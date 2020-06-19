@@ -20,24 +20,16 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.`type`
-import org.mmadt.language.obj.Inst.Func
+package org.mmadt.storage.obj.value
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.LstType
-import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
+import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory.qOne
 
-class TLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] = (Tokens.`,`, List.empty[A]), val q: IntQ = qOne, val via: ViaTuple = base) extends LstType[A] {
-  override def toString: String = LanguageFactory.printLst(this)
-  override val func: Func[_ <: Obj, _ <: Obj] = null
-  def exec(start: A): Obj = MergeOp().exec(SplitOp(this).exec(start)).clone(via = (start, this))
+class VRec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), val q: IntQ = qOne, val via: ViaTuple = base) extends RecValue[A, B] {
+  override def toString: String = LanguageFactory.printValue(this)
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new TLst[A](name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]
-
+                     via: ViaTuple = this.via): this.type = new VRec[A, B](name, g.asInstanceOf[RecTuple[A, B]], q, via).asInstanceOf[this.type]
 }
-
-
-

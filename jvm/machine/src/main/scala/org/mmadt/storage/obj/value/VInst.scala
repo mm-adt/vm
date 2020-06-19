@@ -22,17 +22,17 @@
 
 package org.mmadt.storage.obj.value
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[S], val q: IntQ = qOne, val via: ViaTuple = base, val func: Func[_ <: Obj, _ <: Obj] = null) extends Inst[S, E] {
+class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[S], val q: IntQ = qOne, val via: ViaTuple = base, val func: Func[_ <: Obj, _ <: Obj] = null) extends Inst[S, E] with Lst[S] {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
@@ -42,6 +42,12 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
       case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
       case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp()))
     }
+  override def toString: String = LanguageFactory.printInst(this)
+  override def equals(other: Any): Boolean = other match {
+    case inst: Inst[_, _] => inst.op == this.op && inst.args == this.args && this.q == inst.q
+    case _ => false
+  }
+
 }
 
 

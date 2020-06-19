@@ -150,8 +150,8 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (person, marko, person.a(marko)),
       )
     forEvery(check) { (left, right, result) => {
-      if (!left.isInstanceOf[Strm[_]])
-        assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
+//      if (!left.isInstanceOf[Strm[_]])
+  //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
       //else
       //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${left})[a,${right}]"))
       assertResult(result)(left.compute(asType(__.a(right))))

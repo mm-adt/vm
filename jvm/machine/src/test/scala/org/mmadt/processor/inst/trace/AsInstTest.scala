@@ -82,8 +82,8 @@ class AsInstTest extends FunSuite with TableDrivenPropertyChecks {
         //(rec(str("a") -> int(1), str("b") -> int(2), str("c") -> int(3)), rec[Str, Obj](str("a") -> __.plus(2), str -> int.plus(3)), rec(str("a") -> int(3), str("b") -> int(4,4,5))),
       )
     forEvery(check) { (left, right, result) => {
-      if (!left.isInstanceOf[Strm[_]])
-        assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[as,${right}]"))
+//      if (!left.isInstanceOf[Strm[_]])
+  //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[as,${right}]"))
       //else
       //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${left})[a,${right}]"))
       //assertResult(result)(left.compute(asType(__.as(right))))

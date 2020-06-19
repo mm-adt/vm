@@ -35,8 +35,6 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj, B <: Obj] extends Poly[B]
-  with Type[Rec[A, B]]
-  with Value[Rec[A, B]]
   with PlusOp[Rec[A, B]]
   with GetOp[A, B]
   with PutOp[A, B]
@@ -60,7 +58,6 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
         this.gmap.exists(y => Obj.copyDefinitions(this, y._1).test(x._1) && Obj.copyDefinitions(this, y._2).test(x._2))) == arec.gmap.size
     case _ => false
   }
-  override def toString: String = if(this.isValue) LanguageFactory.printValue(this) else LanguageFactory.printType(this)
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {

@@ -27,8 +27,9 @@ import java.util.concurrent.atomic.AtomicLong
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
 import org.mmadt.language.obj.{Obj, Rec}
-import org.mmadt.language.{LanguageFactory, LanguageProvider}
+import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.VRec
 
 import scala.collection.mutable
 import scala.io.{BufferedSource, Source}
@@ -63,7 +64,7 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
   def put(key: K, value: V): V = store.put(key, value).getOrElse(value)
   def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
   def remove(key: K): V = store.remove(key).get
-  def strm(): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => rec(K -> x._1.asInstanceOf[Value[V]], V -> x._2.asInstanceOf[Value[V]])))
+  def strm(): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => new VRec(g=(Tokens.`,`, Map(K -> x._1.asInstanceOf[Value[V]], V -> x._2.asInstanceOf[Value[V]])))))
   def clear(): Unit = {
     counter.set(0L)
     store.clear()

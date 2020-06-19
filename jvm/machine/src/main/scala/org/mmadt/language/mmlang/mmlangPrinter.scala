@@ -23,7 +23,7 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.Tokens.{int => _, obj => _, _}
+import org.mmadt.language.Tokens.{LBRACKET, int => _, obj => _, _}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.strm.Strm
@@ -61,22 +61,22 @@ object mmlangPrinter {
 
   def recString(rec: Rec[_, _]): String = {
     if (rec.isInstanceOf[Strm[_]]) return strmString(rec.asInstanceOf[Strm[Obj]])
-    else if (rec.root) mapString(map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
-    if (!rec.isValue)
+    else if (rec.root) mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
+    if (!rec.isValue && rec.isInstanceOf[Type[Obj]])
       if (Tokens.named(rec.name)) rec.name
-      else rec.name + COLON + mapString(map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
+      else mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
     else
-      mapString(map = rec.gmap, sep = rec.gsep, empty = EMPTYREC) + qString(rec.q)
+      mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC) + qString(rec.q)
   }
 
   private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else Tokens.empty
-  private def mapString(map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) + RROUND
+  private def mapString(rec: Rec[_, _], map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(if (rec.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) + (if (rec.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
     if (lst.glist.isEmpty)
       LROUND + Tokens.space + RROUND
     else
-      lst.glist.foldLeft(if(lst.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + (if(lst.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
+      lst.glist.foldLeft(if (lst.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + (if (lst.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
   }
 
   def typeString(atype: Type[Obj]): String = {

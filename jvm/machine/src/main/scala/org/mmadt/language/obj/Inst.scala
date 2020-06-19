@@ -26,16 +26,18 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.{LanguageException, LanguageFactory}
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Inst[S <: Obj, +E <: Obj] extends Lst[S] with Type[Lst[S]] {
+trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
   val func: Func[_ <: Obj, _ <: Obj]
-  final def op: String = this.g._1
-  final def args: List[Obj] = this.glist
+
+  final def op: String = this.gsep
+  final def args: List[Obj] = this.glist.toList
   final def arg0[O <: Obj]: O = this.glist.head.asInstanceOf[O]
   final def arg1[O <: Obj]: O = this.glist.tail.head.asInstanceOf[O]
   final def arg2[O <: Obj]: O = this.glist.tail.tail.head.asInstanceOf[O]
@@ -44,7 +46,7 @@ trait Inst[S <: Obj, +E <: Obj] extends Lst[S] with Type[Lst[S]] {
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
-  override lazy val hashCode: scala.Int = this.g.hashCode()
+  override lazy val hashCode: scala.Int = this.op.hashCode ^ this.glist.hashCode()
   override def equals(other: Any): Boolean = other match {
     case inst: Inst[_, _] => inst.op == this.op && inst.args == this.args && this.q == inst.q
     case _ => false
