@@ -21,7 +21,7 @@
  */
 
 package org.mmadt.storage.obj.`type`
-import org.mmadt.language.Tokens
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.LstType
@@ -29,6 +29,7 @@ import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
 import org.mmadt.storage.StorageFactory.qOne
 
 class TLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A], val q: IntQ = qOne, val via: ViaTuple = base) extends LstType[A] {
+  override def toString: String = LanguageFactory.printLst(this)
   override val func: Func[_ <: Obj, _ <: Obj] = null
   def exec(start: A): Obj = MergeOp().exec(SplitOp(this).exec(start)).clone(via = (start, this))
   override def clone(name: String = this.name,

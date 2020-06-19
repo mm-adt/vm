@@ -24,17 +24,35 @@ package org.mmadt.language.obj.op.trace
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Inst, Obj, Rec}
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait DefineOp {
+trait DefsOp {
   this: Obj =>
   def define(obj: Obj): this.type = DefineOp(obj).exec(this)
 }
-object DefineOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.define, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = if (!Obj.fetch(start, inst.arg0[Obj])) start.via(start, inst) else start
+object DefsOp extends Func[Obj, Obj] {
+  def apply(): Inst[Obj, Rec[Obj, Obj]] = new VInst[Obj, Rec[Obj, Obj]](g = (Tokens.defs, List.empty), func = this) with TraceInstruction
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val defs: Rec[Obj, Obj] = rec(Tokens.`,`, start.trace.map(x => x._2).
+      filter(x => x.op.equals(Tokens.define)).
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj])))
+    val vars: Rec[Obj, Obj] = rec(Tokens.`,`, start.trace.
+      filter(x => x._2.op.equals(Tokens.to)).
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (y._2.arg0[StrValue] -> y._1)))
+    val rewrites: Rec[Obj, Obj] = rec(Tokens.`,`, start.trace.map(x => x._2).
+      filter(x => x.op.equals(Tokens.rewrite)).
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj])))
+    rec(Tokens.`,`, List(
+      str("defs") -> defs,
+      str("vars") -> vars,
+      str("rewrites") -> rewrites).
+      filter(x => x._2.gmap.nonEmpty).
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + y))
+  }
 }

@@ -877,6 +877,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("play2") {
     println(engine.eval("2[int+7, int+5]"))
+    println(engine.eval("int[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]]<x>[a,xyz][defs]"))
   }
 
   test("play") {
