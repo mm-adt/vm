@@ -32,7 +32,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[S], val q: IntQ = qOne, val via: ViaTuple = base, val func: Func[_ <: Obj, _ <: Obj] = null) extends Inst[S, E] with Lst[S] {
+class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[S], val q: IntQ = qOne, val via: ViaTuple = base, override val func: Func[_ <: Obj, _ <: Obj] = null) extends Inst[S, E] with Lst[S] {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,

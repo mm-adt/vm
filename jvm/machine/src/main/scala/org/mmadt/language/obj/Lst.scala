@@ -22,12 +22,10 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
@@ -61,8 +59,6 @@ trait Lst[A <: Obj] extends Poly[A]
         this.glist.zip(alst.glist).forall(b => Obj.copyDefinitions(this, b._1).test(b._2))
     case _ => false
   }
-
-  override def toString: String = LanguageFactory.printLst(this)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)

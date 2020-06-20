@@ -30,7 +30,9 @@ import org.mmadt.storage.StorageFactory._
 import scala.collection.SortedSet
 import scala.collection.immutable.ListSet
 
-
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq[A] {
   def get(a: A): Option[A] = baseSet.find(b => a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g))
   def put(a: A): MultiSet[A] = {

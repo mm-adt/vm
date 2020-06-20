@@ -120,7 +120,7 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel structure") {
     val poly: Lst[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3).asInstanceOf[Lst[Obj]]
-    assertResult("(int[id]|int[plus,2]|3)<=int[mult,8]-<(int[id]|int[plus,2]|3)")(poly.toString)
+    assertResult("(int[id]|int[plus,2]|3)")(poly.toString)
     assertResult(int.id())(poly.glist.head)
     assertResult(int.plus(2))(poly.glist(1))
     assertResult(int(3))(poly.glist(2))
@@ -132,7 +132,7 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel quantifier") {
     val poly: Lst[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3).asInstanceOf[Lst[Obj]]
-    assertResult("(int{2}[id]|int{2}[plus,2]|3)<=int{2}[mult,8]-<(int{2}[id]|int{2}[plus,2]|3)")(poly.toString)
+    assertResult("(int{2}[id]|int{2}[plus,2]|3)")(poly.toString)
     assertResult(int.q(2).id())(poly.glist.head)
     assertResult(int.q(2).plus(2))(poly.glist(1))
     assertResult(int(3))(poly.glist(2))

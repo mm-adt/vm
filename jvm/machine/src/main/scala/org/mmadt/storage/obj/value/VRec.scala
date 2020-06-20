@@ -26,6 +26,9 @@ import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory.qOne
 
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 class VRec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), val q: IntQ = qOne, val via: ViaTuple = base) extends RecValue[A, B] {
   override def toString: String = LanguageFactory.printValue(this)
   override def clone(name: String = this.name,

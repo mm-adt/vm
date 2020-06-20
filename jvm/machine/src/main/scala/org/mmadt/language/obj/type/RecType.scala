@@ -21,13 +21,19 @@
  */
 
 package org.mmadt.language.obj.`type`
+import org.mmadt.language.LanguageFactory
+import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
 import org.mmadt.language.obj.{Inst, Obj, Rec}
+import org.mmadt.storage.StorageFactory.rec
 
 trait RecType[A <: Obj, B <: Obj]
   extends Type[Obj]
     with ObjType
     with Inst[B, Obj]
-    with Rec[A, B]
+    with Rec[A, B] {
+  override def toString: String = LanguageFactory.printType(this)
+  override def exec(start: B): Obj = MergeOp().exec(SplitOp(rec(this.gsep, this.gmap.asInstanceOf[Map[Obj, Obj]])).exec(start)).clone(via = (start, this))
+}
 
 
 

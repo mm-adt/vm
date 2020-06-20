@@ -699,13 +699,13 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("3")(engine.eval("(1;(2|3))[get,1][get,1]").toString)
     assertResult("6")(engine.eval("(1;(2;(3|(4|5|6)))).1.1.1.2").toString)
     //////
-    assertResult("(str;;)<=str-<(str;;)")(engine.eval("str-<(str;int;int[plus,2])").toString)
+    assertResult("(str;;)")(engine.eval("str-<(str;int;int[plus,2])").toString)
     assertResult("int{0,24}<=(int{2};int{12}<=int{3}[plus,2]{4})>-[is,true][id]")(engine.eval("(int{2};int{3}[plus,2]{4})>-[is,true][id]").toString)
-    assertResult("(||str)<=str-<(||str)")(engine.eval("str-<(int|bool|str)").toString)
+    assertResult("(||str)")(engine.eval("str-<(int|bool|str)").toString)
     assertResult("str-<(str,,)>-[plus,'hello']")(engine.eval("str-<(str,,)>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<(str,int,int[plus,2])>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz'-<(str,int,int[plus,2])>-[plus,'hello']").toString)
-    assertResult("(3|int|int[plus,2])<=int-<(3|int|int[plus,2])")(engine.eval("int-<(3|int|int[plus,2])").toString)
+    assertResult("(3|int|int[plus,2])")(engine.eval("int-<(3|int|int[plus,2])").toString)
     assertResult("int{?}<=int-<(3|int|int{?}<=int[is,bool<=int[lt,0]])>-[plus,1]")(engine.eval("int-<(3|int|int[is<0])>-[plus,1]").toString)
     /////
     assertResult(zeroObj `,` int(10))(engine.eval("10-<(bool,int)"))
@@ -799,6 +799,12 @@ class mmlangScriptEngineTest extends FunSuite {
     //    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,years<=int][define,person<=rec['name'->str,'age'->years]][is,[a,person]]{350}"))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
+        | [define,person['name'->str,'age'->int]]
+        | [define,old<=int[gt,20]]
+        | [define,young<=int[lt,20]]
+        | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
+    assertResult(str("young guy"))(engine.eval(
+      """ ('name'->'ryan','age'->2)
         | [define,person['name'->str,'age'->int]]
         | [define,old<=int[gt,20]]
         | [define,young<=int[lt,20]]

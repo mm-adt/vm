@@ -26,16 +26,14 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
+import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
-  val func: Func[_ <: Obj, _ <: Obj]
-
+  val func: Func[_ <: Obj, _ <: Obj] = null
   final def op: String = this.gsep
   final def args: List[Obj] = this.glist.toList
   final def arg0[O <: Obj]: O = this.glist.head.asInstanceOf[O]

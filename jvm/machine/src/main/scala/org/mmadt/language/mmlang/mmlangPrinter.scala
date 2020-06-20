@@ -49,15 +49,6 @@ object mmlangPrinter {
     case _ => "{" + x._1.g + "," + x._2.g + "}"
   }
 
-  def strmString(strm: Strm[Obj]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
-
-  def lstString(lst: Lst[_]): String = {
-    if (lst.root) listString(lst)
-    if (!lst.isValue && lst.isInstanceOf[Type[Obj]])
-      typeString(lst.asInstanceOf[Type[Obj]])
-    else
-      listString(lst) + qString(lst.q)
-  }
 
   def recString(rec: Rec[_, _]): String = {
     if (rec.isInstanceOf[Strm[_]]) return strmString(rec.asInstanceOf[Strm[Obj]])
@@ -79,7 +70,8 @@ object mmlangPrinter {
       lst.glist.foldLeft(if (lst.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + (if (lst.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
   }
 
-  def typeString(atype: Type[Obj]): String = {
+  def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
+  def typeString(atype: Type[_]): String = {
     val range = (atype match {
       case arec: Rec[_, _] => recString(arec)
       case alst: Lst[_] => listString(alst)
@@ -94,17 +86,16 @@ object mmlangPrinter {
     }
     (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain.alive && !atype.domain.equals(obj.q(qStar))) domain else Tokens.empty))) + atype.trace.map(_._2.toString()).fold(Tokens.empty)((a, b) => a + b)
   }
-
-  def valueString(avalue: Value[Obj]): String = {
+  def valueString(avalue: Value[_]): String = {
     val named = Tokens.named(avalue.name)
     (if (named) avalue.name + COLON else EMPTY) + (
       avalue match {
         case arec: Rec[_, _] => recString(arec)
+        case alst: Lst[_] => listString(alst)
         case astr: StrValue => SQUOTE + astr.g + SQUOTE
         case _ => avalue.g
       }) + qString(avalue.q)
   }
-
   def instString(inst: Inst[_, _]): String = {
     (inst.op match {
       case Tokens.define => Tokens.empty

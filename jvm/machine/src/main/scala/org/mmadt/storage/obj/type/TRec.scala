@@ -21,18 +21,17 @@
  */
 
 package org.mmadt.storage.obj.`type`
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.RecType
-import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 class TRec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), val q: IntQ = qOne, val via: ViaTuple = base) extends RecType[A, B] {
-  override def toString: String = LanguageFactory.printType(this)
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
                      via: ViaTuple = this.via): this.type = new TRec[A, B](name, g.asInstanceOf[RecTuple[A, B]], q, via).asInstanceOf[this.type]
-  override val func: Inst.Func[_ <: Obj, _ <: Obj] = null
-  override def exec(start: B): Obj = MergeOp().exec(SplitOp(rec(this.gsep, this.gmap.asInstanceOf[Map[Obj,Obj]])).exec(start)).clone(via = (start, this))
 }

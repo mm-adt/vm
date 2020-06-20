@@ -23,14 +23,14 @@
 package org.mmadt.language.obj.value.strm
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.{Obj, Rec, RecTuple}
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RecStrm[A <: Value[Obj], B <: Value[Obj]] extends Strm[Rec[A, B]] with Rec[A, B] {
+trait RecStrm[A <: Obj, B <: Obj] extends Strm[Rec[A, B]] with RecValue[A, B] {
   override def g: RecTuple[A, B] = throw LanguageException.typeNoGround(this)
 
   override lazy val hashCode: Int = this.values.hashCode()

@@ -23,7 +23,7 @@
 package org.mmadt.processor.obj.`type`.rewrite
 
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Obj, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -32,8 +32,8 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class GraphRewriteTest extends FunSuite {
-  private type Vertex = Rec[StrValue, Value[Obj]]
-  private type Graph = Rec[StrValue, Value[Obj]]
+  private type Vertex = RecValue[StrValue, Value[Obj]]
+  private type Graph = RecValue[StrValue, Value[Obj]]
 
   val vertex: Rec[Str, Obj] = rec(str("id") -> int, str("outE") -> tobj("edge").q {
     *

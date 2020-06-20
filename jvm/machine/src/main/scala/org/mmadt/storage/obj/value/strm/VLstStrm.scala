@@ -23,7 +23,11 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.value.LstValue
 import org.mmadt.language.obj.value.strm.LstStrm
 import org.mmadt.language.obj.{Lst, Obj, ViaTuple, base}
 
-class VLstStrm[A <: Obj](val name: String = Tokens.lst, val values: Seq[Lst[A]], val via: ViaTuple = base) extends LstStrm[A]
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
+class VLstStrm[A <: Obj](val name: String = Tokens.lst, val values: Seq[LstValue[A]], val via: ViaTuple = base) extends LstStrm[A]

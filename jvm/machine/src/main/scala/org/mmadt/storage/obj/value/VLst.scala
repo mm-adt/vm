@@ -21,13 +21,17 @@
  */
 
 package org.mmadt.storage.obj.value
-import org.mmadt.language.Tokens
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.LstValue
 import org.mmadt.storage.StorageFactory.qOne
 
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 class VLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A], val q: IntQ = qOne, val via: ViaTuple = base) extends Type[Lst[A]] with LstValue[A] {
+  override def toString: String = LanguageFactory.printValue(this)
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,

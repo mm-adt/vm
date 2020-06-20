@@ -21,13 +21,18 @@
  */
 
 package org.mmadt.language.obj.`type`
+import org.mmadt.language.LanguageFactory
+import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
 import org.mmadt.language.obj.{Inst, Lst, Obj}
 
 trait LstType[A <: Obj]
   extends Type[Obj]
     with ObjType
     with Inst[A, Obj]
-    with Lst[A]
+    with Lst[A] {
+  override def toString: String = LanguageFactory.printType(this)
+  override def exec(start: A): Obj = MergeOp().exec(SplitOp(this).exec(start)).clone(via = (start, this))
+}
 
 
 
