@@ -24,6 +24,8 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.op.map.IdOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, LanguageFactory}
@@ -40,11 +42,13 @@ trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
   final def arg1[O <: Obj]: O = this.glist.tail.head.asInstanceOf[O]
   final def arg2[O <: Obj]: O = this.glist.tail.tail.head.asInstanceOf[O]
   final def arg3[O <: Obj]: O = this.glist.tail.tail.tail.head.asInstanceOf[O]
-  def exec(start: S): E
-
+  def exec(start: S): E =
+    this match {
+      case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
+      case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp())) // TODO: It's not an [id] that processes the inst. hmmm...
+    }
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
-  override lazy val hashCode: scala.Int = this.op.hashCode ^ this.glist.hashCode()
   override def equals(other: Any): Boolean = other match {
     case inst: Inst[_, _] => inst.op == this.op && inst.args == this.args && this.q == inst.q
     case _ => false

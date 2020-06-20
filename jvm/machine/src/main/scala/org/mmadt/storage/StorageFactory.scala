@@ -150,7 +150,7 @@ object StorageFactory {
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
     case arec: RecStrm[Obj, Obj] if arec.isValue => rec.q(arec.q) // TODO:
     case atype: Type[_] => atype
-    case alst: LstStrm[Obj] if alst.isValue => new TLst[Obj](g = (Tokens.`,`, List.empty[Obj])).q(alst.q) // TODO:
+    case alst: LstStrm[Obj] if alst.isValue => new TLst[Obj]().q(alst.q) // TODO:
     case alst: Lst[Obj] => new TLst[Obj](g = alst.g).hardQ(alst.q)
     case arec: Rec[Obj, Obj] => new TRec[Obj, Obj](g = arec.g).hardQ(arec.q)
 

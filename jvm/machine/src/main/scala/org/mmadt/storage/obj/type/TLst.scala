@@ -21,10 +21,9 @@
  */
 
 package org.mmadt.storage.obj.`type`
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.LstType
-import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory.qOne
 
 /**

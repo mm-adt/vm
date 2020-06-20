@@ -22,11 +22,9 @@
 
 package org.mmadt.storage.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.op.map.IdOp
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -37,12 +35,7 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
                      g: Any = this.g,
                      q: IntQ = this.q,
                      via: ViaTuple = this.via): this.type = new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func).asInstanceOf[this.type]
-  override def exec(start: S): E =
-    this match {
-      case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
-      case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp()))
-    }
-  override def toString: String = LanguageFactory.printInst(this)
+  override lazy val hashCode: scala.Int = this.op.hashCode ^ this.glist.hashCode()
   override def equals(other: Any): Boolean = other match {
     case inst: Inst[_, _] => inst.op == this.op && inst.args == this.args && this.q == inst.q
     case _ => false

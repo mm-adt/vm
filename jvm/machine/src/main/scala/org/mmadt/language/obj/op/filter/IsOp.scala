@@ -47,8 +47,8 @@ object IsOp extends Func[Obj, Obj] {
       if (inst.arg0[Bool].g) start.via(start, inst) else start.via(start, inst).hardQ(qZero)
     start match {
       case astrm: Strm[_] => astrm.via(start, Inst.oldInst(inst))
-      case apoly: Poly[_] if (apoly.isType) => start.via(start, Inst.oldInst(inst)).hardQ(minZero(multQ(start, inst)))
-      case avalue: Value[_] if (check.isInstanceOf[Value[_]]) => if (inst.arg0[Bool].g) avalue.via(start, inst) else avalue.via(start, inst).hardQ(qZero)
+      case apoly: Poly[_] if apoly.isType => start.via(start, Inst.oldInst(inst)).hardQ(minZero(multQ(start, inst)))
+      case avalue: Value[_] if check.isInstanceOf[Value[_]] => if (inst.arg0[Bool].g) avalue.via(start, inst) else avalue.via(start, inst).hardQ(qZero)
       case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
     }
   }
