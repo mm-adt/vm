@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.{IntType, RealType, Type, __}
 import org.mmadt.language.obj.op.map.PlusOp
@@ -50,7 +49,7 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2, 3), __.plus(2), int(3, 4, 5), "strm"), // strm * value = strm
         (int(1, 2, 3), __.plus(int(2).q(10)), int(3, 4, 5), "strm"), // strm * value = strm
         (int(1, 2, 3), int.q(3).plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
-        // TODO: (int(1, 2, 3), __.plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3), __.plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3), __.plus(int), int(2, 4, 6), "strm"), // strm * type = strm
         (int(1, 2, 3), __.plus(__.plus(int)), int(3, 6, 9), "strm"), // strm * anon = strm
         //////// REAL
@@ -65,7 +64,7 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(starts) { (input, atype, result, kind) => {
       List(
-        //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
+        // new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
         PlusOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input),
         input.compute(asType(atype)),
         input ===> (input.range ===> atype),

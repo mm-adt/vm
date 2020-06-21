@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 import org.mmadt.language.Tokens
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.trace.JuxtaOp
 import org.mmadt.storage.StorageFactory._

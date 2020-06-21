@@ -25,6 +25,7 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{ObjType, __}
 import org.mmadt.language.obj.op.map.AOp
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{ObjValue, StrValue}
 import org.mmadt.language.obj.{Bool, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
@@ -149,10 +150,10 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (person, marko, person.a(marko)),
       )
     forEvery(check) { (left, right, result) => {
-      //      if (!left.isInstanceOf[Strm[_]])
-      //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
-      //else
-      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${left})[a,${right}]"))
+      if (!left.isInstanceOf[Strm[_]])
+        assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
+      else
+        assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[${left}][a,${right}]"))
       assertResult(result)(left.compute(asType(__.a(right))))
       assertResult(result)(left.a(right))
       assertResult(result)(AOp(right).exec(left))
