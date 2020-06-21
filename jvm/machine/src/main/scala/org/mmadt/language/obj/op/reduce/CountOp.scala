@@ -43,7 +43,7 @@ trait CountOp {
 object CountOp extends Func[Obj, Obj] {
   def apply(): Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.count, Nil), func = this) with ReduceInstruction[Int] with TraceInstruction {
     val seed: Int = int(0)
-    val reducer: Int = __.to("x").get(0, int).plus(__.from("x").get(1).quant())
+    val reducer: Int = __.to("x").get(0).plus(__.from("x").get(1).quant()).as(int)
   }
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {

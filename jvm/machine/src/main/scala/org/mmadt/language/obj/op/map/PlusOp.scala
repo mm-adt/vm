@@ -26,7 +26,6 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -49,7 +48,6 @@ object PlusOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     try {
       (start match {
-        case _: Strm[_] => start
         case _: Value[_] => start match {
           case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
           case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)

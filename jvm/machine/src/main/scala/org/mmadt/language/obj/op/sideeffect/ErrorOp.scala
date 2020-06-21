@@ -38,7 +38,6 @@ trait ErrorOp {
 object ErrorOp extends Func[Obj, Obj] {
   def apply(message: StrValue): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.error, List(message)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
-    case apoly: Poly[_] if apoly.isType => start.via(start, inst)
     case _: Value[_] => throw LanguageException.typeError(start, inst.arg0[StrValue].g)
     case _ => start.via(start, inst)
   }

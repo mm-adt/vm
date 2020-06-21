@@ -48,7 +48,6 @@ object OrOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.or, List(other)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     Try[Bool](start match {
-      case astrm: BoolStrm => astrm
       case abool: BoolValue => abool.clone(g = abool.g || inst.arg0[Bool].g)
       case _ => bool
     }).getOrElse(bool).via(start, inst)

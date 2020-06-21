@@ -24,7 +24,6 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.value.IntValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,7 +32,6 @@ trait IntType extends Int
   with Type[Int]
   with ObjType {
   def g: Long = throw LanguageException.typeNoGround(this)
-  def apply(value: IntValue): IntValue = value.named(this.name)
 }
 
 

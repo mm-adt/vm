@@ -37,7 +37,7 @@ trait Strm[+O <: Obj] extends Value[O] {
   override def g: Any = throw LanguageException.typeNoGround(this)
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = {
     val x = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(_.alive)) // TODO: ghetto
-    (if (x.alive) x else strm).asInstanceOf[this.type]
+    (if (true) x else strm).asInstanceOf[this.type]
   }
   override def q(q: IntQ): this.type = strm(this.values.map(x => if (x.root) x.q(multQ(x.q, q)) else x.q(q)).filter(_.alive)).asInstanceOf[this.type]
   override val q: IntQ = this.values.foldLeft(qZero)((a, b) => plusQ(a, b.q))

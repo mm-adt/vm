@@ -39,25 +39,26 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
   def neg(): this.type = this.via(this, NegOp())
-  def or(other: Obj): Bool = bool.via(this, OrOp(other))
-  def and(other: Obj): Bool = bool.via(this, AndOp(other))
+  def or(other: Obj): this.type = this.via(this, OrOp(other))
+  def and(other: Obj): this.type = this.via(this, AndOp(other))
   def one(): this.type = this.via(this, OneOp())
   def zero(): this.type = this.via(this, ZeroOp())
-  def gt(other: Obj): BoolType = bool.via(this, GtOp(other))
-  def gte(other: Obj): BoolType = bool.via(this, GteOp(other))
-  def lt(other: Obj): BoolType = bool.via(this, LtOp(other))
-  def lte(other: Obj): BoolType = bool.via(this, LteOp(other))
+  def gt(other: Obj): this.type = this.via(this, GtOp(other))
+  def gte(other: Obj): this.type = this.via(this, GteOp(other))
+  def lt(other: Obj): this.type = this.via(this, LtOp(other))
+  def lte(other: Obj): this.type = this.via(this, LteOp(other))
   def head(): this.type = this.via(this, HeadOp())
   def tail(): this.type = this.via(this, TailOp())
   def merge(): this.type = this.via(this, MergeOp())
   ///
   def get(key: Obj): this.type = this.via(this, GetOp(key))
-  def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
+  def get[BB <: Obj](key: Obj, btype: BB): this.type = this.via(this, GetOp(key, btype))
   def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
 }
 
 object __ extends __(Tokens.anon, qOne, base) {
   def apply(name: String): __ = __.named(name)
+  def isAnonRoot(obj: Obj): Boolean = isAnon(obj) && obj.root
   def isAnon(obj: Obj): Boolean = obj.isInstanceOf[__] && obj.name.equals(Tokens.anon)
   def isToken(obj: Obj): Boolean = obj.isInstanceOf[__] && Tokens.named(obj.name)
 }

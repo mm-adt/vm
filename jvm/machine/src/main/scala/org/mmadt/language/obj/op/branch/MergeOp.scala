@@ -42,7 +42,6 @@ object MergeOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.merge, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case astrm: Strm[Poly[_]] => astrm.via(start, inst)
       case apoly: Poly[_] if apoly.isValue && apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(x, inst.q))).filter(_.alive).getOrElse(zeroObj)
       case apoly: Rec[Obj, Obj] if apoly.isValue && !apoly.gmap.keys.exists(x => x.alive && x.isInstanceOf[Type[_]]) => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
       case apoly: Lst[_] if apoly.isValue && apoly.isChoice => strm(Poly.keepFirst(zeroObj, apoly).glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))

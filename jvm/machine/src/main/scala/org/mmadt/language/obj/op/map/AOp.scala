@@ -42,13 +42,13 @@ trait AOp {
 object AOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
-    val resolved = Inst.resolveArg(start, inst.arg0[Obj])
     start match {
       case _: __ => bool.via(start, inst)
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))
-      case _: Poly[_] => bool(start.test(resolved)).via(start, inst)
-      case _: Type[_] => bool.via(start, if (eqQ(start, inst.arg0[Obj])) AOp(resolved) else inst) // streams vs. iterations (this is a crappy problem)
       case _: Value[_] => bool(start.test(inst.arg0[Obj])).via(start, inst)
+      case _: Type[_] => bool.via(start,
+        if (eqQ(start, inst.arg0[Obj])) AOp(Inst.resolveArg(start, inst.arg0[Obj])).hardQ(inst.q)
+        else inst) // streams vs. iterations (this is a crappy problem)
     }
   }
 }

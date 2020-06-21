@@ -27,7 +27,6 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.BoolValue
-import org.mmadt.language.obj.value.strm.BoolStrm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -47,7 +46,6 @@ object AndOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.and, List(other)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     Try[Bool](start match {
-      case astrm:BoolStrm => astrm
       case abool: BoolValue => abool.clone(g = abool.g && inst.arg0[Bool].g)
       case _ => bool
     }).getOrElse(bool).via(start, inst)

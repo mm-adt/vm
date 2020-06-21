@@ -44,7 +44,6 @@ object RepeatOp extends Func[Obj, Obj] {
     val until: Obj = Inst.resolveArg(start, oldInst.arg1)
     //
     start match {
-      case _: Strm[_] => start.via(start, oldInst)
       case _: Value[_] if until.isInstanceOf[Bool] =>
         def loop(y: Obj): Obj = {
           strm(y.toStrm.values.filter(_.alive).flatMap(x => {

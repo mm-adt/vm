@@ -27,7 +27,6 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -47,7 +46,6 @@ object LtOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.lt, List(other)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     Try[Obj](start match {
-      case _: Strm[Obj] => start
       case aint: Int => bool(g = aint.g < inst.arg0[Int].g)
       case areal: Real => bool(g = areal.g < inst.arg0[Real].g)
       case astr: Str => bool(g = astr.g < inst.arg0[Str].g)

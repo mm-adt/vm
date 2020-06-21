@@ -148,14 +148,11 @@ object StorageFactory {
     case _: __ => Tokens.anon
   }
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
-    case arec: RecStrm[Obj, Obj] if arec.isValue => rec.q(arec.q) // TODO:
     case atype: Type[_] => atype
-    case alst: LstStrm[Obj] if alst.isValue => new TLst[Obj]().q(alst.q) // TODO:
-    case alst: Lst[Obj] => new TLst[Obj](g = alst.g).hardQ(alst.q)
-    case arec: Rec[Obj, Obj] => new TRec[Obj, Obj](g = arec.g).hardQ(arec.q)
-
-    //case arec: Rec[Obj, Obj] if arec.isValue => arec.clone(g = (arec.gsep, arec.gmap.map(x => (asType[Obj](x._1), asType[Obj](x._2)))))
-
+    case arec: RecStrm[Obj, Obj] if arec.isValue => rec.q(arec.q) // TODO:
+    case alst: LstStrm[Obj] => new TLst[Obj]().q(alst.q) // TODO:
+    case alst: Lst[Obj] => new TLst[Obj](g = alst.g, q = alst.q)
+    case arec: Rec[Obj, Obj] => new TRec[Obj, Obj](g = arec.g, q = arec.q)
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
     case _: StrValue | _: StrStrm => tstr(name = obj.name, q = obj.q)

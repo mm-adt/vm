@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.map.JuxtaOp
+import org.mmadt.language.obj.op.trace.JuxtaOp
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}

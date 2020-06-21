@@ -44,7 +44,6 @@ object GetOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val key: Obj = inst.arg0[Obj]
     (start match {
-      case astrm: Strm[_] => return astrm.via(start, inst)
       case anon: __ => anon.via(start, inst)
       case arec: Rec[Obj, Obj] =>
         val results = arec.gmap

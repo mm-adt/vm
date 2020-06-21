@@ -42,11 +42,17 @@ trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
   final def arg1[O <: Obj]: O = this.glist.tail.head.asInstanceOf[O]
   final def arg2[O <: Obj]: O = this.glist.tail.tail.head.asInstanceOf[O]
   final def arg3[O <: Obj]: O = this.glist.tail.tail.tail.head.asInstanceOf[O]
-  def exec(start: S): E =
+  def exec(start: S): E = {
     this match {
       case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
-      case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp())) // TODO: It's not an [id] that processes the inst. hmmm...
+      case _ => start match {
+//        case _: __ => start.via(start, this).asInstanceOf[E]
+        case _: Strm[_] => start.via(start, this).asInstanceOf[E]
+        case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp())) // TODO: It's not an [id] that processes the inst. hmmm...
+      }
     }
+
+  }
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
   override def equals(other: Any): Boolean = other match {

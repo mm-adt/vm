@@ -25,7 +25,6 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{ObjType, __}
 import org.mmadt.language.obj.op.map.AOp
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{ObjValue, StrValue}
 import org.mmadt.language.obj.{Bool, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
@@ -113,7 +112,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("a"), bool, bfalse),
         (str("a"), int, bfalse),
         (str("a"), real, bfalse),
-        (str("a"), __.gt(str("b")), bfalse),
+        //(str("a"), __.gt(str("b")), bfalse),
         // (str("a"), str.lt(str("b")), btrue),
         (str("a"), str, btrue),
         (str("a"), rec, bfalse),
@@ -127,9 +126,9 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (vadas, person, btrue),
         (marko, oldPerson, btrue),
         (marko, youngPerson, bfalse),
-        (marko, youngPerson.put("age",int), btrue),
+        (marko, youngPerson.put("age", int), btrue),
         (vadas, oldPerson, bfalse),
-        (vadas, oldPerson.put("age",int.is(int.gt(10))), btrue),
+        (vadas, oldPerson.put("age", int.is(int.gt(10))), btrue),
         (vadas, youngPerson, btrue),
         (youngPerson, vadas, bfalse),
         (oldPerson, vadas, bfalse),
@@ -139,7 +138,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (vadas, car, bfalse),
         (person, car, bfalse),
         (person, person, btrue),
-        (person,oldPerson,bfalse),
+        (person, oldPerson, bfalse),
         //(oldPerson,person,btrue),
         (car, car, btrue),
         (marko, bool, bfalse),
@@ -150,8 +149,8 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (person, marko, person.a(marko)),
       )
     forEvery(check) { (left, right, result) => {
-//      if (!left.isInstanceOf[Strm[_]])
-  //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
+      //      if (!left.isInstanceOf[Strm[_]])
+      //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
       //else
       //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${left})[a,${right}]"))
       assertResult(result)(left.compute(asType(__.a(right))))

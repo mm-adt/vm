@@ -143,14 +143,19 @@ trait Obj
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
-  def compute[E <: Obj](rangeType: E): E = rangeType match {
-    case _: Type[E] if this.root && rangeType.root && __.isAnon(this) => rangeType.hardQ(multQ(this, rangeType))
-    case _: Type[E] => Tokens.tryName[E](rangeType, rangeType.trace
-      .headOption
-      .map(x => x._2.exec(this))
-      .map(x => x.compute(rangeType.linvert()))
-      .getOrElse(this.asInstanceOf[E]))
-    case _ => rangeType
+  def compute[E <: Obj](rangeType: E): E = {
+    rangeType match {
+      case _: Type[E] if __.isAnonRoot(this) && rangeType.root => rangeType.hardQ(multQ(this, rangeType))
+      case atype: Type[E] =>
+      //  if(!Type.ctypeCheck(this, atype))
+       //   LanguageException.testTypeCheck(this,atype)
+        Tokens.tryName[E](rangeType, rangeType.trace
+          .headOption
+          .map(x => x._2.exec(this))
+          .map(x => x.compute(rangeType.linvert()))
+          .getOrElse(this.asInstanceOf[E]))
+      case _ => rangeType
+    }
   }
 
   def ==>[E <: Obj](rangeType: Type[E]): E = {

@@ -27,7 +27,6 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -48,7 +47,6 @@ object EqsOp extends Func[Obj, Bool] {
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     Try[Obj](start match {
       case _: Obj if !start.alive => bool(!inst.arg0.alive)
-      case astrm: Strm[Obj] => astrm
       case _: Poly[_] => bool(inst.arg0.equals(start))
       case avalue: Value[_] => bool(g = avalue.g == inst.arg0[Value[_]].g)
     }).getOrElse(bool).via(start, inst).asInstanceOf[Bool]
