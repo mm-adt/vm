@@ -20,19 +20,17 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj
+package org.mmadt.language.obj.value
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Int, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor4}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3, TableFor4}
 
-class OLstTest extends FunSuite with TableDrivenPropertyChecks {
+class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("lst test") {
     assert(("a" | "b").q(0).test(str.q(0)))
@@ -55,26 +53,26 @@ class OLstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel expressions") {
-    val starts: TableFor2[Obj, Obj] =
-      new TableFor2[Obj, Obj](("expr", "result"),
-        (int(1).-<(int `,` int), int(1) `,` int(1)),
-        (int(1).-<(int `,` int.plus(2)), int(1) `,` int(3)),
-        (int(1).-<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
-        (int(1).q(5).-<(int `,` int.plus(2).q(10)), int(1).q(5) `,` int(3).q(50)),
-        (int(1).q(5).-<(int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
-        (int(int(1), int(100)).-<(int | int) >-, int(int(1), int(100))),
-        (int(int(1), int(100)).-<(int `,` int) >-, int(1, 1, 100, 100)),
-        (int(int(1), int(100)).-<(int `,` int) >-, int(int(1).q(2), int(100).q(2))),
-        (int(int(1).q(5), int(100)).-<(int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
-        (int(int(1).q(5), int(100)).-<(int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
-        //(int(int(1), int(2)).-<(int | (int -< (int | int))), strm(List(int(1)|, int(2)|))),
+    val starts: TableFor3[Obj, Obj, Obj] =
+      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
+        (int(1), __ -< (int `,` int), int(1) `,` int(1)),
+        (int(1), __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
+        (int(1), __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
+        // (int(1).q(5), __ -< (int `,` int.plus(2).q(10)), int(1).q(5) `,` int(3).q(50)),
+        (int(1).q(5), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
+        (int(1, 100), __ -< (int | int) >-, int(int(1), int(100))),
+        (int(1, 100), __ -< (int `,` int) >-, int(1, 1, 100, 100)),
+        (int(1, 100), __ -< (int `,` int) >-, int(int(1).q(2), int(100).q(2))),
+        (int(int(1).q(5), 100), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
+        (int(int(1).q(5), 100), __ -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
+        //(int(1,2),__ -<(int | (int -< (int | int))), strm(List[Obj](int(1)|, int(2)|))),
         //(int(int(1), int(2)).-<(int `,` (int -< (int | int))), strm[Obj](List(int(1), int(1) |, int(2), int(2) |))),
-        (int(1) -< (str | int), zeroObj | int(1)),
+        (int(1), __ -< (str | int), zeroObj | int(1)),
         //(strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
-    forEvery(starts) { (query, result) => {
-      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
-      assertResult(result)(query)
+    forEvery(starts) { (lhs, rhs, result) => {
+      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[${lhs}]${rhs}"))
+      assertResult(result)(lhs `=>` rhs)
     }
     }
   }
