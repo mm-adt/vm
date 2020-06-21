@@ -50,7 +50,7 @@ trait StorageFactory {
   def rec[A <: Obj, B <: Obj]: Rec[A, B] = new TRec()
   def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecValue[A, B] = new VRec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
   def rec[A <: Obj, B <: Obj](sep: String = Tokens.`,`, map: Map[A, B]): Rec[A, B] = new VRec(g = (sep, map))
-  def lst[A <: Obj](sep: String, values: A*): Lst[A] = new VLst[A](g = (sep, values.toList))
+  def lst[A <: Obj](sep: String, values: A*): LstValue[A] = new VLst[A](g = (sep, values.toList))
   def |[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.|, List.empty))
   def `;`[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.`;`, List.empty))
   def `,`[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.`,`, List.empty))
@@ -97,7 +97,7 @@ object StorageFactory {
   def rec[A <: Obj, B <: Obj](sep: String, map: Map[A, B])(implicit f: StorageFactory): RecValue[A, B] = new VRec(g = (sep, map))
   def lst[A <: Obj]: TLst[A] = new TLst()
   def lst[A <: Obj](alst: Lst[A]) = new TLst[A](g = alst.g, q = alst.q)
-  def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Lst[A] = f.lst[A](sep, values: _*)
+  def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): LstValue[A] = f.lst[A](sep, values: _*)
   def |[A <: Obj](implicit f: StorageFactory): Lst[A] = f.|
   def `;`[A <: Obj](implicit f: StorageFactory): Lst[A] = f.`;`
   def `,`[A <: Obj](implicit f: StorageFactory): Lst[A] = f.`,`
