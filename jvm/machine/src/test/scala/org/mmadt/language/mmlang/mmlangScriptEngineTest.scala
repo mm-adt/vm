@@ -483,7 +483,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("rec poly") {
-    assertResult(int(14))(engine.eval("4-<rec:(str->'x'|int->+10)>-"))
+    assertResult(int(14))(engine.eval("4-<(str->'x'|int->+10)>-"))
     assertResult(int(2, 14))(engine.eval("4-<(int[is>0]->2,int->+10)>-"))
   }
 

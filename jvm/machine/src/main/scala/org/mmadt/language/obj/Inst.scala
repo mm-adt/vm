@@ -46,12 +46,10 @@ trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
     this match {
       case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
       case _ => start match {
-//        case _: __ => start.via(start, this).asInstanceOf[E]
         case _: Strm[_] => start.via(start, this).asInstanceOf[E]
         case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg)))).via(this, IdOp())) // TODO: It's not an [id] that processes the inst. hmmm...
       }
     }
-
   }
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
@@ -60,7 +58,6 @@ trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
     case _ => false
   }
 }
-
 object Inst {
   def oldInst[S <: Obj, E <: Obj](newInst: Inst[S, E]): Inst[S, E] = newInst.via._1.asInstanceOf[Inst[S, E]]
   def resolveToken[A <: Obj](obj: Obj, arg: A): A =

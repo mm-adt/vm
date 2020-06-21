@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -34,5 +35,8 @@ trait PathOp {
 }
 object PathOp extends Func[Obj, Lst[Obj]] {
   def apply(): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, Nil), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = lst(Tokens.`;`, start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*).via(start, inst)
+  override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = (start match {
+    case _: Value[_] => lst(Tokens.`;`, start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start: _*)
+    case _ => lst
+  }).via(start, inst).asInstanceOf[Lst[Obj]]
 }

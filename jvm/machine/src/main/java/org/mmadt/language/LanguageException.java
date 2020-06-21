@@ -25,13 +25,12 @@ package org.mmadt.language;
 import org.mmadt.VmException;
 import org.mmadt.language.obj.Lst;
 import org.mmadt.language.obj.Obj;
+import org.mmadt.language.obj.Poly;
 import org.mmadt.language.obj.Rec;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
 import org.mmadt.storage.StorageFactory;
-import org.mmadt.storage.obj.type.TLst;
-import org.mmadt.storage.obj.type.TRec;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -92,9 +91,7 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if(type instanceof TLst<?> || type instanceof TRec<?,?>)
-            return;
-        if (!StorageFactory.asType(obj).range().test(((type instanceof __) ? obj.compute((Type<Obj>) type) : type).domain()))
+        if (!(type.alive() && ((type.domain() instanceof Poly<?>) || __.isAnon(type.domain()) || obj.range().test(type.domain()))))
             throw LanguageException.typingError(obj, type);
     }
 
