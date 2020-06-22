@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait DefsOp {
   this: Obj =>
-  def define(obj: Obj): this.type = DefineOp(obj).exec(this)
+  def defs: Rec[Obj,Obj] = DefsOp().exec(this)
 }
 object DefsOp extends Func[Obj, Obj] {
   def apply(): Inst[Obj, Rec[Obj, Obj]] = new VInst[Obj, Rec[Obj, Obj]](g = (Tokens.defs, List.empty), func = this) with TraceInstruction

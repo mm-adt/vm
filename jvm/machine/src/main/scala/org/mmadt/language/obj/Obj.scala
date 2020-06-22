@@ -44,6 +44,7 @@ trait Obj
     with AsOp
     with CountOp
     with DefineOp
+    with DefsOp
     with IdOp
     with IsOp
     with FoldOp

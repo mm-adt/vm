@@ -539,7 +539,7 @@ class mmlangScriptEngineTest extends FunSuite {
         |   [[is>3] -> [mult,10]
         |   | int   -> [mult,100]][plus,2]""".stripMargin))
     assertResult(int(302, 42))(engine.eval(
-      """ (0,1,2,3)>-
+      """ [0,1,2,3]
         | [plus,1][is>2][
         |    [is>3] --> [mult,10]
         |   | int   --> [mult,100]][plus,2]""".stripMargin))
@@ -792,29 +792,42 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("2[define,big<=int[is>4]][a,big]"))
     assertResult(bfalse)(engine.eval("2[define,big<=_[is>4]][a,big]"))
     assertResult(int(120))(engine.eval("10[define,big<=int[plus,100]][plus,0][plus,big]"))
-    assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,person<=rec['name'->str,'age'->int]][a,person]"))
+    // assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,person<=['name'->str,'age'->int]][a,person]"))
+    // assertResult(bfalse)(engine.eval("('name'->'marko')[define,person<=person['name'->str,'age'->int]][a,person]"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][a,person]{100}"))
     assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][a,person]{100}"))
-    //    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,person<=rec['name'->str,'age'->int]][put,'age',29][is,[a,person]]{350}"))
-    //    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,years<=int][define,person<=rec['name'->str,'age'->years]][is,[a,person]]{350}"))
+    assertResult(btrue.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][plus,('age'->29)][a,person]{100}"))
+    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][plus,('years'->29)][a,person]{100}"))
+    // assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
+    // assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,years<=int][define,person<=rec['name'->str,'age'->years]][is,[a,person]]{350}"))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
-        | [define,person['name'->str,'age'->int]]
+        | [define,person:('name'->str,'age'->int)]
         | [define,old<=int[gt,20]]
         | [define,young<=int[lt,20]]
         | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
     assertResult(str("young guy"))(engine.eval(
       """ ('name'->'ryan','age'->2)
-        | [define,person['name'->str,'age'->int]]
+        | [define,person:('name'->str,'age'->int)]
         | [define,old<=int[gt,20]]
         | [define,young<=int[lt,20]]
         | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
     assertResult(str("young guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
-        | [define,person<=rec['name'->str,'age'->int][is,.age>0]]
+        | [define,person:('name'->str,'age'->int[is,.age>0])]
         | [define,old<=int[is>20]]
         | [define,young<=int[is<20]]
         | [is,[a,person]][.age+-100<.old> -> 'old guy' , .age+-100<.young> -> 'young guy']""".stripMargin))
+ /*
+ mmlang> ('name'->'marko','age'->29)[define,person:('name'->str,'age'->int[is<0])][is,[a,person]]
+ ==>('name'->'marko','age'->29){?}{?}
+ */
+    /*assertResult(zeroObj)(engine.eval(
+      """ ('name'->'marko','age'->29)
+        | [define,person:('name'->str,'age'->[is<0])]
+        | [define,old<=int[is>20]]
+        | [define,young<=int[is<20]]
+        | [is,[a,person]][.age+-100<.old> -> 'old guy' , .age+-100<.young> -> 'young guy']""".stripMargin))*/
     ///////////////////
     assertResult(btrue `,` bfalse `,` btrue)(engine.eval(
       """ 1
