@@ -72,8 +72,8 @@ object mmlangPrinter {
     if (lst.glist.isEmpty)
       LROUND + Tokens.space + RROUND
     else
-      lst.glist.foldLeft(if (lst.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) +
-        (if (lst.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
+      lst.glist.foldLeft(if (lst.isInstanceOf[TLst[_]]) LROUND else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) +
+        (if (lst.isInstanceOf[TLst[_]]) RROUND else RROUND)
   }
 
   def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)

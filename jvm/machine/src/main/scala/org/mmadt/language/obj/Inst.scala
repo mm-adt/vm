@@ -68,7 +68,7 @@ object Inst {
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     resolveToken(obj, arg) match {
-      case lstArg: Lst[_] if !lstArg.isValue => (if (obj.test(lstArg)) lstArg else lstArg.q(qZero)).asInstanceOf[E] // TODO: compute lstArg?
+      //case lstArg: LstType[_]  => (if (obj.test(lstArg)) lstArg else lstArg.q(qZero)).asInstanceOf[E] // TODO: compute lstArg?
       case valueArg: OValue[E] => valueArg
       case typeArg: OType[E] => obj match {
         case _: Strm[_] => arg

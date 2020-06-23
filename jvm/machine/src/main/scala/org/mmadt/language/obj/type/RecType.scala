@@ -33,6 +33,9 @@ trait RecType[A <: Obj, B <: Obj]
     with Rec[A, B] {
   override def toString: String = LanguageFactory.printType(this)
   override def exec(start: B): Obj = MergeOp().exec(SplitOp(rec(this.gsep, this.gmap.asInstanceOf[Map[Obj, Obj]])).exec(start)).clone(via = (start, this))
+  override def test(other: Obj): Boolean = RecType.super.test(other)
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
+  override def equals(other: Any): Boolean = RecType.super.equals(other)
 }
 
 

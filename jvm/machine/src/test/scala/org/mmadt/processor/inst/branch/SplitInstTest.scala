@@ -35,8 +35,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
     val check: TableFor3[Obj, Poly[Obj], Obj] =
       new TableFor3[Obj, Poly[Obj], Obj](("input", "type", "result"),
         (int(1), int.-<(int `;` int), int(1) `;` int(1)),
-        (int(1, 2, 3), int.q(3).-<(int.q(3) `,` int.q(3)), strm(List((int(1) `,` 1), (int(2) `,` 2), (int(3) `,` 3)))),
-        (int(1, 2, 3), int.q(3).-<(int(5).q(3) `,` int(8).q(3)), (int(5).q(3) `,` int(8).q(3)).q(3)),
+        (int(1, 2, 3), int.q(3).-<(int.q(3) `,` int.q(3)), strm(List(int(1) `,` 1, int(2) `,` 2, int(3) `,` 3))),
         (int(2), __.-<(int | str), int(2) | obj.q(qZero)),
         (int(4).q(2), int.q(2).-<(int | int.is(__.gt(10))), int(4).q(2) | obj.q(qZero)),
         (int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), int(2).q(2) `;` obj.q(qZero)),
@@ -60,7 +59,6 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("lineage preservation (coproducts)") {
-    println(int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
     assertResult(int(321, 323))(int(1) ===> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
     assertResult(int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))(int ===> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
     assertResult(strm(List(
@@ -128,14 +126,14 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
           (int --> int.mult(4))) >-)
 
     assertResult(int(42, 43, 44))(
-      int(0) ==> int.plus(int(39)).-<(
+      int(0) ===> int.plus(int(39)).-<(
         (int.is(int.gt(40)) --> int.plus(1)) `,`
           (int.is(int.gt(30)) --> int.plus(2)) `,`
           (int.is(int.gt(20)) --> int.plus(3)) `,`
           (int.is(int.gt(10)) --> int.plus(4))).>-.plus(1))
 
     assertResult(int(33, 34))(
-      int(0) ==> int.plus(29).-<(
+      int(0) ===> int.plus(29).-<(
         (int.is(int.gt(40)) --> int.plus(1)) `,`
           (int.is(int.gt(30)) --> int.plus(2)) `,`
           (int.is(int.gt(20)) --> int.plus(3)) `,`
@@ -178,21 +176,21 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
           int --> int.mult(4)) >-)
 
     assertResult(int(42))(
-      int(0) ==> int.plus(int(39)).-<(
+      int(0) ===> int.plus(int(39)).-<(
         int.is(int.gt(40)) --> int.plus(1) |
           int.is(int.gt(30)) --> int.plus(2) |
           int.is(int.gt(20)) --> int.plus(3) |
           int.is(int.gt(10)) --> int.plus(4)).>-.plus(1))
 
     assertResult(int(33))(
-      int(0) ==> int.plus(29).-<(
+      int(0) ===> int.plus(29).-<(
         int.is(int.gt(40)) --> int.plus(1) |
           int.is(int.gt(30)) --> int.plus(2) |
           int.is(int.gt(20)) --> int.plus(3) |
           int.is(int.gt(10)) --> int.plus(4)).>-.plus(1))
 
     assertResult(int(33))(
-      int(0) ==> int.plus(29).-<(
+      int(0) ===> int.plus(29).-<(
         int.is(__.gt(40)) --> int.plus(1) |
           int.is(__.gt(30)) --> int.plus(2) |
           int.is(__.gt(20)) --> int.plus(3) |

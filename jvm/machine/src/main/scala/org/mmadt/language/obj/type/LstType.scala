@@ -32,6 +32,9 @@ trait LstType[A <: Obj]
     with Lst[A] {
   override def toString: String = LanguageFactory.printType(this)
   override def exec(start: A): Obj = MergeOp().exec(SplitOp(this).exec(start)).clone(via = (start, this))
+  override def test(other: Obj): Boolean = super[Lst].test(other)
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode()
+  override def equals(other: Any): Boolean = super[Lst].equals(other)
 }
 
 

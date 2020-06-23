@@ -30,6 +30,7 @@ import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{ViaTuple, _}
 import org.mmadt.storage.StorageFactory.{qOne, qZero}
+import org.mmadt.storage.obj.OLst
 import org.mmadt.storage.obj.`type`._
 import org.mmadt.storage.obj.value._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
@@ -50,6 +51,7 @@ trait StorageFactory {
   def rec[A <: Obj, B <: Obj]: Rec[A, B] = new TRec()
   def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): RecValue[A, B] = new VRec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
   def rec[A <: Obj, B <: Obj](sep: String = Tokens.`,`, map: Map[A, B]): Rec[A, B] = new VRec(g = (sep, map))
+  def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = base): Lst[A] = OLst.makeLst(name, g, q, via)
   def lst[A <: Obj](sep: String, values: A*): LstValue[A] = new VLst[A](g = (sep, values.toList))
   def |[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.|, List.empty))
   def `;`[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.`;`, List.empty))
@@ -95,8 +97,9 @@ object StorageFactory {
   def rec[A <: Obj, B <: Obj]: TRec[A, B] = new TRec()
   def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): RecValue[A, B] = new VRec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
   def rec[A <: Obj, B <: Obj](sep: String, map: Map[A, B])(implicit f: StorageFactory): RecValue[A, B] = new VRec(g = (sep, map))
+  def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): Lst[A] = OLst.makeLst(name, g, q, via)
   def lst[A <: Obj]: TLst[A] = new TLst()
-  def lst[A <: Obj](alst: Lst[A]) = new TLst[A](g = alst.g, q = alst.q)
+  def lst[A <: Obj](alst: Lst[A]): Lst[A] = OLst.makeLst[A](g = alst.g, q = alst.q)
   def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): LstValue[A] = f.lst[A](sep, values: _*)
   def |[A <: Obj](implicit f: StorageFactory): Lst[A] = f.|
   def `;`[A <: Obj](implicit f: StorageFactory): Lst[A] = f.`;`
@@ -152,7 +155,7 @@ object StorageFactory {
     case atype: Type[_] => atype
     case arec: RecStrm[Obj, Obj] if arec.isValue => rec.q(arec.q) // TODO:
     case alst: LstStrm[Obj] => new TLst[Obj]().q(alst.q) // TODO:
-    case alst: Lst[Obj] => new TLst[Obj](g = alst.g, q = alst.q)
+    case alst: LstValue[Obj] => lst(g = (alst.gsep, alst.g._2.map(x => asType(x))))
     case arec: Rec[Obj, Obj] => new TRec[Obj, Obj](g = arec.g, q = arec.q)
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)

@@ -32,6 +32,7 @@ class CountInstTest extends FunSuite {
   test("[count] w/ int") {
     assertResult(int(1))(int(2).count())
     assertResult(int(10))(int(2).q(10).count())
+    assertResult(int(1))(int(12) ===> int.count())
     assertResult(int(0))(int(1) ===> int.is(int.gt(10)).count())
     assertResult(int(0))(int(1, 2, 3) ===> int.q(*).is(int.gt(10)).count())
     assertResult(int(3))(int(1, 2, 3).count())

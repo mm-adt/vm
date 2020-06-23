@@ -69,23 +69,22 @@ trait Lst[A <: Obj] extends Poly[A]
     case _ => false
   }
 }
-
 object Lst {
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
-    apoly.clone(apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
+    apoly.clone(g=(apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
   }
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A]): Lst[A] = {
     if (apoly.isSerial) {
       var local = start
-      apoly.clone(apoly.glist.map(slot => {
+      apoly.clone(g=(apoly.gsep,apoly.glist.map(slot => {
         local = local match {
           case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
           case _ => Inst.resolveArg(local, slot)
         }
         local
-      }))
-    } else apoly.clone(apoly.glist.map(slot => Inst.resolveArg(start, slot)))
+      })))
+    } else apoly.clone(g=(apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot))))
 
   }
 }

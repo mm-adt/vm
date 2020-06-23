@@ -22,11 +22,9 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
@@ -73,6 +71,7 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
 object Rec {
   def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = {
     if (arec.isSerial) {
+      if (__.isAnonRoot(start)) return arec
       var local = start -> start
       arec.clone(g = (arec.gsep, arec.gmap.map(slot => {
         val key = Inst.resolveArg(local._1, slot._1)

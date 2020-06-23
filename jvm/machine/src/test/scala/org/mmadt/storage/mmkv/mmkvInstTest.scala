@@ -75,7 +75,7 @@ class mmkvInstTest extends FunSuite {
     //assertResult("('k'->1,'v'->'marko')")((int(1) ==> int.=:[RecType[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
   }
 
-  test("mmkv rewrites") {
+ /* test("mmkv rewrites") {
     assertResult("mmkv")(engine.eval(s"[=mmkv,'${file2}']").name)
     assertResult(int.q(*))(engine.eval(s"[=mmkv,'${file2}'][get,'k']").range)
     assertResult(int.q(*))(engine.eval(s"[=mmkv,'${file2}'][get,'v'][get,'age']").range)
@@ -91,7 +91,7 @@ class mmkvInstTest extends FunSuite {
     //  assertResult(s"mmkv{*}<=_[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"[=mmkv,'${file2}'][is,[get,'k'][eq,2]]").toString) // TODO
     assertResult(str("marko"))(engine.eval(s"1[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
     assertResult(str("marko"))(engine.eval(s"[1][=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
-  }
+  }*/
 
 }
 

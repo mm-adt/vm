@@ -102,7 +102,7 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("scala type constructor") {
-    assertResult("('a'|'b')")(("a" | "b").toString())
+    assertResult("('a'|'b')")(("a" | "b").toString)
   }
 
   test("parallel [get] values") {
@@ -110,41 +110,6 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(str("b"))((str("a") | "b").get(1))
     assertResult(str("b"))((str("a") | "b" | "c").get(1))
     assertResult("b" | "d")(("a" | ("b" | "d") | "c").get(1))
-  }
-
-  test("parallel [get] types") {
-    assertResult(str)((str.plus("a") | str).get(0, str).range)
-  }
-
-  test("parallel structure") {
-    val poly: Lst[Obj] = int.mult(8).split(__.id() | __.plus(2) | 3).asInstanceOf[Lst[Obj]]
-    assertResult("(int[id]|int[plus,2]|3)")(poly.toString)
-    assertResult(int.id())(poly.glist.head)
-    assertResult(int.plus(2))(poly.glist(1))
-    assertResult(int(3))(poly.glist(2))
-    assertResult(int)(poly.glist.head.via._1)
-    assertResult(int)(poly.glist(1).via._1)
-    assert(poly.glist(2).root)
-    assertResult(int.id() | int.plus(2) | int(3))(poly.range)
-  }
-
-  test("parallel quantifier") {
-    val poly: Lst[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3).asInstanceOf[Lst[Obj]]
-    assertResult("(int{2}[id]|int{2}[plus,2]|3)")(poly.toString)
-    assertResult(int.q(2).id())(poly.glist.head)
-    assertResult(int.q(2).plus(2))(poly.glist(1))
-    assertResult(int(3))(poly.glist(2))
-    assertResult(int.q(2))(poly.glist.head.via._1)
-    assertResult(int.q(2))(poly.glist(1).via._1)
-    assert(poly.glist(2).root)
-    assertResult(int.q(2).id() | int.q(2).plus(2) | int(3))(poly.range)
-  }
-
-  test("parallel [split] quantification") {
-    assertResult(int)(int.mult(8).split(__.id() | __.plus(8).mult(2) | int(56)).merge[Int].id().isolate)
-    assertResult(int.q(1, 20))(int.mult(8).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
-    assertResult(int.q(1, 40))(int.q(2).mult(8).q(1).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
-    assertResult(int(56))(int.q(2).mult(8).q(0).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Obj].id().isolate)
   }
 
   test("serial value/type checking") {

@@ -20,23 +20,24 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.`type`
+package org.mmadt.storage.obj
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.LstType
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.storage.StorageFactory.qOne
-import org.mmadt.storage.obj.OLst
+import org.mmadt.storage.obj.`type`.TLst
+import org.mmadt.storage.obj.value.VLst
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class TLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base) extends OLst[A](name, g, q, via) with LstType[A] {
-  override def toString: String = LanguageFactory.printType(this)
-  /*override def clone(name: String = this.name,
+abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] = (Tokens.`,`, List.empty[A]), val q: IntQ = qOne, val via: ViaTuple = base) extends Lst[A] {
+  override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new TLst[A](name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]*/
+                     via: ViaTuple = this.via): this.type = OLst.makeLst(name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]
+
 }
-
-
-
+object OLst {
+  def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base): OLst[A] = {
+    if (g._2.nonEmpty && !g._2.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]])) new VLst[A](name, g, q, via)
+    else new TLst[A](name, g, q, via)
+  }
+}

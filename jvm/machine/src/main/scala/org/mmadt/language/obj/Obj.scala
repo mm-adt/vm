@@ -127,16 +127,16 @@ trait Obj
   final def `,`[A <: Obj](obj: scala.Long): Lst[A] = this.`,`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `,`[A <: Obj](obj: scala.Int): Lst[A] = this.`,`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `,`[A <: Obj](obj: String): Lst[A] = this.`,`(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `,`[A <: Obj]: LstValue[A] = lst(Tokens.`,`, this.asInstanceOf[A])
+  final def `,`[A <: Obj]: Lst[A] = lst(Tokens.`,`, this.asInstanceOf[A])
   final def `,`[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.`,`, obj)
   /////////////////
   private final def polyMaker[A <: Obj](sep: String, obj: A): Lst[A] = {
     this match {
       case apoly: Lst[A] => obj match {
-        case bpoly: Lst[A] => lst(sep, apoly.asInstanceOf[A], bpoly.asInstanceOf[A])
-        case _ => apoly.clone(apoly.glist :+ obj)
+        case bpoly: Lst[A] => lst(g = (sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A])))
+        case _ => lst(g = (apoly.gsep, apoly.glist :+ obj))
       }
-      case _ => lst(sep, this.asInstanceOf[A], obj)
+      case _ => lst(g = (sep, List(this.asInstanceOf[A], obj)))
     }
   }
 

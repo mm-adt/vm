@@ -46,7 +46,7 @@ object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val asObj: Obj = inst.arg0[Obj]
-    val toObj: Obj = if (!asObj.isInstanceOf[Poly[Obj]] && asObj.isInstanceOf[Value[Obj]]) {
+    val toObj: Obj = if (!asObj.isInstanceOf[Rec[Obj,Obj]] && asObj.isInstanceOf[Value[Obj]]) {
       Inst.resolveArg(start, asObj)
     } else {
       start match {
@@ -108,7 +108,7 @@ object AsOp extends Func[Obj, Obj] {
     y.domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case alst: Lst[Obj] => new VLst[Obj](g=(alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))))
+      case alst: Lst[Obj] => lst(g=(alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))))
       case _ => throw LanguageException.typingError(x, asType(y))
     } //, y)
   }

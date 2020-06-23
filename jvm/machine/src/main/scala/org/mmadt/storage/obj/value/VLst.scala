@@ -22,19 +22,19 @@
 
 package org.mmadt.storage.obj.value
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.LstValue
 import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory.qOne
+import org.mmadt.storage.obj.OLst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] = (Tokens.`,`, List.empty[A]), val q: IntQ = qOne, val via: ViaTuple = base) extends Type[Lst[A]] with LstValue[A] {
+class VLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base) extends OLst[A](name, g, q, via) with LstValue[A] {
   override def toString: String = LanguageFactory.printValue(this)
-  override def clone(name: String = this.name,
+  /*override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new VLst[A](name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = new VLst[A](name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]*/
 }
 

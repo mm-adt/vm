@@ -92,12 +92,12 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     val definitions = int
       //.define((int.mult(2)`;`)<=(int.plus(int)`;`))
       .rewrite(int <= (int.plus(0) `;`))
-      .rewrite((int.zero() `;`) <= (int.plus(1).plus(-1) `;`))
-    assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1))))
-    assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1)).plus(0)))
+    //      .rewrite((int.zero() `;`) <= (int.plus(1).plus(-1) `;`))
+    //  assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1))))
+    //    assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1)).plus(0)))
     assertResult(int.plus(int.plus(2).plus(3).plus(4)))(processor.apply(definitions.plus(int.plus(2).plus(3).plus(4))))
     assertResult(int.plus(int))(processor.apply(definitions.plus(0).plus(int.plus(0))))
-    assertResult(int)(processor.apply(definitions.plus(0).plus(int.plus(int(1)).plus(-1).plus(int(0)))))
+    //  assertResult(int)(processor.apply(definitions.plus(0).plus(int.plus(int(1)).plus(-1).plus(int(0)))))
   }
 
   /*test("compiler with domain rewrites") {

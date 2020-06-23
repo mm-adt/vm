@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.value.LstValue
 import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -42,10 +42,11 @@ object MergeOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.merge, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
+      case apoly: LstValue[_] if apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(x, inst.q))).filter(_.alive).getOrElse(zeroObj)
       case apoly: Poly[_] if apoly.isValue && apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(x, inst.q))).filter(_.alive).getOrElse(zeroObj)
       case apoly: Rec[Obj, Obj] if apoly.isValue && !apoly.gmap.keys.exists(x => x.alive && x.isInstanceOf[Type[_]]) => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
-      case apoly: Lst[_] if apoly.isValue && apoly.isChoice => strm(Poly.keepFirst(zeroObj, apoly).glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
-      case apoly: Lst[_] if apoly.isValue => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
+      case apoly: LstValue[_] if apoly.isChoice => strm(Poly.keepFirst(zeroObj, apoly).glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
+      case apoly: LstValue[_] => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
       case apoly: Poly[_] => BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
       case _ => start.via(start, inst)
     }

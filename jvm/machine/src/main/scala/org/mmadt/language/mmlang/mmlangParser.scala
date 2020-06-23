@@ -85,7 +85,7 @@ class mmlangParser extends JavaTokenParsers {
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
   // mmlang's language structure
-  lazy val obj: Parser[Obj] = objType | objValue | anonQuant
+  lazy val obj: Parser[Obj] = objValue | objType | anonQuant
 
   // variable parsing
   lazy val symbolName: Regex = "[a-zA-Z]+".r
@@ -94,9 +94,9 @@ class mmlangParser extends JavaTokenParsers {
 
   // poly parsing
   lazy val polySep: Parser[String] = Tokens.| | Tokens.`;` | Tokens.`,`
-  def lstStruct(until: String): Parser[LstTuple[Obj]] =
-    (opt(obj) ~ polySep) ~ repsep(opt(obj), polySep) ^^ (x => lst(x._1._2, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)): _*).g) |
-      obj <~ guard(until) ^^ (x => (Tokens.`,`, List(x))) |
+  def lstStruct(parser: Parser[Obj], until: String): Parser[LstTuple[Obj]] =
+    (opt(parser) ~ polySep) ~ repsep(opt(parser), polySep) ^^ (x => lst(x._1._2, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)): _*).g) |
+      parser <~ guard(until) ^^ (x => (Tokens.`,`, List(x))) |
       Tokens.empty ^^ (_ => (Tokens.`,`, List.empty[Obj]))
   lazy val recStruct: Parser[RecTuple[Obj, Obj]] =
     ((opt((obj <~ Tokens.->) ~ obj) ~ polySep) ~ rep1sep(opt((obj <~ Tokens.->) ~ obj), polySep)) ^^
@@ -114,11 +114,11 @@ class mmlangParser extends JavaTokenParsers {
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
   lazy val recType: Parser[RecType[Obj, Obj]] = (LBRACKET ~> recStruct) <~ RBRACKET ^^ (x => new TRec[Obj, Obj](g = x))
   lazy val recCType: Parser[RecType[Obj, Obj]] = Tokens.rec ~> (LBRACKET ~> recStruct) <~ RBRACKET ^^ (x => new TRec[Obj, Obj](g = x)) | Tokens.rec ^^ (_ => rec)
-  lazy val lstType: Parser[LstType[Obj]] = (LBRACKET ~> lstStruct(RBRACKET)) <~ RBRACKET ^^ (x => new TLst[Obj](g = (x._1, x._2)))
-  lazy val lstCType: Parser[LstType[Obj]] = Tokens.lst ~> (LBRACKET ~> lstStruct(RBRACKET)) <~ RBRACKET ^^ (x => new TLst(g = x)) | Tokens.lst ^^ (_ => lst)
+  lazy val lstType: Parser[LstType[Obj]] = (LROUND ~> lstStruct(obj, RROUND)) <~ RROUND ^^ (x => new TLst[Obj](g = (x._1, x._2)))
+  lazy val lstCType: Parser[LstType[Obj]] = Tokens.lst ~> (LROUND ~> lstStruct(obj, RROUND)) <~ RROUND ^^ (x => new TLst(g = x)) | Tokens.lst ^^ (_ => lst)
   lazy val tokenType: Parser[__] = varName ^^ (x => __(x))
 
-  lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | (not(inst) ~> (lstCType | recCType | lstValue)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | (not(inst) ~> (lstCType | recCType | lstType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ {
     case Some(range) ~ domain ~ insts => range <= insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
     case None ~ domain ~ insts => insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
@@ -133,7 +133,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val intValue: Parser[IntValue] = opt(valueType) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
   lazy val realValue: Parser[RealValue] = opt(valueType) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
   lazy val strValue: Parser[StrValue] = opt(valueType) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
-  lazy val lstValue: Parser[VLst[Obj]] = (LROUND ~> lstStruct(RROUND)) <~ RROUND ^^ (x => new VLst[Obj](g = (x._1, x._2)))
+  lazy val lstValue: Parser[VLst[Obj]] = (LROUND ~> lstStruct(objValue, RROUND)) <~ RROUND ^^ (x => new VLst[Obj](g = (x._1, x._2)))
   lazy val recValue: Parser[VRec[Obj, Obj]] =
     (opt(valueType) <~ opt(COLON)) ~ (LROUND ~> recStruct <~ RROUND) ^^ (x => new VRec[Obj, Obj](g = (x._2._1, x._2._2.asInstanceOf[Map[Obj, Obj]])).named(x._1.getOrElse(Tokens.rec))) |
       (opt(Tokens.rec) <~ opt(COLON)) ~> (LROUND ~> recStruct) <~ RROUND ^^ (x => new VRec[Obj, Obj](g = (x._1, x._2)))
@@ -141,15 +141,15 @@ class mmlangParser extends JavaTokenParsers {
   // instruction parsing
   lazy val inst: Parser[List[Inst[Obj, Obj]]] = (
     sugarlessInst | fromSugar | toSugar | splitSugar | repeatSugar |
-      mergeSugar | infixSugar | getStrSugar | getIntSugar | lstType | recType) ~ opt(quantifier) ^^
-    (x => List(x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]]))
+      mergeSugar | infixSugar | getStrSugar | getIntSugar | recType) ~ opt(quantifier) ^^
+    (x => List(x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])) | splitMergeSugar
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
     Tokens.as_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op |
       Tokens.juxt_op | Tokens.lte_op | Tokens.gt_op | Tokens.lt_op | Tokens.eqs_op |
       Tokens.and_op | /*Tokens.or_op |*/ Tokens.given_op | Tokens.product_op | Tokens.sum_op |
       Tokens.combine_op | Tokens.a_op | Tokens.is) ~ obj ^^
     (x => OpInstResolver.resolve(x._1, List(x._2)))
-  lazy val splitSugar: Parser[Inst[Obj, Obj]] = Tokens.split_op ~> (recValue | lstValue) ^^ (x => SplitOp(x.asInstanceOf[Poly[Obj]]))
+  lazy val splitSugar: Parser[Inst[Obj, Obj]] = Tokens.split_op ~> (recValue | lstValue | lstType) ^^ (x => SplitOp(x.asInstanceOf[Poly[Obj]]))
   lazy val mergeSugar: Parser[Inst[Obj, Obj]] = Tokens.merge_op ^^ (_ => MergeOp[Obj]().asInstanceOf[Inst[Obj, Obj]])
   lazy val getStrSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
   lazy val getIntSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
@@ -157,11 +157,15 @@ class mmlangParser extends JavaTokenParsers {
   lazy val fromSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
   lazy val repeatSugar: Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.pow_op ~> LROUND ~> obj <~ RROUND) ^^ (x => RepeatOp(x._1, x._2))
   lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> (("(" + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + ")|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
-/*
- lazy val splitMergeSugar: Parser[List[Inst[Obj, Obj]]] =
-    ((LBRACKET ~> lstStruct(RBRACKET)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp[Obj](lst(x._1._1, x._1._2: _*)), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]])) |
+
+  lazy val splitMergeSugar: Parser[List[Inst[Obj, Obj]]] =
+    ((LBRACKET ~> lstStruct(obj, RBRACKET)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp[Obj](lst(x._1._1, x._1._2.map(x => {
+      if (x.isInstanceOf[LstType[_]] && x.root)
+        __.is(__.a(x))
+      else x
+    }): _*)), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]])) |
       ((LBRACKET ~> recStruct) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp(rec(x._1._1, x._1._2.asInstanceOf[Map[Obj, Obj]])), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]]))
- */
+
 
   // quantifier parsing
   lazy val quantifier: Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1, x._2.getOrElse(x._1)))
