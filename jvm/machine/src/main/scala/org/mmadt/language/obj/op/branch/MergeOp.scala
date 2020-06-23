@@ -46,7 +46,7 @@ object MergeOp extends Func[Obj, Obj] {
       case apoly: RecValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(x, inst.q))).filter(_.alive).getOrElse(zeroObj)
       case apoly: RecValue[_, _] if !apoly.gmap.keys.exists(x => x.alive && x.isInstanceOf[Type[_]]) => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
       case apoly: LstValue[_] if apoly.isChoice => strm(Poly.keepFirst(zeroObj, apoly).glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
-      case apoly: LstValue[_] => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
+      case apoly: LstValue[_] => strm(apoly.glist.map(x => Obj.copyDefinitions(apoly, x.clone(q = multQ(multQ(start, x), inst.q)))).filter(_.alive))
       case apoly: Poly[_] => BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
       case _ => start.via(start, inst)
     }

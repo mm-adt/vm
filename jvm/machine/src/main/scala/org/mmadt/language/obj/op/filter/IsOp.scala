@@ -43,6 +43,7 @@ object IsOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
       case apoly: Poly[_] if apoly.isInstanceOf[Type[_]] => start.via(start, Inst.oldInst(inst)).hardQ(minZero(multQ(start, inst)))
+      case _: Value[_] if !inst.arg0[Obj].isInstanceOf[Value[_]] => start.via(start,  Inst.oldInst(inst)) // TODO: this is weird
       case avalue: Value[_] if inst.arg0[Obj].isInstanceOf[Value[_]] => if (inst.arg0[Bool].g) avalue.via(start, inst) else avalue.via(start, inst).hardQ(qZero)
       case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
     }
