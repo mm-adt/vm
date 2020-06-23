@@ -29,9 +29,7 @@ import org.mmadt.language.obj._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StrType extends Str
-  with Type[Str]
-  with ObjType {
+trait StrType extends Str with Type[Str] {
   def g: String = throw LanguageException.typeNoGround(this)
 }
 

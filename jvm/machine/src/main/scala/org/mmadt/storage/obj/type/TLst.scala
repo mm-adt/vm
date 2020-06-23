@@ -30,9 +30,5 @@ import org.mmadt.storage.obj.OLst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base) extends OLst[A](name, g, q, via) with LstType[A] {
-  override def toString: String = LanguageFactory.printType(this)
-}
-
-
+class TLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base) extends OLst[A](name, g, q, via) with LstType[A]
 

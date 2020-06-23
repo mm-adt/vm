@@ -22,8 +22,8 @@
 
 package org.mmadt.processor.inst.sideeffect
 
-import org.mmadt.language.obj.Rec
-import org.mmadt.language.obj.value.{ObjValue, StrValue}
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -34,7 +34,7 @@ import scala.collection.immutable.ListMap
  */
 class PutInstTest extends FunSuite {
   test("[put] w/ rec value") {
-    val marko: Rec[StrValue, ObjValue] = rec(str("name") -> str("marko"))
+    val marko: Rec[StrValue, Obj] = rec(str("name") -> str("marko"))
     val markoFull = marko.put(str("age"), int(29))
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(markoFull)
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(markoFull.put(str("name"), str("marko")))

@@ -27,8 +27,6 @@ import org.mmadt.language.obj.Real
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RealValue extends Real
-  with ObjValue
-  with Value[Real] {
+trait RealValue extends Real with Value[Real] {
   override val g: Double
 }

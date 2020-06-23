@@ -32,8 +32,7 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Value[+V <: Obj] extends Obj
-  with TypeOp[V] {
+trait Value[+V <: Obj] extends Obj with TypeOp[V] {
   def g: Any
 
   override def test(other: Obj): Boolean = other match {

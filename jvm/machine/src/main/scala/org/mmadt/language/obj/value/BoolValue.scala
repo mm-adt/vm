@@ -27,8 +27,6 @@ import org.mmadt.language.obj.Bool
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait BoolValue extends Bool
-  with ObjValue
-  with Value[Bool] {
+trait BoolValue extends Bool with Value[Bool] {
   override val g: Boolean
 }

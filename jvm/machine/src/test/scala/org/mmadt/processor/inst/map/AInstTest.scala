@@ -33,12 +33,12 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class AInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  val marko: Rec[StrValue, ObjValue] = rec(str("name") -> str("marko"), str("age") -> int(29))
-  val vadas: Rec[StrValue, ObjValue] = rec(str("name") -> str("vadas"), str("age") -> int(27))
-  val person: Rec[StrValue, ObjType] = rec(str("name") -> str, str("age") -> int)
-  val oldPerson: Rec[StrValue, ObjType] = rec(str("name") -> str, str("age") -> int.is(int.gt(28)))
+  val marko: Rec[StrValue, Obj] = rec(str("name") -> str("marko"), str("age") -> int(29))
+  val vadas: Rec[StrValue, Obj] = rec(str("name") -> str("vadas"), str("age") -> int(27))
+  val person: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> int)
+  val oldPerson: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> int.is(int.gt(28)))
   val youngPerson: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> __.is(__.lt(28)))
-  val car: Rec[StrValue, ObjType] = rec(str("name") -> str, str("year") -> int)
+  val car: Rec[StrValue, Obj] = rec(str("name") -> str, str("year") -> int)
 
   test("[a] w/ values") {
     val check: TableFor3[Obj, Obj, Bool] =

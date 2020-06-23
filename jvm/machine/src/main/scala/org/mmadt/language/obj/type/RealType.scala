@@ -24,13 +24,10 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Real
-import org.mmadt.language.obj.value.RealValue
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RealType extends Real
-  with Type[Real]
-  with ObjType {
+trait RealType extends Real with Type[Real] {
   def g: Double = throw LanguageException.typeNoGround(this)
 }
