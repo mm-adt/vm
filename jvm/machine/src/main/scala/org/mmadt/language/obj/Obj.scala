@@ -100,7 +100,7 @@ trait Obj
   def root: Boolean = null == this.via || null == this.via._1
   def isolate: this.type = this.clone(q = this.q, via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
   def domainObj[D <: Obj]: D = if (this.root) this.asInstanceOf[D] else this.via._1.domainObj[D] // TODO: rename to like start/end (the non-typed versions of domain/range)
-  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else multQ(this.q, multQ(obj.q, inst.q)), via = (obj, inst))
+  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else qZero, via = (obj, inst))
   def trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
   def linvert(): this.type = {

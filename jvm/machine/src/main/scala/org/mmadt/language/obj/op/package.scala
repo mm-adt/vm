@@ -48,8 +48,8 @@ package object op {
       }
       if (brch.isParallel) { // [,] sum the min/max quantification
         result.hardQ(brch.glist.map(x => x.q).reduce((a, b) => plusQ(a, b)))
-      } else if (brch.isSerial) { // [;] mult the min/max quantification
-        asType(brch.glist.last.asInstanceOf[OT]).hardQ(brch.glist.map(x => x.q).reduce((a, b) => multQ(a, b)))
+      } else if (brch.isSerial) { // [;] last quantification
+        asType[OT](brch.glist.last.asInstanceOf[OT])
       } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduce((a, b) => (
           int(Math.min(a._1.g, b._1.g)),

@@ -665,13 +665,19 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("'marko'[a,[real|int]]"))
     assertResult(str)(engine.eval("str-<(str|str|str)>-").range)
     assertResult(str)(engine.eval("str-<(str|str|str)>-").domain)
-    assertResult(str)(engine.eval("str[str|str|str]").range)
     assertResult(str)(engine.eval("str[str|str|str]").domain)
+    assertResult(str)(engine.eval("str[str|str|str]").range)
+    assertResult(str.q(3))(engine.eval("str[str,str,str]").range)
+    assertResult(str.q(6))(engine.eval("str[str[id]{1};str[id]{3};str[id]{2}]").range)
     assertResult(str | str | str)(engine.eval("str-<(str|str|str)").range)
     assertResult(str | str | str)(engine.eval("str-<(_|_|_)").range)
-    //     assertResult(str.q(2, 7))(engine.eval("str[str{2}|str{5}|str{3,7}]").range)
-    assertResult(str.q(2, 7))(engine.eval("str-<(str[id]{2}|str[id]{5}|str[id]{3,7})>-").range)
+    assertResult(str)(engine.eval("str[str[id]{2}|str[id]{5}|str[id]{3,7}]").domain)
+    assertResult(str.q(2, 7))(engine.eval("str[str[id]{2}|str[id]{5}|str[id]{3,7}]").range)
+    assertResult(str)(engine.eval("str[str{2}|str{5}|str{3,7}]").domain)
+    // assertResult(str.q(2, 7))(engine.eval("str[str{2}|str{5}|str{3,7}]").range)
     assertResult(str)(engine.eval("str-<(str[id]{2}|str[id]{5}|str[id]{3,7})>-").domain)
+    assertResult(str.q(2, 7))(engine.eval("str-<(str[id]{2}|str[id]{5}|str[id]{3,7})>-").range)
+    assertResult(int(9, 7))(engine.eval("2[int+7, int+5]"))
   }
 
   test("poly split/merge/get") {
@@ -693,7 +699,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("6")(engine.eval("(1;(2;(3|(4|5|6)))).1.1.1.2").toString)
     //////
     assertResult("(str;;)<=str-<(str;;)")(engine.eval("str-<(str;int;int[plus,2])").toString)
-    assertResult("int{0,24}<=(int{2};int{12}<=int{3}[plus,2]{4})>-[is,true][id]")(engine.eval("(int{2};int{3}[plus,2]{4})>-[is,true][id]").toString)
+    assertResult("int{0,12}<=(int{2};int{12}<=int{3}[plus,2]{4})>-[is,true][id]")(engine.eval("(int{2};int{3}[plus,2]{4})>-[is,true][id]").toString)
     assertResult("(||str)<=str-<(||str)")(engine.eval("str-<(int|bool|str)").toString)
     assertResult("str-<(str,,)>-[plus,'hello']")(engine.eval("str-<(str,,)>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<(str,int,int[plus,2])>-[plus,'hello']").toString)
@@ -716,7 +722,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("[type] instruction parsing") {
     assertResult("bool<=int[plus,1][mult,5][gt,int[mult,int]]")(engine.eval("5[plus,1][mult,5][gt,int[mult,int]][type]").toString)
     assertResult("int{?}<=int[is,bool<=int[lt,10]]")(engine.eval("5[is<10][type]").toString)
-    // assertResult("int{0,3}<=int[is,bool<=int[lt,10]]")(engine.eval("[start,5,6,7][is<10][type]").toString) // TODO: why the dangling quantifier
+    assertResult("int{0,3}<=int[is,bool<=int[lt,10]]")(engine.eval("(5,6,7)>-[is<10][type]").toString)
   }
 
   test("ring axioms") {
@@ -818,6 +824,10 @@ class mmlangScriptEngineTest extends FunSuite {
             | [define,old<=int[is>20]]
             | [define,young<=int[is<20]]
             | [is,[a,person]][.age+-100<.old> -> 'old guy' , .age+-100<.young> -> 'young guy']""".stripMargin))*/
+    /*assertResult(zeroObj)(engine.eval(
+      """ ('name'->'marko','age'->29)
+        | [define,person<=person:('name'->str,'age'->int)[is,.age<0]]
+        | [is,[a,person]]""".stripMargin))*/
     /*
     mmlang> ('name'->'marko','age'->29)[define,person:('name'->str,'age'->int[is<0])][is,[a,person]]
     ==>('name'->'marko','age'->29){?}{?}
