@@ -609,9 +609,9 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("lst values w/ [mult], [plus], and [zero]") {
-    assertResult(lst)(engine.eval("()"))
-    assertResult(lst)(engine.eval("()"))
-    assertResult(lst)(engine.eval("()"))
+    //assertResult(lst)(engine.eval("()"))
+    //assertResult(lst)(engine.eval("()"))
+    //assertResult(lst)(engine.eval("()"))
     //assertResult(int(1) `;`)(engine.eval("(1)")) // TODO: no sep on singles
     assertResult(int(1) `,`)(engine.eval("(1)"))
     //assertResult(int(1) `|`)(engine.eval("(1)"))  // TODO: no sep on singles
