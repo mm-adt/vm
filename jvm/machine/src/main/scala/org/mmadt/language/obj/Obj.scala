@@ -78,8 +78,11 @@ trait Obj
   }
   def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type = {
-    // LanguageException.testDomainRange(asType(this), asType(domainType))
-    if (domainType.root) this.clone(via = (domainType, NoOp())) else this.clone(via = (domainType.rinvert(), domainType.via._2))
+    // LanguageException.testTypeCheck(domainType,asType(this))
+    if (domainType.root)
+      if (__.isTokenRoot(this)) domainType.named(this.name).asInstanceOf[this.type]
+      else this.clone(via = (domainType, NoOp()))
+    else this.clone(via = (domainType.rinvert(), domainType.via._2))
   }
   def range: Type[Obj] = asType(this.isolate)
   def domain[D <: Obj]: Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]

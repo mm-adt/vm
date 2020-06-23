@@ -772,27 +772,32 @@ class mmlangScriptEngineTest extends FunSuite {
   test("combine parsing") {
     assertResult("(2,2,8)")(engine.eval("(1,2,3)=(+1,_,+5)").toString)
     assertResult("(1,2,(3,(24,15)))")(engine.eval("(1,2,(3,(4,5)))=(_,_,=(int,=(+20,+10)))").toString)
+    assertResult("(8,10)")(engine.eval("(1)>--<(+1,+2)=(*4,+7)").toString)
+    assertResult("(8,10)")(engine.eval("1-<(+1,+2)=(*4,+7)").toString)
+    assertResult("(8,(3,10))")(engine.eval("1-<(+1,+2)=(*4,-<(_,+7))").toString)
+    //assertResult("(8,(3,10))WRONG")(engine.eval("1-<(+1,+2)=(*4,-<(_,+7))=(_,_)").toString)
     //assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("(1,(2,(3,4,(5,6,7))))(>-)^([a,lst])"))
-    //    assertResult("((1,1),(1,1)),((3,3),(3,3)),(((1,2),(3,4)),((1,2),(3,4))){3}")(engine.eval("[1,3,((1,2),(3,4))](-<(_,_))^([a,(int,int)])").toString) // TODO: strm q
+    //assertResult("((1,1),(1,1)),((3,3),(3,3)),(((1,2),(3,4)),((1,2),(3,4))){3}")(engine.eval("[1,3,((1,2),(3,4))](-<(_,_))^([a,(int,int)])").toString) // TODO: strm q
     //assertResult(int(1, 2, 3))(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
   }
 
   test("define parsing") {
     assertResult("nat")(engine.eval("int[define,nat<=int[is>0]][as,nat][plus,10]").name)
-    // assertResult(true.q(3))(engine.eval("int[define,'nat',int[is>0]][1,2,3][a,nat]"))
+    //assertResult(true.q(3))(engine.eval("(1,2,3)[define,'nat',int[is>0]]>-[a,nat]"))
     assertResult(btrue)(engine.eval("10[define,big<=int[is>4]][a,big]"))
     assertResult(btrue)(engine.eval("10[define,big<=_[is>4]][a,big]"))
     assertResult(bfalse)(engine.eval("2[define,big<=int[is>4]][a,big]"))
     assertResult(bfalse)(engine.eval("2[define,big<=_[is>4]][a,big]"))
     assertResult(int(120))(engine.eval("10[define,big<=int[plus,100]][plus,0][plus,big]"))
-    // assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,person<=['name'->str,'age'->int]][a,person]"))
-    // assertResult(bfalse)(engine.eval("('name'->'marko')[define,person<=person['name'->str,'age'->int]][a,person]"))
+    assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,person<=('name'->str,'age'->int)][a,person]"))
+    assertResult(bfalse)(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][a,person]"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][a,person]{100}"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str)][a,person]{100}"))
     assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][a,person]{100}"))
+     assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person<=('name'->str,'age'->int)][a,person]{100}"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][plus,('age'->29)][a,person]{100}"))
     assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][plus,('years'->29)][a,person]{100}"))
-    //     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
+    // assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
     // assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,years<=int][define,person<=rec['name'->str,'age'->years]][is,[a,person]]{350}"))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
