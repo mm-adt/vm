@@ -28,6 +28,9 @@ import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`.TLst
 import org.mmadt.storage.obj.value.VLst
 
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] = (Tokens.`,`, List.empty[A]), val q: IntQ = qOne, val via: ViaTuple = base) extends Lst[A] {
   override def clone(name: String = this.name,
                      g: Any = this.g,
@@ -36,7 +39,7 @@ abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] 
 
 }
 object OLst {
-  def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base): OLst[A] = {
+  def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base): Lst[A] = {
     if (g._2.nonEmpty && !g._2.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]])) new VLst[A](name, g, q, via)
     else new TLst[A](name, g, q, via)
   }

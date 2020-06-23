@@ -23,10 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.MergeOp
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 
 trait Poly[A <: Obj] extends Obj
   with MergeOp[A] {
@@ -37,9 +34,6 @@ trait Poly[A <: Obj] extends Obj
   def isChoice: Boolean = this.gsep == Tokens.|
   def isPlus: Boolean = this.isParallel | this.isChoice
   def isEmpty: Boolean = this.glist.isEmpty
-
-  def isValue: Boolean = this.isInstanceOf[Strm[_]] || (!this.glist.exists(x => x.alive && ((x.isInstanceOf[Type[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isValue))))
-  def isType: Boolean = !this.glist.exists(x => x.alive && ((x.isInstanceOf[Value[_]] && !x.isInstanceOf[Poly[_]]) || (x.isInstanceOf[Poly[_]] && !x.asInstanceOf[Poly[_]].isType)))
 }
 object Poly {
   def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = {

@@ -50,10 +50,10 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
     case aobj: Obj if !aobj.alive => !this.alive
     //case anon: __ => Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
-      withinQ(this, arec) &&
-      arec.gmap.count(x => qStar.equals(x._2.q) ||
-        this.gmap.exists(y => Obj.copyDefinitions(this, y._1).test(x._1) && Obj.copyDefinitions(this, y._2).test(x._2))) == arec.gmap.size
+    case arec: Rec[_, _] =>
+      Poly.sameSep(this, arec) && withinQ(this, arec) &&
+        arec.gmap.count(x => qStar.equals(x._2.q) ||
+          this.gmap.exists(y => Obj.copyDefinitions(this, y._1).test(x._1) && Obj.copyDefinitions(this, y._2).test(x._2))) == arec.gmap.size
     case _ => false
   }
 
@@ -80,17 +80,17 @@ object Rec {
           case _ => (key -> Inst.resolveArg(local._2, slot._2)).asInstanceOf[(A, A)]
         }
         local
-      })))
+      })), q = start.q)
     } else {
       arec.clone(g = (arec.gsep, arec.gmap.toSeq.map(slot => {
         val key = Inst.resolveArg(start, slot._1)
         (key, if (key.alive) Inst.resolveArg(start, slot._2) else zeroObj.asInstanceOf[B])
-      }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values))))))
+      }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values))))), q = start.q)
     }
   }
   def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {
     var found: Boolean = false;
-    arec.clone(g = (arec.gsep, arec.gmap.map(x => {
+    val x = arec.clone(g = (arec.gsep, arec.gmap.map(x => {
       if (!found) {
         val keyResolve = Inst.resolveArg(start, x._1)
         if (keyResolve.alive) {
@@ -99,6 +99,7 @@ object Rec {
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)
-    })))
+    })), q = start.q)
+    x.hardQ(qOne) // TODO: why?
   }
 }

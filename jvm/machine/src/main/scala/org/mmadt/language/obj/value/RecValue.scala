@@ -23,7 +23,14 @@
 package org.mmadt.language.obj.value
 import org.mmadt.language.obj.{Obj, Rec}
 
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait RecValue[A <: Obj, B <: Obj]
   extends Value[Rec[A, B]]
     with ObjValue
-    with Rec[A, B]
+    with Rec[A, B] {
+  override def test(other: Obj): Boolean = super[Rec].test(other)
+  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
+  override def equals(other: Any): Boolean = super[Rec].equals(other)
+}

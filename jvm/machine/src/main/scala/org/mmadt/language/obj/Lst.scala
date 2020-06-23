@@ -64,7 +64,7 @@ trait Lst[A <: Obj] extends Poly[A]
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] =>
       Poly.sameSep(this, alst) && alst.name.equals(this.name) && eqQ(alst, this) &&
-        ((this.isValue && this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))) ||
+        ((this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))) ||
           (this.glist.equals(alst.glist) && this.via.equals(alst.via)))
     case _ => false
   }

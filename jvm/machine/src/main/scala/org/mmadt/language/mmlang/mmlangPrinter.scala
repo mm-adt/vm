@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.Tokens
 import org.mmadt.language.Tokens.{LBRACKET, int => _, obj => _, _}
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.storage.StorageFactory._
@@ -53,7 +53,7 @@ object mmlangPrinter {
   def recString(rec: Rec[_, _]): String = {
     if (rec.isInstanceOf[Strm[_]]) return strmString(rec.asInstanceOf[Strm[Obj]])
     else if (rec.root) mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
-    if (!rec.isValue && rec.isInstanceOf[Type[Obj]])
+    if (rec.isInstanceOf[RecType[Obj,Obj]])
       if (Tokens.named(rec.name)) rec.name
       else mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
     else
@@ -64,8 +64,8 @@ object mmlangPrinter {
   private def mapString(rec: Rec[_, _], map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = {
     if (map.isEmpty)
       empty else
-      map.foldLeft(if (rec.isInstanceOf[TRec[_, _]]) LBRACKET else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) +
-        (if (rec.isInstanceOf[TRec[_, _]]) RBRACKET else RROUND)
+      map.foldLeft(if (rec.isInstanceOf[TRec[_, _]]) LROUND else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) +
+        (if (rec.isInstanceOf[TRec[_, _]]) RROUND else RROUND)
   }
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])

@@ -31,7 +31,7 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.{VInst, VLst}
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,9 +46,8 @@ object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val asObj: Obj = inst.arg0[Obj]
-    val toObj: Obj = if (!asObj.isInstanceOf[Rec[Obj,Obj]] && asObj.isInstanceOf[Value[Obj]]) {
-      Inst.resolveArg(start, asObj)
-    } else {
+    val toObj: Obj = if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
+    else {
       start match {
         case _: Type[Obj] if !start.isInstanceOf[Poly[Obj]] => asObj
         case abool: Bool => boolConverter(abool, asObj)
@@ -108,7 +107,7 @@ object AsOp extends Func[Obj, Obj] {
     y.domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case alst: Lst[Obj] => lst(g=(alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))))
+      case alst: LstType[Obj] => lst(g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))))
       case _ => throw LanguageException.typingError(x, asType(y))
     } //, y)
   }
@@ -119,7 +118,7 @@ object AsOp extends Func[Obj, Obj] {
     y.domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case arec: Rec[Obj, Obj] => rec(sep = arec.gsep, map =
+      case arec: RecType[Obj, Obj] => rec(sep = arec.gsep, map =
         x.gmap
           .flatMap(a => arec.gmap
             .filter(q => a._1.test(q._1))

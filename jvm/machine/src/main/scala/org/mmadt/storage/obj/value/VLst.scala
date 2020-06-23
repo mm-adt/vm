@@ -32,9 +32,5 @@ import org.mmadt.storage.obj.OLst
  */
 class VLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base) extends OLst[A](name, g, q, via) with LstValue[A] {
   override def toString: String = LanguageFactory.printValue(this)
-  /*override def clone(name: String = this.name,
-                     g: Any = this.g,
-                     q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new VLst[A](name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]*/
 }
 

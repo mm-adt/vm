@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{RecType, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -48,6 +48,7 @@ object PlusOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     try {
       (start match {
+        case arec: RecType[Obj, Obj] => asType(arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[Rec[Obj, Obj]].gmap)))
         case _: Value[_] => start match {
           case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
           case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)

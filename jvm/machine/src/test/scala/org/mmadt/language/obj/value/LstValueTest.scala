@@ -121,7 +121,7 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
         (str `;` "b", false),
       )
     forEvery(starts) { (serial, bool) => {
-      assertResult(bool)(serial.isValue)
+      assertResult(bool)(serial.isInstanceOf[Value[Obj]])
     }
     }
   }

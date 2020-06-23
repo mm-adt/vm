@@ -91,7 +91,7 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (!(type.alive() && ((type.domain() instanceof Poly<?>) || __.isAnon(type.domain()) || obj.range().test(type.domain()))))
+        if (!(type.domain() instanceof Poly<?>) && !(type.alive() && (__.isAnon(type.domain()) || obj.range().test(type.domain()))))
             throw LanguageException.typingError(obj, type);
     }
 

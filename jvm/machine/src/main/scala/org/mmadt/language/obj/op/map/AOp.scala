@@ -42,6 +42,7 @@ trait AOp {
 object AOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
+    // if (start == inst.arg0[Obj]) return btrue.via(start, inst)
     start match {
       case _: __ => bool.via(start, inst)
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))

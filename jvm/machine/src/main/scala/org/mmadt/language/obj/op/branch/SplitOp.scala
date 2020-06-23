@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.{LanguageException, Tokens}
@@ -50,7 +50,7 @@ object SplitOp extends Func[Obj, Obj] {
       case _ => start
     }, apoly))
     apoly.gsep match {
-      case _ if apoly.isInstanceOf[Rec[Obj, Obj]] && apoly.isType && apoly.isSerial => newInst.arg0[Obj].via(start, inst)
+      case _ if apoly.isInstanceOf[RecType[Obj, Obj]] && apoly.isSerial => newInst.arg0[Obj].via(start, inst)
       case _ if apoly.isChoice & apoly.isInstanceOf[Rec[Obj, Obj]] => processFirst(start, inst.asInstanceOf[Inst[Obj, Poly[Obj]]]) // TODO: cause the same resolutions map to the same keys
       case _ if apoly.isChoice => processFirst(start, newInst)
       case _ if apoly.isSerial || apoly.isParallel => newInst.arg0[Poly[Obj]].clone(via = (start, newInst))

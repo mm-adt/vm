@@ -26,7 +26,6 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -43,6 +42,7 @@ object GetOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val key: Obj = inst.arg0[Obj]
+    // println(start + "!!!" + inst)
     (start match {
       case anon: __ => anon.via(start, inst)
       case arec: Rec[Obj, Obj] =>

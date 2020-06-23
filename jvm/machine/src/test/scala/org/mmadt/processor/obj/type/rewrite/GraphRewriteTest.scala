@@ -49,12 +49,12 @@ class GraphRewriteTest extends FunSuite {
  */
 
   test("model types") {
-    val marko: Vertex = rec(str("id") -> int(1))
-    val vadas: Vertex = rec(str("id") -> int(2))
-    val lop: Vertex = rec(str("id") -> int(3))
-    val josh: Vertex = rec(str("id") -> int(4))
-    val ripple: Vertex = rec(str("id") -> int(5))
-    val peter: Vertex = rec(str("id") -> int(6))
+    val marko: Vertex = rec(str("id") -> int(1)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val vadas: Vertex = rec(str("id") -> int(2)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val lop: Vertex = rec(str("id") -> int(3)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val josh: Vertex = rec(str("id") -> int(4)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val ripple: Vertex = rec(str("id") -> int(5)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val peter: Vertex = rec(str("id") -> int(6)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
     val graph: RecStrm[StrValue, Value[Obj]] = rec(marko, vadas, lop, josh, ripple, peter)
 
     assertResult(6)(graph.values.length)
@@ -70,12 +70,12 @@ class GraphRewriteTest extends FunSuite {
     def makeEdge(outV: Vertex, label: String, inV: Vertex) = {
       rec(str("outV") -> outV, str("label") -> str(label), str("inV") -> inV)
     }
-    var marko: Vertex = rec(str("id") -> int(1))
-    val vadas: Vertex = rec(str("id") -> int(2))
-    val lop: Vertex = rec(str("id") -> int(3))
-    val josh: Vertex = rec(str("id") -> int(4))
-    val ripple: Vertex = rec(str("id") -> int(5))
-    val peter: Vertex = rec(str("id") -> int(6))
+    var marko: Vertex = rec(str("id") -> int(1)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val vadas: Vertex = rec(str("id") -> int(2)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val lop: Vertex = rec(str("id") -> int(3)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val josh: Vertex = rec(str("id") -> int(4)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val ripple: Vertex = rec(str("id") -> int(5)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    val peter: Vertex = rec(str("id") -> int(6)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
 
    // marko = marko.put(str("outE"), rec(makeEdge(marko, "knows", vadas), makeEdge(marko, "created", lop), makeEdge(marko, "knows", josh)))
    // val graph: RecStrm[StrValue, Value[Obj]] = rec(marko, vadas, lop, josh, ripple, peter)
