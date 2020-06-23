@@ -157,6 +157,11 @@ class mmlangParser extends JavaTokenParsers {
   lazy val fromSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
   lazy val repeatSugar: Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.pow_op ~> LROUND ~> obj <~ RROUND) ^^ (x => RepeatOp(x._1, x._2))
   lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> (("(" + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + ")|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
+/*
+ lazy val splitMergeSugar: Parser[List[Inst[Obj, Obj]]] =
+    ((LBRACKET ~> lstStruct(RBRACKET)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp[Obj](lst(x._1._1, x._1._2: _*)), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]])) |
+      ((LBRACKET ~> recStruct) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp(rec(x._1._1, x._1._2.asInstanceOf[Map[Obj, Obj]])), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]]))
+ */
 
   // quantifier parsing
   lazy val quantifier: Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1, x._2.getOrElse(x._1)))

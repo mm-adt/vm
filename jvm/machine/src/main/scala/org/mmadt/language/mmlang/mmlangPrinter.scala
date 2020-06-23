@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.TLst
+import org.mmadt.storage.obj.`type`.{TLst, TRec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -61,13 +61,19 @@ object mmlangPrinter {
   }
 
   private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else Tokens.empty
-  private def mapString(rec: Rec[_, _], map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = if (map.isEmpty) empty else map.foldLeft(if (rec.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) + (if (rec.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
+  private def mapString(rec: Rec[_, _], map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = {
+    if (map.isEmpty)
+      empty else
+      map.foldLeft(if (rec.isInstanceOf[TRec[_, _]]) LBRACKET else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) +
+        (if (rec.isInstanceOf[TRec[_, _]]) RBRACKET else RROUND)
+  }
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
     if (lst.glist.isEmpty)
       LROUND + Tokens.space + RROUND
     else
-      lst.glist.foldLeft(if (lst.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + (if (lst.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
+      lst.glist.foldLeft(if (lst.isInstanceOf[TLst[_]]) LBRACKET else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) +
+        (if (lst.isInstanceOf[TLst[_]]) RBRACKET else RROUND)
   }
 
   def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1)
