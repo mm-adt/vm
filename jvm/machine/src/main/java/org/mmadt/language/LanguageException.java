@@ -25,7 +25,6 @@ package org.mmadt.language;
 import org.mmadt.VmException;
 import org.mmadt.language.obj.Lst;
 import org.mmadt.language.obj.Obj;
-import org.mmadt.language.obj.Poly;
 import org.mmadt.language.obj.Rec;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
@@ -91,7 +90,7 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (!(type.domain() instanceof Poly<?>) && !(type.alive() && (__.isAnon(type.domain()) || obj.range().test(type.domain()))))
+        if (!(type.alive() && (__.isAnon(type.domain()) || obj.range().test(type.domain()))))
             throw LanguageException.typingError(obj, type);
     }
 

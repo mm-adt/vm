@@ -57,7 +57,7 @@ object mmlangPrinter {
       if (Tokens.named(rec.name)) rec.name
       else mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
     else
-      mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC) + qString(rec.q)
+      mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
   }
 
   private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else Tokens.empty

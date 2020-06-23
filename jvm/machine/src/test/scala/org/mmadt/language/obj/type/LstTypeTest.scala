@@ -22,7 +22,8 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.`type`.{LstType, __}
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.{Int, Lst, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -49,9 +50,8 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         //(strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
     forEvery(starts) { (lhs, rhs, result) => {
-      // assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[start ${lhs}]${rhs}"))
-      assertResult(result)(rhs.asInstanceOf[LstType[Obj]].exec(lhs))
-      assertResult(result)(lhs.compute(__.via(__, rhs.asInstanceOf[LstType[Obj]])))
+      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${lhs})>--<${rhs}>-"))
+      assertResult(result)(lhs ===> __.-<(rhs).>-)
     }
     }
   }

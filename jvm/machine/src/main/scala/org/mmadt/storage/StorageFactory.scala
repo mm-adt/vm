@@ -147,8 +147,8 @@ object StorageFactory {
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
     case arec: RecStrm[Obj, Obj] => rec.q(arec.q)
     case alst: LstStrm[Obj] => lst.q(alst.q)
-    case alst: LstValue[Obj] => lst(name = obj.name, g = (alst.gsep, alst.g._2.map(x => asType(x))), q = obj.q)
-    case arec: Rec[Obj, Obj] => rec(name = obj.name, g = (arec.gsep, arec.g._2.map(x => x._1 -> asType(x._2))), q = obj.q)
+    case alst: LstValue[Obj] => lst(name = obj.name, g = (alst.gsep, alst.g._2.map(x => asType(x))), q = obj.q, via = alst.via)
+    case arec: Rec[Obj, Obj] => rec(name = obj.name, g = (arec.gsep, arec.g._2.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
     case atype: Type[_] => atype
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)

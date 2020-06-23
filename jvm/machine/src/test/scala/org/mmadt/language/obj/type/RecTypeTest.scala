@@ -20,16 +20,16 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.__
+package org.mmadt.language.obj.`type`
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.value.{IntValue, StrValue}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 import scala.collection.immutable.ListMap
 
-class ORecTest extends FunSuite {
+class RecTypeTest extends FunSuite {
 
   val X: (IntValue, StrValue) = int(1) -> str("a")
   val Y: (IntValue, StrValue) = int(2) -> str("b")
@@ -50,6 +50,16 @@ class ORecTest extends FunSuite {
     //intercept[LanguageException] {
     assertResult(zeroObj)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(3)))
     //}
+  }
+
+  test("rec domain check") {
+    assertResult(rec(str("name") -> str("marko")))(rec(str("name") -> str("marko")) ===> rec(str("name") -> str))
+    assertThrows[LanguageException] {
+      rec(str("nae") -> str("marko")) ===> rec(str("name") -> str)
+    }
+    assertResult(int(11))((int(10) ===> int.split(rec(g=(Tokens.`|`,Map[Obj,Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
+    assertResult(int(11,12,13))((int(10,11,12) ===> int.q(3).split(rec(g=(Tokens.`|`,Map[Obj,Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
+    assertResult(int(11,12,13))((int(10)`,`11`,`12) ===> (int`,`int`,`int).merge.split(rec(g=(Tokens.`|`,Map[Obj,Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj])
   }
 
   test("rec value via varargs construction") {
@@ -158,4 +168,5 @@ class ORecTest extends FunSuite {
     assert(rec.test(rec))
     assert(rec.test(rec))
   }
+
 }

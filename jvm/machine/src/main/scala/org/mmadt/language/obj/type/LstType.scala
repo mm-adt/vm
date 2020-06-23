@@ -22,16 +22,13 @@
 
 package org.mmadt.language.obj.`type`
 import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
-import org.mmadt.language.obj.{Inst, Lst, Obj}
+import org.mmadt.language.obj.{Lst, Obj}
 
 trait LstType[A <: Obj]
   extends Type[Obj]
     with ObjType
-    with Inst[A, Obj]
     with Lst[A] {
   override def toString: String = LanguageFactory.printType(this)
-  override def exec(start: A): Obj = MergeOp().exec(SplitOp(this).exec(start)).clone(via = (start, this))
   override def test(other: Obj): Boolean = super[Lst].test(other)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode()
   override def equals(other: Any): Boolean = super[Lst].equals(other)

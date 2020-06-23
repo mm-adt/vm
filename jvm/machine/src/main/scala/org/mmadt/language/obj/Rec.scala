@@ -95,7 +95,7 @@ object Rec {
         val keyResolve = Inst.resolveArg(start, x._1)
         if (keyResolve.alive) {
           found = true
-          (keyResolve, Inst.resolveArg(start, x._2))
+          (keyResolve, Inst.resolveArg(start, x._2).hardQ(start.q)) // TODO: Generalize to Inst.resolveArg()
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)

@@ -22,18 +22,13 @@
 
 package org.mmadt.language.obj.`type`
 import org.mmadt.language.LanguageFactory
-import org.mmadt.language.obj.op.branch.{MergeOp, SplitOp}
-import org.mmadt.language.obj.{Inst, Obj, Rec}
-import org.mmadt.storage.StorageFactory.rec
-import org.mmadt.storage.obj.`type`.TRec
+import org.mmadt.language.obj.{Obj, Rec}
 
 trait RecType[A <: Obj, B <: Obj]
   extends Type[Obj]
     with ObjType
-    with Inst[B, Obj]
     with Rec[A, B] {
   override def toString: String = LanguageFactory.printType(this)
-  override def exec(start: B): Obj = MergeOp().exec(SplitOp(rec(g=(this.gsep, this.gmap.asInstanceOf[Map[Obj, Obj]]))).exec(start)).clone(via = (start, this))
   override def test(other: Obj): Boolean = super[Rec].test(other)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode()
   override def equals(other: Any): Boolean = super[Rec].equals(other)
