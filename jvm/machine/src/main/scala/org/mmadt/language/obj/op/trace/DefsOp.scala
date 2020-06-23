@@ -39,20 +39,20 @@ trait DefsOp {
 object DefsOp extends Func[Obj, Obj] {
   def apply(): Inst[Obj, Rec[Obj, Obj]] = new VInst[Obj, Rec[Obj, Obj]](g = (Tokens.defs, List.empty), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val defs: Rec[Obj, Obj] = rec(Tokens.`,`, start.trace.map(x => x._2).
+    val defs: Rec[Obj, Obj] = rec(g=(Tokens.`,`, start.trace.map(x => x._2).
       filter(x => x.op.equals(Tokens.define)).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj])))
-    val vars: Rec[Obj, Obj] = rec(Tokens.`,`, start.trace.
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj]))))
+    val vars: Rec[Obj, Obj] = rec(g=(Tokens.`,`, start.trace.
       filter(x => x._2.op.equals(Tokens.to)).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (y._2.arg0[StrValue] -> y._1)))
-    val rewrites: Rec[Obj, Obj] = rec(Tokens.`,`, start.trace.map(x => x._2).
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (y._2.arg0[StrValue] -> y._1))))
+    val rewrites: Rec[Obj, Obj] = rec(g=(Tokens.`,`, start.trace.map(x => x._2).
       filter(x => x.op.equals(Tokens.rewrite)).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj])))
-    rec(Tokens.`,`, List(
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj]))))
+    rec(g=(Tokens.`,`, List(
       str("defs") -> defs,
       str("vars") -> vars,
       str("rewrites") -> rewrites).
       filter(x => x._2.gmap.nonEmpty).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + y))
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + y)))
   }
 }

@@ -72,10 +72,7 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[head] exception") {
     assertThrows[LanguageException] {
-      `;`.head()
-    }
-    assertThrows[LanguageException] {
-      |.head()
+      lst.head()
     }
   }
 }

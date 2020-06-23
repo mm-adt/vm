@@ -56,10 +56,7 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[tail] exception") {
     assertThrows[LanguageException] {
-      |.tail()
-    }
-    assertThrows[LanguageException] {
-      `;`.tail()
+     lst.tail()
     }
   }
 

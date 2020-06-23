@@ -48,14 +48,12 @@ trait StorageFactory {
   lazy val int: IntType = tint()
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
-  def rec[A <: Obj, B <: Obj]: Rec[A, B] = new TRec()
+  def rec[A <: Obj, B <: Obj]: Rec[A, B] = ORec.makeRec()
   def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): Rec[A, B] = ORec.makeRec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
-  def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = base): Lst[A] = OLst.makeLst(name, g, q, via)
   def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty), q: IntQ = qOne, via: ViaTuple = base): Rec[A, B] = ORec.makeRec(name, g, q, via)
-  def lst[A <: Obj](sep: String, values: A*): LstValue[A] = new VLst[A](g = (sep, values.toList))
-  def |[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.|, List.empty))
-  def `;`[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.`;`, List.empty))
-  def `,`[A <: Obj]: Lst[A] = new VLst[A](g = (Tokens.`,`, List.empty))
+  def lst[A <: Obj]: Lst[A] = OLst.makeLst()
+  def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = base): Lst[A] = OLst.makeLst(name, g, q, via)
+  def lst[A <: Obj](sep: String, values: A*): Lst[A] = OLst.makeLst(g = (sep, values.toList))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base): BoolType
@@ -94,18 +92,12 @@ object StorageFactory {
   lazy val int: IntType = tint()
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
-  def rec[A <: Obj, B <: Obj]: TRec[A, B] = new TRec()
-  def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): Rec[A, B] = ORec.makeRec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
-  def rec[A <: Obj, B <: Obj](sep: String, map: Map[A, B])(implicit f: StorageFactory): Rec[A, B] = ORec.makeRec(g = (sep, map))
-  def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): Lst[A] = OLst.makeLst(name, g, q, via)
+  def rec[A <: Obj, B <: Obj](implicit f: StorageFactory): RecType[A, B] = f.rec[A, B].asInstanceOf[RecType[A, B]]
+  def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): Rec[A, B] = f.rec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
   def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty), q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): Rec[A, B] = ORec.makeRec(name, g, q, via)
-  def lst[A <: Obj]: TLst[A] = new TLst()
-  def lst[A <: Obj](alst: Lst[A]): Lst[A] = OLst.makeLst[A](g = alst.g, q = alst.q)
-  def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): LstValue[A] = f.lst[A](sep, values: _*)
-  def |[A <: Obj](implicit f: StorageFactory): Lst[A] = f.|
-  def `;`[A <: Obj](implicit f: StorageFactory): Lst[A] = f.`;`
-  def `,`[A <: Obj](implicit f: StorageFactory): Lst[A] = f.`,`
-
+  def lst[A <: Obj](implicit f: StorageFactory): LstType[A] = f.lst[A].asInstanceOf[LstType[A]]
+  def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Lst[A] = f.lst[A](sep, values: _*)
+  def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): Lst[A] = OLst.makeLst(name, g, q, via)
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = base)(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)

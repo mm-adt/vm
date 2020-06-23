@@ -118,11 +118,11 @@ object AsOp extends Func[Obj, Obj] {
     y.domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case arec: RecType[Obj, Obj] => rec(sep = arec.gsep, map =
+      case arec: RecType[Obj, Obj] => rec(g = (arec.gsep,
         x.gmap
           .flatMap(a => arec.gmap
             .filter(q => a._1.test(q._1))
-            .map(q => (a._1.as(q._1), a._2.as(q._2)))).toMap[Obj, Obj])
+            .map(q => (a._1.as(q._1), a._2.as(q._2)))).toMap[Obj, Obj]))
       case _ => throw LanguageException.typingError(x, asType(y))
     } //, y)
   }

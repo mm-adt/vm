@@ -59,7 +59,7 @@ class mmkvStoreTest extends FunSuite {
   test("mmkv store [count]") {
     val store: mmkvStore[IntType, Rec[StrValue, Obj]] = mmkvStore.open[IntType, Rec[StrValue, Obj]](file2)
     try {
-      assertResult(rec[StrValue, Obj](",", Map(str("k") -> int, str("v") -> rec[StrValue, Obj](",", Map(str("name") -> str, str("age") -> int)).named("person"))).named("mmkv"))(store.schema)
+      assertResult(rec[StrValue, Obj](g=(",", Map(str("k") -> int, str("v") -> rec[StrValue, Obj](g=(",", Map(str("name") -> str, str("age") -> int))).named("person")))).named("mmkv"))(store.schema)
       assertResult(4)(store.count())
     } finally store.close()
   }
@@ -67,7 +67,7 @@ class mmkvStoreTest extends FunSuite {
   test("mmkv store [put]") {
     val store = mmkvStore.open[IntValue, BoolValue](file3)
     try {
-      assertResult(rec(",", Map(str("k") -> int, str("v") -> bool)).named("mmkv"))(store.schema)
+      assertResult(rec(g=(",", Map(str("k") -> int, str("v") -> bool))).named("mmkv"))(store.schema)
       store.clear()
       assertResult(0)(store.strm().values.count(_ => true))
       assertResult(bfalse)(store.put(bfalse))

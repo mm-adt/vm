@@ -22,7 +22,6 @@
 
 package org.mmadt.storage.obj
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.{IntValue, StrValue}
 import org.mmadt.storage.StorageFactory._
@@ -95,9 +94,9 @@ class ORecTest extends FunSuite {
   }
 
   test("rec choose branching") {
-   // assertResult(str("name", "my", "is"))(int(1, 2, 3).split(rec(g=(Tokens.`|`, Map(int.is(int.eqs(2)) -> str("name"), int.is(int.gt(2)) -> str("is"), int -> str("my"))))))
-    assertResult(false)(rec(g=(Tokens.`|`, Map(str("a") -> int(1), str("b") -> int(2)))).equals(rec(Tokens.`|`, Map(str("b") -> int(2), str("a") -> int(1)))))
-    assertResult(bfalse)(rec(g=(Tokens.`|`, Map(str("a") -> int(1), str("b") -> int(2)))).eqs(rec(Tokens.`|`, Map(str("b") -> int(2), str("a") -> int(1)))))
+    //assertResult(str("name", "my", "is"))(int(1, 2, 3).split(rec(g=(Tokens.`|`, Map(int.is(int.eqs(2)) -> str("name"), int.is(int.gt(2)) -> str("is"), int -> str("my"))))))
+    assertResult(false)(rec(g = (Tokens.`|`, Map(str("a") -> int(1), str("b") -> int(2)))).equals(rec(g = (Tokens.`|`, Map(str("b") -> int(2), str("a") -> int(1))))))
+    assertResult(bfalse)(rec(g = (Tokens.`|`, Map(str("a") -> int(1), str("b") -> int(2)))).eqs(rec(g = (Tokens.`|`, Map(str("b") -> int(2), str("a") -> int(1))))))
   }
 
   test("record value/type checking") {

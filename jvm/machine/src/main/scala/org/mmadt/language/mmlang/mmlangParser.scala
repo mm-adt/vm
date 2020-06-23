@@ -100,7 +100,7 @@ class mmlangParser extends JavaTokenParsers {
       Tokens.empty ^^ (_ => (Tokens.`,`, List.empty[Obj]))
   def recStruct(parser: Parser[Obj]): Parser[RecTuple[Obj, Obj]] =
     ((opt((parser <~ Tokens.->) ~ parser) ~ polySep) ~ rep1sep(opt((parser <~ Tokens.->) ~ parser), polySep)) ^^
-      (x => rec(x._1._2, x._1._1.map(a => Map(a._1 -> a._2)).getOrElse(Map.empty[Obj, Obj]) ++ x._2.map(y => y.map(z => z._1 -> z._2).getOrElse(zeroObj -> zeroObj)).toMap[Obj, Obj]).g) |
+      (x => rec(g=(x._1._2, x._1._1.map(a => Map(a._1 -> a._2)).getOrElse(Map.empty[Obj, Obj]) ++ x._2.map(y => y.map(z => z._1 -> z._2).getOrElse(zeroObj -> zeroObj)).toMap[Obj, Obj])).g) |
       Tokens.-> ^^ (_ => (Tokens.`,`, Map.empty[Obj, Obj])) |
       (parser <~ Tokens.->) ~ parser ^^ (x => (Tokens.`,`, Map(x._1 -> x._2)))
 
@@ -163,7 +163,7 @@ class mmlangParser extends JavaTokenParsers {
         __.is(__.a(x))
       else x
     }): _*)), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]])) |
-      ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp(rec(x._1._1, x._1._2.asInstanceOf[Map[Obj, Obj]])), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]]))
+      ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp(rec(g=(x._1._1, x._1._2.asInstanceOf[Map[Obj, Obj]]))), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]]))
 
   // quantifier parsing
   lazy val quantifier: Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1, x._2.getOrElse(x._1)))

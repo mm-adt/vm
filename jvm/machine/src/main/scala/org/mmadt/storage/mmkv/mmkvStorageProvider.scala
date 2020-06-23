@@ -69,7 +69,7 @@ object mmkvStorageProvider {
   private val opcode = "=mmkv"
   private val K: StrValue = str("k")
   private val V: StrValue = str("v")
-  private val mmkv: Rec[StrValue, Type[Obj]] = rec(",", Map(K -> int, V -> __)).named("mmkv")
+  private val mmkv: Rec[StrValue, Type[Obj]] = rec(g=(",", Map(K -> int, V -> __))).named("mmkv")
 
   object mmkvOp {
     object mmkvGetRecords extends Func[Obj, Rec[StrValue, Obj]] {
