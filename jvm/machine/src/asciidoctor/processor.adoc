@@ -63,6 +63,10 @@ denotes the unary function \[
 
 ==== Instruction Classes
 
+The set `obj` can be partitioned into _types_ and _values_ as \$\tt{obj} = \tt{type} + \tt{value}\$. The type `objs` are the carrier set of https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity], where `[compose]` is multiplication (`\*`) , `[branch]` is addition (`+`), `[id]` is the multiplicative identity (`1`), and `[id]{0}` is the the additive identity (`0`). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is `int` and `+` and `*` are standard integer addition and multiplication, respectively.
+
+A variation of the https://en.wikipedia.org/wiki/Product_ring[direct product] of rings composes the type ring and the quantifier into a new ring called a https://zenodo.org/record/2565243[stream ring], where the carrier set is the set of all quantified types and `[id]{1}` is the multiplicative identity and `[id]{0}` is the additive identity.
+
 ===== Map
 
 ===== Filter

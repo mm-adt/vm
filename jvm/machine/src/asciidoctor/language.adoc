@@ -383,19 +383,6 @@ mmlang>
 
 ==== Poly Types
 
-.Poly Constructs
-================================================================
-. `[ ]` is a type polynomial.
-. `( )` is a value polynomial.
-. `lst` is a polynomial with terms indexed by `int`.
-. `rec` is a polynomial with terms indexed by `obj`.
-. `,` is a polynomial term deliminator denoting parallel compose.
-. `|` is a polynomial term deliminator denoting parallel choose.
-. `;` is a polynomial term combinator denoting serial compose.
-. `-<` is sugar for `[split]` copying the LHS across all polynomial terms.
-. `>-` is sugar for `[merge]` joining polynomial terms into a single `obj`.
-================================================================
-
 .Rings
 ****
 A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the _multiplicative_ operator, \$\+: A \times A \rightarrow A \$ is the _additive_ operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity.
@@ -431,47 +418,71 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.
 |===
 ****
 
+
+.Poly Constructs in mmlang
+================================================================
+. `( )` is a polynomial constructor.
+. `lst` is a polynomial with terms indexed by `int`.
+. `rec` is a polynomial with terms indexed by `obj`.
+. `,` is a polynomial term deliminator denoting parallel compose.
+. `|` is a polynomial term deliminator denoting parallel choose.
+. `;` is a polynomial term combinator denoting serial compose.
+. `-<` is sugar for `[split]` copying the lhs `obj` across all polynomial terms.
+. `>-` is sugar for `[merge]` joining polynomial terms into a single `obj`.
+================================================================
+
+
 [cols="0,1,2",width=35%,float=right]
 |===
-| poly |  inst       | + axiom
+| poly |  inst       | free form
 
 | `,`  | `[branch]`  | commutative
 | `\|` | `[choose]`  | non-commutative
 | `;`  | `[compose]` | semi-commutative
 |===
 
-A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as \[
-p = q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n, \]
+A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
+\[
+p = q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n,
+\]
 where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via `+`.
 
-In mm-ADT, the elements of the set `poly` are https://en.wikipedia.org/wiki/Polynomial[polynomials].
-A `poly` is a _decoupling_ of _objs_ composed of _quantifiers_ and _objects_ typically expressed as
+In mm-ADT, the set \$\tt{poly} \subset \tt{obj}\$ are https://en.wikipedia.org/wiki/Polynomial[polynomials] typically expressed as
 
 [.text-center]
 `(x0{q0},x1{q1},x2{q2},...,xn{qn})`
 
-where `qi` is a quantifier, `xi` is an object, `xi{qi}` is an `obj` (type or value), and the `objs` are isolated via `,`.
+where `qi` is a _quantifier_ (coefficient), `xi` is an _object_ (indeterminate), `xi{qi}` is an `obj` (term), and the `objs` are linearly combined via `,`. This particular `poly` is called a `,-poly` that captures the typical realization of a polynomial. As a data structure, a `,-poly` is a https://en.wikipedia.org/wiki/Multiset[multi-set] or bag. As an algebraic structure, a `,-poly` is a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] that encodes the mm-ADT virtual machine's underlying https://zenodo.org/record/2565243[stream ring algebra] additive and multiplicative magmas as a https://en.wikipedia.org/wiki/Free_group[free abelian group] \$\langle F(\tt{obj}),+\rangle\$ and an unfree monoid \$\langle \tt{obj},\ast \rangle\$, respectively.
 
-The set `obj` is a https://en.wikipedia.org/wiki/Tagged_union[disjoint union] of types and values, where \$\tt{type} \rightarrow \tt{obj} leftarrow \tt{value}\$.
-The type `objs` are the carrier of a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] with `[compose]` as multiplication , `[branch]` as addition, `[id]` as the multiplicative identity (*1*), and `[is,false]` as the additive identity (*0*). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is `int` and `+` and `*` are standard integer addition and multiplication, respectively.
-A variation of the https://en.wikipedia.org/wiki/Product_ring[direct product] of rings composes the type ring and the quantifier into a new ring called a https://zenodo.org/record/2565243[stream ring], where the carrier set is the set of all quantified types and `[id]{1}` is the multiplicative identity and `[id]{0}` is the additive identity.
+image::poly-columns.png[float=left,width=275]
 
-image::poly-type-value.png[float=right,width=525]
+The suggestive diagram on the left has four multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] compositions rooted at \$a\$ and going up via a chain of \$\ast\$-compositions. Furthermore, the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] is diagrammed left-to-right. As a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring], `,-poly` maintains the free (unevaluated) additive group separate from the non-free (evaluating) multiplicative monoid such that the diagram's \$\ast\$-compositions would yield a single element denoted in `mmlang` as
 
-In mm-ADT, `poly` is formed from the coproduct of `vpoly`, `tpoly`, and `tvpoly`.
-The `vpolys` and `tpolys` are data or process https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fixpoints] that exist at the extreme ends of the type/value `obj` coproduct.
-Between these extremes are the `tvpolys`.
-The `tvpolys` ultimately resolve to a `vpoly` or a `tpoly` fixpoint through the process of https://en.wikipedia.org/wiki/Compiler[compilation] or https://en.wikipedia.org/wiki/Eval[evaluation].
-A `tvpoly` can be understood as a process that hasn't terminated (https://en.wikipedia.org/wiki/State_(computer_science)[state]) or as a function equipped with data (https://en.wikipedia.org/wiki/Closure_(computer_programming)[closure]).
-Together, these `poly` types are useful as:
+[.text-center]
+`(abc{q0},ad{q1},abe{q2},adeb{q3})`.
 
-. *Data structures* (`vpoly`): Data as the solution to a polynomial, where there no longer exists indeterminates.
-. *Process structures* (`tpoly`): Programs as a polynomial containing only indeterminates and thus, may have various value solutions.
-. *Computing structures* (`tvpoly`): A computation as a polynomial that hasn't been fully solved and thus, is midway between either a `tpoly` or a `vpoly` fixpoint.
+NOTE: Note that quantifiers are not diagrammed in the image and the reason for there being only a single quantifier for every element of the multiplicative monoid is forthcoming.
 
-IMPORTANT: mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array) and `rec` (an `obj`-indexed array).
+If the `objs` of the multiplicative monoid are values (as opposed to free types), then the expression above would further reduces to
 
-A `vpoly` can be understood as a common list containing only values.
+[.text-center]
+`(x0{q0},x1{q1},x2{q2},x3{q3})`.
+
+In general, an mm-ADT `poly` is used to _decouple_ one algebraic structure from another in order that one be free and the other non-free. From the perspective of applied computing, the free algebras are https://en.wikipedia.org/wiki/Lazy_evaluation[delayed], unevaluated structures and the unfree algebras are https://en.wikipedia.org/wiki/Eager_evaluation[eager], evaluated structures. Each type of `poly` realizes a particular algebraic structure with useful computing properties.
+
+. https://en.wikipedia.org/wiki/Polynomial_ring[polynomial rings] (`,-poly`): nondeterministic parallel branching and products (_orThen_).
+. https://en.wikipedia.org/wiki/Monoid_ring[monoid rings] (`|-poly`): deterministic `if/else`-branching and co-products (_xorThen_).
+. https://en.wikipedia.org/wiki/Trace_monoid[trace monoids] (`;-poly`): type rewriting and meta-programming (_andThen_).
+
+
+'''
+
+image::poly-type-value.png[float=right,width=500]
+
+In mm-ADT, `poly` is formed from the coproduct of `lst` and `rec`.
+
+mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array or https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (an `obj`-indexed array or https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]). Both `lst` and `rec` sets are composed of value and type forms.
+
 
 [source]
 ----

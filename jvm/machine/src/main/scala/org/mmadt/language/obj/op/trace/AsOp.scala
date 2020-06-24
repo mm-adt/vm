@@ -113,17 +113,17 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def recConverter(x: Rec[Obj, Obj], y: Obj): Obj = {
-    // if (x.isType) return y
-    //Inst.resolveArg(
-    y.domain match {
+    if (!Inst.resolveToken(x, y).domain.alive)
+      throw LanguageException.typingError(x, asType(y))
+    Inst.resolveToken(x, y).domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
       case arec: RecType[Obj, Obj] => rec(g = (arec.gsep,
         x.gmap
           .flatMap(a => arec.gmap
-            .filter(q => a._1.test(q._1))
+            .filter(b => a._1.test(b._1))
             .map(q => (a._1.as(q._1), a._2.as(q._2)))).toMap[Obj, Obj]))
       case _ => throw LanguageException.typingError(x, asType(y))
-    } //, y)
+    }
   }
 }

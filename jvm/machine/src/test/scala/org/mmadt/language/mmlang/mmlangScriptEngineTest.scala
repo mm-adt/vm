@@ -903,8 +903,22 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("play2") {
-    println(engine.eval("2[int+7, int+5]"))
-    println(engine.eval("int[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]]<x>[a,xyz][defs]"))
+    val file1: String = "'/Users/marko/software/mmadt/vm/jvm/data/source-1.mm'"
+    assertResult("person:('name'->'marko','age'->29)")(engine.eval(s"('name'->'marko','age'->29)[load,${file1}][as,person]").toString)
+    assertThrows[LanguageException] {
+      engine.eval(s"('naame'->'marko','age'->29)[load,${file1}][as,person]")
+    }
+    assertThrows[LanguageException] {
+      engine.eval(s"('name'->'marko','adge'->29)[load,${file1}][as,person]")
+    }
+    assertThrows[LanguageException] {
+      engine.eval(s"('name'->'marko')[load,${file1}][as,person]")
+    }
+    assertThrows[LanguageException] {
+      engine.eval(s"('age'->29)[load,${file1}][as,person]")
+    }
+    println(engine.eval(s"('name'->'marko','age'->0)[load,${file1}][a,person]"))
+
   }
 
   test("play") {
