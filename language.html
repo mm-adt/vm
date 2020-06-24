@@ -1149,42 +1149,6 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
-<div class="exampleblock">
-<div class="title">Example 1. Poly Constructs</div>
-<div class="content">
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><code>[ ]</code> is a type polynomial.</p>
-</li>
-<li>
-<p><code>( )</code> is a value polynomial.</p>
-</li>
-<li>
-<p><code>lst</code> is a polynomial with terms indexed by <code>int</code>.</p>
-</li>
-<li>
-<p><code>rec</code> is a polynomial with terms indexed by <code>obj</code>.</p>
-</li>
-<li>
-<p><code>,</code> is a polynomial term deliminator denoting parallel compose.</p>
-</li>
-<li>
-<p><code>|</code> is a polynomial term deliminator denoting parallel choose.</p>
-</li>
-<li>
-<p><code>;</code> is a polynomial term combinator denoting serial compose.</p>
-</li>
-<li>
-<p><code>-&lt;</code> is sugar for <code>[split]</code> copying the LHS across all polynomial terms.</p>
-</li>
-<li>
-<p><code>&gt;-</code> is sugar for <code>[merge]</code> joining polynomial terms into a single <code>obj</code>.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Rings</div>
@@ -1301,6 +1265,39 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 </table>
 </div>
 </div>
+<div class="exampleblock">
+<div class="title">Example 1. Poly Constructs in mmlang</div>
+<div class="content">
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>( )</code> is a polynomial constructor.</p>
+</li>
+<li>
+<p><code>lst</code> is a polynomial with terms indexed by <code>int</code>.</p>
+</li>
+<li>
+<p><code>rec</code> is a polynomial with terms indexed by <code>obj</code>.</p>
+</li>
+<li>
+<p><code>,</code> is a polynomial term deliminator denoting parallel compose.</p>
+</li>
+<li>
+<p><code>|</code> is a polynomial term deliminator denoting parallel choose.</p>
+</li>
+<li>
+<p><code>;</code> is a polynomial term combinator denoting serial compose.</p>
+</li>
+<li>
+<p><code>-&lt;</code> is sugar for <code>[split]</code> copying the lhs <code>obj</code> across all polynomial terms.</p>
+</li>
+<li>
+<p><code>&gt;-</code> is sugar for <code>[merge]</code> joining polynomial terms into a single <code>obj</code>.</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
 <colgroup>
 <col style="width: 0%;">
@@ -1311,7 +1308,7 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <tr>
 <th class="tableblock halign-left valign-top">poly</th>
 <th class="tableblock halign-left valign-top">inst</th>
-<th class="tableblock halign-left valign-top">+ axiom</th>
+<th class="tableblock halign-left valign-top">free form</th>
 </tr>
 </thead>
 <tbody>
@@ -1333,65 +1330,77 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 </tbody>
 </table>
 <div class="paragraph">
-<p>A polynomial is a <em>linear combination</em> of <em>terms</em> composed of <em>coefficients</em> and <em>indeterminates</em> typically expressed as \[
-p = q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n, \]
+<p>A polynomial is a <em>linear combination</em> of <em>terms</em> composed of <em>coefficients</em> and <em>indeterminates</em> typically expressed as
+\[
+p = q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n,
+\]
 where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via <code>+</code>.</p>
 </div>
 <div class="paragraph">
-<p>In mm-ADT, the elements of the set <code>poly</code> are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>.
-A <code>poly</code> is a <em>decoupling</em> of <em>objs</em> composed of <em>quantifiers</em> and <em>objects</em> typically expressed as</p>
+<p>In mm-ADT, the set \$\tt{poly} \subset \tt{obj}\$ are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a> typically expressed as</p>
 </div>
 <div class="paragraph text-center">
 <p><code>(x0{q0},x1{q1},x2{q2},&#8230;&#8203;,xn{qn})</code></p>
 </div>
 <div class="paragraph">
-<p>where <code>qi</code> is a quantifier, <code>xi</code> is an object, <code>xi{qi}</code> is an <code>obj</code> (type or value), and the <code>objs</code> are isolated via <code>,</code>.</p>
+<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is an <em>object</em> (indeterminate), <code>xi{qi}</code> is an <code>obj</code> (term), and the <code>objs</code> are linearly combined via <code>,</code>. This particular <code>poly</code> is called a <code>,-poly</code> that captures the typical realization of a polynomial. As a data structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiset">multi-set</a> or bag. As an algebraic structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> that encodes the mm-ADT virtual machine&#8217;s underlying <a href="https://zenodo.org/record/2565243">stream ring algebra</a> additive and multiplicative magmas as a <a href="https://en.wikipedia.org/wiki/Free_group">free abelian group</a> \$\langle F(\tt{obj}),+\rangle\$ and an unfree monoid \$\langle \tt{obj},\ast \rangle\$, respectively.</p>
 </div>
-<div class="paragraph">
-<p>The set <code>obj</code> is a <a href="https://en.wikipedia.org/wiki/Tagged_union">disjoint union</a> of types and values, where \$\tt{type} \rightarrow \tt{obj} leftarrow \tt{value}\$.
-The type <code>objs</code> are the carrier of a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> with <code>[compose]</code> as multiplication , <code>[branch]</code> as addition, <code>[id]</code> as the multiplicative identity (<strong>1</strong>), and <code>[is,false]</code> as the additive identity (<strong>0</strong>). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is <code>int</code> and <code>+</code> and <code>*</code> are standard integer addition and multiplication, respectively.
-A variation of the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of rings composes the type ring and the quantifier into a new ring called a <a href="https://zenodo.org/record/2565243">stream ring</a>, where the carrier set is the set of all quantified types and <code>[id]{1}</code> is the multiplicative identity and <code>[id]{0}</code> is the additive identity.</p>
-</div>
-<div class="imageblock right">
+<div class="imageblock left">
 <div class="content">
-<img src="./images/language/poly-type-value.png" alt="poly type value" width="525">
+<img src="./images/language/poly-columns.png" alt="poly columns" width="275">
 </div>
 </div>
 <div class="paragraph">
-<p>In mm-ADT, <code>poly</code> is formed from the coproduct of <code>vpoly</code>, <code>tpoly</code>, and <code>tvpoly</code>.
-The <code>vpolys</code> and <code>tpolys</code> are data or process <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fixpoints</a> that exist at the extreme ends of the type/value <code>obj</code> coproduct.
-Between these extremes are the <code>tvpolys</code>.
-The <code>tvpolys</code> ultimately resolve to a <code>vpoly</code> or a <code>tpoly</code> fixpoint through the process of <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> or <a href="https://en.wikipedia.org/wiki/Eval">evaluation</a>.
-A <code>tvpoly</code> can be understood as a process that hasn&#8217;t terminated (<a href="https://en.wikipedia.org/wiki/State_(computer_science)">state</a>) or as a function equipped with data (<a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a>).
-Together, these <code>poly</code> types are useful as:</p>
+<p>The suggestive diagram on the left has four multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> compositions rooted at \$a\$ and going up via a chain of \$\ast\$-compositions. Furthermore, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> is diagrammed left-to-right. As a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a>, <code>,-poly</code> maintains the free (unevaluated) additive group separate from the non-free (evaluating) multiplicative monoid such that the diagram&#8217;s \$\ast\$-compositions would yield a single element denoted in <code>mmlang</code> as</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Data structures</strong> (<code>vpoly</code>): Data as the solution to a polynomial, where there no longer exists indeterminates.</p>
-</li>
-<li>
-<p><strong>Process structures</strong> (<code>tpoly</code>): Programs as a polynomial containing only indeterminates and thus, may have various value solutions.</p>
-</li>
-<li>
-<p><strong>Computing structures</strong> (<code>tvpoly</code>): A computation as a polynomial that hasn&#8217;t been fully solved and thus, is midway between either a <code>tpoly</code> or a <code>vpoly</code> fixpoint.</p>
-</li>
-</ol>
+<div class="paragraph text-center">
+<p><code>(abc{q0},ad{q1},abe{q2},adeb{q3})</code>.</p>
 </div>
-<div class="admonitionblock important">
+<div class="admonitionblock note">
 <table>
 <tr>
 <td class="icon">
-<div class="title">Important</div>
+<div class="title">Note</div>
 </td>
 <td class="content">
-mm-ADT provides two convenient type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array) and <code>rec</code> (an <code>obj</code>-indexed array).
+Note that quantifiers are not diagrammed in the image and the reason for there being only a single quantifier for every element of the multiplicative monoid is forthcoming.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>A <code>vpoly</code> can be understood as a common list containing only values.</p>
+<p>If the <code>objs</code> of the multiplicative monoid are values (as opposed to free types), then the expression above would further reduces to</p>
+</div>
+<div class="paragraph text-center">
+<p><code>(x0{q0},x1{q1},x2{q2},x3{q3})</code>.</p>
+</div>
+<div class="paragraph">
+<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> one algebraic structure from another in order that one be free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the unfree algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. Each type of <code>poly</code> realizes a particular algebraic structure with useful computing properties.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial rings</a> (<code>,-poly</code>): nondeterministic parallel branching and products (<em>orThen</em>).</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a> (<code>|-poly</code>): deterministic <code>if/else</code>-branching and co-products (<em>xorThen</em>).</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoids</a> (<code>;-poly</code>): type rewriting and meta-programming (<em>andThen</em>).</p>
+</li>
+</ol>
+</div>
+<hr>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/poly-type-value.png" alt="poly type value" width="500">
+</div>
+</div>
+<div class="paragraph">
+<p>In mm-ADT, <code>poly</code> is formed from the coproduct of <code>lst</code> and <code>rec</code>.</p>
+</div>
+<div class="paragraph">
+<p>mm-ADT provides two convenient type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array or <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and <code>rec</code> (an <code>obj</code>-indexed array or <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>). Both <code>lst</code> and <code>rec</code> sets are composed of value and type forms.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2849,7 +2858,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-06-19 04:41:44 -0600
+Last updated 2020-06-24 14:21:27 -0600
 </div>
 </div>
 </body>
