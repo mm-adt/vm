@@ -118,29 +118,6 @@ public class Console {
             terminal.flush();
         }
     }
-
-    /*private static Model loadFiles(final Terminal terminal, final mmADTScriptEngine engine, final String location) {
-        if (null == engine.get(MODEL))
-            engine.put(MODEL, Model.simple());
-        final Model model = (Model) engine.get(MODEL);
-        File file = new File(location);
-        if (file.isDirectory()) {
-            return Stream.of(Objects.requireNonNull(file.listFiles())).
-                    filter(File::isFile).
-                    filter(x -> x.getName().endsWith(engine.getFactory().getExtensions().get(0))).
-                    peek(x -> terminal.writer().println(RESULT + "Loaded " + x)).
-                    map(x -> loadFiles(terminal, engine, x.getAbsolutePath())).
-                    reduce(Model::put).orElse(model);
-        } else {
-            try {
-                assert model != null;
-                return model.put(Model.apply((RecType<Type<Obj>, Type<Obj>>) engine.eval(Files.lines(file.toPath()).map(x -> x.trim()).reduce((a, b) -> a + " " + b).orElse("")).next()));
-            } catch (Exception e) {
-                throw new RuntimeException(e.getMessage(), e);
-
-            }
-        }
-    }*/
 }
 
 

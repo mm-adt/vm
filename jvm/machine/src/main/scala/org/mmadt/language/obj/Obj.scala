@@ -28,7 +28,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.sideeffect.ErrorOp
+import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp}
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
@@ -53,6 +53,7 @@ trait Obj
     with JuxtaOp
     with PathOp
     with FromOp
+    with LoadOp
     with QOp
     with ErrorOp
     with EvalOp

@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
-import org.mmadt.language.obj.op.sideeffect.{ErrorOp, PutOp}
+import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp, PutOp}
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Lst, Obj}
@@ -70,6 +70,7 @@ object OpInstResolver {
       case Tokens.given | Tokens.given_op => GivenOp(args.head)
       case Tokens.trace => args.headOption.map(x => TraceOp(x.asInstanceOf[Lst[Obj]])).getOrElse(TraceOp())
       //
+      case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()
       case Tokens.a | Tokens.a_op => AOp(args.head)
       case Tokens.as | Tokens.as_op => AsOp(args.head)

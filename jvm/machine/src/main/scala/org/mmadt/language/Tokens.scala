@@ -30,7 +30,7 @@ object Tokens {
 
   lazy val reservedOps: List[String] = List(
     Tokens.define, Tokens.neg,
-    Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.defs,
+    Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.defs, Tokens.load,
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.given, Tokens.trace, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last,
     Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.juxt, Tokens.fold, Tokens.error, Tokens.rewrite)
@@ -47,6 +47,7 @@ object Tokens {
   val lst = "lst"
   val inst = "inst"
 
+  val load = "load"
   val defs = "defs"
   val define = "define"
   val a = "a"
