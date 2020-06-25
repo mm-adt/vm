@@ -821,11 +821,11 @@ class mmlangScriptEngineTest extends FunSuite {
         | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
     /*    assertResult(str("young guy"))(engine.eval(
           """ ('name'->'marko','age'->29)
-            | [define,person:('name'->str,'age'->int[is,.age>0])]
+            | [define,person:('name'->str,'age'->young)]
             | [define,old<=int[is>20]]
             | [define,young<=int[is<20]]
-            | [is,[a,person]][.age+-100<.old> -> 'old guy' , .age+-100<.young> -> 'young guy']""".stripMargin))*/
-    /*    assertResult(zeroObj)(engine.eval(
+           | [is,[a,person]][.age+-100[map,old] -> 'old guy' , .age+-100[map,young] -> 'young guy']""".stripMargin))*/
+    /*   assertResult(zeroObj)(engine.eval(
           """ ('name'->'marko','age'->-29)
             | [define,nat<=int[is>0]]
             | [define,person:('name'->str,'age'->nat)]
@@ -899,6 +899,14 @@ class mmlangScriptEngineTest extends FunSuite {
         }
      */
   }
+
+  /*test("play333") {
+    assertResult(zeroObj)(engine.eval(
+      """ ('name'->'marko','age'->-29)
+        | [define,nat<=int[is>0]]
+        | [define,person:('name'->str,'age'->nat)]
+        | [is,[a,person]]""".stripMargin))
+  }*/
 
   test("loading definitions parser") {
     val file1: String = "'" + getClass.getResource("/load/source-1.mm").getPath + "'"

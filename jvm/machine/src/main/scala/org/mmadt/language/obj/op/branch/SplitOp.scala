@@ -26,7 +26,6 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
@@ -42,17 +41,14 @@ object SplitOp extends Func[Obj, Obj] {
     val oldInst: Inst[Obj, Poly[Obj]] = Inst.oldInst(inst).asInstanceOf[Inst[Obj, Poly[Obj]]]
     val apoly: Poly[Obj] = oldInst.arg0[Obj] match {
       case x: Poly[Obj] => x
-      case x => Inst.resolveArg[Obj, Obj](start, x).asInstanceOf[Poly[Obj]]
+      case _ => inst.arg0[Poly[Obj]]
     }
-    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(start match {
-      case _: Value[_] => start.clone(via = (start, oldInst))
-      case _ => start
-    }, apoly))
+    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(start.clone(via = (start, oldInst)), apoly))
     apoly.gsep match {
-      case _ if apoly.isInstanceOf[RecType[Obj, Obj]] && apoly.isSerial => newInst.arg0[Obj].via(start, inst)
-      case _ if apoly.isChoice & apoly.isInstanceOf[Rec[Obj, Obj]] => processFirst(start, inst.asInstanceOf[Inst[Obj, Poly[Obj]]]) // TODO: cause the same resolutions map to the same keys
-      case _ if apoly.isChoice => processFirst(start, newInst)
-      case _ if apoly.isSerial || apoly.isParallel => newInst.arg0[Poly[Obj]].clone(via = (start, newInst))
+      case Tokens.`;` if apoly.isInstanceOf[RecType[Obj, Obj]] => newInst.arg0[Obj].via(start, inst)
+      case Tokens.`|` if apoly.isInstanceOf[Rec[Obj, Obj]] => processFirst(start, inst.asInstanceOf[Inst[Obj, Poly[Obj]]]) // TODO: cause the same resolutions map to the same keys
+      case Tokens.`|` => processFirst(start, newInst)
+      case Tokens.`;` | Tokens.`,` => newInst.arg0[Poly[Obj]].clone(via = (start, newInst))
       case _ => throw new LanguageException("Unknown poly connective: " + start)
     }
   }
