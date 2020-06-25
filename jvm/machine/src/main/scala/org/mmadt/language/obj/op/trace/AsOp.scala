@@ -45,8 +45,14 @@ trait AsOp {
 object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val asObj: Obj = inst.arg0[Obj]
-    val toObj: Obj = if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
+    val asObj: Obj = if (start.isInstanceOf[Type[_]]) inst.arg0[Obj] else Inst.resolveToken(start, inst.arg0[Obj])
+    // println(asObj + "---" + asObj.domain + "---" + asObj.range)
+    val dObj: Obj = choose(start, asObj)
+    val rObj: Obj = if (asObj.domain != asObj.range) choose(dObj, asObj.range) else dObj
+    (if (Tokens.named(asObj.name)) rObj.named(asObj.name) else rObj).via(start, inst)
+  }
+  private def choose(start: Obj, asObj: Obj): Obj = {
+    if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {
       start match {
         case _: Type[Obj] if !start.isInstanceOf[Poly[Obj]] => asObj
@@ -57,10 +63,8 @@ object AsOp extends Func[Obj, Obj] {
         case alst: Lst[Obj] => lstConverter(alst, asObj)
         case arec: Rec[Obj, Obj] => recConverter(arec, asObj)
       }
-    }.via(start, inst)
-    if (Tokens.named(asObj.name)) toObj.named(asObj.name) else toObj
+    }
   }
-
   private def boolConverter(x: Bool, y: Obj): Obj = {
     Inst.resolveArg(y.domain match {
       case _: __ => x
@@ -73,7 +77,7 @@ object AsOp extends Func[Obj, Obj] {
   private def intConverter(x: Int, y: Obj): Obj = {
     Inst.resolveArg(y.domain match {
       case _: __ => x
-      case aint: IntType => vint(name = aint.name, g = x.g)
+      case aint: IntType => vint(name = aint.name, g = x.g, via = x.via)
       case areal: RealType => vreal(name = areal.name, g = x.g)
       case astr: StrType => vstr(name = astr.name, g = x.g.toString)
       case _ => throw LanguageException.typingError(x, asType(y))
@@ -114,12 +118,12 @@ object AsOp extends Func[Obj, Obj] {
     val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case arec: RecType[Obj, Obj] => val z = rec(g = (arec.gsep,
+      case arec: RecType[Obj, Obj] => val z = rec(name=arec.name, g = (arec.gsep,
         x.gmap.flatMap(a => arec.gmap
           .filter(b => a._1.test(b._1))
           .map(b => (a._1.as(b._1), a._2.as(b._2))))))
         if (z.gmap.size != arec.gmap.size) throw LanguageException.typingError(x, asType(y))
-        z
+        z.clone(via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     }
     y.trace.map(x => x._2).foldLeft(w)((x, y) => y.exec(x))

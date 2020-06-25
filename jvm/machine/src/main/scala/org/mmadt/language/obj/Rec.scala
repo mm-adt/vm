@@ -85,7 +85,10 @@ object Rec {
       arec.clone(g = (arec.gsep, arec.gmap.toSeq.map(slot => {
         val key = Inst.resolveArg(start, slot._1)
         (key, if (key.alive) Inst.resolveArg(start, slot._2) else zeroObj.asInstanceOf[B])
-      }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else strm[B](List(b._2) ++ a.getOrElse(b._1, strm[B]).toStrm.values))))), q = start.q)
+      }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else {
+        val alst: List[B] = List(b._2) ++ a.get(b._1).map(x => List(x)).getOrElse(List.empty)
+        if (alst.size == 1) alst.head else strm(alst)
+      })))))
     }
   }
   def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {
@@ -99,7 +102,7 @@ object Rec {
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)
-    })), q = start.q)
-    x.hardQ(qOne) // TODO: why?
+    })))
+    x.hardQ(qOne) // TODO: why? -- related to [is,a] issue
   }
 }

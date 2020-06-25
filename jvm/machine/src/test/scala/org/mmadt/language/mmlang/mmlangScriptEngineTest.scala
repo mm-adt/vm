@@ -902,7 +902,9 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("play2") {
     val file1: String = "'" + getClass.getResource("/load/source-1.mm").getPath + "'"
-    assertResult("person:('name'->'marko','age'->nat:29)")(engine.eval(s"('name'->'marko','age'->29)[load,${file1}][as,person]").toString)
+
+
+    assertResult("person:('name'->'marko','age'->29)")(engine.eval(s"('name'->'marko','age'->29)[load,${file1}][as,person]").toString)
     assertThrows[LanguageException] {
       engine.eval(s"('naame'->'marko','age'->29)[load,${file1}][as,person]")
     }
@@ -917,6 +919,11 @@ class mmlangScriptEngineTest extends FunSuite {
     }
     assertResult(bfalse)(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][a,person]"))
     println(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][is,[a,person]]"))
+
+    assertResult("vertex:('name'->10)")(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,vertex]").toString)
+
+    println(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,vertex]"))
+
 
   }
 

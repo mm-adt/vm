@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -52,8 +52,7 @@ object GetOp extends Func[Obj, Obj] {
           .values
           .flatMap(a => a.toStrm.values)
           .filter(a => a.alive)
-
-        if (results.isEmpty) zeroObj //throw LanguageException.PolyException.noKeyValue(arec, key)
+        if (results.isEmpty) if (arec.isInstanceOf[Type[_]]) __ else zeroObj //throw LanguageException.PolyException.noKeyValue(arec, key)
         // else if(rec.isType) return asType[Obj](results.head).via(start,Inst.oldInst(inst))
         else if (results.size == 1) results.head
         else return strm(results.toSeq)
