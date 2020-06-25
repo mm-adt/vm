@@ -63,11 +63,12 @@ object Inst {
   def resolveToken[A <: Obj](obj: Obj, arg: A): A =
     if (__.isToken(arg))
       Obj.fetchOption[A](obj, arg.name).orElse[A](obj match {
-        case _: Type[Obj] => Some(__.from(arg.name).asInstanceOf[A])
+        case _: Type[Obj] => return arg
         case _ => throw LanguageException.labelNotFound(obj, arg.name)
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     resolveToken(obj, arg) match {
+      case anon:__ if __.isToken(anon) => anon.asInstanceOf[E]
       case valueArg: OValue[E] => valueArg
       case typeArg: OType[E] => obj match {
         case _: Strm[_] => arg

@@ -796,6 +796,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("2[define,big<=int[is>4]][a,big]"))
     assertResult(bfalse)(engine.eval("2[define,big<=_[is>4]][a,big]"))
     assertResult(int(120))(engine.eval("10[define,big<=int[plus,100]][plus,0][plus,big]"))
+    assertResult(int(120))(engine.eval("10[define,big<=int[plus,100]][plus,big]"))
     assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,person<=('name'->str,'age'->int)][a,person]"))
     assertResult(bfalse)(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][a,person]"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][a,person]{100}"))
@@ -903,8 +904,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("play2") {
-    val file1: String = "'/Users/marko/software/mmadt/vm/jvm/data/source-1.mm'"
-    assertResult("person:('name'->'marko','age'->29)")(engine.eval(s"('name'->'marko','age'->29)[load,${file1}][as,person]").toString)
+    val file1: String = "'" + getClass.getResource("/load/source-1.mm").getPath + "'"
+    assertResult("person:('name'->'marko','age'->nat:29)")(engine.eval(s"('name'->'marko','age'->29)[load,${file1}][as,person]").toString)
     assertThrows[LanguageException] {
       engine.eval(s"('naame'->'marko','age'->29)[load,${file1}][as,person]")
     }
@@ -933,7 +934,7 @@ class mmlangScriptEngineTest extends FunSuite {
      assertResult(int(0))(x)*/
     // assertResult(int.plus(int).mult(int).plus(1))(x)
     assertResult(int)(engine.eval("int[rewrite,int<=(int[mult,1])][mult,1]"))
-    println(engine.eval("10[define,big<=int[plus,100]]<.big>+10"))
+    println(engine.eval("10[define,big<=int[plus,100]][plus,big]"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))
     println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))

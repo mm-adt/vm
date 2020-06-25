@@ -26,7 +26,7 @@ import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 class LoadInstTest extends FunSuite {
-  val file1: String = getClass.getResource("/load/source-1.txt").getPath
+  val file1: String = getClass.getResource("/load/source-1.mm").getPath
   test("[load] w/ rec value") {
     assertResult(btrue)(rec(str("name") -> str("marko"), str("age") -> int(29)).load(file1).get("age").a(__("nat")))
     //assertResult(bfalse)(rec(str("name") -> str("marko"), str("age") -> int(0)).load(file1).get("age").a(__("nat")))

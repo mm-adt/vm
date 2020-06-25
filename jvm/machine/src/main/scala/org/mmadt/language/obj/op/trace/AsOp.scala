@@ -102,28 +102,27 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def lstConverter(x: Lst[Obj], y: Obj): Obj = {
-    // if (x.isType) return y
-    //Inst.resolveArg(
     y.domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
       case alst: LstType[Obj] => lst(g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))))
       case _ => throw LanguageException.typingError(x, asType(y))
-    } //, y)
+    }
   }
 
   private def recConverter(x: Rec[Obj, Obj], y: Obj): Obj = {
-    if (!Inst.resolveToken(x, y).domain.alive)
-      throw LanguageException.typingError(x, asType(y))
-    Inst.resolveToken(x, y).domain match {
+    val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case arec: RecType[Obj, Obj] => rec(g = (arec.gsep,
+      case arec: RecType[Obj, Obj] => val z = rec(g = (arec.gsep,
         x.gmap
           .flatMap(a => arec.gmap
             .filter(b => a._1.test(b._1))
-            .map(q => (a._1.as(q._1), a._2.as(q._2)))).toMap[Obj, Obj]))
+            .map(q => (Obj.copyDefinitions(x, a._1).as(q._1), Obj.copyDefinitions(x, a._2).as(q._2)))).toMap[Obj, Obj]))
+        if (z.gmap.size != arec.gmap.size) throw LanguageException.typingError(x, asType(y))
+        z
       case _ => throw LanguageException.typingError(x, asType(y))
     }
+    y.trace.map(x => x._2).foldLeft(w)((x, y) => y.exec(x))
   }
 }

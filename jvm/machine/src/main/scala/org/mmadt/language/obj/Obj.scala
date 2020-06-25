@@ -197,7 +197,7 @@ object Obj {
         case _: Value[Obj] => Some(x.via._1.asInstanceOf[A])
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].name == label => Some(Inst.resolveArg(obj, x.via._2.arg0[A].named(baseName(x.via._2.arg0[A]))))
+      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].name == label => Some(x.via._2.arg0[A].named(baseName(x.via._2.arg0[A])))
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label => Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
       case x => fetchOption(x.via._1, label)
     }

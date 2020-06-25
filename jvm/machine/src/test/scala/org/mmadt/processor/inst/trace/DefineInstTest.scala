@@ -37,8 +37,8 @@ class DefineInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(-2).define(__("nat") <= int.is(int.gt(0))).a(__("nat")), bfalse),
         (int(-2).define(__("nat") <= int.is(int.gt(0))).a(__("nat").plus(100)), bfalse),
 
-        (int(2).define(__("abc") <= int.is(int.gt(0))).a(__.from("abc")), btrue),
-        (int(-2).define(__("abc") <= int.is(int.gt(0))).a(__.from("abc")), bfalse),
+        (int(2).define(__("abc") <= int.is(int.gt(0))).a(__("abc")), btrue),
+        (int(-2).define(__("abc") <= int.is(int.gt(0))).a(__("abc")), bfalse),
       /*  ((int(1) `,` (int(1) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), btrue),
         ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), bfalse),
         ((int(1) `,` (int(2) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), bfalse),
