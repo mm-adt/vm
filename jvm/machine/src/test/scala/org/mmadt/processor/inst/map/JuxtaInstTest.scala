@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 import org.mmadt.language.Tokens
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.trace.JuxtaOp
 import org.mmadt.storage.StorageFactory._
@@ -56,7 +57,7 @@ class JuxtaInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(starts) { (left, right) => {
       println(left.map(_.toString).reduce((a, b) => a + Tokens.juxt_op + b))
-      // assertResult(right)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left.map(_.toString).reduce((a, b) => a + "=>" + b)}"))
+     // assertResult(right)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left.map(_.toString).reduce((a, b) => a + "=>" + b)}"))
       assertResult(right)(left.reduce((a, b) => a `=>` b))
       assertResult(right)(left.reduce((a, b) => JuxtaOp(b).exec(a)))
     }

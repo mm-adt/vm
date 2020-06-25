@@ -43,8 +43,8 @@ class RecTypeTest extends FunSuite {
     assertResult("(1->true)")(rec(int(1) -> btrue).toString)
     assertResult("(1->true,2->false)")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
     assertResult("(1->true,2->false)")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
-    //assertResult(bfalse)(rec(int(1) -> btrue) ===> rec.plus(rec(int(2) -> bfalse)).get(int(2)))
-    //assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
+    assertResult(bfalse)(rec(int(1) -> btrue) ===> rec.plus(rec(int(2) -> bfalse)).get(int(2)))
+    assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec.plus(rec(int(2) -> bfalse)))
     assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))
     //intercept[LanguageException] {
@@ -57,9 +57,9 @@ class RecTypeTest extends FunSuite {
     assertThrows[LanguageException] {
       rec(str("nae") -> str("marko")) ===> rec(str("name") -> str)
     }
-    assertResult(int(11))((int(10) ===> int.split(rec(g=(Tokens.`|`,Map[Obj,Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
-    assertResult(int(11,12,13))((int(10,11,12) ===> int.q(3).split(rec(g=(Tokens.`|`,Map[Obj,Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
-    assertResult(int(11,12,13))((int(10)`,`11`,`12) ===> (int`,`int`,`int).merge.split(rec(g=(Tokens.`|`,Map[Obj,Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj])
+    assertResult(int(11))((int(10) ===> int.split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
+    assertResult(int(11, 12, 13))((int(10, 11, 12) ===> int.q(3).split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
+    assertResult(int(11, 12, 13))((int(10) `,` 11 `,` 12) ===> (int `,` int `,` int).merge.split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj])
   }
 
   test("rec value via varargs construction") {

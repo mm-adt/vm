@@ -54,12 +54,12 @@ class IntTypeTest extends FunSuite {
     assertResult("int[is,bool<=int[gt,5]]")((int <= int.is(int.gt(5))).toString())
     assertResult(int(5))(int(5) ==> (int <= int.is(int.gt(4))))
     assertResult(int(5))(int(5) ==> (int.is(int.gt(4))))
-    /*intercept[LanguageException]{
+    //intercept[LanguageException]{
      int(4) ==> (int <= int.is(int.gt(4)))
-    }*/
-    /*intercept[LanguageException] {
+    //}
+    //intercept[LanguageException] {
       int(6) ==> int.q(0).is(int.gt(5))
-    }*/
+    //}
     intercept[LanguageException] {
       int(6) ==> int.q(2).is(int.gt(5))
     }
