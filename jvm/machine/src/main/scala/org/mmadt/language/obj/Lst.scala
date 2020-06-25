@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -45,7 +45,7 @@ trait Lst[A <: Obj] extends Poly[A]
 
   def g: LstTuple[A]
   override def gsep: String = g._1
-  override def glist: List[A] = g._2
+  override def glist: List[A] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x))
 
   def clone(values: List[A]): this.type = this.clone(g = (gsep, values))
 
@@ -56,7 +56,7 @@ trait Lst[A <: Obj] extends Poly[A]
     case alst: Lst[_] => // Poly.sameSep(this, alst) &&
       withinQ(this, alst) &&
         (this.glist.length == alst.glist.length || alst.glist.isEmpty) && // TODO: should lists only check up to their length
-        this.glist.zip(alst.glist).forall(b => Obj.copyDefinitions(this, b._1).test(b._2))
+        this.glist.zip(alst.glist).forall(b => b._1.test(b._2))
     case _ => false
   }
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
@@ -72,19 +72,19 @@ trait Lst[A <: Obj] extends Poly[A]
 object Lst {
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
-    apoly.clone(g=(apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
+    apoly.clone(g = (apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
   }
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A]): Lst[A] = {
     if (apoly.isSerial) {
       var local = start
-      apoly.clone(g=(apoly.gsep,apoly.glist.map(slot => {
+      apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => {
         local = local match {
           case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
           case _ => Inst.resolveArg(local, slot)
         }
         local
       })))
-    } else apoly.clone(g=(apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot))))
+    } else apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot))))
 
   }
 }

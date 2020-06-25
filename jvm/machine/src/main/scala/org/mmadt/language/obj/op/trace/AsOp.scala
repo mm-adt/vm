@@ -115,10 +115,9 @@ object AsOp extends Func[Obj, Obj] {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
       case arec: RecType[Obj, Obj] => val z = rec(g = (arec.gsep,
-        x.gmap
-          .flatMap(a => arec.gmap
-            .filter(b => a._1.test(b._1))
-            .map(q => (Obj.copyDefinitions(x, a._1).as(q._1), Obj.copyDefinitions(x, a._2).as(q._2)))).toMap[Obj, Obj]))
+        x.gmap.flatMap(a => arec.gmap
+          .filter(b => a._1.test(b._1))
+          .map(b => (a._1.as(b._1), a._2.as(b._2))))))
         if (z.gmap.size != arec.gmap.size) throw LanguageException.typingError(x, asType(y))
         z
       case _ => throw LanguageException.typingError(x, asType(y))

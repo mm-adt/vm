@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.filter
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -42,23 +42,9 @@ object IsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case apoly: Poly[_] if apoly.isInstanceOf[Type[_]] => start.via(start, Inst.oldInst(inst)).hardQ(minZero(multQ(start, inst)))
-      case _: Value[_] if !inst.arg0[Obj].isInstanceOf[Value[_]] => start.via(start,  Inst.oldInst(inst)) // TODO: this is weird
-      case avalue: Value[_] if inst.arg0[Obj].isInstanceOf[Value[_]] => if (inst.arg0[Bool].g) avalue.via(start, inst) else avalue.via(start, inst).hardQ(qZero)
-      case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
+      case _: Value[_] if inst.arg0[Obj].isInstanceOf[Value[_]] => if (inst.arg0[Bool].g) start.via(start, inst) else start.hardQ(qZero)
+      case _ => start.clone(via=(start, inst),q=minZero(multQ(start, inst)))
     }
   }
 }
-/*
-override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    Try[Obj](
-      if (inst.arg0[Bool].g) start.via(start, inst)
-      else
-        start.via(start, inst).hardQ(qZero)).getOrElse(
-      start match {
-        case astrm: Strm[Obj] => astrm.via(start, inst)
-        case _ => start.clone(via = (start, inst), q = minZero(multQ(start, inst)))
-      })
-  }
-*/
 
