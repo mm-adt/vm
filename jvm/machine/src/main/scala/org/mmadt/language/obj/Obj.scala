@@ -190,16 +190,18 @@ object Obj {
   }
 
   @scala.annotation.tailrec
-  def fetchOption[A <: Obj](obj: Obj, label: String): Option[A] = {
+  def fetchOption[A <: Obj](source: Obj, obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => None
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => obj match {
         case _: Value[Obj] => Some(x.via._1.asInstanceOf[A])
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].name == label => Some(x.via._2.arg0[A].named(baseName(x.via._2.arg0[A])))
+      case x if x.via._2.op == Tokens.define &&
+        x.via._2.arg0[Obj].name == label &&
+        source.test(asType(x.via._2.arg0[Obj].domain)) => Some(x.via._2.arg0[A].named(baseName(x.via._2.arg0[A])))
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label => Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
-      case x => fetchOption(x.via._1, label)
+      case x => fetchOption(source, x.via._1, label)
     }
   }
 

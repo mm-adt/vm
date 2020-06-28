@@ -25,6 +25,7 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -34,7 +35,12 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func).asInstanceOf[this.type]
+                     via: ViaTuple = this.via): this.type = {
+    if (this.isInstanceOf[TraceInstruction])
+      (new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func) with TraceInstruction).asInstanceOf[this.type]
+    else
+      new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func).asInstanceOf[this.type]
+  }
   override lazy val hashCode: scala.Int = this.op.hashCode ^ this.glist.hashCode()
   override def equals(other: Any): Boolean = other match {
     case inst: Inst[_, _] => inst.op == this.op && inst.args == this.args && this.q == inst.q

@@ -25,12 +25,14 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -42,11 +44,14 @@ trait AOp {
 object AOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
-    val arg = Inst.resolveToken(start,inst.arg0[Obj])
     start match {
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))
-      case _: Value[_] => bool(start.test(arg)).via(start, inst)
-      case _: Type[_] => bool.via(start,inst)
+      case _: Value[_] =>
+        val arg = Try[Obj] {
+          Inst.resolveToken(start, inst.arg0[Obj])
+        }.getOrElse(zeroObj)
+        bool(start.test(arg)).via(start, inst)
+      case _: Type[_] => bool.via(start, inst)
     }
   }
 }
