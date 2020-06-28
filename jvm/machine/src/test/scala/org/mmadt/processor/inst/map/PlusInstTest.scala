@@ -39,7 +39,7 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
         //////// INT
         (int(2), __.plus(2), int(4), "value"), // value * value = value
         (int(2).q(10), __.plus(2), int(4).q(10), "value"), // value * value = value
-        //(int(2).q(10), __.plus(2).q(20), int(4).q(200), "value"), // value * value = value
+        (int(2).q(10), __.plus(2).q(20), int(4).q(200), "value"), // value * value = value
         (int(2), __.plus(int(2).q(10)), int(4), "value"), // value * value = value
         (int(2), __.plus(int), int(4), "value"), // value * type = value
         (int(2), __.plus(__.plus(int)), int(6), "value"), // value * anon = value

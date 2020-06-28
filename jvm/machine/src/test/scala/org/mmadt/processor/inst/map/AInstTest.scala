@@ -23,9 +23,9 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
-import org.mmadt.language.obj.`type`.{ObjType, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.AOp
-import org.mmadt.language.obj.value.{ObjValue, StrValue}
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Bool, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -112,8 +112,8 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("a"), bool, bfalse),
         (str("a"), int, bfalse),
         (str("a"), real, bfalse),
-        //(str("a"), __.gt(str("b")), bfalse),
-        // (str("a"), str.lt(str("b")), btrue),
+        (str("a"), __.is(__.gt(str("b"))), bfalse),
+        (str("a"), str.is(str.lt(str("b"))), btrue),
         (str("a"), str, btrue),
         (str("a"), rec, bfalse),
         (str, str("a"), str.a(str("a"))),
@@ -149,17 +149,13 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (person, marko, person.a(marko)),
       )
     forEvery(check) { (left, right, result) => {
-      /* if (!left.isInstanceOf[Strm[_]])
-         assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[a,${right}]"))
-       else
-         assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[${left}][a,${right}]"))*/
+      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[${left}][a,${right}]"))
       assertResult(result)(left.compute(asType(__.a(right))))
       assertResult(result)(left.a(right))
       assertResult(result)(AOp(right).exec(left))
-      // assertResult(result)(left ===> left.range.a(right))
-      //   assertResult(result)(left ===> (left.range ===> left.range.a(right)))
+      assertResult(result)(left ===> left.range.a(right))
+      assertResult(result)(left ===> (left.range ===> left.range.a(right)))
     }
-
     }
   }
 

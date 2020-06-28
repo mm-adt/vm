@@ -26,6 +26,7 @@ import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Int, Lst, Obj}
+import org.mmadt.storage.StorageFactory
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3, TableFor4}
@@ -65,8 +66,8 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 100), __ -< (int `,` int) >-, int(int(1).q(2), int(100).q(2))),
         (int(int(1).q(5), 100), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
         (int(int(1).q(5), 100), __ -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
-        //(int(1,2),__ -<(int | (int -< (int | int))), strm(List[Obj](int(1)|, int(2)|))),
-        //(int(int(1), int(2)).-<(int `,` (int -< (int | int))), strm[Obj](List(int(1), int(1) |, int(2), int(2) |))),
+        (int(1, 2), __ -< (int | (int -< (int | int))), StorageFactory.strm[Obj](List[Obj](int(1) `|`, int(2) `|`))),
+        (int(1, 2), __ -< (int `,` (int -< (int | int))), StorageFactory.strm[Obj](List(int(1) `,` (int(1) |), int(2) `,` (int(2) |)))),
         (int(1), __ -< (str | int), zeroObj | int(1)),
         //(strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )

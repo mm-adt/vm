@@ -55,7 +55,7 @@ object AsOp extends Func[Obj, Obj] {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {
       start match {
-        case _: Type[Obj] if !start.isInstanceOf[Poly[Obj]] => asObj
+        case _: Type[Obj] => asObj
         case abool: Bool => boolConverter(abool, asObj)
         case aint: Int => intConverter(aint, asObj)
         case areal: Real => realConverter(areal, asObj)
@@ -118,7 +118,7 @@ object AsOp extends Func[Obj, Obj] {
     val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
-      case arec: RecType[Obj, Obj] => val z = rec(name=arec.name, g = (arec.gsep,
+      case arec: RecType[Obj, Obj] => val z = rec(name = arec.name, g = (arec.gsep,
         x.gmap.flatMap(a => arec.gmap
           .filter(b => a._1.test(b._1))
           .map(b => (a._1.as(b._1), a._2.as(b._2))))))

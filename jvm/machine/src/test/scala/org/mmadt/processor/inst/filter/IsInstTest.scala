@@ -24,11 +24,11 @@ package org.mmadt.processor.inst.filter
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
-import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor3}
@@ -71,7 +71,8 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
 
       )
     forEvery(starts) { (expr, result, atype) => {
-      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${expr}"))
+      if (!expr.isInstanceOf[Strm[_]])
+        assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${expr}"))
       assertResult(result)(expr)
       atype match {
         case "value" => assert(expr.isInstanceOf[Value[_]])
@@ -102,7 +103,7 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { obj => {
       val expr = maker(obj)
       obj match {
-        case _ : Rec[Obj,Obj] =>
+        case _: Rec[Obj, Obj] =>
         case value: Value[_] => assert(value.g == expr.asInstanceOf[Value[_]].g)
         case _ =>
       }
