@@ -47,7 +47,7 @@ trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
       case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
       case _ => start match {
         case _: Strm[_] => start.via(start, this).asInstanceOf[E]
-        case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg))),via=(this,IdOp()))) // TODO: It's not an [id] that processes the inst. hmmm...
+        case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Inst.resolveArg(start, arg))), via = (this, IdOp()))) // TODO: It's not an [id] that processes the inst. hmmm...
       }
     }
   }
@@ -68,7 +68,7 @@ object Inst {
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     resolveToken(obj, arg) match {
-      case anon:__ if __.isToken(anon) => anon.asInstanceOf[E]
+      case anon: __ if __.isToken(anon) => anon.asInstanceOf[E]
       case valueArg: OValue[E] => valueArg
       case typeArg: OType[E] => obj match {
         case _: Strm[_] => arg

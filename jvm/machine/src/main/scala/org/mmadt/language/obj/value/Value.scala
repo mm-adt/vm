@@ -37,7 +37,8 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
 
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
-    case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
+    case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
+    case anon: __ => withinQ(this, anon) && Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case avalue: Value[_] if this.name.equals(avalue.name) =>
       withinQ(this, avalue) && this.g.equals(avalue.g)

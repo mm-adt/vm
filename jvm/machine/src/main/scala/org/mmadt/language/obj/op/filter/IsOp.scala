@@ -42,8 +42,9 @@ object IsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case _: Value[_] if inst.arg0[Obj].isInstanceOf[Value[_]] => if (inst.arg0[Bool].g) start.via(start, inst) else start.hardQ(qZero)
-      case _ => start.clone(via=(start, inst),q=minZero(multQ(start, inst)))
+      case _: Obj if !inst.arg0[Obj].alive => start.via(start, inst).hardQ(qZero)
+      case _: Value[_] => if (inst.arg0[Bool].g) start.via(start, inst) else start.via(start, inst).hardQ(qZero)
+      case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
     }
   }
 }

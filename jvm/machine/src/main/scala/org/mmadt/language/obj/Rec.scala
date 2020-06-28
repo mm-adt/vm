@@ -46,15 +46,18 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def glist: Seq[B] = gmap.values.toSeq
   def gsep: String = g._1
   def clone(values: collection.Map[A, B]): this.type = this.clone(g = (gsep, values))
-  override def test(other: Obj): Boolean = Inst.resolveToken(this, other) match {
-    case aobj: Obj if !aobj.alive => !this.alive
-    //case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
-    case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case arec: Rec[_, _] =>
-      Poly.sameSep(this, arec) && withinQ(this, arec) &&
-        arec.gmap.count(x => qStar.equals(x._2.q) ||
-          this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
-    case _ => false
+  override def test(other: Obj): Boolean = {
+    Inst.resolveToken(this, other) match {
+      case aobj: Obj if !aobj.alive => !this.alive
+      case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
+      case anon: __ => Inst.resolveArg(this, anon).alive
+      case astrm: Strm[_] => MultiSet.test(this, astrm)
+      case arec: Rec[_, _] =>
+        Poly.sameSep(this, arec) && withinQ(this, arec) &&
+          arec.gmap.count(x => qStar.equals(x._2.q) ||
+            this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
+      case _ => false
+    }
   }
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()

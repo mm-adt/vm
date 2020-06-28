@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
 class IteratorProcessor extends Processor {
   override def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E = {
     var output: Iterator[E] = domainObj match {
-      case strm: Strm[_] => strm.values.map(x => x.asInstanceOf[E]).iterator
+      case strm: Strm[E] => strm.values.iterator
       case single: E => Iterator(single)
     }
     for (tt <- IteratorProcessor.createInstList(Nil, rangeType)) {
@@ -50,7 +50,7 @@ class IteratorProcessor extends Processor {
           .map(_.compute(tt._1.via(tt._1, tt._2)))
           .filter(_.alive)
           .flatMap(x => x match {
-            case strm: Strm[E] => strm.values.map(x => x)
+            case strm: Strm[E] => strm.values.filter(_.alive)
             case single: E => Iterator(single)
           })
       }

@@ -51,6 +51,7 @@ trait Lst[A <: Obj] extends Poly[A]
 
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
+    case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
     case anon: __ => Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] => // Poly.sameSep(this, alst) &&
