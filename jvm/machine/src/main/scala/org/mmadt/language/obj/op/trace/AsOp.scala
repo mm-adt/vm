@@ -49,7 +49,9 @@ object AsOp extends Func[Obj, Obj] {
     // println(asObj + "---" + asObj.domain + "---" + asObj.range)
     val dObj: Obj = choose(start, asObj)
     val rObj: Obj = if (asObj.domain != asObj.range) choose(dObj, asObj.range) else dObj
-    (if (Tokens.named(asObj.name)) rObj.named(asObj.name) else rObj).via(start, inst)
+    val result = (if (Tokens.named(inst.arg0[Obj].name)) rObj.named(inst.arg0[Obj].name) else rObj).via(start, inst)
+    if (!result.alive) throw LanguageException.typingError(start, asType(asObj))
+    result
   }
   private def choose(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)

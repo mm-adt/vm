@@ -917,7 +917,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("loading definitions parser") {
     val file1: String = "'" + getClass.getResource("/load/source-1.mm").getPath + "'"
-    assertResult("person:('name'->'marko','age'->29)")(engine.eval(s"('name'->'marko','age'->29)[load,${file1}][as,person]").toString)
+    assertResult("person:('name'->'marko','age'->nat:29)")(engine.eval(s"('name'->'marko','age'->29)[load,${file1}][as,person]").toString)
     assertThrows[LanguageException] {
       engine.eval(s"('naame'->'marko','age'->29)[load,${file1}][as,person]")
     }
@@ -931,11 +931,11 @@ class mmlangScriptEngineTest extends FunSuite {
       engine.eval(s"('age'->29)[load,${file1}][as,person]")
     }
     assertResult(bfalse)(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][a,person]"))
-    println(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][is,[a,person]]"))
+    assertResult(zeroObj)(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][is,[a,person]]"))
 
-    assertResult("vertex:('id'->10,'label'->'marko10','outE'->)")(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]").toString)
+    assertResult("vertex:('id'->nat:10,'label'->'marko10','outE'->)")(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,vertex]").toString)
     assertResult("vertex:('id'->5)")(engine.eval(s"5[load,${file1}][as,vertex]").toString)
-    println(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]"))
+    // println(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]"))
 
 
   }

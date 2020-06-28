@@ -29,7 +29,6 @@ import org.mmadt.language.obj.Rec;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
-import org.mmadt.storage.StorageFactory;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -84,14 +83,8 @@ public class LanguageException extends VmException {
         return new LanguageException(source + " does not contain the label '" + label + "'");
     }
 
-    public static void testDomainRange(final Type<?> range, final Type<?> domain) {
-        if (!(domain instanceof __) && !range.range().q(StorageFactory.qOne()).test(domain.range().q(StorageFactory.qOne())))
-            throw LanguageException.typingError(range, domain);
-    }
-
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (!(type.alive() && (__.isAnon(type.domain()) || obj.range().test(type.domain()))))
-            throw LanguageException.typingError(obj, type);
+        if (!(__.isAnon(type.domain()) || obj.range().test(type.domain()))) throw LanguageException.typingError(obj, type);
     }
 
     public static class PolyException {
@@ -108,8 +101,10 @@ public class LanguageException extends VmException {
         }
 
         public static void testIndex(final Lst<?> lst, final int index) {
-            if (index < 0) throw new LanguageException("Index must be 0 or greater: " + index);
-            if (lst.glist().length() < (index + 1)) throw new LanguageException("Index is out of bounds: " + index);
+            if (index < 0)
+                throw new LanguageException("Index must be 0 or greater: " + index);
+            if (lst.glist().length() < (index + 1))
+                throw new LanguageException("Index is out of bounds: " + index);
         }
 
         public static LanguageException noKeyValue(final Rec<?, ?> rec, final Obj key) {

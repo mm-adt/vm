@@ -21,18 +21,36 @@
  */
 
 package org.mmadt.processor.inst.sideeffect
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 class LoadInstTest extends FunSuite {
   val file1: String = getClass.getResource("/load/source-1.mm").getPath
-  test("[load] w/ rec value") {
+  test("[load] w/ [a] mapping") {
     assertResult(bfalse)(int(5).load(file1).a(__("person")))
     assertResult(btrue)(int(5).load(file1).a(__("vertex")))
     assertResult(btrue)(rec(str("name") -> str("marko"), str("age") -> int(29)).load(file1).a(__("person")))
     assertResult(bfalse)(rec(str("name") -> str("marko"), str("age") -> int(0)).load(file1).a(__("person")))
+    assertResult(bfalse)(rec(str("age") -> int(29)).load(file1).a(__("person")))
     assertResult(btrue)(rec(str("name") -> str("marko"), str("age") -> int(29)).load(file1).get("age").a(__("nat")))
     assertResult(bfalse)(rec(str("name") -> str("marko"), str("age") -> int(0)).load(file1).get("age").a(__("nat")))
+  }
+  test("[load] w/ [as] mapping") {
+    assertResult(rec(str("id") -> int(5)).named("vertex"))(int(5).load(file1).as(__("vertex")))
+    assertThrows[LanguageException] {
+      int(5).load(file1).as(__("person"))
+    }
+    //
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).named("person"))(rec(str("name") -> str("marko"), str("age") -> int(29)).load(file1).as(__("person")))
+    assertThrows[LanguageException] {
+      rec(str("name") -> str("marko"), str("age") -> int(0)).load(file1).as(__("person"))
+    }
+    //
+    assertResult(int(29).named("nat"))(rec(str("name") -> str("marko"), str("age") -> int(29)).load(file1).get("age").as(__("nat")))
+    assertThrows[LanguageException] {
+      println(rec(str("name") -> str("marko"), str("age") -> int(0)).load(file1).get("age").as(__("nat")))
+    }
   }
 }
