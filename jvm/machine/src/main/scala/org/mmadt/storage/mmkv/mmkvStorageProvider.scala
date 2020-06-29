@@ -48,6 +48,10 @@ class mmkvStorageProvider extends StorageProvider {
   override def name: String = "mmkv"
   val getByKeyEq: StrValue = str("getByKeyEq")
   val addKeyValue: StrValue = str("addKeyValue")
+  val file1: String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
+  val file2: String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
+  val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
+
   override def resolveInstruction(op: String, args: util.List[Obj]): Optional[Inst[Obj, Obj]] = {
     if (op != opcode) Optional.empty()
     Optional.ofNullable(asScalaIterator(args.iterator()).toList match {
@@ -57,19 +61,19 @@ class mmkvStorageProvider extends StorageProvider {
     })
   }
   override def rewrites(): util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
-    RewriteOp((__.error("keys are immutable") `,`) <= (mmkv.put("k", mmkv.get("k")) `,`)),
-    RewriteOp((__.error("values are immutable") `,`) <= (mmkv.put("v", __.via(__, StartOp(__))) `,`)),
+    RewriteOp((__.error("keys are immutable") `,`) <= (mmkv.put(K, mmkv.get(K)) `,`)),
+    RewriteOp((__.error("values are immutable") `,`) <= (mmkv.put(V, __.via(__, StartOp(__))) `,`)),
     RewriteOp(
-      (List(mmkvGetRecordsByKey("/Users/marko/software/mmadt/vm/jvm/machine/target/test-classes/mmkv/mmkv-2.txt", 1)).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`)
+      (List(mmkvGetRecordsByKey(file2, 1)).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`)
         <=
-        (List(mmkvGetRecords(str), IsOp[Obj](__.get(str("k")).eqs(int.to("y")))).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`))))
+        (List(mmkvGetRecords(str), IsOp[Obj](__.get(K).eqs(int.to("y")))).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`))))
 }
 
 object mmkvStorageProvider {
   private val opcode = "=mmkv"
   private val K: StrValue = str("k")
   private val V: StrValue = str("v")
-  private val mmkv: Rec[StrValue, Type[Obj]] = rec(g=(",", Map(K -> int, V -> __))).named("mmkv")
+  private val mmkv: Rec[StrValue, Type[Obj]] = rec(g = (",", Map(K -> int, V -> __))).named("mmkv")
 
   object mmkvOp {
     object mmkvGetRecords extends Func[Obj, Rec[StrValue, Obj]] {
@@ -80,7 +84,7 @@ object mmkvStorageProvider {
         val fileStr: String = inst.arg0[StrValue].g
         (start match {
           case _: Type[_] => mmkvStore.open(fileStr).schema.via(start, inst).hardQ(*)
-          case _ => mmkvStore.open(fileStr).strm()
+          case _ => mmkvStore.open(fileStr).stream((start, inst))
         }).asInstanceOf[Rec[StrValue, Obj]]
       }
     }

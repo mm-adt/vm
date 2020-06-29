@@ -37,9 +37,9 @@ import org.scalatest.FunSuite
 class mmkvStoreTest extends FunSuite {
 
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
-  val file1: String = getClass.getResource("/mmkv/mmkv-1.txt").getPath
-  val file2: String = getClass.getResource("/mmkv/mmkv-2.txt").getPath
-  val file3: String = getClass.getResource("/mmkv/mmkv-3.txt").getPath
+  val file1: String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
+  val file2: String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
+  val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
   val mmkv: String = "=mmkv"
 
   test("mmkv storage provider") {
@@ -69,14 +69,14 @@ class mmkvStoreTest extends FunSuite {
     try {
       assertResult(rec(g=(",", Map(str("k") -> int, str("v") -> bool))).named("mmkv"))(store.schema)
       store.clear()
-      assertResult(0)(store.strm().values.count(_ => true))
+      assertResult(0)(store.stream().values.count(_ => true))
       assertResult(bfalse)(store.put(bfalse))
-      assertResult(1)(store.strm().values.count(_ => true))
-      assert(store.strm().values.map(x => x.gmap(str("k"))).exists(x => x.g == 0))
+      assertResult(1)(store.stream().values.count(_ => true))
+      assert(store.stream().values.map(x => x.gmap(str("k"))).exists(x => x.g == 0))
       assertResult(btrue)(store.put(45, btrue))
-      assertResult(2)(store.strm().values.count(_ => true))
-      assert(store.strm().values.map(x => x.gmap(str("k"))).exists(x => x.g == 0))
-      assert(store.strm().values.map(x => x.gmap(str("k"))).exists(x => x.g == 45))
+      assertResult(2)(store.stream().values.count(_ => true))
+      assert(store.stream().values.map(x => x.gmap(str("k"))).exists(x => x.g == 0))
+      assert(store.stream().values.map(x => x.gmap(str("k"))).exists(x => x.g == 45))
       assertResult(btrue)(store.get(45))
       assertResult(bfalse)(store.get(0))
     } finally store.close()

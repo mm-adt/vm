@@ -36,9 +36,11 @@ import org.scalatest.FunSuite
 class mmkvInstTest extends FunSuite {
 
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
-  val file1: String = getClass.getResource("/mmkv/mmkv-1.txt").getPath
-  val file2: String = getClass.getResource("/mmkv/mmkv-2.txt").getPath
-  val file3: String = getClass.getResource("/mmkv/mmkv-3.txt").getPath
+  val file1: String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
+  val file2: String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
+  val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
+  val file4: String = getClass.getResource("/mmkv/mmkv-4.mm").getPath
+  val source4: String = getClass.getResource("/mmkv/source-4.mm").getPath
   val mmkv: String = "=mmkv"
 
   test("mmkv parsing") {
@@ -69,7 +71,7 @@ class mmkvInstTest extends FunSuite {
     assertResult(str("marko!", "stephen!"))(engine.eval(s"1[=mmkv,'${file2}'].v[is.age>28].name+'!'"))
   }
 
-  test("[=mmkv] with mmkv-1.txt") {
+  test("[=mmkv] with mmkv-1.mm") {
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
     assertResult("('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz')")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(int(1, 2, 3, 4))(Processor.iterator(int(4), int.=:[Rec[Obj, Obj]](mmkv)(str(file1)).get(str("k"), int)))
@@ -94,5 +96,11 @@ class mmkvInstTest extends FunSuite {
     assertResult(str("marko"))(engine.eval(s"1[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
     assertResult(str("marko"))(engine.eval(s"[1][=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
   }
+
+  test("mmkv file-4 parsing") {
+    assertResult(s"mmkv{*}<=_[=mmkv,'${file4}']")(engine.eval(s"[=mmkv,'${file4}']").toString)
+    assertResult("vertex:('name'->'marko','friends'->person:('name'->'ryan','age'->25,'knows'->3))")(engine.eval(s"1[load,'${source4}'][=mmkv,'${file4}'][is.k==1].v[as,vertex]").toString)
+  }
+
 }
 
