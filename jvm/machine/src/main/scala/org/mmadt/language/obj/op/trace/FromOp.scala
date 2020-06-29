@@ -26,6 +26,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -43,6 +44,7 @@ object FromOp extends Func[Obj, Obj] {
   def apply[O <: Obj](label: StrValue): Inst[Obj, Obj] = new VInst[Obj, O](g = (Tokens.from, List(label)), func = this) with TraceInstruction
   def apply[O <: Obj](label: StrValue, default: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.from, List(label, default)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
     val history: Option[(String, Obj)] = Obj.fetchWithInstOption[Obj](start, inst.arg0[StrValue].g)
     if (history.isEmpty && !start.isInstanceOf[Type[Obj]])
       if (inst.args.length == 1)

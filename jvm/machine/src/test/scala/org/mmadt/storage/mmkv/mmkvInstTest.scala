@@ -45,10 +45,10 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv parsing") {
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
-    assertResult("('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz')")(engine.eval(s"1[=mmkv,'${file1}']").toString)
+    assertResult("{('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz')}")(engine.eval(s"1[=mmkv,'${file1}']").toString)
     //
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file2}']").range.toString)
-    assertResult("('k'->1,'v'->person:('name'->'marko','age'->29)),('k'->2,'v'->person:('name'->'ryan','age'->25)),('k'->3,'v'->person:('name'->'stephen','age'->32)),('k'->4,'v'->person:('name'->'kuppitz','age'->23))")(engine.eval(s"1[=mmkv,'${file2}']").toString)
+    assertResult("{('k'->1,'v'->person:('name'->'marko','age'->29)),('k'->2,'v'->person:('name'->'ryan','age'->25)),('k'->3,'v'->person:('name'->'stephen','age'->32)),('k'->4,'v'->person:('name'->'kuppitz','age'->23))}")(engine.eval(s"1[=mmkv,'${file2}']").toString)
     //
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file3}']").range.toString)
     assertResult(zeroObj)(engine.eval(s"1[=mmkv,'${file3}']"))
@@ -73,7 +73,7 @@ class mmkvInstTest extends FunSuite {
 
   test("[=mmkv] with mmkv-1.mm") {
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
-    assertResult("('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz')")(int(1).=:(mmkv)(str(file1)).toString)
+    assertResult("{('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz')}")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(int(1, 2, 3, 4))(Processor.iterator(int(4), int.=:[Rec[Obj, Obj]](mmkv)(str(file1)).get(str("k"), int)))
     assertResult("('k'->1,'v'->'marko')")((int(1) ==> int.=:[RecType[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
   }

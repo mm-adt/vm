@@ -724,7 +724,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("int[plus,100][plus,200]-<(int;int[plus,2])>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<(int;int[plus,2])>-[plus,20]").toString)
     assertResult("int[plus,100][plus,200]-<(int|int[plus,2])>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<(int|int[plus,2])>-[plus,20]").toString)
     assertResult("(10;10;11)")(engine.eval("10-<(bool,int)>-[plus,1][path]").toString)
-    assertResult("12,14")(engine.eval("1[plus,1]-<(int,int[plus,2])>-[plus,10]").toString)
+    assertResult("{12,14}")(engine.eval("1[plus,1]-<(int,int[plus,2])>-[plus,10]").toString)
   }
 
   test("[type] instruction parsing") {
