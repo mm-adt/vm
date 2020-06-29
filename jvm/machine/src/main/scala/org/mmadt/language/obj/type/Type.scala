@@ -30,14 +30,10 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[+T <: Obj] extends Obj
-  with ExplainOp {
-  this: T =>
-
+trait Type[+T <: Obj] extends Obj with ExplainOp {
   // type signature properties and functions
   //def value: Any = throw LanguageException.typesNoValue(this)
   override def range: this.type = this.isolate
-
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
@@ -59,7 +55,6 @@ trait Type[+T <: Obj] extends Obj
     case _ => false
   }
 }
-
 object Type {
   def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (__.isAnon(atype) || obj.range.hardQ(qOne).test(atype.domain.hardQ(qOne)))
 }

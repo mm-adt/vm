@@ -52,7 +52,6 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
       case anon: __ => Inst.resolveArg(this, anon).alive
       case astrm: Strm[_] => MultiSet.test(this, astrm)
       case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
-        // this.name.equals(arec.name) &&
         withinQ(this, arec) &&
         arec.gmap.count(x => qStar.equals(x._2.q) ||
           this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
@@ -62,6 +61,7 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
 
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
+    case obj: Obj if !this.alive => !obj.alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
       this.name.equals(arec.name) &&

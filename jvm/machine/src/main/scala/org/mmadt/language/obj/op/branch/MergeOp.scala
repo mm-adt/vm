@@ -24,9 +24,9 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.PolyType
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.value.{LstValue, RecValue}
+import org.mmadt.language.obj.value.PolyValue
 import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -41,12 +41,10 @@ object MergeOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.merge, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case apoly: RecValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(x, inst.q))).filter(_.alive).getOrElse(zeroObj)
-      case apoly: RecValue[_, _] if !apoly.gmap.keys.exists(x => x.alive && x.isInstanceOf[Type[_]]) => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
-      case apoly: LstValue[_] if apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(x, inst.q))).filter(_.alive).getOrElse(zeroObj)
-      case apoly: LstValue[_] if apoly.isChoice => strm(Poly.keepFirst(zeroObj, apoly).glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
-      case apoly: LstValue[_] => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
-      case apoly: Poly[_] => BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
+      case apoly: PolyValue[_, _] if apoly.isChoice => strm(Poly.keepFirst(apoly, apoly).glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
+      case apoly: PolyValue[_, _] if apoly.isParallel => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
+      case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(x, inst.q))).filter(_.alive).getOrElse(zeroObj)
+      case apoly: PolyType[_, _] => BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
       case _ => start.via(start, inst)
     }
   }

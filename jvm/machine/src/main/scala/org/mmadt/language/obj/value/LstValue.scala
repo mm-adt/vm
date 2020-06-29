@@ -26,7 +26,7 @@ import org.mmadt.language.obj.{Lst, Obj}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait LstValue[A <: Obj] extends Value[Lst[A]] with Lst[A] {
+trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
   override def test(other: Obj): Boolean = super[Lst].test(other)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = super[Lst].equals(other)

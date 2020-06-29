@@ -60,6 +60,7 @@ trait Lst[A <: Obj] extends Poly[A]
   }
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
+    case obj: Obj if !this.alive => !obj.alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&

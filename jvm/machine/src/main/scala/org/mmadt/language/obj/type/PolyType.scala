@@ -20,14 +20,7 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.value
-import org.mmadt.language.obj.{Obj, Rec}
+package org.mmadt.language.obj.`type`
+import org.mmadt.language.obj.{Obj, Poly}
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-trait RecValue[A <: Obj, B <: Obj] extends PolyValue[B, Rec[A, B]] with Rec[A, B] {
-  override def test(other: Obj): Boolean = super[Rec].test(other)
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
-  override def equals(other: Any): Boolean = super[Rec].equals(other)
-}
+trait PolyType[A <: Obj, B <: Poly[A]] extends Poly[A] with Type[B]

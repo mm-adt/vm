@@ -24,11 +24,11 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.{Obj, Rec}
 
-trait RecType[A <: Obj, B <: Obj] extends Type[Obj] with Rec[A, B] {
+trait RecType[A <: Obj, B <: Obj] extends PolyType[B, Rec[A, B]] with Rec[A, B] {
   override def toString: String = LanguageFactory.printType(this)
-  override def test(other: Obj): Boolean = super[Rec].test(other)
+  override def test(other: Obj): Boolean = super[Rec].test(other) // && super[PolyType].test(other)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode()
-  override def equals(other: Any): Boolean = super[Rec].equals(other) && super[Type].equals(other)
+  override def equals(other: Any): Boolean = super[Rec].equals(other) && super[PolyType].equals(other)
 }
 
 
