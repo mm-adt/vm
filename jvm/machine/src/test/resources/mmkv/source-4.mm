@@ -1,4 +1,4 @@
-[define,vertex<=person:('name'->str,'age'->int,'knows'->int)<x>-<
+[define,vertex<=person:('name'->str,'age'->int,'knows'->int{*})-<
   ('name'    ->.name,
-   'friends' ->[=mmkv,''][is,.k==x.knows].v
+   'friends' ->.knows<y>[=mmkv,''][map,[is,.k==<.y>].v]
   )]

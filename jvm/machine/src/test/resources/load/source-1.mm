@@ -3,5 +3,5 @@
 [define,vertex<=person:('name'->str,'age'->nat)-<(
                         'id'    -> .age,
                         'label' -> <x>.name[plus,<.x>.age[as,str]],
-                        'outE'  -> {0})]
+                        'outE'  -> _{0})]
 [define,vertex<=int-<('id'->_)]

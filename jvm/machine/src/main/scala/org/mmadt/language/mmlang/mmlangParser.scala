@@ -30,6 +30,7 @@ import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.{MergeOp, RepeatOp, SplitOp}
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory
@@ -129,7 +130,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val anonTypeSugar: Parser[__] = rep1[List[Inst[Obj, Obj]]](inst) ^^ (x => x.flatten.foldLeft(new __())((a, b) => a.clone(via = (a, b))))
 
   // value parsing
-  lazy val objValue: Parser[Value[Obj]] = (boolValue | realValue | intValue | strValue | lstValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val objValue: Parser[Value[Obj]] = (boolValue | realValue | intValue | strValue | lstValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1)) | strmValue
   lazy val boolValue: Parser[BoolValue] = opt(objName) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => vbool(x._1.getOrElse(Tokens.bool), x._2.toBoolean, qOne))
   lazy val intValue: Parser[IntValue] = opt(objName) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
   lazy val realValue: Parser[RealValue] = opt(objName) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
@@ -138,6 +139,8 @@ class mmlangParser extends JavaTokenParsers {
     (x => lst(name = x._1.getOrElse(Tokens.lst), g = (x._2._1, x._2._2)))).asInstanceOf[Parser[LstValue[Obj]]]
   lazy val recValue: Parser[RecValue[Obj, Obj]] = (opt(objName) ~ (LROUND ~> recStruct(objValue) <~ RROUND) ^^
     (x => rec(name = x._1.getOrElse(Tokens.rec), g = (x._2._1, x._2._2)))).asInstanceOf[Parser[RecValue[Obj, Obj]]]
+  lazy val strmValue: Parser[Strm[Obj]] = LCURL ~> repsep(objValue, Tokens.`,`) <~ RCURL ^^ (x => estrm(x).asInstanceOf[Strm[Obj]])
+
 
   // instruction parsing
   lazy val inst: Parser[List[Inst[Obj, Obj]]] = (

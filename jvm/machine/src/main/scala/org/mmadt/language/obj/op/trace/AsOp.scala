@@ -28,6 +28,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -45,6 +46,7 @@ trait AsOp {
 object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    if (start.isInstanceOf[Strm[_]]) return start.via(start,inst)
     val asObj: Obj = if (start.isInstanceOf[Type[_]]) inst.arg0[Obj] else Inst.resolveToken(start, inst.arg0[Obj])
     // println(asObj + "---" + asObj.domain + "---" + asObj.range)
     val dObj: Obj = choose(start, asObj)

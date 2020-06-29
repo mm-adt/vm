@@ -96,6 +96,14 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str("marko comp3 45AHA\"\"\\'-%^&"))(engine.eval("'marko comp3 45AHA\"\"\\'-%^&'"))
   }
 
+  test("strm parsing") {
+    assertResult(int(1, 2, 3))(engine.eval("{1,2,3}"))
+    assertResult(str(str("a").q(3), str("b")))(engine.eval("{'a'{3},'b'}"))
+    assertResult(strm)(engine.eval("{}"))
+    assertResult(strm)(engine.eval("_{0}"))
+    assertResult(bool(btrue, bfalse, bfalse, bfalse))(engine.eval("{false{3},true}"))
+  }
+
   test("atomic named value parsing") {
     assertResult(vbool(name = "keep", g = true))(engine.eval("keep:true"))
     assertResult(vint(name = "nat", g = 5))(engine.eval("nat:5"))
@@ -166,12 +174,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(__.plus(1).mult(__.plus(10)))(engine.eval("[plus,1][mult,[plus,10]]"))
     assertResult(__.plus(1.2).mult(__.plus(10.1)))(engine.eval("[plus,1.2][mult,[plus,10.1]]"))
     assertResult(int(75))(engine.eval("4[plus,1][mult,[plus,10]]"))
-    assertResult(__.q(qZero))(engine.eval("{0}"))
-    assertResult(__)(engine.eval("{1}"))
-    assertResult(int(10))(engine.eval("int[{0}|10]"))
-    assertResult(int(5))(engine.eval("5[{0}|{1}]"))
-    assertResult(zeroObj)(engine.eval("5[{0};{1}]"))
-    assertResult(int(5))(engine.eval("5[{0},{1}]"))
+    assertResult(__.q(qZero))(engine.eval("_{0}"))
+    assertResult(__)(engine.eval("_{1}"))
+    assertResult(int(10))(engine.eval("int[_{0}|10]"))
+    assertResult(int(5))(engine.eval("5[_{0}|_{1}]"))
+    assertResult(zeroObj)(engine.eval("5[_{0};_{1}]"))
+    assertResult(int(5))(engine.eval("5[_{0},_{1}]"))
   }
 
   test("quantifier inst parsing") {
