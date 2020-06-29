@@ -85,11 +85,16 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
 }
 
 object mmkvStore extends AutoCloseable {
-  private val dbs: mutable.Map[String, mmkvStore[Obj, Obj]] = new mutable.HashMap
+  private val dbs: mutable.Map[String, mmkvStore[Obj, Obj]] = new mutable.LinkedHashMap
 
   def open[K <: Obj, V <: Obj](file: String): mmkvStore[K, V] =
-    if (file.equals(Tokens.empty)) dbs.head._2.asInstanceOf[mmkvStore[K, V]]
-    else dbs.getOrElseUpdate(file, new mmkvStore(file)).asInstanceOf[mmkvStore[K, V]]
+    if (file.equals(Tokens.empty)) dbs.last._2.asInstanceOf[mmkvStore[K, V]]
+    else {
+      val db = dbs.getOrElseUpdate(file, new mmkvStore(file))
+      dbs.remove(file)
+      dbs.put(file, db)
+      db.asInstanceOf[mmkvStore[K, V]]
+    }
 
   override def close(): Unit = {
     dbs.values.foreach(m => m.close())
