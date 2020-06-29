@@ -91,8 +91,8 @@ class mmkvInstTest extends FunSuite {
     assertThrows[LanguageException] {
       engine.eval(s"1[=mmkv,'${file2}'][put,'k',346]")
     }
-    //assertResult(s"mmkv{*}<=_[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
-    //assertResult(s"mmkv{*}<=_[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"[=mmkv,'${file2}'][is,[get,'k'][eq,2]]").toString) // TODO
+    assertResult(s"mmkv{*}<=_[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
+    // assertResult(s"mmkv{*}<=_[=mmkv,'${file2}','getByKeyEq',2]")(engine.eval(s"[=mmkv,'${file2}'][is,[get,'k'][eq,2]]").toString) // TODO
     assertResult(str("marko"))(engine.eval(s"1[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
     assertResult(str("marko"))(engine.eval(s"[1][=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
   }

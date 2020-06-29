@@ -66,7 +66,7 @@ class mmkvStorageProvider extends StorageProvider {
     RewriteOp(
       (List(mmkvGetRecordsByKey(file2, 1)).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`)
         <=
-        (List(mmkvGetRecords(str), IsOp[Obj](__.get(K).eqs(int.to("y")))).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`))))
+        (List(mmkvGetRecords(file2), IsOp[Obj](mmkv.q(*).get(K).eqs(1))).foldLeft(__.asInstanceOf[Obj])((x, y) => x.via(x,y)) `,`))))
 }
 
 object mmkvStorageProvider {
