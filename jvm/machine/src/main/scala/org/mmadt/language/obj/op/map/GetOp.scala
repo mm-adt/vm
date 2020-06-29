@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -62,7 +62,8 @@ object GetOp extends Func[Obj, Obj] {
           alst.glist(aint.g.toInt)
         case _ => obj
       }
-      case _ => obj
+      case _: Value[_] => zeroObj
+      case _ => __
     }).via(start, inst)
   }
 }

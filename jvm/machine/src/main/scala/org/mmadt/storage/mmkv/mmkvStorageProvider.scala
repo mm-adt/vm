@@ -61,12 +61,12 @@ class mmkvStorageProvider extends StorageProvider {
     })
   }
   override def rewrites(): util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
-    RewriteOp((__.error("keys are immutable") `,`) <= (mmkv.put(K, mmkv.get(K)) `,`)),
+    RewriteOp((__.error("keys are immutable") `,`) <= (mmkv.put(K, __.via(__, StartOp(__))) `,`)),
     RewriteOp((__.error("values are immutable") `,`) <= (mmkv.put(V, __.via(__, StartOp(__))) `,`)),
     RewriteOp(
       (List(mmkvGetRecordsByKey(file2, 1)).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`)
         <=
-        (List(mmkvGetRecords(file2), IsOp[Obj](mmkv.q(*).get(K).eqs(1))).foldLeft(__.asInstanceOf[Obj])((x, y) => x.via(x,y)) `,`))))
+        (List(mmkvGetRecords(file2), IsOp[Obj](mmkv.q(*).get(K).eqs(1))).foldLeft(__.asInstanceOf[Obj])((x, y) => x.via(x, y)) `,`))))
 }
 
 object mmkvStorageProvider {
@@ -80,7 +80,7 @@ object mmkvStorageProvider {
       def apply(fileStr: Str): Inst[Obj, Rec[StrValue, Obj]] = new VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr)), func = this)
       override def apply(start: Obj, inst: Inst[Obj, Rec[StrValue, Obj]]): Rec[StrValue, Obj] = {
         if (inst.arg0[Obj].isInstanceOf[Type[_]])
-          return rec.via(start, inst)
+          return rec[StrValue, Obj].via(start, inst)
         val fileStr: String = inst.arg0[StrValue].g
         (start match {
           case _: Type[_] => mmkvStore.open(fileStr).schema.via(start, inst).hardQ(*)
@@ -93,7 +93,7 @@ object mmkvStorageProvider {
       def apply(fileStr: Obj, key: Obj): Inst[Obj, Rec[StrValue, Obj]] = new VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr, str("getByKeyEq"), key)), func = this)
       override def apply(start: Obj, inst: Inst[Obj, Rec[StrValue, Obj]]): Rec[StrValue, Obj] = {
         if (inst.arg0[Obj].isInstanceOf[Type[_]])
-          return rec.via(start, inst)
+          return rec[StrValue, Obj].via(start, inst)
         val fileStr: String = inst.arg0[StrValue].g
         val key: Obj = inst.arg2[Obj]
         (start match {
