@@ -874,7 +874,7 @@ class mmlangScriptEngineTest extends FunSuite {
         | [define,z<=int[zero]]
         | [define,o<=int[one]]
         | [plus,z][plus,o]""".stripMargin))
-    assertResult(int(1))(engine.eval(
+    assertResult(int(1).named("o"))(engine.eval(
       """ 10
         | [define,z:0]
         | [define,o<=int[one]]

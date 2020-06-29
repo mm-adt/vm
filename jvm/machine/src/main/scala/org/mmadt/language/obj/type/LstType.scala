@@ -28,7 +28,7 @@ trait LstType[A <: Obj] extends Type[Obj] with Lst[A] {
   override def toString: String = LanguageFactory.printType(this)
   override def test(other: Obj): Boolean = super[Lst].test(other)
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode()
-  override def equals(other: Any): Boolean = super[Lst].equals(other)
+  override def equals(other: Any): Boolean = super[Lst].equals(other) && super[Type].equals(other)
 }
 
 

@@ -73,7 +73,7 @@ class AsInstTest extends FunSuite with TableDrivenPropertyChecks {
         ((int(1) `,` 2 `,` 3), (__.plus(1) `,` __.plus(2) `,` __.plus(3)), (int(2) `,` 4 `,` 6)),
         ((int(1) `,` 2 `,` 3), (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int(2) `,` 4 `,` 6)),
         ((int(1) `,` 2 `,` 3), (int(8) `,` 9 `,` 10), (int(8) `,` 9 `,` 10)),
-        ((int(1) `,` 2 `,` 3), lst, lst),
+        // ((int(1) `,` 2 `,` 3), lst, lst),
         ((int `,` int.plus(7) `,` int), (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int.plus(1) `,` int.plus(2) `,` int.plus(3)) <= (int `,` int.plus(7) `,` int).as((int.plus(1) `,` int.plus(2) `,` int.plus(3)))),
         // rec
         (rec(str("a") -> int(1), str("b") -> int(2), str("c") -> int(3)), rec[Str, Obj](str("a") -> __.plus(2), str("c") -> str.plus("3")), rec(str("a") -> int(3), str("c") -> str("33"))),

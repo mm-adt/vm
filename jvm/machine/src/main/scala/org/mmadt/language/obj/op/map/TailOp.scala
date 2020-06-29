@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.{Inst, Lst, Obj, Poly, Rec}
+import org.mmadt.language.obj._
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
@@ -36,10 +36,10 @@ object TailOp extends Func[Obj, Poly[Obj]] {
   override def apply(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = (start match {
     case alst: Lst[Obj] =>
       if (alst.glist.isEmpty) throw LanguageException.PolyException.noTail
-      alst.clone(alst.glist.tail)
-    case arec: Rec[Obj,Obj] =>
+      alst.clone(g = (alst.gsep, alst.glist.tail))
+    case arec: Rec[Obj, Obj] =>
       if (arec.glist.isEmpty) throw LanguageException.PolyException.noTail
-      arec.clone(arec.gmap.tail)
+      arec.clone(g = (arec.gsep, arec.gmap.tail))
     case _ => start
   }).via(start, inst).asInstanceOf[Poly[Obj]]
 }

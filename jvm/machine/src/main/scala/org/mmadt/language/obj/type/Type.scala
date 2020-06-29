@@ -43,7 +43,7 @@ trait Type[+T <: Obj] extends Obj
     case aobj: Obj if !aobj.alive => !this.alive
     case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
     case atype: Type[_] =>
-      (name.equals(atype.name) || __.isAnon(this) || __.isAnon(atype)) &&
+      (baseName(this).equals(baseName(atype)) || __.isAnon(this) || __.isAnon(atype)) &&
         withinQ(this, atype) &&
         this.trace.length == atype.trace.length &&
         this.trace.map(_._2).zip(atype.trace.map(_._2)).
@@ -55,7 +55,7 @@ trait Type[+T <: Obj] extends Obj
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode()
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
-    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && ((this.root && atype.root) || (this.via == atype.via))
+    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && this.via == atype.via
     case _ => false
   }
 }

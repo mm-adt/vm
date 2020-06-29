@@ -47,26 +47,24 @@ trait Lst[A <: Obj] extends Poly[A]
   override def gsep: String = g._1
   override def glist: List[A] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x))
 
-  def clone(values: List[A]): this.type = this.clone(g = (gsep, values))
-
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
     case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
     case anon: __ => Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case alst: Lst[_] => // Poly.sameSep(this, alst) &&
+    case alst: Lst[_] => Poly.sameSep(this, alst) &&
       withinQ(this, alst) &&
-        (this.glist.length == alst.glist.length || alst.glist.isEmpty) && // TODO: should lists only check up to their length
-        this.glist.zip(alst.glist).forall(b => b._1.test(b._2))
+      (this.glist.length == alst.glist.length || alst.glist.isEmpty) && // TODO: should lists only check up to their length
+      this.glist.zip(alst.glist).forall(b => b._1.test(b._2))
     case _ => false
   }
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case alst: Lst[_] =>
-      Poly.sameSep(this, alst) && alst.name.equals(this.name) && eqQ(alst, this) &&
-        ((this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))) ||
-          (this.glist.equals(alst.glist) && this.via.equals(alst.via)))
+    case alst: Lst[_] => Poly.sameSep(this, alst) &&
+      this.name.equals(alst.name) &&
+      eqQ(this, alst) &&
+      this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))
     case _ => false
   }
 }

@@ -43,7 +43,7 @@ class LoadInstTest extends FunSuite {
       int(5).load(file1).as(__("person"))
     }
     //
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).named("person"))(rec(str("name") -> str("marko"), str("age") -> int(29)).load(file1).as(__("person")))
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29).named("nat")).named("person"))(rec(str("name") -> str("marko"), str("age") -> int(29)).load(file1).as(__("person")))
     assertThrows[LanguageException] {
       rec(str("name") -> str("marko"), str("age") -> int(0)).load(file1).as(__("person"))
     }

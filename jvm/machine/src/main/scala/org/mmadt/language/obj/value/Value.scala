@@ -27,6 +27,7 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.TypeOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
@@ -40,10 +41,8 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
     case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
     case anon: __ => withinQ(this, anon) && Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case avalue: Value[_] if this.name.equals(avalue.name) =>
-      withinQ(this, avalue) && this.g.equals(avalue.g)
-    case atype: Type[_] if this.name.equals(atype.name) || atype.name.equals(Tokens.anon) =>
-      withinQ(this, atype.domain) && this.compute(atype).alive
+    case avalue: Value[_] => this.g.equals(avalue.g) && withinQ(this, avalue)
+    case atype: Type[_] => (baseName(this).equals(baseName(atype)) || atype.name.equals(Tokens.anon)) && withinQ(this, atype.domain) && this.compute(atype).alive
     case _ => false
   }
 
@@ -53,7 +52,7 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
     case astrm: Strm[V] => MultiSet.test(astrm, this.toStrm)
-    case avalue: Value[V] => this.g.equals(avalue.g) && eqQ(this, avalue)
+    case avalue: Value[V] => this.name.equals(avalue.name) && this.g.equals(avalue.g) && eqQ(this, avalue)
     case _ => false
   }
 }

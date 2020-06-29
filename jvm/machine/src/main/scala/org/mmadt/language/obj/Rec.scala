@@ -45,17 +45,17 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def gmap: collection.Map[A, B] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
   def glist: Seq[B] = gmap.values.toSeq
   def gsep: String = g._1
-  def clone(values: collection.Map[A, B]): this.type = this.clone(g = (gsep, values))
   override def test(other: Obj): Boolean = {
     Inst.resolveToken(this, other) match {
       case aobj: Obj if !aobj.alive => !this.alive
       case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
       case anon: __ => Inst.resolveArg(this, anon).alive
       case astrm: Strm[_] => MultiSet.test(this, astrm)
-      case arec: Rec[_, _] =>
-        Poly.sameSep(this, arec) && withinQ(this, arec) &&
-          arec.gmap.count(x => qStar.equals(x._2.q) ||
-            this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
+      case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
+        // this.name.equals(arec.name) &&
+        withinQ(this, arec) &&
+        arec.gmap.count(x => qStar.equals(x._2.q) ||
+          this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
       case _ => false
     }
   }
@@ -64,10 +64,10 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   override def equals(other: Any): Boolean = other match {
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
-      arec.name.equals(this.name) &&
-      eqQ(arec, this) &&
+      this.name.equals(arec.name) &&
+      eqQ(this, arec) &&
       this.gmap.size == arec.gmap.size &&
-      this.gmap.zip(arec.gmap).foldRight(true)((a, b) => a._1._1.equals(a._2._1) && a._1._2.equals(a._2._2) && b)
+      this.gmap.zip(arec.gmap).forall(x => x._1._1.equals(x._2._1) && x._1._2.equals(x._2._2))
     case _ => false
   }
 }
@@ -101,11 +101,11 @@ object Rec {
         val keyResolve = Inst.resolveArg(start, x._1)
         if (keyResolve.alive) {
           found = true
-          (keyResolve, Inst.resolveArg(start, x._2).hardQ(start.q)) // TODO: Generalize to Inst.resolveArg()
+          (keyResolve.hardQ(multQ(start, keyResolve)), Inst.resolveArg(start, x._2).hardQ(multQ(start, x._2))) // TODO: Generalize to Inst.resolveArg()
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)
     })))
-    x.hardQ(qOne) // TODO: why? -- related to [is,a] issue
+    x.hardQ(qOne) // TODO: related to whether the inst.q and the poly.q should be coupled
   }
 }

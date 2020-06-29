@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Int, Lst, Obj, Real}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -55,12 +54,12 @@ object MultOp extends Func[Obj, Obj] {
           case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
           // poly mult
           case multA: Lst[Obj] if multA.isSerial => inst.arg0[Obj] match {
-            case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist ++ multB.glist)
-            case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(plusB.glist.map(a => lst(Tokens.`;`, multA.glist :+ a: _*)))
+            case multB: Lst[Obj] if multB.isSerial => multA.clone(g = (multA.gsep, multA.glist ++ multB.glist))
+            case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(g = (plusB.gsep, plusB.glist.map(a => lst(Tokens.`;`, multA.glist :+ a: _*))))
           }
           case multA: Lst[Obj] if multA.isPlus => inst.arg0[Obj] match {
-            case multB: Lst[Obj] if multB.isSerial => multA.clone(multA.glist.map(a => lst(Tokens.`;`, a +: multB.glist: _*)))
-            case plusB: Lst[Obj] if plusB.isPlus => multA.clone(multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b))))
+            case multB: Lst[Obj] if multB.isSerial => multA.clone(g = (multA.gsep, multA.glist.map(a => lst(Tokens.`;`, a +: multB.glist: _*))))
+            case plusB: Lst[Obj] if plusB.isPlus => multA.clone(g = (multA.gsep, multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b)))))
           }
         }
         case _ => start
