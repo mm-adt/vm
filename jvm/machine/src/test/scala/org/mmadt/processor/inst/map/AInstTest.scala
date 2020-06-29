@@ -150,7 +150,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(check) { (left, right, result) => {
       //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[${left}][a,${right}]"))
-      assertResult(result)(left.compute(asType(__.a(right))))
+      assertResult(result)(left.compute(__.a(right)))
       assertResult(result)(left.a(right))
       assertResult(result)(AOp(right).exec(left))
       assertResult(result)(left ===> left.range.a(right))
