@@ -511,11 +511,11 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("str strm input parsing") {
-    //  assertResult(str("marko"))(engine.eval("""('m','a','r','k','o')>-[fold,x.0+x.1]"""))
-    //   assertResult(str("marko"))(engine.eval("""('m','a','r','k','o')>-[fold,[zero],x.0+x.1]"""))
-    //  assertResult(str("dr. marko"))(engine.eval("""('m','a','r','k','o')>-[fold,[zero]+'dr. ',x.0+x.1]"""))
-    //  assertResult(str("marko"))(engine.eval("""['m','a','r','k','o'][fold,'',x.0[plus,x.1]]"""))
-    //  assertResult(str("marko"))(engine.eval("""['m','a','r','k','o'][fold,'',x.0+x.1]"""))
+    assertResult(str("marko"))(engine.eval("""('m','a','r','k','o')>-[fold,x.0+x.1]"""))
+    assertResult(str("marko"))(engine.eval("""('m','a','r','k','o')>-[id][fold,[zero],x.0+x.1]"""))
+    assertResult(str("dr. marko"))(engine.eval("""('m','a','r','k','o')>-[fold,[zero]+'dr. ',x.0+x.1]"""))
+    assertResult(str("marko"))(engine.eval("""['m','a','r','k','o'][fold,'',x.0[plus,x.1]]"""))
+    assertResult(str("marko"))(engine.eval("""['m','a','r','k','o'][fold,'',x.0+x.1]"""))
   }
 
   test("rec strm input parsing") {
@@ -582,10 +582,12 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("reducing expressions") {
     assertResult(int(7))(engine.eval("[5{7}][plus,2][count]"))
+    assertResult(int(7))(engine.eval("(5,6,7,8,9,0,1)>-[count]"))
     assertResult(int(5))(engine.eval("[1,3,7,2,1][plus,2][count]"))
     assertResult(int(6))(engine.eval("[1,3,7,2,1,10][plus,2][count]"))
     assertResult(int(2))(engine.eval("[1,3,7,2,1,10][plus,2][is>5][count]"))
     assertResult(int(3))(engine.eval("[1.0,3.1,7.2,2.5,1.1,10.1]+2.0[is>5.0][count]"))
+    assertResult(int(3))(engine.eval("(1.0,3.1,7.2,2.5,1.1,10.1)>-+2.0[is>5.0][count]"))
   }
 
   test("logical expressions") {

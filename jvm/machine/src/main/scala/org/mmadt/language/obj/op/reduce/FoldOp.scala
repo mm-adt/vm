@@ -30,6 +30,7 @@ import org.mmadt.language.obj.op.map.ZeroOp
 import org.mmadt.language.obj.op.{ReduceInstruction, TraceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -51,10 +52,10 @@ object FoldOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val seed: Obj = Inst.resolveArg(start.toStrm.values.headOption.getOrElse(start), inst.arg0[Obj])
     val folding: Obj = __.to("x").compute(inst.arg1[Obj])
-    start match {
-      case strm: Strm[_] => strm.values.foldLeft(seed)((x, y) => Inst.resolveArg((x `,` y), folding))
-      case avalue: Value[_] => Inst.resolveArg((avalue `,` seed), folding).via(start, inst)
+    (start match {
+      case strm: Strm[_] => strm.values.foldLeft(seed)((x, y) => Inst.resolveArg((x `,` y).to("x"), folding))
+      case avalue: Value[_] => Inst.resolveArg((avalue `,` seed), folding)
       case _: Type[_] => inst.arg1[Type[Obj]].via(start, inst)
-    }
+    }).hardQ(qOne)
   }
 }
