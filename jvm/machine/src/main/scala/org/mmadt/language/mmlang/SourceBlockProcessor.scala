@@ -36,6 +36,7 @@ import scala.util.Try
 class SourceBlockProcessor(config: java.util.Map[String, Object]) extends Treeprocessor(config) {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
   override def process(document: Document): Document = {
+   println("HADSFDSFDASFDSFADS")
     touch(document);
     document;
   }
