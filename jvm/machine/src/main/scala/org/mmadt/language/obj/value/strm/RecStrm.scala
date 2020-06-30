@@ -22,16 +22,16 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.{Obj, Rec, RecTuple}
+import org.mmadt.storage.StorageFactory.{qZero, rec}
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecStrm[A <: Obj, B <: Obj] extends Strm[Rec[A, B]] with RecValue[A, B] {
-  override def g: RecTuple[A, B] = throw LanguageException.typeNoGround(this)
+  override def g: RecTuple[A, B] = this.values.headOption.getOrElse(rec[A, B].hardQ(qZero)).g
 
   override lazy val hashCode: Int = this.values.hashCode()
   override def equals(other: Any): Boolean = other match {

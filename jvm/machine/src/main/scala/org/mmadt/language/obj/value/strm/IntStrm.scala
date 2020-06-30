@@ -22,12 +22,12 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Int
+import org.mmadt.storage.StorageFactory.{int, qZero}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait IntStrm extends Strm[Int] with Int {
-  override def g: Long = throw LanguageException.typeNoGround(this)
+  override def g: Long = this.values.headOption.getOrElse(int.hardQ(qZero)).g
 }

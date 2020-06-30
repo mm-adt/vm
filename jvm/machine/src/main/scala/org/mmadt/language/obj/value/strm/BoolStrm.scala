@@ -22,12 +22,11 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Bool
-
+import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait BoolStrm extends Strm[Bool] with Bool {
-  override def g: Boolean = throw LanguageException.typeNoGround(this)
+  override def g: Boolean = this.values.headOption.getOrElse(bool.hardQ(qZero)).g
 }

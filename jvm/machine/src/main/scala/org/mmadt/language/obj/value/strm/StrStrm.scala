@@ -22,12 +22,12 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Str
+import org.mmadt.storage.StorageFactory.{qZero, str}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait StrStrm extends Strm[Str] with Str {
-  override def g: String = throw LanguageException.typeNoGround(this)
+  override def g: String = this.values.headOption.getOrElse(str.hardQ(qZero)).g
 }

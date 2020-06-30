@@ -22,12 +22,12 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Real
+import org.mmadt.storage.StorageFactory.{qZero, real}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RealStrm extends Strm[Real] with Real {
-  override def g: Double = throw LanguageException.typeNoGround(this)
+  override def g: Double = this.values.headOption.getOrElse(real.hardQ(qZero)).g
 }

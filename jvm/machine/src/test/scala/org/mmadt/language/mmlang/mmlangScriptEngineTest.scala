@@ -955,6 +955,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("[as] parsing") {
     assertResult(btrue)(engine.eval("43[define,bool<=int>0][as,bool]"))
     assertResult(bfalse)(engine.eval("-43[define,bool<=int>0][as,bool]"))
+    println(engine.eval("1[is,-<(true|false)>-]"))
   }
 
   test("play") {

@@ -22,12 +22,12 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.{Lst, LstTuple, Obj}
+import org.mmadt.storage.StorageFactory.{lst, qZero}
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 trait LstStrm[A <: Obj] extends Strm[Lst[A]] with Lst[A] {
-  override def g: LstTuple[A] = throw LanguageException.typeNoGround(this)
+  override def g: LstTuple[A] = this.values.headOption.getOrElse(lst[A].hardQ(qZero)).g
 
   override def equals(other: Any): Boolean = other match {
     case alst: Lst[_] => MultiSet.test(this, alst)

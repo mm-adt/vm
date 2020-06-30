@@ -71,9 +71,8 @@ object Inst {
       case anon: __ if __.isToken(anon) => anon.asInstanceOf[E]
       case valueArg: OValue[E] => valueArg
       case typeArg: OType[E] => obj match {
-        case _: Strm[_] => arg
-        case _: Value[_] => if (Type.ctypeCheck(obj, typeArg)) obj.compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
-        case obj: Type[_] => if (Type.ctypeCheck(obj, typeArg)) obj.range.compute(typeArg) else typeArg.q(qZero).asInstanceOf[E]
+        case _: Value[_] => if (Type.ctypeCheck(obj, typeArg)) obj.compute(typeArg) else typeArg.hardQ(qZero)
+        case obj: Type[_] => if (Type.ctypeCheck(obj, typeArg)) obj.range.compute(typeArg) else typeArg.hardQ(qZero)
       }
     }
   }
