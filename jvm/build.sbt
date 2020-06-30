@@ -39,22 +39,23 @@ lazy val machine = (project in file("machine"))
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
       "org.asciidoctor" % "asciidoctorj" % "2.1.0",
       // tests
-      "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
-    //git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
-    //scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"), "scm:git:git@github.com:mm-adt/vm.git")),
-    // excludeFilter in ghpagesCleanSite := ((_: File) => true),
-    //asciiDocExtensions := List(ExtensionConfiguration("org.mmadt.language.mmlang.SourceBlockProcessor", None)),
+      "org.scalatest" %% "scalatest" % "3.0.8" % Test),
     asciiDocDirectory := baseDirectory.value / "src" / "asciidoctor",
     asciiDocOutputDirectory := target.value / "docs" / "asciidoctor",
     asciiDocBackend := "html",
     asciiDocType := Some("book"),
     asciiDocImagesDir := Some((baseDirectory.value / "src" / "asciidoctor" / "images").toString),
+    scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"), "scm:git:git@github.com:mm-adt/vm.git")),
+    // asciiDocExtensions := List(ExtensionConfiguration("org.mmadt.language.mmlang.SourceBlockProcessor", None)),
+    // git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
+    // excludeFilter in ghpagesCleanSite := ((_: File) => true),
   )
   .enablePlugins(AssemblyPlugin)
-  //.enablePlugins(AsciidoctorPlugin)
-  //.enablePlugins(SitePreviewPlugin)
-  //.enablePlugins(GhpagesPlugin)
   .enablePlugins(AsciiDoctorPlugin)
+//.enablePlugins(AsciidoctorPlugin)
+//.enablePlugins(SitePreviewPlugin)
+//.enablePlugins(GhpagesPlugin)
+
 
 
 
