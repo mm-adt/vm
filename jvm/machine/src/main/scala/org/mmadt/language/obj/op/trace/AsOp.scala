@@ -48,7 +48,6 @@ object AsOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
     val asObj: Obj = if (start.isInstanceOf[Type[_]]) inst.arg0[Obj] else Inst.resolveToken(start, inst.arg0[Obj])
-    // println(asObj + "---" + asObj.domain + "---" + asObj.range)
     val dObj: Obj = choose(start, asObj)
     val rObj: Obj = if (asObj.domain != asObj.range) choose(dObj, asObj.range) else dObj
     val result = (if (Tokens.named(inst.arg0[Obj].name)) rObj.named(inst.arg0[Obj].name) else rObj).via(start, inst)
@@ -58,8 +57,9 @@ object AsOp extends Func[Obj, Obj] {
   private def choose(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {
+      val defined = Obj.fetchOption[Obj](start, start, asObj.name)
       start match {
-        case _ if Obj.fetchOption[Obj](start, start, asObj.name).isDefined => Inst.resolveArg(start, Obj.fetchOption[Obj](start, start, asObj.name).get)
+        case _ if defined.isDefined => Inst.resolveArg(start, defined.get)
         case _: Type[Obj] => asObj
         case abool: Bool => boolConverter(abool, asObj)
         case aint: Int => intConverter(aint, asObj)

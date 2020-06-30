@@ -24,10 +24,11 @@ package org.mmadt.storage.mmkv
 
 import java.util.concurrent.atomic.AtomicLong
 
+import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{IntValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Obj, Rec, ViaTuple, _}
-import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
+import org.mmadt.language.{LanguageException, LanguageFactory, LanguageProvider, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 import scala.collection.mutable
@@ -36,16 +37,15 @@ import scala.io.{BufferedSource, Source}
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
+class mmkvStore[K <: Obj, V <: Obj](val file: String) extends AutoCloseable {
 
   private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
-  private val MMKV: String = "mmkv"
   private val K: StrValue = str("k")
   private val V: StrValue = str("v")
 
-  val schema: Rec[StrValue, Obj] = {
+  val schema: RecType[StrValue, Obj] = {
     val source = Source.fromFile(file)
-    try source.getLines().take(1).map(line => mmlang.parse[Rec[StrValue, Obj]](line)).next()
+    try source.getLines().take(1).map(line => mmlang.parse[RecType[StrValue, Obj]](line)).next()
     finally source.close();
   }
 
@@ -61,16 +61,19 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
 
   def get(key: K): V = {
     val temp = store(key.hardQ(qOne))
-    // assert(schema.test(temp))
+    LanguageException.testTypeCheck(temp, asType(schema.gmap(V)))
     temp
   }
   def put(key: K, value: V): V = store.put(key, value).getOrElse(value)
   def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
   def remove(key: K): V = store.remove(key).get
-  def stream(via: ViaTuple = base): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x =>
-    rec(via = via, g = (Tokens.`,`, Map(
+  def stream(via: ViaTuple = base): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => {
+    val kv = rec(via = via, g = (Tokens.`,`, Map(
       K -> x._1.asInstanceOf[Value[V]],
-      V -> x._2.asInstanceOf[Value[V]]))).asInstanceOf[RecValue[StrValue, Value[Obj]]]))
+      V -> x._2.asInstanceOf[Value[V]]))).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    LanguageException.testTypeCheck(kv, schema)
+    kv
+  }))
   def clear(): Unit = {
     counter.set(0L)
     store.clear()
