@@ -166,7 +166,6 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(20).plus(10).a(int).is(btrue), btrue, 3),
         (int(20).plus(10).a(real), bfalse, 2),
         (int(20).plus(10).id().a(int), btrue, 3),
-        (int(20) ===> int.id().plus(10).id().a(bool).and(btrue.or(bool)), bfalse, 5),
         (int(20) ===> int.id().plus(int.plus(5).plus(5)).a(int.is(int.gt(20))).id(), btrue, 4),
         (btrue, btrue, 0),
       )

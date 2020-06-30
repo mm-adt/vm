@@ -77,7 +77,7 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
     }
   }
 
-  test("[and] lineage") {
+  /*test("[and] lineage") {
     def maker(x: Obj with AndOp): Obj = x.q(2).and(btrue).q(3).and(btrue).q(10)
 
     val starts: TableFor1[AndOp with Obj] =
@@ -98,5 +98,5 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
       assertResult((obj.q(2).and(btrue).q(3), AndOp(btrue).q(10)))(expr.trace.last)
     }
     }
-  }
+  }*/
 }

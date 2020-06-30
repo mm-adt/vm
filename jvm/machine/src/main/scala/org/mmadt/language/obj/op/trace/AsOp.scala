@@ -59,8 +59,8 @@ object AsOp extends Func[Obj, Obj] {
     else {
       val defined = Obj.fetchOption[Obj](start, start, asObj.name)
       start match {
-        case _ if defined.isDefined => Inst.resolveArg(start, defined.get)
         case _: Type[Obj] => asObj
+        case _ if defined.isDefined => Inst.resolveArg(start, defined.get)
         case abool: Bool => boolConverter(abool, asObj)
         case aint: Int => intConverter(aint, asObj)
         case areal: Real => realConverter(areal, asObj)
