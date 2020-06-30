@@ -28,13 +28,11 @@ import java.util.Optional
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.trace.RewriteOp
 import org.mmadt.language.obj.value._
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.mmkv.mmkvStorageProvider._
-import org.mmadt.storage.mmkv.mmkvStorageProvider.mmkvOp.{mmkvGetRecords, mmkvGetRecordsByKey}
 import org.mmadt.storage.obj.value.VInst
 import org.mmadt.storage.{StorageException, StorageProvider}
 
@@ -48,9 +46,6 @@ class mmkvStorageProvider extends StorageProvider {
   override def name: String = "mmkv"
   val getByKeyEq: StrValue = str("getByKeyEq")
   val addKeyValue: StrValue = str("addKeyValue")
-  val file1: String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
-  val file2: String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
-  val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
 
   override def resolveInstruction(op: String, args: util.List[Obj]): Optional[Inst[Obj, Obj]] = {
     if (op != opcode) Optional.empty()
@@ -63,10 +58,10 @@ class mmkvStorageProvider extends StorageProvider {
   override def rewrites(): util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
     RewriteOp((__.error("keys are immutable") `,`) <= (mmkv.put(K, __.via(__, StartOp(__))) `,`)),
     RewriteOp((__.error("values are immutable") `,`) <= (mmkv.put(V, __.via(__, StartOp(__))) `,`)),
-    RewriteOp(
-      (List(mmkvGetRecordsByKey(file2, 1)).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`)
+    /*RewriteOp(
+      (List(mmkvGetRecordsByKey(str, 1)).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`)
         <=
-        (List(mmkvGetRecords(file2), IsOp[Obj](mmkv.q(*).get(K).eqs(1))).foldLeft(__.asInstanceOf[Obj])((x, y) => x.via(x, y)) `,`))))
+        (List(mmkvGetRecords(str), IsOp[Obj](mmkv.q(*).get(K).eqs(1))).foldLeft(__.asInstanceOf[Obj])((x, y) => x.via(x, y)) `,`)))*/))
 }
 
 object mmkvStorageProvider {
@@ -98,7 +93,7 @@ object mmkvStorageProvider {
         val key: Obj = inst.arg2[Obj]
         (start match {
           case _: Type[_] => mmkvStore.open(fileStr).schema.via(start, inst).hardQ(*)
-          case _ => rec(K -> key, V -> mmkvStore.open(fileStr).get(key))
+          case _ => rec(K -> key, V -> mmkvStore.open(fileStr).get(key)).via(start,inst)
         })
       }
     }

@@ -25,11 +25,10 @@ package org.mmadt.storage.mmkv
 import java.util.concurrent.atomic.AtomicLong
 
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
-import org.mmadt.language.obj.{Obj, Rec, ViaTuple}
+import org.mmadt.language.obj.value.{IntValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.{Obj, Rec, ViaTuple, _}
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.VRec
 
 import scala.collection.mutable
 import scala.io.{BufferedSource, Source}
@@ -60,14 +59,18 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
 
   private val counter: AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].g).max)
 
-  def get(key: K): V = store(key)
+  def get(key: K): V = store(key.hardQ(qOne))
   def put(key: K, value: V): V = store.put(key, value).getOrElse(value)
   def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
   def remove(key: K): V = store.remove(key).get
-  def stream(via: ViaTuple = (null, null)): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => new VRec(g = (Tokens.`,`, Map(K -> x._1.asInstanceOf[Value[V]], V -> x._2.asInstanceOf[Value[V]])), via = via)))
+  def stream(via: ViaTuple = base): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x =>
+    rec(via = via, g = (Tokens.`,`, Map(
+      K -> x._1.asInstanceOf[Value[V]],
+      V -> x._2.asInstanceOf[Value[V]]))).asInstanceOf[RecValue[StrValue, Value[Obj]]]))
   def clear(): Unit = {
     counter.set(0L)
     store.clear()
+
   }
   def count(): Long = this.store.size
 
