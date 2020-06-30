@@ -45,7 +45,7 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
 
   val schema: Rec[StrValue, Obj] = {
     val source = Source.fromFile(file)
-    try source.getLines().take(1).map(line => mmlang.parse[Rec[StrValue, Obj]](line)).next().named(MMKV)
+    try source.getLines().take(1).map(line => mmlang.parse[Rec[StrValue, Obj]](line)).next()
     finally source.close();
   }
 
@@ -59,7 +59,11 @@ class mmkvStore[K <: Obj, V <: Obj](file: String) extends AutoCloseable {
 
   private val counter: AtomicLong = new AtomicLong(if (store.keys.isEmpty) 0L else store.keys.map(x => x.asInstanceOf[IntValue].g).max)
 
-  def get(key: K): V = store(key.hardQ(qOne))
+  def get(key: K): V = {
+    val temp = store(key.hardQ(qOne))
+    // assert(schema.test(temp))
+    temp
+  }
   def put(key: K, value: V): V = store.put(key, value).getOrElse(value)
   def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
   def remove(key: K): V = store.remove(key).get

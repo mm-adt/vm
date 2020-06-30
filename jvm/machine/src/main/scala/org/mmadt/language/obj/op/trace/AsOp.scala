@@ -46,7 +46,7 @@ trait AsOp {
 object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    if (start.isInstanceOf[Strm[_]]) return start.via(start,inst)
+    if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
     val asObj: Obj = if (start.isInstanceOf[Type[_]]) inst.arg0[Obj] else Inst.resolveToken(start, inst.arg0[Obj])
     // println(asObj + "---" + asObj.domain + "---" + asObj.range)
     val dObj: Obj = choose(start, asObj)
@@ -59,6 +59,7 @@ object AsOp extends Func[Obj, Obj] {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {
       start match {
+        case _ if Obj.fetchOption[Obj](start, start, asObj.name).isDefined => Inst.resolveArg(start, Obj.fetchOption[Obj](start, start, asObj.name).get)
         case _: Type[Obj] => asObj
         case abool: Bool => boolConverter(abool, asObj)
         case aint: Int => intConverter(aint, asObj)
