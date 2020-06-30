@@ -108,10 +108,10 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv file-5 parsing") {
     assertResult(s"mmkv{*}<=_[=mmkv,'${file5}']")(engine.eval(s"[=mmkv,'${file5}']").toString)
-    assertResult("vertex:('id'->1,'name'->'marko','friends'->{edge:('outV'->1,'label'->'knows','inV'->2),edge:('outV'->1,'label'->'knows','inV'->3)})")(
+    assertResult("vertex:('id'->1,'name'->'marko','outE'->{edge:('outV'->1,'label'->'knows','inV'->2),edge:('outV'->1,'label'->'knows','inV'->3)})")(
       engine.eval(s"1[load,'${source5}'][=mmkv,'${file5}'][is.k==1][as,vertex]").toString)
-    assertResult("{vertex:('id'->2,'name'->'ryan','friends'->{edge:('outV'->2,'label'->'likes','inV'->3)}),vertex:('id'->3,'name'->'stephen','friends'->)}")(
-      engine.eval(s"1[load,'${source5}'][=mmkv,'${file5}'][is.k==1][as,vertex].friends.inV[as,vertex]").toString)
+    assertResult("{vertex:('id'->2,'name'->'ryan','outE'->{edge:('outV'->2,'label'->'likes','inV'->3)}),vertex:('id'->3,'name'->'stephen','outE'->)}")(
+      engine.eval(s"1[load,'${source5}'][=mmkv,'${file5}'][is.k==1][as,vertex].outE.inV[as,vertex]").toString)
   }
 
 }
