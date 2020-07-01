@@ -447,9 +447,9 @@ As an economic model, each integration point offers the respective development t
 <div class="sect1">
 <h2 id="_virtual_machine_components">Virtual Machine Components</h2>
 <div class="sectionbody">
-<div class="imageblock right text-center">
+<div class="imageblock right">
 <div class="content">
-<img src="./images/introduction/vm-components.png" alt="vm components" width="360" height="294">
+<img src="./images/introduction/diag-f9bcfd96975e3103c088523d50854fca.png" alt="diag f9bcfd96975e3103c088523d50854fca" width="380" height="294">
 </div>
 </div>
 <div class="paragraph">
@@ -474,7 +474,7 @@ As an economic model, each integration point offers the respective development t
 <div class="sect2">
 <h3 id="_mm_adt_theory">mm-ADT Theory</h3>
 <div class="sect3">
-<h4 id="_a_universal_unary_function">A Universal Unary Function</h4>
+<h4 id="_mm_adt_function">mm-ADT Function</h4>
 <div class="paragraph">
 <p>Every mm-ADT program denotes a single <a href="https://en.wikipedia.org/wiki/Unary_function">unary function</a> that maps an <code>obj</code> of type \$S\$ (start) to an <code>obj</code> of type \$E\$ (end) with the function signature</p>
 </div>
@@ -484,13 +484,12 @@ f: S \rightarrow E.
 \]</p>
 </div>
 <div class="paragraph">
-<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested-functions of arbitrary arity that are <a href="https://en.wikipedia.org/wiki/Currying">curried</a> at either compile-time or runtime).
-The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.</p>
+<p>The complexities of mm-ADT are realized in the definition of an <code>obj</code> (which includes both types and values) and the internal structure of an \$f\$-program (which is a composition of nested <a href="https://en.wikipedia.org/wiki/Currying">curried</a> functions). The sole purpose of this documentation is to make salient the various algebraic structures that are operationalized to ultimately yield the mapping \$f : S \rightarrow E\$.</p>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_three_interrelated_algebras">Three Interrelated Algebras</h4>
-<table class="tableblock frame-all grid-all right" style="width: 40%;">
+<h4 id="_mm_adt_algebras">mm-ADT Algebras</h4>
+<table class="tableblock frame-all grid-all left" style="width: 30%;">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -503,34 +502,35 @@ The sole purpose of this documentation is to make salient the various algebraic 
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">instruction monoid</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> magma</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ADT functors</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code> monoid</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Processor</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">stream ring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code> ringoid</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Each of the three aforementioned mm-ADT VM components has an associated axiomatic algebra that best describes its structures and processes. The <strong>language algebra</strong> is a described as a trace polynomial ringoid that captures the serial and parallel composition of instructions from the mm-ADT instruction set architecture. The <strong>processor algebra</strong> (for both compilation and evaluation) is an instruction monoid for serially composing instructions. Finally, the <strong>storage algebra</strong> is founded on the set of all mm-ADT objects with various algebraic actions that specify the way in which the many abstract data types are coupled and controlled by one another (e.g. key/value, graph, relational, etc.).</p>
+<p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component&#8217;s particular interpretation of mm-ADT. The <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a non- <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary "juxtapostion" operator. The <strong>language algebra</strong> is a
+is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturing the serially composition of parameterized instructions (<code>inst</code>) in the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) used for compilation and evaluation of mm-ADT types (or programs). These algebras represent the particular perspective that each component has on a shared data structure called the <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace graph</a>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
 </div>
 <div class="paragraph">
-<p>The primary purpose of this documentation is to explain these algebras individuals, specify their relationship to each otherm and demonstrate how they are manipulated in practice with mm-ADT technology. Data system engineers will learn how to integrate their technology so end users may compose their system with other systems to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
+<p>The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated by mm-ADT technologies. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
-<h3 id="_mm_adt_practice">mm-ADT Practice</h3>
+<h3 id="_mm_adt_technology">mm-ADT Technology</h3>
 <div class="sect3">
 <h4 id="_mm_adt_console">mm-ADT Console</h4>
 <div class="paragraph">
 <p>The mm-ADT VM provides a <a href="https://en.wikipedia.org/wiki/Read%E2%80%93eval%E2%80%93print_loop:">REPL</a> console for users to evaluate mm-ADT programs written in any mm-ADT language.
-The reference language distributed with the VM is called <code>mmlang</code>. <code>mmlang</code> is a low-level, functional language that is in near 1-to-1 correspondence with the underlying VM architecture&#8201;&#8212;&#8201;offering it&#8217;s users <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-Complete</a> expressively when writing programs and an interactive teaching tool for studying the mm-ADT VM.</p>
+The reference language distributed with the VM is called <code>mmlang</code>. <code>mmlang</code> is a low-level, functional language that is in near 1-to-1 correspondence with the underlying VM architecture&#8201;&#8212;&#8201;offering it&#8217;s users <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing-Complete</a> expressivity when writing programs and an interactive teaching tool for studying the mm-ADT VM.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -551,40 +551,40 @@ All the examples contained herein are presented using <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>mmlang&gt; 1
-==&gt;1
-mmlang&gt; +2
-==&gt;[plus,2]
-mmlang&gt; 1+2
-==&gt;3
-mmlang&gt; 1[plus,2]
-==&gt;3</code></pre>
+<pre>1
+1+2
+1[plus,2]
+5</pre>
 </div>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_mmlang_syntax_and_semantics">mmlang Syntax and Semantics</h4>
 <div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below. <code>mmlang</code> is best understood as a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> whose elements denote mm-ADT programs which <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">act, as modules,</a> on the ringoid structure of an mm-ADT processor.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Context-free_grammar">context-free grammar</a> for <code>mmlang</code> is presented below. <code>mmlang</code> is best understood as a <a href="https://en.wikipedia.org/wiki/Free_algebra">free ringoid</a> whose elements denote mm-ADT programs which <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">act, as modules,</a> on the instruction monoid implemented by every mm-ADT processor.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="highlight"><code>obj   := (type | value){q}
-type  := ctype | dtype
-ctype := bool | int  | real | str | poly | _
-poly  := lst | rec | inst
-sep   := ; | , | (|)
-q     := int,int | int | ? | * | +
-{int} := _{int,int}
-dtype := ctype&lt;=ctype([inst]+)
-rec   := [-] | [obj-&gt;obj(&lt;sep&gt;obj-&gt;obj)*]
-lst   := [ ] | [obj(&lt;sep&gt;obj)*]
-inst  := [op(,obj*)]
-op    := a, add, and, as, combine, count, eq, error, explain, fold, from,
-         get, given, groupCount, gt, gte, head, id, is, last, lt, lte, map,
-         merge, mult, neg, noop, one, or, path, plus, pow, put, q, repeat,
-         split, start, tail, to, trace, type, zero
-sugop := . | &gt; | &lt; | &gt;= | =&lt; | == | * | +</code></pre>
+<pre class="highlight"><code>obj   ::= (type | value)q
+value ::= vbool | vint | vreal | vstr
+vbool ::= 'true' | 'false'
+vint  ::= [1-9][0-9]*
+vreal ::= [0-9]+'.'[0-9]*
+vstr  ::= "'" [a-zA-Z]* "'"
+type  ::= ctype | dtype
+ctype ::= 'bool' | 'int'  | 'real' | 'str' | poly | '_'
+poly  ::= lst | rec | inst
+q     ::= '{' int (',' int)? '}'
+dtype ::= ctype q? ('&lt;=' ctype q?)? inst*
+sep   ::= ';' | ',' | '|'
+lst   ::= '(' obj (sep obj)* ')' q?
+rec   ::= '(' obj '-&gt;' obj (sep obj '-&gt;' obj)* ')' q?
+inst  ::= '[' op(','obj)* ']' q?
+op    ::= 'a' | 'add' | 'and' | 'as' | 'combine' | 'count' | 'eq' | 'error' |
+          'explain' | 'fold' | 'from' | 'get' | 'given' | 'groupCount' | 'gt' |
+          'gte' | 'head' | 'id' | 'is' | 'last' | 'lt' | 'lte' | 'map' | 'merge' |
+          'mult' | 'neg' | 'noop' | 'one' | 'or' | 'path' | 'plus' | 'pow' | 'put' |
+          'q' | 'repeat' |'split' | 'start' | 'tail' | 'to' | 'trace' | 'type' | 'zero'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -725,7 +725,7 @@ o1    [a,t1]                := t1(o1) != {0}</code></pre>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-28 23:35:15 -0600
+Last updated 2020-07-01 01:34:44 -0600
 </div>
 </div>
 </body>

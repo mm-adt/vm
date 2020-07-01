@@ -15,22 +15,24 @@ $(document).ready(function(){
   $("span[style='background-color:hsla(0,100%,50%,0.05)']").attr("style",bcolor)
   $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;" + bcolor)
   // END: general random tweaks to convert python highlighting to mmlang
-  var rewrites = {"op":      ["[",  "["+ospan + "#080" +bold + cspan],      // bold green
+  var rewrites = {"special": ["",       ospan + "#710" + cspan],            // dark red
+                  "op":      ["[",  "["+ospan + "#080" +bold + cspan],      // bold green
                   "tokens":  ["",       ospan + "#000" +bold + cspan],      // bold green
                   "infix":   ["",       ospan + "#080" +bold + cspan],      // bold green
                   "value":   ["",       ospan + "#00D" + cspan],            // light blue
                   "type":    ["",       ospan + "#369" + bold + cspan],     // dark blue
-                  "special": ["",       ospan + "#710" + cspan],            // dark red
+
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
-  var items =    {"op":      ["a","compose","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
-                              "one","zero","noop","eq","is","id","db","explain","count","fold","map",
-                              "split","merge","last","head","tail","div","minus","choose","put","repeat"],
+  var items =    {"special": ["mmlang","q"],
+                  "op":      ["a","compose","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
+                              "one","zero","noop","eq","is","id","db","explain","count","fold","map","trace",
+                              "split","merge","last","head","tail","div","minus","choose","put","repeat","type",
+                              "define","rewrite","to","from"],
                   "tokens":  ["{","}"],
                   "infix":   ["|","&&",",","+","*"],
                   "value":   ["true","false"],
                   "type":    ["_","real","rec","lst","tvpoly","vpoly","tpoly","poly","inst",
                               "obj","int","str","bool","range","domain"],
-                  "special": ["mmlang","q"],
                   "plain":   ["is not"]};
   $.each(items, function(key, values) {
     jQuery.each(values, function(index,element) {

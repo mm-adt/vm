@@ -524,6 +524,12 @@ denotes the unary function \[
 </div>
 <div class="sect3">
 <h4 id="_instruction_classes">Instruction Classes</h4>
+<div class="paragraph">
+<p>The set <code>obj</code> can be partitioned into <em>types</em> and <em>values</em> as \$\tt{obj} = \tt{type} + \tt{value}\$. The type <code>objs</code> are the carrier set of <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a>, where <code>[compose]</code> is multiplication (<code>*</code>) , <code>[branch]</code> is addition (<code>+</code>), <code>[id]</code> is the multiplicative identity (<code>1</code>), and <code>[id]{0}</code> is the the additive identity (<code>0</code>). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is <code>int</code> and <code>+</code> and <code>*</code> are standard integer addition and multiplication, respectively.</p>
+</div>
+<div class="paragraph">
+<p>A variation of the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of rings composes the type ring and the quantifier into a new ring called a <a href="https://zenodo.org/record/2565243">stream ring</a>, where the carrier set is the set of all quantified types and <code>[id]{1}</code> is the multiplicative identity and <code>[id]{0}</code> is the additive identity.</p>
+</div>
 <div class="sect4">
 <h5 id="_map">Map</h5>
 
@@ -551,7 +557,7 @@ denotes the unary function \[
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-30 22:28:56 -0600
+Last updated 2020-06-24 13:42:59 -0600
 </div>
 </div>
 </body>

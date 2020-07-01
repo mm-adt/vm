@@ -5,7 +5,7 @@
 <!--[if IE]><meta http-equiv="X-UA-Compatible" content="IE=edge"><![endif]-->
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="generator" content="Asciidoctor 1.5.8">
-<title>Instructions</title>
+<title>Reference</title>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Open+Sans:300,300italic,400,400italic,600,600italic%7CNoto+Serif:400,400italic,700,700italic%7CDroid+Sans+Mono:400,700">
 <style>
 /* Asciidoctor default stylesheet | MIT License | http://asciidoctor.org */
@@ -434,17 +434,48 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="header">
 </div>
 <div id="content">
+<div class="sect1">
+<h2 id="_reference">Reference</h2>
+<div class="sectionbody">
+<div class="sect2">
+<h3 id="_mmlang_grammar">mmlang Grammar</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="highlight"><code>obj   ::= (type | value)q
+value ::= vbool | vint | vreal | vstr
+vbool ::= 'true' | 'false'
+vint  ::= [1-9][0-9]*
+vreal ::= [0-9]+'.'[0-9]*
+vstr  ::= "'" [a-zA-Z]* "'"
+type  ::= ctype | dtype
+ctype ::= 'bool' | 'int'  | 'real' | 'str' | poly | '_'
+poly  ::= lst | rec | inst
+q     ::= '{' int (',' int)? '}'
+dtype ::= ctype q? ('&lt;=' ctype q?)? inst*
+sep   ::= ';' | ',' | '|'
+lst   ::= '(' obj (sep obj)* ')' q?
+rec   ::= '(' obj '-&gt;' obj (sep obj '-&gt;' obj)* ')' q?
+inst  ::= '[' op(','obj)* ']' q?
+op    ::= 'a' | 'add' | 'and' | 'as' | 'combine' | 'count' | 'eq' | 'error' |
+          'explain' | 'fold' | 'from' | 'get' | 'given' | 'groupCount' | 'gt' |
+          'gte' | 'head' | 'id' | 'is' | 'last' | 'lt' | 'lte' | 'map' | 'merge' |
+          'mult' | 'neg' | 'noop' | 'one' | 'or' | 'path' | 'plus' | 'pow' | 'put' |
+          'q' | 'repeat' |'split' | 'start' | 'tail' | 'to' | 'trace' | 'type' | 'zero'</code></pre>
+</div>
+</div>
+<iframe src="images/reference/mmlang-ebnf.html" width="100%" height="1000px"></iframe>
+</div>
 <div class="sect2">
 <h3 id="_instructions">Instructions</h3>
 <div class="paragraph">
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 75%;">
+<table class="tableblock frame-all grid-all" style="width: 80%;">
 <caption class="title">Table 1. Instruction classes</caption>
 <colgroup>
-<col style="width: 8.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 58.3334%;">
+<col style="width: 9.0909%;">
+<col style="width: 36.3636%;">
+<col style="width: 54.5455%;">
 </colgroup>
 <thead>
 <tr>
@@ -532,14 +563,16 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 
 </div>
 <div class="sect3">
-<h4 id="_traverser_instructions">Traverser Instructions</h4>
+<h4 id="_trace_instructions">Trace Instructions</h4>
 
+</div>
+</div>
 </div>
 </div>
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-05-30 22:27:42 -0600
+Last updated 2020-06-04 21:18:09 -0600
 </div>
 </div>
 </body>
