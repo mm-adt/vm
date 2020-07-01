@@ -83,5 +83,6 @@ object ScriptEngineBlockProcessor {
 git checkout gh-pages
 cp jvm/machine/target/asciidoctor/index.html .
 git commit -a -m "ScriptEngine block processed index"
+git checkout master
  */
 }
