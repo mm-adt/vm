@@ -53,19 +53,13 @@ Thus, the previous formula can be rewritten as \[
 This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*.
 This is the *obj meta-model*.
 
-[source]
+[exec]
 ----
-mmlang> int            <1>
-==>int
-mmlang> 1              <2>
-==>1
-mmlang> int{5}         <3>
-==>int{5}
-mmlang> 1{5}           <4>
-==>1{5}
-mmlang> 'a','b','a'    <5>
-==>'a'{2}
-==>'b'
+int              //<1>
+1                //<2>
+int{5}           //<3>
+1{5}             //<4>
+{'a','b','a'}    //<5>
 ----
 <1> A single `int` type.
 <2> A single `int` value of `1`.
@@ -80,12 +74,10 @@ Many modern programming environments make a sharp distinction between types and 
 . Compilation is the evaluation of a program with a type argument (\$ \tt{type} \rightarrow \tt{type} \rightarrow \tt{type} \$) and
 . Types serve as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions] during evaluation (\$ \tt{value} \rightarrow \tt{type} \rightarrow \tt{value} \$).
 
-[source]
+[exec]
 ----   
-mmlang> int int[is,[gt,0]]                 <1>
-==>int{?}<=int[is,bool<=int[gt,0]]
-mmlang> 5 int{?}<=int[is,bool<=int[gt,0]]  <2>
-==>5
+int => int[is,[gt,0]]                   //<1>
+5 => int{?}<=int[is,bool<=int[gt,0]]    //<2>
 ----
 <1> The `int`-type is applied to the `int[is,[gt,0]]`-type to yield an `int{?}`-type denoting either 0 or 1 `int` (*compilation*).
 <2> The type `bool\<=int[gt,0]` serves as a lambda that yields `true` or `false` for every incoming `int` value (*evaluation*).
@@ -161,14 +153,11 @@ image::obj-full.png[float=right,width=320]
 
 The full `obj` structure thus far is diagrammed on the right and some type examples are presented in `mmlang` on the left.
 
-[source]
+[exec]
 ----
-mmlang> int                                    <1>
-==>int
-mmlang> int{2}                                 <2>
-==>int{2}
-mmlang> int{2}[is>0]                           <3>
-==>int{0,2}<=int{2}[is,bool{2}<=int{2}[gt,0]]
+int                                    //<1>
+int{2}                                 //<2>
+int{2}[is>0]                           //<3>
 ----
 <1> A ctype denoting a single integer stream.
 <2> A ctype denoting a stream with two integers.
@@ -206,36 +195,31 @@ mmlang> int{1}
 Such https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declarations] state that the value referred to by `x` is a _single_ element within the set of integers. The concept of a "single element" is captured in mm-ADT by the `obj` quantifier, where a https://en.wikipedia.org/wiki/Unit_(ring_theory)[unit] quantifier is not displayed in `mmlang`. That is, `int{1}` is more concisely displayed as `int`.
 
 a|
-[source]
+[exec]
 ----
-mmlang> int<=int
-==>int
+int<=int
 ----
 |From the perspective of "type-as-function," An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `\<=` and repeated type are not displayed. That is `int\<=int` is more concisely displayed as `int`.
 
 a|
-[source]
+[exec]
 ----
-mmlang> int<=bool
-language error: bool is not an int
+int<=bool
 ----
 |Type's that are fully specified by their type signature are always canonical types. Therefore, `bool\<=int` is meaningless as there are no instructions to map an `int` to a `bool`.
 
 a|
-[source]
+[exec]
 ----
-mmlang> int{5}
-==>int{5}
+int{5}
 ----
 |`int{5}` is a type referring to 5 integers. As a point of comparison, `int` refers to a single integer. This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
 
 a|
-[source]
+[exec]
 ----
-mmlang> int{0,5}
-==>int{0,5}
-mmlang> int{0,5}<=int{0,5}
-==>int{0,5}
+int{0,5}
+int{0,5}<=int{0,5}
 ----
 |Quantifiers must be elements from a ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] is two integers and represents uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
 |===
@@ -248,14 +232,11 @@ NOTE: In practice, the string representation of a value is its _ground_ and the 
 
 image::type-value-trace.png[align=center,width=550]
 
-[source]
+[exec]
 ----
-mmlang> 2[plus,4][is>0]
-==>6
-mmlang> 2[plus,4][is>0][trace]
-==>[2;[plus,4];6;[is,true]]
-mmlang> 2[plus,4][is>0][type]
-==>int{?}<=int[plus,4][is,bool<=int[gt,0]]
+2[plus,4][is>0]
+2[plus,4][is>0][trace]
+2[plus,4][is>0][type]
 ----
 
 Both types and values exist in a larger graph called the *obj graph* for which a type's type graph is a component. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that are no longer required by the program. This process is called *trace retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
@@ -344,29 +325,13 @@ An mm-ADT `mono` is the set of all atomic types.
 
 ===== Bool Type
 
-[source]
+[exec]
 ----
-mmlang> true
-==>true
-mmlang> true&&false
-==>false
-mmlang> true[and,false]
-==>false
-mmlang> true[and,false][neg]
-==>true
-mmlang> true[and,false][neg][or,false]
-==>true
-mmlang> bool[and,false][neg][or,false][explain]
-==>'
-bool[and,false][neg][or,false]
-
-instruction    domain       range  state
------------------------------------------
-[and,false]    bool    =>   bool
-[neg]          bool    =>   bool
-[or,false]     bool    =>   bool
-'
-mmlang>
+true
+true&&false
+true[and,false]
+true[and,false][neg]
+true[and,false][neg][or,false]
 ----
 
 ===== Int Type
@@ -484,14 +449,11 @@ In mm-ADT, `poly` is formed from the coproduct of `lst` and `rec`.
 mm-ADT provides two convenient type constructors for working with `poly` data structures: `lst` (an `int`-indexed array or https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (an `obj`-indexed array or https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]). Both `lst` and `rec` sets are composed of value and type forms.
 
 
-[source]
+[exec]
 ----
-mmlang> ('a','b','c')      <1>
-==>('a','b','c')
-mmlang> (,.)               <2>
-==>(,.)
-mmlang> ('a',.)            <3>
-==>('a',.)
+('a','b','c')     //<1>
+lst               //<2>
+('a')             //<3>
 ----
 <1> A fully reduced three term polynomial.
 <2> An empty `,-poly`.
@@ -499,25 +461,20 @@ mmlang> ('a',.)            <3>
 
 The reason for `.` is that the `,-vpoly` below is a two term `poly` with the second term being `obj{0}`.
 
-[source]
+[exec]
 ----
-mmlang> ('a',)
-==>('a',)
-mmlang> ('a',).1
-mmlang> ('a',.).1
-language error: poly index is out of bounds: 1
+('a')
+('a',).1
+('a').1
 ----
 
 A `tpoly` can be understood as either an unordered (`,`) or ordered (`|`, `;`) collection of functions.
 
-[source]
+[exec]
 ----
-mmlang> 3-<([plus,1],[mult,2])   <1>
-==>[4,6]
-mmlang> 3-<([plus,1]|[mult,2])   <2>
-==>[4|]
-mmlang> 3-<([plus,1];[mult,2])   <3>
-==>[4;8]
+3-<([plus,1],[mult,2])   //<1>
+3-<([plus,1]|[mult,2])   //<2>
+3-<([plus,1];[mult,2])   //<3>
 ----
 <1> A polynomial solved as `(3+1,3*2)` (or).
 <2> A polynomial solved as `(3+1,obj{0})` (exclusive or).
@@ -527,14 +484,11 @@ mmlang> 3-<([plus,1];[mult,2])   <3>
 ================================================================
 The two terms of the polynomial `\[[gt,0],[gt,10]]` are `_` types (__anonymous types__). Compilation infers the domain/range of the anonymous types.
 
-[source]
+[exec]
 ----
-mmlang> [[gt,0],[gt,10]]
-==>bool{2}<=_-<(bool<=_[gt,0],bool<=_[gt,10])>-
-mmlang> int[[gt,0],[gt,10]]
-==>bool{2}<=int-<(bool<=int[gt,0],bool<=int[gt,10])>-
-mmlang> int{5}[[gt,0],[gt,10]]
-==>bool{10}<=int{5}-<(bool{5}<=int{5}[gt,0],bool{5}<=int{5}[gt,10])>-
+[[gt,0],[gt,10]]
+int[[gt,0],[gt,10]]
+int{5}[[gt,0],[gt,10]]
 ----
 ================================================================
 
@@ -572,16 +526,12 @@ If the indeterminates of two terms are equal, then they can be merged by summing
 In the lexicon of mm-ADT, if two types are equal, then their quantifiers can be summed using the additive operator of the respective quantifier ring.
 Within the category of the `inst` monoid, the following `mmlang` examples highlight the salient features of `|-poly` addition.
 
-[source]
+[exec]
 ----
-mmlang> 'mar'[branch,[plus,'ko'],[plus,'ko']]     <1>
-==>'marko'{2}
-mmlang> 'mar'[branch,[plus,'ko']{2}]              <2>
-==>'marko'{2}
-mmlang> 'mar'[plus,'ko']{2}                       <3>
-==>'marko'{2}
-mmlang> 'marko'{2}                                <4>
-==>'marko'{2}
+'mar'[[plus,'ko'],[plus,'ko']]      //<1>
+'mar'[[plus,'ko']{2}]               //<2>
+'mar'[plus,'ko']{2}                 //<3>
+'marko'{2}                          //<4>
 ----
 <1> The `'mar'` `str` is copied as input to two `[plus,'ko']` branches.
 <2> Branch aggregation by coefficient summation is possible because the two branches are equal.
@@ -590,14 +540,11 @@ mmlang> 'marko'{2}                                <4>
 
 In the category `poly`, the previous `mmlang` examples are written as follows.
 
-[source]
+[exec]
 ----
-mmlang> 'mar'[[plus,'ko'],[plus,'ko']]
-==>'marko'{2}
-mmlang> 'mar'[[plus,'ko']{2},.]
-==>'marko'{2}
-mmlang> [[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]
-==>'marko'{2}
+'mar'[[plus,'ko'],[plus,'ko']]
+mmlang> 'mar'[[plus,'ko']{2}]
+[[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]
 ----
 
 The last expression demonstrates a property of all rings: multiplication both right and left https://en.wikipedia.org/wiki/Distributive_property[distributes] over addition.
@@ -606,14 +553,10 @@ The last expression demonstrates a property of all rings: multiplication both ri
 a(b+c) &=& \; ab + ac \\ (b+c)a &=& \; ba + ca \end{split}
 \]
 
-[source]
+[exec]
 ----
-mmlang> 'a'[+'b',+'c']
-==>'ab'
-==>'ac'
-mmlang> ['b','c']+'a'
-==>'ba'
-==>'ca'
+'a'[+'b',+'c']
+['b','c']+'a'
 ----
 
 ================================================================
@@ -621,19 +564,13 @@ Two `,-poly` terms can be added if their indeterminates are equal.
 For the monotypes such as `bool`, `int`, `real`, and `str`, equality is based on the grounded value of the type.
 Equality ignores quantification and trace history.
 
-[source]
+[exec]
 ----
-mmlang> 'a'=='a'
-==>true
-mmlang> 'a'=='ab'
-==>false
-mmlang> 6==6
-==>true
-mmlang> 6==6{10}
-==>true
-mmlang> 6{20}==6{10}
-==>true{20}
-mmlang>
+'a'=='a'
+'a'=='ab'
+6==6
+6==6{10}
+6{20}==6{10}
 ----
 
 Every type is either a ctype or a dtype.
@@ -641,14 +578,11 @@ A ctype does not have a trace.
 A dtype's trace is the list of instructions rooted at a ctype.
 Type equality is based on ctype and trace equality.
 
-[source]
+[exec]
 ----
-mmlang> (int,.)==(int,.)
-==>true
-mmlang> (int,.)==(int[plus,10],.)
-==>false
-mmlang> (int[plus,10],.)==(int[plus,10],.)
-==>true
+(int)==(int)
+(int)==(int[plus,10])
+(int[plus,10])==(int[plus,10])
 ----
 
 In the example below, the two traces are different, but the semantics of the expression are the same.
@@ -657,10 +591,9 @@ This is accomplished via a particular type of https://en.wikipedia.org/wiki/Rewr
 Given a specification of type equivalences (as defined by their trace), `int[plus,10][plus,0]` is rewritten to `int[plus,10]`.
 At which point the two types are equivalent and can be merged accordingly.
 
-[source]
+[exec]
 ----
-mmlang> (int[plus,10],.)==(int[plus,10][plus,0],.)
-==>false
+(int[plus,10])==(int[plus,10][plus,0])
 ----
 ================================================================
 
@@ -673,14 +606,11 @@ A `|-poly` is a polynomial ring with non-commutative addition defined as
 \texttt{t0\{q0\}} & \text{if } x=>\texttt{t0\{q0\}} \notin \texttt{obj\{0\}}, \\ \texttt{t1\{q1\}} & \text{if } x=>\texttt{t1\{q1\}} \notin \texttt{obj\{0\}}, \\ \texttt{obj\{0\}} & \text{otherwise.} \end{cases}
 \]
 
-[source]
+[exec]
 ----
-mmlang> 'mar'[choose,[plus,'ko'],[plus,'io']]          <1>
-==>'marko'
-mmlang> 'mar'[choose,[plus,'ko']{0},[plus,'io']]       <2>
-==>'mario'
-mmlang> 'mar'[choose,[plus,'ko']{0},[plus,'io']{0}]    <3>
-mmlang>
+'mar'[[plus,'ko']|[plus,'io']]          //<1>
+'mar'[[plus,'ko']{0}|[plus,'io']]       //<2>
+'mar'[[plus,'ko']{0}|[plus,'io']{0}]    //<3>
 ----
 <1> The first branch does not yield `obj{0}` so `'ko'` is added to `'mar'`.
 The polynomial reduces to `[plus,'ko']`.
@@ -689,14 +619,11 @@ The polynomial reduces to `[plus,'io']`.
 <3> Both branches yield an `obj{0}`.
 The polynomial reduces to `obj{0}`.
 
-[source]
+[exec]
 ----
-mmlang> 'mar'[[plus,'ko']|[plus,'io']]
-==>'marko'
-mmlang> 'mar'[[plus,'ko']{0}|[plus,'io']]
-==>'mario'
-mmlang> 'mar'[[plus,'ko']{0}|[plus,'io']{0}]
-mmlang>
+'mar'[[plus,'ko']|[plus,'io']]
+'mar'[[plus,'ko']{0}|[plus,'io']]
+'mar'[[plus,'ko']{0}|[plus,'io']{0}]
 ----
 
 Every `|-poly` non-commutative addition because the order in which the terms/branches are evaluated determines the result of the computation.
@@ -711,47 +638,38 @@ In mm-ADT, monoid multiplication is standard type composition and is defined as
 \[
 \texttt{t0\{q0\};t1\{q1\} = t0;t1\{q0*q1\}} \]
 
-[source]
+[exec]
 ----
-mmlang> 'mar'[compose,[plus,'k']{2},[plus,'o']{3}]  <1>
-==>'marko'{6}
-mmlang> 'mar'[compose,[plus,'k']{2},[plus,'o']{0}]  <2>
-mmlang>
+'mar'[[plus,'k']{2}|[plus,'o']{3}]  //<1>
+'mar'[[plus,'k']{2}|[plus,'o']{0}]  //<2>
 ----
 <1> The two branches are serially composed to create a single "branch" with a quantifier that is the product of the two original branch quantifiers.
 <2> The two branches are serially composed, but the second branch has a `0`-quantifier and thus, the resolution goes to `obj{0}` as `2 * 0 = 0`.
 
-[source]
+[exec]
 ----
-mmlang> 'mar'[[plus,'k'];[plus,'o']]
-==>'marko'
-mmlang> 'mar'[[plus,'k'];[plus,'o']{0}]
-mmlang>
+'mar'[[plus,'k']{2}|[plus,'o']{3}]
+'mar'[[plus,'k']{2}|[plus,'o']{0}]
 ----
 
 [NOTE]
 ================================================================
 The `[compose]` instruction is a https://en.wikipedia.org/wiki/Higher-order_function[higher-order instruction] that yields the same result as fundamental instruction composition/concatenation.
 
-[source]
+[exec]
 ----
-mmlang> 'mar'[plus,'k']{2}[plus,'o']{3}
-==>'marko'{6}
-mmlang> 'mar'[plus,'k']{2}[plus,'o']{0}
-mmlang>
+'mar'[plus,'k']{2}[plus,'o']{3}
+'mar'[plus,'k']{2}[plus,'o']{0}
 ----
 
 Moreover, a `poly` can be inspected using standard list instructions. Below demonstrates that the `;-poly[merge]` (`>-`) is equivalent to `;-poly[last]`.
 
 
-[source]
+[exec]
 ----
-mmlang> 'mar'-<([plus,'k'];[plus,'o'])
-==>['mark';'marko']
-mmlang> 'mar'-<([plus,'k'];[plus,'o'])>-
-==>'marko'
-mmlang> 'mar'-<([plus,'k'];[plus,'o'])[last]
-==>'marko'
+'mar'-<([plus,'k'];[plus,'o'])
+'mar'-<([plus,'k'];[plus,'o'])>-
+'mar'-<([plus,'k'];[plus,'o'])[last]
 ----
 ================================================================
 
@@ -767,76 +685,60 @@ The table below presents the set of instructions whose domain is `poly`.
 | `[plus]` | `poly`    | `poly` | list  | term expression concatenation
 a|
 [.small]
-[source]
+[exec]
 ----
-mmlang> ('a','b')+('c','d')
-==>('a','b','c','d')
+('a','b')+('c','d')
 ----
 | `[mult]` | `poly`    | `poly` | vector | https://en.wikipedia.org/wiki/Dot_product[dot product] that is distributive over addition via https://en.wikipedia.org/wiki/FOIL_method[FOIL]
 a|
 [.small]
-[source]
+[exec]
 ----
-mmlang> ('a','b')*('c','d')
-==>(('a','c'),('a','d'),('b','c'),('b','d'))
+('a','b')*('c','d')
 ----
 | `[hmult]` | `poly`  | `poly`  | vector | https://en.wikipedia.org/wiki/Hadamard_product_(matrices)[Hadamard] pairwise product
 a|
 [.small]
-[source]
+[exec]
 ----
-mmlang> ('a','b')=('c','d')
-==>('c','d')
+('a','b')=('c','d')
 ----
 | `[head]` |          | `obj`   | list   | the first term of the polynomial
 a|
 [.small]
-[source]
+[exec]
 ----
-mmlang> ('a','b')[head]
-==>'a'
-mmlang> (,.)[head]
-language error: empty polys do not have heads
+('a','b')[head]
 ----
 | `[tail]` |          | `poly`  | list   | the polynomial without the first term
 a|
 [.small]
-[source]
+[exec]
 ----
-mmlang> ('a','b')[tail]
-==>('b'.,)
-mmlang> (,.)[tail]
-language error: empty polys do not have tails
+('a','b')[tail]
 ----
 | `[last]` |          | `obj`  | list   | the last term of the polynomial
 a|
 [.small]
-[source]
+[exec]
 ----
-mmlang> ('a','b')[last]
-==>'b'
-mmlang> (,.)[last]
-language error: empty polys do not have lasts
+('a','b')[last]
 ----
 | `[get]`  | `int`     | `obj`   | array | term access by index
 a|
 [.small]
-[source]
+[exec]
 ----
-mmlang> ('a','b','c').1
-==>'b'
-mmlang> ('a','b','c').3
-language error: poly index is out of bounds: 3
+('a','b','c').1
+('a','b','c').3
 ----
 | `[put]`  | `int,obj` | `poly`  | array | term insertion term by index
 a|
 [.small]
-[source]
+[exec]
 ----
-mmlang> ('a','b','c')[put,1,'ab']
-==>('a','ab','b','c')
-mmlang> ('a','b','c')[put,5,'e']
-==>('a','b','c',,'e')
+('a','b','c')[put,1,'ab']
+('a','b','c')[put,5,'e']
 ----
 |===
 
@@ -848,19 +750,15 @@ mmlang> ('a','b','c')[put,5,'e']
 
 | `[split]`  | `poly` | `poly`  |
 a|
-[source]
+[exec]
 ----
-mmlang> -<('a','b','c')
-==>('a','b','c')
+-<('a','b','c')
 ----
 | `[merge]`  |        | `obj`  |
 a|
-[source]
+[exec]
 ----
-mmlang> -<('a','b','c')>-
-==>'a'
-==>'b'
-==>'c'
+-<('a','b','c')>-
 ----
 |===
 
@@ -873,30 +771,24 @@ mmlang> -<('a','b','c')>-
 
 | `;`-*apply*  | `-<(;)`
 a|
-[source]
+[exec]
 ----
-mmlang> 6-<(_;_)
-==>(6;6)
-mmlang> 6-<(_+1;_>6)
-==>(7;true)
+6-<(_;_)
+6-<(_+1;_>6)
 ----
 | `,`-*copy*   | `-<(,)`
 a|
-[source]
+[exec]
 ----
-mmlang> 6-<(_,_)
-==>(6,6)
-mmlang> 6-<(_>0,_>8)
-==>(true,false)
+6-<(_,_)
+6-<(_>0,_>8)
 ----
 | `\|`-*pick*  | `-<(\|)`
 a|
-[source]
+[exec]
 ----
-mmlang> 6-<(_\|_)
-==>(6\|)
-mmlang> 6-<(_>0\|_>8)
-==>(true\|)
+6-<(_\|_)
+6-<(_>0\|_>8)
 ----
 |===
 
@@ -907,31 +799,24 @@ mmlang> 6-<(_>0\|_>8)
 
 | `;`-*return*     | `(;)>-`
 a|
-[source]
+[exec]
 ----
-mmlang> 6-<(_;_)>-
-==>6
-mmlang> 6-<(_+1;_>6)>-
-==>true
+6-<(_;_)>-
+6-<(_+1;_>6)>-
 ----
 | `,`-*merge*      | `(,)>-`
 a|
-[source]
+[exec]
 ----
-mmlang> 6-<(_,_)>-
-==>6{2}
-mmlang> 6-<(_>0,_>8)>-
-==>true
-==>false
+6-<(_,_)>-
+6-<(_>0,_>8)>-
 ----
 | `\|`-*coalesce*  | `(\|)>-`
 a|
-[source]
+[exec]
 ----
-mmlang> 6-<(_\|_)>-
-==>6
-mmlang> 6-<(_+1\|_>6)>-
-==>7
+6-<(_\|_)>-
+6-<(_+1\|_>6)>-
 ----
 |===
 
@@ -949,20 +834,14 @@ There are three primary use cases for `rec`.
 
 . Labeling `poly` indices.
 +
-[source]
+[exec]
 ----
-mmlang> ('marko',29)
-==>('marko',29)
-mmlang> ('marko',29).0                    <1>
-==>'marko'
-mmlang> ('marko',29).1
-==>29
-mmlang> ('name'->'marko','age'->29)
-==>('name'->'marko','age'->29)
-mmlang> ('name'->'marko','age'->29).name  <2>
-==>'marko'
-mmlang> ('name'->'marko','age'->29).age
-==>29
+('marko',29)
+('marko',29).0                    //<1>
+('marko',29).1
+('name'->'marko','age'->29)
+('name'->'marko','age'->29).name  //<2>
+('name'->'marko','age'->29).age
 ----
 <1> The slots of a "person" `lst` are accessed with `int` values.
 <2> The slots of a "person" `rec` are accessed with `str` values.
@@ -971,42 +850,27 @@ mmlang> ('name'->'marko','age'->29).age
 +
 [source]
 ----
-mmlang> ('a'->1,'b'->2,'c'->3,'d'->4)
-==>('a'->1,'b'->2,'c'->3,'d'->4)
-mmlang> ('a'->1,'b'->2,'c'->3,'d'->4)[get,is>'a']
-==>2
-==>3
-==>4
-mmlang> ('a'->1,'b'->2,'c'->3,'d'->4)[get,is>'b']
-==>3
-==>4
-mmlang>
+('a'->1,'b'->2,'c'->3,'d'->4)
+('a'->1,'b'->2,'c'->3,'d'->4)[get,is>'a']
+('a'->1,'b'->2,'c'->3,'d'->4)[get,is>'b']
 ----
 +
 . Branching with predicates.
 +
-[source]
+[exec]
 ----
-mmlang> 1,2,3-<(is==2 -> 'name' | is>2 -> 'is' | int -> 'my')
-==>(->|1->'my')
-==>(2->'name'|->)
-==>(->|3->'is')
-mmlang> 1,2,3-<(is==2 -> 'name' | is>2 -> 'is' | int -> 'my')>-
-==>'my'
-==>'name'
-==>'is'
+{1,2,3}-<(is==2 -> 'name' | is>2 -> 'is' | int -> 'my')
+{1,2,3}-<(is==2 -> 'name' | is>2 -> 'is' | int -> 'my')>-
 ----
 
 ================================================================
 
 The `poly` `recs` are ordered. Even though slots can be uniquely identified by their `obj`-key, equality is dependent on position.
 
-[source]
+[exec]
 ----
-mmlang> (1->'a',2->'b')==(1->'a',2->'b')
-==>true
-mmlang> (1->'a',2->'b')==(2->'b',1->'a')
-==>false
+(1->'a',2->'b')==(1->'a',2->'b')
+(1->'a',2->'b')==(2->'b',1->'a')
 ----
 
 Order-based equality ensures the semantics of `;-rec` and `|-rec`, which are non-commutative. The `rec` that is generated from a `-<` split has both the keys and the slots resolved according to the rules of _juxtaposition_ . If two keys yield the same result, then their slots are merged as specified by the `poly` summation operator.
@@ -1014,14 +878,11 @@ Order-based equality ensures the semantics of `;-rec` and `|-rec`, which are non
 
 image::rec-orders.png[width=600,align=center]
 
-[source]
+[exec]
 ----
-mmlang> 23-<(is>10->'a',int->'b')
-==>(23->'b','a')
-mmlang> 23-<(is>10->'a'|int->'b')
-==>(23->'a'|->)
-mmlang> 23-<(is>10->'a';int->'b')
-==>(23->'b')
+23-<(is>10->'a',int->'b')
+23-<(is>10->'a'|int->'b')
+23-<(is>10->'a';int->'b')
 ----
 
 ================================================================
@@ -1076,16 +937,14 @@ However, with pair-wise product, only the main diagonol remains.
 
 [source]
 ----
-mmlang> ((1,2,3),(4,5,6),(7,8,9))=(=(_,,),=(,_,),=(,,_))
-==>((1,,),(,5,),(,,9))
-mmlang> ((1,2,3),
-         (4,5,6),
-         (7,8,9))
-         =
-        (=(_,,),
-         =(,_,),
-         =(,,_))
-==>((1,,),(,5,),(,,9))
+((1,2,3),(4,5,6),(7,8,9))=(=(_,,),=(,_,),=(,,_))
+((1,2,3),
+ (4,5,6),
+ (7,8,9))
+    =
+ (=(_,,),
+  =(,_,),
+  =(,,_))
 ----
 
 ====== Meta-Programming
@@ -1118,9 +977,7 @@ In category theory, a _type-to-type_ mapping that https://en.wikipedia.org/wiki/
 
 [source]
 ----
-mmlang> [define,(int[is,[eq,int]])<=(int[plus,x:int][plus,x:int[neg]])]
-        [int][plus,10][plus,-10]
-==>int[is,[eq,int]]
+[define,(int[is,[eq,int]])<=(int[plus,x][plus,x[neg]])][int][plus,10][plus,-10]
 ----
 
 image::type-to-type-type.png[width=700,align=center]
@@ -1248,25 +1105,12 @@ V = \texttt{obj}, \;\;\; I = \texttt{inst}, \;\;\; E \subseteq V \times I \times
 \]
 The edge \$(a,i,b) \in E\$, notated as \$a\to_{i}b\$, has the corresponding `mmlang` denotation: `b\<=a[i]`.
 
-[source]
+[exec]
 ----
-mmlang> int                                         <1>
-==>int
-mmlang> int[plus,1]                                 <2>
-==>int[plus,1]
-mmlang> int[plus,1][mult,[plus,10]]                 <3>
-==>int[plus,1][mult,int[plus,10]]
-mmlang> int[plus,1][mult,[plus,10]][explain]        <4>
-==>'
-int[plus,1][mult,int[plus,10]]
-
-instruction            domain      range state
------------------------------------------------
-[plus,1]               int    =>   int
-[mult,int[plus,10]]    int    =>   int
- [plus,10]              int   =>    int
-'
-mmlang>
+int                                         //<1>
+int[plus,1]                                 //<2>
+int[plus,1][mult,[plus,10]]                 //<3>
+int[plus,1][mult,[plus,10]][explain]        //<4>
 ----
 <1> mm-ADT `obj` graph has an identity for each ctype (mult-rooted Cayley graph).
 <2> \$\tt{i\nt} \to_{[\tt{plus,1}]} \tt{i\nt}'\$ (or `int\<=int[plus,1]`) is the Cayley source, label, and target.
@@ -1286,26 +1130,20 @@ An mm-ADT program is a _type_ defined recurssively as \$ \tt{type} = (\tt{type} 
 
 image::start-ctypes.png[float="right",width=315]
 
-[source]
+[exec]
 ----
-mmlang> [start,int]
-==>int
-mmlang> [start,int][plus,5]
-==>int[plus,5]
-mmlang> [start,int][plus,5][gt,10]
-==>bool<=int[plus,5][gt,10]
-mmlang>
+[start,int]
+[start,int][plus,5]
+[start,int][plus,5][gt,10]
 ----
 
 The `[noop]` instruction is the only mm-ADT instruction that does not alter the state of the `obj` trace graph and thus, the state of the computation.
 The instruction `[id]`, on the other hand, does.
 
-[source]
+[exec]
 ----
-mmlang> [start,int][plus,5][gt,10][noop]
-==>bool<=int[plus,5][gt,10]
-mmlang> [start,int][plus,5][gt,10][id]
-==>bool<=int[plus,5][gt,10][id]
+[start,int][plus,5][gt,10][noop]
+[start,int][plus,5][gt,10][id]
 ----
 
 ================================================================
@@ -1363,14 +1201,9 @@ In `mmlang`, a `poly` can be denoted as a _structure_ via `[ ]` (a value) or as 
 The example 3-slot `int` `,-poly` below has a domain of `int` and a range of `int{1,3}`.
 This branch structure will product one, two, or three `ints` given a single `int`.
 
-[source]
+[exec]
 ----
-mmlang> int[int[is>0],int[is<0],int]
-==>int{1,3}<=int-<(
-     int{?}<=int[is,bool<=int[gt,0]],
-     int{?}<=int[is,bool<=int[lt,0]],
-     int
-   )>-
+int[int[is>0],int[is<0],int]
 ----
 
 [.small]
@@ -1456,14 +1289,10 @@ The two `;,-poly` monoids serve as components of a https://en.wikipedia.org/wiki
 ;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle \]
 where the _branch_ component is, in fact, a group with `(a{q},a{-q}) == {0}` and `[branch,a{q},a{-q}] == {0}`.
 
-[source]
+[exec]
 ----
-mmlang> -<('a'{2},'a'{-2})
-==>['a'{2},'a'{-2}]
-mmlang> -<('a'{2},'a'{-2})>-
-mmlang>
-mmlang> [branch,['a'{2},'a'{-2}]]
-mmlang>
+-<('a'{2},'a'{-2})
+-<('a'{2},'a'{-2})>-
 ----
 
 The `|-poly` can be appended to the `;,-poly` ring, where it serves as an https://en.wikipedia.org/wiki/Idempotence[idempotent] variation of the additive group commonly used to denote https://en.wikipedia.org/wiki/Tagged_union[sum types].

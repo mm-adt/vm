@@ -67,7 +67,7 @@ public class LanguageException extends VmException {
     }
 
     public static LanguageException typeNoGround(final Obj source) {
-        return new LanguageException("Types are not grounded: " + source);
+        return new LanguageException("types are not grounded: " + source);
     }
 
     public static LanguageException zeroLengthPath(final Obj source) {
@@ -84,31 +84,32 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (!(__.isAnon(type.domain()) || obj.range().test(type.domain()))) throw LanguageException.typingError(obj, type);
+        if (!(__.isAnon(type.domain()) || obj.range().test(type.domain())))
+            throw LanguageException.typingError(obj, type);
     }
 
     public static class PolyException {
         public static LanguageException noHead() {
-            return new LanguageException("Empty polys do not have heads");
+            return new LanguageException("empty polys do not have heads");
         }
 
         public static LanguageException noLast() {
-            return new LanguageException("Empty polys do not have lasts");
+            return new LanguageException("empty polys do not have lasts");
         }
 
         public static LanguageException noTail() {
-            return new LanguageException("Empty polys do not have tails");
+            return new LanguageException("empty polys do not have tails");
         }
 
         public static void testIndex(final Lst<?> lst, final int index) {
             if (index < 0)
-                throw new LanguageException("Index must be 0 or greater: " + index);
+                throw new LanguageException("poly index must be 0 or greater: " + index);
             if (lst.glist().length() < (index + 1))
-                throw new LanguageException("Index is out of bounds: " + index);
+                throw new LanguageException("poly index is out of bounds: " + index);
         }
 
         public static LanguageException noKeyValue(final Rec<?, ?> rec, final Obj key) {
-            return new LanguageException("Key doesn't match any rec keys: " + key);
+            return new LanguageException("key doesn't match any rec keys: " + key);
         }
     }
 }

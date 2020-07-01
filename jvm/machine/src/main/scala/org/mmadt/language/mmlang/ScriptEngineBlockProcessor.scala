@@ -28,9 +28,11 @@ import org.asciidoctor.extension.{BlockProcessor, Contexts, Name, Reader}
 import org.asciidoctor.jruby.{AsciiDocDirectoryWalker, DirectoryWalker}
 import org.asciidoctor.{Asciidoctor, OptionsBuilder, SafeMode}
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 
 import scala.collection.JavaConverters
+import scala.util.{Failure, Success, Try}
 
 @Name("exec")
 @Contexts(Array(Contexts.LISTING))
@@ -39,13 +41,23 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
   val style = "source"
   val language = "python"
+  val prompt = "mmlang> "
   override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
     val builder: StringBuilder = new StringBuilder
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
-      builder.append("mmlang> ").append(w).append("\n")
-      engine.eval(w).toStrm.values.foreach(a => {
-        builder.append(Tokens.RRDARROW).append(a).append("\n")
-      })
+      builder.append(prompt).append(w).append("\n")
+      Try[Obj] {
+        engine.eval(w)
+      } match {
+        case Failure(exception) if exception.isInstanceOf[LanguageException] => builder.append("language error: ").append(exception.getLocalizedMessage).append("\n")
+        case Failure(exception) => throw exception
+        case Success(value) =>
+          val results = value.toStrm.values.toList
+          if (results.isEmpty) builder.append(prompt).append("\n")
+          else results.foreach(a => {
+            builder.append(Tokens.RRDARROW).append(a).append("\n")
+          })
+      }
     })
     println(builder)
     this.createBlock(parent, "listing", builder.toString(), JavaConverters.mapAsJavaMap(Map[String, Object]("style" -> style, "language" -> language)))
