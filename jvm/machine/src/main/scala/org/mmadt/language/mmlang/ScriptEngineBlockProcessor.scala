@@ -68,6 +68,7 @@ object ScriptEngineBlockProcessor {
   val target: String = "machine/target/asciidoctor/"
   def main(args: Array[String]): Unit = {
     val asciidoctor = Asciidoctor.Factory.create()
+    asciidoctor.requireLibrary("asciidoctor-diagram")
     val directoryWalker: DirectoryWalker = new AsciiDocDirectoryWalker(source);
     val asciidocFiles = directoryWalker.scan();
     JavaConverters.collectionAsScalaIterable[File](asciidocFiles).map(z => {
@@ -83,6 +84,7 @@ object ScriptEngineBlockProcessor {
 git checkout gh-pages
 cp jvm/machine/target/asciidoctor/index.html .
 git commit -a -m "ScriptEngine block processed index"
+git push
 git checkout master
  */
 }
