@@ -595,7 +595,6 @@ As an economic model, each integration point offers the respective development t
 <div class="sect1">
 <h2 id="_virtual_machine_components">Virtual Machine Components</h2>
 <div class="sectionbody">
-<<<<<<< HEAD
 <div class="literalblock">
 <div class="content">
 <pre>    /-----------------------\
@@ -615,11 +614,6 @@ As an economic model, each integration point offers the respective development t
 |language| |processor| | storage |
 |        | |         | |         |
 +--------+ +---------+ +---------+</pre>
-=======
-<div class="imageblock right">
-<div class="content">
-<img src="./images/introduction/diag-f9bcfd96975e3103c088523d50854fca.png" alt="diag f9bcfd96975e3103c088523d50854fca" width="380" height="294">
->>>>>>> 3b4373ded1903e88b8faa22182fd65c56883faf9
 </div>
 </div>
 <div class="paragraph">
@@ -721,7 +715,6 @@ All the examples contained herein are presented using <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<<<<<<< HEAD
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>
 ==&gt;<span style="color:#00D">1</span>
 mmlang&gt; <span style="color:#00D">1</span>+<span style="color:#00D">2</span>
@@ -730,12 +723,6 @@ mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">2</sp
 ==&gt;<span style="color:#00D">3</span>
 mmlang&gt; <span style="color:#00D">5</span>
 ==&gt;<span style="color:#00D">5</span></code></pre>
-=======
-<pre>1
-1+2
-1[plus,2]
-5</pre>
->>>>>>> 3b4373ded1903e88b8faa22182fd65c56883faf9
 </div>
 </div>
 </div>
@@ -2793,7 +2780,6 @@ mmlang&gt; ((<span style="color:#00D">1</span>,<span style="color:#00D">2</span>
 </div>
 <div class="paragraph">
 <p>describes a <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexive graph</a> with vertices are in <code>int</code> and edges labeled <code>[is,[eq,int]]</code>. There are other mm-ADT types (an infinite amount in fact) that are related to <code>int[is,[eq,int]]</code> by a <a href="https://en.wikipedia.org/wiki/Graph_homomorphism">graph homomorphism</a>. A few such types are itemized below.</p>
-<<<<<<< HEAD
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2879,93 +2865,6 @@ b\{ 0\} &amp; \text{otherwise.}
 <div class="sect2">
 <h3 id="_language_algebras">Language Algebras</h3>
 <div class="paragraph">
-=======
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">0</span>]
-<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">1</span>]
-<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][plus,-<span style="color:#00D">1</span>]
-<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">2</span>][plus,-<span style="color:#00D">2</span>]
-<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">3</span>][plus,-<span style="color:#00D">3</span>]
-...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note a common pattern. The type <code>int[plus,x:int][plus,x:int[neg]]</code> captures an infinite number of more specific types that are homomorphic to <code>int[is,[eq,int]]</code>. <a href="https://en.wikipedia.org/wiki/Higher-order_function">Higher order type</a> are defined using mm-ADT <code>polys</code>.</p>
-</div>
-<div class="paragraph text-center">
-<p><code>(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])</code></p>
-</div>
-<div class="paragraph">
-<p>In category theory, a <em>type-to-type</em> mapping that <a href="https://en.wikipedia.org/wiki/Morphism">preserves structure</a> is called a <a href="https://en.wikipedia.org/wiki/Functor">functor</a>. From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range <code>&lt;=</code>-relation within a higher-order <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a> with respective signature. The identity is apparent in that there are no instructions required to coerce an <code>obj</code> of the domain to an <code>obj</code> of the range. This is analogous to <code>int&lt;=int</code>, save that the mapping is not predicated on <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphism</a>, but on a broader relationship called a <a href="https://en.wikipedia.org/wiki/Surjective_function">surjective</a> homomorphism (a  <a href="https://en.wikipedia.org/wiki/Rewriting">reduction</a>). Any type containing only a type signature <code>()&lt;=()</code> says that the domain type is equal to the range type such that the domain can be <a href="https://en.wikipedia.org/wiki/Abstract_rewriting_system">substituted</a> for the range.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [define,(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])&lt;=(<span style="color:#369;font-weight:bold">int</span>[plus,x:<span style="color:#369;font-weight:bold">int</span>][plus,x:<span style="color:#369;font-weight:bold">int</span>[neg]])]
-        [<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">10</span>][plus,-<span style="color:#00D">10</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]]</code></pre>
-</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/type-to-type-type.png" alt="type to type type" width="700">
-</div>
-</div>
-<div class="paragraph">
-<p>The type <code>int[is,[eq,int]]</code> has an <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> image in <code>int</code>, where the reflexive self-loop paths in <code>int[is,[eq,int]]</code> are contracted to 0-length paths. The isomorphism realizes <code>int</code> as a classic set without structure because the type <code>int</code> has no instructions and thus, no type graph edges.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [define,<span style="color:#369;font-weight:bold">int</span>&lt;=(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])]
-        [define,(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])&lt;=(<span style="color:#369;font-weight:bold">int</span>[plus,x:<span style="color:#369;font-weight:bold">int</span>][plus,x:<span style="color:#369;font-weight:bold">int</span>[neg]])]
-        [<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">10</span>][plus,-<span style="color:#00D">10</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 2. mm-ADT Types are Graphs and their Values Realize Paths</div>
-<div class="content">
-<div class="paragraph">
-<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type</p>
-</div>
-<div class="paragraph">
-<p><code>int[is&gt;0]</code></p>
-</div>
-<div class="paragraph">
-<p>would be considered a reasonable type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$ \tt{g\t}:\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type</p>
-</div>
-<div class="paragraph">
-<p><code>int[plus,1]</code></p>
-</div>
-<div class="paragraph">
-<p>would be considered unreasonable as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>. An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as algorithmically defined by its instructions) <em>does not</em> map the <code>obj</code> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal</a> <code>obj{0}</code>. If
-\[
-f: A \rightarrow B
-\]
-is the function of type <code>B&lt;=A[f]</code>, then
-\[
-f(a) =
-\begin{cases}
-b\{*\} &amp; \text{if $a$ is a value of the type},  \\
-b\{ 0\} &amp; \text{otherwise.}
-\end{cases}
-\]</p>
-</div>
-<div class="paragraph">
-<p>An mm-ADT <strong>type graph</strong> denotes a type whose values are those <code>objs</code> that realize a path in that graph.</p>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_language_algebras">Language Algebras</h3>
-<div class="paragraph">
->>>>>>> 3b4373ded1903e88b8faa22182fd65c56883faf9
 <p>The mm-ADT VM is a computing machine founded on a non-commutative <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> ring called a <em>stream ring</em>. The practical mental-model that mm-ADT purports is that of streams of data flowing through functions (instructions) composed serially (<code>*</code>) and in parallel (<code>+</code>). Moreover, these streams can be split and merged via the product and coproduct of <em>streams</em> of data whose size and dynamics are regulated by the coefficients (or quantifiers) of the respective polynomial ring. The physical manifestation of this algebra is manipulated by <code>mmlang</code>. However, there are two other intervening algebras (at the processor and storage levels), where ultimately, the <code>mmlang</code> <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> realizes a correspondence by means of a <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring action</a> upon a <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a>.</p>
 </div>
 <div class="olist arabic">
@@ -3168,41 +3067,9 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 <div class="imageblock text-center">
 <div class="content">
 <img src="./images/language/cayley-example.png" alt="cayley example">
-<<<<<<< HEAD
-=======
 </div>
 </div>
 <div class="paragraph">
-<p>Every aspect of an mm-ADT computation from composition to evaluation is realized on this graph:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
-</li>
-<li>
-<p><strong>Compilation</strong>: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
-</li>
-<li>
-<p><strong>Rewrite</strong>: The vertices can be "merged" using <code>[rewrite]</code> instructions that specify a domain pattern that is equivalent to a range pattern.</p>
-</li>
-<li>
-<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
-</li>
-<li>
-<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively). When the current monoid operation requires historic state information, the co-Cayley graph is searched for previously encoded <code>inst</code> terms.</p>
-</li>
-<li>
-<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place whereby the binary <code>*</code> operator no longer operates as a free algebra, but collapses two elements to one. The path&#8217;s tail element is the result of the computation.</p>
-</li>
-</ol>
->>>>>>> 3b4373ded1903e88b8faa22182fd65c56883faf9
-</div>
-</div>
-<div class="sect5">
-<h6 id="_subgraph_algebras">Subgraph Algebras</h6>
-<div class="paragraph">
-<<<<<<< HEAD
 <p>Every aspect of an mm-ADT computation from composition to evaluation is realized on this graph:</p>
 </div>
 <div class="olist arabic">
@@ -3231,8 +3098,6 @@ mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<sp
 <div class="sect5">
 <h6 id="_subgraph_algebras">Subgraph Algebras</h6>
 <div class="paragraph">
-=======
->>>>>>> 3b4373ded1903e88b8faa22182fd65c56883faf9
 <p>While the Cayley graph encoding respects the axioms of a monoid, certain subgraphs have richer structure. Examples include:</p>
 </div>
 <div class="olist arabic">
@@ -3745,11 +3610,7 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 </div>
 <div id="footer">
 <div id="footer-text">
-<<<<<<< HEAD
-Last updated 2020-07-01 01:44:13 -0600
-=======
-Last updated 2020-05-30 23:03:12 -0600
->>>>>>> 3b4373ded1903e88b8faa22182fd65c56883faf9
+Last updated 2020-07-01 01:48:09 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
