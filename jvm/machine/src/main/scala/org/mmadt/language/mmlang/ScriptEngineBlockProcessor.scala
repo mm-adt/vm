@@ -67,8 +67,9 @@ object ScriptEngineBlockProcessor {
       asciidoctor.convertFile(z, OptionsBuilder.options().toDir(new File(target)).safe(SafeMode.UNSAFE).mkDirs(true).toFile(true))
     })
   }
-  /**
-   * git checkout gh-pages
-   * git 
-   */
+  /*
+git checkout gh-pages
+cp jvm/machine/target/asciidoctor/index.html .
+git commit -a -m "ScriptEngine block processed index"
+ */
 }
