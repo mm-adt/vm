@@ -27,6 +27,6 @@ import org.asciidoctor.jruby.extension.spi.ExtensionRegistry
 
 class mmlangExtensionRegistry extends ExtensionRegistry {
   override def register(asciidoctor: Asciidoctor): Unit = {
-    asciidoctor.javaExtensionRegistry().block(classOf[SourceBlockProcessor]);
+    asciidoctor.javaExtensionRegistry().block(classOf[ScriptEngineBlockProcessor]);
   }
 }

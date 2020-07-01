@@ -35,8 +35,10 @@ import scala.collection.JavaConverters
 @Name("exec")
 @Contexts(Array(Contexts.LISTING))
 @ContentModel(ContentModel.RAW)
-class SourceBlockProcessor(astring: String, config: java.util.Map[String, Object]) extends BlockProcessor {
+class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, Object]) extends BlockProcessor {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
+  val style = "source"
+  val language = "python"
   override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
     val builder: StringBuilder = new StringBuilder
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
@@ -46,10 +48,10 @@ class SourceBlockProcessor(astring: String, config: java.util.Map[String, Object
       })
     })
     println(builder)
-    this.createBlock(parent, "listing", builder.toString(), JavaConverters.mapAsJavaMap(Map[String, Object]("style" -> "source", "language" -> "python")))
+    this.createBlock(parent, "listing", builder.toString(), JavaConverters.mapAsJavaMap(Map[String, Object]("style" -> style, "language" -> language)))
   }
 }
-object SourceBlockProcessor {
+object ScriptEngineBlockProcessor {
   val source: String = "machine/src/asciidoctor/"
   val target: String = "machine/target/asciidoctor/"
   def main(args: Array[String]): Unit = {
@@ -61,8 +63,12 @@ object SourceBlockProcessor {
       z
     }).filter(z => Set("index.adoc").contains(z.getName)).foreach(z => {
       println("Processing file: " + z)
-      asciidoctor.javaExtensionRegistry.block(classOf[SourceBlockProcessor])
+      asciidoctor.javaExtensionRegistry.block(classOf[ScriptEngineBlockProcessor])
       asciidoctor.convertFile(z, OptionsBuilder.options().toDir(new File(target)).safe(SafeMode.UNSAFE).mkDirs(true).toFile(true))
     })
   }
+  /**
+   * git checkout gh-pages
+   * git 
+   */
 }
