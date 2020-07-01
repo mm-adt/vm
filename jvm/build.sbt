@@ -8,9 +8,27 @@ ThisBuild / scalaVersion := "2.12.10"
 ThisBuild / version := "0.1-SNAPSHOT"
 Compile / compileOrder := CompileOrder.JavaThenScala
 
+
+val copyData = taskKey[Unit]("Copy .mm files to data directory")
+copyData := {
+  import Path._
+  val copyOptions = CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
+  println("Copying resources to data.")
+  List("mmkv", "load").foreach(dir => {
+    val src = (machine / Compile / resourceDirectory in Test).value / dir
+    val pairs = (src ** "*.mm").get() pair rebase(src, baseDirectory.value / "data")
+    IO.copy(pairs, copyOptions)
+  })
+  val images = List((machine / Compile / baseDirectory).value / "src" / "asciidoctor" / "images",
+    (machine / Compile / target).value / "asciidoctor" / "images")
+  println("Copying documentation images to target: " + images.head + " => " + images.tail.head)
+  IO.copyDirectory(images.head, images.tail.head, copyOptions)
+}
+(compile in Compile) := ((compile in Compile) dependsOn copyData).value
 makeSite := {
   (makeSite in machine).value
 }
+
 lazy val machine = (project in file("machine"))
   .settings(
     name := "machine",
