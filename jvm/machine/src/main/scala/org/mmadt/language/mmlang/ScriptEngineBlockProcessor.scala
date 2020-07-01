@@ -81,10 +81,14 @@ object ScriptEngineBlockProcessor {
     })
   }
   /*
+compile; assembly
+run ScriptEngineBlockProcessor.main()
+
 git commit -a -m "documentation processed and generated"
 git push
 git checkout gh-pages
 cp jvm/machine/target/asciidoctor/index.html .
+cp -rf jvm/machine/target/asciidoctor/images .
 git commit -a -m "documentation deployed to gh-pages"
 git push
 git checkout master
