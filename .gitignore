@@ -7,3 +7,4 @@ fileTemplates/
 html/
 .DS_Store
 .mmadt_history
+deploy-docs.sh

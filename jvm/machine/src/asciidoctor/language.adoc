@@ -34,8 +34,7 @@ That is, product and coproduct equality are defined via component equality.
 
 image::obj-type-value-q.png[role=left,padding-left=303,width=280]
 
-Everything that can be denoted in `mmlang` is an `obj`.
-Within the VM and outside the referential purview of an interfacing language, every `obj` is the product of
+Everything that can be denoted in `mmlang` is an `obj`. Within the VM and outside the referential purview of an interfacing language, every `obj` is the product of
 
 . An *object* that is either a *type* or a *value* and
 . A *quantifier* specifying the "amount" of objects being denoted.
@@ -46,8 +45,8 @@ Within the VM and outside the referential purview of an interfacing language, ev
 
 image::obj-type-q-value-q.png[float=right,width=450]
 
-This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring]. The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts.
-Thus, the previous formula can be rewritten as \[
+This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring]. The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts. Thus, the previous formula can be rewritten as
+\[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
 This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*.
@@ -65,14 +64,16 @@ int{5}           //<3>
 <2> A single `int` value of `1`.
 <3> Five `int` types.
 <4> Five `1` `int` values.
-<5> A type containing `'a'`,`'b'`, and `'a'` `str` values.
+<5> A `str` _stream_ containing `'a'`,`'b'`, and `'a'`.
+
+NOTE: The *stream* is a foundational concept in mm-ADT. It's algebraic properties are discussed at length when discussing values. In the meantime, note that a stream is an `obj`. A stream's type is the type of it's constituent values. A stream's quantifier is the sum of the quantifiers of it's constituent values. Streams are unordered and do not nest in that `{1,{2,3},4}` is equivalent to `{1,2,3,4}`.
 
 ==== Types and Values
 
-Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, every instruction operates on both types and values. Two interesting consequences are
+Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two notable consequences of computable types and values are
 
-. Compilation is the evaluation of a program with a type argument (\$ \tt{type} \rightarrow \tt{type} \rightarrow \tt{type} \$) and
-. Types serve as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions] during evaluation (\$ \tt{value} \rightarrow \tt{type} \rightarrow \tt{value} \$).
+. https://en.wikipedia.org/wiki/Compiler[Compilation] is the evaluation of a program (a type) with a type argument (\$ \tt{type} \rightarrow \tt{type} \rightarrow \tt{type} \$) and
+. Types serve as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions] when a value is applied (\$ \tt{value} \rightarrow \tt{type} \rightarrow \tt{value} \$).
 
 [exec]
 ----   
@@ -89,20 +90,21 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 |===
 |structure A | structure B | unification
 
-|type        | value      | quantifiers expand the cardinality of values and constrain the cardinality of types.
-|type        | variable   | types refer to a values across contexts and variables refer to values within contexts.
-|type        | AST        | a single https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] is used in compilation, optimization, and evaluation.
-|type        | function   | functions are (dependent) types with values generated at evaluation.
 |type        | program    | a program is a "complicated" type.
-|compilation | evaluation | compilations are type evaluations, where a compilation error is a "compilation runtime" error.
+|compilation | evaluation | compilations are https://en.wikipedia.org/wiki/Abstract_interpretation[type evaluations], where a compilation error is a "type runtime" error.
+|type        | value      | quantifiers expand the cardinality of values and constrain the cardinality of types.
+|type        | variable   | (non-dependent) types refer to values across contexts and variables refer to values within a context.
+|type        | https://en.wikipedia.org/wiki/Abstract_syntax_tree[AST]        | a single https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] is used in compilation, optimization, and evaluation.
+|type        | function   | functions are (dependent) types with values generated at evaluation.
 |state       | trace      | types and values both encode state information in their process traces.
 |classical   | quantum    | quantum computing is classical computing with a unitary matrix quantifier ring.
-|canonical   | atomics    | atomic values and canonical types are both "tokens" by which all constructions are built.
+|canonical   | atomics    | atomic values and canonical types are both "tokens" by which all other constructs are built.
 |===
 
 === The Type
 
-An `obj` was previously defined as \[
+An `obj` was previously defined as
+\[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
 
@@ -121,7 +123,7 @@ The ctypes are https://en.wikipedia.org/wiki/Nominal_type_system[nominal types].
 
 image::type-product.png[float=right,width=295]
 
-The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. The path back to a type's base ctype is called the type's *trace*. Formally, the type coproduct is defined as
+The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. Formally, the type coproduct is defined as
 
 \[
 \begin{split}
@@ -130,7 +132,9 @@ The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural t
 
 where each component of the coproduct also has a respective quantifier as previously defined for all `objs`.
 
-A dtype has two \$pi\$-projections. The type projection denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the instruction projection denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
+NOTE: Every `obj` has an associated quantifier. The coupling of objects and quantifiers may not always be apparent, especially when not discussing quantifiers in particular. When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity]. More specifically, the `real` `1.35{1}` is written `1.35`.
+
+A dtype has two product projections. The _type projection_ denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the _instruction projection_ denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the aforementioned component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
 \[
 \begin{split}
 \tt{type} &=\;& (\tt{type} &\;\times\;& \tt{inst}) &\;+\;& \tt{ctype} \\ \text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"} \end{split}
@@ -140,33 +144,38 @@ The implication of the dtype product is that mm-ADT types are generated https://
 
 image::ctype-dtype.png[align=center,width=230]
 
-For example, `int` is a ctype denoting a single `int` value from the set of all integers. When the instruction `[is>0]` is applied to `int`, the dtype `int[is>0]` is formed, where `[is>0]` is https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugar] for `[is,[gt,0]]`. This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$.
-In terms of the "__range = domain and function__" reading, when an `int` (*domain*) is applied to `[is>0]` (*function*), the result is an `int` greater than zero (*range*).
+For example, `int` is a ctype denoting a single `int` value from the set of all integers. When `int` is applied to the instruction `[is>0]`, the dtype `int{?}\<=int[is>0]` is formed, where `[is>0]` is https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugar] for `[is,[gt,0]]`. This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$. In terms of the "__range = domain and function__" reading, when an `int` (*domain*) is applied to `[is>0]` (*function*), the result is either an `int` greater than zero or no `int` at all (*range*).
 
-image::int_isgt0.png[align=center,width=260]
+image::int_isgt0.png[align=center,width=230]
 
-The diagram above is an instance of a structure that is core to various aspects of mm-ADT including type checking, type inference, compiler optimization, garbage collection, and more. It has a name. It's called a *type graph*.
+The diagram above is an instance of a structure that is core to various aspects of mm-ADT including https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. It has a name. The *obj graph* for which the subgraph concerned with type specification is called the *type graph* such that
+\[
+G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
+\]
+The `obj` graph will be studied at length from the perspective of https://en.wikipedia.org/wiki/Cayley_graph[Cayley graphs], where the `obj` graph is understood as a ring-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] Cayley graph.
 
 ==== Type Structure
 
 image::obj-full.png[float=right,width=320]
 
-The full `obj` structure thus far is diagrammed on the right and some type examples are presented in `mmlang` on the left.
+The full `obj` structure thus far is diagrammed on the right. On the left, some `mmlang` examples are presented.
 
 [exec]
 ----
-int                                    //<1>
-int{2}                                 //<2>
-int{2}[is>0]                           //<3>
+int                          //<1>
+int{2}                       //<2>
+int{2}[is>0]                 //<3>
+int{2}[is>0][mult,[neg]]     //<4>
 ----
-<1> A ctype denoting a single integer stream.
-<2> A ctype denoting a stream with two integers.
-<3> A dtype denoting a zero, one, or two integers.
+<1> A ctype denoting a single integer.
+<2> A ctype denoting two integers.
+<3> A dtype denoting zero, one, or two integers greater than 0.
+<4> A dtype extending the previous type by their negative complement.
 
-The salient features of a type are captured in the psuedo-`mmlang` expression below, where the three projections encode a type's
+The salient features of a type are captured in the pseudo-`mmlang` expression below, where the three projections encode a type's
 
 . *Type signature*: the ctype specification of a type's domain and range (via the \$ \pi_\tt{domai\n} \$ and \$ \pi_\tt{rang\e} \$ projections), and
-. *Type definition*: an instruction sequence specifying domain `obj` processes (via the \$ \pi_\tt{i\nsts} \$ projection).
+. *Type definition*: an instruction sequence specifying a process on the domain `obj` (via the \$ \pi_\tt{i\nsts} \$ projection).
 
 image::type-signature-definition.png[align=center,width=650]
 
