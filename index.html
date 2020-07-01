@@ -737,137 +737,6 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
           <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">q</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">repeat</span><span style="color:#710">'</span></span> |<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">split</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">start</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">tail</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">to</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">trace</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">zero</span><span style="color:#710">'</span></span></code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables:</p>
-</div>
-<table class="tableblock frame-none grid-none small" style="width: 25%;">
-<colgroup>
-<col style="width: 66.6666%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">variable</th>
-<th class="tableblock halign-left valign-top">range</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>o1</code>, <code>o2</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>objs</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t1</code>, <code>t2</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>v1</code>, <code>v2</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">values</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a]</code>, <code>[b]</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">instructions</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{q1}</code>, <code>{q2}</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">quantifiers</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">id</span>(t1)                    := t1&lt;=t1[<span style="color:#369;font-weight:bold">id</span>]
-domain(t1)                := t1
-<span style="color:#369;font-weight:bold">range</span>(t1)                 := t1
-domain(t2&lt;=t1[a])         := t1
-<span style="color:#369;font-weight:bold">range</span>(t2&lt;=t1[a])          := t2</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The quantifiers of an <code>mmlang</code> program are elements of a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> called the <em>quantifier ring</em>. In the equations to follow, <code>*</code> and <code>+</code> refer to the respective monoid and group operations the quantifier ring.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>obj</code> magma juxtapositions, where instructions <code>[a]</code>, <code>[b]</code>, etc. act as <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">functions</a> on values and as free monoid concatenation on types. The particulars <code>objs</code> that are yielded juxtaposing an <code>obj</code> to the left of a type are forthcoming.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">v1{q1}                v2{q2}               := v2{q1*q2}
-v1{q1}                t2{q2}&lt;=t1[a][b]     := b(a(v1)){q1*q2}
-t2{q1}&lt;=t1[a][b]      t3{q2}&lt;=t2[c][d]     := t3{q1*q2}&lt;=t1[a][b][c][d]
-t2{q1}&lt;=t1[a][b]      v1{q2}               := v1{q1*q2}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>inst</code> instructions denote functions that operate on <code>objs</code>. The particular of each instruction is forthcoming. The branch instructions denote flow control operations that mirror the type ringoid where <code>[compose]</code> is <code>*</code>, <code>[branch]</code> is <code>+</code>, and <code>[choose]</code> is <code>|</code>.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">v1{q1}[compose,t2{q2}&lt;=t1[a][b],t3{q3}&lt;=t2[c][d]]]     := t3{q1*q2*q3}&lt;=t1[a][b][c][d](v1)
-v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1),t2{q1*q2}&lt;=t1[c][d](v1)
-v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[a][b]]       := t2{q1*(q2+q3)}&lt;=t1[a][b][c][d](v1)
-v1{q1}[choose,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1) | t2{q1*q2}&lt;=t1[c][d](v1)
-v1{q1}[repeat,[obj{<span style="color:#F00;background-color:#FAA">?</span>}-&gt;{<span style="color:#00D">0</span>},obj{<span style="color:#F00;background-color:#FAA">?</span>}-&gt;<span style="color:#369;font-weight:bold">type</span>,n]]            := ...</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>polys</code> are the free algebra of the branch operations encoded in <code>mmlang</code> itself. Thus, the <code>inst</code> branch rules above are mirrored in the <code>poly</code> compositions below.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">(t2{q1}&lt;=t1[a][b];t3{q2}&lt;=t2[c][d])  := t3{q1*q2}[a][b][c][d]
-(t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d])  := t2{q1+q2}&lt;=t1[branch,t2{q1}&lt;=t1[a][b],t2{q1}&lt;=t1[c][d]]
-(t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[a][b])  := t2{q1+q2}&lt;=t1[a][b]
-(t2{q1}&lt;=t1[a][b]|t2{q2}&lt;=t1[c][d])  := t2{<span style="color:#369;font-weight:bold">min</span>(q1,q2),<span style="color:#369;font-weight:bold">max</span>(q1,q2)}&lt;=t1[choose,t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d]]</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The non-branching <code>inst</code> instructions are the functional primitives that are composed to create mm-ADT programs.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">obj    <span style="color:#369;font-weight:bold">type</span>                     := operation <span style="color:#080;font-weight:bold">or</span> equivalence
---------------------------------------------------------
-o1     <span style="color:#369;font-weight:bold">bool</span>&lt;=obj[a,o2]          := o1.test(o2)
-bool1  <span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>[<span style="color:#080;font-weight:bold">and</span>,bool2]    := bool1 &amp; bool2
-o1{q1} <span style="color:#369;font-weight:bold">int</span>&lt;=obj[count]          := q1
-o1     <span style="color:#369;font-weight:bold">bool</span>&lt;=obj[eq,o2]         := o1 == o2
-t1     <span style="color:#369;font-weight:bold">str</span>&lt;=obj[explain]        ...
-...</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The type-oriented <code>inst</code> instructions specify the typing rules, where the <code>_</code> symbol refers to the <em>anonymous type</em>. These equations are presented using the <code>obj</code> magma&#8217;s juxtaposition.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">t1    _                     := t1
-t1    _[a][b]               := b(a(t1))&lt;=t1[a][b]
-o1    [a,_]                 := true
-o1    [a,o1]                := true
-o1{<span style="color:#00D">0</span>} [a,{<span style="color:#00D">0</span>}]               := true
-o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</code></pre>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -3475,6 +3344,137 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 </div>
 </div>
 <iframe src="images/reference/mmlang-ebnf.html" width="100%" height="1000px"></iframe>
+<div class="paragraph">
+<p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables:</p>
+</div>
+<table class="tableblock frame-none grid-none small" style="width: 25%;">
+<colgroup>
+<col style="width: 66.6666%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">variable</th>
+<th class="tableblock halign-left valign-top">range</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>o1</code>, <code>o2</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>objs</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t1</code>, <code>t2</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>v1</code>, <code>v2</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">values</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a]</code>, <code>[b]</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">instructions</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{q1}</code>, <code>{q2}</code>, &#8230;&#8203;</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">quantifiers</p></td>
+</tr>
+</tbody>
+</table>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">id</span>(t1)                    := t1&lt;=t1[<span style="color:#369;font-weight:bold">id</span>]
+domain(t1)                := t1
+<span style="color:#369;font-weight:bold">range</span>(t1)                 := t1
+domain(t2&lt;=t1[a])         := t1
+<span style="color:#369;font-weight:bold">range</span>(t2&lt;=t1[a])          := t2</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The quantifiers of an <code>mmlang</code> program are elements of a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> called the <em>quantifier ring</em>. In the equations to follow, <code>*</code> and <code>+</code> refer to the respective monoid and group operations the quantifier ring.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>obj</code> magma juxtapositions, where instructions <code>[a]</code>, <code>[b]</code>, etc. act as <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">functions</a> on values and as free monoid concatenation on types. The particulars <code>objs</code> that are yielded juxtaposing an <code>obj</code> to the left of a type are forthcoming.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">v1{q1}                v2{q2}               := v2{q1*q2}
+v1{q1}                t2{q2}&lt;=t1[a][b]     := b(a(v1)){q1*q2}
+t2{q1}&lt;=t1[a][b]      t3{q2}&lt;=t2[c][d]     := t3{q1*q2}&lt;=t1[a][b][c][d]
+t2{q1}&lt;=t1[a][b]      v1{q2}               := v1{q1*q2}</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>inst</code> instructions denote functions that operate on <code>objs</code>. The particular of each instruction is forthcoming. The branch instructions denote flow control operations that mirror the type ringoid where <code>[compose]</code> is <code>*</code>, <code>[branch]</code> is <code>+</code>, and <code>[choose]</code> is <code>|</code>.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">v1{q1}[compose,t2{q2}&lt;=t1[a][b],t3{q3}&lt;=t2[c][d]]]     := t3{q1*q2*q3}&lt;=t1[a][b][c][d](v1)
+v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1),t2{q1*q2}&lt;=t1[c][d](v1)
+v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[a][b]]       := t2{q1*(q2+q3)}&lt;=t1[a][b][c][d](v1)
+v1{q1}[choose,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1) | t2{q1*q2}&lt;=t1[c][d](v1)
+v1{q1}[repeat,[obj{<span style="color:#F00;background-color:#FAA">?</span>}-&gt;{<span style="color:#00D">0</span>},obj{<span style="color:#F00;background-color:#FAA">?</span>}-&gt;<span style="color:#369;font-weight:bold">type</span>,n]]            := ...</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The <code>polys</code> are the free algebra of the branch operations encoded in <code>mmlang</code> itself. Thus, the <code>inst</code> branch rules above are mirrored in the <code>poly</code> compositions below.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">(t2{q1}&lt;=t1[a][b];t3{q2}&lt;=t2[c][d])  := t3{q1*q2}[a][b][c][d]
+(t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d])  := t2{q1+q2}&lt;=t1[branch,t2{q1}&lt;=t1[a][b],t2{q1}&lt;=t1[c][d]]
+(t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[a][b])  := t2{q1+q2}&lt;=t1[a][b]
+(t2{q1}&lt;=t1[a][b]|t2{q2}&lt;=t1[c][d])  := t2{<span style="color:#369;font-weight:bold">min</span>(q1,q2),<span style="color:#369;font-weight:bold">max</span>(q1,q2)}&lt;=t1[choose,t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d]]</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The non-branching <code>inst</code> instructions are the functional primitives that are composed to create mm-ADT programs.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">obj    <span style="color:#369;font-weight:bold">type</span>                     := operation <span style="color:#080;font-weight:bold">or</span> equivalence
+--------------------------------------------------------
+o1     <span style="color:#369;font-weight:bold">bool</span>&lt;=obj[a,o2]          := o1.test(o2)
+bool1  <span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>[<span style="color:#080;font-weight:bold">and</span>,bool2]    := bool1 &amp; bool2
+o1{q1} <span style="color:#369;font-weight:bold">int</span>&lt;=obj[count]          := q1
+o1     <span style="color:#369;font-weight:bold">bool</span>&lt;=obj[eq,o2]         := o1 == o2
+t1     <span style="color:#369;font-weight:bold">str</span>&lt;=obj[explain]        ...
+...</code></pre>
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>The type-oriented <code>inst</code> instructions specify the typing rules, where the <code>_</code> symbol refers to the <em>anonymous type</em>. These equations are presented using the <code>obj</code> magma&#8217;s juxtaposition.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">t1    _                     := t1
+t1    _[a][b]               := b(a(t1))&lt;=t1[a][b]
+o1    [a,_]                 := true
+o1    [a,o1]                := true
+o1{<span style="color:#00D">0</span>} [a,{<span style="color:#00D">0</span>}]               := true
+o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</code></pre>
+</div>
+</div>
 </div>
 <div class="sect2">
 <h3 id="_instructions">Instructions</h3>
@@ -3589,7 +3589,7 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-01 14:09:00 -0600
+Last updated 2020-07-01 15:27:54 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
