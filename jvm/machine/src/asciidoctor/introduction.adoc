@@ -87,11 +87,12 @@ mmlang>
 A simple console session is presented below, where the parser expects programs written in the language specified left of the `>` prompt.
 All the examples contained herein are presented using `mmlang`.
 
-[source]
+[exec]
 ----
 1
 1+2
 1[plus,2]
+5
 ----
 
 ==== mmlang Syntax and Semantics

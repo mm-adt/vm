@@ -33,7 +33,7 @@ lazy val machine = (project in file("machine"))
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
     scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"), "scm:git:git@github.com:mm-adt/vm.git")),
-    excludeFilter in ghpagesCleanSite := ((_: File) => true)
+    excludeFilter in ghpagesCleanSite := ((f: File) => f.getName.contains("index"))
   )
   .enablePlugins(AssemblyPlugin)
   .enablePlugins(AsciidoctorPlugin)

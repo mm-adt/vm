@@ -23,57 +23,46 @@
 package org.mmadt.language.mmlang
 import java.io.File
 
-import org.asciidoctor.{Asciidoctor, OptionsBuilder, SafeMode}
-import org.asciidoctor.ast.{Document, StructuralNode}
-import org.asciidoctor.extension.Treeprocessor
+import org.asciidoctor.ast.{ContentModel, StructuralNode}
+import org.asciidoctor.extension.{BlockProcessor, Contexts, Name, Reader}
 import org.asciidoctor.jruby.{AsciiDocDirectoryWalker, DirectoryWalker}
-import org.mmadt.language.LanguageFactory
+import org.asciidoctor.{Asciidoctor, OptionsBuilder, SafeMode}
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.{LanguageFactory, Tokens}
 
-import scala.util.Try
+import scala.collection.JavaConverters
 
-class SourceBlockProcessor(config: java.util.Map[String, Object]) extends Treeprocessor(config) {
+@Name("exec")
+@Contexts(Array(Contexts.LISTING))
+@ContentModel(ContentModel.RAW)
+class SourceBlockProcessor(astring: String, config: java.util.Map[String, Object]) extends BlockProcessor {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
-  override def process(document: Document): Document = {
-   println("HADSFDSFDASFDSFADS")
-    touch(document);
-    document;
-  }
-  def touch(block: StructuralNode): Unit = {
-    if (block.getBlocks != null) {
-      val blocks = block.getBlocks
-      for (i <- 0 until blocks.size()) {
-        val z = blocks.get(i)
-        if (z.getStyle == "source" && !z.getAttributes.keySet().contains("language")) {
-          println(z.getAttributes())
-          Try[Unit] {
-            val builder: StringBuilder = new StringBuilder
-            z.getContent.toString.split("\n").foreach(w => {
-              builder.append("mmlang> ").append(w).append("\n")
-              engine.eval(w).toStrm.values.foreach(a => {
-                builder.append("==>").append(a).append("\n")
-              })
-            })
-            blocks.set(i, createBlock(z, z.getContext, builder.toString()))
-          }.getOrElse(int(1))
-        }
-        touch(z)
-      }
-    }
+  override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
+    val builder: StringBuilder = new StringBuilder
+    JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
+      builder.append("mmlang> ").append(w).append("\n")
+      engine.eval(w).toStrm.values.foreach(a => {
+        builder.append(Tokens.RRDARROW).append(a).append("\n")
+      })
+    })
+    println(builder)
+    this.createBlock(parent, "listing", builder.toString(), JavaConverters.mapAsJavaMap(Map[String, Object]("style" -> "source", "language" -> "python")))
   }
 }
 object SourceBlockProcessor {
-
+  val source: String = "machine/src/asciidoctor/"
+  val target: String = "machine/target/asciidoctor/"
   def main(args: Array[String]): Unit = {
     val asciidoctor = Asciidoctor.Factory.create()
-    val directoryWalker: DirectoryWalker = new AsciiDocDirectoryWalker("/Users/marko/software/mmadt/vm/jvm/machine/src/asciidoctor/");
+    val directoryWalker: DirectoryWalker = new AsciiDocDirectoryWalker(source);
     val asciidocFiles = directoryWalker.scan();
-    asciidocFiles.stream().filter(z => z.getName.contains("introduction")).forEach(x => {
-      println(x)
-      asciidoctor.javaExtensionRegistry.treeprocessor(classOf[SourceBlockProcessor])
-      asciidoctor.convertFile(x, OptionsBuilder.options().toDir(new File("/Users/marko/software/mmadt/vm/jvm/machine/target/asciidoctor")).safe(SafeMode.UNSAFE).toFile(true))
-      asciidoctor.convertFile(x, OptionsBuilder.options().toDir(new File("/Users/marko/software/mmadt/vm/jvm/machine/target/site")).safe(SafeMode.UNSAFE).toFile(true))
+    JavaConverters.collectionAsScalaIterable[File](asciidocFiles).map(z => {
+      println("Current file: " + z)
+      z
+    }).filter(z => Set("index.adoc").contains(z.getName)).foreach(z => {
+      println("Processing file: " + z)
+      asciidoctor.javaExtensionRegistry.block(classOf[SourceBlockProcessor])
+      asciidoctor.convertFile(z, OptionsBuilder.options().toDir(new File(target)).safe(SafeMode.UNSAFE).mkDirs(true).toFile(true))
     })
   }
 }
