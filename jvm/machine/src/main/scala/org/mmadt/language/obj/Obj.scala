@@ -79,7 +79,6 @@ trait Obj
   }
   def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type = {
-    // LanguageException.testTypeCheck(domainType,asType(this))
     if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert(), domainType.via._2))
   }
@@ -149,6 +148,8 @@ trait Obj
   def compute[E <: Obj](rangeType: E): E = rangeType match {
     case _: Type[E] if __.isAnonRoot(this) && rangeType.root => rangeType.hardQ(multQ(this, rangeType))
     case _: Type[E] =>
+      if (this.isInstanceOf[Type[_]] && this.root && rangeType.root)
+        LanguageException.testTypeCheck(this.hardQ(1), asType(rangeType).hardQ(1))
       Tokens.tryName[E](rangeType, rangeType.trace
         .headOption
         .map(x => x._2.exec(this))

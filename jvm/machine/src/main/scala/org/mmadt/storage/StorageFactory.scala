@@ -143,6 +143,7 @@ object StorageFactory {
     case _: Lst[_] => Tokens.lst
     case _: Rec[_, _] => Tokens.rec
     case _: __ => Tokens.anon
+    case _ => Tokens.obj
   }
   def toBaseName[A <: Obj](obj: A): A = obj.clone(name = baseName(obj))
   def asType[O <: Obj](obj: O): OType[O] = (obj match {

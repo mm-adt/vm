@@ -61,6 +61,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertThrows[LanguageException] {
       engine.eval("3[mult,42.5]")
     }
+    assertThrows[LanguageException] {
+      println(engine.eval("bool<=int"))
+    }
     //TODO
   }
 

@@ -162,10 +162,10 @@ The full `obj` structure thus far is diagrammed on the right. On the left, some 
 
 [exec]
 ----
-int                          //<1>
-int{2}                       //<2>
-int{2}[is>0]                 //<3>
-int{2}[is>0][mult,[neg]]     //<4>
+int                                       //<1>
+int{2}                                    //<2>
+int{2}[is>0]                              //<3>
+int{2}[is>0][mult,[neg]]                  //<4>
 ----
 <1> A ctype denoting a single integer.
 <2> A ctype denoting two integers.
@@ -181,15 +181,23 @@ image::type-signature-definition.png[align=center,width=650]
 
 ===== Type Signature
 
-Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type and the _range_ is the target type. Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`.
-The general pattern of a type signature is
+Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type and the _range_ is the target type. Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`. The general pattern of a type signature is
 
 [.text-center]
 `range{q}\<=domain{q}`.
 
+NOTE: In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ and a range of \$Y\$, then it's signature is denoted \$f: X \to Y\$. Furthermore, given quantifiers from a ring \$Q\$, the function signature would be denoted \$f: X \times Q \to Y \times Q\$.
+
 [cols="6,10"]
 |===
 |mmlang Expression |Description
+
+a|
+[exec]
+----
+int<=int
+----
+|From the perspective of "type-as-function," An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `\<=` and repeated type are not displayed. That is `int\<=int` is more concisely displayed as `int`.
 
 a|
 [source]
@@ -206,20 +214,6 @@ Such https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declaratio
 a|
 [exec]
 ----
-int<=int
-----
-|From the perspective of "type-as-function," An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `\<=` and repeated type are not displayed. That is `int\<=int` is more concisely displayed as `int`.
-
-a|
-[exec]
-----
-int<=bool
-----
-|Type's that are fully specified by their type signature are always canonical types. Therefore, `bool\<=int` is meaningless as there are no instructions to map an `int` to a `bool`.
-
-a|
-[exec]
-----
 int{5}
 ----
 |`int{5}` is a type referring to 5 integers. As a point of comparison, `int` refers to a single integer. This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
@@ -231,15 +225,23 @@ int{0,5}
 int{0,5}<=int{0,5}
 ----
 |Quantifiers must be elements from a ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] is two integers and represents uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
+
+a|
+[exec]
+----
+int<=bool
+----
+|Types that are fully specified by their type signature are always canonical types. Therefore, `bool\<=int` is meaningless as there are no instructions to map an `int` to a `bool`. This example does not assume an underlying _model_. When model-ADTs are defined, it is possible for `bool\<=int` to yield a result.
+
 |===
 
 ===== Type Definition
 
-Types and values both have a *ground* that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`. For a type, this history is called the *type definition* (and more generally, the *type's trace*) and is a subgraph of a larger *type graph*.
+Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`. For a type, this history is called the *type definition* and is a subgraph of the larger type graph (which is a subgraph of an even larger `obj` graph).
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _trace_.
 
-image::type-value-trace.png[align=center,width=550]
+image::type-value-trace.png[align=center,width=650]
 
 [exec]
 ----
@@ -249,6 +251,8 @@ image::type-value-trace.png[align=center,width=550]
 ----
 
 Both types and values exist in a larger graph called the *obj graph* for which a type's type graph is a component. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that are no longer required by the program. This process is called *trace retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
+
+NOTE: image:type-value-trace-short.png[float=right,width=370] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels can be shortened to type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously deduced by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). The above diagram's more concise representation is on the right. All subsequent diagrams will follow this convention.
 
 ===== Type Quantification
 
@@ -265,9 +269,7 @@ Thus, besides labels, two initials are isomorphic.
 
 image::terminal.png[width=130,float=right]
 
-A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
-Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
-Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
 
 &nbsp;
 ****
@@ -287,18 +289,7 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 |any footnote:order[]           |`{*}`  | `{1,max}`
 |===
 
-In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated quantifier `q`. Quantifiers are typically integers, but can be any element from an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, unitary matrices, etc.). While integer quantifiers signify "amount," other quantifiers such as https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices] used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description.
-
-Common programming concepts that are usually captured by typeclasses or functors (via https://en.wikipedia.org/wiki/Lift_(mathematics)[lifting]) are expressed in mm-ADT via quantification.
-
-[source]
-----
-int                               // a single int   (some)
-int{?}<=int[is,[gt,0]]            // 0 or 1 int     (option)
-int{0}<=int[is,false]             // 0 ints         (none)
-int{4}<=int{2}[branch,[id],[id]]  // 4 ints         (exact)
-int{*}<=[=db][get,'people']       // 0 or more ints (any)
-----
+In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated quantifier `q` denoted `{q}` in `mmlang`. Quantifiers are typically integers, but can be any element from an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.). While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as values can be negative where `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
 
 The default quantifier ring of the mm-ADT VM is
 \[
@@ -309,6 +300,29 @@ where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the addi
 One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial object].
 
 NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}` or `{0}` (the *zero object*).
+
+Common programming concepts that are usually captured by typeclasses or functors (via https://en.wikipedia.org/wiki/Lift_(mathematics)[lifting]) are expressed in mm-ADT via quantification.
+
+[source]
+----
+int                                   // a single int    (some)
+int{?}<=int[is,[gt,0]]                // 0 or 1 int      (option)
+int{0}<=int[is,false]                 // 0 ints          (none)
+int{4}<=int{2}[_,_]                   // 4 ints          (exact)
+int{*}<=[=db][get,'people'][age]      // 0 or any ints   (any)
+----
+
+The mm-ADT VM compiler translates an `mmlang` expression to a subgraph of the larger Cayley type graph. The compiler then walks that subgraph from root to leaves filling in any information that was not specified in the original expression. This technique is made salient in the compiler field of https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation]. Amongst other benefits, it allows users to write expressions containing few types and quantifiers as they can be deduced by the type graph structure. This is called https://en.wikipedia.org/wiki/Type_inference[type inference]. The expressions above are rewritten below in order to demonstrate mm-ADT inferencing.
+
+[exec]
+----
+int
+int[is>0]
+int[is,false]
+int{2}[_,_]
+----
+
+
 
 ==== Mono Types
 
