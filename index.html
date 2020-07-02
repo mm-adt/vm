@@ -1443,7 +1443,7 @@ mmlang&gt; int{2}[_,_]
 </div>
 <div class="sect3">
 <h4 id="_mono_types">Mono Types</h4>
-<table class="tableblock frame-all grid-all right small" style="width: 35%;">
+<table class="tableblock frame-all grid-all right" style="width: 35%;">
 <colgroup>
 <col style="width: 16.6666%;">
 <col style="width: 50%;">
@@ -1486,9 +1486,9 @@ mmlang&gt; int{2}[_,_]
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT atomic, non-composite types are denoted <code>mono</code>. There are 4 <code>mono</code> types: <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>. The associated table presents the typical operators (sugar&#8217;d instructions) that can be applied to each type as well as the identity (additive) and annihilator (multiplicative) values of the type. This section will present example uses of each type.</p>
+<p>The mm-ADT type system can be partitioned into <strong>mono types</strong> (<a href="https://en.wikipedia.org/wiki/Monomial">monomials</a>) and <strong>poly types</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>). The <code>mono</code> types are <a href="https://en.wikipedia.org/wiki/Primitive_data_type">atomic</a> and there are 4 of them: <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>. The associated table presents the typical operators (<a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugared</a> instructions) that can be applied to each <code>mono</code>. The table also includes the additive (<strong>0</strong>) (additive) and multiplicative (<strong>1</strong>) <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> values of each <code>mono</code>. The remaining subsections will present examples of each <code>mono</code> type that also highlight important mm-ADT concepts.
+'''</p>
 </div>
-<hr>
 <div class="sect4">
 <h5 id="_bool_type">Bool Type</h5>
 <div class="paragraph">
@@ -3662,7 +3662,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-02 05:48:52 -0600
+Last updated 2020-07-02 10:57:54 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
