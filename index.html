@@ -1491,18 +1491,54 @@ mmlang&gt; int{2}[_,_]
 <hr>
 <div class="sect4">
 <h5 id="_bool_type">Bool Type</h5>
+<div class="paragraph">
+<p>The type <code>bool</code> has two values: <code>true</code> and <code>false</code>. The <strong>0</strong>-value is <code>false</code> and the <strong>1</strong>-value is <code>true</code>, where <code>[zero]</code> and <code>[one]</code> yield values regardless of their input.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; bool[zero]
 ==&gt;false
 mmlang&gt; bool[one]
 ==&gt;true
-mmlang&gt; bool[and,[zero],[one]]
+mmlang&gt; true[zero]
 ==&gt;false
-mmlang&gt; bool[or,[zero],[one]]
+mmlang&gt; true[one]
 ==&gt;true
-mmlang&gt; bool[and,&gt;5,&lt;8]
-==&gt;bool[and,bool[gt,5],bool[lt,8]]
+mmlang&gt; false[zero]
+==&gt;false
+mmlang&gt; false[one]
+==&gt;true</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image left"><img src="./images/language/bool-zero-one.png" alt="bool zero one" width="265"></span> When an <code>obj</code> is applied to an <code>inst</code>, the <code>inst</code> yields an <code>obj</code>. In mm-ADT, types and values are simply vertices in the <code>obj</code> graph. A <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a> <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> <code>inst</code> such as <code>[zero]</code> and <code>[one]</code> require only the domain&#8217;s type to produce a respective constant value. Consequently, the distinction between compilation and evaluation blur. That is, "compilation" can produce values and thus, the program is complete before being "evaluated." This idea is exaggerated in the example below, where from the <code>bool</code> ctype, instructions are applied one-by-one to demonstrate how the type&#8217;s definition (a path in the Cayley <code>obj</code> graph) yields a <code>false</code> value. At <code>[zero]</code>, the process transitions from the type graph to the value graph which are both connected subgraphs of the larger <code>obj</code> graph. The final instruction, <code>[and,bool,bool]</code>, is compiled to <code>[and,false,false]</code> which results in <code>false</code>. Thus, a single "compilation" automata is able to derive the result set.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; bool
+==&gt;bool
+mmlang&gt; bool[or,bool,bool]
+==&gt;bool[or,bool,bool]
+mmlang&gt; bool[or,bool,bool][zero]
+==&gt;false
+mmlang&gt; bool[or,bool,bool][zero][and,bool,bool]
+==&gt;false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The instructions <code>[and]</code> and <code>[or]</code> create <code>bool</code> dtypes from type. Their type structures are</p>
+</div>
+<div class="paragraph text-center">
+<p><code>bool{q}&lt;=obj{q}[and,bool*]</code><br>
+<code>bool{q}&lt;=obj{q}[or, bool*]</code>.</p>
+</div>
+<div class="paragraph">
+<p>The domain <code>obj</code> becomes the domain of the respective <code>bool</code> arguments and the resultant (con/dis)junction of the <code>bool</code> arguments determines the range <code>bool</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[and,&gt;5,&lt;8]
+==&gt;bool&lt;=int[and,bool&lt;=int[gt,5],bool&lt;=int[lt,8]]
 mmlang&gt; {9,6}[and,&gt;5,&lt;8]
 ==&gt;false
 ==&gt;true
@@ -3630,7 +3666,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-02 04:01:09 -0600
+Last updated 2020-07-02 04:07:51 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
