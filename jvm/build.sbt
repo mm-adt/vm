@@ -12,18 +12,27 @@ Compile / compileOrder := CompileOrder.JavaThenScala
 val copyData = taskKey[Unit]("Copy .mm files to data directory")
 copyData := {
   import Path._
-  val copyOptions = CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false)
   println("Copying resources to data.")
   List("mmkv", "load").foreach(dir => {
     val src = (machine / Compile / resourceDirectory in Test).value / dir
     val pairs = (src ** "*.mm").get() pair rebase(src, baseDirectory.value / "data")
-    IO.copy(pairs, copyOptions)
+    IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
   })
+
+}
+val deployDocs = taskKey[Unit]("Deploy documentation to GitHub pages")
+deployDocs := {
   val images = List((machine / Compile / baseDirectory).value / "src" / "asciidoctor" / "images",
     (machine / Compile / target).value / "asciidoctor" / "images")
   println("Copying documentation images to target: " + images.head + " => " + images.tail.head)
-  IO.copyDirectory(images.head, images.tail.head, copyOptions)
+  IO.copyDirectory(
+    images.head,
+    images.tail.head,
+    CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
+  // set the main class for the main 'sbt run' task
+  // (runMain in Compile).toTask(" org.mmadt.language.mmlang.StorageEngineBlockProcessor").value
 }
+
 (compile in Compile) := ((compile in Compile) dependsOn copyData).value
 makeSite := {
   (makeSite in machine).value
@@ -52,7 +61,7 @@ lazy val machine = (project in file("machine"))
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
     scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"), "scm:git:git@github.com:mm-adt/vm.git")),
-    excludeFilter in ghpagesCleanSite := ((f: File) => f.getName.contains("index"))
+    excludeFilter in ghpagesCleanSite := ((f: File) => f.getName.contains("index")),
   )
   .enablePlugins(AssemblyPlugin)
   .enablePlugins(AsciidoctorPlugin)

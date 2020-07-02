@@ -40,7 +40,7 @@ import scala.util.{Failure, Success, Try}
 class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, Object]) extends BlockProcessor {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
   val style = "source"
-  val language = "python"
+  val language = "mmlang"
   val prompt = "mmlang> "
   override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
     val builder: StringBuilder = new StringBuilder

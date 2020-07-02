@@ -40,12 +40,8 @@ trait IsOp {
 }
 object IsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other.asInstanceOf[O])), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val arg = inst.arg0[Obj]
-    arg match {
-      case avalue: BoolValue => if (avalue.g) start.via(start, inst) else start.via(start, inst).hardQ(qZero)
-      case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
-    }
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.arg0[Obj] match {
+    case avalue: BoolValue => if (avalue.g) start.via(start, inst) else start.via(start, inst).hardQ(qZero)
+    case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
   }
 }
-
