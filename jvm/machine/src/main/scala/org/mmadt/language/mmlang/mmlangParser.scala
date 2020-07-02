@@ -108,7 +108,7 @@ class mmlangParser extends JavaTokenParsers {
       (parser <~ Tokens.->) ~ parser ^^ (x => (Tokens.`,`, Map(x._1 -> x._2)))
 
   // type parsing
-  lazy val objType: Parser[Obj] = dType | anonTypeSugar
+  lazy val objType: Parser[Obj] = aType | anonTypeSugar
   lazy val tobjType: Parser[Type[Obj]] = Tokens.obj ^^ (_ => StorageFactory.obj)
   lazy val anonType: Parser[__] = Tokens.anon ^^ (_ => __)
   lazy val boolType: Parser[BoolType] = Tokens.bool ^^ (_ => bool)
@@ -122,9 +122,10 @@ class mmlangParser extends JavaTokenParsers {
   lazy val tokenType: Parser[__] = varName ^^ (x => __(x))
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val dType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ {
-    case Some(range) ~ domain ~ insts => range <= insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
-    case None ~ domain ~ insts => insts.flatten.foldLeft(domain.asInstanceOf[Obj])((x, y) => y.exec(x))
+  lazy val dtype: Parser[Obj] = cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ (x => x._2.flatten.foldLeft(x._1.asInstanceOf[Obj])((x, y) => y.exec(x)))
+  lazy val aType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ dtype ^^ {
+    case Some(range) ~ domain => range <= domain
+    case None ~ domain => domain
   }
   lazy val anonQuant: Parser[__] = quantifier ^^ (x => new __().q(x))
   lazy val anonTypeSugar: Parser[__] = rep1[List[Inst[Obj, Obj]]](inst) ^^ (x => x.flatten.foldLeft(new __())((a, b) => a.clone(via = (a, b))))
@@ -146,7 +147,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val inst: Parser[List[Inst[Obj, Obj]]] = (
     sugarlessInst | fromSugar | toSugar | splitSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar) ~ opt(quantifier) ^^
     (x => List(x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])) | splitMergeSugar
-  lazy val infixSugar: Parser[Inst[Obj, Obj]] = (
+  lazy val infixSugar: Parser[Inst[Obj, Obj]] = not(Tokens.:<=) ~> (
     Tokens.as_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.juxt_op | Tokens.lte_op | Tokens.gt_op |
       Tokens.lt_op | Tokens.eqs_op | Tokens.and_op | Tokens.or_op | Tokens.given_op | Tokens.product_op | Tokens.sum_op |
       Tokens.combine_op | Tokens.a_op | Tokens.is) ~ obj ^^ (x => OpInstResolver.resolve(x._1, List(x._2)))
