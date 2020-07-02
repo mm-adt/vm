@@ -1102,13 +1102,13 @@ The <code>obj</code> graph will be studied at length from the perspective of <a 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>                          <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>                                       <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}                       <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}                                    <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                 <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                              <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[gt,<span style="color:#00D">0</span>]]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>][mult,[neg]]     <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>][mult,[neg]]                  <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[gt,<span style="color:#00D">0</span>]][mult,<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}[neg]]</code></pre>
 </div>
 </div>
@@ -1153,11 +1153,22 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 <div class="sect4">
 <h5 id="_type_signature">Type Signature</h5>
 <div class="paragraph">
-<p>Every mm-ADT type can be generally understood as a function that maps an <code>obj</code> of one type to an <code>obj</code> of another type. A <strong>type signature</strong> specifies the source and target of this mapping, where the <em>domain</em> is the source type and the <em>range</em> is the target type. Both the domain and range type specifications include a respective quantifier denoted <code>{q}</code> in <code>mmlang</code>.
-The general pattern of a type signature is</p>
+<p>Every mm-ADT type can be generally understood as a function that maps an <code>obj</code> of one type to an <code>obj</code> of another type. A <strong>type signature</strong> specifies the source and target of this mapping, where the <em>domain</em> is the source type and the <em>range</em> is the target type. Both the domain and range type specifications include a respective quantifier denoted <code>{q}</code> in <code>mmlang</code>. The general pattern of a type signature is</p>
 </div>
 <div class="paragraph text-center">
 <p><code>range{q}&lt;=domain{q}</code>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ and a range of \$Y\$, then it&#8217;s signature is denoted \$f: X \to Y\$. Furthermore, given quantifiers from a ring \$Q\$, the function signature would be denoted \$f: X \times Q \to Y \times Q\$.
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1174,17 +1185,6 @@ The general pattern of a type signature is</p>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">1</span>}
-==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
-</div>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">In most programming languages, a value can be typed <code>int</code> as in</p>
-<p class="tableblock"><code>val x:int = 10</code>.</p>
-<p class="tableblock">Such <a href="https://en.wikipedia.org/wiki/Declaration_(computer_programming)">declarations</a> state that the value referred to by <code>x</code> is a <em>single</em> element within the set of integers. The concept of a "single element" is captured in mm-ADT by the <code>obj</code> quantifier, where a <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unit</a> quantifier is not displayed in <code>mmlang</code>. That is, <code>int{1}</code> is more concisely displayed as <code>int</code>.</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;=<span style="color:#369;font-weight:bold">int</span>
 ==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
 </div>
@@ -1194,11 +1194,13 @@ The general pattern of a type signature is</p>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>
-==&gt;<span style="color:#369;font-weight:bold">bool</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">1</span>}
+==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Type&#8217;s that are fully specified by their type signature are always canonical types. Therefore, <code>bool&lt;=int</code> is meaningless as there are no instructions to map an <code>int</code> to a <code>bool</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">In most programming languages, a value can be typed <code>int</code> as in</p>
+<p class="tableblock"><code>val x:int = 10</code>.</p>
+<p class="tableblock">Such <a href="https://en.wikipedia.org/wiki/Declaration_(computer_programming)">declarations</a> state that the value referred to by <code>x</code> is a <em>single</em> element within the set of integers. The concept of a "single element" is captured in mm-ADT by the <code>obj</code> quantifier, where a <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unit</a> quantifier is not displayed in <code>mmlang</code>. That is, <code>int{1}</code> is more concisely displayed as <code>int</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -1220,13 +1222,22 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers must be elements from a ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">carrier set</a> is two integers and represents uncertainty as to the number of elements being referred to. <code>int{0,5}</code> is a type referring to either 0, 1, 2, 3, 4, or 5 integers.</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>
+language error: <span style="color:#369;font-weight:bold">bool</span> <span style="color:#080;font-weight:bold">is</span> <span style="color:#080;font-weight:bold">not</span> an <span style="color:#369;font-weight:bold">int</span></code></pre>
+</div>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Types that are fully specified by their type signature are always canonical types. Therefore, <code>bool&lt;=int</code> is meaningless as there are no instructions to map an <code>int</code> to a <code>bool</code>. This example does not assume an underlying <em>model</em>. When model-ADTs are defined, it is possible for <code>bool&lt;=int</code> to yield a result.</p></td>
+</tr>
 </tbody>
 </table>
 </div>
 <div class="sect4">
 <h5 id="_type_definition">Type Definition</h5>
 <div class="paragraph">
-<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT VM within the hosting environment (e.g. the JVM). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>. For a type, this history is called the <strong>type definition</strong> (and more generally, the <strong>type&#8217;s trace</strong>) and is a subgraph of a larger <strong>type graph</strong>.</p>
+<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>. For a type, this history is called the <strong>type definition</strong> and is a subgraph of the larger type graph (which is a subgraph of an even larger <code>obj</code> graph).</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1242,7 +1253,7 @@ In practice, the string representation of a value is its <em>ground</em> and the
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/type-value-trace.png" alt="type value trace" width="550">
+<img src="./images/language/type-value-trace.png" alt="type value trace" width="650">
 </div>
 </div>
 <div class="listingblock">
@@ -1257,6 +1268,18 @@ mmlang&gt; <span style="color:#00D">2</span>[plus,<span style="color:#00D">4</sp
 </div>
 <div class="paragraph">
 <p>Both types and values exist in a larger graph called the <strong>obj graph</strong> for which a type&#8217;s type graph is a component. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that are no longer required by the program. This process is called <strong>trace retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<span class="image right"><img src="./images/language/type-value-trace-short.png" alt="type value trace short" width="370"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels can be shortened to type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously deduced by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). The above diagram&#8217;s more concise representation is on the right. All subsequent diagrams will follow this convention.
+</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect4">
@@ -1284,9 +1307,7 @@ Thus, besides labels, two initials are isomorphic.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
-Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
-Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
+<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
 </div>
 <div class="paragraph">
 <p>&nbsp;</p>
@@ -1351,19 +1372,7 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 </tbody>
 </table>
 <div class="paragraph">
-<p>In order to quantify the <em>amount</em> of values denoted by a type, every mm-ADT type has an associated quantifier <code>q</code>. Quantifiers are typically integers, but can be any element from an ordered algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, unitary matrices, etc.). While integer quantifiers signify "amount," other quantifiers such as <a href="https://en.wikipedia.org/wiki/Unitary_matrix">unitary matrices</a> used in the representation of a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description.</p>
-</div>
-<div class="paragraph">
-<p>Common programming concepts that are usually captured by typeclasses or functors (via <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifting</a>) are expressed in mm-ADT via quantification.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">int</span>                               // a single <span style="color:#369;font-weight:bold">int</span>   (some)
-<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]            // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> <span style="color:#00D">1</span> <span style="color:#369;font-weight:bold">int</span>     (option)
-<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,false]             // <span style="color:#00D">0</span> ints         (none)
-<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">4</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[branch,[<span style="color:#369;font-weight:bold">id</span>],[<span style="color:#369;font-weight:bold">id</span>]]  // <span style="color:#00D">4</span> ints         (exact)
-<span style="color:#369;font-weight:bold">int</span>{*}&lt;=[=db][get,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">people</span><span style="color:#710">'</span></span>]       // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> more ints (<span style="color:#369;font-weight:bold">any</span>)</code></pre>
-</div>
+<p>In order to quantify the <em>amount</em> of values denoted by a type, every mm-ADT type has an associated quantifier <code>q</code> denoted <code>{q}</code> in <code>mmlang</code>. Quantifiers are typically integers, but can be any element from an ordered algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, <a href="https://en.wikipedia.org/wiki/Unitary_matrix">unitary matrices</a>, etc.). While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description as values can be negative where <code>objs</code> interact with constructive and destructive <a href="https://en.wikipedia.org/wiki/Wave_interference">interference</a>.</p>
 </div>
 <div class="paragraph">
 <p>The default quantifier ring of the mm-ADT VM is
@@ -1386,6 +1395,33 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Common programming concepts that are usually captured by typeclasses or functors (via <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifting</a>) are expressed in mm-ADT via quantification.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">int</span>                                   // a single <span style="color:#369;font-weight:bold">int</span>    (some)
+<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]                // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> <span style="color:#00D">1</span> <span style="color:#369;font-weight:bold">int</span>      (option)
+<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,false]                 // <span style="color:#00D">0</span> ints          (none)
+<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">4</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[_,_]                   // <span style="color:#00D">4</span> ints          (exact)
+<span style="color:#369;font-weight:bold">int</span>{*}&lt;=[=db][get,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">people</span><span style="color:#710">'</span></span>][age]      // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> <span style="color:#369;font-weight:bold">any</span> ints   (<span style="color:#369;font-weight:bold">any</span>)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The mm-ADT VM compiler translates an <code>mmlang</code> expression to a subgraph of the larger Cayley type graph. The compiler then walks that subgraph from root to leaves filling in any information that was not specified in the original expression. This technique is made salient in the compiler field of <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a>. Amongst other benefits, it allows users to write expressions containing few types and quantifiers as they can be deduced by the type graph structure. This is called <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>. The expressions above are rewritten below in order to demonstrate mm-ADT inferencing.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
+==&gt;<span style="color:#369;font-weight:bold">int</span>
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,false]
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,false]
+mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[_,_]
+==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">4</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}-&lt;(<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>},<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>})&gt;-</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -3589,7 +3625,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-01 15:27:54 -0600
+Last updated 2020-07-01 15:31:42 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
