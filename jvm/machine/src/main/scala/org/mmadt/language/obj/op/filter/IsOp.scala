@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,9 +41,9 @@ trait IsOp {
 object IsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    start match {
-      case _: Obj if !inst.arg0[Obj].alive => start.via(start, inst).hardQ(qZero)
-      case _: Value[_] => if (inst.arg0[Bool].g) start.via(start, inst) else start.via(start, inst).hardQ(qZero)
+    val arg = inst.arg0[Obj]
+    arg match {
+      case avalue: BoolValue => if (avalue.g) start.via(start, inst) else start.via(start, inst).hardQ(qZero)
       case _ => start.via(start, inst).hardQ(minZero(multQ(start, inst)))
     }
   }

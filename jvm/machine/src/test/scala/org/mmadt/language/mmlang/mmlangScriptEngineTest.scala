@@ -511,6 +511,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("real strm input parsing") {
     assertResult(real(-1.2, 0.0))(engine.eval("real{+}[0.0,1.2][plus,-1.2]"))
+    assertResult(zeroObj)(engine.eval("real{5}[is,false]"))
   }
 
   test("str strm input parsing") {
@@ -712,7 +713,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("6")(engine.eval("(1;(2;(3|(4|5|6)))).1.1.1.2").toString)
     //////
     assertResult("(str;;)<=str-<(str;;)")(engine.eval("str-<(str;int;int[plus,2])").toString)
-    assertResult("int{0,12}<=(int{2};int{12}<=int{3}[plus,2]{4})>-[is,true][id]")(engine.eval("(int{2};int{3}[plus,2]{4})>-[is,true][id]").toString)
+    assertResult("int{12}<=(int{2};int{12}<=int{3}[plus,2]{4})>-[is,true][id]")(engine.eval("(int{2};int{3}[plus,2]{4})>-[is,true][id]").toString)
     assertResult("(||str)<=str-<(||str)")(engine.eval("str-<(int|bool|str)").toString)
     assertResult("str-<(str,,)>-[plus,'hello']")(engine.eval("str-<(str,,)>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<(str,int,int[plus,2])>-[plus,'hello']").toString)
