@@ -1511,18 +1511,14 @@ mmlang&gt; false[one]
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image left"><img src="./images/language/bool-zero-one.png" alt="bool zero one" width="320"></span> In mm-ADT, types and values are simply vertices in the <code>obj</code> graph. A <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a> <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> <code>inst</code> such as <code>[zero]</code> and <code>[one]</code> require only the domain&#8217;s type to produce a respective constant value. Consequently, the distinction between compilation and evaluation blur. That is, "compilation" can produce values and thus, the program is complete before being "evaluated." This idea is exaggerated in the example below, where from the <code>bool</code> ctype, instructions are applied one-by-one to demonstrate how the type&#8217;s definition (a path in the Cayley <code>obj</code> graph) yields a <code>false</code> value. At <code>[zero]</code>, the process transitions from the type graph to the value graph which are both connected subgraphs of the larger <code>obj</code> graph. The final instruction, <code>[and,bool,bool]</code>, is compiled to <code>[and,false,false]</code> which results in <code>false</code>. Thus, a single "compilation" automata is able to derive the result set.</p>
+<p><span class="image left"><img src="./images/language/bool-zero-one.png" alt="bool zero one" width="320"></span> In mm-ADT, types and values are simply vertices in the <code>obj</code> graph. A <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a> <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> <code>inst</code> such as <code>[zero]</code> and <code>[one]</code> require only the domain&#8217;s type to produce a respective constant value. Consequently, the distinction between compilation and evaluation blur as "compilation" can produce values and thus, the program may be complete before being "evaluated." The example below further elucidates the phenomena, where the <code>[trace]</code> instruction maps an <code>obj</code> to its path in the Cayley <code>obj</code> graph. Note that <code>[zero]</code> transitions the process from the type graph to the value graph, which are both connected subgraphs of the larger <code>obj</code> graph. The final instruction, <code>[and,bool,bool]</code>, is compiled to <code>[and,false,false]</code> which results in <code>false</code>. Thus, a single "compilation" automata is able to derive the expected result set. From an <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a> perspective, regardless of the progam&#8217;s input being <code>true</code> or <code>false</code>, the range is always <code>false</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; bool
-==&gt;bool
-mmlang&gt; bool[or,bool,bool]
-==&gt;bool[or,bool,bool]
-mmlang&gt; bool[or,bool,bool][zero]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; bool[or,bool,bool][zero][and,bool,bool]
 ==&gt;false
-mmlang&gt; bool[or,bool,bool][zero][and,bool,bool]
-==&gt;false</code></pre>
+mmlang&gt; bool[or,bool,bool][zero][and,bool,bool][trace]
+==&gt;(bool;[or,bool,bool];bool;[zero];false;[and,false,false])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3666,7 +3662,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-02 05:36:01 -0600
+Last updated 2020-07-02 05:48:52 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
