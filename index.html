@@ -699,12 +699,12 @@ All the examples contained herein are presented using <code>mmlang</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">1</span>
-==&gt;<span style="color:#00D">1</span>
-mmlang&gt; <span style="color:#00D">1</span>+<span style="color:#00D">2</span>
-==&gt;<span style="color:#00D">3</span>
-mmlang&gt; <span style="color:#00D">1</span>[plus,<span style="color:#00D">2</span>]
-==&gt;<span style="color:#00D">3</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1
+==&gt;1
+mmlang&gt; 1+2
+==&gt;3
+mmlang&gt; 1[plus,2]
+==&gt;3</code></pre>
 </div>
 </div>
 </div>
@@ -837,17 +837,17 @@ This is the <strong>obj meta-model</strong>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>              <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#00D">1</span>                <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="color:#00D">1</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}           <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}
-mmlang&gt; <span style="color:#00D">1</span>{<span style="color:#00D">5</span>}             <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;<span style="color:#00D">1</span>{<span style="color:#00D">5</span>}
-mmlang&gt; {<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>}    <i class="conum" data-value="5"></i><b>(5)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int              <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;int
+mmlang&gt; 1                <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;1
+mmlang&gt; int{5}           <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;int{5}
+mmlang&gt; 1{5}             <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;1{5}
+mmlang&gt; {'a','b','a'}    <i class="conum" data-value="5"></i><b>(5)</b>
+==&gt;'b'
+==&gt;'a'{2}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -903,10 +903,10 @@ The <strong>stream</strong> is a foundational concept in mm-ADT. It&#8217;s alge
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; int =&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]                   <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]
-mmlang&gt; <span style="color:#00D">5</span> =&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]    <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="color:#00D">5</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; int[is,[gt,0]]                   <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]
+mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;5</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1102,14 +1102,14 @@ The <code>obj</code> graph will be studied at length from the perspective of <a 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>                                       <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}                                    <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                              <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[gt,<span style="color:#00D">0</span>]]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>][mult,[neg]]                  <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[gt,<span style="color:#00D">0</span>]][mult,<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">2</span>}[neg]]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                       <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;int
+mmlang&gt; int{2}                                    <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;int{2}
+mmlang&gt; int{2}[is&gt;0]                              <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]]
+mmlang&gt; int{2}[is&gt;0][mult,[neg]]                  <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]][mult,int{0,2}[neg]]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1185,8 +1185,8 @@ In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ a
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;=<span style="color:#369;font-weight:bold">int</span>
-==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int&lt;=int
+==&gt;int</code></pre>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">From the perspective of "type-as-function," An mm-ADT <code>int</code> is a <a href="https://en.wikipedia.org/wiki/NOP_(code)">no-op</a> on the set of integers. Given any integer, <code>int</code> returns that integer. In <code>mmlang</code>, when the domain and range are the same, the <code>&lt;=</code> and repeated type are not displayed. That is <code>int&lt;=int</code> is more concisely displayed as <code>int</code>.</p></td>
@@ -1205,8 +1205,8 @@ In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ a
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{5}
+==&gt;int{5}</code></pre>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int{5}</code> is a type referring to 5 integers. As a point of comparison, <code>int</code> refers to a single integer. This is why <code>int</code> is syntactic sugar for <code>int{1}</code> in <code>mmlang</code>.</p></td>
@@ -1214,10 +1214,10 @@ In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ a
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">5</span>}
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">5</span>}
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">5</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">5</span>}
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>,<span style="color:#00D">5</span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{0,5}
+==&gt;int{0,5}
+mmlang&gt; int{0,5}&lt;=int{0,5}
+==&gt;int{0,5}</code></pre>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers must be elements from a ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">carrier set</a> is two integers and represents uncertainty as to the number of elements being referred to. <code>int{0,5}</code> is a type referring to either 0, 1, 2, 3, 4, or 5 integers.</p></td>
@@ -1225,8 +1225,8 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>
-language error: <span style="color:#369;font-weight:bold">bool</span> <span style="color:#080;font-weight:bold">is</span> <span style="color:#080;font-weight:bold">not</span> an <span style="color:#369;font-weight:bold">int</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int&lt;=bool
+language error: bool is not an int</code></pre>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Types that are fully specified by their type signature are always canonical types. Therefore, <code>bool&lt;=int</code> is meaningless as there are no instructions to map an <code>int</code> to a <code>bool</code>. This example does not assume an underlying <em>model</em>. When model-ADTs are defined, it is possible for <code>bool&lt;=int</code> to yield a result.</p></td>
@@ -1253,17 +1253,17 @@ In practice, the string representation of a value is its <em>ground</em> and the
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/type-value-trace.png" alt="type value trace" width="650">
+<img src="./images/language/type-value-trace.png" alt="type value trace" width="700">
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">2</span>[plus,<span style="color:#00D">4</span>][<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]
-==&gt;<span style="color:#00D">6</span>
-mmlang&gt; <span style="color:#00D">2</span>[plus,<span style="color:#00D">4</span>][<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>][trace]
-==&gt;(<span style="color:#00D">2</span>;[plus,<span style="color:#00D">4</span>];<span style="color:#00D">6</span>;[<span style="color:#080;font-weight:bold">is</span>,true])
-mmlang&gt; <span style="color:#00D">2</span>[plus,<span style="color:#00D">4</span>][<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>][<span style="color:#369;font-weight:bold">type</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">4</span>][<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 2[plus,4][is&gt;0]
+==&gt;6
+mmlang&gt; 2[plus,4][is&gt;0][trace]
+==&gt;(2;[plus,4];6;[is,true])
+mmlang&gt; 2[plus,4][is&gt;0][type]
+==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1276,7 +1276,7 @@ mmlang&gt; <span style="color:#00D">2</span>[plus,<span style="color:#00D">4</sp
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<span class="image right"><img src="./images/language/type-value-trace-short.png" alt="type value trace short" width="370"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels can be shortened to type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously deduced by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). The above diagram&#8217;s more concise representation is on the right. All subsequent diagrams will follow this convention.
+<span class="image right"><img src="./images/language/type-value-trace-short.png" alt="type value trace short" width="400"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels can be shortened to type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously deduced by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). The above diagram&#8217;s more concise representation is on the right. All subsequent diagrams will follow this convention.
 </td>
 </tr>
 </table>
@@ -1402,25 +1402,25 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">int</span>                                   // a single <span style="color:#369;font-weight:bold">int</span>    (some)
-<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[gt,<span style="color:#00D">0</span>]]                // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> <span style="color:#00D">1</span> <span style="color:#369;font-weight:bold">int</span>      (option)
+<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                     // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> <span style="color:#00D">1</span> <span style="color:#369;font-weight:bold">int</span>      (option)
 <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,false]                 // <span style="color:#00D">0</span> ints          (none)
 <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">4</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[_,_]                   // <span style="color:#00D">4</span> ints          (exact)
 <span style="color:#369;font-weight:bold">int</span>{*}&lt;=[=db][get,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">people</span><span style="color:#710">'</span></span>][age]      // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> <span style="color:#369;font-weight:bold">any</span> ints   (<span style="color:#369;font-weight:bold">any</span>)</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>An mm-ADT program is a type. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. The mm-ADT VM encodes a type <code>obj</code> as a path within the larger mm-ADT type graph (a Cayley graph). The type&#8217;s graph is traversed and rewritten by different <a href="https://en.wikipedia.org/wiki/Automata_theory">automata</a> from the mm-ADT compiler and ultimately, the evaluating processor. While the type graph is a graphical encoding of the monoidal structure of <code>obj</code>, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that realizes instances (values) of the type. From the vantage point of this latter interpretation, various techniques from the field of <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a> are leveraged. Or particular import to this section, the expressions above are rewritten below by a compiler automata performing type and quantifier <a href="https://en.wikipedia.org/wiki/Type_inference">inference</a>.</p>
+<p>An mm-ADT program is a type. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. The mm-ADT VM encodes a type <code>obj</code> as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within the larger mm-ADT type graph (a Cayley graph). The type&#8217;s graph is traversed and rewritten by different <a href="https://en.wikipedia.org/wiki/Automata_theory">automata</a> from the mm-ADT compiler and ultimately, the evaluating processor. While a type&#8217;s graph is a graphical encoding of the monoidal structure of a particular subset of <code>obj</code>, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that realizes elements of the type (i.e. computed resultant values). From the vantage point of the latter perspective, various techniques from the field of <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a> are leveraged. Or particular import to this section, the expressions above are rewritten below by a compiler automata performing type and quantifier <a href="https://en.wikipedia.org/wiki/Type_inference">inference</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>
-==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,false]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int
+==&gt;int
+mmlang&gt; int[is&gt;0]
+==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]
+mmlang&gt; int[is,false]
 mmlang&gt;
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[_,_]
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">4</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}-&lt;(<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>},<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>})&gt;-</code></pre>
+mmlang&gt; int{2}[_,_]
+==&gt;int{4}&lt;=int{2}-&lt;(int{2},int{2})&gt;-</code></pre>
 </div>
 </div>
 </div>
@@ -1485,15 +1485,15 @@ mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="col
 <h5 id="_bool_type">Bool Type</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; true
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; true
 ==&gt;true
 mmlang&gt; true&amp;&amp;false
 ==&gt;false
-mmlang&gt; true[<span style="color:#080;font-weight:bold">and</span>,false]
+mmlang&gt; true[and,false]
 ==&gt;false
-mmlang&gt; true[<span style="color:#080;font-weight:bold">and</span>,false][neg]
+mmlang&gt; true[and,false][neg]
 ==&gt;true
-mmlang&gt; true[<span style="color:#080;font-weight:bold">and</span>,false][neg][<span style="color:#080;font-weight:bold">or</span>,false]
+mmlang&gt; true[and,false][neg][or,false]
 ==&gt;true</code></pre>
 </div>
 </div>
@@ -1779,12 +1779,12 @@ Note that quantifiers are not diagrammed in the image and the reason for there b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)     <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b','c')     <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;('a','b','c')
 mmlang&gt; lst               <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;( )
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>)             <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>)</code></pre>
+mmlang&gt; ('a')             <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;('a')</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1808,12 +1808,12 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>)
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>)
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,)<span style="color:#60E">.1</span>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a')
+==&gt;('a')
+mmlang&gt; ('a',).1
 mmlang&gt;
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>)<span style="color:#60E">.1</span>
-language error: poly index <span style="color:#080;font-weight:bold">is</span> out of bounds: <span style="color:#00D">1</span></code></pre>
+mmlang&gt; ('a').1
+language error: poly index is out of bounds: 1</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1821,12 +1821,12 @@ language error: poly index <span style="color:#080;font-weight:bold">is</span> o
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">3</span>-&lt;([plus,<span style="color:#00D">1</span>],[mult,<span style="color:#00D">2</span>])   <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;(<span style="color:#00D">4</span>,<span style="color:#00D">6</span>)
-mmlang&gt; <span style="color:#00D">3</span>-&lt;([plus,<span style="color:#00D">1</span>]|[mult,<span style="color:#00D">2</span>])   <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(<span style="color:#00D">4</span>|)
-mmlang&gt; <span style="color:#00D">3</span>-&lt;([plus,<span style="color:#00D">1</span>];[mult,<span style="color:#00D">2</span>])   <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(<span style="color:#00D">4</span>;<span style="color:#00D">8</span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])   <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;(4,6)
+mmlang&gt; 3-&lt;([plus,1]|[mult,2])   <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;(4|)
+mmlang&gt; 3-&lt;([plus,1];[mult,2])   <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;(4;8)</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1857,12 +1857,12 @@ mmlang&gt; <span style="color:#00D">3</span>-&lt;([plus,<span style="color:#00D"
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [[gt,<span style="color:#00D">0</span>],[gt,<span style="color:#00D">10</span>]]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=_-&lt;(<span style="color:#369;font-weight:bold">bool</span>&lt;=_[gt,<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">bool</span>&lt;=_[gt,<span style="color:#00D">10</span>])&gt;-
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[[gt,<span style="color:#00D">0</span>],[gt,<span style="color:#00D">10</span>]]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">10</span>])&gt;-
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}[[gt,<span style="color:#00D">0</span>],[gt,<span style="color:#00D">10</span>]]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">10</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}-&lt;(<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">5</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}[gt,<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">5</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">5</span>}[gt,<span style="color:#00D">10</span>])&gt;-</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [[gt,0],[gt,10]]
+==&gt;bool{2}&lt;=_-&lt;(bool&lt;=_[gt,0],bool&lt;=_[gt,10])&gt;-
+mmlang&gt; int[[gt,0],[gt,10]]
+==&gt;bool{2}&lt;=int-&lt;(bool&lt;=int[gt,0],bool&lt;=int[gt,10])&gt;-
+mmlang&gt; int{5}[[gt,0],[gt,10]]
+==&gt;bool{10}&lt;=int{5}-&lt;(bool{5}&lt;=int{5}[gt,0],bool{5}&lt;=int{5}[gt,10])&gt;-</code></pre>
 </div>
 </div>
 </td>
@@ -1921,14 +1921,14 @@ Within the category of the <code>inst</code> monoid, the following <code>mmlang<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>],[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]]      <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}]               <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}                 <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}                          <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko'],[plus,'ko']]      <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;'marko'{2}
+mmlang&gt; 'mar'[[plus,'ko']{2}]               <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;'marko'{2}
+mmlang&gt; 'mar'[plus,'ko']{2}                 <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;'marko'{2}
+mmlang&gt; 'marko'{2}                          <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;'marko'{2}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1956,12 +1956,12 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>],[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}
-mmlang&gt; mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=mmlang[gt,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>]-&lt;(<span style="color:#369;font-weight:bold">bool</span>{<span style="color:#00D">2</span>}&lt;=<span style="color:#369;font-weight:bold">bool</span>[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>})&gt;-
-mmlang&gt; [[start,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>][plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>],[start,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>][plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko'],[plus,'ko']]
+==&gt;'marko'{2}
+mmlang&gt; mmlang&gt; 'mar'[[plus,'ko']{2}]
+==&gt;bool{2}&lt;=mmlang[gt,'mar']-&lt;(bool{2}&lt;=bool[plus,'ko']{2})&gt;-
+mmlang&gt; [[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]
+==&gt;'marko'{2}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1973,12 +1973,12 @@ a(b+c) &amp;=&amp; \; ab + ac \\ (b+c)a &amp;=&amp; \; ba + ca \end{split}
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>[+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ac</span><span style="color:#710">'</span></span>
-mmlang&gt; [<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>]+<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ba</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ca</span><span style="color:#710">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'[+'b',+'c']
+==&gt;'ab'
+==&gt;'ac'
+mmlang&gt; ['b','c']+'a'
+==&gt;'ba'
+==&gt;'ca'</code></pre>
 </div>
 </div>
 <div class="exampleblock">
@@ -1990,16 +1990,16 @@ Equality ignores quantification and trace history.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>==<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'=='a'
 ==&gt;true
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>==<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>
+mmlang&gt; 'a'=='ab'
 ==&gt;false
-mmlang&gt; <span style="color:#00D">6</span>==<span style="color:#00D">6</span>
+mmlang&gt; 6==6
 ==&gt;true
-mmlang&gt; <span style="color:#00D">6</span>==<span style="color:#00D">6</span>{<span style="color:#00D">10</span>}
+mmlang&gt; 6==6{10}
 ==&gt;true
-mmlang&gt; <span style="color:#00D">6</span>{<span style="color:#00D">20</span>}==<span style="color:#00D">6</span>{<span style="color:#00D">10</span>}
-==&gt;true{<span style="color:#00D">20</span>}</code></pre>
+mmlang&gt; 6{20}==6{10}
+==&gt;true{20}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2010,11 +2010,11 @@ Type equality is based on ctype and trace equality.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="color:#369;font-weight:bold">int</span>)==(<span style="color:#369;font-weight:bold">int</span>)
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int)==(int)
 ==&gt;true
-mmlang&gt; (<span style="color:#369;font-weight:bold">int</span>)==(<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>])
+mmlang&gt; (int)==(int[plus,10])
 ==&gt;false
-mmlang&gt; (<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>])==(<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>])
+mmlang&gt; (int[plus,10])==(int[plus,10])
 ==&gt;true</code></pre>
 </div>
 </div>
@@ -2027,7 +2027,7 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>])==(<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>][plus,<span style="color:#00D">0</span>])
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int[plus,10])==(int[plus,10][plus,0])
 ==&gt;false</code></pre>
 </div>
 </div>
@@ -2047,11 +2047,11 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">io</span><span style="color:#710">'</span></span>]]          <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">io</span><span style="color:#710">'</span></span>]]       <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mario</span><span style="color:#710">'</span></span>
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">io</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}]    <i class="conum" data-value="3"></i><b>(3)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko']|[plus,'io']]          <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;'marko'
+mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']]       <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;'mario'
+mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']{0}]    <i class="conum" data-value="3"></i><b>(3)</b>
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -2076,11 +2076,11 @@ The polynomial reduces to <code>obj{0}</code>.</td>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">io</span><span style="color:#710">'</span></span>]]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">io</span><span style="color:#710">'</span></span>]]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mario</span><span style="color:#710">'</span></span>
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ko</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">io</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko']|[plus,'io']]
+==&gt;'marko'
+mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']]
+==&gt;'mario'
+mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']{0}]
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -2102,10 +2102,10 @@ In mm-ADT, monoid multiplication is standard type composition and is defined as<
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]{<span style="color:#00D">3</span>}]  <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mark</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}]  <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mark</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'k']{2}|[plus,'o']{3}]  <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;'mark'{2}
+mmlang&gt; 'mar'[[plus,'k']{2}|[plus,'o']{0}]  <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;'mark'{2}</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2122,10 +2122,10 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]{<span style="color:#00D">3</span>}]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mark</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}|[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mark</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'k']{2}|[plus,'o']{3}]
+==&gt;'mark'{2}
+mmlang&gt; 'mar'[[plus,'k']{2}|[plus,'o']{0}]
+==&gt;'mark'{2}</code></pre>
 </div>
 </div>
 <div class="admonitionblock note">
@@ -2140,9 +2140,9 @@ mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="col
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]{<span style="color:#00D">3</span>}
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>{<span style="color:#00D">6</span>}
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>]{<span style="color:#00D">2</span>}[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>]{<span style="color:#00D">0</span>}
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[plus,'k']{2}[plus,'o']{3}
+==&gt;'marko'{6}
+mmlang&gt; 'mar'[plus,'k']{2}[plus,'o']{0}
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -2151,12 +2151,12 @@ mmlang&gt;</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>-&lt;([plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>];[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>])
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mark</span><span style="color:#710">'</span></span>;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>)
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>-&lt;([plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>];[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>])&gt;-
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
-mmlang&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">mar</span><span style="color:#710">'</span></span>-&lt;([plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">k</span><span style="color:#710">'</span></span>];[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">o</span><span style="color:#710">'</span></span>])[last]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])
+==&gt;('mark';'marko')
+mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])&gt;-
+==&gt;'marko'
+mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])[last]
+==&gt;'marko'</code></pre>
 </div>
 </div>
 </td>
@@ -2197,8 +2197,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock">term expression concatenation</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)+(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>)
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b')+('c','d')
+==&gt;('a','b','c','d')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2210,8 +2210,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Dot_product">dot product</a> that is distributive over addition via <a href="https://en.wikipedia.org/wiki/FOIL_method">FOIL</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)*(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>)
-==&gt;((<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>),(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>),(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>),(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>))</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b')*('c','d')
+==&gt;(('a','c'),('a','d'),('b','c'),('b','d'))</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2223,8 +2223,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Hadamard_product_(matrices)">Hadamard</a> pairwise product</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>)
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">d</span><span style="color:#710">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b')=('c','d')
+==&gt;('c','d')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2236,8 +2236,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock">the first term of the polynomial</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)[head]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b')[head]
+==&gt;'a'</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2249,8 +2249,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock">the polynomial without the first term</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)[tail]
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b')[tail]
+==&gt;('b')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2262,8 +2262,8 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock">the last term of the polynomial</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)[last]
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b')[last]
+==&gt;'b'</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2275,10 +2275,10 @@ The table below presents the set of instructions whose domain is <code>poly</cod
 <td class="tableblock halign-left valign-top"><p class="tableblock">term access by index</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)<span style="color:#60E">.1</span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)<span style="color:#60E">.3</span>
-language error: poly index <span style="color:#080;font-weight:bold">is</span> out of bounds: <span style="color:#00D">3</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b','c').1
+==&gt;'b'
+mmlang&gt; ('a','b','c').3
+language error: poly index is out of bounds: 3</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2290,10 +2290,10 @@ language error: poly index <span style="color:#080;font-weight:bold">is</span> o
 <td class="tableblock halign-left valign-top"><p class="tableblock">term insertion term by index</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)[put,<span style="color:#00D">1</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>]
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">ab</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)[put,<span style="color:#00D">5</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">e</span><span style="color:#710">'</span></span>]
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">e</span><span style="color:#710">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b','c')[put,1,'ab']
+==&gt;('a','ab','b','c')
+mmlang&gt; ('a','b','c')[put,5,'e']
+==&gt;('a','b','c','e')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2327,8 +2327,8 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; -&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; -&lt;('a','b','c')
+==&gt;('a','b','c')</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2339,10 +2339,10 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; -&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span>)&gt;-
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">c</span><span style="color:#710">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; -&lt;('a','b','c')&gt;-
+==&gt;'a'
+==&gt;'b'
+==&gt;'c'</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2368,10 +2368,10 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;(;)</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;(_;_)
-==&gt;(<span style="color:#00D">6</span>;<span style="color:#00D">6</span>)
-mmlang&gt; <span style="color:#00D">6</span>-&lt;(_+<span style="color:#00D">1</span>;_&gt;<span style="color:#00D">6</span>)
-==&gt;(<span style="color:#00D">7</span>;true)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6-&lt;(_;_)
+==&gt;(6;6)
+mmlang&gt; 6-&lt;(_+1;_&gt;6)
+==&gt;(7;true)</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2380,9 +2380,9 @@ mmlang&gt; <span style="color:#00D">6</span>-&lt;(_+<span style="color:#00D">1</
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;(,)</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;(_,_)
-==&gt;(<span style="color:#00D">6</span>,<span style="color:#00D">6</span>)
-mmlang&gt; <span style="color:#00D">6</span>-&lt;(_&gt;<span style="color:#00D">0</span>,_&gt;<span style="color:#00D">8</span>)
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6-&lt;(_,_)
+==&gt;(6,6)
+mmlang&gt; 6-&lt;(_&gt;0,_&gt;8)
 ==&gt;(true,false)</code></pre>
 </div>
 </div></div></td>
@@ -2392,9 +2392,9 @@ mmlang&gt; <span style="color:#00D">6</span>-&lt;(_&gt;<span style="color:#00D">
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;(|)</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;(_|_)
-==&gt;(<span style="color:#00D">6</span>|)
-mmlang&gt; <span style="color:#00D">6</span>-&lt;(_&gt;<span style="color:#00D">0</span>|_&gt;<span style="color:#00D">8</span>)
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6-&lt;(_|_)
+==&gt;(6|)
+mmlang&gt; 6-&lt;(_&gt;0|_&gt;8)
 ==&gt;(true|)</code></pre>
 </div>
 </div></div></td>
@@ -2420,9 +2420,9 @@ mmlang&gt; <span style="color:#00D">6</span>-&lt;(_&gt;<span style="color:#00D">
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>(;)&gt;-</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;(_;_)&gt;-
-==&gt;<span style="color:#00D">6</span>
-mmlang&gt; <span style="color:#00D">6</span>-&lt;(_+<span style="color:#00D">1</span>;_&gt;<span style="color:#00D">6</span>)&gt;-
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6-&lt;(_;_)&gt;-
+==&gt;6
+mmlang&gt; 6-&lt;(_+1;_&gt;6)&gt;-
 ==&gt;true</code></pre>
 </div>
 </div></div></td>
@@ -2432,9 +2432,9 @@ mmlang&gt; <span style="color:#00D">6</span>-&lt;(_+<span style="color:#00D">1</
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>(,)&gt;-</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;(_,_)&gt;-
-==&gt;<span style="color:#00D">6</span>{<span style="color:#00D">2</span>}
-mmlang&gt; <span style="color:#00D">6</span>-&lt;(_&gt;<span style="color:#00D">0</span>,_&gt;<span style="color:#00D">8</span>)&gt;-
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6-&lt;(_,_)&gt;-
+==&gt;6{2}
+mmlang&gt; 6-&lt;(_&gt;0,_&gt;8)&gt;-
 ==&gt;true
 ==&gt;false</code></pre>
 </div>
@@ -2445,10 +2445,10 @@ mmlang&gt; <span style="color:#00D">6</span>-&lt;(_&gt;<span style="color:#00D">
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>(|)&gt;-</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">6</span>-&lt;(_|_)&gt;-
-==&gt;<span style="color:#00D">6</span>
-mmlang&gt; <span style="color:#00D">6</span>-&lt;(_+<span style="color:#00D">1</span>|_&gt;<span style="color:#00D">6</span>)&gt;-
-==&gt;<span style="color:#00D">7</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6-&lt;(_|_)&gt;-
+==&gt;6
+mmlang&gt; 6-&lt;(_+1|_&gt;6)&gt;-
+==&gt;7</code></pre>
 </div>
 </div></div></td>
 </tr>
@@ -2485,18 +2485,18 @@ A <code>lst</code> is analogous to a <a href="https://en.wikipedia.org/wiki/List
 <p>Labeling <code>poly</code> indices.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>)
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>)
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>)<span style="color:#60E">.0</span>                    <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="color:#00D">29</span>)<span style="color:#60E">.1</span>
-==&gt;<span style="color:#00D">29</span>
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">age</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">29</span>)
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">age</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">29</span>)
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">age</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">29</span>).name  <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>
-mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">marko</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">age</span><span style="color:#710">'</span></span>-&gt;<span style="color:#00D">29</span>).age
-==&gt;<span style="color:#00D">29</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('marko',29)
+==&gt;('marko',29)
+mmlang&gt; ('marko',29).0                    <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;'marko'
+mmlang&gt; ('marko',29).1
+==&gt;29
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)
+==&gt;('name'-&gt;'marko','age'-&gt;29)
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29).name  <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;'marko'
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29).age
+==&gt;29</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2526,14 +2526,14 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 <p>Branching with predicates.</p>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; {<span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>}-&lt;(<span style="color:#080;font-weight:bold">is</span>==<span style="color:#00D">2</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span> | <span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">2</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">is</span><span style="color:#710">'</span></span> | <span style="color:#369;font-weight:bold">int</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>)
-==&gt;(-&gt;|<span style="color:#00D">1</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>)
-==&gt;(<span style="color:#00D">2</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>|-&gt;)
-==&gt;(-&gt;|<span style="color:#00D">3</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">is</span><span style="color:#710">'</span></span>)
-mmlang&gt; {<span style="color:#00D">1</span>,<span style="color:#00D">2</span>,<span style="color:#00D">3</span>}-&lt;(<span style="color:#080;font-weight:bold">is</span>==<span style="color:#00D">2</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span> | <span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">2</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">is</span><span style="color:#710">'</span></span> | <span style="color:#369;font-weight:bold">int</span> -&gt; <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>)&gt;-
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">my</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">name</span><span style="color:#710">'</span></span>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">is</span><span style="color:#710">'</span></span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; {1,2,3}-&lt;(is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my')
+==&gt;(-&gt;|1-&gt;'my')
+==&gt;(2-&gt;'name'|-&gt;)
+==&gt;(-&gt;|3-&gt;'is')
+mmlang&gt; {1,2,3}-&lt;(is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my')&gt;-
+==&gt;'my'
+==&gt;'name'
+==&gt;'is'</code></pre>
 </div>
 </div>
 </li>
@@ -2546,9 +2546,9 @@ mmlang&gt; {<span style="color:#00D">1</span>,<span style="color:#00D">2</span>,
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; (<span style="color:#00D">1</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="color:#00D">2</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)==(<span style="color:#00D">1</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="color:#00D">2</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1-&gt;'a',2-&gt;'b')==(1-&gt;'a',2-&gt;'b')
 ==&gt;false
-mmlang&gt; (<span style="color:#00D">1</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="color:#00D">2</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)==(<span style="color:#00D">2</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="color:#00D">1</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>)
+mmlang&gt; (1-&gt;'a',2-&gt;'b')==(2-&gt;'b',1-&gt;'a')
 ==&gt;false</code></pre>
 </div>
 </div>
@@ -2562,12 +2562,12 @@ mmlang&gt; (<span style="color:#00D">1</span>-&gt;<span style="background-color:
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#00D">23</span>-&lt;(<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">10</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>,<span style="color:#369;font-weight:bold">int</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)
-==&gt;(<span style="color:#00D">23</span>-&gt;{<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>})
-mmlang&gt; <span style="color:#00D">23</span>-&lt;(<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">10</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>|<span style="color:#369;font-weight:bold">int</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)
-==&gt;(<span style="color:#00D">23</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>|-&gt;)
-mmlang&gt; <span style="color:#00D">23</span>-&lt;(<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">10</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>;<span style="color:#369;font-weight:bold">int</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)
-==&gt;(<span style="color:#00D">23</span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">b</span><span style="color:#710">'</span></span>)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 23-&lt;(is&gt;10-&gt;'a',int-&gt;'b')
+==&gt;(23-&gt;{'b','a'})
+mmlang&gt; 23-&lt;(is&gt;10-&gt;'a'|int-&gt;'b')
+==&gt;(23-&gt;'a'|-&gt;)
+mmlang&gt; 23-&lt;(is&gt;10-&gt;'a';int-&gt;'b')
+==&gt;(23-&gt;'b')</code></pre>
 </div>
 </div>
 </div>
@@ -2871,22 +2871,22 @@ The edge \$(a,i,b) \in E\$, notated as \$a\to_{i}b\$, has the corresponding <cod
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>                                         <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>]                                 <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][mult,[plus,<span style="color:#00D">10</span>]]                 <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][mult,<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>]]
-mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][mult,[plus,<span style="color:#00D">10</span>]][explain]        <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span></span>
-<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][mult,<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                         <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;int
+mmlang&gt; int[plus,1]                                 <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;int[plus,1]
+mmlang&gt; int[plus,1][mult,[plus,10]]                 <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;int[plus,1][mult,int[plus,10]]
+mmlang&gt; int[plus,1][mult,[plus,10]][explain]        <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;'
+int[plus,1][mult,int[plus,10]]
 
-instruction            domain      <span style="color:#369;font-weight:bold">range</span> state
+instruction            domain      range state
 -----------------------------------------------
-[plus,<span style="color:#00D">1</span>]               int    =&gt;   <span style="color:#369;font-weight:bold">int</span>
-[mult,<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">10</span>]]    int    =&gt;   <span style="color:#369;font-weight:bold">int</span>
- [plus,<span style="color:#00D">10</span>]              int   =&gt;    <span style="color:#369;font-weight:bold">int</span>
-<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span></span></code></pre>
+[plus,1]               int    =&gt;   int
+[mult,int[plus,10]]    int    =&gt;   int
+ [plus,10]              int   =&gt;    int
+'</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2930,12 +2930,12 @@ instruction            domain      <span style="color:#369;font-weight:bold">ran
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>
-mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>]
-mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int]
+==&gt;int
+mmlang&gt; [start,int][plus,5]
+==&gt;int[plus,5]
+mmlang&gt; [start,int][plus,5][gt,10]
+==&gt;bool&lt;=int[plus,5][gt,10]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2944,10 +2944,10 @@ The instruction <code>[id]</code>, on the other hand, does.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][noop]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>]
-mmlang&gt; [start,<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][<span style="color:#369;font-weight:bold">id</span>]
-==&gt;<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">5</span>][gt,<span style="color:#00D">10</span>][<span style="color:#369;font-weight:bold">id</span>]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int][plus,5][gt,10][noop]
+==&gt;bool&lt;=int[plus,5][gt,10]
+mmlang&gt; [start,int][plus,5][gt,10][id]
+==&gt;bool&lt;=int[plus,5][gt,10][id]</code></pre>
 </div>
 </div>
 </div>
@@ -3067,8 +3067,8 @@ This branch structure will product one, two, or three <code>ints</code> given a 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>[<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&lt;<span style="color:#00D">0</span>],<span style="color:#369;font-weight:bold">int</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">1</span>,<span style="color:#00D">3</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[gt,<span style="color:#00D">0</span>]],<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,<span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">int</span>[lt,<span style="color:#00D">0</span>]],<span style="color:#369;font-weight:bold">int</span>)&gt;-</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[int[is&gt;0],int[is&lt;0],int]
+==&gt;int{1,3}&lt;=int-&lt;(int{?}&lt;=int[is,bool&lt;=int[gt,0]],int{?}&lt;=int[is,bool&lt;=int[lt,0]],int)&gt;-</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all left small" style="width: 30%;">
@@ -3200,10 +3200,10 @@ where the <em>branch</em> component is, in fact, a group with <code>(a{q},a{-q})
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; -&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>},<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{-<span style="color:#00D">2</span>})
-==&gt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>},<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{-<span style="color:#00D">2</span>})
-mmlang&gt; -&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{<span style="color:#00D">2</span>},<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{-<span style="color:#00D">2</span>})&gt;-
-==&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">a</span><span style="color:#710">'</span></span>{<span style="color:#00D">0</span>}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; -&lt;('a'{2},'a'{-2})
+==&gt;('a'{2},'a'{-2})
+mmlang&gt; -&lt;('a'{2},'a'{-2})&gt;-
+==&gt;'a'{0}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3625,7 +3625,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-01 19:23:38 -0600
+Last updated 2020-07-02 00:29:14 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
