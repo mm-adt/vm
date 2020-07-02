@@ -1511,7 +1511,7 @@ mmlang&gt; false[one]
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image left"><img src="./images/language/bool-zero-one.png" alt="bool zero one" width="265"></span> When an <code>obj</code> is applied to an <code>inst</code>, the <code>inst</code> yields an <code>obj</code>. In mm-ADT, types and values are simply vertices in the <code>obj</code> graph. A <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a> <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> <code>inst</code> such as <code>[zero]</code> and <code>[one]</code> require only the domain&#8217;s type to produce a respective constant value. Consequently, the distinction between compilation and evaluation blur. That is, "compilation" can produce values and thus, the program is complete before being "evaluated." This idea is exaggerated in the example below, where from the <code>bool</code> ctype, instructions are applied one-by-one to demonstrate how the type&#8217;s definition (a path in the Cayley <code>obj</code> graph) yields a <code>false</code> value. At <code>[zero]</code>, the process transitions from the type graph to the value graph which are both connected subgraphs of the larger <code>obj</code> graph. The final instruction, <code>[and,bool,bool]</code>, is compiled to <code>[and,false,false]</code> which results in <code>false</code>. Thus, a single "compilation" automata is able to derive the result set.</p>
+<p><span class="image left"><img src="./images/language/bool-zero-one.png" alt="bool zero one" width="320"></span> In mm-ADT, types and values are simply vertices in the <code>obj</code> graph. A <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a> <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> <code>inst</code> such as <code>[zero]</code> and <code>[one]</code> require only the domain&#8217;s type to produce a respective constant value. Consequently, the distinction between compilation and evaluation blur. That is, "compilation" can produce values and thus, the program is complete before being "evaluated." This idea is exaggerated in the example below, where from the <code>bool</code> ctype, instructions are applied one-by-one to demonstrate how the type&#8217;s definition (a path in the Cayley <code>obj</code> graph) yields a <code>false</code> value. At <code>[zero]</code>, the process transitions from the type graph to the value graph which are both connected subgraphs of the larger <code>obj</code> graph. The final instruction, <code>[and,bool,bool]</code>, is compiled to <code>[and,false,false]</code> which results in <code>false</code>. Thus, a single "compilation" automata is able to derive the result set.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3666,7 +3666,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-02 05:34:53 -0600
+Last updated 2020-07-02 05:36:01 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
