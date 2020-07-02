@@ -39,9 +39,9 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
         (bfalse, __.or(btrue), btrue, "value"), // value * value = value
         (bfalse, __.or(bool), bfalse, "value"), // value * type = value
         (bfalse, __.or(__.or(bool)), bfalse, "value"), // value * anon = value
-        (bool, __.or(btrue), bool.or(btrue), "type"), // type * value = type
+        (bool, __.or(btrue), btrue, "value"), // type * value = type
         (bool, __.or(bool), bool.or(bool), "type"), // type * type = type
-        (bool(true, true, false), __.or(btrue), bool(true, true, true), "strm"), // strm * value = strm
+        (bool(true, true, false), __.or(btrue), btrue.q(3), "value"), // strm * value = strm
         (bool(true, true, false), __.or(bool), bool(true, true, false), "strm"), // strm * type = strm
         (bool(true, true, false), __.or(__.or(bool)), bool(true, true, false), "strm"), // strm * anon = strm
       )
@@ -74,10 +74,6 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
         bfalse)
     forEvery(starts) { obj => {
       val expr = maker(obj)
-      obj match {
-        case value: Value[_] => assert(value.g == expr.asInstanceOf[Value[_]].g)
-        case _ =>
-      }
       assert(obj.q != expr.q)
       assertResult(2)(expr.trace.length)
       assertResult((int(60), int(60)))(expr.q)

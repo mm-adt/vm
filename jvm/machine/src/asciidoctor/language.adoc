@@ -156,23 +156,33 @@ The `obj` graph will be studied at length from the perspective of https://en.wik
 
 ==== Type Structure
 
+.Cayley Graphs
+****
+
+image::cayley-graph.png[width=200,float=right]
+
+A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of the structure of a https://en.wikipedia.org/wiki/Group_(mathematics)[group]. If \$\langle A, \cdot, I \rangle \$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and edges \$E = (A \times (A \times I))\$ is the Cayley graph of the group. The directed edge \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i = b\$.
+
+When constructed in full, a Cayley graph's vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. A _generalized_ Cayley Graph is a graph with respective vertex/edge structure, but for other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
+****
+
 image::obj-full.png[float=right,width=320]
 
-The full `obj` structure thus far is diagrammed on the right. On the left, some `mmlang` examples are presented.
+The full `obj` structure thus far is diagrammed on the right. On the left are some example `mmlang` expressions.
 
 [exec]
 ----
-int                                       //<1>
-int{2}                                    //<2>
-int{2}[is>0]                              //<3>
-int{2}[is>0][mult,[neg]]                  //<4>
+int                                          //<1>
+int{2}                                       //<2>
+int{2}[is>0]                                 //<3>
+int{2}[is>0][mult,[neg]]                     //<4>
 ----
 <1> A ctype denoting a single integer.
 <2> A ctype denoting two integers.
 <3> A dtype denoting zero, one, or two integers greater than 0.
 <4> A dtype extending the previous type by their negative complement.
 
-The salient features of a type are captured in the pseudo-`mmlang` expression below, where the three projections encode a type's
+The diagram below captures the salient features of a type, where the three projections encode a type's
 
 . *Type signature*: the ctype specification of a type's domain and range (via the \$ \pi_\tt{domai\n} \$ and \$ \pi_\tt{rang\e} \$ projections), and
 . *Type definition*: an instruction sequence specifying a process on the domain `obj` (via the \$ \pi_\tt{i\nsts} \$ projection).
@@ -181,7 +191,7 @@ image::type-signature-definition.png[align=center,width=650]
 
 ===== Type Signature
 
-Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type and the _range_ is the target type. Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`. The general pattern of a type signature is
+Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type, and the _range_ is the target type. Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`. The general pattern of a type signature is
 
 [.text-center]
 `range{q}\<=domain{q}`.
@@ -275,7 +285,7 @@ A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E
 ****
 
 .Quantifier Symbols in mmlang
-[width=35%,cols="1,1,2,float=right]
+[width=35%,cols="2,1,2",float=right]
 |===
 |usage   |sugar  | unsugared
 
@@ -324,15 +334,8 @@ int{2}[_,_]
 
 ==== Mono Types
 
-.Monoids
-****
-A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
-****
-
-An mm-ADT `mono` is the set of all atomic types.
-
 [.small]
-[cols="1,3,1,1",width=35%,float=left]
+[cols="1,3,1,1",width=35%,float=right]
 |===
 | type | inst                              | 0       |  1
 
@@ -342,17 +345,21 @@ An mm-ADT `mono` is the set of all atomic types.
 | `str`  | `+` `>` `<` `>=` `\<=`          | `''`    |
 |===
 
+The mm-ADT atomic, non-composite types are denoted `mono`. There are 4 `mono` types: `bool`, `int`, `real`, and `str`. The associated table presents the typical operators (sugar'd instructions) that can be applied to each type as well as the identity (additive) and annihilator (multiplicative) values of the type. This section will present example uses of each type.
+
 '''
 
 ===== Bool Type
 
 [exec]
 ----
-true
-true&&false
-true[and,false]
-true[and,false][neg]
-true[and,false][neg][or,false]
+bool[zero]
+bool[one]
+bool[and,[zero],[one]]
+bool[or,[zero],[one]]
+bool[and,>5,<8]
+{9,6}[and,>5,<8]
+{9,6}[or,>5,<8]
 ----
 
 ===== Int Type
@@ -1100,14 +1107,9 @@ This is the simplest algebraic structure describing mm-ADT. This interpretation 
 
 ==== Inst Monoid
 
-.Cayley Graphs
+.Monoids
 ****
-
-image::cayley-graph.png[width=200,float=right]
-
-A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of the structure of a group. If \$\langle A, \cdot, I \rangle \$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and generating set \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and edges \$E = (A \times (A \times I))\$ is the Cayley graph of the group. Thus, the edge \$a \to_i b\$ states that the outgoing and incoming vertices \$a,b \in A\$ respectively are connected by an edge labeled with the element \$i \in I\$.
-
-A _fully constructed_ graph, a Cayley graph's vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. As a _dynamically constructed_ graph, a Cayley graph encodes the history of a group computation, where the current element has an incoming edges from the previous element being applied to a denoted generator. A _generalized_ Cayley Graph applies the same concepts of the Cayley graph's group presentation, to other magmas such as monoids and semigroups.
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.
 ****
 
 mm-ADT types serve numerous roles which are typically realized by many sorts of objects in other programming environments. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] which is the https://en.wikipedia.org/wiki/Generator_(mathematics)[generating set] of the https://en.wikipedia.org/wiki/Free_monoid[free] **inst monoid**

@@ -42,6 +42,8 @@ import org.mmadt.storage.StorageFactory._
 trait Obj
   extends AOp
     with AsOp
+    with AndOp
+    with OrOp
     with CountOp
     with DefineOp
     with DefsOp

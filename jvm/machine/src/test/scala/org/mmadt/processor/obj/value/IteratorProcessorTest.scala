@@ -62,10 +62,8 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
   }
   test("process canonical type") {
     int(10) ===> int
-
     int(1, 2, 3) ==> int.q(+)
-
-    /*    assertThrows[LanguageException] {
+    /*  assertThrows[LanguageException] {
           int(10) ===> int.q(0)
         }
 
@@ -74,17 +72,14 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
         }
     */
     assertThrows[LanguageException] {
-      int(10) ===> bool.and(bfalse)
+      int(10) ===> bool.and(bool)
     }
-
     assertThrows[LanguageException] {
       int(10) ===> str
     }
-
     assertThrows[LanguageException] {
       int(10) ===> str.q(2)
     }
-
     assertThrows[LanguageException] {
       str("hello") ===> bool
     }

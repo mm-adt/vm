@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.{Inst, Int, Obj, Real}
+import org.mmadt.language.obj.{Bool, Inst, Int, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -38,6 +38,7 @@ trait OneOp[O <: Obj] {
 object OneOp extends Func[Obj, Obj] {
   def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.one, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
+    case _: Bool => btrue
     case _: Int => int(1)
     case _: Real => real(1.0)
     case _ => start

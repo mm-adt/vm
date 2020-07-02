@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -33,15 +33,15 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait AndOp {
-  this: Bool =>
+  this: Obj =>
   def and(other: Obj*): Bool = AndOp(other: _*).exec(this)
   final def &&(other: Obj*): Bool = this.and(other: _*)
 }
 object AndOp extends Func[Obj, Bool] {
   def apply(other: Obj*): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.and, other.toList), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool =
-    start match {
-      case _: Value[_] => bool(inst.args.forall(x => x.asInstanceOf[Bool].g)).via(start, inst).asInstanceOf[Bool]
-      case _ => bool.via(start, inst)
-    }
+    if (inst.args.forall(x => x.isInstanceOf[BoolValue]))
+      bool(inst.args.forall(x => x.asInstanceOf[BoolValue].g)).via(start, inst)
+    else
+      bool.via(start, inst)
 }

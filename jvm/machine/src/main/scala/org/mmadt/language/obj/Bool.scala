@@ -22,14 +22,14 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.op.map.{AndOp, NegOp, OrOp}
+import org.mmadt.language.obj.op.map._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Bool extends Obj
-  with AndOp
-  with OrOp
+  with ZeroOp[Bool]
+  with OneOp[Bool]
   with NegOp[Bool] {
   def g: Boolean
 }

@@ -49,10 +49,11 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
         (btrue, __.and(__.and(bool)), btrue, "value"), // value * anon = value
         (btrue.q(10), __.and(__.and(bool)), btrue.q(10), "value"), // value * anon = value
         (btrue, __.and(__.and(bool.q(10))), btrue, "value"), // value * anon = value
-        (bool, __.and(btrue), bool.and(btrue), "type"), // type * value = type
+        (bool, __.and(btrue), btrue, "value"), // type * value = type
+        (bool, __.and(bfalse), bfalse, "value"), // type * value = type
         (bool, __.and(bool), bool.and(bool), "type"), // type * type = type
-        (bool(true, true, false), __.and(bfalse), bool(false, false, false), "strm"), // strm * value = strm
-        (bool(true, true, false), __.and(bfalse.q(10)), bool(false, false, false), "strm"), // strm * value = strm
+        (bool(true, true, false), __.and(bfalse), bfalse.q(3), "value"), // strm * value = strm
+        (bool(true, true, false), __.and(bfalse.q(10)), bfalse.q(3), "value"), // strm * value = strm
         (bool(true, true, false), __.and(bool), bool(true, true, false), "strm"), // strm * type = strm
         (bool(true, true, false), __.and(bool).q(10), bool(btrue.q(10), btrue.q(10), bfalse.q(10)), "strm"), // strm * type = strm
         (bool(true, true, false), __.and(bool.q(10)), bool(true, true, false), "strm"), // strm * type = strm
