@@ -32,7 +32,7 @@ $(document).ready(function(){
                   "infix":   ["|","&&",",","+","*"],
                   "value":   ["true","false"],
                   "type":    ["_","real","rec","lst","tvpoly","vpoly","tpoly","poly","inst",
-                              "obj","int","str","bool","range","domain"],
+                              "obj","int","str","bool","range","domain"], 
                   "plain":   ["is not"]};
   $.each(items, function(key, values) {
     jQuery.each(values, function(index,element) {
