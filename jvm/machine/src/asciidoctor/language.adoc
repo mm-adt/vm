@@ -351,13 +351,39 @@ The mm-ADT atomic, non-composite types are denoted `mono`. There are 4 `mono` ty
 
 ===== Bool Type
 
+The type `bool` has two values: `true` and `false`. The *0*-value is `false` and the *1*-value is `true`, where `[zero]` and `[one]` yield values regardless of their input.
+
 [exec]
 ----
 bool[zero]
 bool[one]
-bool[and,[zero],[one]]
-bool[or,[zero],[one]]
-bool[and,>5,<8]
+true[zero]
+true[one]
+false[zero]
+false[one]
+----
+
+image:bool-zero-one.png[width=265,float=left] When an `obj` is applied to an `inst`, the `inst` yields an `obj`. In mm-ADT, types and values are simply vertices in the `obj` graph. A https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphic] https://en.wikipedia.org/wiki/Constant_function[constant] `inst` such as `[zero]` and `[one]` require only the domain's type to produce a respective constant value. Consequently, the distinction between compilation and evaluation blur. That is, "compilation" can produce values and thus, the program is complete before being "evaluated." This idea is exaggerated in the example below, where from the `bool` ctype, instructions are applied one-by-one to demonstrate how the type's definition (a path in the Cayley `obj` graph) yields a `false` value. At `[zero]`, the process transitions from the type graph to the value graph which are both connected subgraphs of the larger `obj` graph. The final instruction, `[and,bool,bool]`, is compiled to `[and,false,false]` which results in `false`. Thus, a single "compilation" automata is able to derive the result set.
+
+[exec]
+----
+bool
+bool[or,bool,bool]
+bool[or,bool,bool][zero]
+bool[or,bool,bool][zero][and,bool,bool]
+----
+
+The instructions `[and]` and `[or]` create `bool` dtypes from type. Their type structures are
+
+[.text-center]
+`bool{q}\<=obj{q}[and,bool*]` +
+`bool{q}\<=obj{q}[or, bool*]`.
+
+The domain `obj` becomes the domain of the respective `bool` arguments and the resultant (con/dis)junction of the `bool` arguments determines the range `bool`.
+
+[exec]
+----
+int[and,>5,<8]
 {9,6}[and,>5,<8]
 {9,6}[or,>5,<8]
 ----
