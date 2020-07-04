@@ -46,7 +46,7 @@ package object op {
         case 1 => types.head
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
-      if (brch.isParallel) { // [,] sum the min/max quantification
+      val x = if (brch.isParallel) { // [,] sum the min/max quantification
         result.hardQ(brch.glist.map(x => x.q).reduce((a, b) => plusQ(a, b)))
       } else if (brch.isSerial) { // [;] last quantification
         asType[OT](brch.glist.last.asInstanceOf[OT])
@@ -55,6 +55,7 @@ package object op {
           int(Math.min(a._1.g, b._1.g)),
           int(Math.max(a._2.g, b._2.g)))))
       }
+      x.hardQ(multQ(brch.q, x.q))
     }
   }
 
