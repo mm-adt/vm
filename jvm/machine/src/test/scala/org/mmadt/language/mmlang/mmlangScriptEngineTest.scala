@@ -74,6 +74,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str)(engine.eval("str"))
     assertResult(lst)(engine.eval("lst"))
     assertResult(rec)(engine.eval("rec"))
+    assertResult(__)(engine.eval("_"))
   }
 
   test("quantified canonical type parsing") {
@@ -83,6 +84,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str)(engine.eval("str{1}"))
     assertResult(rec.q(int(5), int(10)))(engine.eval("rec{5,10}"))
     assertResult(lst.q(int(5), int(10)))(engine.eval("lst{5,10}"))
+    // assertResult(__.q(+))(engine.eval("_{+}"))
   }
 
   test("atomic value parsing") {
@@ -202,7 +204,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(int(15).q(48))(engine.eval("5{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
-    // assertResult(__.q(64) <= __.plus(2).q(2).mult(3).q(32).plus(4))(engine.eval("[plus,2]{2}[mult,3]{32}[plus,4]"))
+    assertResult(__.q(64) <= __.plus(2).q(2).mult(3).q(32).plus(4))(engine.eval("[plus,2]{2}[mult,3]{32}[plus,4]"))
   }
 
   test("refinement type parsing") {
@@ -377,8 +379,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(3))(engine.eval("-1 int[plus,2]-<(int[is>5]->34|int[is==1]->int[plus2]|int->20)>-"))
     assertResult(int(20))(engine.eval("1 [plus,2]-<([is>5]->true|[is==1]->[plus 2]|int->20)>-"))
     assertResult(int(20))(engine.eval("1 [plus,2][split,([is>5]->true|[is==1]->[plus 2]|int->20)]>-"))
-    // assertResult(obj.q(?))(engine.eval("int[plus,2][int[is>5]->true|[is==1]->[plus2][is,int]|int->20]").range)
-    // assertResult(obj.q(?))(engine.eval("int[plus,2][int[is>5]->true|[is==1]->[plus2]|int->20]").range)
+    //assertResult(obj.q(0, 2))(engine.eval("int[plus,2][int[is>5]->true|[is==1]->[plus2][is,int]]").range)
+    assertResult(obj)(engine.eval("int[plus,2][int[is>5]->true|[is==1]->[plus2]|int->20]").range)
     assertResult(bfalse)(engine.eval("4[plus,1]-<([is>5] -> true | int -> false)>-"))
     assertResult(bfalse.q(3))(engine.eval("(4,2,1)>-[plus,1]-<([is>5] -> true | int -> false)>-"))
     assertResult(bool(btrue, bfalse.q(2)))(engine.eval("(5,2,1)>-[plus,1][int[is>5] -> true | int -> false]"))
@@ -415,7 +417,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(13))(engine.eval("10-<(int -> int[plus,2] ; _ -> int[plus,1])>-"))
     assertResult(int(11, 51, 61))(engine.eval("(10,50,60)>--<(int ->int ; _ -> int[plus,1])>-"))
     assertResult(zeroObj)(engine.eval("(10,50,60)>--<(bool -> true ; int -> int[plus,1])>-"))
-//    assertResult(int(11, 51, 51, 61))(engine.eval("(10,50{2},60)>--<(int -> int ; int+1 -> int[plus,1])>-"))
+    //    assertResult(int(11, 51, 51, 61))(engine.eval("(10,50{2},60)>--<(int -> int ; int+1 -> int[plus,1])>-"))
     assertResult(zeroObj)(engine.eval("(10,10)>--<(bool -> true ; int -> int[plus,1])>-"))
     assertResult(int(11).q(2))(engine.eval("10{2}-<(int+1 ->int ; int -> int[plus,1])>-"))
     assertResult(int(302, 42))(engine.eval(
@@ -967,7 +969,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("frobenius axioms parsing") {
     assertResult(int(1) `,` 1)(engine.eval("(1,1)=(_,-<(_,_))=(>-,_)"))
     assertResult(int(1) `,` 1)(engine.eval("(1,1)=(-<(_,_),_)=(_,>-)"))
-    assertResult((int(1)`,`1).q(2))(engine.eval("(1,1)>--<(_,_)"))
+    assertResult((int(1) `,` 1).q(2))(engine.eval("(1,1)>--<(_,_)"))
     assertResult(int(1).q(2))(engine.eval("1-<(_,_)>-"))
     // complex quantifier examples
     assertResult(int(1).q(4))(engine.eval("1{2}-<(_,_)>-"))
