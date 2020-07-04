@@ -444,7 +444,7 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.
 . `;` is a polynomial term combinator denoting serial compose.
 . `-<` is sugar for `[split]` copying the lhs `obj` across all polynomial terms.
 . `>-` is sugar for `[merge]` joining polynomial terms into a single `obj`.
-. `=` is sugar for `[combine]` combing polynomial terms pair-wise.
+. `=` is sugar for `[combine]` composing polynomial terms pair-wise.
 ================================================================
 
 NOTE: The resoning behind the `[split]` sugar symbol `-<`, is that it represents one wire (`-`) splitting into many (`<`). Likewise, the reason for `>-` being the `[merge]` sugar symbol is it represents many wires merging (`>`) into one (`-`). Finally, `[combine]` has a sugar of `=` which represents parallel wires being operated on independently.
