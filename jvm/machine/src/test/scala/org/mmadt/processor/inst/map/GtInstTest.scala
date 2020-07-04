@@ -50,11 +50,11 @@ class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.gt(int), int.gt(int), "type"), // type * type = type
         (int(1, 2, 3).gt(2), bool(false, false, true), "strm"), // strm * value = strm
         (int(1, 2, 3).gt(int(2).q(10)), bool(false, false, true), "strm"), // strm * value = strm
-        //(int(1, 2, 3).gt(int(2)).q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10)), "strm"), // strm * value = strm
-        //(int(1, 2, 3).gt(int(2)).q(10), bool(bfalse.q(20), btrue.q(10)), "strm"), // strm * value = strm
-        //(int(1, 2, 3).gt(int(2)).q(10).id(), bool(bfalse.q(10), bfalse.q(10), btrue.q(10)), "strm"), // strm * value = strm
-        //(int(1, 2, 3).gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50)), "strm"), // strm * value = strm
-        //(int(1, 2, 3).id().gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50)), "strm"), // strm * value = strm
+        (int(1, 2, 3).gt(int(2)).q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).gt(int(2)).q(10), bool(bfalse.q(20), btrue.q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).gt(int(2)).q(10).id(), bool(bfalse.q(10), bfalse.q(10), btrue.q(10)), "strm"), // strm * value = strm
+        (int(1, 2, 3).gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50)), "strm"), // strm * value = strm
+        (int(1, 2, 3).id().gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50)), "strm"), // strm * value = strm
         (int(1, 2, 3).gt(int(2)).id().q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50)), "strm"), // strm * value = strm
         (int(1, 2, 3).gt(int), bool(false, false, false), "strm"), // strm * type = strm
         (int(1, 2, 3).gt(__.mult(int)), bool(false, false, false), "strm"), // strm * anon = strm
@@ -64,7 +64,7 @@ class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(2.0).gt(__.mult(real)), false, "value"), // value * anon = value
         (real.gt(real(2.0)), real.gt(2.0), "type"), // type * value = type
         (real.gt(real), real.gt(real), "type"), // type * type = type
-        // (real(1.0, 2.0, 3.0).gt(2.0).q(3), bool(bfalse.q(6), btrue.q(3)), "strm"), // strm * value = strm
+        (real(1.0, 2.0, 3.0).gt(2.0).q(3), bool(bfalse.q(6), btrue.q(3)), "strm"), // strm * value = strm
         (real(1.0, 2.0, 3.0).gt(2.0).id().q(3), bool(bfalse.q(6), btrue.q(3)), "strm"), // strm * value = strm
         (real(1.0, 2.0, 3.0).gt(2.0), bool(false, false, true), "strm"), // strm * value = strm
         (real(1.0, 2.0, 3.0).gt(real), bool(false, false, false), "strm"), // strm * type = strm
@@ -79,7 +79,7 @@ class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str.q(10).gt("b"), str.q(10).gt("b"), "type"), // type * value = type
         (str.gt(str), str.gt(str), "type"), // type * type = type
         (str("a", "b", "c").gt("b"), bool(false, false, true), "strm"), // strm * value = strm
-        //(str("a", "b", "c").gt(str("b").q(10)), bool(false, false, true), "strm"), // strm * value = strm
+        (str("a", "b", "c").gt(str("b").q(10)), bool(false, false, true), "strm"), // strm * value = strm
         (str("a", "b", "c") ==> __.gt("b").q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10)), "strm"), // strm * value = strm
         (str("a", "b", "c").gt(str), bool(false, false, false), "strm"), // strm * type = strm
       )

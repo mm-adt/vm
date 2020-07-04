@@ -49,7 +49,7 @@ class MapInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.q(10).map(int(2)), int.q(10).map(int(2)), "type"), // type * value = type
         (int.map(int), int.map(int), "type"), // type * type = type
         (int(1, 2, 3).map(2), int(2, 2, 2), "strm"), // strm * value = strm
-        //(int(1, 2, 3).map(int(2).q(10)), int(int(2).q(10), int(2).q(10), int(2).q(10)), "strm"), // strm * value = strm
+        // (int(1, 2, 3).map(int(2).q(10)), int(int(2).q(10), int(2).q(10), int(2).q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3) ===> __.map(int(2)).q(10), int(int(2).q(10), int(2).q(10), int(2).q(10)), "strm"), // strm * value = strm
         (int(1, 2, 3).map(int), int(1, 2, 3), "strm"), // strm * type = strm
         (int(1, 2, 3).map(int.mult(int)), int(1, 4, 9), "strm"), // strm * type = strm

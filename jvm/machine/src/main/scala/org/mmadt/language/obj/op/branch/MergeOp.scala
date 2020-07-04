@@ -47,7 +47,6 @@ object MergeOp extends Func[Obj, Obj] {
       case apoly: PolyType[_, _] =>
         val t = BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
         t.hardQ(multQ(start, t))
-
       case _ => start.via(start, inst)
     }
   }

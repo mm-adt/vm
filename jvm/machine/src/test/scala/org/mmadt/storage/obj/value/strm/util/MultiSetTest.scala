@@ -62,6 +62,7 @@ class MultiSetTest extends FunSuite {
   test("multiset w/ inst") {
     println(int(1, 1, 1).q(20))
     assertResult(int(int(12).q(40), int(13).q(40), int(14).q(40)))(int(1, 2, 3).q(20).plus(10).q(2).plus(1))
-    assertResult(int(int(12).q(80), int(13).q(40)))(int(1, 1, 2).q(20).plus(10).q(2).plus(1))
+    assertResult(int(int(12).q(4), int(13).q(2)))(int(1, 1, 2).plus(10).q(2).plus(1))
+    assertResult(int(int(12).q(40), int(13).q(40)))(int(1, 1, 2).q(20).plus(10).q(2).plus(1))
   }
 }

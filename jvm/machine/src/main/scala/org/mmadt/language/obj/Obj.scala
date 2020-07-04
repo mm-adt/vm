@@ -90,7 +90,7 @@ trait Obj
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def q(q: IntQ): this.type = if (q.equals(qZero)) this.isolate.clone(q = qZero) else this.clone(
-    q = if (this.root) q else multQ(this.via._1, q),
+    q = if (this.root) q else multQ(this.q, q),
     via = if (this.root) base else (this.via._1, this.via._2.q(q)))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))

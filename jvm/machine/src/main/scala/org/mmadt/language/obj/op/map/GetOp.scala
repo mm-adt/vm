@@ -47,8 +47,7 @@ object GetOp extends Func[Obj, Obj] {
       case anon: __ => anon.via(start, inst)
       case arec: Rec[Obj, Obj] =>
         val results = arec.gmap
-          .filter(a => key.test(a._1) || a._1.test(Inst.oldInst(inst).arg0[Obj]))
-          .filter(a => a._1.alive)
+          .filter(a => key.test(a._1))
           .values
           .flatMap(a => a.toStrm.values)
           .filter(a => a.alive)

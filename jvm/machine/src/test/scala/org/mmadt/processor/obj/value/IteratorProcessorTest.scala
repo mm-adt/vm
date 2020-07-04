@@ -46,11 +46,11 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
       int.is(int.gt(int(20))) --> int.plus(int(3)) |
         int.is(int.gt(int(10))) --> int.plus(int(2)) |
         int --> int.plus(int(1))).>-.plus(int(0)))
-    //assertResult(int(50))(int(10).q(50) ===> int.q(50).plus(2).count())
+    assertResult(int(50))(int(10).q(50) ===> int.q(50).plus(2).count())
     assertResult(int(50))(int(10).q(50).plus(2).count())
     assertResult(int(3))(int(10, 20, 30) ===> int.q(+).plus(2).count())
     assertResult(int(12))(int(10, 20, int(30).q(10)).plus(2).count())
-    //assertResult(int(12))(int(10, 20, int(30).q(10)) ===> int.q(+).plus(2).count())
+    assertResult(int(12))(int(10, 20, int(30).q(10)) ===> int.q(+).plus(2).count())
     assertResult(int(4))(int(10, 20, 30, 40) ===> int.q(*).plus(2).mult(100).count())
     assertResult(int(2))(int(10, 20, 30, 40) ===> int.q(*).is(int.gt(20)).count())
     assertResult(int(12))(int(10, 20, 30, 40) ===> int.q(1, 57).is(int.gt(20)).count().plus(10))

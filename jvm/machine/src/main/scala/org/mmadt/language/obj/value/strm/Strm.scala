@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.value.strm
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
@@ -34,12 +34,8 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 trait Strm[+O <: Obj] extends Value[O] {
   def values: Seq[O]
 
-  override def g: Any = throw LanguageException.typeNoGround(this)
-  override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = {
-    val x = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(_.alive)) // TODO: ghetto
-    (if (true) x else strm).asInstanceOf[this.type]
-  }
-  override def q(q: IntQ): this.type = strm(this.values.map(x => if (x.root) x.q(multQ(x.q, q)) else x.q(q)).filter(_.alive)).asInstanceOf[this.type]
+  override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(_.alive)).asInstanceOf[this.type]
+  override def q(q: IntQ): this.type = strm(this.values.map(x => x.q(q)).filter(_.alive)).asInstanceOf[this.type]
   override val q: IntQ = this.values.foldLeft(qZero)((a, b) => plusQ(a, b.q))
   // utility methods
   override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]
