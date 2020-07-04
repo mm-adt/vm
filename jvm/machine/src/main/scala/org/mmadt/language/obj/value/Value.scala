@@ -42,7 +42,7 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
     case anon: __ => withinQ(this, anon) && Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case avalue: Value[_] => this.g.equals(avalue.g) && withinQ(this, avalue)
-    case atype: Type[_] => (baseName(this).equals(baseName(atype)) || atype.name.equals(Tokens.anon)) && withinQ(this, atype.domain) && this.compute(atype).alive
+    case atype: Type[_] => (baseName(this).equals(baseName(atype)) || atype.name.equals(Tokens.obj) || atype.name.equals(Tokens.anon)) && withinQ(this, atype.domain) && this.compute(atype).alive
     case _ => false
   }
 

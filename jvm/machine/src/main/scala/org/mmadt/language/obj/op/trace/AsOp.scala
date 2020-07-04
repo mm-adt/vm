@@ -48,13 +48,13 @@ object AsOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
     val asObj: Obj = if (start.isInstanceOf[Type[_]]) inst.arg0[Obj] else Inst.resolveToken(start, inst.arg0[Obj])
-    val dObj: Obj = choose(start, asObj)
-    val rObj: Obj = if (asObj.domain != asObj.range) choose(dObj, asObj.range) else dObj
+    val dObj: Obj = pickMapping(start, asObj)
+    val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, asObj.range) else dObj
     val result = (if (Tokens.named(inst.arg0[Obj].name)) rObj.named(inst.arg0[Obj].name) else rObj).via(start, inst)
     if (!result.alive) throw LanguageException.typingError(start, asType(asObj))
     result
   }
-  private def choose(start: Obj, asObj: Obj): Obj = {
+  private def pickMapping(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {
       val defined = Obj.fetchOption[Obj](start, start, asObj.name)
@@ -85,6 +85,7 @@ object AsOp extends Func[Obj, Obj] {
       case aint: IntType => vint(name = aint.name, g = x.g, via = x.via)
       case areal: RealType => vreal(name = areal.name, g = x.g)
       case astr: StrType => vstr(name = astr.name, g = x.g.toString)
+      case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
     }, y)
   }
@@ -106,6 +107,7 @@ object AsOp extends Func[Obj, Obj] {
       case aint: IntType => vint(name = aint.name, g = JLong.valueOf(x.g))
       case areal: RealType => vreal(name = areal.name, g = JDouble.valueOf(x.g))
       case astr: StrType => vstr(name = astr.name, g = x.g)
+      case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
     }, y)
   }
@@ -127,7 +129,7 @@ object AsOp extends Func[Obj, Obj] {
         x.gmap.flatMap(a => arec.gmap
           .filter(b => a._1.test(b._1))
           .map(b => (a._1.as(b._1), a._2.as(b._2))))))
-        if (z.gmap.size != arec.gmap.size) throw LanguageException.typingError(x, asType(y))
+        if (z.gmap.size < arec.gmap.count(x => x._2.q._1.g > 0)) throw LanguageException.typingError(x, asType(y))
         z.clone(via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     }

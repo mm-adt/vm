@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.{eqQ, _}
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -39,7 +39,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
     case aobj: Obj if !aobj.alive => !this.alive
     case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
     case atype: Type[_] =>
-      (baseName(this).equals(baseName(atype)) || __.isAnon(this) || __.isAnon(atype)) &&
+      (baseName(this).equals(baseName(atype)) || atype.name.equals(Tokens.obj) || __.isAnon(this) || __.isAnon(atype)) &&
         withinQ(this, atype) &&
         this.trace.length == atype.trace.length &&
         this.trace.map(_._2).zip(atype.trace.map(_._2)).

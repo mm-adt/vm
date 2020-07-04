@@ -34,21 +34,21 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait DefsOp {
   this: Obj =>
-  def defs: Rec[Obj,Obj] = DefsOp().exec(this)
+  def defs: Rec[Obj, Obj] = DefsOp().exec(this)
 }
 object DefsOp extends Func[Obj, Obj] {
   def apply(): Inst[Obj, Rec[Obj, Obj]] = new VInst[Obj, Rec[Obj, Obj]](g = (Tokens.defs, List.empty), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val defs: Rec[Obj, Obj] = rec(g=(Tokens.`,`, start.trace.map(x => x._2).
-      filter(x => x.op.equals(Tokens.define)).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj]))))
-    val vars: Rec[Obj, Obj] = rec(g=(Tokens.`,`, start.trace.
+    val defs: Rec[Obj, Obj] = rec(g = (Tokens.`,`, start.trace.map(x => x._2).
+      filter(x => x.op.equals(Tokens.define)).flatMap(x => x.args).
+      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.range.name) -> y))))
+    val vars: Rec[Obj, Obj] = rec(g = (Tokens.`,`, start.trace.
       filter(x => x._2.op.equals(Tokens.to)).
       foldLeft(Map.empty[Obj, Obj])((x, y) => x + (y._2.arg0[StrValue] -> y._1))))
-    val rewrites: Rec[Obj, Obj] = rec(g=(Tokens.`,`, start.trace.map(x => x._2).
+    val rewrites: Rec[Obj, Obj] = rec(g = (Tokens.`,`, start.trace.map(x => x._2).
       filter(x => x.op.equals(Tokens.rewrite)).
       foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj]))))
-    rec(g=(Tokens.`,`, List(
+    rec(g = (Tokens.`,`, List(
       str("defs") -> defs,
       str("vars") -> vars,
       str("rewrites") -> rewrites).
