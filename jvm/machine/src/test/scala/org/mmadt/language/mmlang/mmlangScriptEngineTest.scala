@@ -964,6 +964,19 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("1[is,-<(true|false)>-]"))
   }
 
+  test("frobenius axioms parsing") {
+    assertResult(int(1) `,` 1)(engine.eval("(1,1)=(_,-<(_,_))=(>-,_)"))
+    assertResult(int(1) `,` 1)(engine.eval("(1,1)=(-<(_,_),_)=(_,>-)"))
+    //assertResult((int(1)`,`1).q(2))(engine.eval("(1,1)>--<(_,_)"))
+    assertResult(int(1).q(2))(engine.eval("1-<(_,_)>-"))
+    // complex quantifier examples
+    assertResult(int(1).q(4))(engine.eval("1{2}-<(_,_)>-"))
+    assertResult(int(1).q(6))(engine.eval("1{2}-<([id]{2},_)>-"))
+    assertResult(int(1).q(24))(engine.eval("1{2}-<([id]{2},_)>-{4}"))
+    // assertResult(int(1).q(24))(engine.eval("1{2}-<([id]{2},_){4}>-"))
+
+  }
+
   test("play") {
     /* val x: Obj = engine.eval(
        """int
@@ -981,7 +994,7 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("(3)"))
     println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
     //println(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
-    println(engine.eval("(1,(2,3))=(_,=(<y>,[id]))>-"))
+    //println(engine.eval("(1,(2,3))=(_,=(<y>,[id]))>-"))
     println(engine.eval("[1,2,(3,)](-<(_,))^([a,(((int,),),)][neg])"))
     println(engine.eval("(1,2,(3,(4,5)))=(_,_,=(int,=(+20,+10)))"))
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?|y?)"))

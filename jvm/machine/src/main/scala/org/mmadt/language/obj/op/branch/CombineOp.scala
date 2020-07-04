@@ -24,8 +24,8 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.{BranchInstruction, TraceInstruction}
+import org.mmadt.language.obj.value.strm.LstStrm
 import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage.StorageFactory.lst
 import org.mmadt.storage.obj.value.VInst
@@ -40,10 +40,11 @@ object CombineOp extends Func[Obj, Lst[Obj]] {
   def apply[A <: Obj, B <: Obj](other: Obj): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.combine, List(other)), func = this) with BranchInstruction with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = {
     start match {
+      case astrm: LstStrm[Obj] => astrm.via(start, inst)
       case alst: Lst[Obj] =>
-        val temp = if (inst.arg0.isInstanceOf[Lst[Obj]]) inst.arg0[Lst[Obj]] else return alst.via(start, inst)
-        val combinedPoly: Lst[Obj] = lst(g = (temp.gsep, alst.glist.zip(temp.glist).map(a => Inst.resolveArg(a._1, a._2))))
-        (temp.gsep match {
+        val arg = inst.arg0[Lst[Obj]]
+        val combinedPoly: Lst[Obj] = alst.clone(g = (arg.gsep, alst.glist.zip(arg.glist).map(a => Inst.resolveArg(a._1, a._2))))
+        (combinedPoly.gsep match {
           case Tokens.| => Lst.keepFirst(combinedPoly)
           case _ => combinedPoly
         }).via(start, inst)
