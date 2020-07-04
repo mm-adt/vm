@@ -42,17 +42,10 @@ object GetOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val key: Obj = inst.arg0[Obj]
-    // println(start + "!!!" + inst)
     (start match {
-      case anon: __ => anon.via(start, inst)
       case arec: Rec[Obj, Obj] =>
-        val results = arec.gmap
-          .filter(a => key.test(a._1))
-          .values
-          .flatMap(a => a.toStrm.values)
-          .filter(a => a.alive)
-        if (results.isEmpty) if (arec.isInstanceOf[Type[_]]) __ else zeroObj //throw LanguageException.PolyException.noKeyValue(arec, key)
-        // else if(rec.isType) return asType[Obj](results.head).via(start,Inst.oldInst(inst))
+        val results = arec.gmap.filter(a => key.test(a._1)).values.flatMap(a => a.toStrm.values).filter(a => a.alive)
+        if (results.isEmpty) if (arec.isInstanceOf[Type[_]]) __ else zeroObj
         else if (results.size == 1) results.head
         else return strm(results.toSeq)
       case alst: Lst[_] => key match {
@@ -62,7 +55,7 @@ object GetOp extends Func[Obj, Obj] {
         case _ => obj
       }
       case _: Value[_] => zeroObj
-      case _ => __
+      case _ => start
     }).via(start, inst)
   }
 }
