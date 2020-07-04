@@ -1436,7 +1436,7 @@ mmlang&gt; int[is&gt;0]
 mmlang&gt; int[is,false]
 mmlang&gt;
 mmlang&gt; int{2}[_,_]
-==&gt;int{4}&lt;=int{2}-&lt;(int{2},int{2})&gt;-</code></pre>
+==&gt;int{4}&lt;=int{2}-&lt;(int,int)&gt;-</code></pre>
 </div>
 </div>
 </div>
@@ -1714,9 +1714,24 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <li>
 <p><code>&gt;-</code> is sugar for <code>[merge]</code> joining polynomial terms into a single <code>obj</code>.</p>
 </li>
+<li>
+<p><code>=</code> is sugar for <code>[combine]</code> combing polynomial terms pair-wise.</p>
+</li>
 </ol>
 </div>
 </div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The resoning behind the <code>[split]</code> sugar symbol <code>-&lt;</code>, is that it represents one wire (<code>-</code>) splitting into many (<code>&lt;</code>). Likewise, the reason for <code>&gt;-</code> being the <code>[merge]</code> sugar symbol is it represents many wires merging (<code>&gt;</code>) into one (<code>-</code>). Finally, <code>[combine]</code> has a sugar of <code>=</code> which represents parallel wires being operated on independently.
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
 <colgroup>
@@ -1907,7 +1922,7 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])   <i class="conum" data-value="3"></i><b>(3
 mmlang&gt; int[[gt,0],[gt,10]]
 ==&gt;bool{2}&lt;=int-&lt;(bool&lt;=int[gt,0],bool&lt;=int[gt,10])&gt;-
 mmlang&gt; int{5}[[gt,0],[gt,10]]
-==&gt;bool{10}&lt;=int{5}-&lt;(bool{5}&lt;=int{5}[gt,0],bool{5}&lt;=int{5}[gt,10])&gt;-</code></pre>
+==&gt;bool{10}&lt;=int{5}-&lt;(bool&lt;=int[gt,0],bool&lt;=int[gt,10])&gt;-</code></pre>
 </div>
 </div>
 </td>
@@ -3662,7 +3677,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-02 10:57:54 -0600
+Last updated 2020-07-02 15:59:33 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
