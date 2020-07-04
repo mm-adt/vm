@@ -32,9 +32,13 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait DefineOp {
   this: Obj =>
-  def define(obj: Obj): this.type = DefineOp(obj).exec(this)
+  def define(objs: Obj*): this.type = DefineOp(objs: _*).exec(this)
 }
 object DefineOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.define, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = if (!Obj.fetch(start, inst.arg0[Obj])) start.via(start, inst) else start
+  def apply[O <: Obj](objs: Obj*): Inst[O, O] = new VInst[O, O](g = (Tokens.define, objs.toList.asInstanceOf[List[O]]), func = this) with TraceInstruction
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val undefined = inst.args.filter(x => !Obj.fetch(start, x))
+    if (undefined.isEmpty) start else start.via(start, inst.clone(g = (Tokens.define, undefined)))
+    // if (!Obj.fetch(start, inst.arg0[Obj])) start.via(start, inst) else start
+  }
 }

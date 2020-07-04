@@ -106,7 +106,7 @@ object OpInstResolver {
       case Tokens.fold => if (args.tail.isEmpty) FoldOp(args.head) else FoldOp(args.head, args.tail.head)
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].g)
       case Tokens.defs => DefsOp()
-      case Tokens.define => DefineOp(args.head)
+      case Tokens.define => DefineOp(args: _*)
       case Tokens.rewrite => RewriteOp(args.head)
       case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
       case Tokens.id => IdOp()

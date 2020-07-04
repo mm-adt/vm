@@ -184,7 +184,7 @@ object Obj {
     start match {
       case x if x.root => false
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].trace == search.trace => true
+      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.trace == search.trace) => true
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].trace == search.trace && x.via._2.arg0[Obj].equals(search) => true // TODO: trace search because poly values (bad?)
       case x => fetch(x.via._1, search)
     }
@@ -198,11 +198,12 @@ object Obj {
         case _: Value[Obj] => Some(x.via._1.asInstanceOf[A])
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
-      case x if x.via._2.op == Tokens.define &&
-        x.via._2.arg0[Obj].name == label &&
-        source.test(asType(x.via._2.arg0[Obj].domain)) => Some(x.via._2.arg0[A].named(baseName(x.via._2.arg0[A])))
-      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label => Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
-      case x => fetchOption(source, x.via._1, label)
+      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label && source.test(asType(y.domain))) =>
+        Some(toBaseName(x.via._2.args.find(y => y.name == label && source.test(asType(y.domain))).get.asInstanceOf[A]))
+      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
+        Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
+      case x =>
+        fetchOption(source, x.via._1, label)
     }
   }
 
@@ -211,9 +212,12 @@ object Obj {
   def fetchWithInstOption[A <: Obj](obj: Obj, label: String): Option[(String, A)] = {
     obj match {
       case x if x.root => None
-      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some((Tokens.to, x.via._1.asInstanceOf[A]))
-      case x if x.via._2.op == Tokens.define && x.via._2.arg0[Obj].name == label => Some((Tokens.define, x.via._2.arg0[A]))
-      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label => Some((Tokens.rewrite, x.via._2.arg0[A]))
+      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label =>
+        Some((Tokens.to, x.via._1.asInstanceOf[A]))
+      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label) =>
+        Some((Tokens.define, x.via._2.args.find(y => y.name == label).get.asInstanceOf[A]))
+      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
+        Some((Tokens.rewrite, x.via._2.arg0[A]))
       case x => fetchWithInstOption(x.via._1, label)
     }
   }
