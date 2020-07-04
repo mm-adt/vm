@@ -36,9 +36,6 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   with PlusOp[Rec[A, B]]
   with GetOp[A, B]
   with PutOp[A, B]
-  with HeadOp[B]
-  with TailOp
-  with LastOp[B]
   with ZeroOp[Rec[A, B]] {
 
   def g: RecTuple[A, B]
@@ -96,16 +93,15 @@ object Rec {
   }
   def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {
     var found: Boolean = false;
-    val x = arec.clone(g = (arec.gsep, arec.gmap.map(x => {
+    arec.clone(g = (arec.gsep, arec.gmap.map(x => {
       if (!found) {
         val keyResolve = Inst.resolveArg(start, x._1)
         if (keyResolve.alive) {
           found = true
-          (keyResolve.hardQ(multQ(start, keyResolve)), Inst.resolveArg(start, x._2).hardQ(multQ(start, x._2))) // TODO: Generalize to Inst.resolveArg()
+          (keyResolve, Inst.resolveArg(start, x._2))
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)
     })))
-    x.hardQ(qOne) // TODO: related to whether the inst.q and the poly.q should be coupled
   }
 }

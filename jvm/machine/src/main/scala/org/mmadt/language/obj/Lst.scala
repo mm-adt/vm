@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
+import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
@@ -32,12 +32,8 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 trait Lst[A <: Obj] extends Poly[A]
   with CombineOp[A]
-  with MergeOp[A]
   with GetOp[Int, A]
   with PutOp[Int, A]
-  with HeadOp[A]
-  with TailOp
-  with LastOp[A]
   with PlusOp[Lst[A]]
   with MultOp[Lst[A]]
   //with OneOp[Lst[A]]
@@ -45,7 +41,7 @@ trait Lst[A <: Obj] extends Poly[A]
 
   def g: LstTuple[A]
   override def gsep: String = g._1
-  override def glist: List[A] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x))
+  override def glist: List[A] = g._2/*.map(x => x.hardQ(multQ(this.q, x.q)))*/.map(x => if (this.isInstanceOf[Type[_]]) x else Obj.copyDefinitions(this, x))
 
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive

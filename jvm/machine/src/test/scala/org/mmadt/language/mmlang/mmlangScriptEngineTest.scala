@@ -279,7 +279,7 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("int{3}[+1,+2,+3][explain]"))
     println(engine.eval("int{3}[is>10 -> +1 | is==0 -> +2 | int -> +3][explain]"))
     assert(engine.eval("int[define,nat<=int[is>0]]<x>[plus,[mult,x]][[is,[a,nat]][plus,10]|[define,notnat<=int[plus,0]]]<y>[plus,x][explain]").toString.contains("nat->nat<=int[is,bool<=int[gt,0]] x->int notnat->notnat<=int[plus,0]"))
-    assert(engine.eval("int{3}[+1,+2,+3][explain]").toString.contains("(int{3}[plus,1],int{3}[plus,2],int{3}[pl...    =>   int{9}"))
+    assert(engine.eval("int{3}[+1,+2,+3][explain]").toString.contains("(int[plus,1],int[plus,2],int[plus,3]){3}...    =>   int{9}"))
     assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("instruction"))
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("z->bool"))
   }
@@ -415,7 +415,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(13))(engine.eval("10-<(int -> int[plus,2] ; _ -> int[plus,1])>-"))
     assertResult(int(11, 51, 61))(engine.eval("(10,50,60)>--<(int ->int ; _ -> int[plus,1])>-"))
     assertResult(zeroObj)(engine.eval("(10,50,60)>--<(bool -> true ; int -> int[plus,1])>-"))
-    assertResult(int(11, 51, 51, 61))(engine.eval("(10,50{2},60)>--<(int -> int ; int+1 -> int[plus,1])>-"))
+//    assertResult(int(11, 51, 51, 61))(engine.eval("(10,50{2},60)>--<(int -> int ; int+1 -> int[plus,1])>-"))
     assertResult(zeroObj)(engine.eval("(10,10)>--<(bool -> true ; int -> int[plus,1])>-"))
     assertResult(int(11).q(2))(engine.eval("10{2}-<(int+1 ->int ; int -> int[plus,1])>-"))
     assertResult(int(302, 42))(engine.eval(
@@ -492,13 +492,13 @@ class mmlangScriptEngineTest extends FunSuite {
   test("bool strm input parsing") {
     assertResult(btrue)(engine.eval("(true,false)>-[is,[id]]"))
     assertResult(btrue)(engine.eval("(true,false)>-[is,[id]]"))
-    assertResult(btrue)(engine.eval("bool{*}[true,false][is,[id]]"))
+    assertResult(btrue)(engine.eval("{true,false} => bool{*}[is,[id]]"))
     assertResult(btrue)(engine.eval("[true,false][is,[id]]"))
   }
 
   test("int strm input parsing") {
-    assertResult(int(-1, 0))(engine.eval("int{+}[0,1][plus,-1]"))
-    assertResult(int(-1, 0))(engine.eval("int{+}[0,1][plus,-1]"))
+    assertResult(int(-1, 0))(engine.eval("{0,1} => int{+}[plus,-1]"))
+    assertResult(int(-1, 0))(engine.eval("{0,1} => int{+}[plus,-1]"))
     assertResult(int(1, 2, 3))(engine.eval("[0,1,2][plus,1]"))
     assertResult(int(int(1).q(3), int(2).q(10), int(3)))(engine.eval("[0{3},1{10},2][plus,1]"))
     assertResult(int(30, 40))(engine.eval("(0,1,2,3)>-[plus,1][is,int[gt,2]][mult,10]"))
@@ -510,7 +510,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("real strm input parsing") {
-    assertResult(real(-1.2, 0.0))(engine.eval("real{+}[0.0,1.2][plus,-1.2]"))
+    assertResult(real(-1.2, 0.0))(engine.eval("{0.0,1.2} => real{+}[plus,-1.2]"))
     assertResult(zeroObj)(engine.eval("real{5}[is,false]"))
   }
 
@@ -967,7 +967,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("frobenius axioms parsing") {
     assertResult(int(1) `,` 1)(engine.eval("(1,1)=(_,-<(_,_))=(>-,_)"))
     assertResult(int(1) `,` 1)(engine.eval("(1,1)=(-<(_,_),_)=(_,>-)"))
-    //assertResult((int(1)`,`1).q(2))(engine.eval("(1,1)>--<(_,_)"))
+    assertResult((int(1)`,`1).q(2))(engine.eval("(1,1)>--<(_,_)"))
     assertResult(int(1).q(2))(engine.eval("1-<(_,_)>-"))
     // complex quantifier examples
     assertResult(int(1).q(4))(engine.eval("1{2}-<(_,_)>-"))

@@ -27,6 +27,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.op.BranchInstruction
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
@@ -38,22 +39,23 @@ trait SplitOp {
 object SplitOp extends Func[Obj, Obj] {
   def apply[A <: Obj](branches: Obj): Inst[A, Poly[A]] = new VInst[A, Poly[A]](g = (Tokens.split, List(branches.asInstanceOf[A])), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val startUnit = start.hardQ(qOne)
     val oldInst: Inst[Obj, Poly[Obj]] = Inst.oldInst(inst).asInstanceOf[Inst[Obj, Poly[Obj]]]
     val apoly: Poly[Obj] = oldInst.arg0[Obj] match {
       case x: Poly[Obj] => x
       case _ => inst.arg0[Poly[Obj]]
     }
-    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(start.clone(via = (start, oldInst)), apoly))
-    apoly match {
+    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(startUnit.clone(via = (startUnit, oldInst)), apoly))
+    (apoly match {
       case _: RecType[_, _] if apoly.isSerial => newInst.arg0[Obj].clone(via = (start, oldInst))
-      case _: RecType[_, _] if apoly.isChoice => processFirst(start, oldInst) // TODO: cause the same resolutions map to the same keys
+      case _: RecType[_, _] if apoly.isChoice => processFirst(startUnit, oldInst).clone(via = (start, oldInst)) // TODO: cause the same resolutions map to the same keys
       //
-      case _: Poly[_] if apoly.isChoice => processFirst(start, newInst)
+      case _: Poly[_] if apoly.isChoice => processFirst(startUnit, newInst).clone(via = (start, newInst))
       case _ => newInst.arg0[Poly[Obj]].clone(via = (start, newInst))
-    }
+    }).hardQ(start.q)
   }
-  private def processFirst(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = (start match {
+  private def processFirst(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = start match {
     case _: Type[_] => inst.arg0[Poly[Obj]]
     case _ => Poly.keepFirst(start, inst.arg0[Poly[Obj]])
-  }).clone(via = (start, inst))
+  }
 }

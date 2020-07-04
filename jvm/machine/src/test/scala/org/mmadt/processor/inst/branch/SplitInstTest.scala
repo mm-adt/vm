@@ -37,8 +37,8 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1), int.-<(int `;` int), int(1) `;` int(1)),
         (int(1, 2, 3), int.q(3).-<(int.q(3) `,` int.q(3)), strm(List(int(1) `,` 1, int(2) `,` 2, int(3) `,` 3))),
         (int(2), __.-<(int | str), int(2) | obj.q(qZero)),
-        (int(4).q(2), int.q(2).-<(int | int.is(__.gt(10))), int(4).q(2) | obj.q(qZero)),
-        (int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), int(2).q(2) `;` obj.q(qZero)),
+        (int(4).q(2), int.q(2).-<(int | int.is(__.gt(10))), (int(4) | obj.q(qZero)).q(2)),
+        (int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), (int(2) `;` obj.q(qZero)).q(2)),
         (int(2), int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)),
         (int(2), int.-<(int.-<(int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero)),
       )

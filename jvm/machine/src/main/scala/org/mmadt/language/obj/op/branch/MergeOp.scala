@@ -43,8 +43,11 @@ object MergeOp extends Func[Obj, Obj] {
     start match {
       case apoly: PolyValue[_, _] if apoly.isChoice => strm(Poly.keepFirst(apoly, apoly).glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
       case apoly: PolyValue[_, _] if apoly.isParallel => strm(apoly.glist.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive))
-      case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(x, inst.q))).filter(_.alive).getOrElse(zeroObj)
-      case apoly: PolyType[_, _] => BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
+      case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => x.clone(q = multQ(multQ(start, x), inst.q))).filter(_.alive).getOrElse(zeroObj)
+      case apoly: PolyType[_, _] =>
+        val t = BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
+        t.hardQ(multQ(start, t))
+
       case _ => start.via(start, inst)
     }
   }
