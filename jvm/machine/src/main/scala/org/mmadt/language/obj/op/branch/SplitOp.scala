@@ -52,7 +52,7 @@ object SplitOp extends Func[Obj, Obj] {
       //
       case _: Poly[_] if apoly.isChoice => processFirst(startUnit, newInst).clone(via = (start, newInst))
       case _ => newInst.arg0[Poly[Obj]].clone(via = (start, newInst))
-    }).hardQ(start.q)
+    }).hardQ(multQ(start.q, apoly.q))
   }
   private def processFirst(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = start match {
     case _: Type[_] => inst.arg0[Poly[Obj]]

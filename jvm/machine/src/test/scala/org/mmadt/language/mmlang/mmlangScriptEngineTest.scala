@@ -417,7 +417,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(13))(engine.eval("10-<(int -> int[plus,2] ; _ -> int[plus,1])>-"))
     assertResult(int(11, 51, 61))(engine.eval("(10,50,60)>--<(int ->int ; _ -> int[plus,1])>-"))
     assertResult(zeroObj)(engine.eval("(10,50,60)>--<(bool -> true ; int -> int[plus,1])>-"))
-    //    assertResult(int(11, 51, 51, 61))(engine.eval("(10,50{2},60)>--<(int -> int ; int+1 -> int[plus,1])>-"))
+    assertResult(int(11, 51, 51, 61))(engine.eval("(10,50{2},60)>--<(int -> int ; int+1 -> int[plus,1])>-"))
     assertResult(zeroObj)(engine.eval("(10,10)>--<(bool -> true ; int -> int[plus,1])>-"))
     assertResult(int(11).q(2))(engine.eval("10{2}-<(int+1 ->int ; int -> int[plus,1])>-"))
     assertResult(int(302, 42))(engine.eval(
@@ -955,9 +955,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
     assertResult("vertex:('id'->nat:10,'label'->'marko10','outE'->)")(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,vertex]").toString)
     assertResult("vertex:('id'->5)")(engine.eval(s"5[load,${file1}][as,vertex]").toString)
-    // println(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]"))
-
-
+    assertResult(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,vertex]"))(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]"))
   }
 
   test("[as] parsing") {
@@ -975,7 +973,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(1).q(4))(engine.eval("1{2}-<(_,_)>-"))
     assertResult(int(1).q(6))(engine.eval("1{2}-<([id]{2},_)>-"))
     assertResult(int(1).q(24))(engine.eval("1{2}-<([id]{2},_)>-{4}"))
-    // assertResult(int(1).q(24))(engine.eval("1{2}-<([id]{2},_){4}>-"))
+    assertResult(int(1).q(24))(engine.eval("1{2}-<([id]{2},_){4}>-"))
+    assertResult(int(1).q(240))(engine.eval("1{2}-<([id]{2},_){4}>-{10}"))
 
   }
 
