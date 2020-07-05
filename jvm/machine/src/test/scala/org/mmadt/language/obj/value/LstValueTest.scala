@@ -37,7 +37,7 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
     assert(("a" | "b").q(0).test(str.q(0)))
     //
     assert(("a" | "b").test("a" | "b"))
-    //assert(("a" | "b").test("a" |))
+    assert(!("a" | "b").test("a" |))
     assert(!("a" |).test("a" | "b"))
     //
     assert(("a" | ("b" | "c")).test("a" | ("b" | "c")))

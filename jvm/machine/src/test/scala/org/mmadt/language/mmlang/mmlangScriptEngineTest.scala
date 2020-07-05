@@ -814,6 +814,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(120))(engine.eval("10[define,big<=int[plus,100]][plus,0][plus,big]"))
     assertResult(int(120))(engine.eval("10[define,big<=int[plus,100]][plus,big]"))
     assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][a,person]"))
+    assertResult(btrue)(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][as,person][a,person]"))
     assertResult(bfalse)(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][a,person]"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][a,person]{100}"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str)][a,person]{100}"))
@@ -894,7 +895,7 @@ class mmlangScriptEngineTest extends FunSuite {
       """ 10
         | [define,z:0]
         | [define,o<=int[one]]
-        | [map,o]""".stripMargin))
+        | [as,o]""".stripMargin))
   }
   test("recursive definition parsing") {
     assertResult(bfalse)(engine.eval("(1,(2,'3'))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
@@ -953,9 +954,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][a,person]"))
     assertResult(zeroObj)(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][is,[a,person]]"))
 
-    assertResult("vertex:('id'->nat:10,'label'->'marko10','outE'->)")(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,vertex]").toString)
+    assertResult("vertex:('id'->nat:10,'label'->'marko10','outE'->)")(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]").toString)
     assertResult("vertex:('id'->5)")(engine.eval(s"5[load,${file1}][as,vertex]").toString)
-    assertResult(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,vertex]"))(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]"))
   }
 
   test("[as] parsing") {

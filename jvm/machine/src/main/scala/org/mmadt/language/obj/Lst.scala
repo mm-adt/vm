@@ -49,8 +49,9 @@ trait Lst[A <: Obj] extends Poly[A]
     case anon: __ => Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
+      this.name.equals(other.name) &&
       withinQ(this, alst) &&
-      (this.glist.length == alst.glist.length || alst.glist.isEmpty) && // TODO: should lists only check up to their length
+      (this.glist.size == alst.glist.size || alst.glist.isEmpty) && // TODO: should lists only check up to their length
       this.glist.zip(alst.glist).forall(b => b._1.test(b._2))
     case atype: Type[_] => atype.name.equals(Tokens.obj)
     case _ => false
@@ -62,6 +63,7 @@ trait Lst[A <: Obj] extends Poly[A]
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
       eqQ(this, alst) &&
+      // (this.glist.size == alst.glist.size) &&
       this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))
     case _ => false
   }

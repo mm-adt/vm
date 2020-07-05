@@ -40,8 +40,8 @@ class IntTypeTest extends FunSuite {
     assert(int.plus(2).test(int.plus(2)))
     assert(int.is(int.gt(2)).test(int.is(int.gt(2))))
     assert(!int.test(str))
-    assert(!int.test(int.plus(2)))
-    assert(!int.plus(2).test(int))
+    assert(int.test(int.plus(2)))
+    assert(int.plus(2).test(int))
     assert(!int.test(str.map(int(2))))
     assert(!int.test(str.map(int)))
   }
@@ -55,10 +55,10 @@ class IntTypeTest extends FunSuite {
     assertResult(int(5))(int(5) ==> (int <= int.is(int.gt(4))))
     assertResult(int(5))(int(5) ==> (int.is(int.gt(4))))
     //intercept[LanguageException]{
-     int(4) ==> (int <= int.is(int.gt(4)))
+    int(4) ==> (int <= int.is(int.gt(4)))
     //}
     //intercept[LanguageException] {
-      int(6) ==> int.q(0).is(int.gt(5))
+    int(6) ==> int.q(0).is(int.gt(5))
     //}
     intercept[LanguageException] {
       int(6) ==> int.q(2).is(int.gt(5))

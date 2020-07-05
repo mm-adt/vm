@@ -39,11 +39,8 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
     case aobj: Obj if !aobj.alive => !this.alive
     case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
     case atype: Type[_] =>
-      (baseName(this).equals(baseName(atype)) || atype.name.equals(Tokens.obj) || __.isAnon(this) || __.isAnon(atype)) &&
-        withinQ(this, atype) &&
-        this.trace.length == atype.trace.length &&
-        this.trace.map(_._2).zip(atype.trace.map(_._2)).
-          forall(insts => insts._1.op.equals(insts._2.op) && insts._1.args.zip(insts._2.args).forall(a => a._1.test(a._2)))
+      (this.name.equals(atype.domain.name) || atype.domain.name.equals(Tokens.obj) || __.isAnon(this) || __.isAnon(atype)) &&
+        withinQ(this, atype)
     case _ => false
   }
   // standard Java implementations
