@@ -152,7 +152,7 @@ trait Obj
     case _: Type[E] if __.isAnonRoot(this) && rangeType.root => rangeType.hardQ(multQ(this, rangeType))
     case _: Type[E] =>
       if (this.isInstanceOf[Type[_]] && this.root && rangeType.root)
-        LanguageException.testTypeCheck(this.hardQ(1), asType(rangeType).hardQ(1))
+        LanguageException.testTypeCheck(this, asType(rangeType).hardQ(this.q))
       Tokens.tryName[E](rangeType, rangeType.trace
         .headOption
         .map(x => x._2.exec(this))

@@ -59,7 +59,7 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1), __ -< (int `,` int), int(1) `,` int(1)),
         (int(1), __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
         (int(1), __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
-        // (int(1).q(5), __ -< (int `,` int.plus(2).q(10)), int(1).q(5) `,` int(3).q(50)),
+        (int(1).q(5), __ -< (int `,` int.plus(2).q(10)), (int(1) `,` int(3).q(10)).q(5)),
         (int(1).q(5), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
         (int(1, 100), __ -< (int | int) >-, int(int(1), int(100))),
         (int(1, 100), __ -< (int `,` int) >-, int(1, 1, 100, 100)),

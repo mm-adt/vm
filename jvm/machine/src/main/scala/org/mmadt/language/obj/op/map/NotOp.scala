@@ -38,7 +38,7 @@ object NotOp extends Func[Obj, Bool] {
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     (start match {
       case _: Value[Obj] => inst.arg0[Obj] match {
-        case y: Bool => y.clone(g = !y.g)
+        case y: Bool if y.alive => y.clone(g = !y.g)
         case y => bool(!y.alive)
       }
       case _ => bool
