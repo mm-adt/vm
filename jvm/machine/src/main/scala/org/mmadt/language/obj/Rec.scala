@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -52,6 +53,7 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
         withinQ(this, arec) &&
         arec.gmap.count(x => qStar.equals(x._2.q) ||
           this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
+      case atype: Type[_] => atype.name.equals(Tokens.obj)
       case _ => false
     }
   }

@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
@@ -51,6 +52,7 @@ trait Lst[A <: Obj] extends Poly[A]
       withinQ(this, alst) &&
       (this.glist.length == alst.glist.length || alst.glist.isEmpty) && // TODO: should lists only check up to their length
       this.glist.zip(alst.glist).forall(b => b._1.test(b._2))
+    case atype: Type[_] => atype.name.equals(Tokens.obj)
     case _ => false
   }
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()

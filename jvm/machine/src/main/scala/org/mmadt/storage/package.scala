@@ -33,16 +33,18 @@ import scala.io.Source
 package object storage {
 
   val TP3: String = "tp3"
+  val KV: String = "kv"
 
   private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
-  val tp3: String = getClass.getResource("/model/tp3.mm").getPath
-
 
   def model(name: String): Type[Obj] = {
-    val source = name match {
-      case TP3 => Source.fromFile(tp3)
-      case _ => throw new StorageException("Unknown predefined model: " + name)
-    }
+    val source = Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)
+    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.empty)((x, y) => x + "\n" + y))
+    finally source.close();
+  }
+
+  def functor(from: String, to: String): Type[Obj] = {
+    val source = Source.fromFile(getClass.getResource("/model/functor/" + (to + "_" + from) + ".mm").getFile)
     try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.empty)((x, y) => x + "\n" + y))
     finally source.close();
   }

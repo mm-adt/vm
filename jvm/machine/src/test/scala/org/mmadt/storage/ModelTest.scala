@@ -22,7 +22,8 @@
 
 package org.mmadt.storage
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -30,8 +31,12 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest extends FunSuite {
-  test("[tp3] model basics") {
-    val tp3 = model(TP3)
+
+  val tp3_kv: Type[Obj] = functor(KV, TP3)
+  val kv: Type[Obj] = model(KV)
+  val tp3: Type[Obj] = model(TP3)
+
+  test("[tp3] model") {
     val record1a = rec(
       str("id") -> int(1),
       str("label") -> str("person"))
@@ -54,6 +59,24 @@ class ModelTest extends FunSuite {
     assertThrows[LanguageException] {
       record3 ===> tp3.as(__("vertex"))
     }
+  }
+
+  test("[kv] model") {
+    val record1 = rec(
+      str("k") -> int(1),
+      str("v") -> str("marko"))
+    assertResult(record1.named("kv"))(record1 ===> kv.as(__("kv")))
+  }
+
+  test("[tp3<=kv] functor") {
+    val record1a = rec(
+      str("k") -> (str("vertex") `,` int(1)),
+      str("v") -> rec(str("name") -> str("marko")))
+    val record1b = rec(
+      str("id") -> int(1),
+      str("label") -> str("vertex")).named("vertex")
+    assertResult(record1a.named("kv"))(record1a ===> kv.as(__("kv")))
+    assertResult(record1b)(record1a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("kv")).as(__("vertex")))
   }
 
 }

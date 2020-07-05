@@ -64,7 +64,7 @@ object Inst {
     if (__.isToken(arg))
       Obj.fetchOption[A](obj, obj, arg.name).orElse[A](obj match {
         case _: Type[Obj] => return arg
-        case _ => throw LanguageException.noMatchFound(obj, arg.name)
+        case _ => throw LanguageException.typingError(obj, asType(arg))
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     resolveToken(obj, arg) match {

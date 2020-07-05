@@ -117,6 +117,7 @@ object AsOp extends Func[Obj, Obj] {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString)
       case alst: LstType[Obj] => lst(g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))))
+      case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
     }
   }
@@ -131,6 +132,7 @@ object AsOp extends Func[Obj, Obj] {
           .map(b => (a._1.as(b._1), a._2.as(b._2))))))
         if (z.gmap.size < arec.gmap.count(x => x._2.q._1.g > 0)) throw LanguageException.typingError(x, asType(y))
         z.clone(via = x.via)
+      case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
     }
     y.trace.map(x => x._2).foldLeft(w)((x, y) => y.exec(x))

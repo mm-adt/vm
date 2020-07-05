@@ -37,8 +37,8 @@ trait DefineOp {
 object DefineOp extends Func[Obj, Obj] {
   def apply[O <: Obj](objs: Obj*): Inst[O, O] = new VInst[O, O](g = (Tokens.define, objs.toList.asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val undefined = inst.args.filter(x => !Obj.fetch(start, x))
-    if (undefined.isEmpty) start else start.via(start, inst.clone(g = (Tokens.define, undefined)))
-    // if (!Obj.fetch(start, inst.arg0[Obj])) start.via(start, inst) else start
+    /*val undefined = inst.args.filter(x => !Obj.fetch(start, x))
+    if (undefined.isEmpty) start else*/
+    start.via(start, inst)
   }
 }
