@@ -77,6 +77,16 @@ class ModelTest extends FunSuite {
       str("label") -> str("vertex")).named("vertex")
     assertResult(record1a.named("kv"))(record1a ===> kv.as(__("kv")))
     assertResult(record1b)(record1a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("kv")).as(__("vertex")))
+    //
+    val record2a = rec(
+      str("k") -> (str("vertex") `,` int(1)),
+      str("v") -> rec(str("label") -> str("person"), str("name") -> str("marko")))
+    val record2b = rec(
+      str("id") -> int(1),
+      str("label") -> str("person")).named("vertex")
+    assertResult(record2a.named("kv"))(record2a ===> kv.as(__("kv")))
+    assertResult(record2b)(record2a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("kv")).as(__("vertex")))
+    assertResult(record2b)(record2a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("vertex")))
   }
 
 }
