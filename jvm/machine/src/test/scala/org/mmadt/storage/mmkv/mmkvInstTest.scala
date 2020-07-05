@@ -57,9 +57,9 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("mmkv branch parsing") {
-    assertResult(int(2, 3, 4, 5))(engine.eval(s"[1][=mmkv,'${file1}'][get,'k'][plus,1]"))
-    assertResult(int(100))(engine.eval(s"[10][is==1->[=mmkv,'${file1}'][get,'k'][plus,1] | int -> 100]"))
-    assertResult(int(2, 3, 4, 5))(engine.eval(s"[1][is==1->[=mmkv,'${file1}'][get,'k'][plus,1] | int -> 100]"))
+    assertResult(int(2, 3, 4, 5))(engine.eval(s"{1}[=mmkv,'${file1}'][get,'k'][plus,1]"))
+    assertResult(int(100))(engine.eval(s"10[is==1->[=mmkv,'${file1}'][get,'k'][plus,1] | int -> 100]"))
+    assertResult(int(2, 3, 4, 5))(engine.eval(s"{1}[is==1->[=mmkv,'${file1}'][get,'k'][plus,1] | int -> 100]"))
     assertResult(int(2, 3, 4, 5))(engine.eval(s"1[is==1->[=mmkv,'${file1}'][get,'k'][plus,1] | int -> 100]"))
     assertResult(int(1))(engine.eval(s"1[=mmkv,'${file1}'][is,[get,'k'][eq,1]][get,'k'][[is>3]->0 | _ -> 1]"))
     assertResult(int(1))(engine.eval(s"1[=mmkv,'${file1}'][is,[get,'k'][eq,1]][[is,[get,'k'][gt,3]]->0 | _ -> 1]"))
@@ -68,8 +68,8 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv file-2 parsing") {
     assertResult(s"mmkv{*}<=_[=mmkv,'${file2}']")(engine.eval(s"[=mmkv,'${file2}']").toString)
-    assertResult(str("marko!", "stephen!"))(engine.eval(s"[1][=mmkv,'${file2}'][get,'v'][is,[get,'age'][gt,28]][get,'name'][plus,'!']"))
-    assertResult(str("marko!", "stephen!"))(engine.eval(s"[1][=mmkv,'${file2}'].v[is.age>28].name+'!'"))
+    assertResult(str("marko!", "stephen!"))(engine.eval(s"{1}[=mmkv,'${file2}'][get,'v'][is,[get,'age'][gt,28]][get,'name'][plus,'!']"))
+    assertResult(str("marko!", "stephen!"))(engine.eval(s"{1}[=mmkv,'${file2}'].v[is.age>28].name+'!'"))
     assertResult(str("marko!", "stephen!"))(engine.eval(s"1[=mmkv,'${file2}'].v[is.age>28].name+'!'"))
   }
 
@@ -96,7 +96,7 @@ class mmkvInstTest extends FunSuite {
     // assertResult(s"mmkv{*}<=_[=mmkv,'${file2}','getByKeyEq',1]")(engine.eval(s"[=mmkv,'${file2}'][is,[get,'k'][eq,1]]").toString)
     // assertResult(s"mmkv{*}<=_[=mmkv,'${file2}','getByKeyEq',2]")(engine.eval(s"[=mmkv,'${file2}'][is,[get,'k'][eq,2]]").toString) // TODO
     assertResult(str("marko"))(engine.eval(s"1[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
-    assertResult(str("marko"))(engine.eval(s"[1][=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
+    assertResult(str("marko"))(engine.eval(s"{1}[=mmkv,'${file2}'][is,[get,'k'][eq,1]][get,'v'][get,'name']"))
   }
 
   test("mmkv file-4 parsing") {

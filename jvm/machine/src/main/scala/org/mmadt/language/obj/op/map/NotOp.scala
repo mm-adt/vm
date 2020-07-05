@@ -35,8 +35,13 @@ trait NotOp {
 }
 object NotOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.not, List(other)), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = (start match {
-    case _: Value[Obj] => inst.arg0[Bool].clone(g = !inst.arg0[Bool].g)
-    case _ => bool
-  }).via(start, inst)
+  override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
+    (start match {
+      case _: Value[Obj] => inst.arg0[Obj] match {
+        case y: Bool => y.clone(g = !y.g)
+        case y => bool(!y.alive)
+      }
+      case _ => bool
+    }).via(start, inst)
+  }
 }
