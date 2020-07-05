@@ -23,25 +23,20 @@
 package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{BoolType, __}
-import org.mmadt.language.obj.value.BoolValue
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Bool, Inst, Obj}
 import org.mmadt.storage.StorageFactory.bool
 import org.mmadt.storage.obj.value.VInst
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
 trait NotOp {
-  this: Bool =>
-  def not: Bool = NotOp().exec(this)
-  final def `!`: Bool = this.not
+  this: Obj =>
+  def not(other: Obj): Bool = NotOp(other).exec(this)
+  final def !(other: Obj): Bool = this.not(other)
 }
 object NotOp extends Func[Obj, Bool] {
-  def apply(): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.not, List.empty), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = start match {
-    case avalue: BoolValue => avalue.clone(g = !avalue.g)
-    case atype: BoolType => atype.via(start, inst)
-    case _: __ => bool.via(start, inst)
-  }
+  def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.not, List(other)), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = (start match {
+    case _: Value[Obj] => inst.arg0[Bool].clone(g = !inst.arg0[Bool].g)
+    case _ => bool
+  }).via(start, inst)
 }

@@ -83,6 +83,10 @@ public class LanguageException extends VmException {
         return new LanguageException(source + " does not contain the label '" + label + "'");
     }
 
+    public static LanguageException noMatchFound(final Obj source, final String label) {
+        return new LanguageException(source + " is not a '" + label + "'");
+    }
+
     public static void testTypeCheck(final Obj obj, Type<?> type) {
         if (!(__.isAnon(type.domain()) || obj.range().test(type.domain())))
             throw LanguageException.typingError(obj, type);

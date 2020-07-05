@@ -50,7 +50,7 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   def head(): this.type = this.via(this, HeadOp())
   def tail(): this.type = this.via(this, TailOp())
   def merge(): this.type = this.via(this, MergeOp())
-  def not: this.type = this.via(this, NotOp())
+  override def not(other: Obj): Bool = bool.via(this, NotOp(other))
   ///
   def get(key: Obj): this.type = this.via(this, GetOp(key))
   def get[BB <: Obj](key: Obj, btype: BB): this.type = this.via(this, GetOp(key, btype))

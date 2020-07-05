@@ -51,6 +51,7 @@ trait Obj
     with IsOp
     with FoldOp
     with MapOp
+    with NotOp
     with GivenOp
     with JuxtaOp
     with PathOp

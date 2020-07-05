@@ -30,7 +30,6 @@ import org.mmadt.language.obj.op.map._
 trait Bool extends Obj
   with ZeroOp[Bool]
   with OneOp[Bool]
-  with NegOp[Bool]
-  with NotOp {
+  with NegOp[Bool] {
   def g: Boolean
 }

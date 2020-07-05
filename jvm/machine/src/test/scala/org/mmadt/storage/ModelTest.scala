@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.storage
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -29,12 +30,30 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest extends FunSuite {
-  test("type instructions") {
+  test("[tp3] model basics") {
     val tp3 = model(TP3)
-    val record = rec(
+    val record1a = rec(
       str("id") -> int(1),
       str("label") -> str("person"))
-    assertResult(record.named("vertex"))(record ===> tp3.as(__("vertex")))
+    assertResult(record1a.named("vertex"))(record1a ===> tp3.as(__("vertex")))
+    ///
+    val record2a = rec(
+      str("id") -> int(1),
+      str("label") -> str("person"),
+      str("properties") -> rec(str("name") -> str("marko")))
+    val record2b = rec(
+      str("id") -> int(1),
+      str("label") -> str("person"),
+      str("properties") -> rec(str("name") -> str("marko")).named("property")).named("vertex")
+    assertResult(record2b)(record2a ===> tp3.as(__("vertex")))
+    ///
+    val record3 = rec(
+      str("id") -> int(1),
+      str("label") -> str("person"),
+      str("properties") -> rec(str("id") -> str("marko")).named("property")).named("vertex")
+    assertThrows[LanguageException] {
+      record3 ===> tp3.as(__("vertex"))
+    }
   }
 
 }

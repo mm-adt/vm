@@ -24,7 +24,6 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.map.NotOp
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -39,17 +38,16 @@ class NotInstTest extends FunSuite with TableDrivenPropertyChecks {
         (bfalse, btrue),
         (int(5).gt(10), btrue),
         (int(5).gt(10).q(10), btrue.q(10)),
-        (int.gt(10), int.gt(10).not),
+        (int.gt(10), int.gt(10).not(bool)),
         (int.gt(10).q(0), bool.q(qZero)),
         (int(13).q(2).and(int.gt(10), int.lt(15)).q(10), bfalse.q(20)),
-        (str.gt("a").q(7).id(), str.gt("a").q(7).id().not),
       )
     forEvery(starts) { (left, right) => {
-      assertResult(right)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[not]"))
-      assertResult(right)(left.not)
-      assertResult(right)(NotOp().exec(left))
-      assertResult(right)(left ==> __.not)
-      assertResult(right)(left ===> bool.q(left.q).not)
+      assertResult(right)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[not,_]"))
+      //assertResult(right)(int(1).q(left.q).not(left))
+      assertResult(right)(left `=>` __.not(__))
+      assertResult(right)(left ===> __.not(__))
+      //assertResult(right)(left ===> __.not(__))
     }
     }
   }
