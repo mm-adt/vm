@@ -22,16 +22,16 @@
 
 package org.mmadt.storage
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.storage.StorageFactory.{strm, _}
 import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest extends FunSuite {
-
   val tp3_kv: Type[Obj] = functor(KV, TP3)
   val kv: Type[Obj] = model(KV)
   val tp3: Type[Obj] = model(TP3)
@@ -69,7 +69,7 @@ class ModelTest extends FunSuite {
   }
 
   test("[tp3<=kv] functor") {
-    val record1a = rec(
+    val record1a: Rec[StrValue, Obj] = rec(
       str("k") -> (str("vertex") `,` int(1)),
       str("v") -> rec(str("name") -> str("marko")))
     val record1b = rec(
@@ -87,6 +87,13 @@ class ModelTest extends FunSuite {
     assertResult(record2a.named("kv"))(record2a ===> kv.as(__("kv")))
     assertResult(record2b)(record2a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("kv")).as(__("vertex")))
     assertResult(record2b)(record2a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("vertex")))
+    //
+
+    val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))
+    val store: Rec[StrValue, Obj] = strm(List(record1a, edge1))
+    val g: Type[Obj] = (kv `=>` tp3 `=>` tp3_kv).as(__("store")).as(__("graph"))
+    println(store ==> g)
   }
+
 
 }
