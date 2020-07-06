@@ -20,8 +20,8 @@ This section details the specifics of the relationships between types, values, a
 
 mm-ADT's virtual machine computes via two https://en.wikipedia.org/wiki/Semigroup_action[actions] on the `obj` graph. When a VM process is at the `obj` \$a\$ and the program (as specified by the type definition) requires the evaluation of `inst` \$i\$, then the VM is in one of two situations.
 
-. The vertex \$a\$ has no outgoing \$i\$ edge. In this situation, the VM _applies_ \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (*compute*).
-. The vertex \$a\$ has an outgoing \$i\$ edge. In this situation, the VM _traverses_ the edge \$a \to_i b\$ to arrive at \$b\$ (*memoize*).
+. If the vertex \$a\$ has no outgoing \$i\$-labeled edge, then the VM _applies_ \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (*compute*).
+. If the vertex \$a\$ has an outgoing \$i\$-labeled edge, then the VM _traverses_ the edge \$a \to_i b\$ to arrive at \$b\$ (*memoize*).
 
 The first situation is computing via function https://en.wikipedia.org/wiki/Evaluation_strategy[evaluation]. The second situation leverages https://en.wikipedia.org/wiki/Memoization[memoization] to avoid recomputation. There are three ways to best understand the nature of the `obj` graph.
 
