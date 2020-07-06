@@ -338,7 +338,7 @@ int{2}[_,_]
 |===
 | type | inst                              | 0       |  1
 
-| `bool` | `&&` `\|\|` `-`                 | `false` | `true`
+| `bool` | `&&` `\|\|` `-` `!`             | `false` | `true`
 | `int`  | `*` `+` `-` `>` `<` `>=` `\<=`  | `0`     | `1`
 | `real` | `*` `+` `-` `>` `<` `>=` `\<=`  | `0.0`   | 1.0
 | `str`  | `+` `>` `<` `>=` `\<=`          | `''`    |
@@ -392,9 +392,39 @@ int[and,>5,<8]
 
 ==== Anonymous Type
 
+The type `bool<=int[gt,10]` has a range of `bool` and a domain of `int`. When the type is written `int[gt,10]`, the range is deduced by a compiling automata that applies `int` to `[gt,10]` to yield `bool`. In fact, the range of `int[gt,10]` is an *anonymous type* (called an *anon* for brevity) and is denoted `_` (or with no character in most situations). An anon is a type that has not been grounded to a base type.
+
+[exec]
+----
+bool<=int[gt,10]    //<1>
+_<=int[gt,10]       //<2>
+int[gt,10]          //<3>
+----
+<1> The domain and range of the type are fully specified.
+<2> A type with a specified domain of `int` and a specified range of `_`.
+<3> An `mmlang` sugar where if no range is specified, and it differs from the domain, then `_` is assumed.
+
+Anons can also be used to specify types without a domain.
+
+[exec]
+----
+int{?}<=int[is,bool<=int[gt,10]]     //<1>
+int[is,int[gt,10]]                   //<2>
+int[is,_[gt,10]]                     //<3>
+int[is,[gt,10]]                      //<4>
+----
+<1> The domain and range of the outer and inner nested type are fully specified.
+<2> The nested type has a specified domain of `int`.
+<3> The nested type has an unspecified domain of `_`.
+<4> An `mmlang` sugar where if no domain is specified, `_` is assumed.
+
 ===== Variables
 
+
+
 ===== Definitions
+
+
 
 ==== Poly Types
 

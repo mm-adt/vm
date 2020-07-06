@@ -16,12 +16,25 @@ Type composition, compilation, and evaluation are carried out by mm-ADT complian
 
 This section details the specifics of the relationships between types, values, and processors.
 
+=== Obj Graph
+
+mm-ADT's virtual machine computes via two https://en.wikipedia.org/wiki/Semigroup_action[actions] on the `obj` graph. When a VM process is at the `obj` \$a\$ and the program (as specified by the type definition) requires the evaluation of `inst` \$i\$, then the VM is in one of two situations.
+
+. The vertex \$a\$ has no outgoing \$i\$ edge. In this situation, the VM _applies_ \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (*compute*).
+. The vertex \$a\$ has an outgoing \$i\$ edge. In this situation, the VM _traverses_ the edge \$a \to_i b\$ to arrive at \$b\$ (*memoize*).
+
+The first situation is computing via function https://en.wikipedia.org/wiki/Evaluation_strategy[evaluation]. The second situation leverages https://en.wikipedia.org/wiki/Memoization[memoization] to avoid recomputation. There are three ways to best understand the nature of the `obj` graph.
+
+. *Mathematically*: The `obj` graph has an infinite number of `obj` vertices connected to each other by edges labeled from the infinite set instructions in `inst`. From this perspective, computing is traversal (i.e. https://en.wikipedia.org/wiki/Lookup_table[look-up]) as the `obj` graph is fully materialized and thus, memoized.
+. *Theoretically*: The `obj` graph is manifested as computations proceed where any binary operation \$ai\$ that has already occurred must already exists in the `obj` graph and thus, can be traversed.
+. *Physically*: The `obj` graph is a dynamic entity that expands and contracts given the resource constraints of the underlying physical machines supporting its manifestation across all levels of the https://en.wikipedia.org/wiki/Memory_hierarchy[memory hierarchy], where https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection] prunes the graph and computation grows the graph.
+
 === Processes
 
 Processors are used in the following three situations:
 
 . *Composition*: (https://en.wikipedia.org/wiki/Type_inference[type inference]).
-. *Compilation*: (https://en.wikipedia.org/wiki/Program_optimization[type optimization]). https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point].
+. *Compilation*: (https://en.wikipedia.org/wiki/Program_optimization[type optimization]). (https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point]).
 . *Evaluation*: (https://en.wikipedia.org/wiki/Execution_(computing)[type enumeration]).
 
 
@@ -62,10 +75,6 @@ denotes the unary function \[
 ===== n-Ary Relations
 
 ==== Instruction Classes
-
-The set `obj` can be partitioned into _types_ and _values_ as \$\tt{obj} = \tt{type} + \tt{value}\$. The type `objs` are the carrier set of https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity], where `[compose]` is multiplication (`\*`) , `[branch]` is addition (`+`), `[id]` is the multiplicative identity (`1`), and `[id]{0}` is the the additive identity (`0`). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is `int` and `+` and `*` are standard integer addition and multiplication, respectively.
-
-A variation of the https://en.wikipedia.org/wiki/Product_ring[direct product] of rings composes the type ring and the quantifier into a new ring called a https://zenodo.org/record/2565243[stream ring], where the carrier set is the set of all quantified types and `[id]{1}` is the multiplicative identity and `[id]{0}` is the additive identity.
 
 ===== Map
 
