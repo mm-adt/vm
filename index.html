@@ -533,6 +533,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_storage_structures">Storage Structures</a></li>
 <li><a href="#_processor_structures">Processor Structures</a>
 <ul class="sectlevel2">
+<li><a href="#_obj_graph">Obj Graph</a></li>
 <li><a href="#_processes">Processes</a>
 <ul class="sectlevel3">
 <li><a href="#_instruction_evaluation">Instruction Evaluation</a>
@@ -1436,7 +1437,7 @@ mmlang&gt; int[is&gt;0]
 mmlang&gt; int[is,false]
 mmlang&gt;
 mmlang&gt; int{2}[_,_]
-==&gt;int{4}&lt;=int{2}-&lt;(int,int)&gt;-</code></pre>
+==&gt;int{0,4}&lt;=int{2}-&lt;(int{?}&lt;=int[is,bool&lt;=int[a,_]],int{?}&lt;=int[is,bool&lt;=int[a,_]])&gt;-</code></pre>
 </div>
 </div>
 </div>
@@ -1461,7 +1462,7 @@ mmlang&gt; int{2}[_,_]
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>bool</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&amp;&amp;</code> <code>||</code> <code>-</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&amp;&amp;</code> <code>||</code> <code>-</code> <code>!</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>false</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>true</code></p></td>
 </tr>
@@ -1558,6 +1559,70 @@ mmlang&gt; {9,6}[or,&gt;5,&lt;8]
 </div>
 <div class="sect3">
 <h4 id="_anonymous_type">Anonymous Type</h4>
+<div class="paragraph">
+<p>The type <code>bool&#8656;int[gt,10]</code> has a range of <code>bool</code> and a domain of <code>int</code>. When the type is written <code>int[gt,10]</code>, the range is deduced by a compiling automata that applies <code>int</code> to <code>[gt,10]</code> to yield <code>bool</code>. In fact, the range of <code>int[gt,10]</code> is an <strong>anonymous type</strong> (called an <strong>anon</strong> for brevity) and is denoted <code>_</code> (or with no character in most situations). An anon is a type that has not been grounded to a base type.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; bool&lt;=int[gt,10]    <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;bool&lt;=int[gt,10]
+mmlang&gt; _&lt;=int[gt,10]       <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;bool&lt;=int[gt,10]
+mmlang&gt; int[gt,10]          <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;bool&lt;=int[gt,10]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The domain and range of the type are fully specified.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A type with a specified domain of <code>int</code> and a specified range of <code>_</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An <code>mmlang</code> sugar where if no range is specified, and it differs from the domain, then <code>_</code> is assumed.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Anons can also be used to specify types without a domain.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{?}&lt;=int[is,bool&lt;=int[gt,10]]     <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,10]]
+mmlang&gt; int[is,int[gt,10]]                   <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,10]]
+mmlang&gt; int[is,_[gt,10]]                     <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,10]]
+mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,10]]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The domain and range of the outer and inner nested type are fully specified.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The nested type has a specified domain of <code>int</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The nested type has an unspecified domain of <code>_</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>An <code>mmlang</code> sugar where if no domain is specified, <code>_</code> is assumed.</td>
+</tr>
+</table>
+</div>
 <div class="sect4">
 <h5 id="_variables">Variables</h5>
 
@@ -1715,7 +1780,7 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <p><code>&gt;-</code> is sugar for <code>[merge]</code> joining polynomial terms into a single <code>obj</code>.</p>
 </li>
 <li>
-<p><code>=</code> is sugar for <code>[combine]</code> combing polynomial terms pair-wise.</p>
+<p><code>=</code> is sugar for <code>[combine]</code> composing polynomial terms pair-wise.</p>
 </li>
 </ol>
 </div>
@@ -2037,8 +2102,7 @@ a(b+c) &amp;=&amp; \; ab + ac \\ (b+c)a &amp;=&amp; \; ba + ca \end{split}
 ==&gt;'ab'
 ==&gt;'ac'
 mmlang&gt; ['b','c']+'a'
-==&gt;'ba'
-==&gt;'ca'</code></pre>
+mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="exampleblock">
@@ -2073,7 +2137,7 @@ Type equality is based on ctype and trace equality.</p>
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int)==(int)
 ==&gt;true
 mmlang&gt; (int)==(int[plus,10])
-==&gt;false
+==&gt;true
 mmlang&gt; (int[plus,10])==(int[plus,10])
 ==&gt;true</code></pre>
 </div>
@@ -2088,7 +2152,7 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int[plus,10])==(int[plus,10][plus,0])
-==&gt;false</code></pre>
+==&gt;true</code></pre>
 </div>
 </div>
 </div>
@@ -3120,7 +3184,7 @@ This branch structure will product one, two, or three <code>ints</code> given a 
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[int[is&gt;0],int[is&lt;0],int]
-==&gt;int{1,3}&lt;=int-&lt;(int{?}&lt;=int[is,bool&lt;=int[gt,0]],int{?}&lt;=int[is,bool&lt;=int[lt,0]],int)&gt;-</code></pre>
+==&gt;int{0,3}&lt;=int-&lt;(int{?}&lt;=int[is,bool&lt;=int[gt,0]],int{?}&lt;=int[is,bool&lt;=int[lt,0]],int{?}&lt;=int[is,bool&lt;=int[a,int]])&gt;-</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all left small" style="width: 30%;">
@@ -3308,6 +3372,38 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 <p>This section details the specifics of the relationships between types, values, and processors.</p>
 </div>
 <div class="sect2">
+<h3 id="_obj_graph">Obj Graph</h3>
+<div class="paragraph">
+<p>mm-ADT&#8217;s virtual machine computes via two <a href="https://en.wikipedia.org/wiki/Semigroup_action">actions</a> on the <code>obj</code> graph. When a VM process is at the <code>obj</code> \$a\$ and the program (as specified by the type definition) requires the evaluation of <code>inst</code> \$i\$, then the VM is in one of two situations.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>The vertex \$a\$ has no outgoing \$i\$ edge. In this situation, the VM <em>applies</em> \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (<strong>compute</strong>).</p>
+</li>
+<li>
+<p>The vertex \$a\$ has an outgoing \$i\$ edge. In this situation, the VM <em>traverses</em> the edge \$a \to_i b\$ to arrive at \$b\$ (<strong>memoize</strong>).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The first situation is computing via function <a href="https://en.wikipedia.org/wiki/Evaluation_strategy">evaluation</a>. The second situation leverages <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> to avoid recomputation. There are three ways to best understand the nature of the <code>obj</code> graph.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Mathematically</strong>: The <code>obj</code> graph has an infinite number of <code>obj</code> vertices connected to each other by edges labeled from the infinite set instructions in <code>inst</code>. From this perspective, computing is traversal (i.e. <a href="https://en.wikipedia.org/wiki/Lookup_table">look-up</a>) as the <code>obj</code> graph is fully materialized and thus, memoized.</p>
+</li>
+<li>
+<p><strong>Theoretically</strong>: The <code>obj</code> graph is manifested as computations proceed where any binary operation \$ai\$ that has already occurred must already exists in the <code>obj</code> graph and thus, can be traversed.</p>
+</li>
+<li>
+<p><strong>Physically</strong>: The <code>obj</code> graph is a dynamic entity that expands and contracts given the resource constraints of the underlying physical machines supporting its manifestation across all levels of the <a href="https://en.wikipedia.org/wiki/Memory_hierarchy">memory hierarchy</a>, where <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a> prunes the graph and computation grows the graph.</p>
+</li>
+</ol>
+</div>
+</div>
+<div class="sect2">
 <h3 id="_processes">Processes</h3>
 <div class="paragraph">
 <p>Processors are used in the following three situations:</p>
@@ -3318,7 +3414,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 <p><strong>Composition</strong>: (<a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>).</p>
 </li>
 <li>
-<p><strong>Compilation</strong>: (<a href="https://en.wikipedia.org/wiki/Program_optimization">type optimization</a>). <a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fix point</a>.</p>
+<p><strong>Compilation</strong>: (<a href="https://en.wikipedia.org/wiki/Program_optimization">type optimization</a>). (<a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fix point</a>).</p>
 </li>
 <li>
 <p><strong>Evaluation</strong>: (<a href="https://en.wikipedia.org/wiki/Execution_(computing)">type enumeration</a>).</p>
@@ -3372,12 +3468,6 @@ denotes the unary function \[
 </div>
 <div class="sect3">
 <h4 id="_instruction_classes">Instruction Classes</h4>
-<div class="paragraph">
-<p>The set <code>obj</code> can be partitioned into <em>types</em> and <em>values</em> as \$\tt{obj} = \tt{type} + \tt{value}\$. The type <code>objs</code> are the carrier set of <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a>, where <code>[compose]</code> is multiplication (<code>*</code>) , <code>[branch]</code> is addition (<code>+</code>), <code>[id]</code> is the multiplicative identity (<code>1</code>), and <code>[id]{0}</code> is the the additive identity (<code>0</code>). mm-ADT quantifiers also form a ring with unity, where typically the carrier set is <code>int</code> and <code>+</code> and <code>*</code> are standard integer addition and multiplication, respectively.</p>
-</div>
-<div class="paragraph">
-<p>A variation of the <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of rings composes the type ring and the quantifier into a new ring called a <a href="https://zenodo.org/record/2565243">stream ring</a>, where the carrier set is the set of all quantified types and <code>[id]{1}</code> is the multiplicative identity and <code>[id]{0}</code> is the additive identity.</p>
-</div>
 <div class="sect4">
 <h5 id="_map">Map</h5>
 
@@ -3677,7 +3767,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-02 15:59:33 -0600
+Last updated 2020-07-04 00:25:08 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
