@@ -37,6 +37,7 @@ class mmkvInstTest extends FunSuite {
 
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
+  val mmkv: String = "=mmkv"
   val file1: String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
   val file2: String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
   val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
@@ -46,7 +47,6 @@ class mmkvInstTest extends FunSuite {
   val source4: String = getClass.getResource("/mmkv/source-4.mm").getPath
   val source5: String = getClass.getResource("/mmkv/source-5.mm").getPath
   val source6: String = getClass.getResource("/mmkv/source-6.mm").getPath
-  val mmkv: String = "=mmkv"
   val kv: String = getClass.getResource("/model/kv.mm").getPath
   val tp3: String = getClass.getResource("/model/tp3.mm").getPath
   val tp3_kv: String = getClass.getResource("/model/functor/tp3_kv.mm").getPath

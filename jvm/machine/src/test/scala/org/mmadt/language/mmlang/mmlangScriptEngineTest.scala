@@ -963,7 +963,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][a,person]"))
     assertResult(zeroObj)(engine.eval(s"('name'->'marko','age'->-10)[load,${file1}][is,[a,person]]"))
 
-    assertResult("vertex:('id'->nat:10,'label'->'marko10','outE'->)")(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]").toString)
+    assertResult("vertex:('id'->nat:10,'label'->'marko10')")(engine.eval(s"('name'->'marko','age'->10)[load,${file1}][as,person][as,vertex]").toString)
     assertResult("vertex:('id'->5)")(engine.eval(s"5[load,${file1}][as,vertex]").toString)
   }
 

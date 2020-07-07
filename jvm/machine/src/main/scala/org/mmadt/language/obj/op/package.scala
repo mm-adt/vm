@@ -51,9 +51,9 @@ package object op {
       } else if (brch.isSerial) { // [;] last quantification
         asType[OT](brch.glist.last.asInstanceOf[OT])
       } else { // [|] min/max quantification
-        result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduce((a, b) => (
+        result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduceLeftOption((a, b) => (
           int(Math.min(a._1.g, b._1.g)),
-          int(Math.max(a._2.g, b._2.g)))))
+          int(Math.max(a._2.g, b._2.g)))).getOrElse(qZero))
       }
       x.hardQ(multQ(brch.q, x.q))
     }
