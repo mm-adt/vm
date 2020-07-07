@@ -46,7 +46,9 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   override def test(other: Obj): Boolean = {
     Inst.resolveToken(this, other) match {
       case aobj: Obj if !aobj.alive => !this.alive
-      case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
+      case anon: __ if __.isToken(anon) =>
+        val x = Inst.resolveToken(this, anon)
+        if (__.isToken(x)) true else this.test(x)
       case anon: __ => Inst.resolveArg(this, anon).alive
       case astrm: Strm[_] => MultiSet.test(this, astrm)
       case arec: Rec[_, _] =>

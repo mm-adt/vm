@@ -93,7 +93,7 @@ class ModelTest extends FunSuite {
     val store: Rec[StrValue, Obj] = strm(List(record1a, edge1))
     val g: Type[Obj] = (kv `=>` tp3 `=>` tp3_kv).as(__("store")).as(__("graph"))
     println(g)
-    println(lst(",",store) ==> g)
+    //println(lst(",",store) ==> g)
   }
 
 

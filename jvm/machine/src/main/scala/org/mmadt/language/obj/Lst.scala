@@ -45,11 +45,13 @@ trait Lst[A <: Obj] extends Poly[A]
 
   override def test(other: Obj): Boolean = other match {
     case aobj: Obj if !aobj.alive => !this.alive
-    case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
+    case anon: __ if __.isToken(anon) =>
+      val x = Inst.resolveToken(this, anon)
+      if (__.isToken(x)) true else this.test(x)
     case anon: __ => Inst.resolveArg(this, anon).alive
     case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
-     // this.name.equals(other.name) &&
+      // this.name.equals(other.name) &&
       withinQ(this, alst) &&
       (this.glist.size == alst.glist.size || alst.glist.isEmpty) && // TODO: should lists only check up to their length
       this.glist.zip(alst.glist).forall(b => b._1.test(b._2))

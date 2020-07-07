@@ -80,14 +80,15 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def intConverter(x: Int, y: Obj): Obj = {
-    Inst.resolveArg(y.domain match {
+    val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
       case aint: IntType => vint(name = aint.name, g = x.g, via = x.via)
-      case areal: RealType => vreal(name = areal.name, g = x.g)
-      case astr: StrType => vstr(name = astr.name, g = x.g.toString)
+      case areal: RealType => vreal(name = areal.name, g = x.g, via = x.via)
+      case astr: StrType => vstr(name = astr.name, g = x.g.toString, via = x.via)
       case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
-    }, y)
+    }
+    y.trace.map(x => x._2).foldLeft(w)((x, y) => y.exec(x))
   }
 
   private def realConverter(x: Real, y: Obj): Obj = {

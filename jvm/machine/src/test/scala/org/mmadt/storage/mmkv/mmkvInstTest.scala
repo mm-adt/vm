@@ -41,8 +41,10 @@ class mmkvInstTest extends FunSuite {
   val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
   val file4: String = getClass.getResource("/mmkv/mmkv-4.mm").getPath
   val file5: String = getClass.getResource("/mmkv/mmkv-5.mm").getPath
+  val file6: String = getClass.getResource("/mmkv/mmkv-6.mm").getPath
   val source4: String = getClass.getResource("/mmkv/source-4.mm").getPath
   val source5: String = getClass.getResource("/mmkv/source-5.mm").getPath
+  val source6: String = getClass.getResource("/mmkv/source-6.mm").getPath
   val mmkv: String = "=mmkv"
 
   test("mmkv parsing") {
@@ -112,6 +114,15 @@ class mmkvInstTest extends FunSuite {
       engine.eval(s"1[load,'${source5}'][=mmkv,'${file5}'][is.k==1][as,vertex]").toString)
     assertResult("{vertex:('id'->2,'name'->'ryan','outE'->{edge:('outV'->2,'label'->'likes','inV'->3)}),vertex:('id'->3,'name'->'stephen','outE'->)}")(
       engine.eval(s"1[load,'${source5}'][rewrite,(.outE.inV[as,vertex])<=(.out)][=mmkv,'${file5}'][is.k==1][as,vertex].out").toString)
+  }
+
+  val kv: String = getClass.getResource("/model/kv.mm").getPath
+  val tp3: String = getClass.getResource("/model/tp3.mm").getPath
+  val tp3_kv: String = getClass.getResource("/model/functor/tp3_kv.mm").getPath
+
+  test("mmkv tp3") {
+    println(file6)
+    println(engine.eval(s"1[load,'${kv}'][load,'${tp3}'][load,'${source6}'][as,graph].V[as,vertex].outE[as,edge][is,.label=='knows'].inV[as,vertex]"))
   }
 
 }
