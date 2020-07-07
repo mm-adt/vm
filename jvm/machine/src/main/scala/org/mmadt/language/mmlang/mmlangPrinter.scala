@@ -76,7 +76,7 @@ object mmlangPrinter {
         (if (lst.isInstanceOf[TLst[_]]) RROUND else RROUND)
   }
 
-  def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else LCURL + strm.values.foldLeft(Tokens.empty)((a, b) => a + b + COMMA).dropRight(1) + RCURL
+  def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.name + qString(strm.q)
   def typeString(atype: Type[_]): String = {
     val range = (atype match {
       case arec: Rec[_, _] => recString(arec)

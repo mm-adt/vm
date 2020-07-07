@@ -73,8 +73,8 @@ object AsOp extends Func[Obj, Obj] {
   private def boolConverter(x: Bool, y: Obj): Obj = {
     Inst.resolveArg(y.domain match {
       case _: __ => x
-      case abool: BoolType => vbool(name = abool.name, g = x.g)
-      case astr: StrType => vstr(name = astr.name, g = x.g.toString)
+      case abool: BoolType => vbool(name = abool.name, g = x.g, via = x.via)
+      case astr: StrType => vstr(name = astr.name, g = x.g.toString, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     }, y)
   }
@@ -94,9 +94,9 @@ object AsOp extends Func[Obj, Obj] {
   private def realConverter(x: Real, y: Obj): Obj = {
     Inst.resolveArg(y.domain match {
       case _: __ => x
-      case aint: IntType => vint(name = aint.name, g = x.g.longValue())
-      case areal: RealType => vreal(name = areal.name, g = x.g)
-      case astr: StrType => vstr(name = astr.name, g = x.g.toString)
+      case aint: IntType => vint(name = aint.name, g = x.g.longValue(), via = x.via)
+      case areal: RealType => vreal(name = areal.name, g = x.g, via = x.via)
+      case astr: StrType => vstr(name = astr.name, g = x.g.toString, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     }, y)
   }
@@ -104,10 +104,10 @@ object AsOp extends Func[Obj, Obj] {
   private def strConverter(x: Str, y: Obj): Obj = {
     Inst.resolveArg(y.domain match {
       case _: __ => x
-      case abool: BoolType => vbool(name = abool.name, g = JBoolean.valueOf(x.g))
-      case aint: IntType => vint(name = aint.name, g = JLong.valueOf(x.g))
-      case areal: RealType => vreal(name = areal.name, g = JDouble.valueOf(x.g))
-      case astr: StrType => vstr(name = astr.name, g = x.g)
+      case abool: BoolType => vbool(name = abool.name, g = JBoolean.valueOf(x.g), via = x.via)
+      case aint: IntType => vint(name = aint.name, g = JLong.valueOf(x.g), via = x.via)
+      case areal: RealType => vreal(name = areal.name, g = JDouble.valueOf(x.g), via = x.via)
+      case astr: StrType => vstr(name = astr.name, g = x.g, via = x.via)
       case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
     }, y)
@@ -116,7 +116,7 @@ object AsOp extends Func[Obj, Obj] {
   private def lstConverter(x: Lst[Obj], y: Obj): Obj = {
     val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
-      case astr: StrType => vstr(name = astr.name, g = x.toString)
+      case astr: StrType => vstr(name = astr.name, g = x.toString, via = x.via)
       case alst: LstType[Obj] => lst(g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))), via = x.via)
       case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
@@ -127,7 +127,7 @@ object AsOp extends Func[Obj, Obj] {
   private def recConverter(x: Rec[Obj, Obj], y: Obj): Obj = {
     val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
-      case astr: StrType => vstr(name = astr.name, g = x.toString)
+      case astr: StrType => vstr(name = astr.name, g = x.toString, via = x.via)
       case arec: RecType[Obj, Obj] => val z = rec(name = arec.name, g = (arec.gsep,
         x.gmap.flatMap(a => arec.gmap
           .filter(b => a._1.test(b._1))

@@ -50,7 +50,7 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         //(strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
     forEvery(starts) { (lhs, rhs, result) => {
-      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${lhs})>--<${rhs}>-"))
+//      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${lhs})>--<${rhs}>-"))
       assertResult(result)(lhs ===> __.-<(rhs).>-)
     }
     }

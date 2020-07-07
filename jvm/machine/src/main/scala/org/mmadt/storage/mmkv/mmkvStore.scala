@@ -26,7 +26,7 @@ import java.util.concurrent.atomic.AtomicLong
 
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{IntValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Obj, Rec, ViaTuple, _}
 import org.mmadt.language.{LanguageException, LanguageFactory, LanguageProvider, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -68,7 +68,7 @@ class mmkvStore[K <: Obj, V <: Obj](val file: String) extends AutoCloseable {
   def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
   def remove(key: K): V = store.remove(key).get
   def stream(via: ViaTuple = base): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => {
-    val kv = rec(via = via, g = (Tokens.`,`, Map(
+    val kv = rec(name = schema.name, via = via, g = (Tokens.`,`, Map(
       K -> x._1.asInstanceOf[Value[V]],
       V -> x._2.asInstanceOf[Value[V]]))).asInstanceOf[RecValue[StrValue, Value[Obj]]]
     LanguageException.testTypeCheck(kv, schema)

@@ -53,10 +53,10 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv parsing") {
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
-    assertResult("{('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz')}")(engine.eval(s"1[=mmkv,'${file1}']").toString)
+    assertResult("mmkv{4}")(engine.eval(s"1[=mmkv,'${file1}']").toString)
     //
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file2}']").range.toString)
-    assertResult("{('k'->1,'v'->person:('name'->'marko','age'->29)),('k'->2,'v'->person:('name'->'ryan','age'->25)),('k'->3,'v'->person:('name'->'stephen','age'->32)),('k'->4,'v'->person:('name'->'kuppitz','age'->23))}")(engine.eval(s"1[=mmkv,'${file2}']").toString)
+    assertResult("mmkv{4}")(engine.eval(s"1[=mmkv,'${file2}']").toString)
     //
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file3}']").range.toString)
     assertResult(zeroObj)(engine.eval(s"1[=mmkv,'${file3}']"))
@@ -81,9 +81,9 @@ class mmkvInstTest extends FunSuite {
 
   test("[=mmkv] with mmkv-1.mm") {
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
-    assertResult("{('k'->1,'v'->'marko'),('k'->2,'v'->'ryan'),('k'->3,'v'->'stephen'),('k'->4,'v'->'kuppitz')}")(int(1).=:(mmkv)(str(file1)).toString)
+    assertResult("rec{4}")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(int(1, 2, 3, 4))(Processor.iterator(int(4), int.=:[Rec[Obj, Obj]](mmkv)(str(file1)).get(str("k"), int)))
-    assertResult("('k'->1,'v'->'marko')")((int(1) ==> int.=:[RecType[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
+    assertResult("mmkv:('k'->1,'v'->'marko')")((int(1) ==> int.=:[RecType[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
   }
 
   test("mmkv rewrites") {
@@ -107,16 +107,16 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv file-4 parsing") {
     assertResult(s"mmkv{*}<=_[=mmkv,'${file4}']")(engine.eval(s"[=mmkv,'${file4}']").toString)
-    assertResult("vertex:('name'->'marko','friends'->{person:('name'->'stephen','age'->32,'knows'->4),person:('name'->'ryan','age'->25,'knows'->3){2}})")(
+    assertResult("vertex:('name'->'marko','friends'->person{3})")(
       engine.eval(s"1[load,'${source4}'][=mmkv,'${file4}'][is.k==1].v[as,vertex]").toString)
     //  assertResult("vertex:('name'->'ryan','friends'->person:('name'->'stephen','age'->32,'knows'->4))")(engine.eval(s"1[load,'${source4}'][=mmkv,'${file4}'][is.k==1].v[as,vertex].friends[as,vertex]").toString)
   }
 
   test("mmkv file-5 parsing") {
     assertResult(s"mmkv{*}<=_[=mmkv,'${file5}']")(engine.eval(s"[=mmkv,'${file5}']").toString)
-    assertResult("vertex:('id'->1,'name'->'marko','outE'->{edge:('outV'->1,'label'->'knows','inV'->2),edge:('outV'->1,'label'->'knows','inV'->3)})")(
+    assertResult("vertex:('id'->1,'name'->'marko','outE'->edge{2})")(
       engine.eval(s"1[load,'${source5}'][=mmkv,'${file5}'][is.k==1][as,vertex]").toString)
-    assertResult("{vertex:('id'->2,'name'->'ryan','outE'->{edge:('outV'->2,'label'->'likes','inV'->3)}),vertex:('id'->3,'name'->'stephen','outE'->)}")(
+    assertResult("vertex{2}")(
       engine.eval(s"1[load,'${source5}'][rewrite,(.outE.inV[as,vertex])<=(.out)][=mmkv,'${file5}'][is.k==1][as,vertex].out").toString)
   }
 
@@ -124,7 +124,7 @@ class mmkvInstTest extends FunSuite {
   test("mmkv tp3") {
     println(file6)
     engine.put(":pre", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${source6}']"))
-    println(engine.eval(s"1[as,graph].V[as,vertex].outE[as,edge][is,.label=='knows'].inV[as,vertex]"))
+    println(engine.eval(s"'g'[as,graph].V[as,vertex].outE[as,edge]"))
     engine.put(":pre", null)
   }
 

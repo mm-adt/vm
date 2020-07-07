@@ -184,16 +184,19 @@ object StorageFactory {
     override def vrec[A <: Obj, B <: Obj](values: Iterator[RecValue[A, B]]): RecStrm[A, B] = new VRecStrm(values = MultiSet(values.toSeq))
     //
     override def strm[O <: Obj]: OStrm[O] = new VObjStrm(values = List.empty).asInstanceOf[OStrm[O]]
-    override def strm[O <: Obj](values: Seq[O]): O = values.headOption.map {
-      case _: Bool => new VBoolStrm(values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))
-      case _: Int => new VIntStrm(values = MultiSet(values.asInstanceOf[Seq[IntValue]]))
-      case _: Real => new VRealStrm(values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
-      case _: Str => new VStrStrm(values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
-      case _: Rec[Obj, Obj] => new VRecStrm[Obj, Obj](values = MultiSet(values.asInstanceOf[Seq[RecValue[Obj, Obj]]]))
-      case _: LstValue[Obj] => new VLstStrm[Obj](values = MultiSet(values.asInstanceOf[Seq[LstValue[Obj]]]))
-      // TODO: temporary below
-      case y: TLst[_] => new VLstStrm[Obj](values = MultiSet(values.map(x => new VLst(g = (y.gsep, x.asInstanceOf[TLst[Obj]].glist))).asInstanceOf[Seq[LstValue[Obj]]]))
-      case _ => new VObjStrm(values = List.empty)
-    }.getOrElse(new VObjStrm(values = List.empty)).asInstanceOf[O]
+    override def strm[O <: Obj](values: Seq[O]): O = values.headOption.map(x => {
+      val headName:String = x.name
+      x match {
+        case _: Bool => new VBoolStrm(name = headName, values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))
+        case _: Int => new VIntStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[IntValue]]))
+        case _: Real => new VRealStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
+        case _: Str => new VStrStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
+        case _: Rec[Obj, Obj] => new VRecStrm[Obj, Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[RecValue[Obj, Obj]]]))
+        case _: LstValue[Obj] => new VLstStrm[Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[LstValue[Obj]]]))
+        // TODO: temporary below
+        case y: TLst[_] => new VLstStrm[Obj](name = headName, values = MultiSet(values.map(x => new VLst(g = (y.gsep, x.asInstanceOf[TLst[Obj]].glist))).asInstanceOf[Seq[LstValue[Obj]]]))
+        case _ => new VObjStrm(values = List.empty)
+      }
+    }).getOrElse(new VObjStrm(values = List.empty)).asInstanceOf[O]
   }
 }
