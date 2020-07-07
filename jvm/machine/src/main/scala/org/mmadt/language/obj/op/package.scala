@@ -47,9 +47,9 @@ package object op {
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
       val x = if (brch.isParallel) { // [,] sum the min/max quantification
-        result.hardQ(brch.glist.map(x => x.q).reduce((a, b) => plusQ(a, b)))
+        result.hardQ(brch.glist.map(x => x.q).foldLeft(qZero)((a, b) => plusQ(a, b)))
       } else if (brch.isSerial) { // [;] last quantification
-        asType[OT](brch.glist.last.asInstanceOf[OT])
+        asType[OT](brch.glist.lastOption.getOrElse(zeroObj).asInstanceOf[OT])
       } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduceLeftOption((a, b) => (
           int(Math.min(a._1.g, b._1.g)),
