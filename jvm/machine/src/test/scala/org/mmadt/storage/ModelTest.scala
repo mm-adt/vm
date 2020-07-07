@@ -91,8 +91,9 @@ class ModelTest extends FunSuite {
 
     val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))
     val store: Rec[StrValue, Obj] = strm(List(record1a, edge1))
-    val g: Type[Obj] = (kv `=>` tp3 `=>` tp3_kv).as(__("store"))
-    println(store ==> g)
+    val g: Type[Obj] = (kv `=>` tp3 `=>` tp3_kv).as(__("store")).as(__("graph"))
+    println(g)
+    println(lst(",",store) ==> g)
   }
 
 

@@ -1,5 +1,5 @@
 // A Functor from Key/Value model-ADT to TP3 model-ADT
-[define,graph<=store-<('V'->[is,.k.0=='vertex'],'E'->[is,.k.0=='edge']),
+[define,graph<=store.head-<(_),
         vertex<=kv:('k'->(is=='vertex',obj),'v'->(str->obj))-<
                    ('id'    -> .k.1,
                     'label' -> [.v.label|.k.0]),

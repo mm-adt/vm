@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -42,12 +43,12 @@ object GetOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val key: Obj = inst.arg0[Obj]
-    (start match {
+    val value: Obj = start match {
       case arec: Rec[Obj, Obj] =>
         val results = arec.gmap.filter(a => key.test(a._1)).values.flatMap(a => a.toStrm.values).filter(a => a.alive)
         if (results.isEmpty) if (arec.isInstanceOf[Type[_]]) __ else zeroObj
         else if (results.size == 1) results.head
-        else return strm(results.toSeq)
+        else strm(results.toSeq)
       case alst: Lst[_] => key match {
         case aint: IntValue =>
           LanguageException.PolyException.testIndex(alst, aint.g.toInt)
@@ -56,6 +57,10 @@ object GetOp extends Func[Obj, Obj] {
       }
       case _: Value[_] => zeroObj
       case _ => start
-    }).via(start, inst)
+    }
+    value match {
+      case astrm: Strm[_] => strm(astrm.values.map(x => x.clone(via = (start, inst))))
+      case _ => value.via(start, inst)
+    }
   }
 }

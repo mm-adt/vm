@@ -34,6 +34,7 @@ trait RecStrm[A <: Obj, B <: Obj] extends Strm[Rec[A, B]] with RecValue[A, B] {
   override def g: RecTuple[A, B] = this.values.headOption.getOrElse(rec[A, B].hardQ(qZero)).g
 
   override lazy val hashCode: Int = this.values.hashCode()
+  override def test(other: Obj): Boolean = super[Strm].test(other)
   override def equals(other: Any): Boolean = other match {
     case arec: Rec[_, _] => MultiSet.test(this, arec)
     case _ => false

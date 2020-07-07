@@ -28,7 +28,7 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 trait LstStrm[A <: Obj] extends Strm[Lst[A]] with Lst[A] {
   override def g: LstTuple[A] = this.values.headOption.getOrElse(lst[A].hardQ(qZero)).g
-
+  override def test(other: Obj): Boolean = super[Strm].test(other)
   override def equals(other: Any): Boolean = other match {
     case alst: Lst[_] => MultiSet.test(this, alst)
     case _ => false
