@@ -1,5 +1,5 @@
-[define,graph<=obj-<('V'->[=mmkv,'/Users/marko/software/mmadt/vm/jvm/machine/target/test-classes/mmkv/mmkv-6.mm'][is,.k.0=='vertex'],
-                     'E'->[=mmkv,'/Users/marko/software/mmadt/vm/jvm/machine/target/test-classes/mmkv/mmkv-6.mm'][is,.k.0=='edge']),
+[define,graph<=obj-<('V'->[=mmkv,'data/mmkv-6.mm'][is,.k.0=='vertex'],
+                     'E'->[=mmkv,'data/mmkv-6.mm'][is,.k.0=='edge']),
         vertex<=kv:('k'->(is=='vertex',obj),'v'->(str->obj))<x>-<
                    ('id'         -> .k.1,
                     'label'      -> [.v.label|.k.0],

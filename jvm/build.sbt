@@ -18,6 +18,11 @@ copyData := {
     val pairs = (src ** "*.mm").get() pair rebase(src, baseDirectory.value / "data")
     IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
   })
+  List("model").foreach(dir => {
+    val src = (machine / Compile / resourceDirectory in Compile).value / dir
+    val pairs = (src ** "*.mm").get() pair rebase(src, baseDirectory.value / "data" / "model")
+    IO.copy(pairs, CopyOptions.apply(overwrite = true, preserveLastModified = true, preserveExecutable = false))
+  })
 
 }
 val deployDocs = taskKey[Unit]("Deploy documentation to GitHub pages")
