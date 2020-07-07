@@ -39,6 +39,7 @@ import org.mmadt.language.LanguageFactory;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
 import scala.collection.JavaConverters;
 
+import javax.script.ScriptContext;
 import javax.script.ScriptEngineManager;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -49,20 +50,15 @@ import java.util.stream.IntStream;
  */
 public class Console {
 
-    private static final String HEADER = "" +
-            "                                _____ _______ \n" +
-            "                           /\\  |  __ |__   __|\n" +
-            " _ __ ___  _ __ ___ _____ /  \\ | |  | | | |   \n" +
-            "| '_ ` _ \\| '_ ` _ |_____/ /\\ \\| |  | | | |   \n" +
-            "| | | | | | | | | | |   / ____ \\ |__| | | |   \n" +
-            "|_| |_| |_|_| |_| |_|  /_/    \\_\\____/  |_|   \n" +
-            "                                 mm-adt.org  ";
+    private static final String HEADER = "" + "                                _____ _______ \n" + "                           /\\  |  __ |__   __|\n" + " _ __ ___  _ __ ___ _____ /  \\ | |  | | | |   \n" + "| '_ ` _ \\| '_ ` _ |_____/ /\\ \\| |  | | | |   \n" + "| | | | | | | | | | |   / ____ \\ |__| | | |   \n" + "|_| |_| |_|_| |_| |_|  /_/    \\_\\____/  |_|   \n" + "                                 mm-adt.org  ";
 
 
     private static final String HISTORY = ".mmadt_history";
     private static final String RESULT = "==>";
     private static final String QUIT_OP = ":q";
     private static final String LANG_OP = ":lang";
+    private static final String COLON = ":";
+    private static final String SPACE = " ";
     private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
     private static final Highlighter HIGHLIGHTER = new DefaultHighlighter();
 
@@ -73,16 +69,9 @@ public class Console {
         final Terminal terminal = TerminalBuilder.builder().name("mm-ADT Console").build();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
-        final LineReader reader = LineReaderBuilder.builder()
-                .appName("mm-ADT Console")
-                .terminal(terminal)
-                .highlighter(HIGHLIGHTER)
-                .variable(LineReader.HISTORY_FILE, HISTORY)
-                .history(history)
-                .parser(parser)
-                .build();
+        final LineReader reader = LineReaderBuilder.builder().appName("mm-ADT Console").terminal(terminal).highlighter(HIGHLIGHTER).variable(LineReader.HISTORY_FILE, HISTORY).history(history).parser(parser).build();
         ///////////////////////////////////
-        HIGHLIGHTER.highlight(reader,HEADER).styleMatches(Pattern.compile("mm-adt.org"),new AttributedStyle().italic()).println(terminal);
+        terminal.writer().println(HEADER);
         terminal.flush();
 
         while (true) {
@@ -99,17 +88,22 @@ public class Console {
                 else if (line.startsWith(LANG_OP)) {
                     engineName = line.replace(LANG_OP, "").trim();
                     engine = (mmADTScriptEngine) MANAGER.getEngineByName(engineName);
+                } else if (line.startsWith(COLON)) {
+                    final int splitIndex = line.indexOf(SPACE);
+                    final String key = line.substring(0, splitIndex);
+                    final String value = line.substring(splitIndex + 1);
+                    engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(key, engine.eval(value));
                 } else
                     JavaConverters.asJavaIterator(engine.eval(line).toStrm().values().iterator()).forEachRemaining(o -> {
-                        AttributedString HIGHLIGHT_RESULT = HIGHLIGHTER.highlight(reader,RESULT).styleMatches(Pattern.compile(RESULT),AttributedStyle.BOLD);
-                        AttributedString HIGHLIGHT_RANGE = HIGHLIGHTER.highlight(reader,o.toString()).styleMatches(Pattern.compile("<="),AttributedStyle.BOLD);
+                        AttributedString HIGHLIGHT_RESULT = HIGHLIGHTER.highlight(reader, RESULT).styleMatches(Pattern.compile(RESULT), AttributedStyle.BOLD);
+                        AttributedString HIGHLIGHT_RANGE = HIGHLIGHTER.highlight(reader, o.toString()).styleMatches(Pattern.compile("<="), AttributedStyle.BOLD);
                         HIGHLIGHT_RESULT.print(terminal);
                         HIGHLIGHT_RANGE.println(terminal);
                     });
             } catch (final UserInterruptException e) {
                 break;
             } catch (final VmException e) {
-                AttributedString HIGHLIGHT_ERROR = HIGHLIGHTER.highlight(reader,"language error").styleMatches(Pattern.compile("language error"), AttributedStyle.BOLD);
+                AttributedString HIGHLIGHT_ERROR = HIGHLIGHTER.highlight(reader, "language error").styleMatches(Pattern.compile("language error"), AttributedStyle.BOLD);
                 HIGHLIGHT_ERROR.print(terminal);
                 terminal.writer().println(": " + e.getMessage());
             } catch (final Throwable e) {

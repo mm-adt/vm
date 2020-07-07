@@ -36,6 +36,7 @@ import org.scalatest.FunSuite
 class mmkvInstTest extends FunSuite {
 
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
+
   val file1: String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
   val file2: String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
   val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
@@ -46,6 +47,9 @@ class mmkvInstTest extends FunSuite {
   val source5: String = getClass.getResource("/mmkv/source-5.mm").getPath
   val source6: String = getClass.getResource("/mmkv/source-6.mm").getPath
   val mmkv: String = "=mmkv"
+  val kv: String = getClass.getResource("/model/kv.mm").getPath
+  val tp3: String = getClass.getResource("/model/tp3.mm").getPath
+  val tp3_kv: String = getClass.getResource("/model/functor/tp3_kv.mm").getPath
 
   test("mmkv parsing") {
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
@@ -116,13 +120,12 @@ class mmkvInstTest extends FunSuite {
       engine.eval(s"1[load,'${source5}'][rewrite,(.outE.inV[as,vertex])<=(.out)][=mmkv,'${file5}'][is.k==1][as,vertex].out").toString)
   }
 
-  val kv: String = getClass.getResource("/model/kv.mm").getPath
-  val tp3: String = getClass.getResource("/model/tp3.mm").getPath
-  val tp3_kv: String = getClass.getResource("/model/functor/tp3_kv.mm").getPath
 
   test("mmkv tp3") {
     println(file6)
-    println(engine.eval(s"1[load,'${kv}'][load,'${tp3}'][load,'${source6}'][as,graph].V[as,vertex].outE[as,edge][is,.label=='knows'].inV[as,vertex]"))
+    engine.put(":pre", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${source6}']"))
+    println(engine.eval(s"1[as,graph].V[as,vertex].outE[as,edge][is,.label=='knows'].inV[as,vertex]"))
+    engine.put(":pre", null)
   }
 
 }

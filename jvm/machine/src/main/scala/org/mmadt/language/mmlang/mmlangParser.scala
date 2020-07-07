@@ -48,8 +48,8 @@ class mmlangParser extends JavaTokenParsers {
   override def decimalNumber: Parser[String] = """-?\d+\.\d+""".r
 
   // all mm-ADT languages must be able to accept a string representation of an expression in the language and return an Obj
-  private def parse[O <: Obj](input: String): O = {
-    this.parseAll(expr | emptySpace, input.trim) match {
+  private def parse[O <: Obj](input: String, prefix: Option[Type[Obj]] = None): O = {
+    this.parseAll(expr(prefix) | emptySpace, input.trim) match {
       case Success(result, _) => result.asInstanceOf[O]
       case NoSuccess(y) => throw LanguageException.parseError(
         y._1,
@@ -61,16 +61,16 @@ class mmlangParser extends JavaTokenParsers {
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
 
   // specific to mmlang execution
-  lazy val expr: Parser[Obj] = obj ~ opt(objType) ^^ (x => {
+  def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = obj ~ opt(objType) ^^ (x => {
     x._2 match {
       case None => x._1 match {
         case _: Value[_] => x._1 // left hand value only, return it
-        case _: Type[_] => x._1.domain ===> x._1 // left hand type only, compile it with it's domain
+        case _: Type[_] => prefix.map(pre => x._1.domain `=>` pre).getOrElse(x._1.domain) ===> x._1 // left hand type only, compile it with it's domain
       }
       case Some(y) =>
         x._1 match {
-          case _: Type[Obj] => x._1 ===> y
-          case _: Value[Obj] => x._1 ===> (asType(x._1) ===> y)
+          case _: Type[Obj] => x._1 ===> prefix.map(pre => y `=>` pre).getOrElse(y)
+          case _: Value[Obj] => x._1 ===> (prefix.map(pre => asType(x._1) `=>` pre).getOrElse(asType(x._1)) ===> y)
         } // left and right hand, evaluate right type with left obj
     }
   })
@@ -180,8 +180,8 @@ class mmlangParser extends JavaTokenParsers {
 }
 
 object mmlangParser {
-  def parse[O <: Obj](script: String): O = try {
-    new mmlangParser().parse[O](script)
+  def parse[O <: Obj](script: String, prefix: Option[Type[Obj]] = None): O = try {
+    new mmlangParser().parse[O](script, prefix)
   } catch {
     case e: VmException => throw e
     case e: Exception =>

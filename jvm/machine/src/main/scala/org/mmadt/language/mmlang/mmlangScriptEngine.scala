@@ -27,6 +27,7 @@ import java.io.Reader
 import javax.script._
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.Type
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -35,7 +36,8 @@ class mmlangScriptEngine(factory: mmlangScriptEngineFactory) extends AbstractScr
   override def eval(script: String): Obj = super.eval(script)
   override def eval(reader: Reader): Obj = super.eval(reader)
   override def eval(script: String, context: ScriptContext): Obj = super.eval(script, context)
-  override def eval(script: String, bindings: Bindings): Obj = mmlangParser.parse[Obj](script)
+  override def eval(script: String, bindings: Bindings): Obj = mmlangParser.parse[Obj](script,Option[Type[Obj]](bindings.get(":pre").asInstanceOf[Type[Obj]]))
   override def getFactory: ScriptEngineFactory = factory
 }
+
 
