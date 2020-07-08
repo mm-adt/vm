@@ -24,7 +24,7 @@ $(document).ready(function(){
 
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
   var items =    {"special": ["mmlang","q"],
-                  "op":      ["a","and","or","compose","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
+                  "op":      ["a","and","or","compose","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map","trace",
                               "split","merge","last","head","tail","div","minus","choose","put","repeat","type",
                               "define","rewrite","to","from"],

@@ -1546,7 +1546,78 @@ mmlang&gt; {9,6}[or,&gt;5,&lt;8]
 </div>
 <div class="sect4">
 <h5 id="_int_type">Int Type</h5>
-
+<div class="paragraph">
+<p>The mm-ADT type <code>int</code> refers to the set of all <a href="https://en.wikipedia.org/wiki/Integer">integers</a> commonly referred to as \$\mathbb{Z}\$ in the mathematics literature. Integers are the prototypical example of an <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">algebraic ring</a> and thus, where <strong>0</strong> ("zero") and <strong>1</strong> ("one") derive their name. However, note that <strong>0</strong> and <strong>1</strong> generalize the integer elements <code>0</code> and <code>1</code> with numerous concrete, behavioral realizations in other carrier sets (with respective operators) besides <code>int</code>. If it were not for the success of the integers, <strong>0</strong> would perhaps be commonly refered to as <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a> and <strong>1</strong>, <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unit</a>. In a similar vein, mm-ADT pays homage to the integers with <code>[zero]</code> and <code>[one]</code> being the instructions by which <strong>0</strong> and <strong>1</strong>, respectively, are extracted from those mm-ADT types that yield them such as <code>int</code> with <code>0</code> and <code>1</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; bool[zero]
+==&gt;false
+mmlang&gt; bool[one]
+==&gt;true
+mmlang&gt; int[zero]
+==&gt;0
+mmlang&gt; int[one]
+==&gt;1
+mmlang&gt; real[zero]
+==&gt;0.0
+mmlang&gt; real[one]
+==&gt;1.0
+mmlang&gt; str[zero]
+==&gt;''</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The integers have two binary operators known as <code>*</code> ("multiplication") and <code>+</code> ("addition"), where \$\mathbb{Z},\ast \rangle\$ is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> and \$\langle \mathbb{Z},+\rangle\$ is an <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>Monoid Axioms (for multiplication)</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>\$(a * b) * c = a * (b * c)\$ (associative)</p>
+</li>
+<li>
+<p>\$a * \mathbf{1} = a\$ (identity)</p>
+</li>
+</ol>
+</div>
+</li>
+<li>
+<p>Abelian Group Axioms (for addition)</p>
+<div class="olist loweralpha">
+<ol class="loweralpha" type="a">
+<li>
+<p>\$(a + b) + c = a + (b + c)\$ (associative)</p>
+</li>
+<li>
+<p>\$a + \mathbb{0} = a\$ (identity)</p>
+</li>
+<li>
+<p>\$a + b = b + a\$ (commutative)</p>
+</li>
+<li>
+<p>\$a + -a = \mathbf{0}\$ (inverse)</p>
+</li>
+</ol>
+</div>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+An mm-ADT <code>int</code> is currently encoded using 64-bits. In computer engineering, this is a <code>long</code> value. A later release will dynamically resize the amount of bits used for the encoding such that arbitrary large (both positive and negative) can be represented.
+</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_real_type">Real Type</h5>
@@ -2651,9 +2722,9 @@ mmlang&gt; ('name'-&gt;'marko','age'-&gt;29).age
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; {1,2,3}-&lt;(is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my')
-==&gt;(-&gt;|1-&gt;'my')
-==&gt;(2-&gt;'name'|-&gt;)
-==&gt;(-&gt;|3-&gt;'is')
+==&gt;(1-&gt;'my')
+==&gt;(2-&gt;'name')
+==&gt;(3-&gt;'is')
 mmlang&gt; {1,2,3}-&lt;(is==2 -&gt; 'name' | is&gt;2 -&gt; 'is' | int -&gt; 'my')&gt;-
 ==&gt;'my'
 ==&gt;'name'
@@ -2687,9 +2758,9 @@ mmlang&gt; (1-&gt;'a',2-&gt;'b')==(2-&gt;'b',1-&gt;'a')
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 23-&lt;(is&gt;10-&gt;'a',int-&gt;'b')
-==&gt;(23-&gt;{'b','a'})
+==&gt;(23-&gt;str{2})
 mmlang&gt; 23-&lt;(is&gt;10-&gt;'a'|int-&gt;'b')
-==&gt;(23-&gt;'a'|-&gt;)
+==&gt;(23-&gt;'a')
 mmlang&gt; 23-&lt;(is&gt;10-&gt;'a';int-&gt;'b')
 ==&gt;(23-&gt;'b')</code></pre>
 </div>
@@ -3379,10 +3450,10 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>The vertex \$a\$ has no outgoing \$i\$ edge. In this situation, the VM <em>applies</em> \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (<strong>compute</strong>).</p>
+<p>If the vertex \$a\$ has no outgoing \$i\$-labeled edge, then the VM <em>applies</em> \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (<strong>compute</strong>).</p>
 </li>
 <li>
-<p>The vertex \$a\$ has an outgoing \$i\$ edge. In this situation, the VM <em>traverses</em> the edge \$a \to_i b\$ to arrive at \$b\$ (<strong>memoize</strong>).</p>
+<p>If the vertex \$a\$ has an outgoing \$i\$-labeled edge, then the VM <em>traverses</em> the edge \$a \to_i b\$ to arrive at \$b\$ (<strong>memoize</strong>).</p>
 </li>
 </ol>
 </div>
@@ -3767,7 +3838,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-04 00:25:08 -0600
+Last updated 2020-07-06 13:48:25 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
