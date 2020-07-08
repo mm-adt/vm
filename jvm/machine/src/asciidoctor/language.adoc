@@ -386,6 +386,33 @@ int[and,>5,<8]
 
 ===== Int Type
 
+The mm-ADT type `int` refers to the set of all https://en.wikipedia.org/wiki/Integer[integers] commonly referred to as \$\mathbb{Z}\$ in the mathematics literature. Integers are the prototypical example of an https://en.wikipedia.org/wiki/Ring_%28mathematics%29[algebraic ring] and thus, where *0* ("zero") and *1* ("one") derive their name. However, note that *0* and *1* generalize the integer elements `0` and `1` with numerous concrete, behavioral realizations in other carrier sets (with respective operators) besides `int`. If it were not for the success of the integers, *0* would perhaps be commonly refered to as https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] and *1*, https://en.wikipedia.org/wiki/Unit_(ring_theory)[unit]. In a similar vein, mm-ADT pays homage to the integers with `[zero]` and `[one]` being the instructions by which *0* and *1*, respectively, are extracted from those mm-ADT types that yield them such as `int` with `0` and `1`.
+
+[exec]
+----
+bool[zero]
+bool[one]
+int[zero]
+int[one]
+real[zero]
+real[one]
+str[zero]
+----
+
+The integers have two binary operators known as `*` ("multiplication") and `+` ("addition"), where \$\mathbb{Z},\ast \rangle\$ is a https://en.wikipedia.org/wiki/Monoid[monoid] and \$\langle \mathbb{Z},+\rangle\$ is an https://en.wikipedia.org/wiki/Abelian_group[abelian group].
+
+. Monoid Axioms (for multiplication)
+.. \$(a * b) * c = a * (b * c)\$ (associative)
+.. \$a * \mathbf{1} = a\$ (identity)
+. Abelian Group Axioms (for addition)
+.. \$(a + b) + c = a + (b + c)\$ (associative)
+.. \$a + \mathbb{0} = a\$ (identity)
+.. \$a + b = b + a\$ (commutative)
+.. \$a + -a = \mathbf{0}\$ (inverse)
+
+
+NOTE: An mm-ADT `int` is currently encoded using 64-bits. In computer engineering, this is a `long` value. A later release will dynamically resize the amount of bits used for the encoding such that arbitrary large (both positive and negative) can be represented.
+
 ===== Real Type
 
 ===== Str Type
