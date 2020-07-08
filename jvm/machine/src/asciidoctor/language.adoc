@@ -334,14 +334,14 @@ int{2}[_,_]
 
 ==== Mono Types
 
-[cols="1,3,1,1",width=35%,float=right]
+[cols="1,4,1,1",width=40%,float=right]
 |===
 | type | inst                              | 0       |  1
 
 | `bool` | `&&` `\|\|` `-` `!`             | `false` | `true`
-| `int`  | `*` `+` `-` `>` `<` `>=` `\<=`  | `0`     | `1`
-| `real` | `*` `+` `-` `>` `<` `>=` `\<=`  | `0.0`   | 1.0
-| `str`  | `+` `>` `<` `>=` `\<=`          | `''`    |
+| `int`  | `*` `+` `-` `>` `<` `>=` `=<`  | `0`     | `1`
+| `real` | `*` `+` `-` `>` `<` `>=` `=<`  | `0.0`   | 1.0
+| `str`  | `+` `>` `<` `>=` `=<`          | `''`    |
 |===
 
 The mm-ADT type system can be partitioned into *mono types* (https://en.wikipedia.org/wiki/Monomial[monomials]) and *poly types* (https://en.wikipedia.org/wiki/Polynomial[polynomials]). The `mono` types are https://en.wikipedia.org/wiki/Primitive_data_type[atomic] and there are 4 of them: `bool`, `int`, `real`, and `str`. The associated table presents the typical operators (https://en.wikipedia.org/wiki/Syntactic_sugar[sugared] instructions) that can be applied to each `mono`. The table also includes the additive (*0*) (additive) and multiplicative (*1*) https://en.wikipedia.org/wiki/Identity_element[identity] values of each `mono`. The remaining subsections will present examples of each `mono` type that also highlight important mm-ADT concepts.

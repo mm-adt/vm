@@ -159,10 +159,6 @@ object StorageFactory {
     case _: ObjStrm => tobj(name = obj.name, q = obj.q)
 
   }).asInstanceOf[OType[O]]
-  def isSymbol[O <: Obj](obj: O): Boolean = obj match {
-    case _: Value[_] => false
-    case atype: Type[_] => atype.root && atype.getClass.equals(tobj().getClass) && !atype.name.equals(Tokens.obj) && !atype.name.equals(Tokens.empty)
-  }
   implicit val mmstoreFactory: StorageFactory = new StorageFactory {
     /////////TYPES/////////
     override def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = base): ObjType = new TObj(name, q, via)
@@ -185,7 +181,7 @@ object StorageFactory {
     //
     override def strm[O <: Obj]: OStrm[O] = new VObjStrm(values = List.empty).asInstanceOf[OStrm[O]]
     override def strm[O <: Obj](values: Seq[O]): O = values.headOption.map(x => {
-      val headName:String = x.name
+      val headName: String = x.name
       x match {
         case _: Bool => new VBoolStrm(name = headName, values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))
         case _: Int => new VIntStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[IntValue]]))

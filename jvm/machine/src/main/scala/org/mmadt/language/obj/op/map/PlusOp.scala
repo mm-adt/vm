@@ -22,11 +22,10 @@
 
 package org.mmadt.language.obj.op.map
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{RecType, __}
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.{LanguageException, Tokens}
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -45,31 +44,20 @@ trait PlusOp[O <: Obj] {
 
 object PlusOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj.asInstanceOf[O])), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    try {
-      (start match {
-        case arec: RecType[Obj, Obj] => asType(arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[Rec[Obj, Obj]].gmap)))
-        case _: Value[_] => start match {
-          case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
-          case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)
-          case astr: Str => astr.clone(g = astr.g + inst.arg0[Str].g)
-          case arec: Rec[Obj, Obj] => arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[Rec[Value[Obj], Value[Obj]]].gmap))
-          //   case arec: Rec => arec.clone(g = arec.gmap ++ inst.arg0[ORecType]().gmap)
-          // poly plus
-          case multA: Poly[Obj] if multA.isSerial => inst.arg0[Poly[Obj]] match {
-            case multB: Poly[Obj] if multB.isSerial => multA `,` multB
-            case plusB: Poly[Obj] if plusB.isPlus => lst(plusB.gsep, multA, plusB)
-          }
-          case plusA: Poly[Obj] if plusA.isPlus => inst.arg0[Poly[Obj]] match {
-            case multB: Poly[Obj] if multB.isSerial => if (multB.isEmpty) plusA else lst(plusA.gsep, plusA, multB)
-            case plusB: Poly[Obj] if plusB.isPlus => plusA.clone(g = (plusA.gsep, (plusA.glist ++ plusB.glist).toList))
-          }
-        }
-        case _ => start
-      }).via(start, inst)
-    } catch {
-      case _: ClassCastException => throw LanguageException.typingError(start, asType(inst.arg0[Obj])) // TODO: type check at VInst
-      case _: LanguageException => start.via(start, inst)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
+    case _: Type[_] => start
+    case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
+    case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)
+    case astr: Str => astr.clone(g = astr.g + inst.arg0[Str].g)
+    case arec: Rec[Obj, Obj] => arec.clone(g = (arec.g._1, arec.gmap ++ inst.arg0[Rec[Obj, Obj]].gmap))
+    // poly plus
+    case multA: Lst[Obj] if multA.isSerial => inst.arg0[Lst[Obj]] match {
+      case multB: Lst[Obj] if multB.isSerial => multA `,` multB
+      case plusB: Lst[Obj] if plusB.isPlus => lst(plusB.gsep, multA, plusB)
     }
-  }
+    case plusA: Lst[Obj] if plusA.isPlus => inst.arg0[Lst[Obj]] match {
+      case multB: Lst[Obj] if multB.isSerial => if (multB.isEmpty) plusA else lst(plusA.gsep, plusA, multB)
+      case plusB: Lst[Obj] if plusB.isPlus => plusA.clone(g = (plusA.gsep, plusA.glist ++ plusB.glist))
+    }
+  }).via(start, inst)
 }
