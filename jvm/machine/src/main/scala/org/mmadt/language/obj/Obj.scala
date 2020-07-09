@@ -192,6 +192,16 @@ object Obj {
   }
 
   @scala.annotation.tailrec
+  def fetchExists(start: Obj, label: String): Boolean = {
+    start match {
+      case x if x.root => false
+      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => true
+      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label) => true
+      case x => fetchExists(x.via._1, label)
+    }
+  }
+
+  @scala.annotation.tailrec
   def fetchOption[A <: Obj](source: Obj, obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => None
