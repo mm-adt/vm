@@ -36,7 +36,7 @@ class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq
   def get(a: A): Option[A] = baseSet.find(b => a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g))
   def put(a: A): MultiSet[A] = {
     val oldObj: Option[A] = this.get(a)
-    new MultiSet[A](oldObj.map(x => baseSet - x).getOrElse(baseSet) + oldObj.map(x => x.hardQ(plusQ(a, x))).getOrElse(a))
+    new MultiSet[A](oldObj.map(x => baseSet - x).getOrElse(baseSet) + oldObj.map(x => x.hardQ(plusQ(a.q, x.q))).getOrElse(a))
   }
   def objSize: Long = baseSet.size
   def qSize: IntQ = baseSet.foldRight(qZero)((a, b) => plusQ(a.q, b))
@@ -54,7 +54,7 @@ class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq
 
 object MultiSet {
   def put[A <: Obj](objs: A*): MultiSet[A] = objs.foldLeft(new MultiSet[A])((a, b) => a.put(b))
-  def test(a: Obj, b: Obj): Boolean = MultiSet(a.toStrm.values) == MultiSet(b.toStrm.values)
+  def equals(a: Obj, b: Obj): Boolean = MultiSet(a.toStrm.values) == MultiSet(b.toStrm.values)
   def apply[A <: Obj](objs: Seq[A]): MultiSet[A] = objs.flatMap {
     case astrm: Strm[A] => astrm.values
     case x => List(x)

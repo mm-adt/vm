@@ -23,7 +23,7 @@
 package org.mmadt.language
 
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.storage.StorageFactory._
 
@@ -39,24 +39,13 @@ package object obj {
   // less typing
   type OType[+O <: Obj] = Type[O] with O
   type OValue[+O <: Obj] = Value[O] with O
-  type ORecStrm = RecStrm[Value[Obj], Value[Obj]]
   type OStrm[+O <: Obj] = O with Strm[O]
   // quantifier utilities
-  private lazy val zero: IntValue = int(0)
-  def minZero(quantifier: IntQ): IntQ = (zero, quantifier._2)
+  def minZero(quantifier: IntQ): IntQ = (int(0), quantifier._2)
   def maxZero(quantifier: IntQ): IntQ = (quantifier._2, quantifier._2)
-  def multQ(objA: Obj, objB: Obj): IntQ = objB.q match {
-    case _ if equals(qOne) => objA.q
-    case quantifier: IntQ => (objA.q._1 * quantifier._1, objA.q._2 * quantifier._2)
-  }
   def multQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case x: IntQ if qOne.equals(x) => qA
     case _ => (qA._1 * qB._1, qA._2 * qB._2)
-  }
-  def multQ(qA: Obj, qB: IntQ): IntQ = this.multQ(qA.q, qB)
-  def plusQ(objA: Obj, objB: Obj): IntQ = objB.q match {
-    case _ if equals(qZero) => objA.q
-    case quantifier: IntQ => (objA.q._1 + quantifier._1, objA.q._2 + quantifier._2)
   }
   def plusQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case _ if equals(qZero) => qA

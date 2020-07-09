@@ -125,7 +125,7 @@ class mmkvInstTest extends FunSuite {
     println(file6)
     engine.put(":pre", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${source6}']"))
     println(engine.eval(s"'g'[as,kvstore]"))
-    println(engine.eval(s"'g'[as,graph].V[as,vertex].outE[as,edge]"))
+    println(engine.eval(s"'g'[as,graph].V"))
     engine.put(":pre", null)
   }
 

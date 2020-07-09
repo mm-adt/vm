@@ -50,7 +50,7 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
-    case astrm: Strm[_] => MultiSet.test(this, astrm)
+    case astrm: Strm[_] => MultiSet.equals(this, astrm)
     case avalue: Value[_] => this.isInstanceOf[PolyValue[_, _]] || (this.name.equals(avalue.name) && this.g.equals(avalue.g) && eqQ(this, avalue))
     case _ => false
   }

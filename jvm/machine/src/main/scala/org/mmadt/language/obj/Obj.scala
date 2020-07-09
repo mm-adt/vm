@@ -149,7 +149,7 @@ trait Obj
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: E): E = rangeType match {
-    case _: Type[E] if __.isAnonRoot(this) && rangeType.root => rangeType.hardQ(multQ(this, rangeType))
+    case _: Type[E] if __.isAnonRoot(this) && rangeType.root => rangeType.hardQ(multQ(this.q, rangeType.q))
     case _: Type[E] =>
       if (this.isInstanceOf[Type[_]] && this.root && rangeType.root)
         LanguageException.testTypeCheck(this, asType(rangeType).hardQ(this.q))

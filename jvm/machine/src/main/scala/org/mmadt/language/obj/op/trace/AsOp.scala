@@ -102,7 +102,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def strConverter(x: Str, y: Obj): Obj = {
-    Inst.resolveArg(y.domain match {
+    val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
       case abool: BoolType => vbool(name = abool.name, g = JBoolean.valueOf(x.g), via = x.via)
       case aint: IntType => vint(name = aint.name, g = JLong.valueOf(x.g), via = x.via)
@@ -110,7 +110,8 @@ object AsOp extends Func[Obj, Obj] {
       case astr: StrType => vstr(name = astr.name, g = x.g, via = x.via)
       case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
-    }, y)
+    }
+    y.trace.map(x => x._2).foldLeft(w)((x, y) => y.exec(x))
   }
 
   private def lstConverter(x: Lst[Obj], y: Obj): Obj = {
