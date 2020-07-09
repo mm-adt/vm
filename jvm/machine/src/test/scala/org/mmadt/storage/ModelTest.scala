@@ -24,7 +24,7 @@ package org.mmadt.storage
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.{Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory.{strm, _}
 import org.scalatest.FunSuite
 
@@ -74,7 +74,8 @@ class ModelTest extends FunSuite {
       str("v") -> rec(str("name") -> str("marko")))
     val record1b = rec(
       str("id") -> int(1),
-      str("label") -> str("vertex")).named("vertex")
+      str("label") -> str("vertex"),
+      str("properties") -> rec(str("name") -> str("marko"))).named("vertex")
     assertResult(record1a.named("kv"))(record1a ===> kv.as(__("kv")))
     assertResult(record1b)(record1a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("kv")).as(__("vertex")))
     //
@@ -83,17 +84,18 @@ class ModelTest extends FunSuite {
       str("v") -> rec(str("label") -> str("person"), str("name") -> str("marko")))
     val record2b = rec(
       str("id") -> int(1),
-      str("label") -> str("person")).named("vertex")
+      str("label") -> str("person"),
+      str("properties") -> rec(str("label") -> str("person"), str("name") -> str("marko"))).named("vertex")
     assertResult(record2a.named("kv"))(record2a ===> kv.as(__("kv")))
     assertResult(record2b)(record2a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("kv")).as(__("vertex")))
     assertResult(record2b)(record2a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("vertex")))
     //
 
     val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))
-    val store: Rec[StrValue, Obj] = strm(List(record1a, edge1))
-    val g: Type[Obj] = (kv `=>` tp3 `=>` tp3_kv).as(__("store")).as(__("graph"))
+    val store: Lst[Rec[StrValue, Obj]] = lst(",", strm(List(record1a, edge1)))
+    val g: Type[Obj] = (kv `=>` tp3 `=>` tp3_kv).as(__("graph"))
     println(g)
-    //println(lst(",",store) ==> g)
+    println(store ===> g)
   }
 
 
