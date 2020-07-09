@@ -206,7 +206,7 @@ object Obj {
     obj match {
       case x if x.root => None
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => obj match {
-        case _: Value[Obj] => Some(x.via._1.asInstanceOf[A])
+        case _: Value[Obj] => Some(x.via._1.via(source.via._1, source.via._2).asInstanceOf[A])
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
       case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label && source.test(asType(y.domain))) =>

@@ -122,7 +122,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val tokenType: Parser[__] = varName ^^ (x => __(x))
 
   lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val dtype: Parser[Obj] = cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ (x => x._2.flatten.foldLeft(x._1.asInstanceOf[Obj])((x, y) => y.exec(x)))
+  lazy val dtype: Parser[Obj] = cType ~ rep[List[Inst[Obj, Obj]]](inst) ^^ (x => x._2.flatten.foldLeft(x._1.asInstanceOf[Obj])((x, y) => y.exec(x))) | anonTypeSugar
   lazy val aType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ dtype ^^ {
     case Some(range) ~ domain => range <= domain
     case None ~ domain => domain

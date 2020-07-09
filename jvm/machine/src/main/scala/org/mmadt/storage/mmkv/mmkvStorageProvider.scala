@@ -50,7 +50,7 @@ class mmkvStorageProvider extends StorageProvider {
   override def resolveInstruction(op: String, args: util.List[Obj]): Optional[Inst[Obj, Obj]] = {
     if (op != opcode) Optional.empty()
     Optional.ofNullable(asScalaIterator(args.iterator()).toList match {
-      case List(file: Str) => mmkvOp.mmkvGetRecords(file)
+      case List(file: Obj) => mmkvOp.mmkvGetRecords(file)
       case List(file: Obj, this.getByKeyEq, key: Obj) => mmkvOp.mmkvGetRecordsByKey(file, key)
       case _ => null
     })
@@ -72,7 +72,7 @@ object mmkvStorageProvider {
 
   object mmkvOp {
     object mmkvGetRecords extends Func[Obj, Rec[StrValue, Obj]] {
-      def apply(fileStr: Str): Inst[Obj, Rec[StrValue, Obj]] = new VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr)), func = this)
+      def apply(fileStr: Obj): Inst[Obj, Rec[StrValue, Obj]] = new VInst[Obj, Rec[StrValue, Obj]](g = (opcode, List(fileStr)), func = this)
       override def apply(start: Obj, inst: Inst[Obj, Rec[StrValue, Obj]]): Rec[StrValue, Obj] = {
         if (inst.arg0[Obj].isInstanceOf[Type[_]])
           return rec[StrValue, Obj].via(start, inst)
