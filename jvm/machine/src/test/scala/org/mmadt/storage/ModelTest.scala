@@ -35,6 +35,8 @@ class ModelTest extends FunSuite {
   val tp3_kv: Type[Obj] = functor(KV, TP3)
   val kv: Type[Obj] = model(KV)
   val tp3: Type[Obj] = model(TP3)
+  val fake: Type[Obj] = __.define(__("g") <= __, __("db") <= __)
+  val all: Type[Obj] = kv `=>` tp3 `=>` tp3_kv `=>` fake
 
   test("[tp3] model") {
     val record1a = rec(
@@ -77,7 +79,7 @@ class ModelTest extends FunSuite {
       str("label") -> str("vertex"),
       str("properties") -> rec(str("name") -> str("marko"))).named("vertex")
     assertResult(record1a.named("kv"))(record1a ===> kv.as(__("kv")))
-    assertResult(record1b)(record1a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("kv")).as(__("vertex")))
+    assertResult(record1b)(record1a ==> all.as(__("kv")).as(__("vertex")))
     //
     val record2a = rec(
       str("k") -> (str("vertex") `,` int(1)),
@@ -87,13 +89,13 @@ class ModelTest extends FunSuite {
       str("label") -> str("person"),
       str("properties") -> rec(str("label") -> str("person"), str("name") -> str("marko"))).named("vertex")
     assertResult(record2a.named("kv"))(record2a ===> kv.as(__("kv")))
-    assertResult(record2b)(record2a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("kv")).as(__("vertex")))
-    assertResult(record2b)(record2a ==> (kv `=>` tp3 `=>` tp3_kv).as(__("vertex")))
+    assertResult(record2b)(record2a ==> all.as(__("kv")).as(__("vertex")))
+    assertResult(record2b)(record2a ==> all.as(__("vertex")))
     //
 
     val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))
     val store: Lst[Rec[StrValue, Obj]] = lst(",", strm(List(record1a, edge1)))
-    val g: Type[Obj] = (kv `=>` tp3 `=>` tp3_kv).as(__("graph"))
+    val g: Type[Obj] = all.as(__("graph"))
     println(g)
     println(store ===> g)
   }

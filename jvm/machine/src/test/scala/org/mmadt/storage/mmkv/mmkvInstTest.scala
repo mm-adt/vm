@@ -46,7 +46,6 @@ class mmkvInstTest extends FunSuite {
   val file6: String = getClass.getResource("/mmkv/mmkv-6.mm").getPath
   val source4: String = getClass.getResource("/mmkv/source-4.mm").getPath
   val source5: String = getClass.getResource("/mmkv/source-5.mm").getPath
-  val source6: String = getClass.getResource("/mmkv/source-6.mm").getPath
   val kv: String = getClass.getResource("/model/kv.mm").getPath
   val tp3: String = getClass.getResource("/model/tp3.mm").getPath
   val tp3_kv: String = getClass.getResource("/model/functor/tp3_kv.mm").getPath
@@ -122,8 +121,9 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv tp3") {
     println(file6)
-    engine.put(":pre", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${source6}'][map,'${file6}'][to,'file']"))
+    engine.put(":pre", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${tp3_kv}'][define,db<=[=mmkv,'${file6}']]"))
     println(engine.eval(s"'g'[as,kvstore]"))
+    println(engine.eval(s"'g'[as,graph]<g>.V"))
     println(engine.eval(s"'g'[as,graph]<g>.V[as,vertex][is,.id==1].outE[as,edge].inV[as,vertex].properties.name[fold,x.0+x.1]"))
     engine.put(":pre", null)
   }

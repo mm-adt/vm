@@ -1,4 +1,3 @@
-// A Functor from Key/Value model-ADT to TP3 model-ADT
 [define,graph<=kvstore-<('V'->.0[is,.k.0=='vertex'],
                          'E'->.0[is,.k.0=='edge']),
         vertex<=kv:('k'->(is=='vertex',obj),'v'->(str->obj))<x>-<
@@ -13,4 +12,3 @@
                     'outV'       -> g.V[is,.k.1==x.v.link.0],
                     'inV'        -> g.V[is,.k.1==x.v.link.1])]
 [define,kvstore<=-<(db)]
-[define,g<=_,db<=_]
