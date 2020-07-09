@@ -76,9 +76,9 @@ class TIntTest extends FunSuite {
     assert(int.plus(2).test(int.plus(2)))
     assert(str.plus("a").test(str.plus("a")))
     //
-    assert(!int.named("nat").test(int))
-    assert(!int.named("nat").plus(1).test(int.plus(1)))
-    assert(!int.named("nat").test(int.is(int.gt(0))))
+//    assert(!int.named("nat").test(int))
+  //  assert(!int.named("nat").plus(1).test(int.plus(1)))
+    //assert(!int.named("nat").test(int.is(int.gt(0))))
     assert(int.named("nat").test(int.named("nat").is(int.gt(0))))
   }
 

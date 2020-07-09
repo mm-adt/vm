@@ -22,13 +22,11 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,35 +41,21 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def gmap: collection.Map[A, B] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
   def glist: Seq[B] = gmap.values.toSeq
   def gsep: String = g._1
-  override def test(other: Obj): Boolean = {
-    Inst.resolveToken(this, other) match {
-      case aobj: Obj if !aobj.alive => !this.alive
-      case anon: __ if __.isToken(anon) =>
-        val x = Inst.resolveToken(this, anon)
-        if (__.isToken(x)) true else this.test(x)
-      case anon: __ => Inst.resolveArg(this, anon).alive
-      case astrm: Strm[_] => MultiSet.test(this, astrm)
-      case arec: Rec[_, _] =>
-        // this.name.equals(other.name) &&
-        Poly.sameSep(this, arec) &&
-          withinQ(this, arec) &&
-          arec.gmap.count(x => qStar.equals(x._2.q) ||
-            this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
-      case atype: Type[_] => atype.name.equals(Tokens.obj)
-      case _ => false
-    }
+  override def test(other: Obj): Boolean = other match {
+    case arec: Rec[Obj, Obj] => // this.name.equals(other.name) &&
+      Poly.sameSep(this, arec) &&
+        withinQ(this, arec) &&
+        arec.gmap.count(x => qStar.equals(x._2.q) ||
+          this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
+    case _ => true
   }
-
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case obj: Obj if !this.alive => !obj.alive
-    case astrm: Strm[_] => MultiSet.test(this, astrm)
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
       this.name.equals(arec.name) &&
       eqQ(this, arec) &&
       this.gmap.size == arec.gmap.size &&
       this.gmap.zip(arec.gmap).forall(x => x._1._1.equals(x._2._1) && x._1._2.equals(x._2._2))
-    case _ => false
+    case _ => true
   }
 }
 object Rec {

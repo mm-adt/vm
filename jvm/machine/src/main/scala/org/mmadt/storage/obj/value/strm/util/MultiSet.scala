@@ -27,7 +27,6 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage.StorageFactory._
 
-import scala.collection.SortedSet
 import scala.collection.immutable.ListSet
 
 /**

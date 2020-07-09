@@ -22,11 +22,11 @@
 
 package org.mmadt.language.obj.value
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.TypeOp
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
@@ -37,12 +37,11 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
   def g: Any
 
   override def test(other: Obj): Boolean = other match {
-    case aobj: Obj if !aobj.alive => !this.alive
-    case anon: __ if __.isToken(anon) => this.test(Inst.resolveToken(this, anon))
-    case anon: __ => withinQ(this, anon) && Inst.resolveArg(this, anon).alive
-    case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case avalue: Value[_] => this.g.equals(avalue.g) && withinQ(this, avalue)
-    case atype: Type[_] => (baseName(this).equals(baseName(atype)) || atype.name.equals(Tokens.obj) || atype.name.equals(Tokens.anon)) && withinQ(this, atype.domain) && this.compute(atype).alive
+    case _: Obj if !other.alive => !this.alive
+    case _: __ if __.isToken(other) => this.test(Inst.resolveToken(this, other))
+    // case _: Strm[_] => MultiSet.test(this, other) // TODO: should there be an equals() and a test() ?
+    case _: Type[_] => (baseName(this).equals(baseName(other.domain)) || __.isAnonObj(other)) && withinQ(this, other.domain) && this.compute(other).alive
+    case avalue: Value[_] => this.isInstanceOf[PolyValue[_, _]] || (this.g.equals(avalue.g) && withinQ(this, avalue))
     case _ => false
   }
 
@@ -51,8 +50,8 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
-    case astrm: Strm[V] => MultiSet.test(astrm, this.toStrm)
-    case avalue: Value[V] => this.name.equals(avalue.name) && this.g.equals(avalue.g) && eqQ(this, avalue)
+    case astrm: Strm[_] => MultiSet.test(this, astrm)
+    case avalue: Value[_] => this.isInstanceOf[PolyValue[_, _]] || (this.name.equals(avalue.name) && this.g.equals(avalue.g) && eqQ(this, avalue))
     case _ => false
   }
 }

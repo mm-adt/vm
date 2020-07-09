@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -36,11 +36,8 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   override def range: this.type = this.isolate
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
-    case aobj: Obj if !aobj.alive => !this.alive
-    case anon: __ if __.isToken(anon) => Inst.resolveArg(this, anon).alive
-    case atype: Type[_] =>
-      (this.name.equals(atype.domain.name) || atype.domain.name.equals(Tokens.obj) || __.isAnon(this) || __.isAnon(atype)) &&
-        withinQ(this, atype)
+    case _: Obj if !other.alive => !this.alive
+    case _: Type[_] => (baseName(this).equals(baseName(other.domain)) || __.isAnon(this) || __.isAnonTokenObj(other)) && withinQ(this, other)
     case _ => false
   }
   // standard Java implementations

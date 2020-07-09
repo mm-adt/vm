@@ -22,14 +22,12 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 trait Lst[A <: Obj] extends Poly[A]
   with CombineOp[A]
@@ -42,32 +40,20 @@ trait Lst[A <: Obj] extends Poly[A]
   def g: LstTuple[A]
   override def gsep: String = g._1
   override def glist: List[A] = g._2 /*.map(x => x.hardQ(multQ(this.q, x.q)))*/ .map(x => if (this.isInstanceOf[Type[_]]) x else Obj.copyDefinitions(this, x))
-
   override def test(other: Obj): Boolean = other match {
-    case aobj: Obj if !aobj.alive => !this.alive
-    case anon: __ if __.isToken(anon) =>
-      val x = Inst.resolveToken(this, anon)
-      if (__.isToken(x)) true else this.test(x)
-    case anon: __ => Inst.resolveArg(this, anon).alive
-    case astrm: Strm[_] => MultiSet.test(this, astrm)
-    case alst: Lst[_] => Poly.sameSep(this, alst) &&
-      // this.name.equals(other.name) &&
+    case alst: Lst[_] => Poly.sameSep(this, alst) && // TODO: this.name.equals(other.name) &&
       withinQ(this, alst) &&
       (this.glist.size == alst.glist.size || alst.glist.isEmpty) && // TODO: should lists only check up to their length
       this.glist.zip(alst.glist).forall(b => b._1.test(b._2))
-    case atype: Type[_] => atype.name.equals(Tokens.obj)
-    case _ => false
+    case _ => true
   }
-  override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
   override def equals(other: Any): Boolean = other match {
-    case obj: Obj if !this.alive => !obj.alive
-    case astrm: Strm[_] => MultiSet.test(this, astrm)
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
       eqQ(this, alst) &&
       // (this.glist.size == alst.glist.size) &&
       this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))
-    case _ => false
+    case _ => true
   }
 }
 object Lst {

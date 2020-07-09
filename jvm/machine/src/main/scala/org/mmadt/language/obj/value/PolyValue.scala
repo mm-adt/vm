@@ -23,4 +23,7 @@
 package org.mmadt.language.obj.value
 import org.mmadt.language.obj.{Obj, Poly}
 
+/**
+ * @author Marko A. Rodriguez (http://markorodriguez.com)
+ */
 trait PolyValue[A <: Obj, B <: Poly[A]] extends Poly[A] with Value[B]
