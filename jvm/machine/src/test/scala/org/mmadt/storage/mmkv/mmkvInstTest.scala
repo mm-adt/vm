@@ -49,6 +49,7 @@ class mmkvInstTest extends FunSuite {
   val kv: String = getClass.getResource("/model/kv.mm").getPath
   val tp3: String = getClass.getResource("/model/tp3.mm").getPath
   val tp3_kv: String = getClass.getResource("/model/functor/tp3_kv.mm").getPath
+  val social_kv: String = getClass.getResource("/model/functor/social_kv.mm").getPath
 
   test("mmkv parsing") {
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
@@ -121,8 +122,9 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv tp3") {
     println(file6)
-    engine.put(":pre", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${tp3_kv}'][define,db<=[=mmkv,'${file6}']]"))
-    println(engine.eval(s"'g'[as,kvstore]"))
+    engine.put(":pre", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${tp3_kv}'][load,'${social_kv}'][define,db<=[=mmkv,'${file6}']]"))
+ //   println(engine.eval(s"'g'[as,kvstore]"))
+    println(engine.eval(s"'josh'[as,person].0"))
     println(engine.eval(s"'g'[as,graph]<g>.V"))
     println(engine.eval(s"'g'[as,graph]<g>.V[as,vertex][is,.id==1].outE[as,edge].inV[as,vertex].properties.name[fold,x.0+x.1]"))
     engine.put(":pre", null)

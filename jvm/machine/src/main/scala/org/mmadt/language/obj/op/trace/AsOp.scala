@@ -47,7 +47,7 @@ object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
-    val asObj: Obj = if (start.isInstanceOf[Type[_]]) inst.arg0[Obj] else Inst.resolveToken(start, inst.arg0[Obj])
+    val asObj: Obj = if (start.isInstanceOf[Type[_]])  inst.arg0[Obj] else Inst.resolveToken(start, inst.arg0[Obj])
     val dObj: Obj = pickMapping(start, asObj)
     val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, asObj.range) else dObj
     val result = (if (Tokens.named(inst.arg0[Obj].name)) rObj.named(inst.arg0[Obj].name) else rObj).via(start, inst)
