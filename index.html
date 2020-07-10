@@ -533,11 +533,19 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_storage_structures">Storage Structures</a></li>
 <li><a href="#_processor_structures">Processor Structures</a>
 <ul class="sectlevel2">
-<li><a href="#_obj_graph">Obj Graph</a></li>
-<li><a href="#_processes">Processes</a>
+<li><a href="#_processes">Processes</a></li>
+<li><a href="#_obj_graph">Obj Graph</a>
 <ul class="sectlevel3">
-<li><a href="#_instruction_evaluation">Instruction Evaluation</a>
+<li><a href="#_algebraic_actions">Algebraic Actions</a>
 <ul class="sectlevel4">
+<li><a href="#_type_specification">Type Specification</a></li>
+</ul>
+</li>
+<li><a href="#_type_compilation">Type Compilation</a></li>
+<li><a href="#_type_optimization">Type Optimization</a></li>
+<li><a href="#_type_evaluation">Type Evaluation</a>
+<ul class="sectlevel4">
+<li><a href="#_instruction_evaluation">Instruction Evaluation</a></li>
 <li><a href="#_n_ary_instructions">n-Ary Instructions</a></li>
 <li><a href="#_n_ary_relations">n-Ary Relations</a></li>
 </ul>
@@ -3443,38 +3451,6 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 <p>This section details the specifics of the relationships between types, values, and processors.</p>
 </div>
 <div class="sect2">
-<h3 id="_obj_graph">Obj Graph</h3>
-<div class="paragraph">
-<p>mm-ADT&#8217;s virtual machine computes via two <a href="https://en.wikipedia.org/wiki/Semigroup_action">actions</a> on the <code>obj</code> graph. When a VM process is at the <code>obj</code> \$a\$ and the program (as specified by the type definition) requires the evaluation of <code>inst</code> \$i\$, then the VM is in one of two situations.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>If the vertex \$a\$ has no outgoing \$i\$-labeled edge, then the VM <em>applies</em> \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (<strong>compute</strong>).</p>
-</li>
-<li>
-<p>If the vertex \$a\$ has an outgoing \$i\$-labeled edge, then the VM <em>traverses</em> the edge \$a \to_i b\$ to arrive at \$b\$ (<strong>memoize</strong>).</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The first situation is computing via function <a href="https://en.wikipedia.org/wiki/Evaluation_strategy">evaluation</a>. The second situation leverages <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> to avoid recomputation. There are three ways to best understand the nature of the <code>obj</code> graph.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Mathematically</strong>: The <code>obj</code> graph has an infinite number of <code>obj</code> vertices connected to each other by edges labeled from the infinite set instructions in <code>inst</code>. From this perspective, computing is traversal (i.e. <a href="https://en.wikipedia.org/wiki/Lookup_table">look-up</a>) as the <code>obj</code> graph is fully materialized and thus, memoized.</p>
-</li>
-<li>
-<p><strong>Theoretically</strong>: The <code>obj</code> graph is manifested as computations proceed where any binary operation \$ai\$ that has already occurred must already exists in the <code>obj</code> graph and thus, can be traversed.</p>
-</li>
-<li>
-<p><strong>Physically</strong>: The <code>obj</code> graph is a dynamic entity that expands and contracts given the resource constraints of the underlying physical machines supporting its manifestation across all levels of the <a href="https://en.wikipedia.org/wiki/Memory_hierarchy">memory hierarchy</a>, where <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a> prunes the graph and computation grows the graph.</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
 <h3 id="_processes">Processes</h3>
 <div class="paragraph">
 <p>Processors are used in the following three situations:</p>
@@ -3492,11 +3468,92 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </li>
 </ol>
 </div>
+</div>
+<div class="sect2">
+<h3 id="_obj_graph">Obj Graph</h3>
+<div class="paragraph">
+<p>The mm-ADT virtual machine computes via two <a href="https://en.wikipedia.org/wiki/Semigroup_action">actions</a> on the <code>obj</code> graph. A thread of execution in the VM maintains two primary references: 1.) a reference to an <code>obj</code> and 2.) a reference to an <code>inst</code>. Via the juxtaposition of <code>obj</code> and <code>inst</code> another <code>obj</code> is realized. This process occurs within a larger referential structure called the <code>obj</code> graph. The aim of this section is to codify this process and organize the complexities of the <code>obj</code> graph.</p>
+</div>
+<div class="paragraph">
+<p>When a VM process refers to the <code>obj</code> \$a\$ and the instruction <code>inst</code> \$i\$, then the VM will perform one of the following operations.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>If the vertex \$a\$ has no outgoing \$i\$-labeled edge, then the VM <em>applies</em> \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (<strong>compute</strong>).</p>
+</li>
+<li>
+<p>If the vertex \$a\$ has an outgoing \$i\$-labeled edge, then the VM <em>traverses</em> the edge \$a \to_i b\$ to arrive at \$b\$ (<strong>memoize</strong>).</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The first situation is computing via function <a href="https://en.wikipedia.org/wiki/Evaluation_strategy">evaluation</a> (save space). The second situation leverages <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> to avoid recomputing (save time). This two situations help frame three high-level perspectives on the <code>obj</code> graph.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Mathematically</strong>: The <code>obj</code> graph has an infinite number of <code>obj</code> vertices connected to each other by edges labeled from the infinite <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> <code>inst</code>. From this perspective, computing is traversal (i.e. <a href="https://en.wikipedia.org/wiki/Lookup_table">look-up</a>) as the <code>obj</code> graph is fully materialized.</p>
+</li>
+<li>
+<p><strong>Theoretically</strong>: The <code>obj</code> graph is manifested as computations proceed where, if \$a \in \tt{obj}\$ and \$i \in \tt{i\nst}\$, then any binary operation \$ai\$ that has already been evaluated already exists in the <code>obj</code> graph and as such, can be traversed.</p>
+</li>
+<li>
+<p><strong>Physically</strong>: The <code>obj</code> graph is a dynamic entity that expands and contracts given the resource constraints of the underlying physical machines supporting its manifestation across all levels of the <a href="https://en.wikipedia.org/wiki/Memory_hierarchy">memory hierarchy</a>, where <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a> prunes the graph and computation grows the graph.</p>
+</li>
+</ol>
+</div>
 <div class="sect3">
-<h4 id="_instruction_evaluation">Instruction Evaluation</h4>
+<h4 id="_algebraic_actions">Algebraic Actions</h4>
+<div class="sect4">
+<h5 id="_type_specification">Type Specification</h5>
+<div class="paragraph">
+<p>An mm-ADT <strong>program</strong> in an mm-ADT <strong>type</strong>. In the type graph (a subgraph of the <code>obj</code> graph) a type is denoted by a vertex (an <em>ungrounded</em> vertex). That vertex is the type&#8217;s <strong>range</strong>. The type&#8217;s <strong>definition</strong> is encoded in the directed, <a href="https://en.wikipedia.org/wiki/Deterministic_automaton">deterministic</a> path that ends at a vertex with no outgoing edges. The resultant vertex is a <em>root</em> vertex and is the type&#8217;s <strong>domain</strong>. If the type definition&#8217;s path length is 0, then the domain and the range are equal, and the type is a ctype (a canonical type). If the path length is greater than 0, then the directed binary edges of the path are labeled with instructions from <code>inst</code>. This construction is abstractly represented in the diagram below.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/type-path.png" alt="type path" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p>The type graph forms the central structure upon by which various VM processes are enacted. These processes include type/program specification, compilation, optimization, and ultimately, via a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> from the type graph to the value graph, evaluation. Given finite computing resources, the type graph does not exist eternally in a static form ready-made. No, instead, subgraphs of it must be generated. This is accomplished via an action of <code>inst</code> monoid on the set <code>inst<sup>*</sup></code> (the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene star</a> closure of <code>inst</code>). For instance, in <code>mmlang</code> the user juxtaposes a ctype (domain) and an <code>inst</code> to construct a dtype. That dtype is juxtaposed with another <code>inst</code> to yield another dtype so forth until a desired type is reached.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{range} = ((((((\texttt{domain} \cdot \texttt{inst}_0) \cdot \texttt{inst}_1) \cdot \texttt{inst}_2) \ldots) \cdot \texttt{inst}_{n-2}) \cdot \texttt{inst}_{n-1}).
+\]</p>
+</div>
+<div class="paragraph">
+<p>In general, the action of an <code>inst</code> on a type is the function
+\[
+\texttt{inst}: T \to T,
+\]
+where if \$a \in \tt{i\nst}\$, then
+\[
+a(x) = xa.
+\]</p>
+</div>
+<div class="paragraph">
+<p>Said plainly, instructions in <code>inst</code> act on types by concatenating themselves to the type definition. Algebraically, a type is an element of the <a href="https://en.wikipedia.org/wiki/Free_algebra">free</a> inst monoid rooted a ctype.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_type_compilation">Type Compilation</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_type_optimization">Type Optimization</h4>
+
+</div>
+<div class="sect3">
+<h4 id="_type_evaluation">Type Evaluation</h4>
+<div class="sect4">
+<h5 id="_instruction_evaluation">Instruction Evaluation</h5>
 <div class="paragraph">
 <p>Every mm-ADT instruction denotes a <a href="https://en.wikipedia.org/wiki/Unary_function">unary function</a>, but mm-ADT instructions themselves may contain zero, one, or multiple sub-expressions as arguments.
 At the mm-ADT type-level, mm-ADT instructions are \$n\$-ary computable relations, where through currying and stream semantics, ultimately, unary functions are realized.</p>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_n_ary_instructions">n-Ary Instructions</h5>
@@ -3838,7 +3895,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-08 11:17:47 -0600
+Last updated 2020-07-10 11:12:54 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
