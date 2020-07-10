@@ -15,6 +15,9 @@ Ryan Wisnesky [advisor] (Conexus)
 :copyright: 2020
 :example-caption: Deep Dive
 
+:xinst: \tt{i\nst}
+:xobj: \tt{obj}
+
 include::introduction.adoc[]
 
 include::language.adoc[]
