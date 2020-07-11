@@ -66,18 +66,19 @@ class TIntTest extends FunSuite {
 
   test("type/type patterns on atomic objs") {
     assert(int.test(int))
-    assert(bool.test(bool))
-    assert(str.test(str))
+    assert(!int.test(bool))
+    assert(!int.test(str))
     //
     assert(int.plus(2).test(int))
-    assert(bool.test(bool.is(btrue)))
-    assert(str.test(str.plus("a")))
+    assert(!int.test(bool.is(btrue)))
+    assert(!int.test(str.plus("a")))
+    assert(!int.test(str.plus("a").as(int)))
     //
     assert(int.plus(2).test(int.plus(2)))
     assert(str.plus("a").test(str.plus("a")))
     //
-//    assert(!int.named("nat").test(int))
-  //  assert(!int.named("nat").plus(1).test(int.plus(1)))
+    //assert(!int.named("nat").test(int))
+    //assert(!int.named("nat").plus(1).test(int.plus(1)))
     //assert(!int.named("nat").test(int.is(int.gt(0))))
     assert(int.named("nat").test(int.named("nat").is(int.gt(0))))
   }

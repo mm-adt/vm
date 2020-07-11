@@ -34,6 +34,9 @@ class IntValueTest extends FunSuite {
     assert(!int(3).test(int(3).plus(10).plus(-5)))
     // value ~ type
     assert(int(3).test(int))
+    assert(int(3).test(int.q(*)))
+    assert(!int(3).test(int.q(0)))
+    assert(!int(3).test(int.q(2, 5)))
     assert(!int(3).test(str))
     assert(int(3).test(int.plus(2)))
     assert(!int(3).test(str.map(int(3))))

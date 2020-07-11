@@ -81,10 +81,9 @@ trait Obj
     this.clone(name = name)
   }
   def test(other: Obj): Boolean
-  def <=[D <: Obj](domainType: D): this.type = {
+  def <=[D <: Obj](domainType: D): this.type =
     if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert(), domainType.via._2))
-  }
   def range: Type[Obj] = asType(this.isolate)
   def domain[D <: Obj]: Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]
 
@@ -209,8 +208,8 @@ object Obj {
         case _: Value[Obj] => Some(x.via._1.via(source.via._1, source.via._2).asInstanceOf[A])
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
-      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label && source.test(asType(y.domain))) =>
-        Some(toBaseName(x.via._2.args.find(y => y.name == label && source.test(asType(y.domain))).get.asInstanceOf[A]))
+      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label && source.test(y.domain)) =>
+        Some(toBaseName(x.via._2.args.find(y => y.name == label && source.test(y.domain)).get.asInstanceOf[A]))
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
         Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
       case x =>

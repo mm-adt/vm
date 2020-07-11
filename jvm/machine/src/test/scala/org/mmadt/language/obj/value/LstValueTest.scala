@@ -41,14 +41,13 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
     assert(!("a" |).test("a" | "b"))
     //
     assert(("a" | ("b" | "c")).test("a" | ("b" | "c")))
-    //assert(("a" | ("b" | "c")).test("a" | ("b" |)))
+    assert(!("a" | ("b" | "c")).test("a" | ("b" |)))
     assert(!("a" | ("b" |)).test("a" | ("b" | "c")))
   }
 
   test("basic poly") {
     assertResult(str("a"))(("a" | "b" | "c").head())
     assertResult("b" | "c")(("a" | "b" | "c").tail())
-
     assertResult(str("a"))(("a" `;` "b" `;` "c").head())
     assertResult("b" `;` "c")(("a" `;` "b" `;` "c").tail())
   }

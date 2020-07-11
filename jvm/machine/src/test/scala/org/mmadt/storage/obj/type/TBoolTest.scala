@@ -29,7 +29,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TBoolTest extends FunSuite {
-  test("bool typeo") {
+  test("bool type") {
     assertResult("bool")(bool.name)
     assertResult(bool.and(bool))(bool && bool)
     assertResult(bool.and(true))(bool && true)

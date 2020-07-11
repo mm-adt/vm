@@ -35,7 +35,7 @@ trait RecValue[A <: Obj, B <: Obj] extends PolyValue[B, Rec[A, B]] with Rec[A, B
     case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
       case arec: Rec[A, B] => Rec.test(this, arec)
       case x => __.isAnonObj(x)
-    }) && this.compute(other.domain).alive
+    }) && this.compute(other).alive
     case _ => false
   }
   override def equals(other: Any): Boolean = other.isInstanceOf[RecValue[_, _]] && super[Rec].equals(other) && super[PolyValue].equals(other)
