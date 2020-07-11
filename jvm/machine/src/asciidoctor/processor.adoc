@@ -2,12 +2,12 @@
 
 == Processor Structures
 
-The programs of the mm-ADT virtual machine are _types_. From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. Every mm-ADT type has a corresponding https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrammatic] representation that is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to a directed labeled *type graph* composed of _type_-vertices and _instruction_-edges.
+The programs of the mm-ADT virtual machine are *types*. From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. Every mm-ADT type has a corresponding https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrammatic] representation that is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to a directed labeled *type graph* composed of _type_-vertices and _instruction_-edges.
 
 A program's type graph is the https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize). At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the *value graph*, where the resultant structure of an mm-ADT computation is the *obj graph*, where
 
 \[
-\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q})
+\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
 
 image::process-stack.png[float="right",width=200]
@@ -24,24 +24,20 @@ Processors are used in the following three situations:
 . *Compilation*: (https://en.wikipedia.org/wiki/Program_optimization[type optimization]). (https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29[fix point]).
 . *Evaluation*: (https://en.wikipedia.org/wiki/Execution_(computing)[type enumeration]).
 
-=== Obj Graph
+=== Algebraic Actions
 
-The mm-ADT virtual machine computes via two https://en.wikipedia.org/wiki/Semigroup_action[actions] on the `obj` graph. A thread of execution in the VM maintains two primary references: 1.) a reference to an `obj` and 2.) a reference to an `inst`. Via the juxtaposition of `obj` and `inst` another `obj` is realized. This process occurs within a larger referential structure called the `obj` graph. The aim of this section is to codify this process and organize the complexities of the `obj` graph.
-
-When a VM process refers to the `obj` \$a\$ and the instruction `inst` \$i\$, then the VM will perform one of the following operations.
+A thread of execution in the VM maintains two primary references: 1.) a reference to an `obj` and 2.) a reference to an `inst`. Via the juxtaposition of `obj` and `inst` another `obj` is realized. When a VM process refers to the `obj` \$a\$ and the instruction `inst` \$i\$, then the VM will perform one of the following operations:
 
 . If the vertex \$a\$ has no outgoing \$i\$-labeled edge, then the VM _applies_ \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (*compute*).
 . If the vertex \$a\$ has an outgoing \$i\$-labeled edge, then the VM _traverses_ the edge \$a \to_i b\$ to arrive at \$b\$ (*memoize*).
 
-The first situation is computing via function https://en.wikipedia.org/wiki/Evaluation_strategy[evaluation] (save space). The second situation leverages https://en.wikipedia.org/wiki/Memoization[memoization] to avoid recomputing (save time). This two situations help frame three high-level perspectives on the `obj` graph.
+The first situation is computing via function https://en.wikipedia.org/wiki/Evaluation_strategy[evaluation] (save space). The second situation leverages https://en.wikipedia.org/wiki/Memoization[memoization] to avoid recomputing (save time). These two situations offer three high-level perspectives on the `obj` graph.
 
 . *Mathematically*: The `obj` graph has an infinite number of `obj` vertices connected to each other by edges labeled from the infinite https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] `inst`. From this perspective, computing is traversal (i.e. https://en.wikipedia.org/wiki/Lookup_table[look-up]) as the `obj` graph is fully materialized.
 . *Theoretically*: The `obj` graph is manifested as computations proceed where, if \$a \in \tt{obj}\$ and \$i \in \tt{i\nst}\$, then any binary operation \$ai\$ that has already been evaluated already exists in the `obj` graph and as such, can be traversed.
 . *Physically*: The `obj` graph is a dynamic entity that expands and contracts given the resource constraints of the underlying physical machines supporting its manifestation across all levels of the https://en.wikipedia.org/wiki/Memory_hierarchy[memory hierarchy], where https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection] prunes the graph and computation grows the graph.
 
-==== Algebraic Actions
-
-===== Type Specification
+==== Type Specification
 
 An mm-ADT *program* in an mm-ADT *type*. In the type graph (a subgraph of the `obj` graph) a type is denoted by a vertex (an _ungrounded_ vertex). That vertex is the type's *range*. The type's *definition* is encoded in the directed, https://en.wikipedia.org/wiki/Deterministic_automaton[deterministic] path that ends at a vertex with no outgoing edges. The resultant vertex is a _root_ vertex and is the type's *domain*. If the type definition's path length is 0, then the domain and the range are equal, and the type is a ctype (a canonical type). If the path length is greater than 0, then the directed binary edges of the path are labeled with instructions from `inst`. This construction is abstractly represented in the diagram below.
 
