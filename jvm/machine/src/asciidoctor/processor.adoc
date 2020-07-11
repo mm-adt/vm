@@ -59,7 +59,7 @@ where if \$a \in \tt{i\nst}\$, then
 a(x) = xa.
 \]
 
-Said plainly, instructions in `inst` act on types by concatenating themselves to the type definition. Algebraically, a type is an element of the https://en.wikipedia.org/wiki/Free_algebra[free] inst monoid rooted a ctype.
+Said plainly, instructions in `inst` act on types by concatenating themselves to the type definition. Algebraically, a type is an element of the https://en.wikipedia.org/wiki/Free_algebra[free] inst monoid rooted at a ctype.
 
 ==== Type Compilation
 
@@ -95,7 +95,10 @@ int[plus,1][plus,2][plus,3][path]                             //<2>
 <4> The step-wise `\=>` evaluation of the co-type path chambered in a `;-poly`.
 <5> The evaluation of the `;-poly` simply returns the last path value.
 
-In the `mmlang` example above, the step-wise `\=>` evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM's execution plan.
+In the `mmlang` example above, the step-wise `\=>` evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM's execution plan. The mm-ADT algebras are particular constraints on the most general algebraic specification of mm-ADT: the `obj` magma.
+
+[.text-center]
+`1\=>int\=>[plus,1]\=>[plus,2]\=>[plus,3]\=>int`
 
 ===== Type Checking
 
