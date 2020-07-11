@@ -59,7 +59,7 @@ where if \$a \in \tt{i\nst}\$, then
 a(x) = xa.
 \]
 
-Said plainly, instructions in `inst` act on types by concatenating themselves to the type definition. Algebraically, a type is an element of the https://en.wikipedia.org/wiki/Free_algebra[free] inst monoid rooted at a ctype.
+Said plainly, instructions in `inst` act on types by concatenating themselves to the type definition. Thus, algebraically, a type is an element of the https://en.wikipedia.org/wiki/Free_algebra[free] inst monoid rooted at a ctype.
 
 ==== Type Compilation
 
