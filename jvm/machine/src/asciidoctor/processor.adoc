@@ -67,6 +67,40 @@ Said plainly, instructions in `inst` act on types by concatenating themselves to
 
 ==== Type Evaluation
 
+A type https://en.wikipedia.org/wiki/Compiler[compiles] a type. A type https://en.wikipedia.org/wiki/Executable[evaluates] a value. The `inst` monoid's *type specification* action yields an element in the free `inst` monoid, which, in the `obj` graph, is realized as a path from a range vertex to a domain vertex. In the example `obj` graph encoding below, the range vertex is the *type path*'s _source_ and the domain vertex is the path's _target_.
+
+image::../processor/type-path.png[align=center,width=800]
+
+During *type evaluation*, the type path is reversed to form the *co-type path*, where the domain vertex is the source and the range vertex is the target.
+
+image::../processor/co-type-path.png[align=center,width=800]
+
+If \$x \in \tt{value}\$, then \$x\$ is propagated along the co-type path, where the \$\tt{domai\n}\$ and \$\tt{rang\e}\$ types perform https://en.wikipedia.org/wiki/Type_system#Dynamic_type_checking_and_runtime_type_information[runtime type checking] and the instructions transform the source \$x\$ value at each step into the resultant \$y\$ value.
+
+\[
+y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_1) \cdot \texttt{inst}_2) \ldots) \cdot \texttt{inst}_{n-2}) \cdot \texttt{inst}_{n-1}) \cdot \texttt{range}).
+\]
+
+[exec]
+----
+int[plus,1][plus,2][plus,3]                                   //<1>
+int[plus,1][plus,2][plus,3][path]                             //<2>
+1=>int=>[plus,1]=>[plus,2]=>[plus,3]=>int                     //<3>
+1=>int[plus,1][plus,2][plus,3][path]                          //<4>
+1=>int[plus,1][plus,2][plus,3][path]>-                        //<5>
+----
+<1> An `int\<=int` type with a type path length of 5.
+<2> The co-type path of the previous type encoded in a `;-poly`.
+<3> The step-wise `\=>` evaluation of the co-type path.
+<4> The step-wise `\=>` evaluation of the co-type path chambered in a `;-poly`.
+<5> The evaluation of the `;-poly` simply returns the last path value.
+
+In the `mmlang` example above, the step-wise `\=>` evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM's execution plan.
+
+===== Type Checking
+
+
+
 ===== Instruction Evaluation
 
 Every mm-ADT instruction denotes a https://en.wikipedia.org/wiki/Unary_function[unary function], but mm-ADT instructions themselves may contain zero, one, or multiple sub-expressions as arguments.
