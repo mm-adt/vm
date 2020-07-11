@@ -534,17 +534,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_processor_structures">Processor Structures</a>
 <ul class="sectlevel2">
 <li><a href="#_processes">Processes</a></li>
-<li><a href="#_obj_graph">Obj Graph</a>
-<ul class="sectlevel3">
 <li><a href="#_algebraic_actions">Algebraic Actions</a>
-<ul class="sectlevel4">
+<ul class="sectlevel3">
 <li><a href="#_type_specification">Type Specification</a></li>
-</ul>
-</li>
 <li><a href="#_type_compilation">Type Compilation</a></li>
 <li><a href="#_type_optimization">Type Optimization</a></li>
 <li><a href="#_type_evaluation">Type Evaluation</a>
 <ul class="sectlevel4">
+<li><a href="#_type_checking">Type Checking</a></li>
 <li><a href="#_instruction_evaluation">Instruction Evaluation</a></li>
 <li><a href="#_n_ary_instructions">n-Ary Instructions</a></li>
 <li><a href="#_n_ary_relations">n-Ary Relations</a></li>
@@ -3429,14 +3426,14 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 <h2 id="_processor_structures">Processor Structures</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The programs of the mm-ADT virtual machine are <em>types</em>. From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. Every mm-ADT type has a corresponding <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">diagrammatic</a> representation that is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to a directed labeled <strong>type graph</strong> composed of <em>type</em>-vertices and <em>instruction</em>-edges.</p>
+<p>The programs of the mm-ADT virtual machine are <strong>types</strong>. From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. Every mm-ADT type has a corresponding <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">diagrammatic</a> representation that is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to a directed labeled <strong>type graph</strong> composed of <em>type</em>-vertices and <em>instruction</em>-edges.</p>
 </div>
 <div class="paragraph">
 <p>A program&#8217;s type graph is the <a href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize). At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the <strong>value graph</strong>, where the resultant structure of an mm-ADT computation is the <strong>obj graph</strong>, where</p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q})
+\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]</p>
 </div>
 <div class="imageblock right">
@@ -3470,12 +3467,9 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </div>
 </div>
 <div class="sect2">
-<h3 id="_obj_graph">Obj Graph</h3>
+<h3 id="_algebraic_actions">Algebraic Actions</h3>
 <div class="paragraph">
-<p>The mm-ADT virtual machine computes via two <a href="https://en.wikipedia.org/wiki/Semigroup_action">actions</a> on the <code>obj</code> graph. A thread of execution in the VM maintains two primary references: 1.) a reference to an <code>obj</code> and 2.) a reference to an <code>inst</code>. Via the juxtaposition of <code>obj</code> and <code>inst</code> another <code>obj</code> is realized. This process occurs within a larger referential structure called the <code>obj</code> graph. The aim of this section is to codify this process and organize the complexities of the <code>obj</code> graph.</p>
-</div>
-<div class="paragraph">
-<p>When a VM process refers to the <code>obj</code> \$a\$ and the instruction <code>inst</code> \$i\$, then the VM will perform one of the following operations.</p>
+<p>A thread of execution in the VM maintains two primary references: 1.) a reference to an <code>obj</code> and 2.) a reference to an <code>inst</code>. Via the juxtaposition of <code>obj</code> and <code>inst</code> another <code>obj</code> is realized. When a VM process refers to the <code>obj</code> \$a\$ and the instruction <code>inst</code> \$i\$, then the VM will perform one of the following operations:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -3488,7 +3482,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </ol>
 </div>
 <div class="paragraph">
-<p>The first situation is computing via function <a href="https://en.wikipedia.org/wiki/Evaluation_strategy">evaluation</a> (save space). The second situation leverages <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> to avoid recomputing (save time). This two situations help frame three high-level perspectives on the <code>obj</code> graph.</p>
+<p>The first situation is computing via function <a href="https://en.wikipedia.org/wiki/Evaluation_strategy">evaluation</a> (save space). The second situation leverages <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> to avoid recomputing (save time). These two situations offer three high-level perspectives on the <code>obj</code> graph.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -3504,9 +3498,7 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 </ol>
 </div>
 <div class="sect3">
-<h4 id="_algebraic_actions">Algebraic Actions</h4>
-<div class="sect4">
-<h5 id="_type_specification">Type Specification</h5>
+<h4 id="_type_specification">Type Specification</h4>
 <div class="paragraph">
 <p>An mm-ADT <strong>program</strong> in an mm-ADT <strong>type</strong>. In the type graph (a subgraph of the <code>obj</code> graph) a type is denoted by a vertex (an <em>ungrounded</em> vertex). That vertex is the type&#8217;s <strong>range</strong>. The type&#8217;s <strong>definition</strong> is encoded in the directed, <a href="https://en.wikipedia.org/wiki/Deterministic_automaton">deterministic</a> path that ends at a vertex with no outgoing edges. The resultant vertex is a <em>root</em> vertex and is the type&#8217;s <strong>domain</strong>. If the type definition&#8217;s path length is 0, then the domain and the range are equal, and the type is a ctype (a canonical type). If the path length is greater than 0, then the directed binary edges of the path are labeled with instructions from <code>inst</code>. This construction is abstractly represented in the diagram below.</p>
 </div>
@@ -3537,7 +3529,6 @@ a(x) = xa.
 <p>Said plainly, instructions in <code>inst</code> act on types by concatenating themselves to the type definition. Algebraically, a type is an element of the <a href="https://en.wikipedia.org/wiki/Free_algebra">free</a> inst monoid rooted a ctype.</p>
 </div>
 </div>
-</div>
 <div class="sect3">
 <h4 id="_type_compilation">Type Compilation</h4>
 
@@ -3548,6 +3539,75 @@ a(x) = xa.
 </div>
 <div class="sect3">
 <h4 id="_type_evaluation">Type Evaluation</h4>
+<div class="paragraph">
+<p>A type <a href="https://en.wikipedia.org/wiki/Compiler">compiles</a> a type. A type <a href="https://en.wikipedia.org/wiki/Executable">evaluates</a> a value. The <code>inst</code> monoid&#8217;s <strong>type specification</strong> action yields an element in the free <code>inst</code> monoid, which, in the <code>obj</code> graph, is realized as a path from a range vertex to a domain vertex. In the example <code>obj</code> graph encoding below, the range vertex is the <strong>type path</strong>'s <em>source</em> and the domain vertex is the path&#8217;s <em>target</em>.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/type-path.png" alt="type path" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p>During <strong>type evaluation</strong>, the type path is reversed to form the <strong>co-type path</strong>, where the domain vertex is the source and the range vertex is the target.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/co-type-path.png" alt="co type path" width="800">
+</div>
+</div>
+<div class="paragraph">
+<p>If \$x \in \tt{value}\$, then \$x\$ is propagated along the co-type path, where the \$\tt{domai\n}\$ and \$\tt{rang\e}\$ types perform <a href="https://en.wikipedia.org/wiki/Type_system#Dynamic_type_checking_and_runtime_type_information">runtime type checking</a> and the instructions transform the source \$x\$ value at each step into the resultant \$y\$ value.</p>
+</div>
+<div class="paragraph">
+<p>\[
+y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_1) \cdot \texttt{inst}_2) \ldots) \cdot \texttt{inst}_{n-2}) \cdot \texttt{inst}_{n-1}) \cdot \texttt{range}).
+\]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;int[plus,1][plus,2][plus,3]
+mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;(int;int[plus,1];int[plus,1][plus,2];int[plus,1][plus,2][plus,3])
+mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;7
+mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;(1;2;4;7)
+mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
+==&gt;7</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>An <code>int&lt;=int</code> type with a type path length of 5.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The co-type path of the previous type encoded in a <code>;-poly</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The step-wise <code>=&gt;</code> evaluation of the co-type path.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The step-wise <code>=&gt;</code> evaluation of the co-type path chambered in a <code>;-poly</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The evaluation of the <code>;-poly</code> simply returns the last path value.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In the <code>mmlang</code> example above, the step-wise <code>=&gt;</code> evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM&#8217;s execution plan.</p>
+</div>
+<div class="sect4">
+<h5 id="_type_checking">Type Checking</h5>
+
+</div>
 <div class="sect4">
 <h5 id="_instruction_evaluation">Instruction Evaluation</h5>
 <div class="paragraph">
@@ -3895,7 +3955,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-10 15:26:23 -0600
+Last updated 2020-07-10 15:28:10 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
