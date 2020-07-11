@@ -37,7 +37,10 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
-    case _: Type[_] => (baseName(this).equals(baseName(other.domain)) || __.isAnon(this) || __.isAnonTokenObj(other)) && withinQ(this, other)
+    case _: __ if __.isTokenRoot(other) =>
+      val temp = Inst.resolveToken(this, other)
+      if (temp == other) true else this.test(temp)
+    case _: Type[_] => (baseName(this).equals(baseName(other.domain)) || __.isAnon(this) || __.isAnonObj(other.domain)) && withinQ(this, other)
     case _ => false
   }
   // standard Java implementations

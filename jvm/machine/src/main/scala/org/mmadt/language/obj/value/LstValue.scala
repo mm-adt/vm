@@ -21,12 +21,22 @@
  */
 
 package org.mmadt.language.obj.value
-import org.mmadt.language.obj.{Lst, Obj}
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
-  override def test(other: Obj): Boolean = super[Lst].test(other) && super[PolyValue].test(other)
+  override def test(other: Obj): Boolean = other match {
+    case _: Obj if !other.alive => !this.alive
+    case _: __ if __.isToken(other) => this.test(Inst.resolveToken(this, other))
+    case alst: LstValue[A] => Lst.test(this, alst)
+    case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
+      case alst: Lst[A] => Lst.test(this, alst)
+      case x => __.isAnonObj(x)
+    }) && this.compute(other).alive
+    case _ => false
+  }
   override def equals(other: Any): Boolean = other.isInstanceOf[LstValue[_]] && super[Lst].equals(other) && super[PolyValue].equals(other)
 }

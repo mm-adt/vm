@@ -26,7 +26,7 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.AOp
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Bool, Obj, Rec}
+import org.mmadt.language.obj.{Bool, Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -39,6 +39,8 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
   val oldPerson: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> int.is(int.gt(28)))
   val youngPerson: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> __.is(__.lt(28)))
   val car: Rec[StrValue, Obj] = rec(str("name") -> str, str("year") -> int)
+  val alst: Lst[StrValue] = str("a") `,` "b"
+
 
   test("[a] w/ values") {
     val check: TableFor3[Obj, Obj, Bool] =
@@ -126,9 +128,9 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (vadas, person, btrue),
         (marko, oldPerson, btrue),
         (marko, youngPerson, bfalse),
-        (marko, youngPerson.put("age", int), btrue),
+        (marko, youngPerson.put("age", int), bfalse),
         (vadas, oldPerson, bfalse),
-        (vadas, oldPerson.put("age", int.is(int.gt(10))), btrue),
+        (vadas, oldPerson.put("age", int.is(int.gt(10))), bfalse),
         (vadas, youngPerson, btrue),
         // (youngPerson, vadas, bfalse),
         // (oldPerson, vadas, bfalse),
@@ -147,6 +149,8 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         (marko, str, bfalse),
         (marko, rec, btrue),
         (person, marko, person.a(marko)),
+        //
+        (alst, str("a"), false)
       )
     forEvery(check) { (left, right, result) => {
       //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[${left}][a,${right}]"))

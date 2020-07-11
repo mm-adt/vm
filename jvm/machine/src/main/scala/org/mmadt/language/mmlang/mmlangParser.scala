@@ -161,13 +161,11 @@ class mmlangParser extends JavaTokenParsers {
   lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> (("(" + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + ")|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
   lazy val splitMergeSugar: Parser[List[Inst[Obj, Obj]]] =
     ((LBRACKET ~> lstStruct(obj, RBRACKET)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp[Obj](lst(x._1._1, x._1._2.map {
-      case avalue: Value[_] if avalue.root => __.is(__.eqs(avalue))
-      case atype: Type[_] if atype.root => __.is(__.a(atype))
+      case aobj: Obj if aobj.root => __.is(__.a(aobj))
       case x => x
     }: _*)), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]])) |
       ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => List(SplitOp(rec(g = (x._1._1, x._1._2.map(y => (y._1 match {
-        case avalue: Value[_] if avalue.root => __.is(__.eqs(avalue))
-        case atype: Type[_] if atype.root => __.is(__.a(atype))
+        case aobj: Obj if aobj.root => __.is(__.a(aobj))
         case x => x
       }) -> y._2)))), x._2.map(q => MergeOp[Obj]().q(q)).getOrElse(MergeOp[Obj]()).asInstanceOf[Inst[Obj, Obj]]))
   // quantifier parsing

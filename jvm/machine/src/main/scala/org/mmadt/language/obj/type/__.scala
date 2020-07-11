@@ -62,7 +62,7 @@ object __ extends __(Tokens.anon, qOne, base) {
   def isAnonRoot(obj: Obj): Boolean = obj.root && isAnon(obj)
   def isAnon(obj: Obj): Boolean = obj.isInstanceOf[__] && obj.name.equals(Tokens.anon)
   def isToken(obj: Obj): Boolean = obj.isInstanceOf[__] && Tokens.named(obj.name)
-  // def isTokenRoot(obj:Obj): Boolean = obj.root && isToken(obj)
+  def isTokenRoot(obj: Obj): Boolean = obj.root && isToken(obj)
   def isAnonObj(obj: Obj): Boolean = __.isAnon(obj) || obj.name.equals(Tokens.obj)
   def isAnonTokenObj(obj: Obj): Boolean = __.isAnon(obj) || __.isToken(obj) || obj.name.equals(Tokens.obj)
 }

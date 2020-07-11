@@ -21,12 +21,22 @@
  */
 
 package org.mmadt.language.obj.value
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.{Inst, Obj, Rec, withinQ}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecValue[A <: Obj, B <: Obj] extends PolyValue[B, Rec[A, B]] with Rec[A, B] {
-  override def test(other: Obj): Boolean = super[Rec].test(other) && super[PolyValue].test(other)
+  override def test(other: Obj): Boolean = other match {
+    case _: Obj if !other.alive => !this.alive
+    case _: __ if __.isToken(other) => this.test(Inst.resolveToken(this, other))
+    case arec: RecValue[A, B] => Rec.test(this, arec)
+    case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
+      case arec: Rec[A, B] => Rec.test(this, arec)
+      case x => __.isAnonObj(x)
+    }) && this.compute(other.domain).alive
+    case _ => false
+  }
   override def equals(other: Any): Boolean = other.isInstanceOf[RecValue[_, _]] && super[Rec].equals(other) && super[PolyValue].equals(other)
 }

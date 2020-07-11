@@ -31,7 +31,7 @@ import org.mmadt.storage.obj.value.VRec
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ORec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), val q: IntQ = qOne, val via: ViaTuple = base) extends Rec[A, B] {
+abstract class ORec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), val q: IntQ = qOne, val via: ViaTuple = base) extends Rec[A, B] {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,

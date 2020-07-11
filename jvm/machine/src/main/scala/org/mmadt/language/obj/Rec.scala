@@ -41,14 +41,6 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   def gmap: collection.Map[A, B] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
   def glist: Seq[B] = gmap.values.toSeq
   def gsep: String = g._1
-  override def test(other: Obj): Boolean = other match {
-    case arec: Rec[Obj, Obj] => // this.name.equals(other.name) &&
-      Poly.sameSep(this, arec) &&
-        withinQ(this, arec) &&
-        arec.gmap.count(x => qStar.equals(x._2.q) ||
-          this.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == arec.gmap.size
-    case _ => true
-  }
   override def equals(other: Any): Boolean = other match {
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
       this.name.equals(arec.name) &&
@@ -59,6 +51,11 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   }
 }
 object Rec {
+  def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) &&
+    withinQ(arec, brec) &&
+    brec.gmap.count(x => qStar.equals(x._2.q) ||
+      arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == brec.gmap.size
+
   def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = {
     if (arec.isSerial) {
       if (__.isAnonRoot(start)) return arec

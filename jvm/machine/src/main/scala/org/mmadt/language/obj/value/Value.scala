@@ -39,9 +39,8 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
     case _: __ if __.isToken(other) => this.test(Inst.resolveToken(this, other))
-    // case _: Strm[_] => MultiSet.test(this, other) // TODO: should there be an equals() and a test() ?
     case _: Type[_] => (baseName(this).equals(baseName(other.domain)) || __.isAnonObj(other)) && withinQ(this, other.domain) && this.compute(other).alive
-    case avalue: Value[_] => this.isInstanceOf[PolyValue[_, _]] || (this.g.equals(avalue.g) && withinQ(this, avalue))
+    case avalue: Value[_] => this.g.equals(avalue.g) && withinQ(this, avalue)
     case _ => false
   }
 
