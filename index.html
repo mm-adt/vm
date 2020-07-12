@@ -503,6 +503,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_poly_types">Poly Types</a>
 <ul class="sectlevel4">
+<li><a href="#_structures_and_processes">Structures and Processes</a></li>
 <li><a href="#_orthen_poly">orThen ,-poly</a></li>
 <li><a href="#_xorthen_poly">xorThen |-poly</a></li>
 <li><a href="#_andthen_poly">andThen ;-poly</a></li>
@@ -1869,7 +1870,7 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The resoning behind the <code>[split]</code> sugar symbol <code>-&lt;</code>, is that it represents one wire (<code>-</code>) splitting into many (<code>&lt;</code>). Likewise, the reason for <code>&gt;-</code> being the <code>[merge]</code> sugar symbol is it represents many wires merging (<code>&gt;</code>) into one (<code>-</code>). Finally, <code>[combine]</code> has a sugar of <code>=</code> which represents parallel wires being operated on independently.
+The reason for the <code>[split]</code> sugar symbol <code>-&lt;</code>, is that it represents one wire (<code>-</code>) splitting into many (<code>&lt;</code>). Likewise, the reason for <code>&gt;-</code> being the <code>[merge]</code> sugar symbol is it represents many wires merging (<code>&gt;</code>) into one (<code>-</code>). Finally, <code>[combine]</code> has a sugar of <code>=</code> which represents parallel wires being operated on independently.
 </td>
 </tr>
 </table>
@@ -1913,13 +1914,13 @@ p = q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n,
 where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via <code>+</code>.</p>
 </div>
 <div class="paragraph">
-<p>In mm-ADT, the set \$\tt{poly} \subset \tt{obj}\$ are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a> typically expressed as</p>
+<p>In mm-ADT, the set \$\tt{poly} \subset \tt{obj}\$ are <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a> which, in <code>mmlang</code>, are expressions of the form</p>
 </div>
 <div class="paragraph text-center">
 <p><code>(x0{q0},x1{q1},x2{q2},&#8230;&#8203;,xn{qn})</code></p>
 </div>
 <div class="paragraph">
-<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is an <em>object</em> (indeterminate), <code>xi{qi}</code> is an <code>obj</code> (term), and the <code>objs</code> are linearly combined via <code>,</code>. This particular <code>poly</code> is called a <code>,-poly</code> that captures the typical realization of a polynomial. As a data structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiset">multi-set</a> or bag. As an algebraic structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> that encodes the mm-ADT virtual machine&#8217;s underlying <a href="https://zenodo.org/record/2565243">stream ring algebra</a> additive and multiplicative magmas as a <a href="https://en.wikipedia.org/wiki/Free_group">free abelian group</a> \$\langle F(\tt{obj}),+\rangle\$ and an unfree monoid \$\langle \tt{obj},\ast \rangle\$, respectively.</p>
+<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is an <em>object</em> (indeterminate), <code>xi{qi}</code> is an <code>obj</code> (term), and the <code>objs</code> are linearly combined via <code>,</code>. This particular <code>poly</code> is called a <code>,-poly</code> that captures the typical realization of a polynomial. As a data structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiset">multi-set</a> or bag. As an algebraic structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> that encodes the mm-ADT virtual machine&#8217;s underlying <a href="https://zenodo.org/record/2565243">stream ring algebra</a> additive and multiplicative magmas as a <a href="https://en.wikipedia.org/wiki/Free_group">free abelian group</a> \$\langle F(\tt{obj}),+\rangle\$ and an non-free monoid \$\langle \tt{obj},\ast \rangle\$, respectively.</p>
 </div>
 <div class="imageblock left">
 <div class="content">
@@ -1927,7 +1928,7 @@ where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a te
 </div>
 </div>
 <div class="paragraph">
-<p>The suggestive diagram on the left has four multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> compositions rooted at \$a\$ and going up via a chain of \$\ast\$-compositions. Furthermore, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> is diagrammed left-to-right. As a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a>, <code>,-poly</code> maintains the free (unevaluated) additive group separate from the non-free (evaluating) multiplicative monoid such that the diagram&#8217;s \$\ast\$-compositions would yield a single element denoted in <code>mmlang</code> as</p>
+<p>The illustration (or suggestive diagram) on the left has four multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> compositions rooted at \$a\$ and going up via a chain of \$\ast\$-compositions. Furthermore, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> is diagrammed left-to-right. As a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a>, <code>,-poly</code> maintains the free (unevaluated) additive group separate from the non-free (evaluating) multiplicative monoid such that the diagram&#8217;s \$\ast\$-compositions would yield a single element denoted in <code>mmlang</code> as</p>
 </div>
 <div class="paragraph text-center">
 <p><code>(abc{q0},ad{q1},abe{q2},adeb{q3})</code>.</p>
@@ -1945,78 +1946,117 @@ Note that quantifiers are not diagrammed in the image and the reason for there b
 </table>
 </div>
 <div class="paragraph">
-<p>If the <code>objs</code> of the multiplicative monoid are values (as opposed to free types), then the expression above would further reduces to</p>
+<p>If the <code>objs</code> of the multiplicative monoid are values (as opposed to free types), then the expression above further reduces to an expression of the form</p>
 </div>
 <div class="paragraph text-center">
 <p><code>(x0{q0},x1{q1},x2{q2},x3{q3})</code>.</p>
 </div>
 <div class="paragraph">
-<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> one algebraic structure from another in order that one be free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the unfree algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. Each type of <code>poly</code> realizes a particular algebraic structure with useful computing properties.</p>
+<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> one algebraic structure from another such that one be free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the non-free algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. Each type of <code>poly</code> realizes a particular algebraic structure with useful computing properties.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial rings</a> (<code>,-poly</code>): nondeterministic parallel branching and products (<em>orThen</em>).</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a> (<code>|-poly</code>): deterministic <code>if/else</code>-branching and co-products (<em>xorThen</em>).</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoids</a> (<code>;-poly</code>): type rewriting and meta-programming (<em>andThen</em>).</p>
-</li>
-</ol>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 8.3333%;">
+<col style="width: 8.3333%;">
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3335%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">name</th>
+<th class="tableblock halign-left valign-top">simple</th>
+<th class="tableblock halign-left valign-top">structure</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">illustration</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>orThen</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">nondeterministic parallel branching and products</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-poly-example.png" alt="comma poly example"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>xorThen</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid ring</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">deterministic <code>if/else</code>-branching and co-products</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-poly-example.png" alt="pipe poly example"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>andThen</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type rewriting and meta-programming</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-poly-example.png" alt="semi poly example"></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="_structures_and_processes">Structures and Processes</h5>
+<div class="paragraph">
+<p>A <code>poly</code> is an <code>obj</code> defined by the following <code>mmlang</code> grammar fragment.</p>
 </div>
-<hr>
-<div class="imageblock right">
+<div class="listingblock">
 <div class="content">
-<img src="./images/language/poly-type-value.png" alt="poly type value" width="500">
+<pre class="CodeRay highlight"><code data-lang="python">sep   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">;</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">,</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">|</span><span style="color:#710">'</span></span>
+lst   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> value (sep value)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
+rec   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> value <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> value (sep value <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> value)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
+cpy   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> obj (sep value)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
+swch  ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> obj <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> obj (sep obj <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> obj)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
+col   ::= lst | rec
+brch  ::= cpy | swch
+poly  ::= col | brch</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Like <code>obj</code>, there are <strong>value</strong>-<code>polys</code> and <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is a collection data structure denoted <code>col</code>. A type-<code>poly</code> is a branching data process denoted <code>brch</code>. A <code>col</code> is either a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) or <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>) and a <code>brch</code> is either a <code>cpy</code> (<a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">copy</a>) or <code>swch</code> (<a href="https://en.wikipedia.org/wiki/Switch_statement">switch</a>).
+\[
+\begin{split}
+\texttt{poly} &amp;= \texttt{col} &amp;+ \texttt{brch} \\
+\texttt{poly} &amp;= (\texttt{lst} + \texttt{rec}) &amp;+ (\texttt{cpy} + \texttt{swch})
+\end{split}
+\]</p>
 </div>
 <div class="paragraph">
 <p>In mm-ADT, <code>poly</code> is formed from the coproduct of <code>lst</code> and <code>rec</code>.</p>
 </div>
-<div class="paragraph">
-<p>mm-ADT provides two convenient type constructors for working with <code>poly</code> data structures: <code>lst</code> (an <code>int</code>-indexed array or <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and <code>rec</code> (an <code>obj</code>-indexed array or <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>). Both <code>lst</code> and <code>rec</code> sets are composed of value and type forms.</p>
-</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b','c')     <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b','c')                                               <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;('a','b','c')
-mmlang&gt; lst               <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;( )
-mmlang&gt; ('a')             <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;('a')</code></pre>
+mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'c'-&gt;3)                                      <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;('a'-&gt;1,'b'-&gt;2,'c'-&gt;3)
+mmlang&gt; ([plus,'a'],[plus,'b'],[plus,'c'])                          <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;(_[plus,'a'],_[plus,'b'],_[plus,'c'])
+mmlang&gt; ([is,[eq,'a']]-&gt;1,[is,[eq,'b']]-&gt;2,[is,[eq,'c']]-&gt;3)        <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;(_[is,_[eq,'a']]-&gt;int,_[is,_[eq,'b']]-&gt;int,_[is,_[eq,'c']]-&gt;int)</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A fully reduced three term polynomial.</td>
+<td>A three term value <code>,-poly</code> as a <code>lst</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>An empty <code>,-poly</code>.</td>
+<td>A three term value <code>,-poly</code> as a <code>rec</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A single term <code>,-vpoly</code> also uses a <code>.</code> as a terminator token.</td>
+<td>A three term type <code>,-poly</code> as a <code>cpy</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A three term type <code>,-poly</code> as a <code>swch</code>.</td>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>The reason for <code>.</code> is that the <code>,-vpoly</code> below is a two term <code>poly</code> with the second term being <code>obj{0}</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a')
-==&gt;('a')
-mmlang&gt; ('a',).1
-mmlang&gt;
-mmlang&gt; ('a').1
-language error: poly index is out of bounds: 1</code></pre>
-</div>
-</div>
+<hr>
 <div class="paragraph">
 <p>A <code>tpoly</code> can be understood as either an unordered (<code>,</code>) or ordered (<code>|</code>, <code>;</code>) collection of functions.</p>
 </div>
@@ -2101,6 +2141,7 @@ The result is the result of applying the incoming <code>obj</code> to each <code
 <p><code>[ ]</code>: The <em>type</em> form of a <code>poly</code> is a "functional" poly that can be composed with other types, where <code>[a,b,c]</code> is equivalent to <code>-&lt;(a,b,c)&gt;-</code>.</p>
 </li>
 </ol>
+</div>
 </div>
 </div>
 </div>
@@ -3958,7 +3999,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-11 16:41:31 -0600
+Last updated 2020-07-11 17:16:53 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
