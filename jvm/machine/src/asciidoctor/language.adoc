@@ -621,7 +621,7 @@ The "split-merge" pattern `-<()>-` is common enough that a unified instruction e
 3[[plus,1];[mult,2]]       //<3>
 ----
 
-Finally, the most compact sugar forms of the running "split-merge" examples is presented below. Given the verbosity of branching expressions, all subsequent examples will typically leverage as many sugar constructs as possible to ensure readability.
+Finally, the most compact sugar forms of the running "split-merge" example is presented below. Given the verbosity of branching expressions, all subsequent examples will typically leverage as many sugar constructs as possible to ensure readability.
 
 [exec]
 ----
@@ -1165,7 +1165,7 @@ The mm-ADT VM is a computing machine founded on a non-commutative https://en.wik
 
 ==== Obj Magma
 
-A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a non-associative algebraic structure with a single binary operator. Let
+A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a possibly associative algebraic structure with a single binary operator. Let
 \[
 \mathbf{Obj} = \langle \texttt{obj}, \;\; \rangle
 \]

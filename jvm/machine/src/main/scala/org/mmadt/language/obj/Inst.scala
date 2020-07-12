@@ -42,6 +42,7 @@ trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
   final def arg1[O <: Obj]: O = this.glist.tail.head.asInstanceOf[O]
   final def arg2[O <: Obj]: O = this.glist.tail.tail.head.asInstanceOf[O]
   final def arg3[O <: Obj]: O = this.glist.tail.tail.tail.head.asInstanceOf[O]
+
   def exec(start: S): E = {
     this match {
       case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
@@ -51,15 +52,19 @@ trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
       }
     }
   }
+
   // standard Java implementations
   override def toString: String = LanguageFactory.printInst(this)
+
   override def equals(other: Any): Boolean = other match {
     case inst: Inst[_, _] => inst.op == this.op && inst.args == this.args && this.q == inst.q
     case _ => false
   }
 }
+
 object Inst {
   def oldInst[S <: Obj, E <: Obj](newInst: Inst[S, E]): Inst[S, E] = newInst.via._1.asInstanceOf[Inst[S, E]]
+
   def resolveToken[A <: Obj](obj: Obj, arg: A): A =
     if (__.isToken(arg))
       Obj.fetchOption[A](obj, obj, arg.name).orElse[A](obj match {
@@ -68,17 +73,21 @@ object Inst {
           if (Obj.fetchExists(obj, arg.name)) throw LanguageException.typingError(obj, asType(arg))
           else throw LanguageException.labelNotFound(obj, arg.name)
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
+
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     resolveToken(obj, arg) match {
       case anon: __ if __.isToken(anon) => anon.asInstanceOf[E]
       case valueArg: OValue[E] => valueArg
-      case typeArg: OType[E] => obj match {
-        case _: Value[_] => if (Type.ctypeCheck(obj, typeArg)) obj.compute(typeArg) else typeArg.hardQ(qZero)
-        case obj: Type[_] => if (Type.ctypeCheck(obj, typeArg)) obj.range.compute(typeArg) else typeArg.hardQ(qZero)
+      case typeArg: OType[E] if typeArg.alive && obj.alive && obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) => obj match {
+        case _: Value[_] => obj.compute(typeArg)
+        case _: Type[_] => obj.range.compute(typeArg)
       }
+      case _ => arg.hardQ(qZero)
     }
   }
+
   trait Func[S <: Obj, E <: Obj] {
     def apply(start: S, inst: Inst[S, E]): E
   }
+
 }

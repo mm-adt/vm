@@ -34,6 +34,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   // type signature properties and functions
   //def value: Any = throw LanguageException.typesNoValue(this)
   override def range: this.type = this.isolate
+
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
@@ -43,15 +44,15 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
     case _: Type[_] => (baseName(this).equals(baseName(other.domain)) || __.isAnon(this) || __.isAnonObj(other.domain)) && withinQ(this, other)
     case _ => false
   }
+
   // standard Java implementations
   override def toString: String = LanguageFactory.printType(this)
+
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode()
+
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
     case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && this.via == atype.via
     case _ => false
   }
-}
-object Type {
-  def ctypeCheck(obj: Obj, atype: Type[Obj]): Boolean = obj.alive && atype.alive && (__.isAnon(atype) || obj.range.hardQ(qOne).test(atype.domain.hardQ(qOne)))
 }

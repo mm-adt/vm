@@ -36,14 +36,16 @@ trait SplitOp {
   final def -<[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
   final def `[`[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
 }
+
 object SplitOp extends Func[Obj, Obj] {
   def apply[A <: Obj](branches: Obj): Inst[A, Poly[A]] = new VInst[A, Poly[A]](g = (Tokens.split, List(branches.asInstanceOf[A])), func = this) with BranchInstruction
+
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val startUnit = start.hardQ(qOne)
     val oldInst: Inst[Obj, Poly[Obj]] = Inst.oldInst(inst).asInstanceOf[Inst[Obj, Poly[Obj]]]
     val apoly: Poly[Obj] = oldInst.arg0[Obj] match {
       case x: Poly[Obj] => x
-      case _ => inst.arg0[Poly[Obj]]
+      case _ => if (inst.arg0[Obj].alive) inst.arg0[Poly[Obj]] else return zeroObj
     }
     val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(startUnit.clone(via = (startUnit, oldInst)), apoly))
     (apoly match {
@@ -54,6 +56,7 @@ object SplitOp extends Func[Obj, Obj] {
       case _ => newInst.arg0[Poly[Obj]].clone(via = (start, newInst))
     }).hardQ(multQ(start.q, apoly.q))
   }
+
   private def processFirst(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = start match {
     case _: Type[_] => inst.arg0[Poly[Obj]]
     case _ => Poly.keepFirst(start, inst.arg0[Poly[Obj]])

@@ -50,7 +50,9 @@ object OpInstResolver {
     .map(_.resolveInstruction(op, JavaConverters.seqAsJavaList(args)))
     .find(_.isPresent)
     .map(_.get())
+
   def rewrites: List[Inst[Obj, Obj]] = providers.flatMap(x => asScalaIterator(x.rewrites().iterator()))
+
   def applyRewrites[A <: Obj](obj: A): A = {
     if (obj.trace.map(x => x._2).exists(x => providers.map(y => "=" + y.name()).contains(x.op)))
       this.rewrites.foldLeft(obj.domainObj[Obj])((x, y) => y.exec(x)) `=>` obj
@@ -72,7 +74,8 @@ object OpInstResolver {
       //
       case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()
-      case Tokens.a | Tokens.a_op => AOp(args.head)
+      case Tokens.a => AOp(args.head)
+      case Tokens.is_a_op => IsOp(__.a(args.head))
       case Tokens.as | Tokens.as_op => AsOp(args.head)
       case Tokens.not | Tokens.not_op => NotOp(args.head)
       case Tokens.and | Tokens.and_op => AndOp(args: _*)

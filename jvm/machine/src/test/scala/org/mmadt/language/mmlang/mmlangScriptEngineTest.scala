@@ -267,9 +267,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("1[a,7]"))
     assertResult(btrue)(engine.eval("1.2[a,real]"))
     assertResult(bfalse)(engine.eval("'1'[a,int]"))
-    assertResult(int(1))(engine.eval("1[is?int]"))
-    assertResult(int(1))(engine.eval("1 is?int"))
-    assertResult(int(1))(engine.eval("1is?int"))
+    assertResult(int(1))(engine.eval("1?int"))
+    assertResult(int(1))(engine.eval("1 ?int"))
+    assertResult(int(1))(engine.eval("1[is,[a,int]]"))
     assertResult(btrue)(engine.eval("1[a,[int|str]]"))
     assertResult(bfalse)(engine.eval("1[a,[int[is<0]|str]]"))
     assertResult(btrue)(engine.eval("1[a,[int[is>0]|str]]"))
@@ -430,9 +430,9 @@ class mmlangScriptEngineTest extends FunSuite {
         | [plus,1][is>2][
         |     int[is>3] -> int[mult,10]
         |   | is<4      -> int[mult,100]][plus,2]""".stripMargin))
-    assertResult(int(11, 22))(engine.eval("{'a','b'}['a' -> 11 | 'b' -> 22]"))
-    assertResult(int(11, 22))(engine.eval("('a','b')>-['a' -> 11 | 'b' -> 22]"))
-    assertResult(zeroObj)(engine.eval("('a','b')['a' -> 11 | 'b' -> 22]"))
+    assertResult(int(11, 22))(engine.eval("{'a','b'}[?'a' -> 11 | ?'b' -> 22]"))
+    assertResult(int(11, 22))(engine.eval("('a','b')>-[?'a' -> 11 | ?'b' -> 22]"))
+    assertResult(zeroObj)(engine.eval("('a','b')[?'a' -> 11 | ?'b' -> 22]"))
     assertResult(bfalse)(engine.eval("4[plus,1]-<([is>5] -> true | int -> false)>-"))
     assertResult(bool(btrue, bfalse))(engine.eval("4[plus,56]-<([is>5] -> true , int -> false)>-"))
     assertResult(btrue)(engine.eval("5[plus,1]-<([is>5] -> true | int+1 -> false)>-"))
@@ -690,8 +690,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str)(engine.eval("str-<(str|str|str)>-").range)
     assertResult(str)(engine.eval("str-<(str|str|str)>-").domain)
     assertResult(str)(engine.eval("str[str|str|str]").domain)
-    assertResult(str.q(?))(engine.eval("str[str|str|str]").range) // TODO: smarter [is] on types
-    assertResult(str.q(0, 3))(engine.eval("str[str,str,str]").range) // TODO: smarter [is] on types
+    assertResult(str)(engine.eval("str[str|str|str]").range)
+    assertResult(str.q(3))(engine.eval("str[str,str,str]").range)
     assertResult(str.q(6))(engine.eval("str[str[id]{1};str[id]{3};str[id]{2}]").range)
     assertResult(str | str | str)(engine.eval("str-<(str|str|str)").range)
     assertResult(str | str | str)(engine.eval("str-<(_|_|_)").range)
