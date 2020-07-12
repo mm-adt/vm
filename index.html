@@ -1443,7 +1443,7 @@ mmlang&gt; int[is&gt;0]
 mmlang&gt; int[is,false]
 mmlang&gt;
 mmlang&gt; int{2}[_,_]
-==&gt;int{0,4}&lt;=int{2}-&lt;(int{?}&lt;=int[is,bool&lt;=int[a,_]],int{?}&lt;=int[is,bool&lt;=int[a,_]])&gt;-</code></pre>
+==&gt;int{4}&lt;=int{2}-&lt;(int,int)&gt;-</code></pre>
 </div>
 </div>
 </div>
@@ -2116,7 +2116,7 @@ mmlang&gt; 3[[plus,1];[mult,2]]       <i class="conum" data-value="3"></i><b>(3)
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, the most compact sugar forms of the running "split-merge" examples is presented below. Given the verbosity of branching expressions, all subsequent examples will typically leverage as many sugar constructs as possible to ensure readability.</p>
+<p>Finally, the most compact sugar forms of the running "split-merge" example is presented below. Given the verbosity of branching expressions, all subsequent examples will typically leverage as many sugar constructs as possible to ensure readability.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2216,7 +2216,8 @@ a(b+c) &amp;=&amp; \; ab + ac \\ (b+c)a &amp;=&amp; \; ba + ca \end{split}
 ==&gt;'ab'
 ==&gt;'ac'
 mmlang&gt; ['b','c']+'a'
-mmlang&gt;</code></pre>
+==&gt;'ba'
+==&gt;'ca'</code></pre>
 </div>
 </div>
 <div class="exampleblock">
@@ -3028,7 +3029,7 @@ b\{ 0\} &amp; \text{otherwise.}
 <div class="sect3">
 <h4 id="_obj_magma">Obj Magma</h4>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> is a non-associative algebraic structure with a single binary operator. Let
+<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> is a possibly associative algebraic structure with a single binary operator. Let
 \[
 \mathbf{Obj} = \langle \texttt{obj}, \;\; \rangle
 \]
@@ -3298,7 +3299,7 @@ This branch structure will product one, two, or three <code>ints</code> given a 
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[int[is&gt;0],int[is&lt;0],int]
-==&gt;int{0,3}&lt;=int-&lt;(int{?}&lt;=int[is,bool&lt;=int[gt,0]],int{?}&lt;=int[is,bool&lt;=int[lt,0]],int{?}&lt;=int[is,bool&lt;=int[a,int]])&gt;-</code></pre>
+==&gt;int{1,3}&lt;=int-&lt;(int{?}&lt;=int[is,bool&lt;=int[gt,0]],int{?}&lt;=int[is,bool&lt;=int[lt,0]],int)&gt;-</code></pre>
 </div>
 </div>
 <table class="tableblock frame-all grid-all left small" style="width: 30%;">
@@ -3996,7 +3997,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-12 02:36:11 -0600
+Last updated 2020-07-12 11:33:18 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
