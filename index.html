@@ -1920,7 +1920,7 @@ where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a te
 <p><code>(x0{q0},x1{q1},x2{q2},&#8230;&#8203;,xn{qn})</code></p>
 </div>
 <div class="paragraph">
-<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is an <em>object</em> (indeterminate), <code>xi{qi}</code> is an <code>obj</code> (term), and the <code>objs</code> are linearly combined via <code>,</code>. This particular <code>poly</code> is called a <code>,-poly</code> that captures the typical realization of a polynomial. As a data structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiset">multi-set</a> or bag. As an algebraic structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> that encodes the mm-ADT virtual machine&#8217;s underlying <a href="https://zenodo.org/record/2565243">stream ring algebra</a> additive and multiplicative magmas as a <a href="https://en.wikipedia.org/wiki/Free_group">free abelian group</a> \$\langle F(\tt{obj}),+\rangle\$ and an non-free monoid \$\langle \tt{obj},\ast \rangle\$, respectively.</p>
+<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is an <em>object</em> (indeterminate), <code>xi{qi}</code> is an <code>obj</code> (term), and the <code>objs</code> are linearly combined via <code>,</code>. This particular <code>poly</code> is called a <code>,-poly</code> that captures the typical realization of a polynomial. As a data structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiset">multi-set</a> or bag. As an algebraic structure, a <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> that faithfully encodes the mm-ADT processor&#8217;s additive and multiplicative <a href="https://zenodo.org/record/2565243">type ringoid</a> magmas as a <a href="https://en.wikipedia.org/wiki/Free_group">free abelian group</a> \$\langle F(\tt{obj}),+\rangle\$ and a non-free monoid \$\langle \tt{obj},\ast \rangle\$, respectively.</p>
 </div>
 <div class="imageblock left">
 <div class="content">
@@ -1928,10 +1928,16 @@ where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a te
 </div>
 </div>
 <div class="paragraph">
-<p>The illustration (or suggestive diagram) on the left has four multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> compositions rooted at \$a\$ and going up via a chain of \$\ast\$-compositions. Furthermore, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> is diagrammed left-to-right. As a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a>, <code>,-poly</code> maintains the free (unevaluated) additive group separate from the non-free (evaluating) multiplicative monoid such that the diagram&#8217;s \$\ast\$-compositions would yield a single element denoted in <code>mmlang</code> as</p>
+<p>The illustration (or suggestive diagram) on the left depicts an element of a free ring. There are four multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> compositions rooted at \$a\$ and going up via a chain of \$\ast\$-compositions and there is a single additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> element diagrammed left-to-right. As horizontal and vertical compositions, each depicts element(s) of a free magma. A <code>poly</code> enables one magma to remain free (unevalated) and the other to be non-free (evaluated). In particular, as a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a>, <code>,-poly</code> maintains the free additive group separate from the non-free multiplicative monoid such that the diagram&#8217;s vertical \$\ast\$-compositions would "collapse" yielding 4 isolated terms (<code>objs</code>) specified in <code>mmlang</code> as</p>
 </div>
 <div class="paragraph text-center">
 <p><code>(abc{q0},ad{q1},abe{q2},adeb{q3})</code>.</p>
+</div>
+<div class="paragraph">
+<p>If the multiplicative monoid compositions yielded values (evaluations) as opposed to types (compilations) and \$x_0 = a(bc)\$, \$x_1 = ad\$, \$x_2 = a(be)\$, and \$x_3 = a(d(eb))\$, then the resultant <code>,-poly</code> structure would be</p>
+</div>
+<div class="paragraph text-center">
+<p><code>(x0{q0},x1{q1},x2{q2},x3{q3})</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1940,19 +1946,13 @@ where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a te
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Note that quantifiers are not diagrammed in the image and the reason for there being only a single quantifier for every element of the multiplicative monoid is forthcoming.
+For visual simplicity, quantifiers were not diagrammed. Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the <em>universal commutativity of coefficients theorem</em> of <a href="https://zenodo.org/record/2565243">stream ring theory</a>. This theorem is used in mm-ADT compiler optimization and will be discussed at length in a later section of the documentation.
 </td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>If the <code>objs</code> of the multiplicative monoid are values (as opposed to free types), then the expression above further reduces to an expression of the form</p>
-</div>
-<div class="paragraph text-center">
-<p><code>(x0{q0},x1{q1},x2{q2},x3{q3})</code>.</p>
-</div>
-<div class="paragraph">
-<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> one algebraic structure from another such that one be free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the non-free algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. Each type of <code>poly</code> realizes a particular algebraic structure with useful computing properties.</p>
+<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> two algebraic structures such that one is free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the non-free algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. Each kind of <code>poly</code> (<code>,</code>, <code>|</code>, or <code>;</code>) realizes a particular algebraic structure with useful computing properties.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3999,7 +3999,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-11 17:16:53 -0600
+Last updated 2020-07-12 00:09:41 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
