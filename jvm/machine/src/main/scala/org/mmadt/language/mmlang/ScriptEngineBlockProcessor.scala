@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.mmlang
+
 import java.io.File
 
 import org.asciidoctor.ast.{ContentModel, StructuralNode}
@@ -42,6 +43,7 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
   val style = "source"
   val language = "mmlang"
   val prompt = "mmlang> "
+
   override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
     val builder: StringBuilder = new StringBuilder
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
@@ -63,9 +65,11 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
     this.createBlock(parent, "listing", builder.toString(), JavaConverters.mapAsJavaMap(Map[String, Object]("style" -> style, "language" -> language)))
   }
 }
+
 object ScriptEngineBlockProcessor {
   val source: String = "machine/src/asciidoctor/"
   val target: String = "machine/target/asciidoctor/"
+
   def main(args: Array[String]): Unit = {
     val asciidoctor = Asciidoctor.Factory.create()
     asciidoctor.requireLibrary("asciidoctor-diagram")
@@ -80,21 +84,27 @@ object ScriptEngineBlockProcessor {
       asciidoctor.convertFile(z, OptionsBuilder.options().toDir(new File(target)).safe(SafeMode.UNSAFE).mkDirs(true).toFile(true))
     })
   }
+
   /*
-compile; assembly
+compile; assembly; deployDocs
 run ScriptEngineBlockProcessor.main()
 
 #!/bin/bash
 
+cd ..
 git commit -a -m "documentation processed and generated"
 git push
 git checkout gh-pages
+cd ..
 cp jvm/machine/target/asciidoctor/index.html .
-cp -rf jvm/machine/target/asciidoctor/images .
-rm -rf jvm/machine/target
-git add images/**/*.png
+cd images
+cp -rf ../jvm/machine/target/asciidoctor/images/ .
+# rm -rf jvm/machine/target
+git add ./**/*.png
+cd ..
 git commit -a -m "documentation deployed to gh-pages"
 git push
 git checkout master
+cd jvm
  */
 }
