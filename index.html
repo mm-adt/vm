@@ -503,7 +503,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_poly_types">Poly Types</a>
 <ul class="sectlevel4">
-<li><a href="#_structures_and_processes">Structures and Processes</a></li>
+<li><a href="#_lst_and_rec">Lst and Rec</a></li>
 <li><a href="#_orthen_poly">orThen ,-poly</a></li>
 <li><a href="#_xorthen_poly">xorThen |-poly</a></li>
 <li><a href="#_andthen_poly">andThen ;-poly</a></li>
@@ -1875,37 +1875,6 @@ The reason for the <code>[split]</code> sugar symbol <code>-&lt;</code>, is that
 </tr>
 </table>
 </div>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
-<colgroup>
-<col style="width: 0%;">
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">poly</th>
-<th class="tableblock halign-left valign-top">inst</th>
-<th class="tableblock halign-left valign-top">free form</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">commutative</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[choose]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">non-commutative</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[compose]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">semi-commutative</p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
 <p>A polynomial is a <em>linear combination</em> of <em>terms</em> composed of <em>coefficients</em> and <em>indeterminates</em> typically expressed as
 \[
@@ -1952,7 +1921,12 @@ For visual simplicity, quantifiers were not diagrammed. Furthermore, the reason 
 </table>
 </div>
 <div class="paragraph">
-<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> two algebraic structures such that one is free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the non-free algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. Each kind of <code>poly</code> (<code>,</code>, <code>|</code>, or <code>;</code>) realizes a particular algebraic structure with useful computing properties.</p>
+<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> two algebraic structures such that one is free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the non-free algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. There are three kinds of <code>poly</code>. Each draws their terms from the same <code>obj</code> carrier set and are distinguished, in <code>mmlang</code>, by their respective term separator which denotes a particular "additive" binary operator: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>,</code> has a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>, <code>|</code> a free additive group, and <code>;</code> a free semicommutative multiplicative monoid. The general form of each kind of <code>poly</code> is expressed below in <code>mmlang</code>.</p>
+</div>
+<div class="paragraph text-center">
+<p><code>(x0{q0},x1{q1},&#8230;&#8203;,xn{qn})</code><br>
+<code>(x0{q0}|x1{q1}|&#8230;&#8203;|xn{qn})</code><br>
+<code>(x0{q0};x1{q1};&#8230;&#8203;;xn{qn})</code></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1964,8 +1938,8 @@ For visual simplicity, quantifiers were not diagrammed. Furthermore, the reason 
 </colgroup>
 <thead>
 <tr>
+<th class="tableblock halign-left valign-top">symbol</th>
 <th class="tableblock halign-left valign-top">name</th>
-<th class="tableblock halign-left valign-top">simple</th>
 <th class="tableblock halign-left valign-top">structure</th>
 <th class="tableblock halign-left valign-top">description</th>
 <th class="tableblock halign-left valign-top">illustration</th>
@@ -1996,33 +1970,61 @@ For visual simplicity, quantifiers were not diagrammed. Furthermore, the reason 
 </tbody>
 </table>
 <div class="sect4">
-<h5 id="_structures_and_processes">Structures and Processes</h5>
+<h5 id="_lst_and_rec">Lst and Rec</h5>
 <div class="paragraph">
 <p>A <code>poly</code> is an <code>obj</code> defined by the following <code>mmlang</code> grammar fragment.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">sep   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">;</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">,</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">|</span><span style="color:#710">'</span></span>
-lst   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> value (sep value)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
-rec   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> value <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> value (sep value <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> value)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
-cpy   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> obj (sep value)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
-swch  ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> obj <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> obj (sep obj <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> obj)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
-col   ::= lst | rec
-brch  ::= cpy | swch
-poly  ::= col | brch</code></pre>
+lst   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> obj<span style="color:#F00;background-color:#FAA">?</span> (sep obj)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
+rec   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> (obj <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> obj)<span style="color:#F00;background-color:#FAA">?</span> (sep obj <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> obj)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
+poly  ::= lst | rec</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Like <code>obj</code>, there are <strong>value</strong>-<code>polys</code> and <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is a collection data structure denoted <code>col</code>. A type-<code>poly</code> is a branching data process denoted <code>brch</code>. A <code>col</code> is either a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) or <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>) and a <code>brch</code> is either a <code>cpy</code> (<a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">copy</a>) or <code>swch</code> (<a href="https://en.wikipedia.org/wiki/Switch_statement">switch</a>).
-\[
+<p>Like <code>obj</code>, there are <strong>value</strong>-<code>polys</code> and <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type-<code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiway_branch">branching</a> data process. mm-ADT provides two structures that are generally useful when working with <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>).</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="./images/language/poly-kinds.png" alt="poly kinds" width="225"></span></p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>lst</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>A <code>lst</code> containing all values is a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>.</p>
+</li>
+<li>
+<p>A <code>lst</code> containing a type is a copy <a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">branch</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+<li>
+<p><code>rec</code></p>
+<div class="ulist">
+<ul>
+<li>
+<p>A <code>rec</code> containing all values is a <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>.</p>
+</li>
+<li>
+<p>A <code>rec</code> containing a type is a predicate <a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">branch</a>.</p>
+</li>
+</ul>
+</div>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>\[
 \begin{split}
-\texttt{poly} &amp;= \texttt{col} &amp;+ \texttt{brch} \\
-\texttt{poly} &amp;= (\texttt{lst} + \texttt{rec}) &amp;+ (\texttt{cpy} + \texttt{swch})
+\texttt{poly} &amp;= \texttt{lst} &amp;+ \texttt{rec} \\
+\texttt{poly} &amp;= (\texttt{,-lst} + \texttt{|-lst} + \texttt{;-lst}) &amp;+ (\texttt{,-rec} + \texttt{|-rec} + \texttt{;-rec})
 \end{split}
 \]</p>
-</div>
-<div class="paragraph">
-<p>In mm-ADT, <code>poly</code> is formed from the coproduct of <code>lst</code> and <code>rec</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2040,33 +2042,32 @@ mmlang&gt; ([is,[eq,'a']]-&gt;1,[is,[eq,'b']]-&gt;2,[is,[eq,'c']]-&gt;3)        
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A three term value <code>,-poly</code> as a <code>lst</code>.</td>
+<td>A three term value <code>,-lst</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>A three term value <code>,-poly</code> as a <code>rec</code>.</td>
+<td>A three term value <code>,-rec</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A three term type <code>,-poly</code> as a <code>cpy</code>.</td>
+<td>A three term type <code>,-lst</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>A three term type <code>,-poly</code> as a <code>swch</code>.</td>
+<td>A three term type <code>,-rec</code>.</td>
 </tr>
 </table>
 </div>
-<hr>
 <div class="paragraph">
-<p>A <code>tpoly</code> can be understood as either an unordered (<code>,</code>) or ordered (<code>|</code>, <code>;</code>) collection of functions.</p>
+<p>In the examples below, the value 3 is <code>[split]</code> (<code>-&lt;</code>) across the respective <code>poly</code> terms.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])   <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])     <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;(4,6)
-mmlang&gt; 3-&lt;([plus,1]|[mult,2])   <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 3-&lt;([plus,1]|[mult,2])     <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;(4|)
-mmlang&gt; 3-&lt;([plus,1];[mult,2])   <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 3-&lt;([plus,1];[mult,2])     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;(4;8)</code></pre>
 </div>
 </div>
@@ -2074,17 +2075,59 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])   <i class="conum" data-value="3"></i><b>(3
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A polynomial solved as <code>(3+1,3*2)</code> (or).</td>
+<td>A <code>,-lst</code> type yielding a <code>,-lst</code> value via <code>(3+1,3*2)</code> (<em>orThen</em>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>A polynomial solved as <code>(3+1,obj{0})</code> (exclusive or).</td>
+<td>A <code>|-lst</code> type yielding a <code>|-lst</code> value via <code>(3+1,obj{0})</code> (<em>xorThen</em>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A polynomial solved as <code>(3+1,3+1*2)</code>  (and).</td>
+<td>A <code>;-lst</code> type yielding a <code>;-lst</code> value via <code>(3+1,3+1*2)</code>  (<em>andThen</em>).</td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>The resultant <code>polys</code> can then have their terms <code>[merged]</code> (<code>&gt;-</code>) into a single <code>int{1,2}</code> <code>strm</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])&gt;-   <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;4
+==&gt;6
+mmlang&gt; 3-&lt;([plus,1]|[mult,2])&gt;-   <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;4
+mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-   <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;8</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The "split-merge" pattern <code>-&lt;()&gt;-</code> is common enough that a unified instruction exists.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[[plus,1],[mult,2]]       <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;4
+==&gt;6
+mmlang&gt; 3[[plus,1]|[mult,2]]       <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;4
+mmlang&gt; 3[[plus,1];[mult,2]]       <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;8</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, the most compact sugar forms of the running "split-merge" examples is presented below. Given the verbosity of branching expressions, all subsequent examples will typically leverage as many sugar constructs as possible to ensure readability.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[+1,*2]                   <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;4
+==&gt;6
+mmlang&gt; 3[+1|*2]                   <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;4
+mmlang&gt; 3[+1;*2]                   <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;8</code></pre>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2093,56 +2136,10 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])   <i class="conum" data-value="3"></i><b>(3
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<div class="paragraph">
-<p>The two terms of the polynomial <code>[[gt,0],[gt,10]]</code> are <code>_</code> types (<em>anonymous types</em>). Compilation infers the domain/range of the anonymous types.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [[gt,0],[gt,10]]
-==&gt;bool{2}&lt;=_-&lt;(bool&lt;=_[gt,0],bool&lt;=_[gt,10])&gt;-
-mmlang&gt; int[[gt,0],[gt,10]]
-==&gt;bool{2}&lt;=int-&lt;(bool&lt;=int[gt,0],bool&lt;=int[gt,10])&gt;-
-mmlang&gt; int{5}[[gt,0],[gt,10]]
-==&gt;bool{10}&lt;=int{5}-&lt;(bool&lt;=int[gt,0],bool&lt;=int[gt,10])&gt;-</code></pre>
-</div>
-</div>
+The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</code> for each incoming <code>obj</code>. This <code>poly</code> denotes <em>coupled parallel streams</em>, where each subsequent instruction operates on each term of the <code>poly</code> in a lock-step manner. However, if there are no intermediate instructions between <code>[split]</code> and <code>[merge]</code> (typically specified with <code>[combine]</code>), then this is semantically equivalent to <em>decoupled parallel streams</em> whereby whenever an <code>obj</code> is made available by a branch, it can be immediately placed on the outgoing merged stream. This holds because streams are always unordered.
 </td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p>There are 3 <code>poly</code> rings. Each draws from the same <code>obj</code> carrier set, but are combined using different "additive" binary operators: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>,</code> yields a commutative polynomial, <code>|</code> yields a non-commutative polynomial and <code>;</code> yields a semi-commutative polynomial with "addition" being monoid multiplication. The general form of a <code>poly</code> from each of the three polynomial rings is expressed below in <code>mmlang</code>.</p>
-</div>
-<div class="paragraph text-center">
-<p><code>([t0{q0}],[t1{q1}],&#8230;&#8203;,[tn{qn}])</code><br>
-<code>([t0{q0}]|[t1{q1}]|&#8230;&#8203;|[tn{qn}])</code><br>
-<code>([t0{q0}];[t1{q1}];&#8230;&#8203;;[tn{qn}])</code></p>
-</div>
-<div class="exampleblock">
-<div class="content">
-<div class="paragraph">
-<p>The <code>polys</code> have two structural representations (a value and a type from) and two <code>poly</code>-specific instructions for mapping an <code>obj</code> to a <code>vpoly</code> and a <code>vpoly</code> to an <code>obj</code>.
-The intution being that these operators transform a serial expression into a parallel expression and vice versa.
-Each has a respective <code>mmlang</code> syntax sugar that is the preferred notation for all the remaining examples.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><code>( )</code>: The <em>value</em> form of a <code>poly</code> is an "atomic" poly that can only be resolved when used in conjection with <code>poly</code>-specific instructions/operators.</p>
-</li>
-<li>
-<p><code>-&lt;</code>: The <em>split</em> operator is syntax sugar for <code>poly&lt;=obj[split,poly]</code> where the incoming <code>obj</code> is cloned across the <code>poly</code> terms.
-The result is the result of applying the incoming <code>obj</code> to each <code>poly</code> term in a <code>poly</code> of equal size and type.</p>
-</li>
-<li>
-<p><code>&gt;-</code>: The <em>merge</em> operator is syntax sugar for <code>obj{*}&lt;=poly[merge]</code> where the incoming <code>poly</code> is deconstructed into its component terms, where the resultant <code>obj&#8217;s</code> quantifier is computed the polynomial&#8217;s summation formula.</p>
-</li>
-<li>
-<p><code>[ ]</code>: The <em>type</em> form of a <code>poly</code> is a "functional" poly that can be composed with other types, where <code>[a,b,c]</code> is equivalent to <code>-&lt;(a,b,c)&gt;-</code>.</p>
-</li>
-</ol>
-</div>
-</div>
 </div>
 </div>
 <div class="sect4">
@@ -3999,7 +3996,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-12 00:09:41 -0600
+Last updated 2020-07-12 02:36:11 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
