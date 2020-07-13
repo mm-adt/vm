@@ -630,15 +630,20 @@ NOTE: The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`.
 
 image::comma-poly-example.png[align=center,width=350]
 
-A `,-poly` is a classic polynomial ring with a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. The `,-poly` captures the semantics of the `obj` ring which is formed from the _object_ and _quantifier_ rings via a variation of the standard https://en.wikipedia.org/wiki/Product_ring[direct product] of rings. If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in Q\$ are the elements of the product pairs denoting an `obj`, then the additive operator of the `obj` ring is defined as
+A `,-poly` is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. The mm-ADT `obj` is the  https://en.wikipedia.org/wiki/Product_ring[direct product]  of two rings:
+
+. *object ring* \$\langle \tt{object},=>,-< >- \rangle \$ and
+. *quantifier ring* \$\langle Q, \ast, + \rangle \$.
+
+If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in Q\$ are the elements of the product pairs denoting an `obj`, then the additive operator of the `obj` ring is defined as
 \[
 a\{ q_0 \} + b\{ q_1 \} =
 \begin{cases}
   a\{q_0+q_1\} & \text{if } a==b, \\
-  \{a\{ q_0 \},b\{ q_1 \}\} & \text{otherwise},
+  \prec a\{ q_0 \},b\{ q_1 \} \succ & \text{otherwise},
 \end{cases}
 \]
-where the \$+\$ between quantifiers denotes the quantifier ring's additive operator (`[plus]` for `int` quantifiers) and \$\{\tt{obj},\ldots,\tt{obj}\}\$ denotes `obj` addition (stream `[merge]`). Given the https://en.wikipedia.org/wiki/Commutative_property[commutative nature] of the `,-poly` abelian group, any two equal _objects_ (thus, ignoring quantification) can be *bulked* by summing their quantifiers. The https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below relates the 3 following `mmlang` examples, where \$\Delta\$ is `[split]` and \$\nabla\$ is `[merge]`.
+where the \$+\$ between quantifiers denotes the quantifier ring's additive operator (typically `[plus]` for `int` quantifiers) and \$\prec \tt{obj},\ldots,\tt{obj} \succ \$ denotes `obj` addition (stream `[split]`/`[merge]`). Given the https://en.wikipedia.org/wiki/Commutative_property[commutative nature] of the `,-poly` abelian group, any two equal objects in \$\tt{object}\$ can be *bulked* by summing their quantifiers. The https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the following `mmlang` examples, where \$\Delta\$ is `[split]` and \$\nabla\$ is `[merge]`.
 
 image::comma-lst-tensor-example.png[align=center,width=725]
 
@@ -648,11 +653,11 @@ image::comma-lst-tensor-example.png[align=center,width=725]
 'mar'[[plus,'ko']{2}]             //<2>
 'mar'[plus,'ko']{2}               //<3>
 ----
-<1> The `'mar'` `str` is copied and applied to each `[plus,'ko']` polynomial term in a manner equivalent to https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication].
-<2> Polynomial term aggregation by quantifier summation is possible because the two `,-lst` terms are equal.
+<1> The `'mar'` `str` is copied (\$ \prec \$) and applied (\$ => \$) to each `[plus,'ko']` polynomial term and then aggregated (\$ \succ \$).
+<2> Polynomial term summation via quantifier summation when two `,-lst` terms are equal -- \$\{1\} + \{1\} = \{2\} \$.
 <3> The single term in the `,-lst` can be https://en.wikipedia.org/wiki/Factorization[factored] out.
 
-mm-ADT's processor algebra is a https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] called the *type ringoid* (detailed presentation forthcoming). Elements of the free type ringoid are structures similar in form and function to https://en.wikipedia.org/wiki/Central_processing_unit[hardware circuits]. While the `inst` monoid enables the concatenation of instructions/functions in a serial chain, the type ringoid extends that functionality with a `+`-operator that captures the semantics of a parallel data https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline]. This branching structure is realized in the `inst` monoid via `,-poly`. However, at the execution-level, there exists an `inst` monoid to type ringoid https://en.wikipedia.org/wiki/Functor[functor] that maps `,-poly`-type construction to a parallel data pipeline construction. From this "_parallel data pipeline_"-perspective, perhaps the rationale for the aforementioned `obj` ring addition equation is more salient.
+mm-ADT's processor algebra is a https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] called the *type ringoid* (detailed presentation forthcoming). Elements of the free type ringoid are structures similar in form and function to https://en.wikipedia.org/wiki/Central_processing_unit[hardware circuits]. While the `inst` monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a `+`-operator that captures the semantics of parallel data https://en.wikipedia.org/wiki/Pipeline_(computing)[pipelining]. https://en.wikipedia.org/wiki/Isomorphism[Isomorphic] branchings structures are realized in the `inst` monoid via `,-poly`. However, at the execution-level, there exists an `inst` monoid-to-type ringoid https://en.wikipedia.org/wiki/Functor[functor] (\$\tt{i\nst} \to \tt{type}\$) that maps a `,-poly`-type construction to a parallel data pipeline structure. From this "_parallel data pipeline_"-perspective, perhaps the rationale for the aforementioned `obj` ring addition equation is made more salient.
 
 image::comma-lst-string-example.png[align=center,width=450]
 
@@ -661,7 +666,7 @@ The equality
 [.text-center]
 `'mar'[[plus,'ko']{2}] = 'mar'[plus,'ko']{2}`
 
-is due to a ring theory axiom--multiplication both left and right https://en.wikipedia.org/wiki/Distributive_property[distributes] over addition such that if \$\langle R,+,\ast\rangle\$ is a ring and \$a,b,c \in R\$, then
+is due to ring theory's *distributivity axiom* that requires multiplication both left and right https://en.wikipedia.org/wiki/Distributive_property[distribute] over addition such that if \$\langle R,+,\ast\rangle\$ is a ring and \$a,b,c \in R\$, then
 \[
 \begin{split}
   a(b+c) &=& \; ab + ac \\
@@ -669,25 +674,30 @@ is due to a ring theory axiom--multiplication both left and right https://en.wik
 \end{split}
 \]
 
-These equalities enable https://en.wikipedia.org/wiki/Factorization_of_polynomials[polynomial factorization] and are demonstrated in `mmlang` below.
+These equalities enable https://en.wikipedia.org/wiki/Factorization_of_polynomials[polynomial factorization] across the coupled monoids of a group element. This is demonstrated in `mmlang` below.
 
 [exec]
 ----
-'a'[+'b',+'c']
-['b','c']+'a'
+'a'[+'b',+'c']        //<1>
+['b','c']+'a'         //<2>
 ----
+<1> The value `a` is split (\$\prec\$) and applied (\$=>\$) to `[plus,'b']` and `[plus,'c']` elements before being merge (\$\succ\$).
+<2> The values `a` and `b` are merged (\$\succ\$) and then applied (\$=>\$) to `[plus,'a']`.
 
-To provide further context, note that there are two standard use cases for `poly` factorization at the mm-ADT processor-level.
+Polynomial factorization plays an important role in type optimization (the compiler), where, for example, with considerations to distributed computing:
 
-. https://en.wikipedia.org/wiki/Multithreading_(computer_architecture)[Multi-threaded processors] will tend to not factor out polynomial terms because with parallelism, repeating computations is typically less detrimental to performance than waiting for incoming `objs` to process.
-. Single-threaded processors will tend to factor out as many terms as possible from the polynomial in order to reduce repeated evaluation.
+* https://en.wikipedia.org/wiki/Multithreading_(computer_architecture)[Multi-threaded processors] will tend to not factor out polynomial terms as with native parallelism, repeating computations may be less detrimental to performance than waiting for incoming `objs` to process.
+* Single-threaded processors will tend to factor out as many terms as possible from a polynomial in order to reduce repeated evaluation.
 
 [exec]
 ----
-'a'[+'b'+'c'+'e',+'b'+'d'+'e']
-'a'+'b'[+'c'+'e',+'d'+'e']
-'a'+'b'[+'c',+'d']+'e'
+'a'[+'b'+'c'+'e',+'b'+'d'+'e']                     //<1>
+'a'+'b'[+'c'+'e',+'d'+'e']                         //<2>
+'a'+'b'[+'c',+'d']+'e'                             //<3>
 ----
+<1> The value `a` serves as the scalar in a https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] with the multi-`[plus]` `,-lst`.
+<2> The value `strm` `{a,b}` serves as the scalar.
+<3> The value `{a,b}` is the left multiplicative scalar and the value `e` is a right multiplicative scalar.
 
 ================================================================
 Two `,-poly` terms can be added if their indeterminates are equal.
@@ -729,7 +739,7 @@ At which point the two types are equivalent and can be merged accordingly.
 
 ===== xorThen |-poly
 
-A `|-poly` is a polynomial ring with non-commutative addition defined as
+A `|-poly` is monoid ring.
 
 \[
 \texttt{t0\{q0\}|t1\{q1\}} = \begin{cases}
