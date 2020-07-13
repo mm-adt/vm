@@ -51,10 +51,8 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   }
 }
 object Rec {
-  def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) &&
-    withinQ(arec, brec) &&
-    brec.gmap.count(x => qStar.equals(x._2.q) ||
-      arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))) == brec.gmap.size
+  def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
+    brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.find(y => y._1.test(x._1) && y._2.test(x._2)).map(_ => true).getOrElse(return false))
 
   def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = {
     if (arec.isSerial) {

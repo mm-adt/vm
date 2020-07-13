@@ -200,7 +200,7 @@ object Obj {
     }
   }
 
-  @scala.annotation.tailrec
+  // @scala.annotation.tailrec
   def fetchOption[A <: Obj](source: Obj, obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => None
@@ -208,8 +208,8 @@ object Obj {
         case _: Value[Obj] => Some(x.via._1.via(source.via._1, source.via._2).asInstanceOf[A])
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
-      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label && source.test(y.domain)) =>
-        Some(toBaseName(x.via._2.args.find(y => y.name == label && source.test(y.domain)).get.asInstanceOf[A]))
+      case x if x.via._2.op == Tokens.define =>
+        x.via._2.args.find(y => y.name == label && source.test(y.domain)).map(y => toBaseName(y).asInstanceOf[A]).orElse(fetchOption(source, x.via._1, label))
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
         Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
       case x =>

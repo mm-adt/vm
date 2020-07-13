@@ -52,8 +52,8 @@ trait Lst[A <: Obj] extends Poly[A]
 object Lst {
   def test[A <: Obj](alst: Lst[A], blst: Lst[A]): Boolean = Poly.sameSep(alst, blst) && // TODO: this.name.equals(other.name) &&
     withinQ(alst, blst) &&
-    (alst.glist.size == blst.glist.size || blst.glist.isEmpty) && // TODO: should lists only check up to their length
-    alst.glist.zip(blst.glist).forall(b => b._1.test(b._2))
+    (blst.glist.isEmpty || alst.glist.size == blst.glist.size) && // TODO: should lists only check up to their length
+    alst.glist.zip(blst.glist).find(b => !b._1.test(b._2)).forall(_ => return false)
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
     apoly.clone(g = (apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
