@@ -445,14 +445,6 @@ int[is,[gt,10]]                      //<4>
 <3> The nested type has an unspecified domain of `_`.
 <4> An `mmlang` sugar where if no domain is specified, `_` is assumed.
 
-===== Variables
-
-
-
-===== Definitions
-
-
-
 ==== Poly Types
 
 .Rings
@@ -1067,6 +1059,29 @@ However, with pair-wise product, only the main diagonol remains.
 ----
 
 ====== Meta-Programming
+
+==== Identity Types
+
+If \$\langle M,\cdot,e\rangle\$ is a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e \in M\$ is the https://en.wikipedia.org/wiki/Identity_element[identity element] and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$. Thus, every monoid has a *unique identity*. However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
+
+It is through *distinct identities* that mm-ADT supports dynamic computational state (e.g. https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]) and static type specifications (e.g. https://en.wikipedia.org/wiki/Data_type[definitions]). In particular, both these programming idioms are supported by `[to]` and `[define]`, respectively.
+
+===== Variables
+
+image::../language/linear-variable-example.png[align=center,width=550]
+
+[exec]
+----
+9 => int[plus,1]<x>[plus,2][mult,x]         //<1>
+9 => int[plus,1]<x>[plus,2][mult,x][trace]  //<2>
+int[plus,1]<x>[plus,2][mult,x][explain]     //<3>
+----
+<1> The `<x>` instruction stores the value `10` in the value's path through the `obj` graph.
+<2> The `[trace]` instruction provides the automaton's path through the `obj` graph as `;-lst`.
+<3> The `[explain]` instruction details the scope of state variables.
+
+===== Definitions
+
 
 ==== Higher Order Types
 

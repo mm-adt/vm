@@ -75,13 +75,15 @@ object Inst {
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
 
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
+    if(!obj.alive || !arg.alive) return arg.hardQ(qZero)
     resolveToken(obj, arg) match {
-      case anon: __ if __.isToken(anon) => anon.asInstanceOf[E]
+      case anon: __ if __.isTokenRoot(anon) => anon.asInstanceOf[E]
       case valueArg: OValue[E] => valueArg
-      case typeArg: OType[E] if typeArg.alive && obj.alive && obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) => obj match {
-        case _: Value[_] => obj.compute(typeArg)
-        case _: Type[_] => obj.range.compute(typeArg)
-      }
+      case typeArg: OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>
+        obj match {
+          case _: Value[_] => obj.compute(typeArg)
+          case _: Type[_] => obj.range.compute(typeArg)
+        }
       case _ => arg.hardQ(qZero)
     }
   }
