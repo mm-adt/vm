@@ -1301,7 +1301,7 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<span class="image right"><img src="./images/language/type-value-trace-short.png" alt="type value trace short" width="400"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels can be shortened to type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously deduced by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). The above diagram&#8217;s more concise representation is on the right. All subsequent diagrams will follow this convention.
+<span class="image right"><img src="./images/language/type-value-trace-short.png" alt="type value trace short" width="300"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace <code>[type]</code>-labeled arrows. All subsequent diagrams will follow this convention.
 </td>
 </tr>
 </table>
@@ -2052,6 +2052,18 @@ mmlang&gt; ([is,[eq,'a']]-&gt;1,[is,[eq,'b']]-&gt;2,[is,[eq,'c']]-&gt;3)        
 </tr>
 </table>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+A <code>rec</code> offers no expressivity gains over 2-term <code>lsts</code> of <code>lst</code>. It is provided as a base data type for convenience.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>In the examples below, the value 3 is <code>[split]</code> (<code>-&lt;</code>) across the respective <code>poly</code> terms.</p>
 </div>
@@ -2096,7 +2108,7 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-   <i class="conum" data-value="3"></i>
 </div>
 </div>
 <div class="paragraph">
-<p>The "split-merge" pattern <code>-&lt;()&gt;-</code> is common enough that a unified instruction exists.</p>
+<p>The "split-merge" pattern <code>-&lt;()&gt;-</code> is common enough to warrant a unified instruction.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2138,29 +2150,38 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </div>
 <div class="sect4">
 <h5 id="_orthen_poly">orThen ,-poly</h5>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/comma-poly-example.png" alt="comma poly example" width="350">
+</div>
+</div>
 <div class="paragraph">
-<p>A <code>,-poly</code> is a polynomial ring with <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> addition defined as</p>
+<p>A <code>,-poly</code> is a classic polynomial ring with a free additive abelian group and a non-free multiplicative monoid. If \$a,b \in \tt{obj}\$ with associated quantifies \$q_i \in Q\$, then addition is defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{t0{q0},t1{q1}} = \begin{cases}
-\texttt{t0\{q0+q1\}} &amp; \text{if } \texttt{t0==t1}, \\ \texttt{t0{q0},t1{q1}} &amp; \text{otherwise.} \end{cases}
+a\{ q_0 \},b\{ q_1 \} =
+\begin{cases}
+  a\{q_0+q_1\} &amp; \text{if } a==b, \\
+  a\{ q_0 \},b\{ q_1 \} &amp; \text{otherwise.}
+\end{cases}
 \]</p>
 </div>
 <div class="paragraph">
-<p>If the indeterminates of two terms are equal, then they can be merged by summing their coefficients.
-In the lexicon of mm-ADT, if two types are equal, then their quantifiers can be summed using the additive operator of the respective quantifier ring.
-Within the category of the <code>inst</code> monoid, the following <code>mmlang</code> examples highlight the salient features of <code>|-poly</code> addition.</p>
+<p>Given the commutative nature of the abelian group, any two equal terms (ignoring quantification) can be <strong>bulked</strong> by summing their quantifiers using the additive operator of the corresponding quantifier ring. The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below relates the 3 following <code>mmlang</code> examples, where \$\Delta\$ is <code>[split]</code> and \$\nabla\$ is <code>[merge]</code>.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/comma-lst-tensor-example.png" alt="comma lst tensor example" width="700">
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko'],[plus,'ko']]      <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko'],[plus,'ko']]    <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;'marko'{2}
-mmlang&gt; 'mar'[[plus,'ko']{2}]               <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 'mar'[[plus,'ko']{2}]             <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'marko'{2}
-mmlang&gt; 'mar'[plus,'ko']{2}                 <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;'marko'{2}
-mmlang&gt; 'marko'{2}                          <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; 'mar'[plus,'ko']{2}               <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;'marko'{2}</code></pre>
 </div>
 </div>
@@ -2172,30 +2193,13 @@ mmlang&gt; 'marko'{2}                          <i class="conum" data-value="4"><
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Branch aggregation by coefficient summation is possible because the two branches are equal.</td>
+<td>Branch aggregation by quantifier summation is possible because the two branches are equal.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>With only one "branch," the expression can be extracted from <code>[branch]</code>.</td>
 </tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The expression has reached a fixpoint and thus, is solved.</td>
-</tr>
 </table>
-</div>
-<div class="paragraph">
-<p>In the category <code>poly</code>, the previous <code>mmlang</code> examples are written as follows.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko'],[plus,'ko']]
-==&gt;'marko'{2}
-mmlang&gt; mmlang&gt; 'mar'[[plus,'ko']{2}]
-==&gt;bool{2}&lt;=mmlang[gt,'mar']-&lt;(bool{2}&lt;=bool[plus,'ko']{2})&gt;-
-mmlang&gt; [[start,'mar'][plus,'ko'],[start,'mar'][plus,'ko']]
-==&gt;'marko'{2}</code></pre>
-</div>
 </div>
 <div class="paragraph">
 <p>The last expression demonstrates a property of all rings: multiplication both right and left <a href="https://en.wikipedia.org/wiki/Distributive_property">distributes</a> over addition.
@@ -4133,7 +4137,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-13 07:30:12 -0600
+Last updated 2020-07-13 07:32:12 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
