@@ -2156,23 +2156,19 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </div>
 </div>
 <div class="paragraph">
-<p>A <code>,-poly</code> is a classic polynomial ring with a free additive abelian group and a non-free multiplicative monoid. If \$a,b \in \tt{obj}\$ with associated quantifies \$q_i \in Q\$, then addition is defined as</p>
-</div>
-<div class="paragraph">
-<p>\[
-a\{ q_0 \},b\{ q_1 \} =
+<p>A <code>,-poly</code> is a classic polynomial ring with a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. The <code>,-poly</code> captures the semantics of the <code>obj</code> ring which is formed from the <em>object</em> and <em>quantifier</em> rings via a variation of the standard <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of rings. If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in Q\$ are the elements of the product pairs denoting an <code>obj</code>, then the additive operator of the <code>obj</code> ring is defined as
+\[
+a\{ q_0 \} + b\{ q_1 \} =
 \begin{cases}
   a\{q_0+q_1\} &amp; \text{if } a==b, \\
-  a\{ q_0 \},b\{ q_1 \} &amp; \text{otherwise.}
+  \{a\{ q_0 \},b\{ q_1 \}\} &amp; \text{otherwise},
 \end{cases}
-\]</p>
-</div>
-<div class="paragraph">
-<p>Given the commutative nature of the abelian group, any two equal terms (ignoring quantification) can be <strong>bulked</strong> by summing their quantifiers using the additive operator of the corresponding quantifier ring. The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below relates the 3 following <code>mmlang</code> examples, where \$\Delta\$ is <code>[split]</code> and \$\nabla\$ is <code>[merge]</code>.</p>
+\]
+where the \$+\$ between quantifiers denotes the quantifier ring&#8217;s additive operator (<code>[plus]</code> for <code>int</code> quantifiers) and \$\{\tt{obj},\ldots,\tt{obj}\}\$ denotes <code>obj</code> addition (stream <code>[merge]</code>). Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative nature</a> of the <code>,-poly</code> abelian group, any two equal <em>objects</em> (thus, ignoring quantification) can be <strong>bulked</strong> by summing their quantifiers. The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below relates the 3 following <code>mmlang</code> examples, where \$\Delta\$ is <code>[split]</code> and \$\nabla\$ is <code>[merge]</code>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/comma-lst-tensor-example.png" alt="comma lst tensor example" width="700">
+<img src="./images/language/comma-lst-tensor-example.png" alt="comma lst tensor example" width="725">
 </div>
 </div>
 <div class="listingblock">
@@ -2189,24 +2185,43 @@ mmlang&gt; 'mar'[plus,'ko']{2}               <i class="conum" data-value="3"></i
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>'mar'</code> <code>str</code> is copied as input to two <code>[plus,'ko']</code> branches.</td>
+<td>The <code>'mar'</code> <code>str</code> is copied and applied to each <code>[plus,'ko']</code> polynomial term in a manner equivalent to <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Branch aggregation by quantifier summation is possible because the two branches are equal.</td>
+<td>Polynomial term aggregation by quantifier summation is possible because the two <code>,-lst</code> terms are equal.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>With only one "branch," the expression can be extracted from <code>[branch]</code>.</td>
+<td>The single term in the <code>,-lst</code> can be <a href="https://en.wikipedia.org/wiki/Factorization">factored</a> out.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The last expression demonstrates a property of all rings: multiplication both right and left <a href="https://en.wikipedia.org/wiki/Distributive_property">distributes</a> over addition.
+<p>mm-ADT&#8217;s processor algebra is a <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> called the <strong>type ringoid</strong> (detailed presentation forthcoming). Elements of the free type ringoid are structures similar in form and function to <a href="https://en.wikipedia.org/wiki/Central_processing_unit">hardware circuits</a>. While the <code>inst</code> monoid enables the concatenation of instructions/functions in a serial chain, the type ringoid extends that functionality with a <code>+</code>-operator that captures the semantics of a parallel data <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a>. This branching structure is realized in the <code>inst</code> monoid via <code>,-poly</code>. However, at the execution-level, there exists an <code>inst</code> monoid to type ringoid <a href="https://en.wikipedia.org/wiki/Functor">functor</a> that maps <code>,-poly</code>-type construction to a parallel data pipeline construction. From this "<em>parallel data pipeline</em>"-perspective, perhaps the rationale for the aforementioned <code>obj</code> ring addition equation is more salient.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/comma-lst-string-example.png" alt="comma lst string example" width="450">
+</div>
+</div>
+<div class="paragraph">
+<p>The equality</p>
+</div>
+<div class="paragraph text-center">
+<p><code>'mar'[[plus,'ko']{2}] = 'mar'[plus,'ko']{2}</code></p>
+</div>
+<div class="paragraph">
+<p>is due to a ring theory axiom&#8212;&#8203;multiplication both left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distributes</a> over addition such that if \$\langle R,+,\ast\rangle\$ is a ring and \$a,b,c \in R\$, then
 \[
 \begin{split}
-a(b+c) &amp;=&amp; \; ab + ac \\ (b+c)a &amp;=&amp; \; ba + ca \end{split}
+  a(b+c) &amp;=&amp; \; ab + ac \\
+  (b+c)a &amp;=&amp; \; ba + ca
+\end{split}
 \]</p>
+</div>
+<div class="paragraph">
+<p>These equalities enable <a href="https://en.wikipedia.org/wiki/Factorization_of_polynomials">polynomial factorization</a> and are demonstrated in <code>mmlang</code> below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2216,6 +2231,32 @@ a(b+c) &amp;=&amp; \; ab + ac \\ (b+c)a &amp;=&amp; \; ba + ca \end{split}
 mmlang&gt; ['b','c']+'a'
 ==&gt;'ba'
 ==&gt;'ca'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>To provide further context, note that there are two standard use cases for <code>poly</code> factorization at the mm-ADT processor-level.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Multithreading_(computer_architecture)">Multi-threaded processors</a> will tend to not factor out polynomial terms because with parallelism, repeating computations is typically less detrimental to performance than waiting for incoming <code>objs</code> to process.</p>
+</li>
+<li>
+<p>Single-threaded processors will tend to factor out as many terms as possible from the polynomial in order to reduce repeated evaluation.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'[+'b'+'c'+'e',+'b'+'d'+'e']
+==&gt;'abce'
+==&gt;'abde'
+mmlang&gt; 'a'+'b'[+'c'+'e',+'d'+'e']
+==&gt;'abce'
+==&gt;'abde'
+mmlang&gt; 'a'+'b'[+'c',+'d']+'e'
+==&gt;'abce'
+==&gt;'abde'</code></pre>
 </div>
 </div>
 <div class="exampleblock">
@@ -4137,7 +4178,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-13 07:32:12 -0600
+Last updated 2020-07-13 11:42:40 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
