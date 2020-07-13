@@ -1062,9 +1062,18 @@ However, with pair-wise product, only the main diagonol remains.
 
 ==== Identity Types
 
-If \$\langle M,\cdot,e\rangle\$ is a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e \in M\$ is the https://en.wikipedia.org/wiki/Identity_element[identity element] and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$. Thus, every monoid has a *unique identity*. However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
+If \$\langle M,\cdot,e\rangle\$ is a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e \in M\$ is the https://en.wikipedia.org/wiki/Identity_element[identity element] and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$. Thus, every monoid has a *single unique identity*. However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
 
-It is through *distinct identities* that mm-ADT supports dynamic computational state (e.g. https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]) and static type specifications (e.g. https://en.wikipedia.org/wiki/Data_type[definitions]). In particular, both these programming idioms are supported by `[to]` and `[define]`, respectively.
+It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms below.
+
+[cols="2,1,1,3" width=55%]
+|===
+| idiom                                                                      | inst         | sugar | description
+
+| https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]   | `[to]`       | `< >` | nominal `obj` references
+| https://en.wikipedia.org/wiki/Data_type[type definitions]                  | `[define]`   |       | user defined types
+| rewrite rules                                                              | `[rewrite]`  |       | type equivalences
+|===
 
 ===== Variables
 
@@ -1080,10 +1089,23 @@ int[plus,1]<x>[plus,2][mult,x][explain]     //<3>
 <2> The `[trace]` instruction provides the automaton's path through the `obj` graph as `;-lst`.
 <3> The `[explain]` instruction details the scope of state variables.
 
+The scope of a variable starts at the moment of declaration (`[to]`) and ends when the declaring branch is complete. If an `inst` has a type argument, that type has access to the variables declared in any parent branch.
+
+[exec]
+----
+2 => int<x>[plus,<y>][plus,y]                                                      //<1>
+2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x]                                      //<2>
+2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x][trace]                               //<3>
+int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]  //<4>
+----
+<1> The variable `y` is declared in a branch nested within the retrieving branch.
+<2> The variable `x` is redefined in the nested branch and recovers its original value when the nested branch completes.
+<3> The value path of the previous evaluation highlighting that the final `[plus,x]` resolved to `[plus,2]`.
+<4> A multi-nested expression demonstrating the creation and destruction of variable scope.
+
 ===== Definitions
 
-
-==== Higher Order Types
+===== Rewrites
 
 In mm-ADT, every type \$A\$ is a https://en.wikipedia.org/wiki/Space_(mathematics)[space], where the points of the space are mm-ADT `objs` (types and values) and the structure distinguishing \$A\$ from being a common set is the `inst` relations linking the `objs`. Every mm-ADT type defines a directed labeled https://en.wikipedia.org/wiki/Multigraph[multigraph] called a *type graph*. If \$x,y:A\$ are two `objs` in \$A\$, then the https://en.wikipedia.org/wiki/Path_(topology)[path] \$x \to_{A} y\$ denotes a continuous walk that starts at \$x\$ and ends at \$y\$ https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence[proving] that \$x\$ is "\$A\$-reduced" to \$y\$. Each step of that walk is an instruction forming an edge in the type graph. For instance, the type
 
@@ -1155,6 +1177,8 @@ b\{ 0\} & \text{otherwise.}
 
 An mm-ADT *type graph* denotes a type whose values are those `objs` that realize a path in that graph.
 ================================================================
+
+=== Model-ADTs
 
 === Language Algebras
 

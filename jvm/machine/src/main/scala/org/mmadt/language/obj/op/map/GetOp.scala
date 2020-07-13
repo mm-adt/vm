@@ -31,6 +31,8 @@ import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
+import scala.util.Try
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -51,8 +53,14 @@ object GetOp extends Func[Obj, Obj] {
         else strm(results.toSeq)
       case alst: Lst[_] => key match {
         case aint: IntValue =>
-          LanguageException.PolyException.testIndex(alst, aint.g.toInt)
-          alst.glist(aint.g.toInt)
+          Try[Obj] {
+            alst.glist(aint.g.toInt)
+          }.getOrElse(start match {
+            case _: Value[_] =>
+              LanguageException.PolyException.testIndex(alst, aint.g.toInt)
+              obj
+            case _: Type[_] => __
+          })
         case _ => obj
       }
       case _: Value[_] => zeroObj
