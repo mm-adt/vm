@@ -50,8 +50,14 @@ import java.util.stream.IntStream;
  */
 public class Console {
 
-    private static final String HEADER = "" + "                                _____ _______ \n" + "                           /\\  |  __ |__   __|\n" + " _ __ ___  _ __ ___ _____ /  \\ | |  | | | |   \n" + "| '_ ` _ \\| '_ ` _ |_____/ /\\ \\| |  | | | |   \n" + "| | | | | | | | | | |   / ____ \\ |__| | | |   \n" + "|_| |_| |_|_| |_| |_|  /_/    \\_\\____/  |_|   \n" + "                                 mm-adt.org  ";
-
+    private static final String HEADER = "" +
+            "                                _____ _______ \n" +
+            "                           /\\  |  __ |__   __|\n" +
+            " _ __ ___  _ __ ___ _____ /  \\ | |  | | | |   \n" +
+            "| '_ ` _ \\| '_ ` _ |_____/ /\\ \\| |  | | | |   \n" +
+            "| | | | | | | | | | |   / ____ \\ |__| | | |   \n" +
+            "|_| |_| |_|_| |_| |_|  /_/    \\_\\____/  |_|   \n" +
+            "                                 mm-adt.org  ";
 
     private static final String HISTORY = ".mmadt_history";
     private static final String RESULT = "==>";

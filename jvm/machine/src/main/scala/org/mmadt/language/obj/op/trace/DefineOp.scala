@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.op.trace
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.TraceInstruction
@@ -38,7 +39,8 @@ object DefineOp extends Func[Obj, Obj] {
   def apply[O <: Obj](objs: Obj*): Inst[O, O] = new VInst[O, O](g = (Tokens.define, objs.toList.asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     /*val undefined = inst.args.filter(x => !Obj.fetch(start, x))
-    if (undefined.isEmpty) start else*/
-    start.via(start, inst)
+    if (undefined.isEmpty) start
+    else start.via(start, inst.clone(g = (Tokens.define, undefined)))*/
+    start.via(start,inst)
   }
 }

@@ -68,6 +68,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("canonical type parsing") {
+    assertResult(obj)(engine.eval("obj"))
     assertResult(bool)(engine.eval("bool"))
     assertResult(int)(engine.eval("int"))
     assertResult(real)(engine.eval("real"))
@@ -451,6 +452,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<.x>]"))
     assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,int<.y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<.x>[plus,<.y>]]").toString)
     assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,<.y>]]"))
+    assertResult(int(13))(engine.eval("5 => int<x>[plus,1][plus,x[plus,2]]"))
+    assertResult(int(14))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]]"))
+    assertResult(int(19))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]][plus,x]"))
+    assertResult(int(28))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
+    assertResult(int(28).q(3))(engine.eval("{5,5,5} => int<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
+    assertResult(int(28, 32, 36))(engine.eval("{5,6,7} => int<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
     assertThrows[LanguageException] {
       engine.eval("50[is>dog]")
     }
@@ -475,6 +482,15 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.is(int.lte(int(5))))(engine.eval("int[is,[lte,5]]"))
     assertResult(int.is(int.gte(int(5))))(engine.eval("int[is >= 5]"))
     assertResult(int.is(int.gte(int(5))))(engine.eval("int[is[gte,5]]"))
+    assertResult(int(6))(engine.eval("6[is,int[gt,5]]"))
+    assertResult(int(6))(engine.eval("6[is>5]"))
+    assertResult(int(6))(engine.eval("6[is > 5]"))
+    assertResult(zeroObj)(engine.eval("6[is < 5]"))
+    assertResult(int(4))(engine.eval("4[is[lt,5]]"))
+    assertResult(int(5))(engine.eval("5[is =< 5]"))
+    assertResult(zeroObj)(engine.eval("6[is,[lte,5]]"))
+    assertResult(int(6))(engine.eval("6[is >= 5]"))
+    assertResult(int(5))(engine.eval("5[is[gte,5]]"))
   }
 
   test("get dot-notation parsing") {
