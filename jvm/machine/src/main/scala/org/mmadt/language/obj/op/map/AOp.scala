@@ -32,8 +32,6 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
-import scala.util.Try
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -41,16 +39,14 @@ trait AOp {
   this: Obj =>
   def a(other: Obj): Bool = AOp(other).exec(this)
 }
+
 object AOp extends Func[Obj, Bool] {
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this) with TraceInstruction
+
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     start match {
       case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))
-      case _: Value[_] =>
-        val arg = Try[Obj] {
-          Inst.resolveToken(start, inst.arg0[Obj])
-        }.getOrElse(zeroObj)
-        bool(start.test(arg)).via(start, inst)
+      case _: Value[_] => bool(start.test(inst.arg0[Obj])).via(start, inst)
       case _: Type[_] => bool.via(start, inst)
     }
   }

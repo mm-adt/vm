@@ -21,8 +21,11 @@
  */
 
 package org.mmadt.language.obj.value
+
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -30,7 +33,9 @@ import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
 trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isToken(other) => this.test(Inst.resolveToken(this, other))
+    case _: __ if __.isToken(other) => Try[Boolean] {
+      this.test(Inst.resolveToken(this, other))
+    }.getOrElse(false)
     case alst: LstValue[A] => Lst.test(this, alst)
     case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
       case alst: Lst[A] => Lst.test(this, alst)
@@ -38,5 +43,6 @@ trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
     }) && this.compute(other).alive
     case _ => false
   }
+
   override def equals(other: Any): Boolean = other.isInstanceOf[LstValue[_]] && super[Lst].equals(other) && super[PolyValue].equals(other)
 }

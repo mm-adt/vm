@@ -150,7 +150,7 @@ trait Obj
   def compute[E <: Obj](rangeType: E): E = rangeType match {
     case _: Type[E] if __.isAnonRoot(this) && rangeType.root => rangeType.hardQ(multQ(this.q, rangeType.q))
     case _: Type[E] =>
-      if (this.isInstanceOf[Type[_]] && this.root && rangeType.root)
+      if (this.root && rangeType.root && this.isInstanceOf[Type[_]])
         LanguageException.testTypeCheck(this, asType(rangeType).hardQ(this.q))
       Tokens.tryName[E](rangeType, rangeType.trace
         .headOption
@@ -245,4 +245,5 @@ object Obj {
   @inline implicit class LongExtensions(l: Long)
   @inline implicit class FloatExtensions(f: Float)
   @inline implicit class DoubleExtensions(d: Double)
+
 }
