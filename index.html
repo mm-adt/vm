@@ -1219,8 +1219,8 @@ In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ a
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; <span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">1</span>}
-==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{1}
+==&gt;int</code></pre>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">In most programming languages, a value can be typed <code>int</code> as in</p>
@@ -1639,7 +1639,7 @@ An mm-ADT <code>int</code> is currently encoded using 64-bits. In computer engin
 <div class="sect3">
 <h4 id="_anonymous_type">Anonymous Type</h4>
 <div class="paragraph">
-<p>The type <code>bool&#8656;int[gt,10]</code> has a range of <code>bool</code> and a domain of <code>int</code>. When the type is written <code>int[gt,10]</code>, the range is deduced by a compiling automata that applies <code>int</code> to <code>[gt,10]</code> to yield <code>bool</code>. In fact, the range of <code>int[gt,10]</code> is an <strong>anonymous type</strong> (called an <strong>anon</strong> for brevity) and is denoted <code>_</code> (or with no character in most situations). An anon is a type that has not been grounded to a base type.</p>
+<p>The type <code>bool&lt;=int[gt,10]</code> has a range of <code>bool</code> and a domain of <code>int</code>. When the type is written <code>int[gt,10]</code>, the range is deduced by a compiling automata that applies <code>int</code> to <code>[gt,10]</code> to yield <code>bool</code>. In fact, the range of <code>int[gt,10]</code> is an <strong>anonymous type</strong> (called an <strong>anon</strong> for brevity) and is denoted <code>_</code> (or with no character in most situations). An anon is a type that has not been grounded to a base type.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2093,48 +2093,56 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])     <i class="conum" data-value="3"></i><b>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>The resultant <code>polys</code> can then have their terms <code>[merged]</code> (<code>&gt;-</code>) into a single <code>int{1,2}</code> <code>strm</code>.</p>
-</div>
-<div class="listingblock">
+<table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col style="width: 58.3333%;">
+<col style="width: 41.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The resultant <code>polys</code> can then have their terms <code>[merged]</code> (<code>&gt;-</code>) into a single <code>int{1,2}</code> <code>strm</code>. There is a subtlety to highlight. The result of any <code>inst</code> is a single <code>obj</code>. In particular, to the <code>[merge]</code> in these examples, the output is a single <code>int</code> or a single <code>int</code> <code>strm</code> containing two <code>ints</code>. mm-ADT evaluates unary functions: one <code>obj</code> input yields one <code>obj</code> output.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])&gt;-   <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])&gt;-
 ==&gt;4
 ==&gt;6
-mmlang&gt; 3-&lt;([plus,1]|[mult,2])&gt;-   <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 3-&lt;([plus,1]|[mult,2])&gt;-
 ==&gt;4
-mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-   <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-
 ==&gt;8</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>The "split-merge" pattern <code>-&lt;()&gt;-</code> is common enough to warrant a unified instruction.</p>
-</div>
-<div class="listingblock">
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The "<em>split-merge</em>"-pattern (<code>-&lt;()&gt;-</code>) is common enough to warrant a single, unifying instruction called <code>[splitmerge]</code> and a corresponding sugar of <code>[poly]</code>. If the evaluating processor encounters <code>[splitmerge]</code>, it can compute using a <code>poly</code> of streams versus a stream of <code>polys</code> as may be required with <code>[split]</code>/<code>[merge]</code>. The difference is significant in distributed environments, where the former supports decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[[plus,1],[mult,2]]       <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[[plus,1],[mult,2]]
 ==&gt;4
 ==&gt;6
-mmlang&gt; 3[[plus,1]|[mult,2]]       <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 3[[plus,1]|[mult,2]]
 ==&gt;4
-mmlang&gt; 3[[plus,1];[mult,2]]       <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 3[[plus,1];[mult,2]]
 ==&gt;8</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>Finally, the most compact sugar forms of the running "split-merge" example is presented below. Given the verbosity of branching expressions, all subsequent examples will typically leverage as many sugar constructs as possible to ensure readability.</p>
-</div>
-<div class="listingblock">
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Finally, the most compact sugar forms of the running "<em>split-merge</em>"-examples is presented below. Given the verbosity of branching expressions, all subsequent <code>mmlang</code> examples will favor sugar constructs.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[+1,*2]                   <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[+1,*2]
 ==&gt;4
 ==&gt;6
-mmlang&gt; 3[+1|*2]                   <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 3[+1|*2]
 ==&gt;4
-mmlang&gt; 3[+1;*2]                   <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 3[+1;*2]
 ==&gt;8</code></pre>
 </div>
-</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -4219,7 +4227,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-13 13:54:38 -0600
+Last updated 2020-07-13 17:39:48 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
