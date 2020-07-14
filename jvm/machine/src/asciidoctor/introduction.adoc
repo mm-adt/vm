@@ -50,23 +50,24 @@ The complexities of mm-ADT are realized in the definition of an `obj` (which inc
 
 ==== mm-ADT Algebras
 
-image::../introduction/the-algebras.png[width=600,float=left]
 
-[cols="3,3",width=30,float=right]
+image::../introduction/the-algebras.png[width=550,float=right]
+
+Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component's particular interpretation of mm-ADT. The *language algebra*
+is a https://en.wikipedia.org/wiki/Free_monoid[free monoid] capturing the serial composition of parameterized instructions (`inst`) in the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The *processor algebra* is a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ringoid] (`poly`) used for compilation and evaluation of mm-ADT types (or programs). The *storage algebra* is a https://en.wikipedia.org/wiki/Magma_(algebra)[magma] with a carrier set containing all mm-ADT objects (`obj`) and a non- https://en.wikipedia.org/wiki/Associative_property[associative], binary "juxtapostion" operator. These algebras represent the particular perspective that each component has on a shared data structure called the *obj graph* which realizes a _ringoid-embedding of a monoidal Cayley graph_. This https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] is the medium by which https://en.wikipedia.org/wiki/Semigroup_action[algebraic actions] effectively couple these components over the course of a computation: specification, compilation, and evaluation.
+
+[cols="3,3",width=30,float=left]
 |===
 | Component | Algebra
 
-| Storage   | `obj` magma
 | Language  | `inst` monoid
 | Processor | `type` ringoid
+| Storage   | `obj` magma
 |===
 
-'''
-
-Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component's particular interpretation of mm-ADT. The *storage algebra* is a https://en.wikipedia.org/wiki/Magma_(algebra)[magma] with a carrier set containing all mm-ADT objects (`obj`) and a non- https://en.wikipedia.org/wiki/Associative_property[associative], binary "juxtapostion" operator. The *language algebra* is a
-is a https://en.wikipedia.org/wiki/Free_monoid[free monoid] capturing the serially composition of parameterized instructions (`inst`) in the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The *processor algebra* is a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ringoid] (`poly`) used for compilation and evaluation of mm-ADT types (or programs). These algebras represent the particular perspective that each component has on a shared data structure called the *obj graph* which realizes a _ringoid-embedding of a monoidal Cayley graph_. This https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] is the medium by which https://en.wikipedia.org/wiki/Semigroup_action[algebraic actions] effectively couple these components over the course of a computation: specification, compilation, and evaluation.
-
 The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated by mm-ADT technologies. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create _synthetic data systems_ tailored to their problem's particular computational requirements.
+
+'''
 
 === mm-ADT Technology
 
