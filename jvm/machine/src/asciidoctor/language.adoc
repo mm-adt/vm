@@ -596,7 +596,7 @@ In the examples below, the value 3 is `[split]` (`-<`) across the respective `po
 <2> A `|-lst` type yielding a `|-lst` value via `(3+1,obj{0})` (_xorThen_).
 <3> A `;-lst` type yielding a `;-lst` value via `(3+1,3+1*2)`  (_andThen_).
 
-[grid=none,frame=none,cols="7,5"]
+[grid=none,frame=none,cols="7,4"]
 |===
 |The resultant `polys` can then have their terms `[merged]` (`>-`) into a single `int{1,2}` `strm`. There is a subtlety to highlight. The result of any `inst` is a single `obj`. In particular, to the `[merge]` in these examples, the output is a single `int` or a single `int` `strm` containing two `ints`. mm-ADT evaluates unary functions: one `obj` input yields one `obj` output.
 a|
@@ -606,7 +606,7 @@ a|
 3-<([plus,1]\|[mult,2])>-
 3-<([plus,1];[mult,2])>-
 ----
-
+'''
 |The "_split-merge_"-pattern (`-<()>-`) is common enough to warrant a single, unifying instruction called `[splitmerge]` and a corresponding sugar of `[poly]`. If the evaluating processor encounters `[splitmerge]`, it can compute using a `poly` of streams versus a stream of `polys` as may be required with `[split]`/`[merge]`. The difference is significant in distributed environments, where the former supports decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.
 a|
 [exec]
@@ -615,7 +615,7 @@ a|
 3[[plus,1]\|[mult,2]]
 3[[plus,1];[mult,2]]
 ----
-
+'''
 |Finally, the most compact sugar forms of the running "_split-merge_"-examples is presented below. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
 a|
 [exec]
