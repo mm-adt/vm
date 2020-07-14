@@ -2106,7 +2106,8 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])     <i class="conum" data-value="3"></i><b>
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The resultant <code>polys</code> can then have their terms <code>[merged]</code> (<code>&gt;-</code>) into a single <code>int{1,2}</code> <code>strm</code>. There is a subtlety to highlight. The result of any <code>inst</code> is a single <code>obj</code>. In particular, to the <code>[merge]</code> in these examples, the output is a single <code>int</code> or a single <code>int</code> <code>strm</code> containing two <code>ints</code>. mm-ADT evaluates unary functions: one <code>obj</code> input yields one <code>obj</code> output.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;</p>
+<p class="tableblock">The resultant <code>polys</code> can then have their terms <code>[merged]</code> (<code>&gt;-</code>) into a single <code>int{1,2}</code> <code>strm</code>. There is a subtlety to highlight. The result of any <code>inst</code> is a single <code>obj</code>. In particular, to the <code>[merge]</code> in these examples, the output is a single <code>int</code> or a single <code>int</code> <code>strm</code> containing two <code>ints</code>. mm-ADT evaluates unary functions: one <code>obj</code> input yields one <code>obj</code> output.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])&gt;-
@@ -2117,8 +2118,7 @@ mmlang&gt; 3-&lt;([plus,1]|[mult,2])&gt;-
 mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-
 ==&gt;8</code></pre>
 </div>
-</div>
-<hr></div></td>
+</div></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The "<em>split-merge</em>"-pattern (<code>-&lt;()&gt;-</code>) is common enough to warrant a single, unifying instruction called <code>[splitmerge]</code> and a corresponding sugar of <code>[poly]</code>. If the evaluating processor encounters <code>[splitmerge]</code>, it can compute using a <code>poly</code> of streams versus a stream of <code>polys</code> as may be required with <code>[split]</code>/<code>[merge]</code>. The difference is significant in distributed environments, where the former supports decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.</p></td>
@@ -2132,11 +2132,11 @@ mmlang&gt; 3[[plus,1]|[mult,2]]
 mmlang&gt; 3[[plus,1];[mult,2]]
 ==&gt;8</code></pre>
 </div>
-</div>
-<hr></div></td>
+</div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Finally, the most compact sugar forms of the running "<em>split-merge</em>"-examples is presented below. Given the verbosity of branching expressions, all subsequent <code>mmlang</code> examples will favor sugar constructs.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;</p>
+<p class="tableblock">Finally, the most compact sugar forms of the running "<em>split-merge</em>"-examples is presented below. Given the verbosity of branching expressions, all subsequent <code>mmlang</code> examples will favor sugar constructs.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[+1,*2]
@@ -2177,7 +2177,7 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>object ring</strong> \$\langle \tt{object},&#8658;,-&lt; &gt;- \rangle \$ and</p>
+<p><strong>object ring</strong> \$\langle \tt{object},&#8658;,[ ] \rangle \$ and</p>
 </li>
 <li>
 <p><strong>quantifier ring</strong> \$\langle Q, \ast, + \rangle \$.</p>
@@ -2187,13 +2187,28 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 <div class="paragraph">
 <p>If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in Q\$ are the elements of the product pairs denoting an <code>obj</code>, then the additive operator of the <code>obj</code> ring is defined as
 \[
-a\{ q_0 \} + b\{ q_1 \} =
+[a_{q_0},b_{q_1}] =
 \begin{cases}
-  a\{q_0+q_1\} &amp; \text{if } a==b, \\
-  \prec a\{ q_0 \},b\{ q_1 \} \succ &amp; \text{otherwise},
+  [a_{q_0+q_1}]     &amp; \text{if } a==b, \\
+  [a_{q_0},b_{q_1}] &amp; \text{otherwise},
 \end{cases}
 \]
-where the \$+\$ between quantifiers denotes the quantifier ring&#8217;s additive operator (typically <code>[plus]</code> for <code>int</code> quantifiers) and \$\prec \tt{obj},\ldots,\tt{obj} \succ \$ denotes <code>obj</code> addition (stream <code>[split]</code>/<code>[merge]</code>). Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative nature</a> of the <code>,-poly</code> abelian group, any two equal objects in \$\tt{object}\$ can be <strong>bulked</strong> by summing their quantifiers. The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below depicts the equalities of the following <code>mmlang</code> examples, where \$\Delta\$ is <code>[split]</code> and \$\nabla\$ is <code>[merge]</code>.</p>
+where the \$+\$ between quantifiers denotes the quantifier ring&#8217;s additive operator (typically <code>[plus]</code> for <code>int</code> quantifiers) and \$[\tt{obj},\ldots,\tt{obj}]\$ denotes <code>obj</code> addition (stream <code>[split]</code>/<code>[merge]</code>). Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative nature</a> of the <code>,-poly</code> abelian group, any two equal objects in \$\tt{object}\$ can be <strong>bulked</strong> by summing their quantifiers.</p>
+</div>
+<div class="paragraph">
+<p>When evaluating a \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar multiplication.</p>
+</div>
+<div class="paragraph">
+<p>\[
+[a_{q_0},b_{q_1}](x_{q_2}) =
+\begin{cases}
+[{a(x)}_{q_2*(q_0+q_1)}]            &amp; \text{if } a==b, \\
+[{a(x)}_{q_2*q_0},{b(x)}_{q_2*q_1}] &amp; \text{otherwise},
+\end{cases}
+\]</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below depicts the equalities of the following <code>mmlang</code> examples, where \$\Delta\$ is <code>[split]</code> and \$\nabla\$ is <code>[merge]</code>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -2371,13 +2386,22 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 </div>
 <div class="sect4">
 <h5 id="_xorthen_poly">xorThen |-poly</h5>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/pipe-poly-example.png" alt="pipe poly example" width="350">
+</div>
+</div>
 <div class="paragraph">
 <p>A <code>|-poly</code> is monoid ring.</p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{t0{q0}|t1{q1}} = \begin{cases}
-\texttt{t0{q0}} &amp; \text{if } x&#8658;\texttt{t0{q0}} \notin \texttt{obj{0}}, \\ \texttt{t1{q1}} &amp; \text{if } x&#8658;\texttt{t1{q1}} \notin \texttt{obj{0}}, \\ \texttt{obj{0}} &amp; \text{otherwise.} \end{cases}
+[a_{q_0} | b_{q_1}](x_{q_2}) =
+\begin{cases}
+{a(x)}_{q_2 * q_0} &amp; \text{if } a_{q_0}(x_{q_2}) \neq \bf{0}, \\
+{b(x)}_{q_2 * q_1} &amp; \text{if } b_{q_1}(x_{q_2}) \neq \bf{0}, \\
+\bf{0} &amp; \text{otherwise}.
+\end{cases}
 \]</p>
 </div>
 <div class="listingblock">
@@ -4235,7 +4259,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-14 01:37:01 -0600
+Last updated 2020-07-14 01:42:18 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
