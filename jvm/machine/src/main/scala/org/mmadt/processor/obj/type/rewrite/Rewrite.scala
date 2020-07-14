@@ -32,9 +32,9 @@ trait Rewrite {
   def apply[A <: Obj](obj: A, writer: Writer): A
 
   // utility methods
-  def getRewrites(obj: Obj): List[Obj] = obj.trace.filter(x => x._2.op == Tokens.rewrite).map(x => x._2.arg0[Obj]).sortBy(x => -x.domainObj[Obj].trace.length)
-  def putRewrites(rewrites: List[Obj], obj: Obj): Obj = obj.trace.map(x => x._2).foldLeft(rewrites.foldLeft(obj.domainObj[Obj])((x, y) => RewriteOp(y).exec(x)))((x, y) => y.exec(x))
-  def removeRewrites(obj: Obj): Obj = obj.trace.map(x => x._2).filter(x => x.op != Tokens.rewrite).foldLeft(obj.domainObj[Obj])((x, y) => y.exec(x))
+  def getRewrites(obj: Obj): List[Obj] = obj.trace.filter(x => x._2.op == Tokens.rewrite).map(x => x._2.arg0[Obj]).sortBy(x => -x.domainObj.trace.length)
+  def putRewrites(rewrites: List[Obj], obj: Obj): Obj = obj.trace.map(x => x._2).foldLeft(rewrites.foldLeft(obj.domainObj)((x, y) => RewriteOp(y).exec(x)))((x, y) => y.exec(x))
+  def removeRewrites(obj: Obj): Obj = obj.trace.map(x => x._2).filter(x => x.op != Tokens.rewrite).foldLeft(obj.domainObj)((x, y) => y.exec(x))
   def getPolyOrObj(obj: Obj): Obj = obj.domain match {
     case alst: Lst[_] => alst.glist.head
     case _ => obj

@@ -27,7 +27,6 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.TypeOp
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 import scala.util.Try
@@ -43,7 +42,7 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
     case _: __ if __.isToken(other) => Try[Boolean] {
       this.test(Inst.resolveToken(this, other))
     }.getOrElse(false)
-    case _: Type[_] => (baseName(this).equals(baseName(other.domain)) || __.isAnonObj(other.domain)) && withinQ(this, other.domain) && this.compute(other).alive
+    case _: Type[_] => (sameBase(this, other.domain) || __.isAnonObj(other.domain)) && withinQ(this, other.domain) && this.compute(other).alive
     case avalue: Value[_] => this.g.equals(avalue.g) && withinQ(this, avalue)
     case _ => false
   }

@@ -55,7 +55,7 @@ object OpInstResolver {
 
   def applyRewrites[A <: Obj](obj: A): A = {
     if (obj.trace.map(x => x._2).exists(x => providers.map(y => "=" + y.name()).contains(x.op)))
-      this.rewrites.foldLeft(obj.domainObj[Obj])((x, y) => y.exec(x)) `=>` obj
+      this.rewrites.foldLeft(obj.domainObj)((x, y) => y.exec(x)) `=>` obj
     else
       obj
   }

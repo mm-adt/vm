@@ -95,7 +95,7 @@ class TypeTest extends FunSuite {
   test("type structure w/ two canonical types") {
     val boolType: BoolType = int.plus(10).mult(1).is(int.gt(20)).gt(100).asInstanceOf[BoolType]
     assertResult(int)(boolType.domain)
-    assertResult(Nil)(boolType.domain[IntType].trace)
+    assertResult(Nil)(boolType.domain.trace)
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][gt,100]")(boolType.toString)
     assertResult(bool.q(0, 1))(boolType.range)
     assertResult(bool)(boolType.range.q(qOne))
@@ -138,10 +138,10 @@ class TypeTest extends FunSuite {
   def domainTest(atype: Type[_]): Unit = {
     assertResult(int)(atype.domain)
     assertThrows[LanguageException] {
-      atype.domain[IntType].rinvert()
+      atype.domain.rinvert()
     }
     assertThrows[LanguageException] {
-      atype.domain[IntType].linvert()
+      atype.domain.linvert()
     }
 
   }

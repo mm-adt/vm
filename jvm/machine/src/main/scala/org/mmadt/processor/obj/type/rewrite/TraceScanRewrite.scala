@@ -36,7 +36,7 @@ object TraceScanRewrite extends Rewrite {
     var b: Obj = a
     rewrites.foreach(d => {
       a = b
-      b = b.domainObj[Obj]
+      b = b.domainObj
       val range = getPolyOrObj(d.range)
       val domain = getPolyOrObj(d)
       val domainTrace = domain.trace.map(x => x._2)
@@ -54,7 +54,7 @@ object TraceScanRewrite extends Rewrite {
           }
         } else {
           b = aTrace.foldLeft(b)((x, y) => y.exec(x)) // the window has gone over the instruction length, write unmatched instructions to type
-          a = a.domain[Obj]
+          a = a.domain
         }
       }
     })
@@ -77,14 +77,14 @@ object TraceScanRewrite extends Rewrite {
     if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
   }
 
-  def chooseRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range.foldLeft(query.domainObj[Obj])((x, y) => y.exec(x)) `|` trace.filter(x => x.op != Tokens.rewrite).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge
+  def chooseRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range.foldLeft(query.domainObj)((x, y) => y.exec(x)) `|` trace.filter(x => x.op != Tokens.rewrite).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge
   def replaceRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = {
     //println(range + "####" + trace)
     if (range.length == trace.length) {
       query.compute(trace
         .zip(range)
         .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._1.args.zip(x._2.args).map(y => y._1.compute(y._2))))
-        .foldLeft(query.domainObj[Obj])((x, y) => y.exec(x)))
+        .foldLeft(query.domainObj)((x, y) => y.exec(x)))
     } else {
       range.foldLeft(query)((x, y) => y.exec(x))
     }

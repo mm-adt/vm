@@ -25,7 +25,6 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -33,7 +32,7 @@ import org.mmadt.storage.StorageFactory._
 trait Type[+T <: Obj] extends Obj with ExplainOp {
   // type signature properties and functions
   //def value: Any = throw LanguageException.typesNoValue(this)
-  override def range: this.type = this.isolate
+  override lazy val range: this.type = this.isolate
 
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
@@ -41,7 +40,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
     case _: __ if __.isTokenRoot(other) =>
       val temp = Inst.resolveToken(this, other)
       if (temp == other) true else this.test(temp)
-    case _: Type[_] => (baseName(this).equals(baseName(other.domain)) || __.isAnon(this) || __.isAnonObj(other.domain)) && withinQ(this, other)
+    case _: Type[_] => (sameBase(this, other.domain) || __.isAnon(this) || __.isAnonObj(other.domain)) && withinQ(this, other)
     case _ => false
   }
 

@@ -70,7 +70,7 @@ trait Obj
 
   //////////////////////////////////////////////////////////////
   // data associated with every obj
-  val name: String // the obj type name TODO: should be ref to type?
+  val name: String // the obj type name
   val q: IntQ // the obj quantifier
   val via: ViaTuple // the obj's incoming edge in the obj-graph
   //////////////////////////////////////////////////////////////
@@ -84,8 +84,8 @@ trait Obj
   def <=[D <: Obj](domainType: D): this.type =
     if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert(), domainType.via._2))
-  def range: Type[Obj] = asType(this.isolate)
-  def domain[D <: Obj]: Type[D] = if (this.root) asType(this).asInstanceOf[Type[D]] else asType(this.via._1).domain[D]
+  lazy val range: Type[Obj] = asType(this.isolate)
+  lazy val domain: Type[Obj] = if (this.root) asType(this).asInstanceOf[Type[Obj]] else asType(this.via._1).domain
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
@@ -94,14 +94,14 @@ trait Obj
     via = if (this.root) base else (this.via._1, this.via._2.q(q)))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
-  def alive: Boolean = this.q != qZero
+  lazy val alive: Boolean = this.q != qZero
 
   // via methods
   def root: Boolean = null == this.via || null == this.via._1
-  def isolate: this.type = this.clone(q = this.q, via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
-  def domainObj[D <: Obj]: D = if (this.root) this.asInstanceOf[D] else this.via._1.domainObj[D] // TODO: rename to like start/end (the non-typed versions of domain/range)
+  lazy val isolate: this.type = this.clone(q = this.q, via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
+  lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj // TODO: rename to like start/end (the non-typed versions of domain/range)
+  lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else qZero, via = (obj, inst))
-  def trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
   def linvert(): this.type = {
     if (this.root) throw LanguageException.zeroLengthPath(this)

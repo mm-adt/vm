@@ -38,9 +38,9 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
   with ZeroOp[Rec[A, B]] {
 
   def g: RecTuple[A, B]
-  def gmap: collection.Map[A, B] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
-  def glist: Seq[B] = gmap.values.toSeq
   def gsep: String = g._1
+  lazy val gmap: collection.Map[A, B] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
+  def glist: Seq[B] = gmap.values.toSeq
   override def equals(other: Any): Boolean = other match {
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
       this.name.equals(arec.name) &&

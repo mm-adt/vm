@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory._
  */
 trait Processor {
   def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E
-  def apply[S <: Obj, E <: Obj](rangeType: Type[E]): Type[E] = this.apply(rangeType.domain[S], rangeType).asInstanceOf[Type[E]]
+  def apply[S <: Obj, E <: Obj](rangeType: Type[E]): Type[E] = this.apply(rangeType.domain, rangeType).asInstanceOf[Type[E]]
 }
 
 object Processor {

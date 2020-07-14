@@ -64,6 +64,7 @@ package object obj {
       case _ => false
     }
   }
+  def sameBase(objA: Obj, objB: Obj): Boolean = baseName(objA).equals(baseName(objB))
 }
 
 

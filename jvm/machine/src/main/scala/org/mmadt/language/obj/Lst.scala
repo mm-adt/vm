@@ -38,8 +38,8 @@ trait Lst[A <: Obj] extends Poly[A]
   with ZeroOp[Lst[A]] {
 
   def g: LstTuple[A]
-  override def gsep: String = g._1
-  override def glist: List[A] = g._2 /*.map(x => x.hardQ(multQ(this.q, x.q)))*/ .map(x => if (this.isInstanceOf[Type[_]]) x else Obj.copyDefinitions(this, x))
+  def gsep: String = g._1
+  lazy val glist: List[A] = g._2 /*.map(x => x.hardQ(multQ(this.q, x.q)))*/ .map(x => if (this.isInstanceOf[Type[_]]) x else Obj.copyDefinitions(this, x))
   override def equals(other: Any): Boolean = other match {
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
