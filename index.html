@@ -646,12 +646,16 @@ f: S \rightarrow E.
 </div>
 <div class="sect3">
 <h4 id="_mm_adt_algebras">mm-ADT Algebras</h4>
-<div class="imageblock left">
+<div class="imageblock right">
 <div class="content">
-<img src="./images/introduction/the-algebras.png" alt="the algebras" width="600">
+<img src="./images/introduction/the-algebras.png" alt="the algebras" width="550">
 </div>
 </div>
-<table class="tableblock frame-all grid-all right" style="width: 30%;">
+<div class="paragraph">
+<p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component&#8217;s particular interpretation of mm-ADT. The <strong>language algebra</strong>
+is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturing the serial composition of parameterized instructions (<code>inst</code>) in the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) used for compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a non- <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary "juxtapostion" operator. These algebras represent the particular perspective that each component has on a shared data structure called the <strong>obj graph</strong> which realizes a <em>ringoid-embedding of a monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
+</div>
+<table class="tableblock frame-all grid-all left" style="width: 30%;">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -664,10 +668,6 @@ f: S \rightarrow E.
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> magma</p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code> monoid</p></td>
 </tr>
@@ -675,16 +675,16 @@ f: S \rightarrow E.
 <td class="tableblock halign-left valign-top"><p class="tableblock">Processor</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code> ringoid</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> magma</p></td>
+</tr>
 </tbody>
 </table>
-<hr>
-<div class="paragraph">
-<p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component&#8217;s particular interpretation of mm-ADT. The <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a non- <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary "juxtapostion" operator. The <strong>language algebra</strong> is a
-is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturing the serially composition of parameterized instructions (<code>inst</code>) in the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) used for compilation and evaluation of mm-ADT types (or programs). These algebras represent the particular perspective that each component has on a shared data structure called the <strong>obj graph</strong> which realizes a <em>ringoid-embedding of a monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
-</div>
 <div class="paragraph">
 <p>The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated by mm-ADT technologies. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
 </div>
+<hr>
 </div>
 </div>
 <div class="sect2">
@@ -4235,7 +4235,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-14 00:47:20 -0600
+Last updated 2020-07-14 01:37:01 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
