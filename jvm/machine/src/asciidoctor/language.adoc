@@ -598,7 +598,9 @@ In the examples below, the value 3 is `[split]` (`-<`) across the respective `po
 
 [grid=none,frame=none,cols="7,4"]
 |===
-|The resultant `polys` can then have their terms `[merged]` (`>-`) into a single `int{1,2}` `strm`. There is a subtlety to highlight. The result of any `inst` is a single `obj`. In particular, to the `[merge]` in these examples, the output is a single `int` or a single `int` `strm` containing two `ints`. mm-ADT evaluates unary functions: one `obj` input yields one `obj` output.
+|&nbsp;
+
+The resultant `polys` can then have their terms `[merged]` (`>-`) into a single `int{1,2}` `strm`. There is a subtlety to highlight. The result of any `inst` is a single `obj`. In particular, to the `[merge]` in these examples, the output is a single `int` or a single `int` `strm` containing two `ints`. mm-ADT evaluates unary functions: one `obj` input yields one `obj` output.
 a|
 [exec]
 ----
@@ -606,7 +608,6 @@ a|
 3-<([plus,1]\|[mult,2])>-
 3-<([plus,1];[mult,2])>-
 ----
-'''
 |The "_split-merge_"-pattern (`-<()>-`) is common enough to warrant a single, unifying instruction called `[splitmerge]` and a corresponding sugar of `[poly]`. If the evaluating processor encounters `[splitmerge]`, it can compute using a `poly` of streams versus a stream of `polys` as may be required with `[split]`/`[merge]`. The difference is significant in distributed environments, where the former supports decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.
 a|
 [exec]
@@ -615,8 +616,9 @@ a|
 3[[plus,1]\|[mult,2]]
 3[[plus,1];[mult,2]]
 ----
-'''
-|Finally, the most compact sugar forms of the running "_split-merge_"-examples is presented below. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
+|&nbsp;
+
+Finally, the most compact sugar forms of the running "_split-merge_"-examples is presented below. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
 a|
 [exec]
 ----
@@ -634,18 +636,33 @@ image::comma-poly-example.png[align=center,width=350]
 
 A `,-poly` is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. The mm-ADT `obj` is the  https://en.wikipedia.org/wiki/Product_ring[direct product]  of two rings:
 
-. *object ring* \$\langle \tt{object},=>,-< >- \rangle \$ and
+. *object ring* \$\langle \tt{object},=>,[ ] \rangle \$ and
 . *quantifier ring* \$\langle Q, \ast, + \rangle \$.
 
 If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in Q\$ are the elements of the product pairs denoting an `obj`, then the additive operator of the `obj` ring is defined as
 \[
-a\{ q_0 \} + b\{ q_1 \} =
+[a_{q_0},b_{q_1}] =
 \begin{cases}
-  a\{q_0+q_1\} & \text{if } a==b, \\
-  \prec a\{ q_0 \},b\{ q_1 \} \succ & \text{otherwise},
+  [a_{q_0+q_1}]     & \text{if } a==b, \\
+  [a_{q_0},b_{q_1}] & \text{otherwise},
 \end{cases}
 \]
-where the \$+\$ between quantifiers denotes the quantifier ring's additive operator (typically `[plus]` for `int` quantifiers) and \$\prec \tt{obj},\ldots,\tt{obj} \succ \$ denotes `obj` addition (stream `[split]`/`[merge]`). Given the https://en.wikipedia.org/wiki/Commutative_property[commutative nature] of the `,-poly` abelian group, any two equal objects in \$\tt{object}\$ can be *bulked* by summing their quantifiers. The https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the following `mmlang` examples, where \$\Delta\$ is `[split]` and \$\nabla\$ is `[merge]`.
+where the \$+\$ between quantifiers denotes the quantifier ring's additive operator (typically `[plus]` for `int` quantifiers) and \$[\tt{obj},\ldots,\tt{obj}]\$ denotes `obj` addition (stream `[split]`/`[merge]`). Given the https://en.wikipedia.org/wiki/Commutative_property[commutative nature] of the `,-poly` abelian group, any two equal objects in \$\tt{object}\$ can be *bulked* by summing their quantifiers.
+
+When evaluating a \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebraic https://en.wikipedia.org/wiki/Semigroup_action[action] satisfying the equation below. From another perspective, the `,-poly` is a left https://en.wikipedia.org/wiki/Module_(mathematics)[module] and \$x\$ a scalar in this generalized scalar multiplication.
+
+\[
+[a_{q_0},b_{q_1}](x_{q_2}) =
+\begin{cases}
+[{a(x)}_{q_2*(q_0+q_1)}]            & \text{if } a==b, \\
+[{a(x)}_{q_2*q_0},{b(x)}_{q_2*q_1}] & \text{otherwise},
+\end{cases}
+\]
+
+
+
+The https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the following `mmlang` examples, where \$\Delta\$ is `[split]` and \$\nabla\$ is `[merge]`.
+
 
 image::comma-lst-tensor-example.png[align=center,width=725]
 
@@ -741,11 +758,17 @@ At which point the two types are equivalent and can be merged accordingly.
 
 ===== xorThen |-poly
 
+image::pipe-poly-example.png[align=center,width=350]
+
 A `|-poly` is monoid ring.
 
 \[
-\texttt{t0\{q0\}|t1\{q1\}} = \begin{cases}
-\texttt{t0\{q0\}} & \text{if } x=>\texttt{t0\{q0\}} \notin \texttt{obj\{0\}}, \\ \texttt{t1\{q1\}} & \text{if } x=>\texttt{t1\{q1\}} \notin \texttt{obj\{0\}}, \\ \texttt{obj\{0\}} & \text{otherwise.} \end{cases}
+[a_{q_0} | b_{q_1}](x_{q_2}) =
+\begin{cases}
+{a(x)}_{q_2 * q_0} & \text{if } a_{q_0}(x_{q_2}) \neq \bf{0}, \\
+{b(x)}_{q_2 * q_1} & \text{if } b_{q_1}(x_{q_2}) \neq \bf{0}, \\
+\bf{0} & \text{otherwise}.
+\end{cases}
 \]
 
 [exec]
