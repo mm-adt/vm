@@ -210,10 +210,9 @@ int<=int
 |From the perspective of "type-as-function," An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `\<=` and repeated type are not displayed. That is `int\<=int` is more concisely displayed as `int`.
 
 a|
-[source]
+[exec]
 ----
-mmlang> int{1}
-==>int
+int{1}
 ----
 |In most programming languages, a value can be typed `int` as in
 
@@ -419,7 +418,7 @@ NOTE: An mm-ADT `int` is currently encoded using 64-bits. In computer engineerin
 
 ==== Anonymous Type
 
-The type `bool<=int[gt,10]` has a range of `bool` and a domain of `int`. When the type is written `int[gt,10]`, the range is deduced by a compiling automata that applies `int` to `[gt,10]` to yield `bool`. In fact, the range of `int[gt,10]` is an *anonymous type* (called an *anon* for brevity) and is denoted `_` (or with no character in most situations). An anon is a type that has not been grounded to a base type.
+The type `bool\<=int[gt,10]` has a range of `bool` and a domain of `int`. When the type is written `int[gt,10]`, the range is deduced by a compiling automata that applies `int` to `[gt,10]` to yield `bool`. In fact, the range of `int[gt,10]` is an *anonymous type* (called an *anon* for brevity) and is denoted `_` (or with no character in most situations). An anon is a type that has not been grounded to a base type.
 
 [exec]
 ----
@@ -597,32 +596,35 @@ In the examples below, the value 3 is `[split]` (`-<`) across the respective `po
 <2> A `|-lst` type yielding a `|-lst` value via `(3+1,obj{0})` (_xorThen_).
 <3> A `;-lst` type yielding a `;-lst` value via `(3+1,3+1*2)`  (_andThen_).
 
-The resultant `polys` can then have their terms `[merged]` (`>-`) into a single `int{1,2}` `strm`.
-
+[grid=none,frame=none,cols="7,5"]
+|===
+|The resultant `polys` can then have their terms `[merged]` (`>-`) into a single `int{1,2}` `strm`. There is a subtlety to highlight. The result of any `inst` is a single `obj`. In particular, to the `[merge]` in these examples, the output is a single `int` or a single `int` `strm` containing two `ints`. mm-ADT evaluates unary functions: one `obj` input yields one `obj` output.
+a|
 [exec]
 ----
-3-<([plus,1],[mult,2])>-   //<1>
-3-<([plus,1]|[mult,2])>-   //<2>
-3-<([plus,1];[mult,2])>-   //<3>
+3-<([plus,1],[mult,2])>-
+3-<([plus,1]\|[mult,2])>-
+3-<([plus,1];[mult,2])>-
 ----
 
-The "split-merge" pattern `-<()>-` is common enough to warrant a unified instruction.
-
+|The "_split-merge_"-pattern (`-<()>-`) is common enough to warrant a single, unifying instruction called `[splitmerge]` and a corresponding sugar of `[poly]`. If the evaluating processor encounters `[splitmerge]`, it can compute using a `poly` of streams versus a stream of `polys` as may be required with `[split]`/`[merge]`. The difference is significant in distributed environments, where the former supports decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.
+a|
 [exec]
 ----
-3[[plus,1],[mult,2]]       //<1>
-3[[plus,1]|[mult,2]]       //<2>
-3[[plus,1];[mult,2]]       //<3>
+3[[plus,1],[mult,2]]
+3[[plus,1]\|[mult,2]]
+3[[plus,1];[mult,2]]
 ----
 
-Finally, the most compact sugar forms of the running "split-merge" example is presented below. Given the verbosity of branching expressions, all subsequent examples will typically leverage as many sugar constructs as possible to ensure readability.
-
+|Finally, the most compact sugar forms of the running "_split-merge_"-examples is presented below. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
+a|
 [exec]
 ----
-3[+1,*2]                   //<1>
-3[+1|*2]                   //<2>
-3[+1;*2]                   //<3>
+3[+1,*2]
+3[+1\|*2]
+3[+1;*2]
 ----
+|===
 
 NOTE: The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`. This `poly` denotes _coupled parallel streams_, where each subsequent instruction operates on each term of the `poly` in a lock-step manner. However, if there are no intermediate instructions between `[split]` and `[merge]` (typically specified with `[combine]`), then this is semantically equivalent to _decoupled parallel streams_ whereby whenever an `obj` is made available by a branch, it can be immediately placed on the outgoing merged stream. This holds because streams are always unordered.
 

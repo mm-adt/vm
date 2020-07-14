@@ -23,6 +23,7 @@
 package org.mmadt.language.mmlang
 
 import java.io.File
+import java.util
 
 import org.asciidoctor.ast.{ContentModel, StructuralNode}
 import org.asciidoctor.extension.{BlockProcessor, Contexts, Name, Reader}
@@ -62,7 +63,10 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
       }
     })
     println(builder)
-    this.createBlock(parent, "listing", builder.toString(), JavaConverters.mapAsJavaMap(Map[String, Object]("style" -> style, "language" -> language)))
+    val endAttributes: java.util.Map[String, Object] = new util.HashMap[String, Object]
+    endAttributes.putAll(config)
+    endAttributes.putAll(JavaConverters.mapAsJavaMap(Map("style" -> style, "language" -> language)))
+    this.createBlock(parent, "listing", builder.toString(), endAttributes)
   }
 }
 
