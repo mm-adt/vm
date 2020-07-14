@@ -646,7 +646,12 @@ f: S \rightarrow E.
 </div>
 <div class="sect3">
 <h4 id="_mm_adt_algebras">mm-ADT Algebras</h4>
-<table class="tableblock frame-all grid-all left" style="width: 30%;">
+<div class="imageblock left">
+<div class="content">
+<img src="./images/introduction/the-algebras.png" alt="the algebras" width="600">
+</div>
+</div>
+<table class="tableblock frame-all grid-all right" style="width: 30%;">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -672,6 +677,7 @@ f: S \rightarrow E.
 </tr>
 </tbody>
 </table>
+<hr>
 <div class="paragraph">
 <p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component&#8217;s particular interpretation of mm-ADT. The <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a non- <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary "juxtapostion" operator. The <strong>language algebra</strong> is a
 is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturing the serially composition of parameterized instructions (<code>inst</code>) in the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) used for compilation and evaluation of mm-ADT types (or programs). These algebras represent the particular perspective that each component has on a shared data structure called the <strong>obj graph</strong> which realizes a <em>ringoid-embedding of a monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
@@ -2095,8 +2101,8 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])     <i class="conum" data-value="3"></i><b>
 </div>
 <table class="tableblock frame-none grid-none stretch">
 <colgroup>
-<col style="width: 58.3333%;">
-<col style="width: 41.6667%;">
+<col style="width: 63.6363%;">
+<col style="width: 36.3637%;">
 </colgroup>
 <tbody>
 <tr>
@@ -2111,7 +2117,8 @@ mmlang&gt; 3-&lt;([plus,1]|[mult,2])&gt;-
 mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-
 ==&gt;8</code></pre>
 </div>
-</div></div></td>
+</div>
+<hr></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The "<em>split-merge</em>"-pattern (<code>-&lt;()&gt;-</code>) is common enough to warrant a single, unifying instruction called <code>[splitmerge]</code> and a corresponding sugar of <code>[poly]</code>. If the evaluating processor encounters <code>[splitmerge]</code>, it can compute using a <code>poly</code> of streams versus a stream of <code>polys</code> as may be required with <code>[split]</code>/<code>[merge]</code>. The difference is significant in distributed environments, where the former supports decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.</p></td>
@@ -2125,7 +2132,8 @@ mmlang&gt; 3[[plus,1]|[mult,2]]
 mmlang&gt; 3[[plus,1];[mult,2]]
 ==&gt;8</code></pre>
 </div>
-</div></div></td>
+</div>
+<hr></div></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Finally, the most compact sugar forms of the running "<em>split-merge</em>"-examples is presented below. Given the verbosity of branching expressions, all subsequent <code>mmlang</code> examples will favor sugar constructs.</p></td>
@@ -4227,7 +4235,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-13 17:39:48 -0600
+Last updated 2020-07-14 00:47:20 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
