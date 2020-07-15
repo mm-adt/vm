@@ -524,7 +524,7 @@ If the multiplicative monoid compositions yielded values (evaluations) as oppose
 
 NOTE: For visual simplicity, quantifiers were not diagrammed. Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the _universal commutativity of coefficients theorem_ of https://zenodo.org/record/2565243[stream ring theory]. This theorem is used in mm-ADT's optimizing compiler and will be discussed at length in a later section of the documentation.
 
-In general, an mm-ADT `poly` is used to _decouple_ two algebraic structures such that one is free and the other non-free. From the perspective of applied computing, the free algebras are https://en.wikipedia.org/wiki/Lazy_evaluation[delayed], unevaluated structures and the non-free algebras are https://en.wikipedia.org/wiki/Eager_evaluation[eager], evaluated structures. There are three kinds of `poly`. Each draws their terms from the same `obj` carrier set and are distinguished, in `mmlang`, by their respective term separator which denotes a particular "additive" binary operator: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `,` has a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group], `|` a free additive group, and `;` a free semicommutative multiplicative monoid. The general form of each kind of `poly` is expressed below in `mmlang`.
+In general, an mm-ADT `poly` is used to _decouple_ two algebraic structures such that one is free and the other non-free. From the perspective of applied computing, the free algebras are https://en.wikipedia.org/wiki/Lazy_evaluation[delayed], unevaluated structures and the non-free algebras are https://en.wikipedia.org/wiki/Eager_evaluation[eager], evaluated structures. There are three kinds of `poly`. Each draws their terms from the same `obj` carrier set and are distinguished, in `mmlang`, by their respective term separator which denotes a particular "additive" binary operator: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `,` has a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group], `|` a free additive https://en.wikipedia.org/wiki/Group_(mathematics)[group], and `;` a free semicommutative multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. The general form of each kind of `poly` is expressed below in `mmlang`.
 
 [.text-center]
 `(x0{q0},x1{q1},...,xn{qn})` +
@@ -636,12 +636,12 @@ NOTE: The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`.
 
 image::comma-poly-example.png[align=center,width=350]
 
-A `,-poly` is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. The mm-ADT `obj` is the  https://en.wikipedia.org/wiki/Product_ring[direct product]  of two rings:
+image:../language/obj-type-value-q.png[float=right,width=275] A `,-poly` is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. Recall that the mm-ADT `obj` stream ring is formed via a https://en.wikipedia.org/wiki/Product_ring[direct product] of a https://en.wikipedia.org/wiki/Semiring[semiring] and a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring]:
 
-. *object ring* \$\langle \tt{object},=>,[ ] \rangle \$ and
-. *quantifier ring* \$\langle Q, \ast, + \rangle \$.
+. *object semiring* \$\langle \tt{object},=>,-< \rangle \$ and
+. *quantifier ring* \$\langle \tt{q}, \ast, + \rangle \$,
 
-If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in Q\$ are the elements of the product pairs denoting an `obj`, then the additive operator of the `obj` ring is defined as
+where the quantifier ring, by definition, must be an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an `obj`, then the additive operator of the `obj` stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -649,7 +649,7 @@ If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in Q\$ are the elements of the produc
   [a_{q_0},b_{q_1}] & \text{otherwise},
 \end{cases}
 \]
-where the \$+\$ between quantifiers denotes the quantifier ring's additive operator (typically `[plus]` for `int` quantifiers) and \$[\tt{obj},\ldots,\tt{obj}]\$ denotes `obj` addition (stream `[split]`/`[merge]`). Given the https://en.wikipedia.org/wiki/Commutative_property[commutative nature] of the `,-poly` abelian group, any two equal objects in \$\tt{object}\$ can be *bulked* by summing their quantifiers.
+where \$+\$ denotes the respective quantifier ring's additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed such that \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the time and space dimensions.
 
 When evaluating a \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebraic https://en.wikipedia.org/wiki/Semigroup_action[action] satisfying the equation below. From another perspective, the `,-poly` is a left https://en.wikipedia.org/wiki/Module_(mathematics)[module] and \$x\$ a scalar in this generalized scalar multiplication.
 
