@@ -1921,7 +1921,7 @@ For visual simplicity, quantifiers were not diagrammed. Furthermore, the reason 
 </table>
 </div>
 <div class="paragraph">
-<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> two algebraic structures such that one is free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the non-free algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. There are three kinds of <code>poly</code>. Each draws their terms from the same <code>obj</code> carrier set and are distinguished, in <code>mmlang</code>, by their respective term separator which denotes a particular "additive" binary operator: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>,</code> has a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>, <code>|</code> a free additive group, and <code>;</code> a free semicommutative multiplicative monoid. The general form of each kind of <code>poly</code> is expressed below in <code>mmlang</code>.</p>
+<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> two algebraic structures such that one is free and the other non-free. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the non-free algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. There are three kinds of <code>poly</code>. Each draws their terms from the same <code>obj</code> carrier set and are distinguished, in <code>mmlang</code>, by their respective term separator which denotes a particular "additive" binary operator: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>,</code> has a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>, <code>|</code> a free additive <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>, and <code>;</code> a free semicommutative multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. The general form of each kind of <code>poly</code> is expressed below in <code>mmlang</code>.</p>
 </div>
 <div class="paragraph text-center">
 <p><code>(x0{q0},x1{q1},&#8230;&#8203;,xn{qn})</code><br>
@@ -2175,20 +2175,20 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </div>
 </div>
 <div class="paragraph">
-<p>A <code>,-poly</code> is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> maintaining a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. The mm-ADT <code>obj</code> is the  <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a>  of two rings:</p>
+<p><span class="image right"><img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="275"></span> A <code>,-poly</code> is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> maintaining a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. Recall that the mm-ADT <code>obj</code> stream ring is formed via a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a>:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>object ring</strong> \$\langle \tt{object},&#8658;,[ ] \rangle \$ and</p>
+<p><strong>object semiring</strong> \$\langle \tt{object},&#8658;,-&lt; \rangle \$ and</p>
 </li>
 <li>
-<p><strong>quantifier ring</strong> \$\langle Q, \ast, + \rangle \$.</p>
+<p><strong>quantifier ring</strong> \$\langle \tt{q}, \ast, + \rangle \$,</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
-<p>If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in Q\$ are the elements of the product pairs denoting an <code>obj</code>, then the additive operator of the <code>obj</code> ring is defined as
+<p>where the quantifier ring, by definition, must be an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an <code>obj</code>, then the additive operator of the <code>obj</code> stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -2196,7 +2196,7 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
   [a_{q_0},b_{q_1}] &amp; \text{otherwise},
 \end{cases}
 \]
-where the \$+\$ between quantifiers denotes the quantifier ring&#8217;s additive operator (typically <code>[plus]</code> for <code>int</code> quantifiers) and \$[\tt{obj},\ldots,\tt{obj}]\$ denotes <code>obj</code> addition (stream <code>[split]</code>/<code>[merge]</code>). Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative nature</a> of the <code>,-poly</code> abelian group, any two equal objects in \$\tt{object}\$ can be <strong>bulked</strong> by summing their quantifiers.</p>
+where \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed such that \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the time and space dimensions.</p>
 </div>
 <div class="paragraph">
 <p>When evaluating a \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar multiplication.</p>
@@ -4262,7 +4262,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-14 02:52:43 -0600
+Last updated 2020-07-15 12:03:28 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
