@@ -31,44 +31,36 @@ import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
-import scala.util.Try
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait GetOp[A <: Obj, B <: Obj] {
   this: Obj =>
-  def get(key: A): B = GetOp(key).exec(this)
-  def get[BB <: Obj](key: A, btype: BB): BB = GetOp[A, BB](key).exec(this)
+  def get(key: A): B = GetOp(key, __.asInstanceOf[B]).exec(this)
+  def get[BB <: Obj](key: A, btype: BB): BB = GetOp[A, BB](key, btype).exec(this)
 }
 object GetOp extends Func[Obj, Obj] {
-  def apply[A <: Obj, B <: Obj](key: A, typeHint: B = obj.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key)), func = this)
+  def apply[A <: Obj, B <: Obj](key: A, typeHint: B = __.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key, typeHint)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val key: Obj = inst.arg0[Obj]
+    val typeHint: Obj = Inst.oldInst(inst).arg1[Obj]
+    val newInst: Inst[Obj, Obj] = inst.clone(g = (Tokens.get, List(key, typeHint)))
     val value: Obj = start match {
-      case arec: Rec[Obj, Obj] =>
-        val results = arec.gmap.filter(a => key.test(a._1)).values.flatMap(a => a.toStrm.values).filter(a => a.alive)
-        if (results.isEmpty) if (arec.isInstanceOf[Type[_]]) __ else zeroObj
-        else if (results.size == 1) results.head
-        else strm(results.toSeq)
-      case alst: Lst[_] => key match {
-        case aint: IntValue =>
-          Try[Obj] {
-            alst.glist(aint.g.toInt)
-          }.getOrElse(start match {
-            case _: Value[_] =>
-              LanguageException.PolyException.testIndex(alst, aint.g.toInt)
-              obj
-            case _: Type[_] => __
-          })
-        case _ => obj
+      case arec: Rec[Obj, Obj] => strm(arec.gmap.filter(a => key.test(a._1)).values.toSeq)
+      case alst: Lst[_] if key.isInstanceOf[Int] => key match {
+        case aint: IntValue => LanguageException.PolyException.testIndex(alst, aint.g.toInt); alst.glist(aint.g.toInt) // TODO: multi-get with int types like rec
+        case _ => typeHint
       }
       case _: Value[_] => zeroObj
-      case _ => start
+      case anon: __ => anon
+      case _ => typeHint
     }
-    value match {
-      case astrm: Strm[_] => strm(astrm.values.map(x => x.clone(via = (start, inst))))
-      case _ => value.via(start, inst)
-    }
+    (value match {
+      case astrm: Strm[_] =>
+        if (astrm.values.isEmpty) if (start.isInstanceOf[Type[_]]) typeHint else zeroObj
+        else if (1 == astrm.values.size) astrm.values.head
+        else return strm(astrm.values.map(x => x.clone(via = (start, newInst))))
+      case _ => value
+    }).via(start, newInst)
   }
 }

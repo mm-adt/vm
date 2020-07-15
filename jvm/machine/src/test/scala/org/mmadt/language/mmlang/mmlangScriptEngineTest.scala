@@ -131,9 +131,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec(str("name") -> str, str("age") -> int))(engine.eval("(   'name'   ->str ,   'age' ->int)"))
     assertResult(rec(str("name") -> str, str("age") -> int))(engine.eval("('name'->str,'age'->int)"))
     assertResult(rec(str("name") -> str, str("age") -> int).q(30))(engine.eval("('name'->str,'age'->int){30}"))
-    assertResult(rec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("('name'->str,'age'->int){30}[get,'age'][gt,30]"))
-    assertResult(rec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("bool{30}<=('name'->str,'age'->int){30}[get,'age'][gt,30]"))
-    assertResult(bool.q(*) <= rec(str("name") -> str, str("age") -> int).q(*).get("age", int).gt(30))(engine.eval("bool{*}<=('name'->str,'age'->int){*}[get,'age'][gt,30]"))
+    assertResult(rec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("('name'->str,'age'->int){30}[get,'age',int][gt,30]"))
+    assertResult(rec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("bool{30}<=('name'->str,'age'->int){30}[get,'age',int][gt,30]"))
+    assertResult(bool.q(*) <= rec(str("name") -> str, str("age") -> int).q(*).get("age", int).gt(30))(engine.eval("bool{*}<=('name'->str,'age'->int){*}[get,'age',int][gt,30]"))
   }
 
   test("rec named value parsing") {
