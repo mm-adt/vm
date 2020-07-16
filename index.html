@@ -2016,11 +2016,58 @@ poly  ::= lst | rec</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Like <code>obj</code>, there are <strong>value</strong>-<code>polys</code> and <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type-<code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiway_branch">branching</a> data process. mm-ADT provides two structures that are generally useful when working with <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>).</p>
+<p><span class="image right"><img src="./images/language/poly-kinds.png" alt="poly kinds" width="225"></span> Like <code>obj</code>, there are <strong>value</strong>-<code>polys</code> and <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type-<code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiway_branch">branching</a> data process. mm-ADT provides two structures that are generally useful when working with <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>).</p>
 </div>
-<div class="paragraph">
-<p><span class="image right"><img src="./images/language/poly-kinds.png" alt="poly kinds" width="225"></span></p>
-</div>
+<table class="tableblock frame-all grid-all right small" style="width: 50%;">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3335%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">poly</th>
+<th class="tableblock halign-left valign-top">sep</th>
+<th class="tableblock halign-left valign-top">access (value)</th>
+<th class="tableblock halign-left valign-top">branch (type)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock"><code>lst</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Flow-based_programming#Multiplexing_processes">copy</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/CAR_and_CDR">head</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">coalesce</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">last</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Function_composition">compose</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock"><code>rec</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">all match key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">first match key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">case</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">last match key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Method_cascading">cascade</a></p></td>
+</tr>
+</tbody>
+</table>
 <div class="ulist">
 <ul>
 <li>
@@ -4391,7 +4438,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 01:06:06 -0600
+Last updated 2020-07-16 01:43:36 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
