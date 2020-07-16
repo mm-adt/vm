@@ -589,6 +589,18 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
+<div class="openblock env texmacro">
+<div class="content">
+<div class="paragraph">
+<p>\def\AA{\mathbb{A}}
+\def\BB{\mathbb{B}}</p>
+</div>
+<div class="paragraph">
+<p>\newcommand{\set}[1]{ \{\,#1\,  \} }
+\newcommand{\sett}[2]{ \{\,#1\, \mid\, #2\, \} }</p>
+</div>
+</div>
+</div>
 <div class="imageblock left">
 <div class="content">
 <img src="./images/introduction/mm-adt-logo.png" alt="mm-ADT Logo" width="150">
@@ -1830,6 +1842,42 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <div class="exampleblock">
 <div class="title">Deep Dive 1. Poly Constructs in mmlang</div>
 <div class="content">
+<table class="tableblock frame-all grid-all right small" style="width: 40%;">
+<colgroup>
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 14.2857%;">
+<col style="width: 57.1429%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">name</th>
+<th class="tableblock halign-left valign-top">mmlang</th>
+<th class="tableblock halign-left valign-top">latex</th>
+<th class="tableblock halign-left valign-top">description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>split</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\Delta\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">scalar apply</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>merge</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;-</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\nabla\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">linear evaluation</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>combine</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\cdot\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">poly pairwise apply</p></td>
+</tr>
+</tbody>
+</table>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
@@ -1849,15 +1897,6 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 </li>
 <li>
 <p><code>;</code> is a polynomial term combinator denoting serial compose.</p>
-</li>
-<li>
-<p><code>-&lt;</code> is sugar for <code>[split]</code> copying the lhs <code>obj</code> across all polynomial terms.</p>
-</li>
-<li>
-<p><code>&gt;-</code> is sugar for <code>[merge]</code> joining polynomial terms into a single <code>obj</code>.</p>
-</li>
-<li>
-<p><code>=</code> is sugar for <code>[combine]</code> composing polynomial terms pair-wise.</p>
 </li>
 </ol>
 </div>
@@ -2001,7 +2040,7 @@ poly  ::= lst | rec</code></pre>
 <p>A <code>lst</code> containing all values is a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>.</p>
 </li>
 <li>
-<p>A <code>lst</code> containing a type is a copy <a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">branch</a>.</p>
+<p>A <code>lst</code> containing a type is a <em>copy</em> <a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">branch</a>.</p>
 </li>
 </ul>
 </div>
@@ -2014,7 +2053,7 @@ poly  ::= lst | rec</code></pre>
 <p>A <code>rec</code> containing all values is a <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>.</p>
 </li>
 <li>
-<p>A <code>rec</code> containing a type is a predicate <a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">branch</a>.</p>
+<p>A <code>rec</code> containing a type is a <em>predicate</em> <a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">branch</a>.</p>
 </li>
 </ul>
 </div>
@@ -2180,7 +2219,7 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>object semiring</strong> \$\langle \tt{object},&#8658;,-&lt; \rangle \$ and</p>
+<p><strong>object semiring</strong> \$\langle \tt{object},&#8658;,\Delta\nabla \rangle \$ and</p>
 </li>
 <li>
 <p><strong>quantifier ring</strong> \$\langle \tt{q}, \ast, + \rangle \$,</p>
@@ -2199,7 +2238,7 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 where \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed such that \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the time and space dimensions.</p>
 </div>
 <div class="paragraph">
-<p>When evaluating a \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar multiplication.</p>
+<p>When applying \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar "multiplication."</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2211,7 +2250,24 @@ where \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Re
 \]</p>
 </div>
 <div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below depicts the equalities of the following <code>mmlang</code> examples, where \$\Delta\$ is <code>[split]</code> and \$\nabla\$ is <code>[merge]</code>.</p>
+<p>The two cases above are expressed in <code>mmlang</code> below with the last two examples being the <code>[ ]</code> sugar of <code>-&lt;()&gt;-</code>, where in LaTeX, \$[\$ is sugar for \$\Delta\$ and \$]\$ for \$\nabla\$.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}-&lt;([plus,'a']{3},[plus,'a']{4})&gt;-
+==&gt;'xa'{14}
+mmlang&gt; 'x'{2}-&lt;([plus,'a']{3},[plus,'b']{4})&gt;-
+==&gt;'xa'{6}
+==&gt;'xb'{8}
+mmlang&gt; 'x'{2}[[plus,'a']{3},[plus,'a']{4}]
+==&gt;'xa'{14}
+mmlang&gt; 'x'{2}[[plus,'a']{3},[plus,'b']{4}]
+==&gt;'xa'{6}
+==&gt;'xb'{8}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>As another example, the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below depicts the equalities of the following <code>mmlang</code> examples, where \$\Delta\$ is <code>[split]</code> and \$\nabla\$ is <code>[merge]</code>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -2232,7 +2288,7 @@ mmlang&gt; 'mar'[plus,'ko']{2}               <i class="conum" data-value="3"></i
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>'mar'</code> <code>str</code> is copied (\$ \prec \$) and applied (\$ &#8658; \$) to each <code>[plus,'ko']</code> polynomial term and then aggregated (\$ \succ \$).</td>
+<td>The <code>'mar'</code> <code>str</code> is copied (\$ \Delta \$) and applied (\$ &#8658; \$) to each <code>[plus,'ko']</code> polynomial term and then linearly combined (\$ \nabla \$).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
@@ -2284,11 +2340,11 @@ mmlang&gt; ['b','c']+'a'         <i class="conum" data-value="2"></i><b>(2)</b>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The value <code>a</code> is split (\$\prec\$) and applied (\$&#8658;\$) to <code>[plus,'b']</code> and <code>[plus,'c']</code> elements before being merge (\$\succ\$).</td>
+<td>The value <code>a</code> is split (\$ \Delta \$) and applied (\$&#8658;\$) to <code>[plus,'b']</code> and <code>[plus,'c']</code> elements before being merge (\$ \nabla \$).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The values <code>a</code> and <code>b</code> are merged (\$\succ\$) and then applied (\$&#8658;\$) to <code>[plus,'a']</code>.</td>
+<td>The values <code>a</code> and <code>b</code> are merged (\$ \nabla \$) and then applied (\$&#8658;\$) to <code>[plus,'a']</code>.</td>
 </tr>
 </table>
 </div>
@@ -4262,7 +4318,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-15 12:03:28 -0600
+Last updated 2020-07-15 20:53:36 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
