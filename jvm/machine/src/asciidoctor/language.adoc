@@ -875,17 +875,45 @@ a|
 ----
 int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 ----
+{blank}
 |===
 :prewrap:
 
 ===== andThen ;-poly
 
-A `;-poly` is a polynomial ring with semi-commutative "addition," where "addition" is ring multiplication and thus, is monoid multiplication and monoid multiplication is only guaranteed commutative for the _filter-subring_.
-Polynomials with this structure are called https://en.wikipedia.org/wiki/Monoid_ring[monoid rings].
-In mm-ADT, monoid multiplication is standard type composition and is defined as
+image::semi-poly-example.png[align=center,width=350]
+
+The two magmas of `;-poly` (pronounced "semi poly") are the multiplicative monoid of the `obj` ring. If \$R = (\tt{obj},=>,\Delta\nabla)\$ is the `obj` ring, \$M = (\tt{obj},=>)\$ the multiplicative monoid, and \$G = (\tt{obj},\Delta\nabla)\$ the additive abelian group, then `;-poly` is an \$R\$-module \$M\$ whose elements are in \$M\$. That is, `;-poly` has a free and non-free partially commutative monoid: \$F(M)\$ and \$M\$. It places elements of the multiplicative monoid \$M\$ within a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]. While the elements of the trace monoid are geometrically combined (instead of linearly combined by the additive \$G\$ operator), it still respects the \$+\$-axioms of the ring \$R\$.
+
+If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `;-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
 
 \[
-\texttt{t0\{q0\};t1\{q1\} = t0;t1\{q0*q1\}} \]
+[ a_{q\_0} ; b_{q\_1}(x_{q\_2}) ]  = b(a(x))_{ q_2 * q_0 * q_1 }.
+\]
+
+Of particular interest is when the merging (\$\nabla\$) is suspended and
+
+\[
+\Delta \((a_{q\_0} ; b_{q\_1}(x_{q\_2}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
+\]
+
+The equation above realizes a structure and process joyfully called a "https://en.wikipedia.org/wiki/Bubble_chamber[bubble chamber]," where \$x\$ is the particle and `;-poly` the bubble chamber with each term in the `;-poly` acting as a water droplet.
+
+[exec]
+----
+5-<(+1;+2;+3;+4;+5)     //<1>
+5-<(+1+2;+3;+4+5)       //<2>
+5-<(+1+2+3+4+5)         //<3>
+5-<(+1;+2;+3;+4;+5)>-   //<4>
+5[+1;+2;+3;+4;+5]       //<5>
+5[plus,15]              //<6>
+----
+<1> `5` is propagated through the `;-poly` terms leaving a trace of it's state at each term slot.
+<2> Since the elements of the \$R\$-module \$M\$ are in \$M\$, any monoid element is a legal term.
+<3> A `;-poly` with single term derived via the composition of 5 other \$M\$ elements.
+<4> The merge operator (\$\nabla\$) emits the final term of the `;-poly`.
+<5> The sugar form of the previous expression.
+<6> The last three examples are equivalent.
 
 [exec]
 ----

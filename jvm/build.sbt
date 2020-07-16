@@ -60,8 +60,8 @@ lazy val machine = (project in file("machine"))
     libraryDependencies := List(
       "org.jline" % "jline" % "3.13.3",
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
-      "org.asciidoctor" % "asciidoctorj" % "2.3.0",
-      "org.asciidoctor" % "asciidoctorj-diagram" % "2.0.2",
+      "org.asciidoctor" % "asciidoctorj" % "2.3.1",
+      "org.asciidoctor" % "asciidoctorj-diagram" % "2.3.1",
       // tests
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
