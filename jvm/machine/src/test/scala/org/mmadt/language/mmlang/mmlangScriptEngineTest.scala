@@ -278,8 +278,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("explain instruction parsing") {
-    println(engine.eval("int{3}[+1,+2,+3][explain]"))
-    println(engine.eval("int{3}[is>10 -> +1 | is==0 -> +2 | int -> +3][explain]"))
+    assert(engine.eval("int{3}[is>50 -> +10 | is<5 -> +20 | _ -> +30][explain]").toString.contains("[is,bool<=int[lt,5]]"))
     assert(engine.eval("int[define,nat<=int[is>0]]<x>[plus,[mult,x]][[is,[a,nat]][plus,10]|[define,nonat<=int[plus,0]]]<y>[plus,x][explain]").toString.contains("nat->nat<=int[is,bool<=int[gt,0]] x->int nonat->nonat<=int[plus,0]"))
     assert(engine.eval("int{3}[+1,+2,+3][explain]").toString.contains("(int[plus,1],int[plus,2],int[plus,3]){3}...    =>   int{9}"))
     assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("instruction"))

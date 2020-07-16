@@ -50,7 +50,7 @@ object SplitOp extends Func[Obj, Obj] {
     val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(startUnit.clone(via = (startUnit, oldInst)), apoly))
     (apoly match {
       case _: RecType[_, _] if apoly.isSerial => newInst.arg0[Obj].clone(via = (start, oldInst))
-      case _: RecType[_, _] if apoly.isChoice => processFirst(startUnit, oldInst).clone(via = (start, oldInst)) // TODO: cause the same resolutions map to the same keys
+      case _: RecType[_, _] if apoly.isChoice => processFirst(startUnit, oldInst).clone(via = (start, newInst)) // TODO: cause the same resolutions map to the same keys
       //
       case _: Poly[_] if apoly.isChoice => processFirst(startUnit, newInst).clone(via = (start, newInst))
       case _ => newInst.arg0[Poly[Obj]].clone(via = (start, newInst))

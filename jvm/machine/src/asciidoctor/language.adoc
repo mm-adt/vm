@@ -828,6 +828,7 @@ The previous `mmlang` examples are contrived. In practice, they keys of `|-rec` 
 <1> Three branches with the final branch serving as _default_.
 <2> The same expression, but leveraging `mmlang` syntax sugar.
 
+:prewrap!:
 [.small]
 [cols="1"]
 |===
@@ -837,6 +838,7 @@ a|
 int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 ----
 |===
+:prewrap:
 
 ===== andThen ;-poly
 
