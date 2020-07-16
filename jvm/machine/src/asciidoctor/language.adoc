@@ -777,7 +777,7 @@ At which point the two types are equivalent and can be merged accordingly.
 
 image::pipe-poly-example.png[align=center,width=350]
 
-A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like the `,-poly`, a `|-poly` maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not commutative. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
+A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like the `,-poly`, a `|-poly` maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not https://en.wikipedia.org/wiki/Commutative_property[commutative]. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
 
 \[
 [a_{q_0} | b_{q_1}](x_{q_2}) =
@@ -788,7 +788,7 @@ A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like t
 \end{cases}
 \]
 
-While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, "`null`" is `obj{0}` (the zero element of the `obj` stream ring). The reason every `|-poly` is not commutative is because the order in which the terms/branches are evaluated determines the result of the computation.
+While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the `|-lst` additive group is non-commutative.
 
 [exec]
 ----
@@ -800,10 +800,10 @@ While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[u
 <2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
 <3> Both terms, when applied to `x` yield `obj{0}`. The polynomial reduces to `obj{0}`.
 
-`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching], where branch selection is not based on \$\mathbb{B}\$ (`bool`), but on \$\tt{q}\$ (`{q}`), where "`false`" is `obj{0}` and "'true'" is any non-zero quantifier. If \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then
+`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching], where branch selection is not based on \$\mathbb{B}\$ (`bool`), but on \$\tt{q}\$ (`{q}`), where _false_ is `obj{0}` and _true_ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then
 
 \[
-[a_{q_0} -> b_{q_1}  | c_{q_2} -> d_{q_3}](x_{q_4}) =
+[a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}](x_{q_4}) =
 \begin{cases}
 {b(x)}_{q_4 * q_1} & \text{if } a_{q_0}(x_{q_4}) \neq \bf{0}, \\
 {d(x)}_{q_4 * q_3} & \text{if } c_{q_2}(x_{q_4}) \neq \bf{0}, \\
@@ -817,6 +817,26 @@ While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[u
 'x'{2}[[plus,'a']{0} -> [plus,'b']{4} | [plus,'c']{5} -> [plus,'d']{6}]
 'x'{2}[[plus,'a']{0} -> [plus,'b']{4} | [plus,'c']{0} -> [plus,'d']{6}]
 ----
+
+The previous `mmlang` examples are contrived. In practice, they keys of `|-rec` will typically leverage `[is,bool]` with the anonymous type `_` serving as the https://en.wikipedia.org/wiki/Switch_statement#Fallthrough[default case] of the switch.
+
+[exec]
+----
+{1,10,100}[[is,[gt,50]] -> [plus,10] | [is,[lt,5]] -> [plus,20] | _ -> [plus,30]]     //<1>
+{1,10,100}[is>50 -> +10 | is<5 -> +20 | _ -> +30]                                     //<2>
+----
+<1> Three branches with the final branch serving as _default_.
+<2> The same expression, but leveraging `mmlang` syntax sugar.
+
+[.small]
+[cols="1"]
+|===
+a|
+[exec]
+----
+int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
+----
+|===
 
 ===== andThen ;-poly
 
