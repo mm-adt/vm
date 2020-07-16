@@ -502,6 +502,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_orthen_poly">orThen ,-poly</a></li>
 <li><a href="#_xorthen_poly">xorThen |-poly</a></li>
 <li><a href="#_andthen_poly">andThen ;-poly</a></li>
+<li><a href="#_poly_domain_instructions">Poly Domain Instructions</a></li>
 <li><a href="#_poly_patterns">Poly Patterns</a></li>
 </ul>
 </li>
@@ -2280,7 +2281,7 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </li>
 </ol>
 </div>
-<table class="tableblock frame-all grid-all right" style="width: 30%;">
+<table class="tableblock frame-all grid-all right" style="width: 35%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -2339,7 +2340,7 @@ mmlang&gt; (,,'c'-&gt;3)&gt;-
 \]</p>
 </div>
 <div class="paragraph">
-<p>where \$[a,b] \equiv ◊(a,b) \equiv \nabla(\Delta(a,b)) \$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
+<p>where \$[a,b] \equiv ◊(a,b) \equiv \nabla(\Delta(a,b)) \$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition (denoted <code>,</code> in <code>poly</code>), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
 </div>
 <div class="paragraph">
 <p>When applying \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar "multiplication."</p>
@@ -2566,7 +2567,7 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 <img src="./images/language/pipe-poly-example.png" alt="pipe poly example" width="350">
 </div>
 </div>
-<table class="tableblock frame-all grid-all right" style="width: 30%;">
+<table class="tableblock frame-all grid-all right" style="width: 35%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -2749,7 +2750,7 @@ instruction                                    domain                           
 <div class="paragraph">
 <p>The two <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> of <code>;-poly</code> (pronounced "semi poly") are the free and non-free forms of the <code>obj</code> ring&#8217;s multiplicative monoid. If \$R = (\tt{obj},&#8658;,◊, \_ , _{_0} )\$ is the <code>obj</code> ring, \$M = (\tt{obj},&#8658;, \_)\$ the multiplicative monoid, and \$G = (\tt{obj},◊,_{_0})\$ the additive abelian group, then <code>;-poly</code> is the left  \$R-\$ <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> \$M^\ast\$ (the free \$M\$ monoid). That is, the terms of <code>;-poly</code> are elements of \$M^\ast\$ <em>geometrically</em> combined using the \$M\$ multiplicative operator \$&#8658;\$ (denoted <code>;</code> in <code>poly</code>). A <code>;-poly</code> is a partially commutative monoid known as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>.</p>
 </div>
-<table class="tableblock frame-all grid-all right" style="width: 30%;">
+<table class="tableblock frame-all grid-all right" style="width: 35%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -2855,71 +2856,102 @@ mmlang&gt; 5[plus,15]              <i class="conum" data-value="6"></i><b>(6)</b
 </tr>
 </table>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'k']{2}|[plus,'o']{3}]  <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;'mark'{2}
-mmlang&gt; 'mar'[[plus,'k']{2}|[plus,'o']{0}]  <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;'mark'{2}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
+<div class="sect5">
+<h6 id="_universal_commutativity_of_coefficients">Universal Commutativity of Coefficients</h6>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 53.8461%;">
+<col style="width: 46.1539%;">
+</colgroup>
+<tbody>
 <tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The two branches are serially composed to create a single "branch" with a quantifier that is the product of the two original branch quantifiers.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The two branches are serially composed, but the second branch has a <code>0</code>-quantifier and thus, the resolution goes to <code>obj{0}</code> as <code>2 * 0 = 0</code>.</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
+<td class="tableblock halign-left valign-top"><p class="tableblock">This expression is equivalent to <code>obj{0}</code>. This can be provided by applying the <code>;-poly</code> coefficient equation. <code>2*3*0 = 2*0*4 = 0*3*4</code>. In general, if there exists a <strong>0</strong>-quantified <code>obj</code> in a <code>obj</code>  monoid expression, then the result is always <code>obj{0}</code>.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'k']{2}|[plus,'o']{3}]
-==&gt;'mark'{2}
-mmlang&gt; 'mar'[[plus,'k']{2}|[plus,'o']{0}]
-==&gt;'mark'{2}</code></pre>
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-<div class="paragraph">
-<p>The <code>[compose]</code> instruction is a <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instruction</a> that yields the same result as fundamental instruction composition/concatenation.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[plus,'k']{2}[plus,'o']{3}
-==&gt;'marko'{6}
-mmlang&gt; 'mar'[plus,'k']{2}[plus,'o']{0}
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{0}
+mmlang&gt;
+mmlang&gt; 6{2}[plus,1]{0}[plus,2]{4}
+mmlang&gt;
+mmlang&gt; 6{0}[plus,1]{3}[plus,2]{4}
 mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Moreover, a <code>poly</code> can be inspected using standard list instructions. Below demonstrates that the <code>;-poly[merge]</code> (<code>&gt;-</code>) is equivalent to <code>;-poly[last]</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])
-==&gt;('mark';'marko')
-mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])&gt;-
-==&gt;'marko'
-mmlang&gt; 'mar'-&lt;([plus,'k'];[plus,'o'])[last]
-==&gt;'marko'</code></pre>
-</div>
-</div>
-</td>
+<p></p>
+</div></div></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All three expression evaluate to the same <code>9{24}</code> value. The quantifier ring has a <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> multiplicative monoid such that <code>2*3*4 = 3*4*2 = 4*2*1</code>.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{4}
+==&gt;9{24}
+mmlang&gt; 6{3}[plus,1]{4}[plus,2]{2}
+==&gt;9{24}
+mmlang&gt; 6{4}[plus,1]{2}[plus,2]{3}
+==&gt;9{24}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is possible to propagate coefficients left or right through an <code>obj</code> <code>=&gt;</code> expression. Likewise, unless the quantifiers are <a href="https://en.wikipedia.org/wiki/Prime_element">prime elements</a>, quantifier propagation need not preserve the factors of a <code>*</code>. In this way, if the geometric series remains the same, any quantifier distribution is legal.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{4}
+==&gt;9{24}
+mmlang&gt; 6[plus,1]{6}[plus,2]{4}
+==&gt;9{24}
+mmlang&gt; 6[plus,1][plus,2]{24}
+==&gt;9{24}
+mmlang&gt; 6[plus,1]{12}[plus,2]{2}
+==&gt;9{24}
+mmlang&gt; 6{6}[plus,1]{2}[plus,2]{2}
+==&gt;9{24}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is possible to propagate coefficients left or right through an <code>obj</code> <code>=&gt;</code> expression.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[plus,1]{6}[plus,2]{4}
+==&gt;9{24}
+mmlang&gt; 6[plus,1][plus,2]{24}
+==&gt;9{24}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers propagate along the the multiplicative <code>obj</code> monoid via their <code>*</code>-operator. They propagate along the additive <code>obj</code> group via their <code>+</code>-operator. In this way, if two branches have have <a href="https://en.wikipedia.org/wiki/Orthogonality">orthogonal</a> quantifiers of the same magnitude, then when they leave the <code>+</code>-group to be additively merged onto the <code>*</code>-monoid, they cancel each other out. Various set theoretic and quantum operations make use of constructive and deconstructive quantifier <a href="https://en.wikipedia.org/wiki/Orthogonality">interference</a> when computing.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[[plus,1]{-1}[plus,1]{2},[plus,2]{2}]
+mmlang&gt;
+mmlang&gt; 6[[plus,1]{-1}[plus,1],[plus,2]]{2}
+mmlang&gt;
+mmlang&gt; 6{2}[[plus,1]{-1}[plus,1],[plus,2]]
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
 </table>
 </div>
-<div class="sect5">
-<h6 id="_poly_domain_instructions">Poly Domain Instructions</h6>
+</div>
+<div class="sect4">
+<h5 id="_poly_domain_instructions">Poly Domain Instructions</h5>
 <div class="paragraph">
 <p>A <code>poly</code> has various interpretations including: <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>, <a href="https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)">vector</a>, <a href="https://en.wikipedia.org/wiki/Array_data_structure">array</a>, and program.
 The table below presents the set of instructions whose domain is <code>poly</code>.</p>
@@ -3054,7 +3086,6 @@ mmlang&gt; ('a','b','c')[put,5,'e']
 </tr>
 </tbody>
 </table>
-</div>
 <div class="sect5">
 <h6 id="_split_and_merge">Split and Merge</h6>
 <table class="tableblock frame-all grid-all stretch">
@@ -4655,7 +4686,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 16:03:35 -0600
+Last updated 2020-07-16 16:18:06 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
