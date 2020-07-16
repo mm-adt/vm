@@ -2000,7 +2000,7 @@ For visual simplicity, quantifiers were not diagrammed. Furthermore, the reason 
 </tbody>
 </table>
 <div class="paragraph">
-<p>The study of polynomials makes a distinction between <a href="https://en.wikipedia.org/wiki/Univariate">univariate</a> and <a href="https://en.wikipedia.org/wiki/Polynomial#Multivariate_polynomial">multivariate</a> polynomials, where if all the <em>object</em> components of the <code>obj</code> product are equal, then the polynomial is univariate, else it is multivariate. In mm-ADT, multivariate <code>polys</code> are much more common than univariate <code>polys</code>. However, a primary function of the mm-ADT optimizing compiler is the determination of term equivalence via term rewrites so as to <strong>bulk</strong> terms using the additive and multiplicative operators of the expression&#8217;s associated quantifier ring (i.e. the ring of coefficients).</p>
+<p>The polynomial literature distinguishes <a href="https://en.wikipedia.org/wiki/Univariate">univariate</a> and <a href="https://en.wikipedia.org/wiki/Polynomial#Multivariate_polynomial">multivariate</a> polynomials, where if all the <em>object</em> components of the <code>obj</code> product are equal, then the polynomial is univariate, else it is multivariate. In mm-ADT, multivariate <code>polys</code> are much more common than univariate <code>polys</code>. However, a primary function of the mm-ADT <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">optimizing compiler</a> <code>obj</code> equivalence via <a href="https://en.wikipedia.org/wiki/Rewriting">term rewriting</a> in order to <strong>bulk</strong> <code>objs</code> using the additive and multiplicative operators of the expression&#8217;s associated quantifier ring (i.e. the ring of coefficients).</p>
 </div>
 <div class="sect4">
 <h5 id="_lst_and_rec">Lst and Rec</h5>
@@ -2018,12 +2018,12 @@ poly  ::= lst | rec</code></pre>
 <div class="paragraph">
 <p><span class="image right"><img src="./images/language/poly-kinds.png" alt="poly kinds" width="225"></span> Like <code>obj</code>, there are <strong>value</strong>-<code>polys</code> and <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type-<code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiway_branch">branching</a> data process. mm-ADT provides two structures that are generally useful when working with <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>).</p>
 </div>
-<table class="tableblock frame-all grid-all right small" style="width: 50%;">
+<table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 16.6666%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3335%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 37.5%;">
+<col style="width: 37.5%;">
 </colgroup>
 <thead>
 <tr>
@@ -2036,33 +2036,33 @@ poly  ::= lst | rec</code></pre>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock"><code>lst</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Flow-based_programming#Multiplexing_processes">copy</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/CAR_and_CDR">head</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">coalesce</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">last</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Function_composition">compose</a></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock"><code>rec</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">all match key</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">first match key</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">case</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">last match key</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Method_cascading">cascade</a></p></td>
 </tr>
@@ -2272,8 +2272,53 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
   [a_{q_0+q_1}]     &amp; \text{if } a==b, \\
   [a_{q_0},b_{q_1}] &amp; \text{otherwise},
 \end{cases}
-\]
-where \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed such that \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the time and space dimensions.</p>
+\]</p>
+</div>
+<table class="tableblock frame-all grid-all right small" style="width: 25%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">\$\nabla\$ value poly example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1,2,3)&gt;-
+==&gt;1
+==&gt;2
+==&gt;3
+mmlang&gt; (1|2|3)&gt;-
+==&gt;1
+mmlang&gt; (1;2;3)&gt;-
+==&gt;3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'c'-&gt;3)&gt;-
+==&gt;1
+==&gt;2
+==&gt;3
+mmlang&gt; ('a'-&gt;1|'b'-&gt;2|'c'-&gt;3)&gt;-
+==&gt;1
+mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
+==&gt;3</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>where \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
 </div>
 <div class="paragraph">
 <p>When applying \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar "multiplication."</p>
@@ -2362,7 +2407,7 @@ The previous diagram does not accurately reflect the <code>obj</code> graph&#821
 <p>The equality</p>
 </div>
 <div class="paragraph text-center">
-<p><code>'mar'[[plus,'ko']{2}] = 'mar'[plus,'ko']{2}</code></p>
+<p><code>'mar'[[plus,'ko']{2}] == 'mar'[plus,'ko']{2}</code></p>
 </div>
 <div class="paragraph">
 <p>is due to ring theory&#8217;s <strong>distributivity axiom</strong> that requires multiplication both left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distribute</a> over addition such that if \$\langle R,+,\ast\rangle\$ is a ring and \$a,b,c \in R\$, then
@@ -2399,7 +2444,7 @@ mmlang&gt; ['b','c']+'a'      <i class="conum" data-value="2"></i><b>(2)</b>
 </table>
 </div>
 <div class="paragraph">
-<p>Polynomial factorization plays an important role in type optimization (the compiler), where, for example, with considerations to distributed computing:</p>
+<p>Polynomial factorization plays an important role in compile-time type optimization, where for example, different processors will rewrite branch types to be sympathetic to their architecture.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -4438,7 +4483,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 01:43:36 -0600
+Last updated 2020-07-16 02:17:54 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
