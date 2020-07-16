@@ -897,7 +897,7 @@ Of particular interest is when merging (\$\nabla\$) is suspended and thus
 \Delta \((a_{q\_0} ; b_{q\_1}(x_{q\_2}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
 \]
 
-image:bubble-chamber.png[width=200,float=left] The equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"]. In experimental higher-energy physics, a bubble chamber small room fill with vapor under high pressure, where particles are shot into the room and the trace they leave through the vapor (their _varpor trail_) provides physicists insight into the nature of the particle -- weight, speed, rotation, etc. In mm-ADT, given the equation above, \$x\$ plays the role of the _particle_ and `;-poly` the _bubble chamber_ with each term in the `;-poly` acting as a _vapor droplet_.
+image:bubble-chamber.png[width=200,float=left] The equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"]. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the room and the trace they leave (called their _varpor trail_) provides physicists information that they then used to understand the nature of the particle under study -- e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. In mm-ADT, \$x\$ above (and 5 below) play the role of the _particle_ and `;-poly` the _bubble chamber_ with each term in the `;-poly` acting as a _vapor droplet_.
 
 '''
 
