@@ -660,16 +660,6 @@ image:../language/obj-type-value-q.png[float=right,width=275] A `,-poly` is a cl
 . *object semiring* \$\langle \tt{object},=>,\Delta\nabla \rangle \$ and
 . *quantifier ring* \$\langle \tt{q}, \ast, + \rangle \$,
 
-where the quantifier ring, by definition, must be an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an `obj`, then the additive operator of the `obj` stream ring is defined as
-\[
-[a_{q_0},b_{q_1}] =
-\begin{cases}
-  [a_{q_0+q_1}]     & \text{if } a==b, \\
-  [a_{q_0},b_{q_1}] & \text{otherwise},
-\end{cases}
-\]
-
-
 [float=right,width=30]
 |===
 ^| \$\nabla\$ value poly example
@@ -691,6 +681,15 @@ a|
 ----
 {blank}
 |===
+where the quantifier ring, by definition, must be an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an `obj`, then the additive operator of the `obj` stream ring is defined as
+\[
+[a_{q_0},b_{q_1}] =
+\begin{cases}
+  [a_{q_0+q_1}]     & \text{if } a==b, \\
+  [a_{q_0},b_{q_1}] & \text{otherwise},
+\end{cases}
+\]
+
 where \$+\$ denotes the respective quantifier ring's additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
 
 When applying \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebraic https://en.wikipedia.org/wiki/Semigroup_action[action] satisfying the equation below. From another perspective, the `,-poly` is a left https://en.wikipedia.org/wiki/Module_(mathematics)[module] and \$x\$ a scalar in this generalized scalar "multiplication."
