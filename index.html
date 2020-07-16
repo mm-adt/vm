@@ -2253,7 +2253,7 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="275"></span> A <code>,-poly</code> is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> maintaining a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. Recall that the mm-ADT <code>obj</code> stream ring is formed via a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a>:</p>
+<p><span class="image right"><img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="275"></span> A <code>,-poly</code> (pronounced "comma poly") is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> maintaining a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. Recall that the mm-ADT <code>obj</code> stream ring is formed via a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a>:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -2312,7 +2312,7 @@ mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
 </tbody>
 </table>
 <div class="paragraph">
-<p>where the quantifier ring, by definition, must be an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an <code>obj</code>, then the additive operator of the <code>obj</code> stream ring is defined as
+<p>where the quantifier ring, by definition, must be <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered</a> with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an <code>obj</code>, then the additive operator of the <code>obj</code> stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -2322,7 +2322,7 @@ mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
 \]</p>
 </div>
 <div class="paragraph">
-<p>where \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
+<p>where \$[a,b] \equiv \nabla(\Delta(a,b))\$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
 </div>
 <div class="paragraph">
 <p>When applying \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar "multiplication."</p>
@@ -2687,18 +2687,18 @@ instruction                                    domain                           
 </div>
 </div>
 <div class="paragraph">
-<p>The two magmas of <code>;-poly</code> (pronounced "semi poly") are the multiplicative monoid of the <code>obj</code> ring. If \$R = (\tt{obj},&#8658;,\Delta\nabla)\$ is the <code>obj</code> ring, \$M = (\tt{obj},&#8658;)\$ the multiplicative monoid, and \$G = (\tt{obj},\Delta\nabla)\$ the additive abelian group, then <code>;-poly</code> is an \$R\$-module \$M\$ whose elements are in \$M\$. That is, <code>;-poly</code> has a free and non-free partially commutative monoid: \$F(M)\$ and \$M\$. It places elements of the multiplicative monoid \$M\$ within a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>. While the elements of the trace monoid are geometrically combined (instead of linearly combined by the additive \$G\$ operator), it still respects the \$+\$-axioms of the ring \$R\$.</p>
+<p>The two <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> of <code>;-poly</code> (pronounced "semi poly") are the multiplicative monoid of the <code>obj</code> ring. If \$R = (\tt{obj},&#8658;,\Delta\nabla)\$ is the <code>obj</code> ring, \$M = (\tt{obj},&#8658;)\$ the multiplicative monoid, and \$G = (\tt{obj},\Delta\nabla)\$ the additive abelian group, then <code>;-poly</code> is an \$R\$ <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> \$M\$ whose elements are in \$M\$. That is, <code>;-poly</code> has a free and non-free partially commutative monoid: \$F(M)\$ and \$M\$. It places elements of the multiplicative monoid \$M\$ within a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>. While the elements of the trace monoid are geometrically combined (instead of <a href="https://en.wikipedia.org/wiki/Linear_combination">linearly combined</a> by the additive \$G\$ operator), it still respects the \$+\$-axioms of the ring \$R\$.</p>
 </div>
 <div class="paragraph">
 <p>If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>;-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
 </div>
 <div class="paragraph">
 <p>\[
-[ a_{q_0} ; b_{q_1}(x_{q_2}) ]  = b(a(x))_{ q_2 * q_0 * q_1 }.
+[ a_{q_0} ; b_{q_1} ](x_{q_2}) = b(a(x))_{ q_2 * q_0 * q_1 }.
 \]</p>
 </div>
 <div class="paragraph">
-<p>Of particular interest is when the merging (\$\nabla\$) is suspended and</p>
+<p>Of particular interest is when merging (\$\nabla\$) is suspended and thus</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2706,8 +2706,9 @@ instruction                                    domain                           
 \]</p>
 </div>
 <div class="paragraph">
-<p>The equation above realizes a structure and process joyfully called a "https://en.wikipedia.org/wiki/Bubble_chamber[bubble chamber]," where \$x\$ is the particle and <code>;-poly</code> the bubble chamber with each term in the <code>;-poly</code> acting as a water droplet.</p>
+<p><span class="image left"><img src="./images/language/bubble-chamber.png" alt="bubble chamber" width="200"></span> The equation above realizes a structure and process joyfully named the <a href="https://en.wikipedia.org/wiki/Bubble_chamber">"bubble chamber"</a>. In experimental higher-energy physics, a bubble chamber small room fill with vapor under high pressure, where particles are shot into the room and the trace they leave through the vapor (their <em>varpor trail</em>) provides physicists insight into the nature of the particle&#8201;&#8212;&#8201;weight, speed, rotation, etc. In mm-ADT, given the equation above, \$x\$ plays the role of the <em>particle</em> and <code>;-poly</code> the <em>bubble chamber</em> with each term in the <code>;-poly</code> acting as a <em>vapor droplet</em>.</p>
 </div>
+<hr>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)     <i class="conum" data-value="1"></i><b>(1)</b>
@@ -4552,7 +4553,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 03:21:30 -0600
+Last updated 2020-07-16 12:28:19 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
