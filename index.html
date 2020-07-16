@@ -2857,7 +2857,7 @@ mmlang&gt; 5[plus,15]              <i class="conum" data-value="6"></i><b>(6)</b
 </table>
 </div>
 <div class="sect5">
-<h6 id="_universal_commutativity_of_coefficients">Universal Commutativity of Coefficients</h6>
+<h6 id="_universal_commutativity_of_quantifiers">Universal Commutativity of Quantifiers</h6>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 53.8461%;">
@@ -2865,7 +2865,7 @@ mmlang&gt; 5[plus,15]              <i class="conum" data-value="6"></i><b>(6)</b
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">This expression is equivalent to <code>obj{0}</code>. This can be provided by applying the <code>;-poly</code> coefficient equation. <code>2*3*0 = 2*0*4 = 0*3*4</code>. In general, if there exists a <strong>0</strong>-quantified <code>obj</code> in a <code>obj</code>  monoid expression, then the result is always <code>obj{0}</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Each of these expressions is equivalent to <code>obj{0}</code>. This is demonstrated using the <code>;-poly</code> quantifier equation. <code>2*3*0 = 2*0*4 = 0*3*4</code>. In general, if there exists a <strong>0</strong>-quantified <code>obj</code> in a <code>obj</code>  monoid expression, then the result is always <code>obj{0}</code>.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{0}
@@ -2897,7 +2897,7 @@ mmlang&gt; 6{4}[plus,1]{2}[plus,2]{3}
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is possible to propagate coefficients left or right through an <code>obj</code> <code>=&gt;</code> expression. Likewise, unless the quantifiers are <a href="https://en.wikipedia.org/wiki/Prime_element">prime elements</a>, quantifier propagation need not preserve the factors of a <code>*</code>. In this way, if the geometric series remains the same, any quantifier distribution is legal.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is still possible to propagate coefficients left or right through an <code>obj</code> <code>*</code>-expression. Regardless of the quantifiers being <a href="https://en.wikipedia.org/wiki/Prime_element">prime elements</a>, quantifier propagation need not preserve the factors of a <code>*</code>. In this way, if the <a href="https://en.wikipedia.org/wiki/Geometric_progression">geometric sequence</a> remains the same, any quantifier distribution is allowed.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{4}
@@ -2917,21 +2917,7 @@ mmlang&gt; 6{6}[plus,1]{2}[plus,2]{2}
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is possible to propagate coefficients left or right through an <code>obj</code> <code>=&gt;</code> expression.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[plus,1]{6}[plus,2]{4}
-==&gt;9{24}
-mmlang&gt; 6[plus,1][plus,2]{24}
-==&gt;9{24}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers propagate along the the multiplicative <code>obj</code> monoid via their <code>*</code>-operator. They propagate along the additive <code>obj</code> group via their <code>+</code>-operator. In this way, if two branches have have <a href="https://en.wikipedia.org/wiki/Orthogonality">orthogonal</a> quantifiers of the same magnitude, then when they leave the <code>+</code>-group to be additively merged onto the <code>*</code>-monoid, they cancel each other out. Various set theoretic and quantum operations make use of constructive and deconstructive quantifier <a href="https://en.wikipedia.org/wiki/Orthogonality">interference</a> when computing.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers propagate along the the multiplicative <code>obj</code> monoid via their <code>*</code>-operator. They propagate along the additive <code>obj</code> group via their <code>+</code>-operator. In this way, if two branches have <a href="https://en.wikipedia.org/wiki/Orthogonality">orthogonal</a> quantifiers of the same magnitude, then when they leave the <code>+</code>-group to be additively merged onto the <code>*</code>-monoid, they cancel each other out. Various set theoretic and <a href="https://en.wikipedia.org/wiki/Quantum_computing">quantum</a> operations make use of constructive and deconstructive quantifier <a href="https://en.wikipedia.org/wiki/Orthogonality">interference</a> when computing.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[[plus,1]{-1}[plus,1]{2},[plus,2]{2}]
@@ -4686,7 +4672,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 16:18:06 -0600
+Last updated 2020-07-16 17:17:39 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
