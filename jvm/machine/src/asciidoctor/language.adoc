@@ -788,7 +788,7 @@ A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like t
 \end{cases}
 \]
 
-While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements a https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing operator], where in mm-ADT, "`null`" is `obj{0}` (the zero element of the `obj` stream ring). The reason every `|-poly` is not commutative is because the order in which the terms/branches are evaluated determines the result of the computation.
+While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, "`null`" is `obj{0}` (the zero element of the `obj` stream ring). The reason every `|-poly` is not commutative is because the order in which the terms/branches are evaluated determines the result of the computation.
 
 [exec]
 ----
@@ -800,7 +800,7 @@ While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[u
 <2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
 <3> Both terms, when applied to `x` yield `obj{0}`. The polynomial reduces to `obj{0}`.
 
-`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching], where branch selection is not based on \$\Bool\$ (`bool`), but on \$\tt{q}\$ (`{q}`), where "`false`" is `obj{0}` and "'true'" is any non-zero quantifier. If \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then
+`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching], where branch selection is not based on \$\mathbb{B}\$ (`bool`), but on \$\tt{q}\$ (`{q}`), where "`false`" is `obj{0}` and "'true'" is any non-zero quantifier. If \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then
 
 \[
 [a_{q_0} -> b_{q_1}  | c_{q_2} -> d_{q_3}](x_{q_4}) =

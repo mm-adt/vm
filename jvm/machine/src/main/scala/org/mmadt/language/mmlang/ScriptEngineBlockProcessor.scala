@@ -76,6 +76,8 @@ object ScriptEngineBlockProcessor {
 
   def main(args: Array[String]): Unit = {
     val asciidoctor = Asciidoctor.Factory.create()
+    asciidoctor.readDocumentHeader(new File(source + "docinfo.html"))
+    // RubyUtils.loadRubyClass(JRubyRuntimeContext.get(asciidoctor), new FileInputStream("/Library/Ruby/Gems/2.6.0/gems/asciidoctor-latex-1.5.0.17.dev/lib/asciidoctor-latex.rb"))
     asciidoctor.requireLibrary("asciidoctor-diagram")
     val directoryWalker: DirectoryWalker = new AsciiDocDirectoryWalker(source);
     val asciidocFiles = directoryWalker.scan();
