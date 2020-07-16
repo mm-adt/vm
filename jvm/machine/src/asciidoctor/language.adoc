@@ -665,7 +665,7 @@ image:../language/obj-type-value-q.png[float=right,width=275] A `,-poly` (pronou
 . *object semiring* \$(\tt{object},=>,◊, \_{_1} , \__{0} ) \$ and
 . *quantifier ring* \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$,
 
-[float=right,width=30]
+[float=right,width=35]
 |===
 ^| \$\nabla\$ on value ,-poly
 
@@ -695,7 +695,7 @@ where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/
 \end{cases}
 \]
 
-where \$[a,b] \equiv ◊(a,b) \equiv \nabla(\Delta(a,b)) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
+where \$[a,b] \equiv ◊(a,b) \equiv \nabla(\Delta(a,b)) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Regarding object addition (denoted `,` in `poly`), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
 
 When applying \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebraic https://en.wikipedia.org/wiki/Semigroup_action[action] satisfying the equation below. From another perspective, the `,-poly` is a left https://en.wikipedia.org/wiki/Module_(mathematics)[module] and \$x\$ a scalar in this generalized scalar "multiplication."
 
@@ -817,7 +817,7 @@ At which point the two types are equivalent and can be merged accordingly.
 
 image::pipe-poly-example.png[align=center,width=350]
 
-[float=right,width=30]
+[float=right,width=35]
 |===
 ^| \$\nabla\$ on value \|-poly
 
@@ -914,7 +914,7 @@ image::semi-poly-example.png[align=center,width=350]
 
 The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the free and non-free forms of the `obj` ring's multiplicative monoid. If \$R = (\tt{obj},=>,◊, \_ , \_{_0} )\$ is the `obj` ring, \$M = (\tt{obj},=>, \_)\$ the multiplicative monoid, and \$G = (\tt{obj},◊,\_{_0})\$ the additive abelian group, then `;-poly` is the left  \$R-\$ https://en.wikipedia.org/wiki/Module_(mathematics)[module] \$M^\ast\$ (the free \$M\$ monoid). That is, the terms of `;-poly` are elements of \$M^\ast\$ _geometrically_ combined using the \$M\$ multiplicative operator \$=>\$ (denoted `;` in `poly`). A `;-poly` is a partially commutative monoid known as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid].
 
-[float=right,width=30]
+[float=right,width=35]
 |===
 ^| \$\nabla\$ on value ;-poly
 
@@ -970,42 +970,65 @@ image:bubble-chamber.png[width=200,float=left] The equation above realizes a str
 <5> The sugar form of the previous expression.
 <6> The last three examples are equivalent.
 
+====== Universal Commutativity of Coefficients
+
+[cols="7,6"]
+|===
+
+| This expression is equivalent to `obj{0}`. This can be provided by applying the `;-poly` coefficient equation. `2*3*0 = 2*0*4 = 0*3*4`. In general, if there exists a *0*-quantified `obj` in a `obj`  monoid expression, then the result is always `obj{0}`.
+a|
 [exec]
 ----
-'mar'[[plus,'k']{2}|[plus,'o']{3}]  //<1>
-'mar'[[plus,'k']{2}|[plus,'o']{0}]  //<2>
+6{2}[plus,1]{3}[plus,2]{0}
+6{2}[plus,1]{0}[plus,2]{4}
+6{0}[plus,1]{3}[plus,2]{4}
 ----
-<1> The two branches are serially composed to create a single "branch" with a quantifier that is the product of the two original branch quantifiers.
-<2> The two branches are serially composed, but the second branch has a `0`-quantifier and thus, the resolution goes to `obj{0}` as `2 * 0 = 0`.
+{blank}
 
+| All three expression evaluate to the same `9{24}` value. The quantifier ring has a https://en.wikipedia.org/wiki/Commutative_property[commutative] multiplicative monoid such that `2*3*4 = 3*4*2 = 4*2*1`.
+a|
 [exec]
 ----
-'mar'[[plus,'k']{2}|[plus,'o']{3}]
-'mar'[[plus,'k']{2}|[plus,'o']{0}]
+6{2}[plus,1]{3}[plus,2]{4}
+6{3}[plus,1]{4}[plus,2]{2}
+6{4}[plus,1]{2}[plus,2]{3}
 ----
+{blank}
 
-[NOTE]
-================================================================
-The `[compose]` instruction is a https://en.wikipedia.org/wiki/Higher-order_function[higher-order instruction] that yields the same result as fundamental instruction composition/concatenation.
-
+| If the quantifier ring is not commutative, it is possible to propagate coefficients left or right through an `obj` `\=>` expression. Likewise, unless the quantifiers are https://en.wikipedia.org/wiki/Prime_element[prime elements], quantifier propagation need not preserve the factors of a `*`. In this way, if the geometric series remains the same, any quantifier distribution is legal.
+a|
 [exec]
 ----
-'mar'[plus,'k']{2}[plus,'o']{3}
-'mar'[plus,'k']{2}[plus,'o']{0}
+6{2}[plus,1]{3}[plus,2]{4}
+6[plus,1]{6}[plus,2]{4}
+6[plus,1][plus,2]{24}
+6[plus,1]{12}[plus,2]{2}
+6{6}[plus,1]{2}[plus,2]{2}
 ----
+{blank}
 
-Moreover, a `poly` can be inspected using standard list instructions. Below demonstrates that the `;-poly[merge]` (`>-`) is equivalent to `;-poly[last]`.
-
-
+| If the quantifier ring is not commutative, it is possible to propagate coefficients left or right through an `obj` `\=>` expression.
+a|
 [exec]
 ----
-'mar'-<([plus,'k'];[plus,'o'])
-'mar'-<([plus,'k'];[plus,'o'])>-
-'mar'-<([plus,'k'];[plus,'o'])[last]
+6[plus,1]{6}[plus,2]{4}
+6[plus,1][plus,2]{24}
 ----
-================================================================
+{blank}
 
-====== Poly Domain Instructions
+| Quantifiers propagate along the the multiplicative `obj` monoid via their `\*`-operator. They propagate along the additive `obj` group via their `+`-operator. In this way, if two branches have have https://en.wikipedia.org/wiki/Orthogonality[orthogonal] quantifiers of the same magnitude, then when they leave the `+`-group to be additively merged onto the `*`-monoid, they cancel each other out. Various set theoretic and quantum operations make use of constructive and deconstructive quantifier https://en.wikipedia.org/wiki/Orthogonality[interference] when computing.
+a|
+[exec]
+----
+6[[plus,1]{-1}[plus,1]{2},[plus,2]{2}]
+6[[plus,1]{-1}[plus,1],[plus,2]]{2}
+6{2}[[plus,1]{-1}[plus,1],[plus,2]]
+----
+{blank}
+|===
+
+
+===== Poly Domain Instructions
 
 A `poly` has various interpretations including: https://en.wikipedia.org/wiki/List_(abstract_data_type)[list], https://en.wikipedia.org/wiki/Vector_(mathematics_and_physics)[vector], https://en.wikipedia.org/wiki/Array_data_structure[array], and program.
 The table below presents the set of instructions whose domain is `poly`.
