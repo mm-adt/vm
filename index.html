@@ -592,8 +592,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div class="openblock env texmacro">
 <div class="content">
 <div class="paragraph">
-<p>\def\AA{\mathbb{A}}
-\def\BB{\mathbb{B}}</p>
+<p>\def\Bool{\mathbb{B}}</p>
 </div>
 <div class="paragraph">
 <p>\newcommand{\set}[1]{ \{\,#1\,  \} }
@@ -2163,7 +2162,7 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The "<em>split-merge</em>"-pattern (<code>-&lt;()&gt;-</code>) is common enough to warrant a single, unifying instruction called <code>[splitmerge]</code> and a corresponding sugar of <code>[poly]</code>. If the evaluating processor encounters <code>[splitmerge]</code>, it can compute using a <code>poly</code> of streams versus a stream of <code>polys</code> as may be required with <code>[split]</code>/<code>[merge]</code>. The difference is significant in distributed environments, where the former supports decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">The "<em>split-merge</em>"-pattern (<code>-&lt;()&gt;-</code>) is common enough to warrant a single, unifying instruction called <code>[splitmerge]</code> and a corresponding sugar of <code>[poly]</code>. If the evaluating processor encounters <code>[splitmerge]</code>, it can compute the instruction using a <code>poly</code> of streams versus a stream of <code>polys</code>. The difference is significant in distributed environments, where the former enables decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[[plus,1],[mult,2]]
@@ -2178,7 +2177,7 @@ mmlang&gt; 3[[plus,1];[mult,2]]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">&nbsp;</p>
-<p class="tableblock">Finally, the most compact sugar forms of the running "<em>split-merge</em>"-examples is presented below. Given the verbosity of branching expressions, all subsequent <code>mmlang</code> examples will favor sugar constructs.</p></td>
+<p class="tableblock">Finally, the most compact <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugar</a> forms of the running "<em>split-merge</em>"-examples are presented below. Given the verbosity of branching expressions, all subsequent <code>mmlang</code> examples will favor sugar constructs.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[+1,*2]
@@ -2363,13 +2362,13 @@ mmlang&gt; ['b','c']+'a'         <i class="conum" data-value="2"></i><b>(2)</b>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'[+'b'+'c'+'e',+'b'+'d'+'e']                     <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'[+'b'+'c'+'e',+'b'+'d'+'e']   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;'abce'
 ==&gt;'abde'
-mmlang&gt; 'a'+'b'[+'c'+'e',+'d'+'e']                         <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 'a'+'b'[+'c'+'e',+'d'+'e']       <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'abce'
 ==&gt;'abde'
-mmlang&gt; 'a'+'b'[+'c',+'d']+'e'                             <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 'a'+'b'[+'c',+'d']+'e'           <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;'abce'
 ==&gt;'abde'</code></pre>
 </div>
@@ -2451,7 +2450,7 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>A <code>|-poly</code> is monoid ring.</p>
+<p>A <code>|-poly</code> (pronounced "pipe poly") uses <code>|</code> as its <code>obj</code> term separator. Like the <code>,-poly</code>, a <code>|-poly</code> maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not commutative. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>|-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2463,13 +2462,16 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 \end{cases}
 \]</p>
 </div>
+<div class="paragraph">
+<p>While <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements a <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing operator</a>, where in mm-ADT, &#8220;null&#8221; is <code>obj{0}</code> (the zero element of the <code>obj</code> stream ring). The reason every <code>|-poly</code> is not commutative is because the order in which the terms/branches are evaluated determines the result of the computation.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko']|[plus,'io']]          <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;'marko'
-mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']]       <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;'mario'
-mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']{0}]    <i class="conum" data-value="3"></i><b>(3)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[[plus,'a']{3} | [plus,'b']{4}]  <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;'xa'{6}
+mmlang&gt; 'x'{2}[[plus,'a']{0} | [plus,'b']{4}]  <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;'xb'{8}
+mmlang&gt; 'x'{2}[[plus,'a']{0} | [plus,'b']{0}]  <i class="conum" data-value="3"></i><b>(3)</b>
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -2477,34 +2479,40 @@ mmlang&gt;</code></pre>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The first branch does not yield <code>obj{0}</code> so <code>'ko'</code> is added to <code>'mar'</code>.
-The polynomial reduces to <code>[plus,'ko']</code>.</td>
+<td>The first term applied to <code>x</code> is not <code>obj{0}</code> so <code>'a'</code> is added to <code>'x'</code>. The polynomial reduces to <code>[plus,'a']{3}</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The first branch does yield an <code>obj{0}</code> and the second does not so <code>'io'</code> is added to <code>'mar'</code>.
-The polynomial reduces to <code>[plus,'io']</code>.</td>
+<td>The first term applied to <code>x</code> is <code>obj{0}</code> and the second is not so <code>'b'</code> is added to <code>'x'</code>. The polynomial reduces to <code>[plus,'b']{4}</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Both branches yield an <code>obj{0}</code>.
-The polynomial reduces to <code>obj{0}</code>.</td>
+<td>Both terms, when applied to <code>x</code> yield <code>obj{0}</code>. The polynomial reduces to <code>obj{0}</code>.</td>
 </tr>
 </table>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko']|[plus,'io']]
-==&gt;'marko'
-mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']]
-==&gt;'mario'
-mmlang&gt; 'mar'[[plus,'ko']{0}|[plus,'io']{0}]
-mmlang&gt;</code></pre>
-</div>
+<div class="paragraph">
+<p><code>|-rec</code> extends <code>|-lst</code> with <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a>, where branch selection is not based on \$\Bool\$ (<code>bool</code>), but on \$\tt{q}\$ (<code>{q}</code>), where &#8220;false&#8221; is <code>obj{0}</code> and "'true'" is any non-zero quantifier. If \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then</p>
 </div>
 <div class="paragraph">
-<p>Every <code>|-poly</code> non-commutative addition because the order in which the terms/branches are evaluated determines the result of the computation.
-While <code>,-poly</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-poly</code> implements <a href="https://en.wikipedia.org/wiki/Null_(SQL)#COALESCE">coalesce</a>.</p>
+<p>\[
+[a_{q_0} &#8594; b_{q_1}  | c_{q_2} &#8594; d_{q_3}](x_{q_4}) =
+\begin{cases}
+{b(x)}_{q_4 * q_1} &amp; \text{if } a_{q_0}(x_{q_4}) \neq \bf{0}, \\
+{d(x)}_{q_4 * q_3} &amp; \text{if } c_{q_2}(x_{q_4}) \neq \bf{0}, \\
+\bf{0} &amp; \text{otherwise}.
+\end{cases}
+\]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[[plus,'a']{3} -&gt; [plus,'b']{4} | [plus,'c']{5} -&gt; [plus,'d']{6}]
+==&gt;'xb'{8}
+mmlang&gt; 'x'{2}[[plus,'a']{0} -&gt; [plus,'b']{4} | [plus,'c']{5} -&gt; [plus,'d']{6}]
+==&gt;'xd'{12}
+mmlang&gt; 'x'{2}[[plus,'a']{0} -&gt; [plus,'b']{4} | [plus,'c']{0} -&gt; [plus,'d']{6}]
+mmlang&gt;</code></pre>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -4318,7 +4326,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-15 20:53:36 -0600
+Last updated 2020-07-15 22:25:46 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
