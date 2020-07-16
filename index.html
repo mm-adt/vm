@@ -589,16 +589,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <div id="content">
 <div id="preamble">
 <div class="sectionbody">
-<div class="openblock env texmacro">
-<div class="content">
 <div class="paragraph">
-<p>\def\Bool{\mathbb{B}}</p>
-</div>
-<div class="paragraph">
-<p>\newcommand{\set}[1]{ \{\,#1\,  \} }
-\newcommand{\sett}[2]{ \{\,#1\, \mid\, #2\, \} }</p>
-</div>
-</div>
+<p>include_latex_macros::latex-macros.adoc[]</p>
 </div>
 <div class="imageblock left">
 <div class="content">
@@ -2327,10 +2319,10 @@ mmlang&gt; 'mar'[plus,'ko']{2}               <i class="conum" data-value="3"></i
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'[+'b',+'c']        <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'[+'b',+'c']     <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;'ab'
 ==&gt;'ac'
-mmlang&gt; ['b','c']+'a'         <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; ['b','c']+'a'      <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'ba'
 ==&gt;'ca'</code></pre>
 </div>
@@ -2463,7 +2455,7 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 \]</p>
 </div>
 <div class="paragraph">
-<p>While <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements a <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing operator</a>, where in mm-ADT, &#8220;null&#8221; is <code>obj{0}</code> (the zero element of the <code>obj</code> stream ring). The reason every <code>|-poly</code> is not commutative is because the order in which the terms/branches are evaluated determines the result of the computation.</p>
+<p>While <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, &#8220;null&#8221; is <code>obj{0}</code> (the zero element of the <code>obj</code> stream ring). The reason every <code>|-poly</code> is not commutative is because the order in which the terms/branches are evaluated determines the result of the computation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2492,7 +2484,7 @@ mmlang&gt;</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p><code>|-rec</code> extends <code>|-lst</code> with <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a>, where branch selection is not based on \$\Bool\$ (<code>bool</code>), but on \$\tt{q}\$ (<code>{q}</code>), where &#8220;false&#8221; is <code>obj{0}</code> and "'true'" is any non-zero quantifier. If \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then</p>
+<p><code>|-rec</code> extends <code>|-lst</code> with <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a>, where branch selection is not based on \$\mathbb{B}\$ (<code>bool</code>), but on \$\tt{q}\$ (<code>{q}</code>), where &#8220;false&#8221; is <code>obj{0}</code> and "'true'" is any non-zero quantifier. If \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -4326,7 +4318,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-15 22:25:46 -0600
+Last updated 2020-07-15 22:45:53 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
