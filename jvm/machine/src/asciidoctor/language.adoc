@@ -448,8 +448,7 @@ int[is,[gt,10]]                      //<4>
 
 .Rings
 ****
-A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the _multiplicative_ operator, \$\+: A \times A \rightarrow A \$ is the _additive_ operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity.
-A ring satisfies the following axioms, where \$ a,b,c \in A \$.
+A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the _multiplicative_ operator, \$\+: A \times A \rightarrow A \$ is the _additive_ operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity. A ring satisfies the following axioms, where \$ a,b,c \in A \$.
 
 [.small]
 [cols="^4,^4,^5"]
@@ -457,11 +456,11 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.
 | common notation                    | terminology                              | mmlang notation
 
 |\$(a + b) + c = a + (b + c)\$       | additive associativity                   | `\((a,b),c) == (a,(b,c))`
-|\$0 + a = a + 0 = a\$               | additive identity                        | `({0},a) == (a,{0}) == a`
-|\$a - a = a + (-a) = 0\$            | additive inverses                        | `(a,a{-1}) == {0}`
+|\$0 + a = a + 0 = a\$               | additive identity                        | `(\_{0},a) == (a,_{0}) == a`
+|\$a - a = a + (-a) = 0\$            | additive inverses                        | `(a,a{-1}) == _{0}`
 |\$a + b = b + a\$                   | additive commutativity                   | `(a,b) == (b,a)`
 |\$(a * b) * c = a * (b * c)\$       | multiplicative associativity             | `\((a;b);c) == (a;(b;c))`
-|\$1 * a = a * 1 = a\$               | multiplicative identity                  | `({1};a) == (a;{1}) == a`
+|\$1 * a = a * 1 = a\$               | multiplicative identity                  | `(\_{1};a) == (a;_{1}) == a`
 |\$(a + b) * c = (a * c) + (b * c)\$ | multiplicative left distributivity       | `\((a,b);c) == ((a;c),(b;c))`
 |\$a * (b + c) = (a * b) + (a * c)\$ | multiplicative right distributivity      | `(a;(b,c)) == \((a;b),(a;c))`
 |===
@@ -486,13 +485,15 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.
 ================================================================
 
 [.small]
-[cols="1,1,1,4",width=40,float=right]
+[cols="1,1,1,5",width=40,float=right]
 |===
-| name        | mmlang      | latex         | description
+| name        | mmlang      | latex           | description
 
 | _split_     | `-<`        | \$\Delta\$      | scalar apply
-| _merge_     | `>-`        | \$\nabla\$      | linear evaluation
-| _combine_   | `=`         | \$\cdot\$     | poly pairwise apply
+| _merge_     | `>-`        | \$\nabla\$      | linear combine
+| _branch_    | `[ ]`       | \$◊\$           | scalar apply combine
+| _combine_   | `=`         | \$\cdot\$       | `poly` pairwise combine
+
 |===
 
 . `( )` is a polynomial constructor.
@@ -656,33 +657,33 @@ NOTE: The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`.
 
 image::comma-poly-example.png[align=center,width=350]
 
-image:../language/obj-type-value-q.png[float=right,width=275] A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. Recall that the mm-ADT `obj` stream ring is formed via a https://en.wikipedia.org/wiki/Product_ring[direct product] of a https://en.wikipedia.org/wiki/Semiring[semiring] and a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring]:
+image:../language/obj-type-value-q.png[float=right,width=275] A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. Recall that the mm-ADT `obj` stream ring is formed via a https://en.wikipedia.org/wiki/Product_ring[direct product] of the following https://en.wikipedia.org/wiki/Semiring[semiring] and https://en.wikipedia.org/wiki/Ring_(mathematics)[ring]:
 
-. *object semiring* \$\langle \tt{object},=>,\Delta\nabla \rangle \$ and
-. *quantifier ring* \$\langle \tt{q}, \ast, + \rangle \$,
+. *object semiring* \$(\tt{object},=>,◊, \_{_1} , \__{0} ) \$ and
+. *quantifier ring* \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$,
 
 [float=right,width=30]
 |===
-^| \$\nabla\$ value poly example
+^| \$\nabla\$ on value ,-poly
 
 a|
 [exec]
 ----
 (1,2,3)>-
-(1\|2\|3)>-
-(1;2;3)>-
+(1,,3)>-
+(,,3)>-
 ----
 {blank}
 a|
 [exec]
 ----
 ('a'->1,'b'->2,'c'->3)>-
-('a'->1\|'b'->2\|'c'->3)>-
-('a'->1;'b'->2;'c'->3)>-
+('a'->1,,'c'->3)>-
+(,,'c'->3)>-
 ----
 {blank}
 |===
-where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/Ordered_ring[ordered] with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an `obj`, then the additive operator of the `obj` stream ring is defined as
+where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/Ordered_ring[ordered] with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising `obj` products, then the additive operator of the `obj` stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -691,7 +692,7 @@ where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/
 \end{cases}
 \]
 
-where \$[a,b] \equiv \nabla(\Delta(a,b))\$ and \$+\$ denotes the respective quantifier ring's additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
+where \$[a,b] \equiv ◊(a,b) \equiv \nabla(\Delta(a,b)) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
 
 When applying \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebraic https://en.wikipedia.org/wiki/Semigroup_action[action] satisfying the equation below. From another perspective, the `,-poly` is a left https://en.wikipedia.org/wiki/Module_(mathematics)[module] and \$x\$ a scalar in this generalized scalar "multiplication."
 
@@ -713,7 +714,7 @@ The two cases above are expressed in `mmlang` below with the last two examples b
 'x'{2}[[plus,'a']{3},[plus,'b']{4}]
 ----
 
-As another example, the https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the following `mmlang` examples, where \$\Delta\$ is `[split]` and \$\nabla\$ is `[merge]`.
+The https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the subsequent `mmlang` examples.
 
 image::comma-lst-tensor-example.png[align=center,width=725]
 
@@ -738,7 +739,7 @@ The equality
 [.text-center]
 `'mar'[[plus,'ko']{2}] == 'mar'[plus,'ko']{2}`
 
-is due to ring theory's *distributivity axiom* that requires multiplication both left and right https://en.wikipedia.org/wiki/Distributive_property[distribute] over addition such that if \$\langle R,+,\ast\rangle\$ is a ring and \$a,b,c \in R\$, then
+is due to ring theory's *distributivity axiom* that requires multiplication both left and right https://en.wikipedia.org/wiki/Distributive_property[distribute] over addition such that if \$(R,\ast,+,\mathbf{1},\mathbf{0})\$ is a ring and \$a,b,c \in R\$, then
 \[
 \begin{split}
   a(b+c) &=& \; ab + ac \\
@@ -767,9 +768,9 @@ Polynomial factorization plays an important role in compile-time type optimizati
 'a'+'b'[+'c'+'e',+'d'+'e']       //<2>
 'a'+'b'[+'c',+'d']+'e'           //<3>
 ----
-<1> The value `a` serves as the scalar in a https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] with the multi-`[plus]` `,-lst`.
-<2> The value `strm` `{a,b}` serves as the scalar.
-<3> The value `{a,b}` is the left multiplicative scalar and the value `e` is a right multiplicative scalar.
+<1> The value `a` serves as the scalar in a https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] with the multi-`+` `,-lst`.
+<2> The value `ab` serves as the scalar.
+<3> The value `ab` is the left multiplicative scalar and the value `e` is a right multiplicative scalar.
 
 ================================================================
 Two `,-poly` terms can be added if their indeterminates are equal.
@@ -883,18 +884,18 @@ int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 
 image::semi-poly-example.png[align=center,width=350]
 
-The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the multiplicative monoid of the `obj` ring. If \$R = (\tt{obj},=>,\Delta\nabla)\$ is the `obj` ring, \$M = (\tt{obj},=>)\$ the multiplicative monoid, and \$G = (\tt{obj},\Delta\nabla)\$ the additive abelian group, then `;-poly` is an \$R\$ https://en.wikipedia.org/wiki/Module_(mathematics)[module] \$M\$ whose elements are in \$M\$. That is, `;-poly` has a free and non-free partially commutative monoid: \$F(M)\$ and \$M\$. It places elements of the multiplicative monoid \$M\$ within a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]. While the elements of the trace monoid are geometrically combined (instead of https://en.wikipedia.org/wiki/Linear_combination[linearly combined] by the additive \$G\$ operator), it still respects the \$+\$-axioms of the ring \$R\$.
+The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the free and non-free forms of the `obj` ring's multiplicative monoid. If \$R = (\tt{obj},=>,◊, \_ , \_{_0} )\$ is the `obj` ring, \$M = (\tt{obj},=>, \_)\$ the multiplicative monoid, and \$G = (\tt{obj},◊,\_{_0})\$ the additive abelian group, then `;-poly` is the left  \$R-\$ https://en.wikipedia.org/wiki/Module_(mathematics)[module] \$M^\ast\$ (the free \$M\$ monoid). That is, the terms of `;-poly` are elements of \$M^\ast\$ _geometrically_ combined using the \$M\$ multiplicative operator \$=>\$ (denoted `;` in `poly`). A `;-poly` is a partially commutative monoid known as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid].
 
-If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `;-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
+If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the `;-poly` \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as
 
 \[
 [ a_{q\_0} ; b_{q\_1} ](x_{q\_2}) = b(a(x))_{ q_2 * q_0 * q_1 }.
 \]
 
-Of particular interest is when merging (\$\nabla\$) is suspended and thus
+Of particular interest, when not merging (\$\nabla\$),
 
 \[
-\Delta \((a_{q\_0} ; b_{q\_1}(x_{q\_2}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
+\Delta(x_{q\_2}, (a_{q\_0} ; b_{q\_1}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
 \]
 
 image:bubble-chamber.png[width=200,float=left] The equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"]. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the room and the trace they leave (called their _varpor trail_) provides physicists information that they then used to understand the nature of the particle under study -- e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. In mm-ADT, \$x\$ above (and 5 below) play the role of the _particle_ and `;-poly` the _bubble chamber_ with each term in the `;-poly` acting as a _vapor droplet_.
