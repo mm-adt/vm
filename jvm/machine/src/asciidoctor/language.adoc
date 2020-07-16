@@ -562,9 +562,20 @@ rec   ::= '(' (obj '->' obj)? (sep obj '->' obj)* ')' q?
 poly  ::= lst | rec
 ----
 
-Like `obj`, there are *value*-`polys` and *type*-`polys`. A value-`poly` is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is a https://en.wikipedia.org/wiki/Multiway_branch[branching] data process. mm-ADT provides two structures that are generally useful when working with `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
+image:poly-kinds.png[width=225,float=right] Like `obj`, there are *value*-`polys` and *type*-`polys`. A value-`poly` is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is a https://en.wikipedia.org/wiki/Multiway_branch[branching] data process. mm-ADT provides two structures that are generally useful when working with `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
 
-image:poly-kinds.png[width=225,float=right]
+[.small]
+[cols="1,1,2,2",width=50,float=right]
+|===
+| poly     | sep  | access (value)       | branch (type)
+
+.3+| `lst` ^| `,`  | all                 | https://en.wikipedia.org/wiki/Flow-based_programming#Multiplexing_processes[copy]
+           ^| `\|` | https://en.wikipedia.org/wiki/CAR_and_CDR[head]                | https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
+           ^|  `;` | last                | https://en.wikipedia.org/wiki/Function_composition[compose]
+.3+| `rec` ^| `,`  | all match key       | https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional]
+           ^| `\|` | first match key     | https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
+           ^| `;`  | last match key      | https://en.wikipedia.org/wiki/Method_cascading[cascade]
+|===
 
 * `lst`
 ** A `lst` containing all values is a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list].
