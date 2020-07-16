@@ -1718,8 +1718,7 @@ mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4">
 <div class="content">
 <div class="title">Rings</div>
 <div class="paragraph">
-<p>A ring is an algebraic structure \$ \langle A,*,+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the <em>multiplicative</em> operator, \$\+: A \times A \rightarrow A \$ is the <em>additive</em> operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity.
-A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
+<p>A ring is an algebraic structure \$ \langle A,*,+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the <em>multiplicative</em> operator, \$\+: A \times A \rightarrow A \$ is the <em>additive</em> operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity. A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch small">
 <colgroup>
@@ -1743,12 +1742,12 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$0 + a = a + 0 = a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive identity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>({0},a) == (a,{0}) == a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(_{0},a) == (a,_{0}) == a</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a - a = a + (-a) = 0\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">additive inverses</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a,a{-1}) == {0}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a,a{-1}) == _{0}</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = b + a\$</p></td>
@@ -1763,7 +1762,7 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$1 * a = a * 1 = a\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative identity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>({1};a) == (a;{1}) == a</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(_{1};a) == (a;_{1}) == a</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) * c = (a * c) + (b * c)\$</p></td>
@@ -1835,10 +1834,10 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <div class="content">
 <table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 14.2857%;">
-<col style="width: 57.1429%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 12.5%;">
+<col style="width: 62.5%;">
 </colgroup>
 <thead>
 <tr>
@@ -1859,13 +1858,19 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>merge</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;-</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$\nabla\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">linear evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">linear combine</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><em>branch</em></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[ ]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$◊\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">scalar apply combine</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><em>combine</em></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>=</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\$\cdot\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">poly pairwise apply</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>poly</code> pairwise combine</p></td>
 </tr>
 </tbody>
 </table>
@@ -2253,15 +2258,15 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </div>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="275"></span> A <code>,-poly</code> (pronounced "comma poly") is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> maintaining a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. Recall that the mm-ADT <code>obj</code> stream ring is formed via a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a>:</p>
+<p><span class="image right"><img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="275"></span> A <code>,-poly</code> (pronounced "comma poly") is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> maintaining a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. Recall that the mm-ADT <code>obj</code> stream ring is formed via a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of the following <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a>:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>object semiring</strong> \$\langle \tt{object},&#8658;,\Delta\nabla \rangle \$ and</p>
+<p><strong>object semiring</strong> \$(\tt{object},&#8658;,◊, _{_1} , \__{0} ) \$ and</p>
 </li>
 <li>
-<p><strong>quantifier ring</strong> \$\langle \tt{q}, \ast, + \rangle \$,</p>
+<p><strong>quantifier ring</strong> \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$,</p>
 </li>
 </ol>
 </div>
@@ -2271,7 +2276,7 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">\$\nabla\$ value poly example</th>
+<th class="tableblock halign-center valign-top">\$\nabla\$ on value ,-poly</th>
 </tr>
 </thead>
 <tbody>
@@ -2282,9 +2287,10 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 ==&gt;1
 ==&gt;2
 ==&gt;3
-mmlang&gt; (1|2|3)&gt;-
+mmlang&gt; (1,,3)&gt;-
 ==&gt;1
-mmlang&gt; (1;2;3)&gt;-
+==&gt;3
+mmlang&gt; (,,3)&gt;-
 ==&gt;3</code></pre>
 </div>
 </div>
@@ -2299,9 +2305,10 @@ mmlang&gt; (1;2;3)&gt;-
 ==&gt;1
 ==&gt;2
 ==&gt;3
-mmlang&gt; ('a'-&gt;1|'b'-&gt;2|'c'-&gt;3)&gt;-
+mmlang&gt; ('a'-&gt;1,,'c'-&gt;3)&gt;-
 ==&gt;1
-mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
+==&gt;3
+mmlang&gt; (,,'c'-&gt;3)&gt;-
 ==&gt;3</code></pre>
 </div>
 </div>
@@ -2312,7 +2319,7 @@ mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
 </tbody>
 </table>
 <div class="paragraph">
-<p>where the quantifier ring, by definition, must be <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered</a> with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an <code>obj</code>, then the additive operator of the <code>obj</code> stream ring is defined as
+<p>where the quantifier ring, by definition, must be <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered</a> with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising <code>obj</code> products, then the additive operator of the <code>obj</code> stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -2322,7 +2329,7 @@ mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
 \]</p>
 </div>
 <div class="paragraph">
-<p>where \$[a,b] \equiv \nabla(\Delta(a,b))\$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
+<p>where \$[a,b] \equiv ◊(a,b) \equiv \nabla(\Delta(a,b)) \$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
 </div>
 <div class="paragraph">
 <p>When applying \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar "multiplication."</p>
@@ -2354,7 +2361,7 @@ mmlang&gt; 'x'{2}[[plus,'a']{3},[plus,'b']{4}]
 </div>
 </div>
 <div class="paragraph">
-<p>As another example, the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below depicts the equalities of the following <code>mmlang</code> examples, where \$\Delta\$ is <code>[split]</code> and \$\nabla\$ is <code>[merge]</code>.</p>
+<p>The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below depicts the equalities of the subsequent <code>mmlang</code> examples.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -2414,7 +2421,7 @@ The previous diagram does not accurately reflect the <code>obj</code> graph&#821
 <p><code>'mar'[[plus,'ko']{2}] == 'mar'[plus,'ko']{2}</code></p>
 </div>
 <div class="paragraph">
-<p>is due to ring theory&#8217;s <strong>distributivity axiom</strong> that requires multiplication both left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distribute</a> over addition such that if \$\langle R,+,\ast\rangle\$ is a ring and \$a,b,c \in R\$, then
+<p>is due to ring theory&#8217;s <strong>distributivity axiom</strong> that requires multiplication both left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distribute</a> over addition such that if \$(R,\ast,+,\mathbf{1},\mathbf{0})\$ is a ring and \$a,b,c \in R\$, then
 \[
 \begin{split}
   a(b+c) &amp;=&amp; \; ab + ac \\
@@ -2477,15 +2484,15 @@ mmlang&gt; 'a'+'b'[+'c',+'d']+'e'           <i class="conum" data-value="3"></i>
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The value <code>a</code> serves as the scalar in a <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a> with the multi-<code>[plus]</code> <code>,-lst</code>.</td>
+<td>The value <code>a</code> serves as the scalar in a <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a> with the multi-<code>+</code> <code>,-lst</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The value <code>strm</code> <code>{a,b}</code> serves as the scalar.</td>
+<td>The value <code>ab</code> serves as the scalar.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The value <code>{a,b}</code> is the left multiplicative scalar and the value <code>e</code> is a right multiplicative scalar.</td>
+<td>The value <code>ab</code> is the left multiplicative scalar and the value <code>e</code> is a right multiplicative scalar.</td>
 </tr>
 </table>
 </div>
@@ -2687,10 +2694,10 @@ instruction                                    domain                           
 </div>
 </div>
 <div class="paragraph">
-<p>The two <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> of <code>;-poly</code> (pronounced "semi poly") are the multiplicative monoid of the <code>obj</code> ring. If \$R = (\tt{obj},&#8658;,\Delta\nabla)\$ is the <code>obj</code> ring, \$M = (\tt{obj},&#8658;)\$ the multiplicative monoid, and \$G = (\tt{obj},\Delta\nabla)\$ the additive abelian group, then <code>;-poly</code> is an \$R\$ <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> \$M\$ whose elements are in \$M\$. That is, <code>;-poly</code> has a free and non-free partially commutative monoid: \$F(M)\$ and \$M\$. It places elements of the multiplicative monoid \$M\$ within a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>. While the elements of the trace monoid are geometrically combined (instead of <a href="https://en.wikipedia.org/wiki/Linear_combination">linearly combined</a> by the additive \$G\$ operator), it still respects the \$+\$-axioms of the ring \$R\$.</p>
+<p>The two <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> of <code>;-poly</code> (pronounced "semi poly") are the free and non-free forms of the <code>obj</code> ring&#8217;s multiplicative monoid. If \$R = (\tt{obj},&#8658;,◊, \_ , _{_0} )\$ is the <code>obj</code> ring, \$M = (\tt{obj},&#8658;, \_)\$ the multiplicative monoid, and \$G = (\tt{obj},◊,_{_0})\$ the additive abelian group, then <code>;-poly</code> is the left  \$R-\$ <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> \$M^\ast\$ (the free \$M\$ monoid). That is, the terms of <code>;-poly</code> are elements of \$M^\ast\$ <em>geometrically</em> combined using the \$M\$ multiplicative operator \$&#8658;\$ (denoted <code>;</code> in <code>poly</code>). A <code>;-poly</code> is a partially commutative monoid known as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>.</p>
 </div>
 <div class="paragraph">
-<p>If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>;-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
+<p>If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the <code>;-poly</code> \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2698,11 +2705,11 @@ instruction                                    domain                           
 \]</p>
 </div>
 <div class="paragraph">
-<p>Of particular interest is when merging (\$\nabla\$) is suspended and thus</p>
+<p>Of particular interest, when not merging (\$\nabla\$),</p>
 </div>
 <div class="paragraph">
 <p>\[
-\Delta ((a_{q_0} ; b_{q_1}(x_{q_2}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
+\Delta(x_{q_2}, (a_{q_0} ; b_{q_1}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
 \]</p>
 </div>
 <div class="paragraph">
@@ -4553,7 +4560,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 12:48:55 -0600
+Last updated 2020-07-16 13:03:00 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
