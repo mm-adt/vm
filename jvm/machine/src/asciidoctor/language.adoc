@@ -564,8 +564,14 @@ poly  ::= lst | rec
 
 image:poly-kinds.png[width=225,float=right] Like `obj`, there are *value*-`polys` and *type*-`polys`. A value-`poly` is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is a https://en.wikipedia.org/wiki/Multiway_branch[branching] data process. mm-ADT provides two structures that are generally useful when working with `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
 
-[.small]
-[cols="1,1,3,3",width=40,float=right]
+\[
+\begin{split}
+\texttt{poly} &= \texttt{lst} &+ \texttt{rec} \\
+\texttt{poly} &= (\texttt{,-lst} + \texttt{|-lst} + \texttt{;-lst}) &+ (\texttt{,-rec} + \texttt{|-rec} + \texttt{;-rec})
+\end{split}
+\]
+
+[cols="1,1,3,3",width=45,float=right]
 |===
 | poly     | sep  | access (value)       | branch (type)
 
@@ -584,12 +590,7 @@ image:poly-kinds.png[width=225,float=right] Like `obj`, there are *value*-`polys
 ** A `rec` containing all values is a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record].
 ** A `rec` containing a type is a _predicate_ https://en.wikipedia.org/wiki/Branch_(computer_science)[branch].
 
-\[
-\begin{split}
-\texttt{poly} &= \texttt{lst} &+ \texttt{rec} \\
-\texttt{poly} &= (\texttt{,-lst} + \texttt{|-lst} + \texttt{;-lst}) &+ (\texttt{,-rec} + \texttt{|-rec} + \texttt{;-rec})
-\end{split}
-\]
+'''
 
 [exec]
 ----
