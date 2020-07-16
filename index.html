@@ -2442,7 +2442,7 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>A <code>|-poly</code> (pronounced "pipe poly") uses <code>|</code> as its <code>obj</code> term separator. Like the <code>,-poly</code>, a <code>|-poly</code> maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not commutative. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>|-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
+<p>A <code>|-poly</code> (pronounced "pipe poly") uses <code>|</code> as its <code>obj</code> term separator. Like the <code>,-poly</code>, a <code>|-poly</code> maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>|-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2455,7 +2455,7 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 \]</p>
 </div>
 <div class="paragraph">
-<p>While <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, &#8220;null&#8221; is <code>obj{0}</code> (the zero element of the <code>obj</code> stream ring). The reason every <code>|-poly</code> is not commutative is because the order in which the terms/branches are evaluated determines the result of the computation.</p>
+<p>While <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the <code>|-lst</code> additive group is non-commutative.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2484,11 +2484,11 @@ mmlang&gt;</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p><code>|-rec</code> extends <code>|-lst</code> with <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a>, where branch selection is not based on \$\mathbb{B}\$ (<code>bool</code>), but on \$\tt{q}\$ (<code>{q}</code>), where &#8220;false&#8221; is <code>obj{0}</code> and "'true'" is any non-zero quantifier. If \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then</p>
+<p><code>|-rec</code> extends <code>|-lst</code> with <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a>, where branch selection is not based on \$\mathbb{B}\$ (<code>bool</code>), but on \$\tt{q}\$ (<code>{q}</code>), where <em>false</em> is <code>obj{0}</code> and <em>true</em> is any non-zero quantifier. The non-commutative additive group of <code>|-poly</code>, as inherited by <code>|-rec</code>, realizes <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements">case-based</a> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">pattern matching</a> branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then</p>
 </div>
 <div class="paragraph">
 <p>\[
-[a_{q_0} &#8594; b_{q_1}  | c_{q_2} &#8594; d_{q_3}](x_{q_4}) =
+[a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}](x_{q_4}) =
 \begin{cases}
 {b(x)}_{q_4 * q_1} &amp; \text{if } a_{q_0}(x_{q_4}) \neq \bf{0}, \\
 {d(x)}_{q_4 * q_3} &amp; \text{if } c_{q_2}(x_{q_4}) \neq \bf{0}, \\
@@ -2506,6 +2506,62 @@ mmlang&gt; 'x'{2}[[plus,'a']{0} -&gt; [plus,'b']{4} | [plus,'c']{0} -&gt; [plus,
 mmlang&gt;</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>The previous <code>mmlang</code> examples are contrived. In practice, they keys of <code>|-rec</code> will typically leverage <code>[is,bool]</code> with the anonymous type <code>_</code> serving as the <a href="https://en.wikipedia.org/wiki/Switch_statement#Fallthrough">default case</a> of the switch.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; {1,10,100}[[is,[gt,50]] -&gt; [plus,10] | [is,[lt,5]] -&gt; [plus,20] | _ -&gt; [plus,30]]     <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;21
+==&gt;40
+==&gt;110
+mmlang&gt; {1,10,100}[is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30]                                     <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;21
+==&gt;40
+==&gt;110</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>Three branches with the final branch serving as <em>default</em>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The same expression, but leveraging <code>mmlang</code> syntax sugar.</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch small">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{3}[is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30][explain]
+==&gt;'
+_{3}&lt;=int{3}-&lt;(_[is,_[gt,50]]-&gt;_[plus,10]|_[is,_[lt,5]]-&gt;_[plus,20]|_-&gt;_[plus,30])&gt;-
+
+instruction                                    domain                                              range                                         state
+-------------------------------------------------------------------------------------------------------------------------------------------------------
+-&lt;(_[is,_[gt,50]]-&gt;_[plus,10]|_[is,_[lt,...    int{3}                                         =&gt;   (_[is,_[gt,50]]-&gt;_[plus,10]|_[is,_[lt,5]...
+ [is,_[gt,50]]                                  _                                             =&gt;    _{?}
+  [gt,50]                                        _                                            =&gt;     bool
+ -&gt;[plus,10]                                      _                                             =&gt;    _
+ [is,_[lt,5]]                                   _                                             =&gt;    _{?}
+  [lt,5]                                         _                                            =&gt;     bool
+ -&gt;[plus,20]                                      _                                             =&gt;    _
+ -&gt;[plus,30]                                      _                                             =&gt;    _
+&gt;-                                             (_[is,_[gt,50]]-&gt;_[plus,10]|_[is,_[lt,5]...    =&gt;   _{3}
+'</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="_andthen_poly">andThen ;-poly</h5>
@@ -4318,7 +4374,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-15 22:45:53 -0600
+Last updated 2020-07-15 23:12:37 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
