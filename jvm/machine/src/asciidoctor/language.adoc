@@ -697,6 +697,8 @@ mm-ADT's processor algebra is a https://ncatlab.org/nlab/show/Ab-enriched+catego
 
 image::comma-lst-string-example.png[align=center,width=450]
 
+NOTE: The previous diagram does not accurately reflect the `obj` graph's Cayley nor category diagram structure. Instead, it leverages https://en.wikipedia.org/wiki/String_diagram[string diagram] motifs. The "string diagrams" presented in this documentation do not fully respect the https://core.ac.uk/download/pdf/21747055.pdf[string diagram community's standards] due to the lack of an easy-to-use, LaTeX-based string diagram package. All mm-ADT "string diagrams" will use dotted lines to denote _apparent_ non-`poly` branching on both the \$\Delta\$ and \$\nabla\$ edges.
+
 The equality
 
 [.text-center]
@@ -800,7 +802,7 @@ While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[u
 <2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
 <3> Both terms, when applied to `x` yield `obj{0}`. The polynomial reduces to `obj{0}`.
 
-`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching], where branch selection is not based on \$\mathbb{B}\$ (`bool`), but on \$\tt{q}\$ (`{q}`), where _false_ is `obj{0}` and _true_ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then
+`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching]. In most programming language, branch selection is predicated on \$\mathbb{B}\$ (`bool`), but in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where _false_ is `obj{0}` and _true_ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then
 
 \[
 [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}](x_{q_4}) =
@@ -820,10 +822,12 @@ While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[u
 
 The previous `mmlang` examples are contrived. In practice, they keys of `|-rec` will typically leverage `[is,bool]` with the anonymous type `_` serving as the https://en.wikipedia.org/wiki/Switch_statement#Fallthrough[default case] of the switch.
 
+image::pipe-rec-string-example.png[width=650,align=center]
+
 [exec]
 ----
-{1,10,100}[[is,[gt,50]] -> [plus,10] | [is,[lt,5]] -> [plus,20] | _ -> [plus,30]]     //<1>
-{1,10,100}[is>50 -> +10 | is<5 -> +20 | _ -> +30]                                     //<2>
+{1,10,100}-<([is,[gt,50]] -> [plus,10] | [is,[lt,5]] -> [plus,20] | _ -> [plus,30])>-   //<1>
+{1,10,100}[is>50 -> +10 | is<5 -> +20 | _ -> +30]                                       //<2>
 ----
 <1> Three branches with the final branch serving as _default_.
 <2> The same expression, but leveraging `mmlang` syntax sugar.
