@@ -517,7 +517,10 @@ In mm-ADT, the set \$\tt{poly} \subset \tt{obj}\$ are https://en.wikipedia.org/w
 [.text-center]
 `(x0{q0},x1{q1},x2{q2},...,xn{qn})`
 
-where `qi` is a _quantifier_ (coefficient), `xi` is an _object_ (indeterminate), `xi{qi}` is an `obj` (term), and the `objs` are linearly combined via `,`. In mm-ADT this structure is known as a `,-poly` (pronounced "comma poly"). As a data structure, a `,-poly` is a https://en.wikipedia.org/wiki/Multiset[multi-set] or bag. As an algebraic structure, a `,-poly` is a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] that faithfully encodes the mm-ADT processor algebra's additive and multiplicative *type ringoid* magmas as a https://en.wikipedia.org/wiki/Free_group[free abelian group] \$\langle F(\tt{obj}),,\rangle\$ and a non-free https://en.wikipedia.org/wiki/Monoid[monoid] \$\langle \tt{obj},; \rangle\$, respectively. https://zenodo.org/record/2565243[Stream ring theory] studies `,-poly`.
+where `qi` is a _quantifier_ (coefficient), `xi` is an _object_ (indeterminate), `xi{qi}` is an `obj` (term), and the `objs` are linearly combined via `,`. In mm-ADT this structure is known as a `,-poly` (pronounced "comma poly"). As a data structure, a `,-poly` is a https://en.wikipedia.org/wiki/Multiset[multi-set] or bag. As an algebraic structure, a `,-poly` is a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] that faithfully encodes the mm-ADT processor algebra's additive and multiplicative *type ringoid* magmas as
+
+. an additive https://en.wikipedia.org/wiki/Free_group[free abelian group] \$( F\tt{obj},◊,\_{_0}) \$ and
+. a multiplicative non-free https://en.wikipedia.org/wiki/Monoid[monoid] \$( \tt{obj},=>,\_{_1}) \$,
 
 image::poly-columns.png[float=left,width=275]
 
@@ -578,8 +581,8 @@ image:poly-kinds.png[width=225,float=right] Like `obj`, there are *value*-`polys
 
 .3+| `lst` | `,`  | all                 | https://en.wikipedia.org/wiki/Union_(set_theory)[union]
            | `\|` | https://en.wikipedia.org/wiki/CAR_and_CDR[head]                | https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
-           |  `;` | last                | https://en.wikipedia.org/wiki/Function_composition[compose]
-.3+| `rec` | `,`  | all match key       | https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional]
+           |  `;` | last                | https://en.wikipedia.org/wiki/Method_chaining[chain]
+.3+| `rec` | `,`  | all match key       | https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
            | `\|` | first match key     | https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
            | `;`  | last match key      | https://en.wikipedia.org/wiki/Method_cascading[cascade]
 |===
@@ -631,7 +634,7 @@ a|
 3-<([plus,1]\|[mult,2])>-
 3-<([plus,1];[mult,2])>-
 ----
-|The "_split-merge_"-pattern (`-<()>-`) is common enough to warrant a single, unifying instruction called `[splitmerge]` and a corresponding sugar of `[poly]`. If the evaluating processor encounters `[splitmerge]`, it can compute the instruction using a `poly` of streams versus a stream of `polys`. The difference is significant in distributed environments, where the former enables decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.
+|The "_branch_"-pattern (`-<()>-`) is common enough to warrant a single, unifying instruction called `[branch]` and a corresponding sugar of `[poly]`. If the evaluating processor encounters `[branch]`, it can compute the instruction using a `poly` of streams versus a stream of `polys`. The difference is significant in distributed environments, where the former enables decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.
 a|
 [exec]
 ----
@@ -814,6 +817,29 @@ At which point the two types are equivalent and can be merged accordingly.
 
 image::pipe-poly-example.png[align=center,width=350]
 
+[float=right,width=30]
+|===
+^| \$\nabla\$ on value \|-poly
+
+a|
+[exec]
+----
+(1\|2\|3)>-
+(1\|\|3)>-
+(\|\|3)>-
+----
+{blank}
+
+a|
+[exec]
+----
+('a'->1\|'b'->2\|'c'->3)>-
+('a'->1\|\|'c'->3)>-
+(\|\|'c'->3)>-
+----
+{blank}
+|===
+
 A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like the `,-poly`, a `|-poly` maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not https://en.wikipedia.org/wiki/Commutative_property[commutative]. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
 
 \[
@@ -826,6 +852,8 @@ A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like t
 \]
 
 While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the `|-lst` additive group is non-commutative.
+
+'''
 
 [exec]
 ----
@@ -885,6 +913,29 @@ int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 image::semi-poly-example.png[align=center,width=350]
 
 The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the free and non-free forms of the `obj` ring's multiplicative monoid. If \$R = (\tt{obj},=>,◊, \_ , \_{_0} )\$ is the `obj` ring, \$M = (\tt{obj},=>, \_)\$ the multiplicative monoid, and \$G = (\tt{obj},◊,\_{_0})\$ the additive abelian group, then `;-poly` is the left  \$R-\$ https://en.wikipedia.org/wiki/Module_(mathematics)[module] \$M^\ast\$ (the free \$M\$ monoid). That is, the terms of `;-poly` are elements of \$M^\ast\$ _geometrically_ combined using the \$M\$ multiplicative operator \$=>\$ (denoted `;` in `poly`). A `;-poly` is a partially commutative monoid known as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid].
+
+[float=right,width=30]
+|===
+^| \$\nabla\$ on value ;-poly
+
+a|
+[exec]
+----
+(1;2;3)>-
+(1;;3)>-
+(;;3)>-
+----
+{blank}
+
+a|
+[exec]
+----
+('a'->1;'b'->2;'c'->3)>-
+('a'->1;;'c'->3)>-
+(;;'c'->3)>-
+----
+{blank}
+|===
 
 If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the `;-poly` \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as
 
