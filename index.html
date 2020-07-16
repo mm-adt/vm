@@ -2671,6 +2671,9 @@ instruction                                    domain                           
 &gt;-                                             (_[is,_[gt,50]]-&gt;_[plus,10]|_[is,_[lt,5]...    =&gt;   _{3}
 '</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div></div></td>
 </tr>
 </tbody>
@@ -2678,14 +2681,76 @@ instruction                                    domain                           
 </div>
 <div class="sect4">
 <h5 id="_andthen_poly">andThen ;-poly</h5>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/semi-poly-example.png" alt="semi poly example" width="350">
+</div>
+</div>
 <div class="paragraph">
-<p>A <code>;-poly</code> is a polynomial ring with semi-commutative "addition," where "addition" is ring multiplication and thus, is monoid multiplication and monoid multiplication is only guaranteed commutative for the <em>filter-subring</em>.
-Polynomials with this structure are called <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid rings</a>.
-In mm-ADT, monoid multiplication is standard type composition and is defined as</p>
+<p>The two magmas of <code>;-poly</code> (pronounced "semi poly") are the multiplicative monoid of the <code>obj</code> ring. If \$R = (\tt{obj},&#8658;,\Delta\nabla)\$ is the <code>obj</code> ring, \$M = (\tt{obj},&#8658;)\$ the multiplicative monoid, and \$G = (\tt{obj},\Delta\nabla)\$ the additive abelian group, then <code>;-poly</code> is an \$R\$-module \$M\$ whose elements are in \$M\$. That is, <code>;-poly</code> has a free and non-free partially commutative monoid: \$F(M)\$ and \$M\$. It places elements of the multiplicative monoid \$M\$ within a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>. While the elements of the trace monoid are geometrically combined (instead of linearly combined by the additive \$G\$ operator), it still respects the \$+\$-axioms of the ring \$R\$.</p>
+</div>
+<div class="paragraph">
+<p>If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>;-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{t0{q0};t1{q1} = t0;t1\{q0*q1\}} \]</p>
+[ a_{q_0} ; b_{q_1}(x_{q_2}) ]  = b(a(x))_{ q_2 * q_0 * q_1 }.
+\]</p>
+</div>
+<div class="paragraph">
+<p>Of particular interest is when the merging (\$\nabla\$) is suspended and</p>
+</div>
+<div class="paragraph">
+<p>\[
+\Delta ((a_{q_0} ; b_{q_1}(x_{q_2}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
+\]</p>
+</div>
+<div class="paragraph">
+<p>The equation above realizes a structure and process joyfully called a "https://en.wikipedia.org/wiki/Bubble_chamber[bubble chamber]," where \$x\$ is the particle and <code>;-poly</code> the bubble chamber with each term in the <code>;-poly</code> acting as a water droplet.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)     <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;(6;8;11;15;20)
+mmlang&gt; 5-&lt;(+1+2;+3;+4+5)       <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;(8;11;20)
+mmlang&gt; 5-&lt;(+1+2+3+4+5)         <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;(20)
+mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)&gt;-   <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;20
+mmlang&gt; 5[+1;+2;+3;+4;+5]       <i class="conum" data-value="5"></i><b>(5)</b>
+==&gt;20
+mmlang&gt; 5[plus,15]              <i class="conum" data-value="6"></i><b>(6)</b>
+==&gt;20</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>5</code> is propagated through the <code>;-poly</code> terms leaving a trace of it&#8217;s state at each term slot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Since the elements of the \$R\$-module \$M\$ are in \$M\$, any monoid element is a legal term.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A <code>;-poly</code> with single term derived via the composition of 5 other \$M\$ elements.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The merge operator (\$\nabla\$) emits the final term of the <code>;-poly</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The sugar form of the previous expression.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The last three examples are equivalent.</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4487,7 +4552,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 03:08:45 -0600
+Last updated 2020-07-16 03:21:30 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
