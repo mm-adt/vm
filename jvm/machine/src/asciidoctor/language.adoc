@@ -618,7 +618,7 @@ a|
 3-<([plus,1]\|[mult,2])>-
 3-<([plus,1];[mult,2])>-
 ----
-|The "_split-merge_"-pattern (`-<()>-`) is common enough to warrant a single, unifying instruction called `[splitmerge]` and a corresponding sugar of `[poly]`. If the evaluating processor encounters `[splitmerge]`, it can compute using a `poly` of streams versus a stream of `polys` as may be required with `[split]`/`[merge]`. The difference is significant in distributed environments, where the former supports decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.
+|The "_split-merge_"-pattern (`-<()>-`) is common enough to warrant a single, unifying instruction called `[splitmerge]` and a corresponding sugar of `[poly]`. If the evaluating processor encounters `[splitmerge]`, it can compute the instruction using a `poly` of streams versus a stream of `polys`. The difference is significant in distributed environments, where the former enables decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.
 a|
 [exec]
 ----
@@ -628,7 +628,7 @@ a|
 ----
 |&nbsp;
 
-Finally, the most compact sugar forms of the running "_split-merge_"-examples is presented below. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
+Finally, the most compact https://en.wikipedia.org/wiki/Syntactic_sugar[sugar] forms of the running "_split-merge_"-examples are presented below. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
 a|
 [exec]
 ----
@@ -714,8 +714,8 @@ These equalities enable https://en.wikipedia.org/wiki/Factorization_of_polynomia
 
 [exec]
 ----
-'a'[+'b',+'c']        //<1>
-['b','c']+'a'         //<2>
+'a'[+'b',+'c']     //<1>
+['b','c']+'a'      //<2>
 ----
 <1> The value `a` is split (\$ \Delta \$) and applied (\$=>\$) to `[plus,'b']` and `[plus,'c']` elements before being merge (\$ \nabla \$).
 <2> The values `a` and `b` are merged (\$ \nabla \$) and then applied (\$=>\$) to `[plus,'a']`.
@@ -727,9 +727,9 @@ Polynomial factorization plays an important role in type optimization (the compi
 
 [exec]
 ----
-'a'[+'b'+'c'+'e',+'b'+'d'+'e']                     //<1>
-'a'+'b'[+'c'+'e',+'d'+'e']                         //<2>
-'a'+'b'[+'c',+'d']+'e'                             //<3>
+'a'[+'b'+'c'+'e',+'b'+'d'+'e']   //<1>
+'a'+'b'[+'c'+'e',+'d'+'e']       //<2>
+'a'+'b'[+'c',+'d']+'e'           //<3>
 ----
 <1> The value `a` serves as the scalar in a https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] with the multi-`[plus]` `,-lst`.
 <2> The value `strm` `{a,b}` serves as the scalar.
@@ -777,7 +777,7 @@ At which point the two types are equivalent and can be merged accordingly.
 
 image::pipe-poly-example.png[align=center,width=350]
 
-A `|-poly` is monoid ring.
+A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like the `,-poly`, a `|-poly` maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not commutative. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
 
 \[
 [a_{q_0} | b_{q_1}](x_{q_2}) =
@@ -788,28 +788,35 @@ A `|-poly` is monoid ring.
 \end{cases}
 \]
 
-[exec]
-----
-'mar'[[plus,'ko']|[plus,'io']]          //<1>
-'mar'[[plus,'ko']{0}|[plus,'io']]       //<2>
-'mar'[[plus,'ko']{0}|[plus,'io']{0}]    //<3>
-----
-<1> The first branch does not yield `obj{0}` so `'ko'` is added to `'mar'`.
-The polynomial reduces to `[plus,'ko']`.
-<2> The first branch does yield an `obj{0}` and the second does not so `'io'` is added to `'mar'`.
-The polynomial reduces to `[plus,'io']`.
-<3> Both branches yield an `obj{0}`.
-The polynomial reduces to `obj{0}`.
+While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements a https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing operator], where in mm-ADT, "`null`" is `obj{0}` (the zero element of the `obj` stream ring). The reason every `|-poly` is not commutative is because the order in which the terms/branches are evaluated determines the result of the computation.
 
 [exec]
 ----
-'mar'[[plus,'ko']|[plus,'io']]
-'mar'[[plus,'ko']{0}|[plus,'io']]
-'mar'[[plus,'ko']{0}|[plus,'io']{0}]
+'x'{2}[[plus,'a']{3} | [plus,'b']{4}]  //<1>
+'x'{2}[[plus,'a']{0} | [plus,'b']{4}]  //<2>
+'x'{2}[[plus,'a']{0} | [plus,'b']{0}]  //<3>
 ----
+<1> The first term applied to `x` is not `obj{0}` so `'a'` is added to `'x'`. The polynomial reduces to `[plus,'a']{3}`.
+<2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
+<3> Both terms, when applied to `x` yield `obj{0}`. The polynomial reduces to `obj{0}`.
 
-Every `|-poly` non-commutative addition because the order in which the terms/branches are evaluated determines the result of the computation.
-While `,-poly` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-poly` implements link:https://en.wikipedia.org/wiki/Null_(SQL)#COALESCE[coalesce].
+`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching], where branch selection is not based on \$\Bool\$ (`bool`), but on \$\tt{q}\$ (`{q}`), where "`false`" is `obj{0}` and "'true'" is any non-zero quantifier. If \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then
+
+\[
+[a_{q_0} -> b_{q_1}  | c_{q_2} -> d_{q_3}](x_{q_4}) =
+\begin{cases}
+{b(x)}_{q_4 * q_1} & \text{if } a_{q_0}(x_{q_4}) \neq \bf{0}, \\
+{d(x)}_{q_4 * q_3} & \text{if } c_{q_2}(x_{q_4}) \neq \bf{0}, \\
+\bf{0} & \text{otherwise}.
+\end{cases}
+\]
+
+[exec]
+----
+'x'{2}[[plus,'a']{3} -> [plus,'b']{4} | [plus,'c']{5} -> [plus,'d']{6}]
+'x'{2}[[plus,'a']{0} -> [plus,'b']{4} | [plus,'c']{5} -> [plus,'d']{6}]
+'x'{2}[[plus,'a']{0} -> [plus,'b']{4} | [plus,'c']{0} -> [plus,'d']{6}]
+----
 
 ===== andThen ;-poly
 
