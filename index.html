@@ -2264,16 +2264,6 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </li>
 </ol>
 </div>
-<div class="paragraph">
-<p>where the quantifier ring, by definition, must be an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an <code>obj</code>, then the additive operator of the <code>obj</code> stream ring is defined as
-\[
-[a_{q_0},b_{q_1}] =
-\begin{cases}
-  [a_{q_0+q_1}]     &amp; \text{if } a==b, \\
-  [a_{q_0},b_{q_1}] &amp; \text{otherwise},
-\end{cases}
-\]</p>
-</div>
 <table class="tableblock frame-all grid-all right" style="width: 30%;">
 <colgroup>
 <col style="width: 100%;">
@@ -2320,6 +2310,16 @@ mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>where the quantifier ring, by definition, must be an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an <code>obj</code>, then the additive operator of the <code>obj</code> stream ring is defined as
+\[
+[a_{q_0},b_{q_1}] =
+\begin{cases}
+  [a_{q_0+q_1}]     &amp; \text{if } a==b, \\
+  [a_{q_0},b_{q_1}] &amp; \text{otherwise},
+\end{cases}
+\]</p>
+</div>
 <div class="paragraph">
 <p>where \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
 </div>
@@ -4486,7 +4486,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 03:03:46 -0600
+Last updated 2020-07-16 03:06:11 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
