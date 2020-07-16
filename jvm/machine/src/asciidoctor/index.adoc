@@ -18,6 +18,15 @@ Ryan Wisnesky [advisor] (Conexus)
 :xinst: \tt{i\nst}
 :xobj: \tt{obj}
 
+[env.texmacro]
+--
+\def\AA{\mathbb{A}}
+\def\BB{\mathbb{B}}
+
+\newcommand{\set}[1]{ \{\,#1\,  \} }
+\newcommand{\sett}[2]{ \{\,#1\, \mid\, #2\, \} }
+--
+
 include::introduction.adoc[]
 
 include::language.adoc[]

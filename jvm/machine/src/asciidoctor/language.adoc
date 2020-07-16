@@ -484,15 +484,23 @@ A ring satisfies the following axioms, where \$ a,b,c \in A \$.
 
 .Poly Constructs in mmlang
 ================================================================
+
+[.small]
+[cols="1,1,1,4",width=40,float=right]
+|===
+| name        | mmlang      | latex         | description
+
+| _split_     | `-<`        | \$\Delta\$      | scalar apply
+| _merge_     | `>-`        | \$\nabla\$      | linear evaluation
+| _combine_   | `=`         | \$\cdot\$     | poly pairwise apply
+|===
+
 . `( )` is a polynomial constructor.
 . `lst` is a polynomial with terms indexed by `int`.
 . `rec` is a polynomial with terms indexed by `obj`.
 . `,` is a polynomial term deliminator denoting parallel compose.
 . `|` is a polynomial term deliminator denoting parallel choose.
 . `;` is a polynomial term combinator denoting serial compose.
-. `-<` is sugar for `[split]` copying the lhs `obj` across all polynomial terms.
-. `>-` is sugar for `[merge]` joining polynomial terms into a single `obj`.
-. `=` is sugar for `[combine]` composing polynomial terms pair-wise.
 ================================================================
 
 NOTE: The reason for the `[split]` sugar symbol `-<`, is that it represents one wire (`-`) splitting into many (`<`). Likewise, the reason for `>-` being the `[merge]` sugar symbol is it represents many wires merging (`>`) into one (`-`). Finally, `[combine]` has a sugar of `=` which represents parallel wires being operated on independently.
@@ -560,10 +568,10 @@ image:poly-kinds.png[width=225,float=right]
 
 * `lst`
 ** A `lst` containing all values is a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list].
-** A `lst` containing a type is a copy https://en.wikipedia.org/wiki/Branch_(computer_science)[branch].
+** A `lst` containing a type is a _copy_ https://en.wikipedia.org/wiki/Branch_(computer_science)[branch].
 * `rec`
 ** A `rec` containing all values is a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record].
-** A `rec` containing a type is a predicate https://en.wikipedia.org/wiki/Branch_(computer_science)[branch].
+** A `rec` containing a type is a _predicate_ https://en.wikipedia.org/wiki/Branch_(computer_science)[branch].
 
 \[
 \begin{split}
@@ -638,7 +646,7 @@ image::comma-poly-example.png[align=center,width=350]
 
 image:../language/obj-type-value-q.png[float=right,width=275] A `,-poly` is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. Recall that the mm-ADT `obj` stream ring is formed via a https://en.wikipedia.org/wiki/Product_ring[direct product] of a https://en.wikipedia.org/wiki/Semiring[semiring] and a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring]:
 
-. *object semiring* \$\langle \tt{object},=>,-< \rangle \$ and
+. *object semiring* \$\langle \tt{object},=>,\Delta\nabla \rangle \$ and
 . *quantifier ring* \$\langle \tt{q}, \ast, + \rangle \$,
 
 where the quantifier ring, by definition, must be an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are the elements of the product comprising an `obj`, then the additive operator of the `obj` stream ring is defined as
@@ -651,7 +659,7 @@ where the quantifier ring, by definition, must be an https://en.wikipedia.org/wi
 \]
 where \$+\$ denotes the respective quantifier ring's additive operator. Regarding object addition, if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed such that \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the time and space dimensions.
 
-When evaluating a \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebraic https://en.wikipedia.org/wiki/Semigroup_action[action] satisfying the equation below. From another perspective, the `,-poly` is a left https://en.wikipedia.org/wiki/Module_(mathematics)[module] and \$x\$ a scalar in this generalized scalar multiplication.
+When applying \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebraic https://en.wikipedia.org/wiki/Semigroup_action[action] satisfying the equation below. From another perspective, the `,-poly` is a left https://en.wikipedia.org/wiki/Module_(mathematics)[module] and \$x\$ a scalar in this generalized scalar "multiplication."
 
 \[
 [a_{q_0},b_{q_1}](x_{q_2}) =
@@ -661,10 +669,17 @@ When evaluating a \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebra
 \end{cases}
 \]
 
+The two cases above are expressed in `mmlang` below with the last two examples being the `[ ]` sugar of `-<()>-`, where in LaTeX, \$[\$ is sugar for \$\Delta\$ and \$]\$ for \$\nabla\$.
 
+[exec]
+----
+'x'{2}-<([plus,'a']{3},[plus,'a']{4})>-
+'x'{2}-<([plus,'a']{3},[plus,'b']{4})>-
+'x'{2}[[plus,'a']{3},[plus,'a']{4}]
+'x'{2}[[plus,'a']{3},[plus,'b']{4}]
+----
 
-The https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the following `mmlang` examples, where \$\Delta\$ is `[split]` and \$\nabla\$ is `[merge]`.
-
+As another example, the https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the following `mmlang` examples, where \$\Delta\$ is `[split]` and \$\nabla\$ is `[merge]`.
 
 image::comma-lst-tensor-example.png[align=center,width=725]
 
@@ -674,7 +689,7 @@ image::comma-lst-tensor-example.png[align=center,width=725]
 'mar'[[plus,'ko']{2}]             //<2>
 'mar'[plus,'ko']{2}               //<3>
 ----
-<1> The `'mar'` `str` is copied (\$ \prec \$) and applied (\$ => \$) to each `[plus,'ko']` polynomial term and then aggregated (\$ \succ \$).
+<1> The `'mar'` `str` is copied (\$ \Delta \$) and applied (\$ => \$) to each `[plus,'ko']` polynomial term and then linearly combined (\$ \nabla \$).
 <2> Polynomial term summation via quantifier summation when two `,-lst` terms are equal -- \$\{1\} + \{1\} = \{2\} \$.
 <3> The single term in the `,-lst` can be https://en.wikipedia.org/wiki/Factorization[factored] out.
 
@@ -702,8 +717,8 @@ These equalities enable https://en.wikipedia.org/wiki/Factorization_of_polynomia
 'a'[+'b',+'c']        //<1>
 ['b','c']+'a'         //<2>
 ----
-<1> The value `a` is split (\$\prec\$) and applied (\$=>\$) to `[plus,'b']` and `[plus,'c']` elements before being merge (\$\succ\$).
-<2> The values `a` and `b` are merged (\$\succ\$) and then applied (\$=>\$) to `[plus,'a']`.
+<1> The value `a` is split (\$ \Delta \$) and applied (\$=>\$) to `[plus,'b']` and `[plus,'c']` elements before being merge (\$ \nabla \$).
+<2> The values `a` and `b` are merged (\$ \nabla \$) and then applied (\$=>\$) to `[plus,'a']`.
 
 Polynomial factorization plays an important role in type optimization (the compiler), where, for example, with considerations to distributed computing:
 
