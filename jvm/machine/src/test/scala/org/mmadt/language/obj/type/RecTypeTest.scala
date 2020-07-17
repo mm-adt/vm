@@ -45,6 +45,10 @@ class RecTypeTest extends FunSuite {
     val prec: Rec[StrValue, IntType] = rec(g = (Tokens.`|`, Map(str("a") -> int.plus(1), str("b") -> int.plus(2), str("c") -> int.plus(3))))
     val srec: Rec[StrValue, IntType] = rec(g = (Tokens.`;`, Map(str("a") -> int.plus(1), str("b") -> int.plus(2), str("c") -> int.plus(3))))
 
+    assertResult(int.q(3))(crec.merge.range)
+    assertResult(int.q(1))(prec.merge.range)
+    assertResult(int.q(1))(srec.merge.range)
+
     assertResult(int(11, 12, 13))(int(10).split(crec).merge)
     assertResult(int(11))(int(10).split(prec).merge)
     assertResult(int(16))(int(10).split(srec).merge)

@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.value
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -32,6 +33,21 @@ import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3, TableFor4}
 
 class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
+
+  test("lst value [split]/[merge]") {
+    val clst: Lst[IntValue] = lst(g = (Tokens.`,`, List(int(1), int(2), int(3))))
+    val plst: Lst[IntValue] = lst(g = (Tokens.`|`, List(int(1), int(2), int(3))))
+    val slst: Lst[IntValue] = lst(g = (Tokens.`;`, List(int(1), int(2), int(3))))
+
+    assertResult(int(1, 2, 3))(clst.merge)
+    assertResult(int(1))(plst.merge)
+    assertResult(int(3))(slst.merge)
+
+    assertResult(int(1, 2, 3))(int(10).split(clst).merge)
+    assertResult(int(1))(int(10).split(plst).merge)
+    assertResult(int(3))(int(10).split(slst).merge)
+  }
+
 
   test("lst test") {
     assert(("a" | "b").q(0).test(str.q(0)))

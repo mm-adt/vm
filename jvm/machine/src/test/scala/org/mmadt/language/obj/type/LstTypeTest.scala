@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.{Int, Lst, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
@@ -30,6 +30,21 @@ import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
+
+  test("lst type [split]/[merge]") {
+    val clst: Lst[IntType] = lst(g = (Tokens.`,`, List(int.plus(1), int.plus(2), int.plus(3))))
+    val plst: Lst[IntType] = lst(g = (Tokens.`|`, List(int.plus(1), int.plus(2), int.plus(3))))
+    val slst: Lst[IntType] = lst(g = (Tokens.`;`, List(int.plus(1), int.plus(2), int.plus(3))))
+
+    assertResult(int.q(3))(clst.merge.range)
+    assertResult(int.q(1))(plst.merge.range)
+    assertResult(int.q(1))(slst.merge.range)
+
+    assertResult(int(11, 12, 13))(int(10).split(clst).merge)
+    assertResult(int(11))(int(10).split(plst).merge)
+    assertResult(int(16))(int(10).split(slst).merge)
+  }
+
   test("parallel expressions") {
     val starts: TableFor3[Obj, Lst[Obj], Obj] =
       new TableFor3[Obj, Lst[Obj], Obj](("lhs", "rhs", "result"),
@@ -50,7 +65,7 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         //(strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
     forEvery(starts) { (lhs, rhs, result) => {
-//      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${lhs})>--<${rhs}>-"))
+      //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${lhs})>--<${rhs}>-"))
       assertResult(result)(lhs ===> __.-<(rhs).>-)
     }
     }
@@ -75,13 +90,13 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
   test("parallel quantifier") {
     val poly: Poly[Obj] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3)
     assertResult("(int[id]|int[plus,2]|3){2}<=int{2}[mult,8]-<(int[id]|int[plus,2]|3)")(poly.toString)
-/*    assertResult(int.q(2).id())(poly.glist.head)
-    assertResult(int.q(2).plus(2))(poly.glist(1))
-    assertResult(int(3))(poly.glist(2))
-    assertResult(int.q(2))(poly.glist.head.via._1)
-    assertResult(int.q(2))(poly.glist(1).via._1)
-    assert(poly.glist(2).root)
-    assertResult(int.q(2).id() | int.q(2).plus(2) | int(3))(poly.range)*/
+    /*    assertResult(int.q(2).id())(poly.glist.head)
+        assertResult(int.q(2).plus(2))(poly.glist(1))
+        assertResult(int(3))(poly.glist(2))
+        assertResult(int.q(2))(poly.glist.head.via._1)
+        assertResult(int.q(2))(poly.glist(1).via._1)
+        assert(poly.glist(2).root)
+        assertResult(int.q(2).id() | int.q(2).plus(2) | int(3))(poly.range)*/
   }
 
   test("parallel [split] quantification") {
