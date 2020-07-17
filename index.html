@@ -2263,17 +2263,43 @@ The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</
 </div>
 <div class="sect4">
 <h5 id="_orthen_poly">orThen ,-poly</h5>
-<table class="tableblock frame-none grid-none stretch">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 41.1764%;">
-<col style="width: 5.8823%;">
-<col style="width: 52.9413%;">
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
 </colgroup>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-lst-graph.png" alt="comma lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-rec-graph.png" alt="comma rec graph"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')
+==&gt;('xa','xb','xc')
+mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')&gt;-
+==&gt;'xa'
+==&gt;'xb'
+==&gt;'xc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')
+==&gt;('xs'-&gt;'xa','xr'-&gt;'xb','xt'-&gt;'xc')
+mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')&gt;-
+==&gt;'xa'
+==&gt;'xb'
+==&gt;'xc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -2571,17 +2597,39 @@ At which point the two types are equivalent and can be merged accordingly.</p>
 </div>
 <div class="sect4">
 <h5 id="_xorthen_poly">xorThen |-poly</h5>
-<table class="tableblock frame-none grid-none stretch">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 41.1764%;">
-<col style="width: 5.8823%;">
-<col style="width: 52.9413%;">
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
 </colgroup>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-lst-graph.png" alt="pipe lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-rec-graph.png" alt="pipe rec graph"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')
+==&gt;(|'xb'|)
+mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')&gt;-
+==&gt;'xb'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;('s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c')
+==&gt;('xr'-&gt;'xb')
+mmlang&gt; 'x'-&lt;('s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c')&gt;-
+==&gt;'xb'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -2760,17 +2808,39 @@ instruction                                    domain                           
 </div>
 <div class="sect4">
 <h5 id="_andthen_poly">andThen ;-poly</h5>
-<table class="tableblock frame-none grid-none stretch">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 41.1764%;">
-<col style="width: 5.8823%;">
-<col style="width: 52.9413%;">
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
 </colgroup>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-lst-graph.png" alt="semi lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-rec-graph.png" alt="semi rec graph"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')
+==&gt;('xa';'xab';'xabc')
+mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')&gt;-
+==&gt;'xabc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')
+==&gt;('xs'-&gt;'xa';'xsr'-&gt;'xab';'xsrt'-&gt;'xabc')
+mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')&gt;-
+==&gt;'xabc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -4699,7 +4769,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-16 22:50:21 -0600
+Last updated 2020-07-16 23:27:30 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
