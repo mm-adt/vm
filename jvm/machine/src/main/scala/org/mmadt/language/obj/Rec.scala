@@ -60,7 +60,7 @@ object Rec {
       var local = start -> start
       arec.clone(g = (arec.gsep, arec.gmap.map(slot => {
         val key = Inst.resolveArg(local._1, slot._1)
-        local = if (!key.alive) (key -> zeroObj.asInstanceOf[A]) else local._2 match {
+        local = if (!key.alive) key -> zeroObj.asInstanceOf[A] else local._2 match {
           case astrm: Strm[_] => key -> strm(astrm.values.map(x => Inst.resolveArg(x, slot._2))).asInstanceOf[A]
           case _ => (key -> Inst.resolveArg(local._2, slot._2)).asInstanceOf[(A, A)]
         }
