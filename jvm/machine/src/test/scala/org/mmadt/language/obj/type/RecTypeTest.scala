@@ -21,8 +21,9 @@
  */
 
 package org.mmadt.language.obj.`type`
-import org.mmadt.language.obj.Obj
+
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -37,6 +38,16 @@ class RecTypeTest extends FunSuite {
 
   test("rec value toString") {
     assertResult("(->)")(rec.toString)
+  }
+
+  test("rec type [split]/[merge]") {
+    val crec: Rec[StrValue, IntType] = rec(g = (Tokens.`,`, Map(str("a") -> int.plus(1), str("b") -> int.plus(2), str("c") -> int.plus(3))))
+    val prec: Rec[StrValue, IntType] = rec(g = (Tokens.`|`, Map(str("a") -> int.plus(1), str("b") -> int.plus(2), str("c") -> int.plus(3))))
+    val srec: Rec[StrValue, IntType] = rec(g = (Tokens.`;`, Map(str("a") -> int.plus(1), str("b") -> int.plus(2), str("c") -> int.plus(3))))
+
+    assertResult(int(11, 12, 13))(int(10).split(crec).merge)
+    assertResult(int(11))(int(10).split(prec).merge)
+    assertResult(int(16))(int(10).split(srec).merge)
   }
 
   test("rec values") {
