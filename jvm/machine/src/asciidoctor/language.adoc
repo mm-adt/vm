@@ -658,9 +658,9 @@ NOTE: The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`.
 
 ===== orThen ,-poly
 
-[frame=none, grid=none]
+[cols="7,1,9",frame=none, grid=none]
 |===
-| image:comma-lst-graph.png[width=500] |
+| image:comma-lst-graph.png[] | |  image:comma-rec-graph.png[]
 |===
 
 image:../language/obj-type-value-q.png[float=right,width=275] A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. Recall that the mm-ADT `obj` stream ring is formed via a https://en.wikipedia.org/wiki/Product_ring[direct product] of the following https://en.wikipedia.org/wiki/Semiring[semiring] and https://en.wikipedia.org/wiki/Ring_(mathematics)[ring]:
@@ -818,9 +818,9 @@ At which point the two types are equivalent and can be merged accordingly.
 
 ===== xorThen |-poly
 
-[frame=none, grid=none]
+[cols="7,1,9",frame=none, grid=none]
 |===
-| image:pipe-lst-graph.png[width=500] |
+| image:pipe-lst-graph.png[] | |  image:pipe-rec-graph.png[]
 |===
 
 
@@ -919,8 +919,9 @@ int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 ===== andThen ;-poly
 
 [frame=none, grid=none]
+[cols="7,1,9",frame=none, grid=none]
 |===
-| image:semi-lst-graph.png[width=500] |
+| image:semi-lst-graph.png[] | |  image:semi-rec-graph.png[]
 |===
 
 The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the free and non-free forms of the `obj` ring's multiplicative monoid. If \$R = (\tt{obj},=>,◊, \_ , \_{_0} )\$ is the `obj` ring, \$M = (\tt{obj},=>, \_)\$ the multiplicative monoid, and \$G = (\tt{obj},◊,\_{_0})\$ the additive abelian group, then `;-poly` is the left  \$R-\$ https://en.wikipedia.org/wiki/Module_(mathematics)[module] \$M^\ast\$ (the free \$M\$ monoid). That is, the terms of `;-poly` are elements of \$M^\ast\$ _geometrically_ combined using the \$M\$ multiplicative operator \$=>\$ (denoted `;` in `poly`). A `;-poly` is a partially commutative monoid known as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid].
