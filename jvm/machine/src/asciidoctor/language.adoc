@@ -489,10 +489,10 @@ A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ 
 |===
 | name        | mmlang      | latex           | description
 
-| _split_     | `-<`        | \$\Delta\$      | scalar apply
-| _merge_     | `>-`        | \$\nabla\$      | linear combine
-| _branch_    | `[ ]`       | \$◊\$           | scalar apply combine
-| _combine_   | `=`         | \$\cdot\$       | `poly` pairwise combine
+| _split_     | `-<`        | \$\Delta\$      | scalar `*`
+| _merge_     | `>-`        | \$\nabla\$      | fold `+` (linear combine)
+| _branch_    | `[ ]`       | \$◊\$           | scalar `*` then fold `+`
+| _combine_   | `=`         | \$\cdot\$       | pairwise juxtaposition
 
 |===
 
@@ -506,37 +506,55 @@ A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ 
 
 NOTE: The reason for the `[split]` sugar symbol `-<`, is that it represents one wire (`-`) splitting into many (`<`). Likewise, the reason for `>-` being the `[merge]` sugar symbol is it represents many wires merging (`>`) into one (`-`). Finally, `[combine]` has a sugar of `=` which represents parallel wires being operated on independently.
 
-A polynomial is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
+A https://en.wikipedia.org/wiki/Polynomial[polynomial] is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
 \[
-p = q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n,
+q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n,
 \]
 where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via `+`.
 
-In mm-ADT, the set \$\tt{poly} \subset \tt{obj}\$ are https://en.wikipedia.org/wiki/Polynomial[polynomials] which, in `mmlang`, are expressions of the form
+In mm-ADT, `poly` \$\subset\$ `obj` is the infinite set of polynomials. The polynomial expression above is a `,-poly` \$\subset\$ `poly` (pronounced "comma poly") and, in `mmlang`, are expressions of the form
 
 [.text-center]
 `(x0{q0},x1{q1},x2{q2},...,xn{qn})`
 
-where `qi` is a _quantifier_ (coefficient), `xi` is an _object_ (indeterminate), `xi{qi}` is an `obj` (term), and the `objs` are linearly combined via `,`. In mm-ADT this structure is known as a `,-poly` (pronounced "comma poly"). As a data structure, a `,-poly` is a https://en.wikipedia.org/wiki/Multiset[multi-set] or bag. As an algebraic structure, a `,-poly` is a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] that faithfully encodes the mm-ADT processor algebra's additive and multiplicative *type ringoid* magmas as
+where `qi` is a _quantifier_ (coefficient), `xi` is an _object_ (indeterminate), `xi{qi}` is an `obj` (term), and the `objs` are linearly combined via `,` (addition). If a `,-poly` is composed of `obj` values, then due to the commutativity of addition, `,-poly` is a https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) data structure. If a `,-poly` is composed of `obj` types and values, then the `,-poly` is a https://en.wikipedia.org/wiki/Union_(set_theory)[union] operator. In this way, every `,-poly` is either a value `,-poly` or a type `,-poly`. Both forms are instances of a more general algebraic structure called a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring]. In https://en.wikipedia.org/wiki/Ring_theory[ring theory], every ring combines an https://en.wikipedia.org/wiki/Group_(mathematics)[additive group] and a multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] by https://en.wikipedia.org/wiki/Distributive_property[distributivity]. The `,-poly`'s group and monoid are
 
-. an additive https://en.wikipedia.org/wiki/Free_group[free abelian group] \$( F\tt{obj},◊,\_{_0}) \$ and
-. a multiplicative non-free https://en.wikipedia.org/wiki/Monoid[monoid] \$( \tt{obj},=>,\_{_1}) \$,
+. an additive https://en.wikipedia.org/wiki/Free_group[free abelian group] \$( \tt{obj}^\ast,◊,\bar{\mathbf{0}}) \$ and
+. a multiplicative (non-free) monoid \$( \tt{obj},=>,\bar{\mathbf{1}}) \$,
+
+where `obj^*^` is the https://en.wikipedia.org/wiki/Kleene_star[Kleene star] of `obj` (i.e. the infinite set of all `obj` https://en.wikipedia.org/wiki/Sequence[sequences]), \$◊\$ is the `[branch]` instruction as a binary operator, \$\bar\mathbf{0}\$ is the zero element `\_{0}` (i.e. `obj{0}`), \$=>\$ is the binary juxtaposition operator, and \$\bar\mathbf{1}\$ is the one element `_` (or `_{1}` when displaying the unit quantifier).
 
 image::poly-columns.png[float=left,width=275]
 
-The suggestive illustration to the left depicts an element of a free ring. There are four multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] compositions rooted at \$a\$ with a chain of \$\ast\$-compositions going up and a single additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] element diagrammed left-to-right. As horizontal and vertical compositions, each depicts element(s) of a free magma. An mm-ADT `poly` forces one magma to remain free (unevalated) and the other to be non-free (evaluated). In particular, as a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring], `,-poly` maintains the free additive group separate from the non-free multiplicative monoid such that the diagram's vertical \$\ast\$-compositions would "collapse" yielding 4 terms (`objs`) isolated by the free additive group and specified in `mmlang` as
+The suggestive illustration on the left depicts a single element of some (free) ring. There are four multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] compositions diagrammed as vertical chains rooted at an \$a\$. There is single additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] element diagrammed horizontally, reflecting a (commutative) linear combination of the monoid compositions. As 1-dimensional horizontal and vertical structures, each depicts an element of a free magma (group or monoid). Thus, the illustration contains
+
+. four *free monoid* elements -- `(a;b;c)`, `(a;d)`, `(a;b;e)`, `(a;d;e;b)`, and
+. one *free group* element -- `\((a;b;c),(a;d),(a;b;e),(a;d;e;b))`,
+
+where, in relation to `poly`, the illustration's `*` is denoted `;` and `+` is denoted `,`.
+
+Each mm-ADT `poly` constrains the general construction of the illustration such that one magma remain free (*unevalated*) and the other non-free (*evaluated*). In particular, as a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring], a `,-poly` maintains a *free additive group* composed of isolated *non-free multiplicative monoids*. Thus, with respects to the illustration, the vertical \$\ast\$-compositions are "collapsed" yielding four terms (`objs`) that are unable to merge horizontally due to the free nature of the additive group. Thus, the `,-poly` is suggestively illustrated as
+
+image::comma-poly-example.png[width=350,align=center]
+
+and specified in `mmlang` as
 
 [.text-center]
 `(abc{q0},ad{q1},abe{q2},adeb{q3})`.
 
-If the multiplicative monoid compositions yielded values (evaluations) as opposed to types (compilations) and \$x_0 = a(bc)\$, \$x_1 = ad\$, \$x_2 = a(be)\$, and \$x_3 = a(d(eb))\$, then the resultant `,-poly` structure would be
+NOTE: For visual simplicity, quantifiers are not illustrated. Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the _universal commutativity of coefficients theorem_ of https://zenodo.org/record/2565243[stream ring theory]. This theorem is used in mm-ADT's optimizing compiler and will be discussed at length in a latter section of the documentation.
+
+If the multiplicative monoid compositions yielded values (*evaluations*) as opposed to types (*compilations*) and \$x_0 = a(bc)\$, \$x_1 = ad\$, \$x_2 = a(be)\$, and \$x_3 = a(d(eb))\$, then the `,-poly` is denoted
 
 [.text-center]
-`(x0{q0},x1{q1},x2{q2},x3{q3})`.
+`(x0{q0},x1{q1},x2{q2},x3{q3})`,
 
-NOTE: For visual simplicity, quantifiers were not diagrammed. Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the _universal commutativity of coefficients theorem_ of https://zenodo.org/record/2565243[stream ring theory]. This theorem is used in mm-ADT's optimizing compiler and will be discussed at length in a later section of the documentation.
+and with `,` equivalent to `+`, the original polynomial expression is realized as
+\[
+q_0 x^0 + q_1 x^1 + q_2 x^2 + q_3 x^3.
+\]
 
-In general, an mm-ADT `poly` is used to _decouple_ two algebraic structures such that one is free and the other non-free. From the perspective of applied computing, the free algebras are https://en.wikipedia.org/wiki/Lazy_evaluation[delayed], unevaluated structures and the non-free algebras are https://en.wikipedia.org/wiki/Eager_evaluation[eager], evaluated structures. There are three kinds of `poly`. Each draws their terms from the same `obj` carrier set and are distinguished, in `mmlang`, by their respective term separator which denotes a particular "additive" binary operator: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `,` has a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group], `|` a free additive https://en.wikipedia.org/wiki/Group_(mathematics)[group], and `;` a free semicommutative multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. The general form of each kind of `poly` is expressed below in `mmlang`.
+In general, an mm-ADT `poly` is used to _decouple_ two algebraic structures such that one is *free* and the other *non-free*. From the perspective of applied computing, the free algebras are https://en.wikipedia.org/wiki/Lazy_evaluation[delayed], unevaluated structures and the non-free algebras are https://en.wikipedia.org/wiki/Eager_evaluation[eager], evaluated structures. There are three kinds of `poly`. Each draws their terms from the same `obj` carrier set and are distinguished, in `mmlang`, by their respective term separator which denotes a particular "additive" binary operator: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `,` is the operator of a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group], `|` the operator of a free additive https://en.wikipedia.org/wiki/Group_(mathematics)[group], and `;` is the operator of a free partially commutative multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. The general form of each kind of `poly` is expressed below in `mmlang`.
 
 [.text-center]
 `(x0{q0},x1{q1},...,xn{qn})` +
@@ -552,7 +570,7 @@ In general, an mm-ADT `poly` is used to _decouple_ two algebraic structures such
 | `;-poly`  | _andThen_ | https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]         | type rewriting and meta-programming                     | image:semi-poly-example.png[]
 |===
 
-The polynomial literature distinguishes https://en.wikipedia.org/wiki/Univariate[univariate] and https://en.wikipedia.org/wiki/Polynomial#Multivariate_polynomial[multivariate] polynomials, where if all the _object_ components of the `obj` product are equal, then the polynomial is univariate, else it is multivariate. In mm-ADT, multivariate `polys` are much more common than univariate `polys`. However, a primary function of the mm-ADT https://en.wikipedia.org/wiki/Optimizing_compiler[optimizing compiler] `obj` equivalence via https://en.wikipedia.org/wiki/Rewriting[term rewriting] in order to *bulk* `objs` using the additive and multiplicative operators of the expression's associated quantifier ring (i.e. the ring of coefficients).
+NOTE: The polynomial literature distinguishes https://en.wikipedia.org/wiki/Univariate[univariate] and https://en.wikipedia.org/wiki/Polynomial#Multivariate_polynomial[multivariate] polynomials, where if all the _object_ components of the `obj` product are equal, then the polynomial is univariate, else it is multivariate. In mm-ADT, multivariate `polys` are much more common than univariate `polys`. However, a primary function of the mm-ADT https://en.wikipedia.org/wiki/Optimizing_compiler[optimizing compiler] is to deduce `obj` equivalences via https://en.wikipedia.org/wiki/Rewriting[term rewriting] such that `obj` *bulking* can occur via the additive and multiplicative operators of the expression's associated quantifier ring (i.e. the ring of coefficients).
 
 ===== Lst and Rec
 
