@@ -660,6 +660,8 @@ NOTE: The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`.
 
 [cols="7,9"]
 |===
+^| `,-lst` ^| `,-rec`
+
 | image:comma-lst-graph.png[] | image:comma-rec-graph.png[]
 a|
 [exec]
@@ -834,6 +836,8 @@ At which point the two types are equivalent and can be merged accordingly.
 
 [cols="7,9"]
 |===
+^| `\|-lst` ^| `\|-rec`
+
 | image:pipe-lst-graph.png[] | image:pipe-rec-graph.png[]
 a|
 [exec]
@@ -947,6 +951,8 @@ int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 
 [cols="7,9"]
 |===
+^| `;-lst` ^| `;-rec`
+
 | image:semi-lst-graph.png[] | image:semi-rec-graph.png[]
 a|
 [exec]
