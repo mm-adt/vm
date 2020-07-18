@@ -592,9 +592,11 @@ Like every `obj`, there are *value*-`polys` and there are *type*-`polys`. A valu
 \end{split}
 \]
 
-image:poly-kinds.png[width=300,float=right]
 
-[cols="1,1,4,3,3",width=65]
+image:poly-kinds.png[width=225,float=left]
+
+[.small]
+[cols="1,1,2,3,2",width=70,float=right]
 |===
 | poly     | sep  | access (value)     | collection (values) | branch (type)
 
