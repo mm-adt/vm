@@ -707,10 +707,10 @@ a|
 {blank}
 |===
 
-image:../language/obj-type-value-q.png[float=right,width=275] A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] maintaining a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. Recall that the mm-ADT `obj` stream ring is formed via a https://en.wikipedia.org/wiki/Product_ring[direct product] of the following https://en.wikipedia.org/wiki/Semiring[semiring] and https://en.wikipedia.org/wiki/Ring_(mathematics)[ring]:
+image:obj-type-value-q.png[float=right,width=275] A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] composed of a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. Recall that the mm-ADT `obj` stream ring is formed via a https://en.wikipedia.org/wiki/Product_ring[direct product] of the following https://en.wikipedia.org/wiki/Semiring[semiring] and https://en.wikipedia.org/wiki/Ring_(mathematics)[ring]:
 
-. *object semiring* \$(\tt{object},=>,◊, \_{_1} , \__{0} ) \$ and
-. *quantifier ring* \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$,
+* *object semiring* \$(\tt{object},=>,\diamond, \bar{\mathbf{1}} , \bar{\mathbf{0}} ) \$
+* *quantifier ring* \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$.
 
 [float=right,width=35]
 |===
@@ -733,7 +733,7 @@ a|
 ----
 {blank}
 |===
-where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/Ordered_ring[ordered] with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising `obj` products, then the additive operator of the `obj` stream ring is defined as
+where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/Ordered_ring[ordered] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] and can vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). Thus, the operators \$\ast\$ and \$+\$ of \$\mathbf{q}\$ are dependent on the chosen quantifier ring. Regardless, as long as the quantifier respects the axioms of ring theory, then if \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising `obj` products, then the additive operator of the `obj` stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -742,19 +742,27 @@ where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/
 \end{cases}
 \]
 
-where \$[a,b] \equiv ◊(a,b) \equiv \nabla(\Delta(a,b)) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Regarding object addition (denoted `,` in `poly`), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
+where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Regarding _object_ addition \$\diamond\$ (not `obj` \$◊\$), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
 
-When applying \$x \in \tt{obj}\$, the additive `,-poly` serves as an algebraic https://en.wikipedia.org/wiki/Semigroup_action[action] satisfying the equation below. From another perspective, the `,-poly` is a left https://en.wikipedia.org/wiki/Module_(mathematics)[module] and \$x\$ a scalar in this generalized scalar "multiplication."
+
+[cols="1,1"]
+|===
+^| \$[a_{q_0},b_{q_1}]\$            ^| \$x_{q_2}[a_{q_0},b_{q_1}] \$
+
+| image:obj-addition.png[width=375]  | image:obj-scalar-multiplication.png[width=500]
+|===
+
+When applying \$x \in \tt{obj}\$, the `,-poly` group is a https://en.wikipedia.org/wiki/Group_action[right action] on \$x\$ satisfying the equation below. As an algebraic https://en.wikipedia.org/wiki/Module_(mathematics)[module], \$x\$ is an element of the right `,-poly` https://en.wikipedia.org/wiki/Module_(mathematics)[module] `obj` realizing a generalized form of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication].
 
 \[
-[a_{q_0},b_{q_1}](x_{q_2}) =
+x_{q_2}[a_{q_0},b_{q_1}] =
 \begin{cases}
-[{a(x)}_{q_2*(q_0+q_1)}]            & \text{if } a==b, \\
-[{a(x)}_{q_2*q_0},{b(x)}_{q_2*q_1}] & \text{otherwise},
+[{xa}_{q_2*(q_0+q_1)}]            & \text{if } a==b, \\
+[{xa}_{q_2*q_0},{xb}_{q_2*q_1}] & \text{otherwise},
 \end{cases}
 \]
 
-The two cases above are expressed in `mmlang` below with the last two examples being the `[ ]` sugar of `-<()>-`, where in LaTeX, \$[\$ is sugar for \$\Delta\$ and \$]\$ for \$\nabla\$.
+The two cases above are expressed in `mmlang` below with the last two examples being the `[ ]` sugar of `-<()>-` (\$◊\$).
 
 [exec]
 ----
@@ -776,13 +784,7 @@ image::comma-lst-tensor-example.png[align=center,width=725]
 ----
 <1> The `'mar'` `str` is copied (\$ \Delta \$) and applied (\$ => \$) to each `[plus,'ko']` polynomial term and then linearly combined (\$ \nabla \$).
 <2> Polynomial term summation via quantifier summation when two `,-lst` terms are equal -- \$\{1\} + \{1\} = \{2\} \$.
-<3> The single term in the `,-lst` can be https://en.wikipedia.org/wiki/Factorization[factored] out.
-
-mm-ADT's processor algebra is a https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] called the *type ringoid* (detailed presentation forthcoming). Elements of the free type ringoid are structures similar in form and function to https://en.wikipedia.org/wiki/Central_processing_unit[hardware circuits]. While the `inst` monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a `+`-operator that captures the semantics of parallel data https://en.wikipedia.org/wiki/Pipeline_(computing)[pipelining]. https://en.wikipedia.org/wiki/Isomorphism[Isomorphic] branchings structures are realized in the `inst` monoid via `,-poly`. However, at the execution-level, there exists an `inst` monoid-to-type ringoid https://en.wikipedia.org/wiki/Functor[functor] (\$\tt{i\nst} \to \tt{type}\$) that maps a `,-poly`-type construction to a parallel data pipeline structure. From this "_parallel data pipeline_"-perspective, perhaps the rationale for the aforementioned `obj` ring addition equation is made more salient.
-
-image::comma-lst-string-example.png[align=center,width=450]
-
-NOTE: The previous diagram does not accurately reflect the `obj` graph's Cayley nor category diagram structure. Instead, it leverages https://en.wikipedia.org/wiki/String_diagram[string diagram] motifs. The "string diagrams" presented in this documentation do not fully respect the https://core.ac.uk/download/pdf/21747055.pdf[string diagram community's standards] due to the lack of an easy-to-use, LaTeX-based string diagram package. All mm-ADT "string diagrams" will use dotted lines to denote _apparent_ non-`poly` branching on both the \$\Delta\$ and \$\nabla\$ edges.
+<3> The single term in the `,-lst` can be https://en.wikipedia.org/wiki/Factorization[factored] out. In other words, composing a single split expression is equivalent to composing the expression.
 
 The equality
 
@@ -822,42 +824,15 @@ Polynomial factorization plays an important role in compile-time type optimizati
 <2> The value `ab` serves as the scalar.
 <3> The value `ab` is the left multiplicative scalar and the value `e` is a right multiplicative scalar.
 
+.Type Ringoid Addition Embedded in ,-poly
 ================================================================
-Two `,-poly` terms can be added if their indeterminates are equal.
-For the monotypes such as `bool`, `int`, `real`, and `str`, equality is based on the grounded value of the type.
-Equality ignores quantification and trace history.
 
-[exec]
-----
-'a'=='a'
-'a'=='ab'
-6==6
-6==6{10}
-6{20}==6{10}
-----
+mm-ADT's processor algebra is a https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] called the *type ringoid* (detailed presentation forthcoming). Elements of the free type ringoid have a structure that is similar in form and function to https://en.wikipedia.org/wiki/Central_processing_unit[hardware circuits]. While the `inst` monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a `+`-operator that captures the semantics of parallel data https://en.wikipedia.org/wiki/Pipeline_(computing)[pipelining]. https://en.wikipedia.org/wiki/Isomorphism[Isomorphic] branchings structures are realized in the `inst` monoid via `,-poly`. However, at the execution-level, there exists an `inst` monoid-to-type ringoid https://en.wikipedia.org/wiki/Functor[functor] (\$\tt{i\nst} \to \tt{type}\$) that maps a `,-poly`-type construction to a parallel data pipeline structure. From this "_parallel data pipeline_"-perspective, perhaps the rationale for the aforementioned `obj` ring addition equation becomes obvious.
 
-Every type is either a ctype or a dtype.
-A ctype does not have a trace.
-A dtype's trace is the list of instructions rooted at a ctype.
-Type equality is based on ctype and trace equality.
+image::comma-lst-string-example.png[align=center,width=450]
 
-[exec]
-----
-(int)==(int)
-(int)==(int[plus,10])
-(int[plus,10])==(int[plus,10])
-----
+NOTE: The previous diagram does not accurately reflect the `obj` graph's Cayley nor category diagram structure. Instead, it leverages https://en.wikipedia.org/wiki/String_diagram[string diagram] motifs. The "string diagrams" presented in this documentation do not fully respect the https://core.ac.uk/download/pdf/21747055.pdf[string diagram community's standards] due to the lack of an easy-to-use, LaTeX-based string diagram package. All mm-ADT "string diagrams" will use dotted lines to denote _apparent_ non-`poly` branching on both the \$\Delta\$ and \$\nabla\$ edges.
 
-In the example below, the two traces are different, but the semantics of the expression are the same.
-Thus, as a polynomial, these two terms should be combined.
-This is accomplished via a particular type of https://en.wikipedia.org/wiki/Rewriting[rewrite system] for _type rewrites_.
-Given a specification of type equivalences (as defined by their trace), `int[plus,10][plus,0]` is rewritten to `int[plus,10]`.
-At which point the two types are equivalent and can be merged accordingly.
-
-[exec]
-----
-(int[plus,10])==(int[plus,10][plus,0])
-----
 ================================================================
 
 ===== xorThen |-poly
