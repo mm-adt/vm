@@ -1,0 +1,109 @@
+# Taking Your mm-ADT Traverser for a Walk
+ *by: Marko A. Rodriguez (Spring 2020)*
+ 
+ http://mm-adt.org
+
+```groovy
+mmlang> [plus,1]<x>[plus,0][plus,[mult,<x>]]
+==>[plus,1]<x>[plus,0][plus,[mult,<x>]]
+```
+
+The above type is an **anonymous type**. It has no domain.
+Compilation is a transducing walk from left-to-right over
+the instruction tree. If there is no left-most location to start,
+no walk takes place. The compiler simply returns the original
+anonymous traversal.
+
+
+Every type is a composition of other types,
+where the base type is a **canonical type** (`int`, `bool`, `str`, etc.)
+There are 2 nested anonymous types in 
+the larger composite type from previous.
+
+   1. `[plus,1]<x>[plus,1][plus,[mult,<x>]]`
+   2. `[mult,<x>]`
+   3. `<x>`
+
+```groovy
+mmlang> int[plus,1]<x>[plus,1][plus,[mult,<x>]]
+==>int[plus,1]<x>[plus,1][plus,int[mult,int<x>]]
+```
+
+The above type is an `int` type (which is sugar for `int<=int`).
+The compiler puts a traverser at `int` and the traverser executes each instruction
+it encounters along the way. The output type is built up by the traverser
+as he walks. Types are computed by the same functions that compute on values.
+This **compiling traverser** ultimately generates a new instruction sequence 
+that now has been fully typed. (no more anonymous traversals)
+
+  1. `int[plus,1]<x>[plus,1][plus,int[mult,int<x>]]`
+  2. `int[mult,int<x>]`
+  3. `int<x>`
+
+```groovy
+mmlang> 15[plus,1]<x>[plus,1][plus,[mult,<x>]]
+==>289
+```
+
+The compiler does two things.
+  
+  * First, the 15 is turned into the canonical type `int` and a 
+         **compiling traverser** returns a typed compilation. (like previous)
+  * Second, the typed compilation is then walked by a **evaluation traverser** 
+          whose initial seed value is 15.
+          
+Let's explore what this "(ev)value(ating) traverser" is doing.
+
+```groovy
+15   [plus,1]   <x>     [plus,1]        [plus,     [mult,     <x>]]
+15  
+   15
+           1
+              16
+                  16<x=16>
+                              1<x=16>
+                                  17<x=16>   
+                                           17<x=16>
+                                                     17<x=16>
+                                                                 16<x=16>
+                                                                       272<x=16>
+                                                                           289<x=16>
+                                                                                     289
+```  
+
+The `<x>` is syntactic sugar for `[to,'x']` or `[from,'x']`. Thus,
+
+```groovy
+int[plus,1]<x>[plus,1][plus,int[mult,int<x>]]
+  ==>
+int[plus,1][to,'x'][plus,1][plus,int[mult,int[from,'x']]]
+```
+
+`[to/from]` are **traverser instructions** that write/read the traverser's
+variable state. A traverser maintains key/value bindings that
+can be used to record, via string labels, previous locations
+in the walk.
+
+A traverser is the product of the following structures.
+
+1. current location in the data structure. (e.g. `15`)
+2. current location in the type structure. (e.g. `int[plus,1]`)
+3. a variable state. (e.g. `<x=16,y=46,z='hello'>`)
+
+The `[explain]` instruction details the domain/range specification of each
+instruction in the type composition. It also shows what traverser 
+state variables are stored at each step along the way.
+
+```groovy
+mmlang> int[plus,1]<x>[plus,1][plus,[mult,<x>]][explain]
+'
+int[plus,1]<x>[plus,1][plus,int[mult,int<x>]]
+
+instruction                domain      range state
+---------------------------------------------------
+[plus,1]                   int    =>   int
+[plus,1]                   int    =>   int    int<x>
+[plus,int[mult,int<x>]]    int    =>   int    int<x>
+ [mult,int<x>]              int   =>    int   int<x>
+'
+```

@@ -1,0 +1,5 @@
+mmkv:('k'->int,'v'->person:('name'->str,'age'->int))
+mmkv:('k'->1,'v'->person:('name'->'marko','age'->29))
+mmkv:('k'->2,'v'->person:('name'->'ryan','age'->25))
+mmkv:('k'->3,'v'->person:('name'->'stephen','age'->32))
+mmkv:('k'->4,'v'->person:('name'->'kuppitz','age'->23))

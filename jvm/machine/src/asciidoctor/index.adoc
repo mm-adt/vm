@@ -1,0 +1,28 @@
+= mm-ADT: The Virtual Machine
+Marko A. Rodriguez [creator] (RReduX)
+Ryan Wisnesky [advisor] (Conexus)
+:project-version: 0.1
+:icons: font
+:toc: left
+:toclevels: 4
+:doctype: book
+:docinfo: shared-head
+:stem: latexmath
+:source-highlighter: coderay
+:coderay-css: style
+:source-language: python
+:favicon: ./images/favicon.ico
+:copyright: 2020
+:example-caption: Deep Dive
+
+// include_latex_macros::latex-macros.adoc[]
+
+include::introduction.adoc[]
+
+include::language.adoc[]
+
+include::storage.adoc[]
+
+include::processor.adoc[]
+
+include::reference.adoc[]

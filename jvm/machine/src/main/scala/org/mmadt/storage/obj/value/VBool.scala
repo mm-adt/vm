@@ -3,43 +3,36 @@
  *
  * This file is part of mm-ADT.
  *
- *  mm-ADT is free software: you can redistribute it and/or modify it under
- *  the terms of the GNU Affero General Public License as published by the
- *  Free Software Foundation, either version 3 of the License, or (at your option)
- *  any later version.
+ * mm-ADT is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
  *
- *  mm-ADT is distributed in the hope that it will be useful, but WITHOUT ANY
- *  WARRANTY; without even the implied warranty of MERCHANTABILITY or
- *  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
- *  License for more details.
+ * mm-ADT is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
+ * License for more details.
  *
- *  You should have received a copy of the GNU Affero General Public License
- *  along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
  *
- *  You can be released from the requirements of the license by purchasing a
- *  commercial license from RReduX,Inc. at [info@rredux.com].
+ * You can be released from the requirements of the license by purchasing a
+ * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.BoolType
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBool(name:String,java:Boolean,quantifier:IntQ) extends AbstractVObj(name,java,quantifier) with BoolValue {
-
-  def this(java:Boolean) = this(Tokens.bool,java,qOne)
-  def this(name:String,java:Boolean) = this(name,java,qOne)
-
-  override def value():Boolean = java
-  override def value(java:Boolean):this.type = new VBool(this.name,java,quantifier).asInstanceOf[this.type]
-  override def start():BoolType = tbool(name,quantifier,List((tbool(name,qZero,Nil),StartOp(this))))
-  override def q(quantifier:IntQ):this.type = new VBool(name,java,quantifier).asInstanceOf[this.type]
-  override def as[O <: Obj](name:String):O = new VBool(name,java,quantifier).asInstanceOf[O]
+class VBool(val name: String = Tokens.bool, override val g: Boolean, val q: IntQ = qOne, val via: ViaTuple = base) extends BoolValue {
+  override def clone(name: String = this.name,
+                     g: Any = this.g,
+                     q: IntQ = this.q,
+                     via: ViaTuple = this.via): this.type = new VBool(name, g.asInstanceOf[Boolean], q, via).asInstanceOf[this.type]
 }

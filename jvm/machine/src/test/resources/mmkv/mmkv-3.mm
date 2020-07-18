@@ -1,0 +1,1 @@
+mmkv:('k'->int,'v'->bool)

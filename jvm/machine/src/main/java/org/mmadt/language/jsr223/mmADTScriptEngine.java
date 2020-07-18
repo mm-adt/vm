@@ -3,37 +3,36 @@
  *
  * This file is part of mm-ADT.
  *
- *  mm-ADT is free software: you can redistribute it and/or modify it under
- *  the terms of the GNU Affero General Public License as published by the
- *  Free Software Foundation, either version 3 of the License, or (at your option)
- *  any later version.
+ * mm-ADT is free software: you can redistribute it and/or modify it under
+ * the terms of the GNU Affero General Public License as published by the
+ * Free Software Foundation, either version 3 of the License, or (at your option)
+ * any later version.
  *
- *  mm-ADT is distributed in the hope that it will be useful, but WITHOUT ANY
- *  WARRANTY; without even the implied warranty of MERCHANTABILITY or
- *  FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
- *  License for more details.
+ * mm-ADT is distributed in the hope that it will be useful, but WITHOUT ANY
+ * WARRANTY; without even the implied warranty of MERCHANTABILITY or
+ * FITNESS FOR A PARTICULAR PURPOSE. See the GNU Affero General Public
+ * License for more details.
  *
- *  You should have received a copy of the GNU Affero General Public License
- *  along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
+ * You should have received a copy of the GNU Affero General Public License
+ * along with mm-ADT. If not, see <https://www.gnu.org/licenses/>.
  *
- *  You can be released from the requirements of the license by purchasing a
- *  commercial license from RReduX,Inc. at [info@rredux.com].
+ * You can be released from the requirements of the license by purchasing a
+ * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
 package org.mmadt.language.jsr223;
 
-import org.mmadt.language.model.Model;
+import org.mmadt.VmException;
+import org.mmadt.language.LanguageException;
 import org.mmadt.language.obj.Obj;
-import org.mmadt.language.obj.type.RecType;
-import org.mmadt.language.obj.type.Type;
-import org.mmadt.storage.StorageFactory;
 
 import javax.script.Bindings;
 import javax.script.ScriptContext;
 import javax.script.ScriptEngine;
-import javax.script.ScriptException;
+import javax.script.SimpleBindings;
+import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.Reader;
-import java.util.Iterator;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -41,21 +40,36 @@ import java.util.Iterator;
 public interface mmADTScriptEngine extends ScriptEngine {
 
     @Override
-    public default Obj eval(String script) throws ScriptException {
+    public default Bindings createBindings() {
+        return new SimpleBindings();
+    }
+
+    @Override
+    public default Obj eval(String script) throws VmException {
         return this.eval(script, this.getContext());
     }
 
     @Override
-    public Obj eval(Reader reader) throws ScriptException;
+    public default Obj eval(Reader reader) throws VmException {
+        return this.eval(reader, this.getContext());
+    }
 
     @Override
-    public Obj eval(String script, ScriptContext context) throws ScriptException;
+    public default Obj eval(String script, ScriptContext context) throws VmException {
+        return this.eval(script, context.getBindings(ScriptContext.ENGINE_SCOPE));
+    }
 
     @Override
-    public Obj eval(String script, Bindings bindings) throws ScriptException;
+    public Obj eval(String script, Bindings bindings) throws VmException;
 
     @Override
-    public Obj eval(Reader reader, ScriptContext context) throws ScriptException;
+    public default Obj eval(Reader reader, ScriptContext context) throws VmException {
+        try {
+            return eval(new BufferedReader(reader).readLine(), context);
+        } catch (IOException e) {
+            throw new LanguageException(e.getMessage());
+        }
+    }
 
 
 }
