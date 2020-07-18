@@ -15,7 +15,7 @@ Ryan Wisnesky [advisor] (Conexus)
 :copyright: 2020
 :example-caption: Deep Dive
 
-include_latex_macros::latex-macros.adoc[]
+// include_latex_macros::latex-macros.adoc[]
 
 include::introduction.adoc[]
 
