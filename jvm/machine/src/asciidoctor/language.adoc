@@ -487,15 +487,14 @@ A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ 
 [.small]
 [cols="1,1,1,5",width=40,float=right]
 |===
-| name        | mmlang      | latex           | description
+| name        | mmlang      | latex         | description
 
-| _split_     | `-<`        | \$\Delta\$      | scalar `*`
-| _merge_     | `>-`        | \$\nabla\$      | fold `+` (linear combine)
-| _branch_    | `[ ]`       | \$◊\$           | scalar `*` then fold `+`
-| _combine_   | `=`         | \$\cdot\$       | pairwise juxtaposition
+| _split_     | `-<`        | \$\Delta\$    | scalar `*`
+| _merge_     | `>-`        | \$\nabla\$    | fold `+` (linear combine)
+| _branch_    | `[ ]`       | \$◊\$         | scalar `*` then fold `+`
+| _combine_   | `=`         | \$\circ\$     | pairwise juxtaposition
 
 |===
-
 . `( )` is a polynomial constructor.
 . `lst` is a polynomial with terms indexed by `int`.
 . `rec` is a polynomial with terms indexed by `obj`.
@@ -584,51 +583,57 @@ rec   ::= '(' (obj '->' obj)? (sep obj '->' obj)* ')' q?
 poly  ::= lst | rec
 ----
 
-image:poly-kinds.png[width=225,float=right] Like `obj`, there are *value*-`polys` and *type*-`polys`. A value-`poly` is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is a https://en.wikipedia.org/wiki/Multiway_branch[branching] data process. mm-ADT provides two structures that are generally useful when working with `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
+Like every `obj`, there are *value*-`polys` and there are *type*-`polys`. A value-`poly` is composed of only value `objs` and realizes a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is composed of at least one type `obj` and realizes a https://en.wikipedia.org/wiki/Stream_processing[streaming] data process. mm-ADT provides two kinds of `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]). Each has a `,`, `|`, and `;` form such that
 
 \[
 \begin{split}
 \texttt{poly} &= \texttt{lst} &+ \texttt{rec} \\
-\texttt{poly} &= (\texttt{,-lst} + \texttt{|-lst} + \texttt{;-lst}) &+ (\texttt{,-rec} + \texttt{|-rec} + \texttt{;-rec})
+\texttt{poly} &= (\texttt{,-lst} + \texttt{|-lst} + \texttt{;-lst}) &+ (\texttt{,-rec} + \texttt{|-rec} + \texttt{;-rec}).
 \end{split}
 \]
 
-[cols="1,1,3,3",width=45,float=right]
-|===
-| poly     | sep  | access (value)       | branch (type)
+image:poly-kinds.png[width=300,float=right]
 
-.3+| `lst` | `,`  | all                 | https://en.wikipedia.org/wiki/Union_(set_theory)[union]
-           | `\|` | https://en.wikipedia.org/wiki/CAR_and_CDR[head]                | https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
-           |  `;` | last                | https://en.wikipedia.org/wiki/Method_chaining[chain]
-.3+| `rec` | `,`  | all match key       | https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
-           | `\|` | first match key     | https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
-           | `;`  | last match key      | https://en.wikipedia.org/wiki/Method_cascading[cascade]
+[cols="1,1,4,3,3",width=65]
+|===
+| poly     | sep  | access (value)     | collection (values) | branch (type)
+
+.3+| `lst` | `,`  | all
+| https://en.wikipedia.org/wiki/Multiset[multiset]
+| https://en.wikipedia.org/wiki/Union_(set_theory)[union]
+           | `\|` | head
+| https://en.wikipedia.org/wiki/Set_(abstract_data_type)[set]
+| https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
+           |  `;` | last
+| https://en.wikipedia.org/wiki/Stack_%28abstract_data_type%29[stack]
+| https://en.wikipedia.org/wiki/Method_chaining[chain]
+.3+| `rec` | `,`  | all match key
+| https://en.wikipedia.org/wiki/Multimap[multimap]
+| https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
+           | `\|` | first match key
+| https://en.wikipedia.org/wiki/Associative_array[map]
+| https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
+           | `;`  | last match key     |
+| https://en.wikipedia.org/wiki/Method_cascading[cascade]
 |===
 
-* `lst`
-** A `lst` containing all values is a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list].
-** A `lst` containing a type is a _copy_ https://en.wikipedia.org/wiki/Branch_(computer_science)[branch].
-* `rec`
-** A `rec` containing all values is a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record].
-** A `rec` containing a type is a _predicate_ https://en.wikipedia.org/wiki/Branch_(computer_science)[branch].
+
 
 '''
 
 [exec]
 ----
-('a','b','c')                                               //<1>
-('a'->1,'b'->2,'c'->3)                                      //<2>
-([plus,'a'],[plus,'b'],[plus,'c'])                          //<3>
-([is,[eq,'a']]->1,[is,[eq,'b']]->2,[is,[eq,'c']]->3)        //<4>
+('a','b','c')                                                //<1>
+('a'->1,'b'->2,'c'->3)                                       //<2>
+(+'a',+'b',+'c')                                             //<3>
+(is=='a'->1, is>='b'->2, is>=c->3)                           //<4>
 ----
-<1> A three term value `,-lst`.
-<2> A three term value `,-rec`.
-<3> A three term type `,-lst`.
-<4> A three term type `,-rec`.
+<1> A three term *value* `,-lst`.
+<2> A three term *value* `,-rec`.
+<3> A three term *type* `,-lst` (w/ sugar).
+<4> A three term *type* `,-rec` (w/ sugar).
 
-NOTE: A `rec` offers no expressivity gains over 2-term `lsts` of `lst`. It is provided as a base data type for convenience.
-
-In the examples below, the value 3 is `[split]` (`-<`) across the respective `poly` terms.
+The examples to follow highlight the effect of the combinators `,`, `|`, `;` on `lst`. The value 3 is `[split]` (`-<`, \$\Delta\$) across the respective `poly` terms.
 
 [exec]
 ----
@@ -640,11 +645,15 @@ In the examples below, the value 3 is `[split]` (`-<`) across the respective `po
 <2> A `|-lst` type yielding a `|-lst` value via `(3+1,obj{0})` (_xorThen_).
 <3> A `;-lst` type yielding a `;-lst` value via `(3+1,3+1*2)`  (_andThen_).
 
+Mathematically, this is
+
+. https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication]: \$x(a + b) = xa + xb\$,
+. https://en.wikipedia.org/wiki/Disjoint_union[disjoint multiplication]: \$x(a \oplus b) = xa \oplus xb\$ , and
+. https://en.wikipedia.org/wiki/Left_and_right_(algebra)[left module multiplication]: \$x(ab) = xab\$.
+
 [grid=none,frame=none,cols="7,4"]
 |===
-|&nbsp;
-
-The resultant `polys` can then have their terms `[merged]` (`>-`) into a single `int{1,2}` `strm`. There is a subtlety to highlight. The result of any `inst` is a single `obj`. In particular, to the `[merge]` in these examples, the output is a single `int` or a single `int` `strm` containing two `ints`. mm-ADT evaluates unary functions: one `obj` input yields one `obj` output.
+|The resultant `lsts` have their terms `[merged]` (`>-`, \$\nabla\$) into a single `int{1,2}` `strm`. There is a subtlety to highlight. The result of any `inst` is a single `obj`. In particular, to the `[merge]` in these examples, the output is a single `int` or a single `int` `strm` containing two `ints`. mm-ADT evaluates unary functions: one `obj` input yields one `obj` output.
 a|
 [exec]
 ----
@@ -652,7 +661,8 @@ a|
 3-<([plus,1]\|[mult,2])>-
 3-<([plus,1];[mult,2])>-
 ----
-|The "_branch_"-pattern (`-<()>-`) is common enough to warrant a single, unifying instruction called `[branch]` and a corresponding sugar of `[poly]`. If the evaluating processor encounters `[branch]`, it can compute the instruction using a `poly` of streams versus a stream of `polys`. The difference is significant in distributed environments, where the former enables decoupled, non-communicated parallel pipelines and the latter requires coupled, potentially-communicating parallel pipelines.
+{blank}
+|The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`. This `poly` denotes _coupled parallel streams_, where each subsequent instruction operates on each term of the `poly` in a lock-step manner. However, if there are no intermediate instructions between `[split]` and `[merge]` (typically specified with `[combine]`), then this is semantically equivalent to _decoupled parallel streams_ whereby whenever an `obj` is made available by `poly` type term, it can be immediately placed on the outgoing merged stream. Decoupled parallel streams are common enough that the "_branch_"-pattern (`-<()>-`) is captured by a single `[branch]` (`[ ]`, \$◊\$).
 a|
 [exec]
 ----
@@ -660,9 +670,8 @@ a|
 3[[plus,1]\|[mult,2]]
 3[[plus,1];[mult,2]]
 ----
-|&nbsp;
-
-Finally, the most compact https://en.wikipedia.org/wiki/Syntactic_sugar[sugar] forms of the running "_split-merge_"-examples are presented below. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
+{blank}
+|Finally, the most compact https://en.wikipedia.org/wiki/Syntactic_sugar[sugar] forms of the running examples are presented. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
 a|
 [exec]
 ----
@@ -670,9 +679,8 @@ a|
 3[+1\|*2]
 3[+1;*2]
 ----
+{blank}
 |===
-
-NOTE: The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`. This `poly` denotes _coupled parallel streams_, where each subsequent instruction operates on each term of the `poly` in a lock-step manner. However, if there are no intermediate instructions between `[split]` and `[merge]` (typically specified with `[combine]`), then this is semantically equivalent to _decoupled parallel streams_ whereby whenever an `obj` is made available by a branch, it can be immediately placed on the outgoing merged stream. This holds because streams are always unordered.
 
 ===== orThen ,-poly
 
