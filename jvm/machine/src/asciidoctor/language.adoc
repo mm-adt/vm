@@ -103,6 +103,23 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 
 === The Type
 
+.Free Algebra
+****
+A https://en.wikipedia.org/wiki/Magma_(algebra)[magma algebra] is defined by a carrier set \$A\$ along with a https://en.wikipedia.org/wiki/Binary_operation[binary operator] \$\cdot: A \times A \to A\$ that combines two elements into one (\$a \cdot b \mapsto c\$), and a set of https://en.wikipedia.org/wiki/Axiom[axioms] denoting "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" \$A\$-related equations that a structure must obey should it be said respect the https://en.wikipedia.org/wiki/Algebraic_structure[algebra] \$(A,\cdot)\$.
+
+If \$a,b,c \in A\$, and \$ab = c\$ (a less verbose representation of \$a \cdot b = c\$), then should there be another element \$d \in A\$ such that \$ad = c\$, it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$. Assuming the general case that all elements do not have unique two element https://en.wikipedia.org/wiki/Factorization[factors] in \$A\$, \$\cdot\$ is an irreversible, https://en.wikipedia.org/wiki/Lossy_compression[lossy] operation.
+
+A chain of element \$\cdot\$-compositions can be stored in a https://en.wikipedia.org/wiki/Sequence[sequence] (or https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]). Such sequences are "link:https://en.wikipedia.org/wiki/Computer_program[programs]" that can be executed against _any_ \$A\$-machine. If \$a,b,c,d,e \in A\$, then an example \$A\$-program is
+\[
+aabbbcadebdcaecadeeeeabccbcaabb.
+\]
+While the individual elements of the \$A\$-program are elements in \$A\$, the program as a whole is a _single_ element in \$A^\ast\$. \$A^\ast\$ is an infinite set of all possible \$A\$-element sequences of arbitrary length. Is is known as the https://en.wikipedia.org/wiki/Kleene_star[Kleene closure] over \$A\$. From this vantage point, the elements of \$A\$ are called *letters* and the elements of \$A^\ast\$ are called *words*. The set \$A^\ast\$ is the carrier set of another algebra \$(A^\ast,\circ)\$, where \$\circ: A^\ast \times A^\ast \to A^\ast\$ concatenates two words into a single word. This algebra is used to "link:https://en.wikipedia.org/wiki/Programmer[code]" \$A\$-programs. In the world of https://en.wikipedia.org/wiki/Abstract_algebra[abstract algebra], this new \$(A^\ast,\circ)\$ algebra is called the https://en.wikipedia.org/wiki/Free_algebra[free algebra] over \$A\$.
+
+A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a https://en.wikipedia.org/wiki/Algebra_homomorphism[homomorphism] that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\mu: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\mu\$ "link:https://en.wikipedia.org/wiki/Execution_(computing)[executes]" the program on some \$A\$-machine.
+
+If the \$\mu\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such references in a structure known as the `obj` graph. mm-ADT's link:https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph]-encoding of a free algebraic https://en.wikipedia.org/wiki/Digital_footprint[trace] is the foundation of numerous mm-ADT capabilities including https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation], https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming], and https://en.wikipedia.org/wiki/Reversible_computing[reversible computing].
+****
+
 An `obj` was previously defined as
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
@@ -890,15 +907,15 @@ a|
 A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like the `,-poly`, a `|-poly` maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not https://en.wikipedia.org/wiki/Commutative_property[commutative]. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
 
 \[
-[a_{q_0} | b_{q_1}](x_{q_2}) =
+x_{q_2} [a_{q_0} | b_{q_1}] =
 \begin{cases}
-{a(x)}_{q_2 * q_0} & \text{if } a_{q_0}(x_{q_2}) \neq \bf{0}, \\
-{b(x)}_{q_2 * q_1} & \text{if } b_{q_1}(x_{q_2}) \neq \bf{0}, \\
-\bf{0} & \text{otherwise}.
+{xa}_{q_2 * q_0} & \text{if } x_{q_2} a_{q_0} \neq \bar{\bf{0}}, \\
+{bx}_{q_2 * q_1} & \text{if } x_{q_2} b_{q_1} \neq \bar{\bf{0}}, \\
+\bar{\bf{0}} & \text{otherwise}.
 \end{cases}
 \]
 
-While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the `|-lst` additive group is non-commutative.
+While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\bar{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the `|-lst` additive group is non-commutative.
 
 '''
 
@@ -912,14 +929,14 @@ While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[u
 <2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
 <3> Both terms, when applied to `x` yield `obj{0}`. The polynomial reduces to `obj{0}`.
 
-`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching]. In most programming language, branch selection is predicated on \$\mathbb{B}\$ (`bool`), but in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where _false_ is `obj{0}` and _true_ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then
+`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching]. In most programming language, branch selection is predicated on \$\mathbb{B}\$ (`bool`), but in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where _false_ is `obj{0}` (\$\bar{\mathbf{0}}\$) and _true_ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then
 
 \[
-[a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}](x_{q_4}) =
+x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
 \begin{cases}
-{b(x)}_{q_4 * q_1} & \text{if } a_{q_0}(x_{q_4}) \neq \bf{0}, \\
-{d(x)}_{q_4 * q_3} & \text{if } c_{q_2}(x_{q_4}) \neq \bf{0}, \\
-\bf{0} & \text{otherwise}.
+{xb}_{q_4 * q_1} & \text{if } x_{q_4} a_{q_0} \neq \bar{\bf{0}}, \\
+{xd}_{q_4 * q_3} & \text{if } x_{q_4} c_{q_2} \neq \bar{\bf{0}}, \\
+\bar{\bf{0}} & \text{otherwise}.
 \end{cases}
 \]
 
