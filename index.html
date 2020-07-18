@@ -1006,6 +1006,30 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 </div>
 <div class="sect2">
 <h3 id="_the_type">The Type</h3>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Free Algebra</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma algebra</a> is defined by a carrier set \$A\$ along with a <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> \$\cdot: A \times A \to A\$ that combines two elements into one (\$a \cdot b \mapsto c\$), and a set of <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> denoting "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" \$A\$-related equations that a structure must obey should it be said respect the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">algebra</a> \$(A,\cdot)\$.</p>
+</div>
+<div class="paragraph">
+<p>If \$a,b,c \in A\$, and \$ab = c\$ (a less verbose representation of \$a \cdot b = c\$), then should there be another element \$d \in A\$ such that \$ad = c\$, it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$. Assuming the general case that all elements do not have unique two element <a href="https://en.wikipedia.org/wiki/Factorization">factors</a> in \$A\$, \$\cdot\$ is an irreversible, <a href="https://en.wikipedia.org/wiki/Lossy_compression">lossy</a> operation.</p>
+</div>
+<div class="paragraph">
+<p>A chain of element \$\cdot\$-compositions can be stored in a <a href="https://en.wikipedia.org/wiki/Sequence">sequence</a> (or <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>). Such sequences are "<a href="https://en.wikipedia.org/wiki/Computer_program">programs</a>" that can be executed against <em>any</em> \$A\$-machine. If \$a,b,c,d,e \in A\$, then an example \$A\$-program is
+\[
+aabbbcadebdcaecadeeeeabccbcaabb.
+\]
+While the individual elements of the \$A\$-program are elements in \$A\$, the program as a whole is a <em>single</em> element in \$A^\ast\$. \$A^\ast\$ is an infinite set of all possible \$A\$-element sequences of arbitrary length. Is is known as the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene closure</a> over \$A\$. From this vantage point, the elements of \$A\$ are called <strong>letters</strong> and the elements of \$A^\ast\$ are called <strong>words</strong>. The set \$A^\ast\$ is the carrier set of another algebra \$(A^\ast,\circ)\$, where \$\circ: A^\ast \times A^\ast \to A^\ast\$ concatenates two words into a single word. This algebra is used to "<a href="https://en.wikipedia.org/wiki/Programmer">code</a>" \$A\$-programs. In the world of <a href="https://en.wikipedia.org/wiki/Abstract_algebra">abstract algebra</a>, this new \$(A^\ast,\circ)\$ algebra is called the <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> over \$A\$.</p>
+</div>
+<div class="paragraph">
+<p>A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a <a href="https://en.wikipedia.org/wiki/Algebra_homomorphism">homomorphism</a> that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\mu: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\mu\$ "<a href="https://en.wikipedia.org/wiki/Execution_(computing)">executes</a>" the program on some \$A\$-machine.</p>
+</div>
+<div class="paragraph">
+<p>If the \$\mu\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such references in a structure known as the <code>obj</code> graph. mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a>-encoding of a free algebraic <a href="https://en.wikipedia.org/wiki/Digital_footprint">trace</a> is the foundation of numerous mm-ADT capabilities including <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a>, <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>, and <a href="https://en.wikipedia.org/wiki/Reversible_computing">reversible computing</a>.</p>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>An <code>obj</code> was previously defined as
 \[
@@ -2697,16 +2721,16 @@ mmlang&gt; (||'c'-&gt;3)&gt;-
 </div>
 <div class="paragraph">
 <p>\[
-[a_{q_0} | b_{q_1}](x_{q_2}) =
+x_{q_2} [a_{q_0} | b_{q_1}] =
 \begin{cases}
-{a(x)}_{q_2 * q_0} &amp; \text{if } a_{q_0}(x_{q_2}) \neq \bf{0}, \\
-{b(x)}_{q_2 * q_1} &amp; \text{if } b_{q_1}(x_{q_2}) \neq \bf{0}, \\
-\bf{0} &amp; \text{otherwise}.
+{xa}_{q_2 * q_0} &amp; \text{if } x_{q_2} a_{q_0} \neq \bar{\bf{0}}, \\
+{bx}_{q_2 * q_1} &amp; \text{if } x_{q_2} b_{q_1} \neq \bar{\bf{0}}, \\
+\bar{\bf{0}} &amp; \text{otherwise}.
 \end{cases}
 \]</p>
 </div>
 <div class="paragraph">
-<p>While <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the <code>|-lst</code> additive group is non-commutative.</p>
+<p>While <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring&#8201;&#8212;&#8201;\$\bar{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the <code>|-lst</code> additive group is non-commutative.</p>
 </div>
 <hr>
 <div class="listingblock">
@@ -2736,15 +2760,15 @@ mmlang&gt;</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p><code>|-rec</code> extends <code>|-lst</code> with <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a>. In most programming language, branch selection is predicated on \$\mathbb{B}\$ (<code>bool</code>), but in mm-ADT it is determined by \$\tt{q}\$ (<code>{q}</code>), where <em>false</em> is <code>obj{0}</code> and <em>true</em> is any non-zero quantifier. The non-commutative additive group of <code>|-poly</code>, as inherited by <code>|-rec</code>, realizes <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements">case-based</a> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">pattern matching</a> branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_0,q_1,q_2,q_3,q_4 \in \tt{q}\$, then</p>
+<p><code>|-rec</code> extends <code>|-lst</code> with <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a>. In most programming language, branch selection is predicated on \$\mathbb{B}\$ (<code>bool</code>), but in mm-ADT it is determined by \$\tt{q}\$ (<code>{q}</code>), where <em>false</em> is <code>obj{0}</code> (\$\bar{\mathbf{0}}\$) and <em>true</em> is any non-zero quantifier. The non-commutative additive group of <code>|-poly</code>, as inherited by <code>|-rec</code>, realizes <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements">case-based</a> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">pattern matching</a> branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then</p>
 </div>
 <div class="paragraph">
 <p>\[
-[a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}](x_{q_4}) =
+x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
 \begin{cases}
-{b(x)}_{q_4 * q_1} &amp; \text{if } a_{q_0}(x_{q_4}) \neq \bf{0}, \\
-{d(x)}_{q_4 * q_3} &amp; \text{if } c_{q_2}(x_{q_4}) \neq \bf{0}, \\
-\bf{0} &amp; \text{otherwise}.
+{xb}_{q_4 * q_1} &amp; \text{if } x_{q_4} a_{q_0} \neq \bar{\bf{0}}, \\
+{xd}_{q_4 * q_3} &amp; \text{if } x_{q_4} c_{q_2} \neq \bar{\bf{0}}, \\
+\bar{\bf{0}} &amp; \text{otherwise}.
 \end{cases}
 \]</p>
 </div>
@@ -4792,7 +4816,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-17 23:59:08 -0600
+Last updated 2020-07-18 00:07:33 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
