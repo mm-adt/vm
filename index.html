@@ -2332,17 +2332,17 @@ mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')&gt;-
 </tbody>
 </table>
 <div class="paragraph">
-<p><span class="image right"><img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="275"></span> A <code>,-poly</code> (pronounced "comma poly") is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> maintaining a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. Recall that the mm-ADT <code>obj</code> stream ring is formed via a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of the following <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a>:</p>
+<p><span class="image right"><img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="275"></span> A <code>,-poly</code> (pronounced "comma poly") is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> composed of a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. Recall that the mm-ADT <code>obj</code> stream ring is formed via a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of the following <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a>:</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p><strong>object semiring</strong> \$(\tt{object},&#8658;,◊, _{_1} , \__{0} ) \$ and</p>
+<p><strong>object semiring</strong> \$(\tt{object},&#8658;,\diamond, \bar{\mathbf{1}} , \bar{\mathbf{0}} ) \$</p>
 </li>
 <li>
-<p><strong>quantifier ring</strong> \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$,</p>
+<p><strong>quantifier ring</strong> \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$.</p>
 </li>
-</ol>
+</ul>
 </div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
 <colgroup>
@@ -2393,7 +2393,7 @@ mmlang&gt; (,,'c'-&gt;3)&gt;-
 </tbody>
 </table>
 <div class="paragraph">
-<p>where the quantifier ring, by definition, must be <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered</a> with unity and may vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising <code>obj</code> products, then the additive operator of the <code>obj</code> stream ring is defined as
+<p>where the quantifier ring, by definition, must be <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a> and can vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). Thus, the operators \$\ast\$ and \$+\$ of \$\mathbf{q}\$ are dependent on the chosen quantifier ring. Regardless, as long as the quantifier respects the axioms of ring theory, then if \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising <code>obj</code> products, then the additive operator of the <code>obj</code> stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -2403,22 +2403,40 @@ mmlang&gt; (,,'c'-&gt;3)&gt;-
 \]</p>
 </div>
 <div class="paragraph">
-<p>where \$[a,b] \equiv ◊(a,b) \equiv \nabla(\Delta(a,b)) \$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding object addition (denoted <code>,</code> in <code>poly</code>), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
+<p>where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding <em>object</em> addition \$\diamond\$ (not <code>obj</code> \$◊\$), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
 </div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">\$[a_{q_0},b_{q_1}]\$</th>
+<th class="tableblock halign-center valign-top">\$x_{q_2}[a_{q_0},b_{q_1}] \$</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/obj-addition.png" alt="obj addition" width="375"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/obj-scalar-multiplication.png" alt="obj scalar multiplication" width="500"></span></p></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
-<p>When applying \$x \in \tt{obj}\$, the additive <code>,-poly</code> serves as an algebraic <a href="https://en.wikipedia.org/wiki/Semigroup_action">action</a> satisfying the equation below. From another perspective, the <code>,-poly</code> is a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> and \$x\$ a scalar in this generalized scalar "multiplication."</p>
+<p>When applying \$x \in \tt{obj}\$, the <code>,-poly</code> group is a <a href="https://en.wikipedia.org/wiki/Group_action">right action</a> on \$x\$ satisfying the equation below. As an algebraic <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a>, \$x\$ is an element of the right <code>,-poly</code> <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> <code>obj</code> realizing a generalized form of <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a>.</p>
 </div>
 <div class="paragraph">
 <p>\[
-[a_{q_0},b_{q_1}](x_{q_2}) =
+x_{q_2}[a_{q_0},b_{q_1}] =
 \begin{cases}
-[{a(x)}_{q_2*(q_0+q_1)}]            &amp; \text{if } a==b, \\
-[{a(x)}_{q_2*q_0},{b(x)}_{q_2*q_1}] &amp; \text{otherwise},
+[{xa}_{q_2*(q_0+q_1)}]            &amp; \text{if } a==b, \\
+[{xa}_{q_2*q_0},{xb}_{q_2*q_1}] &amp; \text{otherwise},
 \end{cases}
 \]</p>
 </div>
 <div class="paragraph">
-<p>The two cases above are expressed in <code>mmlang</code> below with the last two examples being the <code>[ ]</code> sugar of <code>-&lt;()&gt;-</code>, where in LaTeX, \$[\$ is sugar for \$\Delta\$ and \$]\$ for \$\nabla\$.</p>
+<p>The two cases above are expressed in <code>mmlang</code> below with the last two examples being the <code>[ ]</code> sugar of <code>-&lt;()&gt;-</code> (\$◊\$).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2464,27 +2482,7 @@ mmlang&gt; 'mar'[plus,'ko']{2}               <i class="conum" data-value="3"></i
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The single term in the <code>,-lst</code> can be <a href="https://en.wikipedia.org/wiki/Factorization">factored</a> out.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>mm-ADT&#8217;s processor algebra is a <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> called the <strong>type ringoid</strong> (detailed presentation forthcoming). Elements of the free type ringoid are structures similar in form and function to <a href="https://en.wikipedia.org/wiki/Central_processing_unit">hardware circuits</a>. While the <code>inst</code> monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a <code>+</code>-operator that captures the semantics of parallel data <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipelining</a>. <a href="https://en.wikipedia.org/wiki/Isomorphism">Isomorphic</a> branchings structures are realized in the <code>inst</code> monoid via <code>,-poly</code>. However, at the execution-level, there exists an <code>inst</code> monoid-to-type ringoid <a href="https://en.wikipedia.org/wiki/Functor">functor</a> (\$\tt{i\nst} \to \tt{type}\$) that maps a <code>,-poly</code>-type construction to a parallel data pipeline structure. From this "<em>parallel data pipeline</em>"-perspective, perhaps the rationale for the aforementioned <code>obj</code> ring addition equation is made more salient.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/comma-lst-string-example.png" alt="comma lst string example" width="450">
-</div>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The previous diagram does not accurately reflect the <code>obj</code> graph&#8217;s Cayley nor category diagram structure. Instead, it leverages <a href="https://en.wikipedia.org/wiki/String_diagram">string diagram</a> motifs. The "string diagrams" presented in this documentation do not fully respect the <a href="https://core.ac.uk/download/pdf/21747055.pdf">string diagram community&#8217;s standards</a> due to the lack of an easy-to-use, LaTeX-based string diagram package. All mm-ADT "string diagrams" will use dotted lines to denote <em>apparent</em> non-<code>poly</code> branching on both the \$\Delta\$ and \$\nabla\$ edges.
-</td>
+<td>The single term in the <code>,-lst</code> can be <a href="https://en.wikipedia.org/wiki/Factorization">factored</a> out. In other words, composing a single split expression is equivalent to composing the expression.</td>
 </tr>
 </table>
 </div>
@@ -2571,54 +2569,27 @@ mmlang&gt; 'a'+'b'[+'c',+'d']+'e'           <i class="conum" data-value="3"></i>
 </table>
 </div>
 <div class="exampleblock">
+<div class="title">Deep Dive 2. Type Ringoid Addition Embedded in ,-poly</div>
 <div class="content">
 <div class="paragraph">
-<p>Two <code>,-poly</code> terms can be added if their indeterminates are equal.
-For the monotypes such as <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>, equality is based on the grounded value of the type.
-Equality ignores quantification and trace history.</p>
+<p>mm-ADT&#8217;s processor algebra is a <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> called the <strong>type ringoid</strong> (detailed presentation forthcoming). Elements of the free type ringoid have a structure that is similar in form and function to <a href="https://en.wikipedia.org/wiki/Central_processing_unit">hardware circuits</a>. While the <code>inst</code> monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a <code>+</code>-operator that captures the semantics of parallel data <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipelining</a>. <a href="https://en.wikipedia.org/wiki/Isomorphism">Isomorphic</a> branchings structures are realized in the <code>inst</code> monoid via <code>,-poly</code>. However, at the execution-level, there exists an <code>inst</code> monoid-to-type ringoid <a href="https://en.wikipedia.org/wiki/Functor">functor</a> (\$\tt{i\nst} \to \tt{type}\$) that maps a <code>,-poly</code>-type construction to a parallel data pipeline structure. From this "<em>parallel data pipeline</em>"-perspective, perhaps the rationale for the aforementioned <code>obj</code> ring addition equation becomes obvious.</p>
 </div>
-<div class="listingblock">
+<div class="imageblock text-center">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'=='a'
-==&gt;true
-mmlang&gt; 'a'=='ab'
-==&gt;false
-mmlang&gt; 6==6
-==&gt;true
-mmlang&gt; 6==6{10}
-==&gt;true
-mmlang&gt; 6{20}==6{10}
-==&gt;true{20}</code></pre>
+<img src="./images/language/comma-lst-string-example.png" alt="comma lst string example" width="450">
 </div>
 </div>
-<div class="paragraph">
-<p>Every type is either a ctype or a dtype.
-A ctype does not have a trace.
-A dtype&#8217;s trace is the list of instructions rooted at a ctype.
-Type equality is based on ctype and trace equality.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int)==(int)
-==&gt;true
-mmlang&gt; (int)==(int[plus,10])
-==&gt;true
-mmlang&gt; (int[plus,10])==(int[plus,10])
-==&gt;true</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In the example below, the two traces are different, but the semantics of the expression are the same.
-Thus, as a polynomial, these two terms should be combined.
-This is accomplished via a particular type of <a href="https://en.wikipedia.org/wiki/Rewriting">rewrite system</a> for <em>type rewrites</em>.
-Given a specification of type equivalences (as defined by their trace), <code>int[plus,10][plus,0]</code> is rewritten to <code>int[plus,10]</code>.
-At which point the two types are equivalent and can be merged accordingly.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int[plus,10])==(int[plus,10][plus,0])
-==&gt;true</code></pre>
-</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The previous diagram does not accurately reflect the <code>obj</code> graph&#8217;s Cayley nor category diagram structure. Instead, it leverages <a href="https://en.wikipedia.org/wiki/String_diagram">string diagram</a> motifs. The "string diagrams" presented in this documentation do not fully respect the <a href="https://core.ac.uk/download/pdf/21747055.pdf">string diagram community&#8217;s standards</a> due to the lack of an easy-to-use, LaTeX-based string diagram package. All mm-ADT "string diagrams" will use dotted lines to denote <em>apparent</em> non-<code>poly</code> branching on both the \$\Delta\$ and \$\nabla\$ edges.
+</td>
+</tr>
+</table>
 </div>
 </div>
 </div>
@@ -3765,7 +3736,7 @@ instruction                                    domain      range state
 <p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. mm-ADT Types are Graphs and their Values Realize Paths</div>
+<div class="title">Deep Dive 3. mm-ADT Types are Graphs and their Values Realize Paths</div>
 <div class="content">
 <div class="paragraph">
 <p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type</p>
@@ -3953,7 +3924,7 @@ instruction            domain      range state
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 3. An Instruction Only Free Monoid</div>
+<div class="title">Deep Dive 4. An Instruction Only Free Monoid</div>
 <div class="content">
 <div class="paragraph">
 <p>The mm-ADT <code>obj</code> graph has 5 roots serving as the <strong>1</strong> identity for each of the 5 ctypes. There is a single root for all of mm-ADT in <code>obj{0}</code>. The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
@@ -4809,7 +4780,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-17 18:05:08 -0600
+Last updated 2020-07-17 18:10:00 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
