@@ -105,7 +105,7 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 
 .Free Algebra
 ****
-A https://en.wikipedia.org/wiki/Magma_(algebra)[magma algebra] is defined by a carrier set \$A\$ along with a https://en.wikipedia.org/wiki/Binary_operation[binary operator] \$\cdot: A \times A \to A\$ that combines two elements into one (\$a \cdot b \mapsto c\$), and a set of https://en.wikipedia.org/wiki/Axiom[axioms] denoting "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" \$A\$-related equations that a structure must obey should it be said respect the https://en.wikipedia.org/wiki/Algebraic_structure[algebra] \$(A,\cdot)\$.
+A https://en.wikipedia.org/wiki/Magma_(algebra)[magma algebra] is defined by a carrier set \$A\$ along with a https://en.wikipedia.org/wiki/Binary_operation[binary operator] \$\cdot: A \times A \to A\$ that combines two elements into one (\$a \cdot b \mapsto c\$), and a set of https://en.wikipedia.org/wiki/Axiom[axioms] denoting "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" \$A\$-related equations that a structure must obey should it be said to respect the https://en.wikipedia.org/wiki/Algebraic_structure[algebra] \$(A,\cdot)\$.
 
 If \$a,b,c \in A\$, and \$ab = c\$ (a less verbose representation of \$a \cdot b = c\$), then should there be another element \$d \in A\$ such that \$ad = c\$, it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$. Assuming the general case that all elements do not have unique two element https://en.wikipedia.org/wiki/Factorization[factors] in \$A\$, \$\cdot\$ is an irreversible, https://en.wikipedia.org/wiki/Lossy_compression[lossy] operation.
 
@@ -767,11 +767,11 @@ where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/
 where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Regarding _object_ addition \$\diamond\$ (not `obj` \$◊\$), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
 
 
-[cols="1,1"]
+[cols="7,9"]
 |===
 ^| \$[a_{q_0},b_{q_1}]\$            ^| \$x_{q_2}[a_{q_0},b_{q_1}] \$
 
-| image:obj-addition.png[width=375]  | image:obj-scalar-multiplication.png[width=500]
+| image:obj-addition.png[]  | image:obj-scalar-multiplication.png[]
 |===
 
 When applying \$x \in \tt{obj}\$, the `,-poly` group is a https://en.wikipedia.org/wiki/Group_action[right action] on \$x\$ satisfying the equation below. As an algebraic https://en.wikipedia.org/wiki/Module_(mathematics)[module], \$x\$ is an element of the right `,-poly` https://en.wikipedia.org/wiki/Module_(mathematics)[module] `obj` realizing a generalized form of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication].
