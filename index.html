@@ -1215,51 +1215,66 @@ In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ a
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int&lt;=int
 ==&gt;int</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">From the perspective of "type-as-function," An mm-ADT <code>int</code> is a <a href="https://en.wikipedia.org/wiki/NOP_(code)">no-op</a> on the set of integers. Given any integer, <code>int</code> returns that integer. In <code>mmlang</code>, when the domain and range are the same, the <code>&lt;=</code> and repeated type are not displayed. That is <code>int&lt;=int</code> is more concisely displayed as <code>int</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{1}
 ==&gt;int</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">In most programming languages, a value can be typed <code>int</code> as in</p>
 <p class="tableblock"><code>val x:int = 10</code>.</p>
 <p class="tableblock">Such <a href="https://en.wikipedia.org/wiki/Declaration_(computer_programming)">declarations</a> state that the value referred to by <code>x</code> is a <em>single</em> element within the set of integers. The concept of a "single element" is captured in mm-ADT by the <code>obj</code> quantifier, where a <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unit</a> quantifier is not displayed in <code>mmlang</code>. That is, <code>int{1}</code> is more concisely displayed as <code>int</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{5}
 ==&gt;int{5}</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>int{5}</code> is a type referring to 5 integers. As a point of comparison, <code>int</code> refers to a single integer. This is why <code>int</code> is syntactic sugar for <code>int{1}</code> in <code>mmlang</code>.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{0,5}
 ==&gt;int{0,5}
 mmlang&gt; int{0,5}&lt;=int{0,5}
 ==&gt;int{0,5}</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers must be elements from a ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">carrier set</a> is two integers and represents uncertainty as to the number of elements being referred to. <code>int{0,5}</code> is a type referring to either 0, 1, 2, 3, 4, or 5 integers.</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int&lt;=bool
 language error: bool is not an int</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Types that are fully specified by their type signature are always canonical types. Therefore, <code>bool&lt;=int</code> is meaningless as there are no instructions to map an <code>int</code> to a <code>bool</code>. This example does not assume an underlying <em>model</em>. When model-ADTs are defined, it is possible for <code>bool&lt;=int</code> to yield a result.</p></td>
 </tr>
@@ -2228,7 +2243,7 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])     <i class="conum" data-value="3"></i><b>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The resultant <code>lsts</code> have their terms <code>[merged]</code> (<code>&gt;-</code>, \$\nabla\$) into a single <code>int{1,2}</code> <code>strm</code>. There is a subtlety to highlight. The result of any <code>inst</code> is a single <code>obj</code>. In particular, to the <code>[merge]</code> in these examples, the output is a single <code>int</code> or a single <code>int</code> <code>strm</code> containing two <code>ints</code>. mm-ADT evaluates unary functions: one <code>obj</code> input yields one <code>obj</code> output.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])&gt;-
 ==&gt;4
@@ -2245,7 +2260,7 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</code> for each incoming <code>obj</code>. This <code>poly</code> denotes <em>coupled parallel streams</em>, where each subsequent instruction operates on each term of the <code>poly</code> in a lock-step manner. However, if there are no intermediate instructions between <code>[split]</code> and <code>[merge]</code> (typically specified with <code>[combine]</code>), then this is semantically equivalent to <em>decoupled parallel streams</em> whereby whenever an <code>obj</code> is made available by <code>poly</code> type term, it can be immediately placed on the outgoing merged stream. Decoupled parallel streams are common enough that the "<em>branch</em>"-pattern (<code>-&lt;()&gt;-</code>) is captured by a single <code>[branch]</code> (<code>[ ]</code>, \$◊\$).</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[[plus,1],[mult,2]]
 ==&gt;4
@@ -2262,7 +2277,7 @@ mmlang&gt; 3[[plus,1];[mult,2]]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Finally, the most compact <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugar</a> forms of the running examples are presented. Given the verbosity of branching expressions, all subsequent <code>mmlang</code> examples will favor sugar constructs.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[+1,*2]
 ==&gt;4
@@ -2971,7 +2986,7 @@ mmlang&gt; 5[plus,15]              <i class="conum" data-value="6"></i><b>(6)</b
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Each of these expressions is equivalent to <code>obj{0}</code>. This is demonstrated using the <code>;-poly</code> quantifier equation. <code>2*3*0 = 2*0*4 = 0*3*4</code>. In general, if there exists a <strong>0</strong>-quantified <code>obj</code> in a <code>obj</code>  monoid expression, then the result is always <code>obj{0}</code>.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{0}
 mmlang&gt;
@@ -2987,7 +3002,7 @@ mmlang&gt;</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">All three expression evaluate to the same <code>9{24}</code> value. The quantifier ring has a <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> multiplicative monoid such that <code>2*3*4 = 3*4*2 = 4*2*1</code>.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{4}
 ==&gt;9{24}
@@ -3003,7 +3018,7 @@ mmlang&gt; 6{4}[plus,1]{2}[plus,2]{3}
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is still possible to propagate coefficients left or right through an <code>obj</code> <code>*</code>-expression. Regardless of the quantifiers being <a href="https://en.wikipedia.org/wiki/Prime_element">prime elements</a>, quantifier propagation need not preserve the factors of a <code>*</code>. In this way, if the <a href="https://en.wikipedia.org/wiki/Geometric_progression">geometric sequence</a> remains the same, any quantifier distribution is allowed.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{4}
 ==&gt;9{24}
@@ -3023,7 +3038,7 @@ mmlang&gt; 6{6}[plus,1]{2}[plus,2]{2}
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers propagate along the the multiplicative <code>obj</code> monoid via their <code>*</code>-operator. They propagate along the additive <code>obj</code> group via their <code>+</code>-operator. In this way, if two branches have <a href="https://en.wikipedia.org/wiki/Orthogonality">orthogonal</a> quantifiers of the same magnitude, then when they leave the <code>+</code>-group to be additively merged onto the <code>*</code>-monoid, they cancel each other out. Various set theoretic and <a href="https://en.wikipedia.org/wiki/Quantum_computing">quantum</a> operations make use of constructive and deconstructive quantifier <a href="https://en.wikipedia.org/wiki/Orthogonality">interference</a> when computing.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[[plus,1]{-1}[plus,1]{2},[plus,2]{2}]
 mmlang&gt;
@@ -4777,7 +4792,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-17 23:58:00 -0600
+Last updated 2020-07-17 23:59:08 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
