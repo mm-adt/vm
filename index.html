@@ -910,10 +910,10 @@ The <strong>stream</strong> is a foundational concept in mm-ADT. It&#8217;s alge
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><a href="https://en.wikipedia.org/wiki/Compiler">Compilation</a> is the evaluation of a program (a type) with a type argument (\$ \tt{type} \rightarrow \tt{type} \rightarrow \tt{type} \$) and</p>
+<p><a href="https://en.wikipedia.org/wiki/Compiler">Compilation</a> is the evaluation of a program (a type) with a type argument: \$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$.</p>
 </li>
 <li>
-<p>Types serve as <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda (or anonymous) functions</a> when a value is applied (\$ \tt{value} \rightarrow \tt{type} \rightarrow \tt{value} \$).</p>
+<p>Types serve as <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda (or anonymous) functions</a> when a value is applied: \$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$.</p>
 </li>
 </ol>
 </div>
@@ -1010,23 +1010,20 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 <div class="content">
 <div class="title">Free Algebra</div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma algebra</a> is defined by a carrier set \$A\$ along with a <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> \$\cdot: A \times A \to A\$ that combines two elements into one (\$a \cdot b \mapsto c\$), and a set of <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> denoting "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" \$A\$-related equations that a structure must obey should it be said to respect the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">algebra</a> \$(A,\cdot)\$.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma algebra</a> is defined by a carrier set \$A\$ along with a <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> \$\cdot: A \times A \to A\$ that combines and two \$A\$-elements into one (\$a \cdot b \mapsto c\$), and a set of <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> denoting "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" \$A\$-related equations that a structure must obey should it be an instance of the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">algebra</a> \$(A,\cdot)\$.</p>
 </div>
 <div class="paragraph">
-<p>If \$a,b,c \in A\$, and \$ab = c\$ (a less verbose representation of \$a \cdot b = c\$), then should there be another element \$d \in A\$ such that \$ad = c\$, it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$. Assuming the general case that all elements do not have unique two element <a href="https://en.wikipedia.org/wiki/Factorization">factors</a> in \$A\$, \$\cdot\$ is an irreversible, <a href="https://en.wikipedia.org/wiki/Lossy_compression">lossy</a> operation.</p>
+<p>With the more concise representation of \$ab \equiv a \cdot b\$, if \$a,b,c \in A\$, and \$ab = c\$, then should there be another element \$d \in A\$ such that \$ad = c\$, it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$. Assuming the general case that all elements do not have unique two element <a href="https://en.wikipedia.org/wiki/Factorization">factors</a> in \$A\$, then the binary operator \$\cdot\$ is an irreversible, <a href="https://en.wikipedia.org/wiki/Lossy_compression">lossy</a> operation.</p>
 </div>
 <div class="paragraph">
-<p>A chain of element \$\cdot\$-compositions can be stored in a <a href="https://en.wikipedia.org/wiki/Sequence">sequence</a> (or <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>). Such sequences are "<a href="https://en.wikipedia.org/wiki/Computer_program">programs</a>" that can be executed against <em>any</em> \$A\$-machine. If \$a,b,c,d,e \in A\$, then an example \$A\$-program is
+<p>A <a href="https://en.wikipedia.org/wiki/Sequence">sequence</a> of \$\cdot\$-compositions can be stored in a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>. Such structures are \$A\$-"<a href="https://en.wikipedia.org/wiki/Computer_program">programs</a>" that can be executed against <em>any</em> \$A\$-machine. If \$a,b,c,d,e \in A\$, then an example \$A\$-program is
 \[
 aabbbcadebdcaecadeeeeabccbcaabb.
 \]
-While the individual elements of the \$A\$-program are elements in \$A\$, the program as a whole is a <em>single</em> element in \$A^\ast\$. \$A^\ast\$ is an infinite set of all possible \$A\$-element sequences of arbitrary length. Is is known as the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene closure</a> over \$A\$. From this vantage point, the elements of \$A\$ are called <strong>letters</strong> and the elements of \$A^\ast\$ are called <strong>words</strong>. The set \$A^\ast\$ is the carrier set of another algebra \$(A^\ast,\circ)\$, where \$\circ: A^\ast \times A^\ast \to A^\ast\$ concatenates two words into a single word. This algebra is used to "<a href="https://en.wikipedia.org/wiki/Programmer">code</a>" \$A\$-programs. In the world of <a href="https://en.wikipedia.org/wiki/Abstract_algebra">abstract algebra</a>, this new \$(A^\ast,\circ)\$ algebra is called the <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> over \$A\$.</p>
+While the individual elements of the \$A\$-program are in \$A\$, the program as a whole is a <em>single</em> element in \$A^\ast\$. \$A^\ast\$ is the infinite set of all possible \$A\$-element sequences of arbitrary length called the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene closure</a> over \$A\$. From this vantage point, the elements of \$A\$ are called <strong>letters</strong> and the elements of \$A^\ast\$ are called <strong>words</strong>. The set \$A^\ast\$ is the carrier set of another algebra \$(A^\ast,\circ)\$, where \$\circ: A^\ast \times A^\ast \to A^\ast\$ concatenates two words into a single word (i.e. list concatenation). This algebra is used to "<a href="https://en.wikipedia.org/wiki/Programmer">code</a>" \$A\$-programs. In the world of <a href="https://en.wikipedia.org/wiki/Abstract_algebra">abstract algebra</a>, this new \$(A^\ast,\circ)\$ algebra is called the <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> over \$A\$.</p>
 </div>
 <div class="paragraph">
-<p>A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a <a href="https://en.wikipedia.org/wiki/Algebra_homomorphism">homomorphism</a> that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\mu: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\mu\$ "<a href="https://en.wikipedia.org/wiki/Execution_(computing)">executes</a>" the program on some \$A\$-machine.</p>
-</div>
-<div class="paragraph">
-<p>If the \$\mu\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such references in a structure known as the <code>obj</code> graph. mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a>-encoding of a free algebraic <a href="https://en.wikipedia.org/wiki/Digital_footprint">trace</a> is the foundation of numerous mm-ADT capabilities including <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a>, <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>, and <a href="https://en.wikipedia.org/wiki/Reversible_computing">reversible computing</a>.</p>
+<p>A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a <a href="https://en.wikipedia.org/wiki/Algebra_homomorphism">homomorphism</a> that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\eta: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\eta\$ "<a href="https://en.wikipedia.org/wiki/Execution_(computing)">executes</a>" the program on some \$A\$-machine. If the \$\eta\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such mappings in a structure known as the <code>obj</code> graph. mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a>-encoding of a free algebraic <a href="https://en.wikipedia.org/wiki/Digital_footprint">trace</a> is the foundation of numerous mm-ADT capabilities including <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a>, <a href="https://en.wikipedia.org/wiki/State_(computer_science)">program state</a>, <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>, and <a href="https://en.wikipedia.org/wiki/Reversible_computing">reversible computing</a>.</p>
 </div>
 </div>
 </div>
@@ -4816,7 +4813,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-18 01:25:31 -0600
+Last updated 2020-07-18 01:44:32 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
