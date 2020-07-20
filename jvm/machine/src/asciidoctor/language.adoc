@@ -724,13 +724,13 @@ In general, an mm-ADT `poly` is used to _decouple_ two algebraic structures such
 `(x0{q0}|x1{q1}|...|xn{qn})` +
 `(x0{q0};x1{q1};...;xn{qn})`
 
-[cols="1,1,2,4,4"]
+[cols="1,3,3,4,5"]
 |===
-| symbol    | name      | structure                                                        | description                                             | illustration
+| symbol    | structure                                                        | value use            | type use                          | illustration
 
-| `,-poly`  | _orThen_  | https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring]   | nondeterministic parallel branching and products        | image:comma-poly-example.png[]
-| `\|-poly` | _xorThen_ | https://en.wikipedia.org/wiki/Monoid_ring[monoid ring]           | deterministic `if/else`-branching and co-products       | image:pipe-poly-example.png[]
-| `;-poly`  | _andThen_ | https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]         | type rewriting and meta-programming                     | image:semi-poly-example.png[]
+| `,-poly`  | https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring]   | unordered products   | nondeterministic branching        | image:comma-poly-example.png[]
+| `\|-poly` | https://en.wikipedia.org/wiki/Monoid_ring[monoid ring]           | coproducts           | deterministic branching           | image:pipe-poly-example.png[]
+| `;-poly`  | https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]         | ordered products     | metaprogramming                   | image:semi-poly-example.png[]
 |===
 
 NOTE: The polynomial literature distinguishes https://en.wikipedia.org/wiki/Univariate[univariate] and https://en.wikipedia.org/wiki/Polynomial#Multivariate_polynomial[multivariate] polynomials, where if all the _object_ components of the `obj` product are equal, then the polynomial is univariate, else it is multivariate. In mm-ADT, multivariate `polys` are much more common than univariate `polys`. However, a primary function of the mm-ADT https://en.wikipedia.org/wiki/Optimizing_compiler[optimizing compiler] is to deduce `obj` equivalences via https://en.wikipedia.org/wiki/Rewriting[term rewriting] such that `obj` *bulking* can occur via the additive and multiplicative operators of the expression's associated quantifier ring (i.e. the ring of coefficients).
@@ -771,7 +771,7 @@ image:poly-kinds.png[width=225,float=left]
 | https://en.wikipedia.org/wiki/Set_(abstract_data_type)[set]
 | https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
            |  `;` | last
-| https://en.wikipedia.org/wiki/Stack_%28abstract_data_type%29[stack]
+| list
 | https://en.wikipedia.org/wiki/Method_chaining[chain]
 .3+| `rec` | `,`  | all match key
 | https://en.wikipedia.org/wiki/Multimap[multimap]
@@ -779,7 +779,8 @@ image:poly-kinds.png[width=225,float=left]
            | `\|` | first match key
 | https://en.wikipedia.org/wiki/Associative_array[map]
 | https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
-           | `;`  | last match key     |
+           | `;`  | last match key
+| record
 | https://en.wikipedia.org/wiki/Method_cascading[cascade]
 |===
 
@@ -992,6 +993,19 @@ Polynomial factorization plays an important role in compile-time type optimizati
 
 ====== Data Type Products
 
+A https://en.wikipedia.org/wiki/Product_(category_theory)[categorical product] is a https://en.wikipedia.org/wiki/Tacit_programming[point-free] specification of a composite object. The elements of the composite are denoted with projective morphisms \$\pi_i\$, where \$i \geq 0\$ is the location of the term. For instance, the `,-poly` `(1,2)` is a product with two elements such that the following diagram commutes, where the dashed line denoted `[type]` and is the Cayley edge label that connects the `obj` value subgraph to the `obj` type subgraph.
+
+image::comma-lst-product-example.png[align=center,width=300]
+
+[exec]
+----
+(1,2)[a,(int,int)]
+(1,2)[a,(int,int,int)]
+(1,2,3)[a,(int,int,int)]
+(1,2,3)[a,(int,2,int[is>=3])]
+(1,'2',(1,1,1))[a,(int,str,(int,int,int))]
+----
+
 .Type Ringoid Addition Embedded in ,-poly
 ================================================================
 
@@ -1063,7 +1077,7 @@ x_{q_2} [a_{q_0} | b_{q_1}] =
 
 ====== Data Flow Conditionals
 
-Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\bar{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. This is the reason that the additive group of `|-lst` is not commutative.
+Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\bar{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. This is the reason that the additive group of `|-lst` (and `|-poly` in general) is not commutative.
 
 '''
 
@@ -1077,7 +1091,7 @@ Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_the
 <2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
 <3> Both terms, when applied to `x` yield `obj{0}`. The polynomial reduces to `obj{0}`.
 
-`|-rec` enables https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate]-based coalescing which is a form of https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching] realized in most programming languages as link:https://en.wikipedia.org/wiki/Control_flow#If-then-(else)_statements[if/else] and https://en.wikipedia.org/wiki/Switch_statement[switch/case] branching. While predicate-based branching is a function of \$\mathbb{B}\$ (`bool`), in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where _false_ is `obj{0}` (\$\bar{\mathbf{0}}\$) and _true_ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then
+`|-rec` enables link:https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate]-based coalescing which is a form of link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching] realized in most programming languages as link:https://en.wikipedia.org/wiki/Control_flow#If-then-(else)_statements[if/else] and link:https://en.wikipedia.org/wiki/Switch_statement[switch/case] branching. While predicate-based branching is a function of \$\mathbb{B}\$ (`bool`), in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where __false__ is `obj{0}` (\$\bar{\mathbf{0}}\$) and __true__ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then
 
 \[
 x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
