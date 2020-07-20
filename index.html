@@ -902,6 +902,252 @@ The <strong>stream</strong> is a foundational concept in mm-ADT. It&#8217;s alge
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>The <code>obj</code> structure satisfies the axioms of <strong>stream ring theory</strong>. The algebraic structure is
+\[
+(\texttt{obj}\;;\;,\;\mathbf{1}\;\mathbf{0}).
+\]</p>
+</div>
+<div class="paragraph">
+<p>The following table provides a review of the ring theoretic axioms and their realization in mm-ADT via <code>mmlang</code> over both <code>obj</code> <strong>values</strong> and <strong>types</strong>. This table serves as a consolidated summary and the particulars surrounding their meaning and use forms the primary purpose of this documentation.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch small">
+<colgroup>
+<col style="width: 5.5555%;">
+<col style="width: 5.5555%;">
+<col style="width: 16.6666%;">
+<col style="width: 33.3333%;">
+<col style="width: 38.8891%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">structure</th>
+<th class="tableblock halign-left valign-top">axiom</th>
+<th class="tableblock halign-left valign-top">equation</th>
+<th class="tableblock halign-left valign-top">mmlang values</th>
+<th class="tableblock halign-left valign-top">mmlang types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock">\$(\tt{obj}  ;)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative associativity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a';'b'];'c']
+==&gt;'c'
+mmlang&gt; ['a';['b';'c']]
+==&gt;'c'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[+'a';+'b'];+'c']
+==&gt;'abc'
+mmlang&gt; ''[+'a';[+'b';+'c']]
+==&gt;'abc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \cdot \mathbf{1} = a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';_{1}]
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';_{1}]
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="4"><p class="tableblock">\$(\tt{obj} ,)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive associativity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a+b)+c = a+(b+c)\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a','b'],'c']
+==&gt;'a'
+==&gt;'b'
+==&gt;'c'
+mmlang&gt; ['a',['b','c']]
+==&gt;'a'
+==&gt;'b'
+==&gt;'c'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[+'a',+'b'],+'c']
+==&gt;'a'
+==&gt;'b'
+==&gt;'c'
+mmlang&gt; ''[+'a',[+'b',+'c']]
+==&gt;'a'
+==&gt;'b'
+==&gt;'c'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive commutativity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a+b = b+a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b']
+==&gt;'a'
+==&gt;'b'
+mmlang&gt; ['b','a']
+==&gt;'b'
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',+'b']
+==&gt;'a'
+==&gt;'b'
+mmlang&gt; ''[+'b',+'a']
+==&gt;'b'
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a+\mathbf{0} = a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a',_{0}]
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',_{0}]
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive inverse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + (-a) =\mathbf{0}\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','a'{-1}]
+==&gt;'a'{0}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',[plus,'a']{-1}]
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top" rowspan="2"><p class="tableblock">\$(\tt{obj};,)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Left distributivity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \cdot (b + c) = ab + ac\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';['b','c']]
+==&gt;'b'
+==&gt;'c'
+mmlang&gt; [['a';'b'],['a';'c']]
+==&gt;'b'
+==&gt;'c'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';[+'b',+'c']]
+==&gt;'ab'
+==&gt;'ac'
+mmlang&gt; ''[[+'a';+'b'],[+'a';+'c']]
+==&gt;'ab'
+==&gt;'ac'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Right distributivity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) \cdot c = ac + bc\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a','b'];'c']
+==&gt;'c'{2}
+mmlang&gt; [['a';'c'],['b';'c']]
+==&gt;'c'{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[+'a',+'b'];+'c']
+==&gt;'ac'
+==&gt;'bc'
+mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
+==&gt;'ac'
+==&gt;'bc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
 <div class="paragraph">
@@ -4813,7 +5059,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-18 01:44:32 -0600
+Last updated 2020-07-19 17:29:55 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
