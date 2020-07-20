@@ -993,9 +993,34 @@ Polynomial factorization plays an important role in compile-time type optimizati
 
 ====== Data Type Products
 
-A https://en.wikipedia.org/wiki/Product_(category_theory)[categorical product] is a https://en.wikipedia.org/wiki/Tacit_programming[point-free] specification of a composite object. The elements of the composite are denoted with projective morphisms \$\pi_i\$, where \$i \geq 0\$ is the location of the term. For instance, the `,-poly` `(1,2)` is a product with two elements such that the following diagram commutes, where the dashed line denoted `[type]` and is the Cayley edge label that connects the `obj` value subgraph to the `obj` type subgraph.
+A https://en.wikipedia.org/wiki/Product_(category_theory)[categorical product] is a https://en.wikipedia.org/wiki/Tacit_programming[point-free] specification of a composite object. The elements of the composite are denoted with projective morphisms \$\pi_i\$, where \$i \geq 0\$ is the location of the term. For instance, the `,-poly` `(1,2)` is a product with two elements such that the following diagram commutes, where the dashed line denotes `[type]` and is the Cayley edge label that connects the `obj` value subgraph to the `obj` type subgraph.
 
-image::comma-lst-product-example.png[align=center,width=300]
+
+
+[cols="2,1,2"]
+|===
+| image:comma-lst-product-example.png[]
+|
+\[
+\begin{split}
+(1,2) &\Rightarrow (\texttt{int},\texttt{int}) \\
+(1,2) &\Rightarrow (\texttt{int},\texttt{int}) \circ \pi_0 \\
+(1,2) &\Rightarrow (\texttt{int},\texttt{int}) \circ \pi_1
+\end{split}
+\]
+
+a|
+[exec]
+----
+(1,2) => (int,int)
+(1,2) => (int,int).0
+(1,2) => (int,int).1
+----
+|===
+
+
+
+
 
 [exec]
 ----
