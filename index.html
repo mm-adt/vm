@@ -499,11 +499,37 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_poly_types">Poly Types</a>
 <ul class="sectlevel4">
 <li><a href="#_lst_and_rec">Lst and Rec</a></li>
-<li><a href="#_orthen_poly">orThen ,-poly</a></li>
-<li><a href="#_xorthen_poly">xorThen |-poly</a></li>
-<li><a href="#_andthen_poly">andThen ;-poly</a></li>
-<li><a href="#_poly_domain_instructions">Poly Domain Instructions</a></li>
-<li><a href="#_poly_patterns">Poly Patterns</a></li>
+<li><a href="#_orthen_poly">orThen ,-poly</a>
+<ul class="sectlevel5">
+<li><a href="#_data_flow_unions">Data Flow Unions</a></li>
+<li><a href="#_data_type_products">Data Type Products</a></li>
+</ul>
+</li>
+<li><a href="#_xorthen_poly">xorThen |-poly</a>
+<ul class="sectlevel5">
+<li><a href="#_data_flow_conditionals">Data Flow Conditionals</a></li>
+<li><a href="#_data_type_coproducts">Data Type Coproducts</a></li>
+</ul>
+</li>
+<li><a href="#_andthen_poly">andThen ;-poly</a>
+<ul class="sectlevel5">
+<li><a href="#_universal_commutativity_of_quantifiers">Universal Commutativity of Quantifiers</a></li>
+</ul>
+</li>
+<li><a href="#_poly_domain_instructions">Poly Domain Instructions</a>
+<ul class="sectlevel5">
+<li><a href="#_split_and_merge">Split and Merge</a></li>
+</ul>
+</li>
+<li><a href="#_poly_patterns">Poly Patterns</a>
+<ul class="sectlevel5">
+<li><a href="#_records">Records</a></li>
+<li><a href="#_lists">Lists</a></li>
+<li><a href="#_stream_containers">Stream Containers</a></li>
+<li><a href="#_01_boolean_matrices">{0,1}-Boolean Matrices</a></li>
+<li><a href="#_meta_programming">Meta-Programming</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_identity_types">Identity Types</a>
@@ -521,7 +547,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_obj_magma">Obj Magma</a></li>
 <li><a href="#_inst_monoid">Inst Monoid</a>
 <ul class="sectlevel4">
-<li><a href="#_monoidal_cayley_graph">Monoidal Cayley Graph</a></li>
+<li><a href="#_monoidal_cayley_graph">Monoidal Cayley Graph</a>
+<ul class="sectlevel5">
+<li><a href="#_the_foundational_obj_graph">The Foundational obj Graph</a></li>
+<li><a href="#_subgraph_algebras">Subgraph Algebras</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_type_ringoid">Type Ringoid</a>
@@ -2731,6 +2762,8 @@ mmlang&gt; 'x'{2}[[plus,'a']{3},[plus,'b']{4}]
 ==&gt;'xb'{8}</code></pre>
 </div>
 </div>
+<div class="sect5">
+<h6 id="_data_flow_unions">Data Flow Unions</h6>
 <div class="paragraph">
 <p>The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below depicts the equalities of the subsequent <code>mmlang</code> examples.</p>
 </div>
@@ -2847,6 +2880,9 @@ mmlang&gt; 'a'+'b'[+'c',+'d']+'e'           <i class="conum" data-value="3"></i>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect5">
+<h6 id="_data_type_products">Data Type Products</h6>
 <div class="exampleblock">
 <div class="title">Deep Dive 2. Type Ringoid Addition Embedded in ,-poly</div>
 <div class="content">
@@ -2869,6 +2905,7 @@ The previous diagram does not accurately reflect the <code>obj</code> graph&#821
 </td>
 </tr>
 </table>
+</div>
 </div>
 </div>
 </div>
@@ -2960,7 +2997,7 @@ mmlang&gt; (||'c'-&gt;3)&gt;-
 </tbody>
 </table>
 <div class="paragraph">
-<p>A <code>|-poly</code> (pronounced "pipe poly") uses <code>|</code> as its <code>obj</code> term separator. Like the <code>,-poly</code>, a <code>|-poly</code> maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>|-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
+<p>A <code>|-poly</code> (pronounced "pipe poly") uses <code>|</code> as the <code>obj</code> term separator. Like the <code>,-poly</code>, a <code>|-poly</code> maintains a <a href="https://en.wikipedia.org/wiki/Free_group">free additive group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. However, unlike <code>,-poly</code>, the additive group is not <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>|-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2972,8 +3009,10 @@ x_{q_2} [a_{q_0} | b_{q_1}] =
 \end{cases}
 \]</p>
 </div>
+<div class="sect5">
+<h6 id="_data_flow_conditionals">Data Flow Conditionals</h6>
 <div class="paragraph">
-<p>While <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring&#8201;&#8212;&#8201;\$\bar{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the <code>|-lst</code> additive group is non-commutative.</p>
+<p>Thus, while <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring&#8201;&#8212;&#8201;\$\bar{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. This is the reason that the additive group of <code>|-lst</code> is not commutative.</p>
 </div>
 <hr>
 <div class="listingblock">
@@ -3003,7 +3042,7 @@ mmlang&gt;</code></pre>
 </table>
 </div>
 <div class="paragraph">
-<p><code>|-rec</code> extends <code>|-lst</code> with <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a>. In most programming language, branch selection is predicated on \$\mathbb{B}\$ (<code>bool</code>), but in mm-ADT it is determined by \$\tt{q}\$ (<code>{q}</code>), where <em>false</em> is <code>obj{0}</code> (\$\bar{\mathbf{0}}\$) and <em>true</em> is any non-zero quantifier. The non-commutative additive group of <code>|-poly</code>, as inherited by <code>|-rec</code>, realizes <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements">case-based</a> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">pattern matching</a> branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then</p>
+<p><code>|-rec</code> enables <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a>-based coalescing which is a form of <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a> realized in most programming languages as <a href="https://en.wikipedia.org/wiki/Control_flow#If-then-(else)<em>statements">if/else</a> and <a href="https://en.wikipedia.org/wiki/Switch_statement">switch/case</a> branching. While predicate-based branching is a function of \$\mathbb{B}\$ (<code>bool</code>), in mm-ADT it is determined by \$\tt{q}\$ (<code>{q}</code>), where _false</em> is <code>obj{0}</code> (\$\bar{\mathbf{0}}\$) and <em>true</em> is any non-zero quantifier. The non-commutative additive group of <code>|-poly</code>, as inherited by <code>|-rec</code>, realizes <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements">case-based</a> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">pattern matching</a> branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -3089,6 +3128,11 @@ instruction                                    domain                           
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect5">
+<h6 id="_data_type_coproducts">Data Type Coproducts</h6>
+
+</div>
 </div>
 <div class="sect4">
 <h5 id="_andthen_poly">andThen ;-poly</h5>
@@ -5059,7 +5103,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-19 17:29:55 -0600
+Last updated 2020-07-20 10:18:41 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
