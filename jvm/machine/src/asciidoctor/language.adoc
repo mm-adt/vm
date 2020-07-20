@@ -68,6 +68,150 @@ int{5}           //<3>
 
 NOTE: The *stream* is a foundational concept in mm-ADT. It's algebraic properties are discussed at length when discussing values. In the meantime, note that a stream is an `obj`. A stream's type is the type of it's constituent values. A stream's quantifier is the sum of the quantifiers of it's constituent values. Streams are unordered and do not nest in that `{1,{2,3},4}` is equivalent to `{1,2,3,4}`.
 
+The `obj` structure satisfies the axioms of *stream ring theory*. The algebraic structure is
+\[
+(\texttt{obj}\;;\;,\;\mathbf{1}\;\mathbf{0}).
+\]
+
+The following table provides a review of the ring theoretic axioms and their realization in mm-ADT via `mmlang` over both `obj` *values* and *types*. This table serves as a consolidated summary and the particulars surrounding their meaning and use forms the primary purpose of this documentation.
+
+[.small]
+[cols="1,1,3,6,7"]
+|===
+| structure |  axiom | equation  | mmlang values | mmlang types
+
+.2+| \$(\tt{obj}  ;)\$
+
+| Multiplicative associativity
+| \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$
+a|
+[exec]
+----
+[['a';'b'];'c']
+['a';['b';'c']]
+----
+{blank}
+a|
+[exec]
+----
+''[[+'a';+'b'];+'c']
+''[+'a';[+'b';+'c']]
+----
+{blank}
+| Multiplicative identity
+| \$a \cdot \mathbf{1} = a\$
+a|
+[exec]
+----
+['a';_{1}]
+----
+{blank}
+a|
+[exec]
+----
+''[+'a';_{1}]
+----
+{blank}
+
+.4+| \$(\tt{obj} ,)\$
+
+| Additive associativity
+| \$(a+b)\+c = a+(b+c)\$
+a|
+[exec]
+----
+[['a','b'],'c']
+['a',['b','c']]
+----
+{blank}
+a|
+[exec]
+----
+''[[+'a',+'b'],+'c']
+''[+'a',[+'b',+'c']]
+----
+{blank}
+| Additive commutativity
+| \$a+b = b+a\$
+a|
+[exec]
+----
+['a','b']
+['b','a']
+----
+{blank}
+a|
+[exec]
+----
+''[+'a',+'b']
+''[+'b',+'a']
+----
+{blank}
+| Additive identity
+| \$a+\mathbf{0} = a\$
+a|
+[exec]
+----
+['a',_{0}]
+----
+{blank}
+a|
+[exec]
+----
+''[+'a',_{0}]
+----
+{blank}
+| Additive inverse
+| \$a + (-a) =\mathbf{0}\$
+a|
+[exec]
+----
+['a','a'{-1}]
+----
+{blank}
+a|
+[exec]
+----
+''[+'a',[plus,'a']{-1}]
+----
+{blank}
+
+.2+| \$(\tt{obj};,)\$
+
+| Left distributivity
+| \$a \cdot (b + c) = ab + ac\$
+a|
+[exec]
+----
+['a';['b','c']]
+[['a';'b'],['a';'c']]
+----
+{blank}
+a|
+[exec]
+----
+''[+'a';[+'b',+'c']]
+''[[+'a';+'b'],[+'a';+'c']]
+----
+{blank}
+| Right distributivity
+| \$(a + b) \cdot c = ac + bc\$
+a|
+[exec]
+----
+[['a','b'];'c']
+[['a';'c'],['b';'c']]
+----
+{blank}
+a|
+[exec]
+----
+''[[+'a',+'b'];+'c']
+''[[+'a';+'c'],[+'b';+'c']]
+----
+{blank}
+|===
+
 ==== Types and Values
 
 Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two notable consequences of computable types and values are
