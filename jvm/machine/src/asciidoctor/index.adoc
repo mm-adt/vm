@@ -4,7 +4,7 @@ Ryan Wisnesky [advisor] (Conexus)
 :project-version: 0.1
 :icons: font
 :toc: left
-:toclevels: 4
+:toclevels: 5
 :doctype: book
 :docinfo: shared-head
 :stem: latexmath

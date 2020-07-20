@@ -936,6 +936,8 @@ The two cases above are expressed in `mmlang` below with the last two examples b
 'x'{2}[[plus,'a']{3},[plus,'b']{4}]
 ----
 
+====== Data Flow Unions
+
 The https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the subsequent `mmlang` examples.
 
 image::comma-lst-tensor-example.png[align=center,width=725]
@@ -987,6 +989,8 @@ Polynomial factorization plays an important role in compile-time type optimizati
 <1> The value `a` serves as the scalar in a https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] with the multi-`+` `,-lst`.
 <2> The value `ab` serves as the scalar.
 <3> The value `ab` is the left multiplicative scalar and the value `e` is a right multiplicative scalar.
+
+====== Data Type Products
 
 .Type Ringoid Addition Embedded in ,-poly
 ================================================================
@@ -1046,7 +1050,7 @@ a|
 {blank}
 |===
 
-A `|-poly` (pronounced "pipe poly") uses `|` as its `obj` term separator. Like the `,-poly`, a `|-poly` maintains a free additive group and a non-free multiplicative monoid. However, the additive group is not https://en.wikipedia.org/wiki/Commutative_property[commutative]. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
+A `|-poly` (pronounced "pipe poly") uses `|` as the `obj` term separator. Like the `,-poly`, a `|-poly` maintains a https://en.wikipedia.org/wiki/Free_group[free additive group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. However, unlike `,-poly`, the additive group is not https://en.wikipedia.org/wiki/Commutative_property[commutative]. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
 
 \[
 x_{q_2} [a_{q_0} | b_{q_1}] =
@@ -1057,7 +1061,9 @@ x_{q_2} [a_{q_0} | b_{q_1}] =
 \end{cases}
 \]
 
-While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\bar{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. Thus, the `|-lst` additive group is non-commutative.
+====== Data Flow Conditionals
+
+Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\bar{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. This is the reason that the additive group of `|-lst` is not commutative.
 
 '''
 
@@ -1071,7 +1077,7 @@ While `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[u
 <2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
 <3> Both terms, when applied to `x` yield `obj{0}`. The polynomial reduces to `obj{0}`.
 
-`|-rec` extends `|-lst` with https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching]. In most programming language, branch selection is predicated on \$\mathbb{B}\$ (`bool`), but in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where _false_ is `obj{0}` (\$\bar{\mathbf{0}}\$) and _true_ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then
+`|-rec` enables https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate]-based coalescing which is a form of https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching] realized in most programming languages as link:https://en.wikipedia.org/wiki/Control_flow#If-then-(else)_statements[if/else] and https://en.wikipedia.org/wiki/Switch_statement[switch/case] branching. While predicate-based branching is a function of \$\mathbb{B}\$ (`bool`), in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where _false_ is `obj{0}` (\$\bar{\mathbf{0}}\$) and _true_ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then
 
 \[
 x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
@@ -1089,7 +1095,7 @@ x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
 'x'{2}[[plus,'a']{0} -> [plus,'b']{4} | [plus,'c']{0} -> [plus,'d']{6}]
 ----
 
-The previous `mmlang` examples are contrived. In practice, they keys of `|-rec` will typically leverage `[is,bool]` with the anonymous type `_` serving as the https://en.wikipedia.org/wiki/Switch_statement#Fallthrough[default case] of the switch.
+The previous `mmlang` examples are contrived. In practice, they keys of `|-rec` will typically leverage `[is,bool]` with the anonymous type `_` serving as the link:https://en.wikipedia.org/wiki/Switch_statement#Fallthrough[default case] of the switch.
 
 image::pipe-rec-string-example.png[width=650,align=center]
 
@@ -1113,6 +1119,9 @@ int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 {blank}
 |===
 :prewrap:
+
+====== Data Type Coproducts
+
 
 ===== andThen ;-poly
 
