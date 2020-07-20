@@ -2884,13 +2884,37 @@ mmlang&gt; 'a'+'b'[+'c',+'d']+'e'           <i class="conum" data-value="3"></i>
 <div class="sect5">
 <h6 id="_data_type_products">Data Type Products</h6>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">categorical product</a> is a <a href="https://en.wikipedia.org/wiki/Tacit_programming">point-free</a> specification of a composite object. The elements of the composite are denoted with projective morphisms \$\pi_i\$, where \$i \geq 0\$ is the location of the term. For instance, the <code>,-poly</code> <code>(1,2)</code> is a product with two elements such that the following diagram commutes, where the dashed line denoted <code>[type]</code> and is the Cayley edge label that connects the <code>obj</code> value subgraph to the <code>obj</code> type subgraph.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">categorical product</a> is a <a href="https://en.wikipedia.org/wiki/Tacit_programming">point-free</a> specification of a composite object. The elements of the composite are denoted with projective morphisms \$\pi_i\$, where \$i \geq 0\$ is the location of the term. For instance, the <code>,-poly</code> <code>(1,2)</code> is a product with two elements such that the following diagram commutes, where the dashed line denotes <code>[type]</code> and is the Cayley edge label that connects the <code>obj</code> value subgraph to the <code>obj</code> type subgraph.</p>
 </div>
-<div class="imageblock text-center">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 40%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-lst-product-example.png" alt="comma lst product example"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
+\begin{split}
+(1,2) &amp;\Rightarrow (\texttt{int},\texttt{int}) \\
+(1,2) &amp;\Rightarrow (\texttt{int},\texttt{int}) \circ \pi_0 \\
+(1,2) &amp;\Rightarrow (\texttt{int},\texttt{int}) \circ \pi_1
+\end{split}
+\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<img src="./images/language/comma-lst-product-example.png" alt="comma lst product example" width="300">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1,2) =&gt; (int,int)
+==&gt;(1,2)
+mmlang&gt; (1,2) =&gt; (int,int).0
+==&gt;1
+mmlang&gt; (1,2) =&gt; (int,int).1
+==&gt;2</code></pre>
 </div>
-</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1,2)[a,(int,int)]
@@ -5125,7 +5149,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-20 10:26:07 -0600
+Last updated 2020-07-20 14:22:17 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
