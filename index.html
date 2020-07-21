@@ -1202,6 +1202,187 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </tr>
 </tbody>
 </table>
+<hr>
+<table class="tableblock frame-all grid-all stretch small">
+<colgroup>
+<col style="width: 10.5263%;">
+<col style="width: 21.0526%;">
+<col style="width: 31.5789%;">
+<col style="width: 36.8422%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">theorem</th>
+<th class="tableblock halign-left valign-top">equation</th>
+<th class="tableblock halign-left valign-top">mmlang values</th>
+<th class="tableblock halign-left valign-top">mmlang types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Useful Deductions&#8201;&#8212;&#8201;\$(\tt{obj},[;],[,],\underline{\mathbf{1}},\underline{\mathbf{0}})\$</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive factoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = a + c\$<br>
+  \$&#8658; b = c\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique factoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = 0\$<br>
+  \$&#8658; a = -b\$<br>
+  \$&#8658; b = -a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$-(a+b) = (-a) + (-b)\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b']{-1}
+==&gt;'a'{-1}
+==&gt;'b'{-1}
+mmlang&gt; ['a'{-1},'b'{-1}]
+==&gt;'a'{-1}
+==&gt;'b'{-1}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',+'b']{-1}
+==&gt;'a'{-1}
+==&gt;'b'{-1}
+mmlang&gt; ''[[plus,'a']{-1},[plus,'b']{-1}]
+==&gt;'a'{-1}
+==&gt;'b'{-1}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$-(-a) = a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{-1}]{-1}
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[plus,'a']{-1}]{-1}
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annihilator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a*0 = 0 = 0*a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';_{0}]
+mmlang&gt;
+mmlang&gt; [_{0};'a']
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';_{0}]
+mmlang&gt;
+mmlang&gt; ''[_{0};+'a']
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a * (-b)\$<br>
+  \$= -a * b\$<br>
+  \$= -(a * b)\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';'b'{-1}]
+==&gt;'b'{-1}
+mmlang&gt; ['a'{-1};'b']
+==&gt;'b'
+mmlang&gt; ['a';'b']{-1}
+==&gt;'b'{-1}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';[plus,'b']{-1}]
+==&gt;'ab'{-1}
+mmlang&gt; ''[[plus,'a']{-1};+'b']
+==&gt;'ab'{-1}
+mmlang&gt; ''[+'a';+'b']{-1}
+==&gt;'ab'{-1}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(-a) * (-b) = a * b\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{-1};'b'{-1}]
+==&gt;'b'{-1}
+mmlang&gt; ['a';'b']
+==&gt;'b'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[plus,'a']{-1};[plus,'b']{-1}]
+==&gt;'ab'
+mmlang&gt; ''[+'a';+'b']
+==&gt;'ab'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
@@ -2577,117 +2758,8 @@ The polynomial literature distinguishes <a href="https://en.wikipedia.org/wiki/U
 <h5 id="_the_type_ringoid">The Type Ringoid</h5>
 <div class="sidebarblock">
 <div class="content">
-<div class="title">Rings</div>
-<div class="paragraph">
-<p>A ring is an algebraic structure \$ \langle A,*,+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the <em>multiplicative</em> operator, \$\+: A \times A \rightarrow A \$ is the <em>additive</em> operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity. A ring satisfies the following axioms, where \$ a,b,c \in A \$.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch small">
-<colgroup>
-<col style="width: 30.7692%;">
-<col style="width: 30.7692%;">
-<col style="width: 38.4616%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">common notation</th>
-<th class="tableblock halign-center valign-top">terminology</th>
-<th class="tableblock halign-center valign-top">mmlang notation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) + c = a + (b + c)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">additive associativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>((a,b),c) == (a,(b,c))</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$0 + a = a + 0 = a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">additive identity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(_{0},a) == (a,_{0}) == a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a - a = a + (-a) = 0\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">additive inverses</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a,a{-1}) == _{0}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = b + a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">additive commutativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a,b) == (b,a)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a * b) * c = a * (b * c)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative associativity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>((a;b);c) == (a;(b;c))</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$1 * a = a * 1 = a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative identity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(_{1};a) == (a;_{1}) == a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a + b) * c = (a * c) + (b * c)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative left distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>((a,b);c) == ((a;c),(b;c))</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a * (b + c) = (a * b) + (a * c)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">multiplicative right distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a;(b,c)) == ((a;b),(a;c))</code></p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all stretch small">
-<colgroup>
-<col style="width: 40%;">
-<col style="width: 20%;">
-<col style="width: 40%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">common notation</th>
-<th class="tableblock halign-center valign-top">deduction</th>
-<th class="tableblock halign-center valign-top">mmlang notation</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = a + c =&gt; b = c\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
-<td class="tableblock halign-center valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a + b = 0 =&gt; a = -b &amp; b = -a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">unique inverse</p></td>
-<td class="tableblock halign-center valign-top"></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$-(a+b) = (-a) + (-b)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a,b){-1} == (a{-1},b{-1})</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$-(-a) = a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">distributivity</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a{-1}){-1} == a</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a*0 = 0 = 0*a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">annihilator</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a;{0}) == {0} == ({0};a)</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a * (-b) = -a * b = -(a * b)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a;b{-1}) == (a{-1};b) == (a;b){-1}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(-a) * (-b) = a * b\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">factors</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a{-1};b{-1}) == (a;b)</code></p></td>
-</tr>
-</tbody>
-</table>
+<div class="title">Ringoids</div>
+
 </div>
 </div>
 <div class="paragraph">
@@ -5211,7 +5283,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 11:21:16 -0600
+Last updated 2020-07-21 12:29:33 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
