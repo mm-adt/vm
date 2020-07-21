@@ -285,11 +285,11 @@ where `op` is an https://en.wikipedia.org/wiki/Opcode[opcode] from a predefined 
 \[
 (\texttt{inst}^\ast,\circ,\emptyset),
 \]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free `inst` monoid called bytecode, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] from the `inst` monoid to the `obj` magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free `inst` monoid, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] from the `inst` monoid to the `obj` magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.
 
-[.small]
+
 .Rosetta Stone
-[cols="1,2,2",width=30,float=right]
+[cols="1,2,2",width=35,float=right]
 |===
 | algebra   | machine        | mm-ADT
 
@@ -301,10 +301,11 @@ where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ conca
 .`inst` monoid to `obj` magma homomorphism
 \[
 \begin{split}
-& \eta: \texttt{inst}^\ast &\to \texttt{type} \\ \\
+& \eta: \texttt{inst}^\ast &\to \texttt{type} \\\\
+& \eta(\emptyset) &= \underline{\mathbf{1}} \\
+& \eta(a \circ b) &= a \Rightarrow b \\\\
 & \eta(x) &=    \prod_{i \in x}^{\Rightarrow} i \\
-&         &=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1} \\ \\
-& \eta(\emptyset) &= \underline{\mathbf{1}}
+&         &=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1}
 \end{split}
 \]
 
