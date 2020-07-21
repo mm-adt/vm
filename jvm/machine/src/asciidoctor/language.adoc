@@ -285,17 +285,17 @@ where `op` is an https://en.wikipedia.org/wiki/Opcode[opcode] from a predefined 
 \[
 (\texttt{inst}^\ast,\circ,\emptyset),
 \]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free `inst` monoid, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] from the `inst` monoid to the `obj` magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free `inst` monoid, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] (https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler]) from the `inst` monoid to the `obj` magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.
 
 
 .Rosetta Stone
-[cols="1,2,2",width=35,float=right]
+[cols="1,2,3",width=35,float=right]
 |===
 | algebra   | machine        | mm-ADT
 
 | `inst`    | ISA            | `inst`
 | `inst^*^` | bytecode       | `inst` `poly`
-| \$\eta\$  | compilation    | type eval
+| \$\eta\$  | assembler      | type induction
 | `type`    | program        | type
 |===
 .`inst` monoid to `obj` magma homomorphism
