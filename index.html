@@ -679,7 +679,7 @@ f: S \rightarrow E.
 </div>
 <div class="paragraph">
 <p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component&#8217;s particular interpretation of mm-ADT. The <strong>language algebra</strong>
-is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturing the serial composition of parameterized instructions (<code>inst</code>) in the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) used for compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a non- <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary "juxtapostion" operator. These algebras represent the particular perspective that each component has on a shared data structure called the <strong>obj graph</strong> which realizes a <em>ringoid-embedding of a monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
+is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturing the serial composition of parameterized instructions (<code>inst</code>) in the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) used for compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a partially <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary operator. These algebras represent the particular perspective that each component has on a shared data structure called the <strong>obj graph</strong> which realizes <em>a ringoid-embedded monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
 </div>
 <table class="tableblock frame-all grid-all left" style="width: 30%;">
 <colgroup>
@@ -1436,11 +1436,11 @@ mmlang&gt; ''[+'a';+'b']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Applying</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$2a \cdot 3a = 6a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$2a \cdot 3b = 6ab\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}['a'{3}]
-==&gt;'a'{6}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}['b'{3}]
+==&gt;'b'{6}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1448,8 +1448,8 @@ mmlang&gt; ''[+'a';+'b']
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}[[plus,'a']{3}]
-==&gt;'aa'{6}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}[[plus,'b']{3}]
+==&gt;'ab'{6}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5441,7 +5441,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 13:58:20 -0600
+Last updated 2020-07-21 14:21:24 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
