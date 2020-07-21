@@ -68,6 +68,7 @@ int{5}           //<3>
 
 NOTE: The *stream* is a foundational concept in mm-ADT. It's algebraic properties are discussed at length when discussing values. In the meantime, note that a stream is an `obj`. A stream's type is the type of it's constituent values. A stream's quantifier is the sum of the quantifiers of it's constituent values. Streams are unordered and do not nest in that `{1,{2,3},4}` is equivalent to `{1,2,3,4}`.
 
+==== The Obj Stream Ring
 
 The *`obj` stream ring* is the algebraic ring
 \[
@@ -221,12 +222,6 @@ a|
 
 ==== Types and Values
 
-.Monoids
-****
-A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the associative binary operator \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.
-****
-
-
 Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two notable consequences of computable types and values are
 
 . https://en.wikipedia.org/wiki/Compiler[Compilation] is the evaluation of a program (a type) with a type argument: \$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$.
@@ -258,7 +253,61 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 |canonical   | atomics    | atomic values and canonical types are both "tokens" by which all other constructs are built.
 |===
 
-=== The Inst Monoid
+==== The Obj Magma
+
+A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a possibly associative algebraic structure with a single binary operator. Let
+\[
+(\texttt{obj},=>,\underline{\mathbf{1}})
+\]
+be a magma with `obj` denoting the set of all quantified mm-ADT objects, \$ =>: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary _apply_ operator, and \$\underline{\mathbf{1}}\$ the https://en.wikipedia.org/wiki/Identity_element[identity element]. Given that an `obj` is the coproduct of the set of all types and values, there are four type/value-patterns that \$=>\$ will encounter.
+
+[cols="1,1,2,5"]
+|===
+| pattern      | note   | algebra   | mmlang
+
+| value/value  | push   | \$x_{q_0} => y_{q_1} \mapsto y_{q_0 \ast q_1}\$
+a|
+[exec]
+----
+4{2} => 'a'{6}
+----
+{blank}
+| value/type    | evaluation     | \$x_{q_0} => a_{q_1} \mapsto a(x)_{q_0 \ast q_1}\$
+a|
+[exec]
+----
+4{2} => int{2}[plus,2]{6}
+----
+{blank}
+| type/value  |  push                |\$a_{q_0} => x_{q_1} \mapsto x_{q_0 \ast q_1}\$
+a|
+[exec]
+----
+int[plus,4]{2} => 'a'{6}
+----
+{blank}
+| type/type  |  compilation         | \$a_{q_0} => b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$
+a|
+[exec]
+----
+int[plus,4]{2} => int{2}[plus,2]{6}
+----
+{blank}
+|===
+
+The one non-associative context that renders the algebra a magma is
+\[
+\texttt{type} => (\texttt{value} => \texttt{type}) \neq (\texttt{type} => \texttt{value}) => \texttt{type}.
+\]
+
+=== The Type
+
+.Monoids
+****
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the associative binary operator \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.
+****
+
+==== The Inst Monoid
 
 .Free Algebra
 ****
@@ -304,7 +353,7 @@ where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ conca
 & \eta: \texttt{inst}^\ast &\to \texttt{type} \\\\
 & \eta(\emptyset) &= \underline{\mathbf{1}} \\
 & \eta(a \circ b) &= a \Rightarrow b \\\\
-& \eta(x) &=    \prod_{i \in x}^{\Rightarrow} i \\
+& \eta(x) &=    \prod_{i \lt |x|}^{\Rightarrow} x_i \\
 &         &=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1}
 \end{split}
 \]
@@ -320,7 +369,21 @@ For example, if \$abcde \in \tt{i\nst}^\ast\$, then
 [start,int]=>[plus,1]=>[mult,2]
 ----
 
-=== The Type
+==== Type Structure
+
+.Cayley Graphs
+****
+
+image::cayley-graph.png[width=200,float=right]
+
+A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group]. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b)\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i \mapsto b\$.
+
+
+When constructed in full, a Cayley graph's vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. Interestingly, a Cayley graph captures both the free and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\circ)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
+
+
+A _generalized_ Cayley Graph is a graph with respective vertex/edge structure, but for other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
+****
 
 An `obj` was previously defined as
 \[
@@ -373,21 +436,6 @@ G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
 \]
 The `obj` graph will be studied at length from the perspective of https://en.wikipedia.org/wiki/Cayley_graph[Cayley graphs], where the `obj` graph is understood as a ring-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] Cayley graph.
 
-==== Type Structure
-
-.Cayley Graphs
-****
-
-image::cayley-graph.png[width=200,float=right]
-
-A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group]. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b)\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i \mapsto b\$.
-
-
-When constructed in full, a Cayley graph's vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. Interestingly, a Cayley graph captures both the free and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\circ)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
-
-
-A _generalized_ Cayley Graph is a graph with respective vertex/edge structure, but for other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
-****
 
 image::obj-full.png[float=right,width=320]
 
@@ -1812,43 +1860,8 @@ The mm-ADT VM is a computing machine founded on a non-commutative https://en.wik
 \textbf{Trace} = \langle \texttt{inst} \cup \texttt{poly}, *, +, |, 1, 0 \rangle
 \]
 
-==== Obj Magma
 
-A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a possibly associative algebraic structure with a single binary operator. Let
-\[
-\mathbf{Obj} = \langle \texttt{obj}, \;\; \rangle
-\]
-be a magma with `obj` denoting the set of all quantified mm-ADT objects and \$ : \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary _juxtaposition_ operated (denoted by a blank space). There are four types of juxtaposition:
-
-. A **type juxtaposed to a value** yields the value whose quantifier is multiplied by the type's quantifier.
-+
-[.text-center]
-`t1{q0}\<=t0[a][b] v2{q1}` = `v2{q0*q1}`
-+
-. A **type juxtaposed to a type** yields a type whose domain is the left type's domain and whose range is the right type's range, where instructions are concatenated (juxtaposed) and respective quantifiers multiplied.
-+
-[.text-center]
-`t1{q0}\<=t0[a][b] t2{q2}\<=t1[c][d]` = `t2{q0*q1}\<=t0[a][b][c][d]`
-+
-. A **value juxtaposed to a type** yields an `obj` (typically a value) that is the application of the type to the value.
-+
-[.text-center]
-`v0{q0} t2{q1}\<=t1[a][b]` = `b(a(v0)){q0*q1}`
-+
-. A **value juxtaposed to a value** yields the right hand value with quantifiers multiplied.
-+
-[.text-center]
-`v0{q0} v1{q1}` = `v1{q0*q1}`
-
-This is the simplest algebraic structure describing mm-ADT. This interpretation of mm-ADT pushes the rules of branching and its additive effects on quantification to the type and thus, to the respective `[branch]` and `[choose]` instructions contained therein. The one non-associative context that renders the algebra a magma is the three element juxtaposition of `type value type`, where it is generally true that
-
-[.text-center]
-`(t0 v1) t2` \$ne\$ `t0 (v1 t2)`.
-
-
-
-
-===== Monoidal Cayley Graph
+==== Monoidal Cayley Graph
 
 The generative https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] encoding of the `inst` monoid is the mm-ADT VM's primary data structure. If `obj` is the set of all vertices and `inst` \$\subset\$ `obj` is the generating set, then the `inst` monoid https://en.wikipedia.org/wiki/Semigroup_action[acts] on the `obj` graph where
 \[
