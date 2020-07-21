@@ -1339,11 +1339,73 @@ While the individual elements of the \$A\$-program are in \$A\$, the program as 
 <p><code>inst  ::= '[' op(','obj)* ']' q?</code>,</p>
 </div>
 <div class="paragraph">
-<p>where <code>op</code> is an <a href="https://en.wikipedia.org/wiki/Opcode">opcode</a> from a predefined set of character string. Example opcodes include <code>plus</code>, <code>mult</code>, <code>branch</code>, <code>is</code>, <code>gt</code>, <code>lt</code>, etc. An mm-ADT program is a sequence of instructions commonly known as <a href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a>. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a faithful embedding of this richer ring structure into a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a> called the <code>inst</code> monoid defined as
+<p>where <code>op</code> is an <a href="https://en.wikipedia.org/wiki/Opcode">opcode</a> from a predefined set of character string. Example opcodes include <code>plus</code>, <code>mult</code>, <code>branch</code>, <code>is</code>, <code>gt</code>, <code>lt</code>, etc. An mm-ADT program is a <a href="https://en.wikipedia.org/wiki/Assembly_language">sequence of instructions</a> commonly known as <a href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a>. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a <a href="https://en.wikipedia.org/wiki/Full_and_faithful_functors">faithful embedding</a> of this richer ring structure into a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a> called the <code>inst</code> monoid defined as
 \[
-(\texttt{inst}^\ast,\circ,\texttt{[noop]}),
+(\texttt{inst}^\ast,\circ,\emptyset),
 \]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and <code>[noop]</code> is the identity element as it&#8217;s action doesn&#8217;t yield a concatenation.</p>
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and \$\emptyset\$ is the <a href="https://en.wikipedia.org/wiki/Empty_set">empty set</a> behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free <code>inst</code> monoid called bytecode, there exists a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> from the <code>inst</code> monoid to the <code>obj</code> magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.</p>
+</div>
+<table class="tableblock frame-all grid-all right small" style="width: 30%;">
+<caption class="title">Table 2. Rosetta Stone</caption>
+<colgroup>
+<col style="width: 20%;">
+<col style="width: 40%;">
+<col style="width: 40%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">algebra</th>
+<th class="tableblock halign-left valign-top">machine</th>
+<th class="tableblock halign-left valign-top">mm-ADT</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ISA</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst<sup>*</sup></code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">bytecode</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code> <code>poly</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\eta\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compilation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type eval</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">program</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<div class="title"><code>inst</code> monoid to <code>obj</code> magma homomorphism</div>
+<p>\[
+\begin{split}
+&amp; \eta: \texttt{inst}^\ast &amp;\to \texttt{type} \\ \\
+&amp; \eta(x) &amp;=    \prod_{i \in x}^{\Rightarrow} i \\
+&amp;         &amp;=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1} \\ \\
+&amp; \eta(\emptyset) &amp;= \underline{\mathbf{1}}
+\end{split}
+\]</p>
+</div>
+<div class="paragraph">
+<p>For example, if \$abcde \in \tt{i\nst}^\ast\$, then
+\[
+\eta(abcde) \mapsto  a &#8658; b &#8658; c &#8658; d &#8658; e.
+\]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int][plus,1][mult,2]
+==&gt;int[plus,1][mult,2]
+mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
+==&gt;int[plus,1][mult,2]</code></pre>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -1750,7 +1812,7 @@ Thus, besides labels, two initials are isomorphic.</p>
 </div>
 </div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
-<caption class="title">Table 2. Quantifier Symbols in mmlang</caption>
+<caption class="title">Table 3. Quantifier Symbols in mmlang</caption>
 <colgroup>
 <col style="width: 40%;">
 <col style="width: 20%;">
@@ -5061,7 +5123,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 80%;">
-<caption class="title">Table 3. Instruction classes</caption>
+<caption class="title">Table 4. Instruction classes</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 36.3636%;">
@@ -5168,7 +5230,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 01:37:35 -0600
+Last updated 2020-07-21 02:51:41 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
