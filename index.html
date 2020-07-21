@@ -1396,6 +1396,9 @@ mmlang&gt; ''[+'a';+'b']
 </div>
 <div class="sect4">
 <h5 id="_stream_ring_axioms">Stream Ring Axioms</h5>
+<div class="paragraph">
+<p>Stream ring theory studies <em>quantified objects</em>. The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier mathematics and their significance in efficient stream computing.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch small">
 <colgroup>
 <col style="width: 10.5263%;">
@@ -1414,7 +1417,7 @@ mmlang&gt; ''[+'a';+'b']
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bulking</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$2a + 3a = 5a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa + ya = (x+y)a\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{2},'a'{3}]
@@ -1436,7 +1439,7 @@ mmlang&gt; ''[+'a';+'b']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Applying</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$2a \cdot 3b = 6ab\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa \cdot yb = (xy)ab\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}['b'{3}]
@@ -1458,7 +1461,8 @@ mmlang&gt; ''[+'a';+'b']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Splitting</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$2a \cdot (3b + 4c) = 6ab + 8ac\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa \cdot (yb + zc)\$<br>
+\$= (xy)ab + (xz)ac\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}['b'{3},'c'{4}]
@@ -1488,7 +1492,7 @@ mmlang&gt; ['ab'{6},'ac'{8}]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Merging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$((2a) + (3b)) = (2a + 3b)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$((xa) + (yb)) = (xa + yb)\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a'{2}],['b'{3}]]
@@ -1537,6 +1541,57 @@ mmlang&gt; ''[[plus,'a']{2},[plus,'b']{3}]
 <div class="paragraph">
 <p></p>
 </div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <strong>bulking</strong>, <strong>merging</strong>, and <strong>removing</strong> axioms are aimed at reducing the amount of data flowing through a stream. The <strong>applying</strong> and <strong>splitting</strong> axioms ensure quantifier semantics during \$\ast\$ and \$+\$ operations on the <em>object</em> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> are maintained, respectively. Without quantifiers and the stream ring axioms, the stream
+\[
+\{a,a,a,b,a,b,b,a,a\}
+\]
+is fully compressed. However, with \$\mathbb{Z}\$-quantifiers and axioms, the above stream is equivalent to
+\[
+\{6a,3b\}.
+\]
+Compression is achieved by removing redundant information in a <a href="https://en.wikipedia.org/wiki/Lossless_compression">lossless</a> manner such that <a href="https://en.wikipedia.org/wiki/Enumeration">enumeration</a> is replaced with quantification. From a data structures perspective, an unordered <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> is converted into a weighted <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a>. The two examples below demonstrate type and value <strong>bulking</strong>, where the former is a compile type optimization and the latter a runtime optimization.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 35.7142%;">
+<col style="width: 64.2858%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)&gt;-+2
+==&gt;14{2}
+mmlang&gt; 5 =&gt; int+1[mult,2]{2}+2
+==&gt;14{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/type-bulk-example.png" alt="type bulk example"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1
+==&gt;6
+mmlang&gt; 5 =&gt; int+1-&lt;(_,_)
+==&gt;(6,6)
+mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)
+==&gt;(12,12)
+mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)&gt;-+2
+==&gt;14{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/value-bulk-example.png" alt="value bulk example"></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -5441,7 +5496,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 14:21:24 -0600
+Last updated 2020-07-21 14:28:54 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
