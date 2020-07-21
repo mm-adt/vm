@@ -475,12 +475,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_the_obj">The Obj</a>
 <ul class="sectlevel3">
+<li><a href="#_the_obj_stream_ring">The Obj Stream Ring</a></li>
 <li><a href="#_types_and_values">Types and Values</a></li>
+<li><a href="#_the_obj_magma">The Obj Magma</a></li>
 </ul>
 </li>
-<li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 <li><a href="#_the_type">The Type</a>
 <ul class="sectlevel3">
+<li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 <li><a href="#_type_structure">Type Structure</a>
 <ul class="sectlevel4">
 <li><a href="#_type_signature">Type Signature</a></li>
@@ -545,13 +547,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_model_adts">Model-ADTs</a></li>
 <li><a href="#_language_algebras">Language Algebras</a>
 <ul class="sectlevel3">
-<li><a href="#_obj_magma">Obj Magma</a>
-<ul class="sectlevel4">
 <li><a href="#_monoidal_cayley_graph">Monoidal Cayley Graph</a>
 <ul class="sectlevel5">
 <li><a href="#_subgraph_algebras">Subgraph Algebras</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><a href="#_type_ringoid">Type Ringoid</a>
@@ -932,6 +930,8 @@ The <strong>stream</strong> is a foundational concept in mm-ADT. It&#8217;s alge
 </tr>
 </table>
 </div>
+<div class="sect3">
+<h4 id="_the_obj_stream_ring">The Obj Stream Ring</h4>
 <div class="paragraph">
 <p>The <strong><code>obj</code> stream ring</strong> is the algebraic ring
 \[
@@ -1199,16 +1199,9 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </tr>
 </tbody>
 </table>
+</div>
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Monoids</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the associative binary operator \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.</p>
-</div>
-</div>
-</div>
 <div class="paragraph">
 <p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two notable consequences of computable types and values are</p>
 </div>
@@ -1308,9 +1301,109 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 </tbody>
 </table>
 </div>
+<div class="sect3">
+<h4 id="_the_obj_magma">The Obj Magma</h4>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> is a possibly associative algebraic structure with a single binary operator. Let
+\[
+(\texttt{obj},&#8658;,\underline{\mathbf{1}})
+\]
+be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objects, \$ &#8658;: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary <em>apply</em> operator, and \$\underline{\mathbf{1}}\$ the <a href="https://en.wikipedia.org/wiki/Identity_element">identity element</a>. Given that an <code>obj</code> is the coproduct of the set of all types and values, there are four type/value-patterns that \$&#8658;\$ will encounter.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">pattern</th>
+<th class="tableblock halign-left valign-top">note</th>
+<th class="tableblock halign-left valign-top">algebra</th>
+<th class="tableblock halign-left valign-top">mmlang</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value/value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">push</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$x_{q_0} &#8658; y_{q_1} \mapsto y_{q_0 \ast q_1}\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4{2} =&gt; 'a'{6}
+==&gt;'a'{12}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">value/type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$x_{q_0} &#8658; a_{q_1} \mapsto a(x)_{q_0 \ast q_1}\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4{2} =&gt; int{2}[plus,2]{6}
+==&gt;6{12}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type/value</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">push</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; x_{q_1} \mapsto x_{q_0 \ast q_1}\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,4]{2} =&gt; 'a'{6}
+==&gt;'a'{12}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">type/type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compilation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,4]{2} =&gt; int{2}[plus,2]{6}
+==&gt;int{12}&lt;=int[plus,4]{2}[plus,2]{6}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The one non-associative context that renders the algebra a magma is
+\[
+\texttt{type} &#8658; (\texttt{value} &#8658; \texttt{type}) \neq (\texttt{type} &#8658; \texttt{value}) &#8658; \texttt{type}.
+\]</p>
+</div>
+</div>
 </div>
 <div class="sect2">
-<h3 id="_the_inst_monoid">The Inst Monoid</h3>
+<h3 id="_the_type">The Type</h3>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Monoids</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the associative binary operator \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.</p>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_the_inst_monoid">The Inst Monoid</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Free Algebra</div>
@@ -1389,7 +1482,7 @@ where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ conca
 &amp; \eta: \texttt{inst}^\ast &amp;\to \texttt{type} \\\\
 &amp; \eta(\emptyset) &amp;= \underline{\mathbf{1}} \\
 &amp; \eta(a \circ b) &amp;= a \Rightarrow b \\\\
-&amp; \eta(x) &amp;=    \prod_{i \in x}^{\Rightarrow} i \\
+&amp; \eta(x) &amp;=    \prod_{i \lt |x|}^{\Rightarrow} x_i \\
 &amp;         &amp;=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1}
 \end{split}
 \]</p>
@@ -1409,8 +1502,27 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_the_type">The Type</h3>
+<div class="sect3">
+<h4 id="_type_structure">Type Structure</h4>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Cayley Graphs</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/cayley-graph.png" alt="cayley graph" width="200">
+</div>
+</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b)\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i \mapsto b\$.</p>
+</div>
+<div class="paragraph">
+<p>When constructed in full, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. Interestingly, a Cayley graph captures both the free and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\circ)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
+</div>
+<div class="paragraph">
+<p>A <em>generalized</em> Cayley Graph is a graph with respective vertex/edge structure, but for other <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> and <a href="https://en.wikipedia.org/wiki/Semigroup">semigroups</a>.</p>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>An <code>obj</code> was previously defined as
 \[
@@ -1510,27 +1622,6 @@ Every <code>obj</code> has an associated quantifier. The coupling of objects and
 G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
 \]
 The <code>obj</code> graph will be studied at length from the perspective of <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graphs</a>, where the <code>obj</code> graph is understood as a ring-<a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> <a href="https://en.wikipedia.org/wiki/Monoidal_category">monoidal</a> Cayley graph.</p>
-</div>
-<div class="sect3">
-<h4 id="_type_structure">Type Structure</h4>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Cayley Graphs</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/cayley-graph.png" alt="cayley graph" width="200">
-</div>
-</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b)\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i \mapsto b\$.</p>
-</div>
-<div class="paragraph">
-<p>When constructed in full, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. Interestingly, a Cayley graph captures both the free and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\circ)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
-</div>
-<div class="paragraph">
-<p>A <em>generalized</em> Cayley Graph is a graph with respective vertex/edge structure, but for other <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> and <a href="https://en.wikipedia.org/wiki/Semigroup">semigroups</a>.</p>
-</div>
-</div>
 </div>
 <div class="imageblock right">
 <div class="content">
@@ -4359,50 +4450,7 @@ b\{ 0\} &amp; \text{otherwise.}
 \]</p>
 </div>
 <div class="sect3">
-<h4 id="_obj_magma">Obj Magma</h4>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> is a possibly associative algebraic structure with a single binary operator. Let
-\[
-\mathbf{Obj} = \langle \texttt{obj}, \;\; \rangle
-\]
-be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objects and \$ : \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary <em>juxtaposition</em> operated (denoted by a blank space). There are four types of juxtaposition:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>A <strong>type juxtaposed to a value</strong> yields the value whose quantifier is multiplied by the type&#8217;s quantifier.</p>
-<div class="paragraph text-center">
-<p><code>t1{q0}&lt;=t0[a][b] v2{q1}</code> = <code>v2{q0*q1}</code></p>
-</div>
-</li>
-<li>
-<p>A <strong>type juxtaposed to a type</strong> yields a type whose domain is the left type&#8217;s domain and whose range is the right type&#8217;s range, where instructions are concatenated (juxtaposed) and respective quantifiers multiplied.</p>
-<div class="paragraph text-center">
-<p><code>t1{q0}&lt;=t0[a][b] t2{q2}&lt;=t1[c][d]</code> = <code>t2{q0*q1}&lt;=t0[a][b][c][d]</code></p>
-</div>
-</li>
-<li>
-<p>A <strong>value juxtaposed to a type</strong> yields an <code>obj</code> (typically a value) that is the application of the type to the value.</p>
-<div class="paragraph text-center">
-<p><code>v0{q0} t2{q1}&lt;=t1[a][b]</code> = <code>b(a(v0)){q0*q1}</code></p>
-</div>
-</li>
-<li>
-<p>A <strong>value juxtaposed to a value</strong> yields the right hand value with quantifiers multiplied.</p>
-<div class="paragraph text-center">
-<p><code>v0{q0} v1{q1}</code> = <code>v1{q0*q1}</code></p>
-</div>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>This is the simplest algebraic structure describing mm-ADT. This interpretation of mm-ADT pushes the rules of branching and its additive effects on quantification to the type and thus, to the respective <code>[branch]</code> and <code>[choose]</code> instructions contained therein. The one non-associative context that renders the algebra a magma is the three element juxtaposition of <code>type value type</code>, where it is generally true that</p>
-</div>
-<div class="paragraph text-center">
-<p><code>(t0 v1) t2</code> \$ne\$ <code>t0 (v1 t2)</code>.</p>
-</div>
-<div class="sect4">
-<h5 id="_monoidal_cayley_graph">Monoidal Cayley Graph</h5>
+<h4 id="_monoidal_cayley_graph">Monoidal Cayley Graph</h4>
 <div class="paragraph">
 <p>The generative <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> encoding of the <code>inst</code> monoid is the mm-ADT VM&#8217;s primary data structure. If <code>obj</code> is the set of all vertices and <code>inst</code> \$\subset\$ <code>obj</code> is the generating set, then the <code>inst</code> monoid <a href="https://en.wikipedia.org/wiki/Semigroup_action">acts</a> on the <code>obj</code> graph where
 \[
@@ -4467,7 +4515,6 @@ instruction            domain      range state
 <p><strong>Poly instructions</strong> \$(\tt{poly} \subset \tt{i\nst})\$: lifts subgraphs into a higher-order vertex. This <a href="https://en.wikipedia.org/wiki/Hypergraph">directed hypergraph</a>, where many vertices link to many vertices, is how <code>[rewrite]</code> yields <a href="https://en.wikipedia.org/wiki/Functor">endofunctors</a> that link disparate areas of the graph not explicit in the <code>inst</code> monoid.</p>
 </li>
 </ol>
-</div>
 </div>
 </div>
 </div>
@@ -5231,7 +5278,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 04:50:35 -0600
+Last updated 2020-07-21 05:12:12 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
