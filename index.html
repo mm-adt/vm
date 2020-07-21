@@ -1390,6 +1390,49 @@ be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objec
 \texttt{type} &#8658; (\texttt{value} &#8658; \texttt{type}) \neq (\texttt{type} &#8658; \texttt{value}) &#8658; \texttt{type}.
 \]</p>
 </div>
+<div class="paragraph">
+<p>The <code>obj</code> magma is simple core algebra allowing any <code>obj</code> to act on any other <code>obj</code>. The <code>obj</code> magma is sufficiently expressive to embed the fundamental <code>obj</code> stream ring, the <code>inst</code> monoid, and the type ringoid algebras. Of particular import, the <code>=&gt;</code> (apply) operator is leveraged throughout the mm-ADT VM . Numerous homomorphism between algebras rely on <code>=&gt;</code>. In particular, the <code>inst</code> right action on an <code>obj</code> uses <code>=&gt;</code> to resolve instruction arguments. The value/type-pattern below demonstrates type evaluation via the use of <code>=&gt;</code>.
+\[
+\begin{split}
+5 &#8658;&amp;\; \texttt{int}[\texttt{plus},\texttt{int}[\texttt{mult},2]]        \\
+5 &#8658;&amp;\; \texttt{int}[\texttt{plus},5&#8658;\texttt{int}[\texttt{mult},2]]     \\
+5 &#8658;&amp;\; \texttt{int}[\texttt{plus},5&#8658;\texttt{int}[\texttt{mult},5&#8658;2]]  \\
+5 &#8658;&amp;\; \texttt{int}[\texttt{plus},5&#8658;\texttt{int}[\texttt{mult},2]]     \\
+5 &#8658;&amp;\; \texttt{int}[\texttt{plus},10]                                   \\
+5 &#8658;&amp;\; 15                                                                \\
+15\;\;\,&amp;
+\end{split}
+\]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int[plus,int[mult,2]]
+==&gt;15
+mmlang&gt; 5 =&gt; int[plus,int[mult,2]][explain]
+==&gt;'
+int[plus,int[mult,2]]
+
+instruction           domain      range state
+----------------------------------------------
+[plus,int[mult,2]]    int    =&gt;   int
+ [mult,2]              int   =&gt;    int
+'
+mmlang&gt; 5 =&gt; int[plus,int[mult,2]][trace]
+==&gt;(5;[plus,10])</code></pre>
+</div>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When an <code>obj</code> is applied to a type, the type&#8217;s instruction arguments are resolved in a "cascading" fashion that will be later be demonstrated to be equivalent to an monoidal generalization of <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a>.
+</td>
+</tr>
+</table>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -5278,7 +5321,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 05:12:12 -0600
+Last updated 2020-07-21 10:34:30 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
