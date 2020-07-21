@@ -340,12 +340,14 @@ a|
 
 ===== Stream Ring Axioms
 
+Stream ring theory studies _quantified objects_. The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier mathematics and their significance in efficient stream computing.
+
 [.small]
 [cols="2,4,6,7"]
 |===
 |  axiom   | equation           | mmlang values | mmlang types
 
-| Bulking  | \$2a + 3a = 5a\$
+| Bulking  | \$xa + ya = (x+y)a\$
 a|
 [exec]
 ----
@@ -358,7 +360,7 @@ a|
 ''[[plus,'a']{2},[plus,'a']{3}]
 ----
 {blank}
-| Applying  | \$2a \cdot 3b = 6ab\$
+| Applying  | \$xa \cdot yb = (xy)ab\$
 a|
 [exec]
 ----
@@ -371,7 +373,9 @@ a|
 'a'{2}[[plus,'b']{3}]
 ----
 {blank}
-| Splitting  | \$2a \cdot (3b + 4c) = 6ab + 8ac\$
+| Splitting  |
+\$xa \cdot (yb + zc)\$ +
+\$= (xy)ab + (xz)ac\$
 a|
 [exec]
 ----
@@ -386,7 +390,7 @@ a|
 ['ab'{6},'ac'{8}]
 ----
 {blank}
-| Merging  | \$\((2a) + (3b)) = (2a + 3b)\$
+| Merging  | \$\((xa) + (yb)) = (xa + yb)\$
 a|
 [exec]
 ----
@@ -416,6 +420,39 @@ a|
 {blank}
 |===
 
+The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount of data flowing through a stream. The *applying* and *splitting* axioms ensure quantifier semantics during \$\ast\$ and \$+\$ operations on the _object_ https://en.wikipedia.org/wiki/Semiring[semiring] are maintained, respectively. Without quantifiers and the stream ring axioms, the stream
+\[
+\{a,a,a,b,a,b,b,a,a\}
+\]
+is fully compressed. However, with \$\mathbb{Z}\$-quantifiers and axioms, the above stream is equivalent to
+\[
+\{6a,3b\}.
+\]
+Compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification. From a data structures perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset]. The two examples below demonstrate type and value *bulking*, where the former is a compile type optimization and the latter a runtime optimization.
+
+
+[cols="5,9"]
+|===
+
+a|
+[exec]
+----
+5 => int+1-<(*2,*2)>-+2
+5 => int+1[mult,2]{2}+2
+----
+{blank}
+| image:type-bulk-example.png[]
+a|
+[exec]
+----
+5 => int+1
+5 => int+1-<(_,_)
+5 => int+1-<(*2,+6)
+5 => int+1-<(*2,+6)>-+2
+----
+{blank}
+| image:value-bulk-example.png[]
+|===
 
 ==== Types and Values
 
