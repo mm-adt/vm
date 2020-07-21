@@ -475,7 +475,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel2">
 <li><a href="#_the_obj">The Obj</a>
 <ul class="sectlevel3">
-<li><a href="#_the_obj_stream_ring">The Obj Stream Ring</a></li>
+<li><a href="#_the_obj_stream_ring">The Obj Stream Ring</a>
+<ul class="sectlevel4">
+<li><a href="#_ring_axioms">Ring Axioms</a></li>
+<li><a href="#_ring_theorems">Ring Theorems</a></li>
+<li><a href="#_stream_ring_axioms">Stream Ring Axioms</a></li>
+</ul>
+</li>
 <li><a href="#_types_and_values">Types and Values</a></li>
 <li><a href="#_the_obj_magma">The Obj Magma</a></li>
 </ul>
@@ -961,6 +967,8 @@ where <code>obj</code> is the carrier set, <code>[;]</code> is the multiplicativ
 <div class="paragraph">
 <p>The following table provides a review of the ring theoretic axioms and their realization in mm-ADT via <code>mmlang</code> over both <code>obj</code> <strong>values</strong> and <strong>types</strong>. This table serves as a consolidated summary. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
 </div>
+<div class="sect4">
+<h5 id="_ring_axioms">Ring Axioms</h5>
 <table class="tableblock frame-all grid-all stretch small">
 <colgroup>
 <col style="width: 10.5263%;">
@@ -1202,7 +1210,9 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </tr>
 </tbody>
 </table>
-<hr>
+</div>
+<div class="sect4">
+<h5 id="_ring_theorems">Ring Theorems</h5>
 <table class="tableblock frame-all grid-all stretch small">
 <colgroup>
 <col style="width: 10.5263%;">
@@ -1383,6 +1393,154 @@ mmlang&gt; ''[+'a';+'b']
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="_stream_ring_axioms">Stream Ring Axioms</h5>
+<table class="tableblock frame-all grid-all stretch small">
+<colgroup>
+<col style="width: 10.5263%;">
+<col style="width: 21.0526%;">
+<col style="width: 31.5789%;">
+<col style="width: 36.8422%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">axiom</th>
+<th class="tableblock halign-left valign-top">equation</th>
+<th class="tableblock halign-left valign-top">mmlang values</th>
+<th class="tableblock halign-left valign-top">mmlang types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bulking</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$2a + 3a = 5a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{2},'a'{3}]
+==&gt;'a'{5}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[plus,'a']{2},[plus,'a']{3}]
+==&gt;'a'{5}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Applying</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$2a \cdot 3a = 6a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}['a'{3}]
+==&gt;'a'{6}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}[[plus,'a']{3}]
+==&gt;'aa'{6}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Splitting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$2a \cdot (3b + 4c) = 6ab + 8ac\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}['b'{3},'c'{4}]
+==&gt;'b'{6}
+==&gt;'c'{8}
+mmlang&gt; ['b'{6},'c'{8}]
+==&gt;'b'{6}
+==&gt;'c'{8}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}[[plus,'b']{3},[plus,'c']{4}]
+==&gt;'ab'{6}
+==&gt;'ac'{8}
+mmlang&gt; ['ab'{6},'ac'{8}]
+==&gt;'ab'{6}
+==&gt;'ac'{8}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Merging</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$((2a) + (3b)) = (2a + 3b)\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a'{2}],['b'{3}]]
+==&gt;'a'{2}
+==&gt;'b'{3}
+mmlang&gt; ['a'{2},'b'{3}]
+==&gt;'a'{2}
+==&gt;'b'{3}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[[plus,'a']{2}],[[plus,'b']{3}]]
+==&gt;'a'{2}
+==&gt;'b'{3}
+mmlang&gt; ''[[plus,'a']{2},[plus,'b']{3}]
+==&gt;'a'{2}
+==&gt;'b'{3}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Removing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(0a + b) = b\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{0},'b']
+==&gt;'b'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[plus,'a']{0},+'b']
+==&gt;'b'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
@@ -5283,7 +5441,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 12:29:33 -0600
+Last updated 2020-07-21 13:58:20 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
