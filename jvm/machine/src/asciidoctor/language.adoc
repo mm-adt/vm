@@ -300,6 +300,28 @@ The one non-associative context that renders the algebra a magma is
 \texttt{type} => (\texttt{value} => \texttt{type}) \neq (\texttt{type} => \texttt{value}) => \texttt{type}.
 \]
 
+The `obj` magma is simple core algebra allowing any `obj` to act on any other `obj`. The `obj` magma is sufficiently expressive to embed the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras. Of particular import, the `\=>` (apply) operator is leveraged throughout the mm-ADT VM . Numerous homomorphism between algebras rely on `\=>`. In particular, the `inst` right action on an `obj` uses `\=>` to resolve instruction arguments. The value/type-pattern below demonstrates type evaluation via the use of `\=>`.
+\[
+\begin{split}
+5 =>&\; \texttt{int}[\texttt{plus\},\texttt{int}[\texttt{mult},2]]        \\
+5 =>&\; \texttt{int}[\texttt{plus\},5=>\texttt{int}[\texttt{mult},2]]     \\
+5 =>&\; \texttt{int}[\texttt{plus\},5=>\texttt{int}[\texttt{mult},5=>2]]  \\
+5 =>&\; \texttt{int}[\texttt{plus\},5=>\texttt{int}[\texttt{mult},2]]     \\
+5 =>&\; \texttt{int}[\texttt{plus\},10]                                   \\
+5 =>&\; 15                                                                \\
+15\;\;\,&
+\end{split}
+\]
+
+[exec]
+----
+5 => int[plus,int[mult,2]]
+5 => int[plus,int[mult,2]][explain]
+5 => int[plus,int[mult,2]][trace]
+----
+
+NOTE: When an `obj` is applied to a type, the type's instruction arguments are resolved in a "cascading" fashion that will be later be demonstrated to be equivalent to an monoidal generalization of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication].
+
 === The Type
 
 .Monoids
