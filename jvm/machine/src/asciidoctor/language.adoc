@@ -280,11 +280,44 @@ The mm-ADT virtual machine's https://en.wikipedia.org/wiki/Instruction_set_archi
 [.text-center]
 `inst  ::= '[' op(','obj)* ']' q?`,
 
-where `op` is an https://en.wikipedia.org/wiki/Opcode[opcode] from a predefined set of character string. Example opcodes include `plus`, `mult`, `branch`, `is`, `gt`, `lt`, etc. An mm-ADT program is a sequence of instructions commonly known as https://en.wikipedia.org/wiki/Bytecode[bytecode]. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a faithful embedding of this richer ring structure into a https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid] called the `inst` monoid defined as
+
+where `op` is an https://en.wikipedia.org/wiki/Opcode[opcode] from a predefined set of character string. Example opcodes include `plus`, `mult`, `branch`, `is`, `gt`, `lt`, etc. An mm-ADT program is a https://en.wikipedia.org/wiki/Assembly_language[sequence of instructions] commonly known as https://en.wikipedia.org/wiki/Bytecode[bytecode]. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a https://en.wikipedia.org/wiki/Full_and_faithful_functors[faithful embedding] of this richer ring structure into a https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid] called the `inst` monoid defined as
 \[
-(\texttt{inst}^\ast,\circ,\texttt{[noop]}),
+(\texttt{inst}^\ast,\circ,\emptyset),
 \]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and `[noop]` is the identity element as it's action doesn't yield a concatenation.
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free `inst` monoid called bytecode, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] from the `inst` monoid to the `obj` magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.
+
+[.small]
+.Rosetta Stone
+[cols="1,2,2",width=30,float=right]
+|===
+| algebra   | machine        | mm-ADT
+
+| `inst`    | ISA            | `inst`
+| `inst^*^` | bytecode       | `inst` `poly`
+| \$\eta\$  | compilation    | type eval
+| `type`    | program        | type
+|===
+.`inst` monoid to `obj` magma homomorphism
+\[
+\begin{split}
+& \eta: \texttt{inst}^\ast &\to \texttt{type} \\ \\
+& \eta(x) &=    \prod_{i \in x}^{\Rightarrow} i \\
+&         &=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1} \\ \\
+& \eta(\emptyset) &= \underline{\mathbf{1}}
+\end{split}
+\]
+
+For example, if \$abcde \in \tt{i\nst}^\ast\$, then
+\[
+\eta(abcde) \mapsto  a => b => c => d => e.
+\]
+
+[exec]
+----
+[start,int][plus,1][mult,2]
+[start,int]=>[plus,1]=>[mult,2]
+----
 
 === The Type
 
