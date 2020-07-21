@@ -255,7 +255,7 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 
 ==== The Obj Magma
 
-A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a possibly associative algebraic structure with a single binary operator. Let
+A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a partially associative algebraic structure with a single binary operator. Let
 \[
 (\texttt{obj},=>,\underline{\mathbf{1}})
 \]
@@ -295,9 +295,12 @@ int[plus,4]{2} => int{2}[plus,2]{6}
 {blank}
 |===
 
-The one non-associative context that renders the algebra a magma is
+The two non-associative patterns that renders the algebra a partially associative magma is
 \[
-\texttt{type} => (\texttt{value} => \texttt{type}) \neq (\texttt{type} => \texttt{value}) => \texttt{type}.
+\begin{split}
+\texttt{type} &=> (\texttt{value} => \texttt{type}) &\;\neq\; (\texttt{type} => \texttt{value}) &=> \texttt{type} \\
+\texttt{type} &=> (\texttt{type} => \texttt{type})  &\;\neq\; (\texttt{type} => \texttt{type})  &=> \texttt{type} \\
+\end{split}
 \]
 
 The `obj` magma is simple core algebra allowing any `obj` to act on any other `obj`. The `obj` magma is sufficiently expressive to embed the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras. Of particular import, the `\=>` (apply) operator is leveraged throughout the mm-ADT VM . Numerous homomorphism between algebras rely on `\=>`. In particular, the `inst` right action on an `obj` uses `\=>` to resolve instruction arguments. The value/type-pattern below demonstrates type evaluation via the use of `\=>`.
