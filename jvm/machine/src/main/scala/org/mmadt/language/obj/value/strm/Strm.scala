@@ -36,7 +36,7 @@ trait Strm[+O <: Obj] extends Value[O] {
 
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = strm(this.values.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(_.alive)).asInstanceOf[this.type]
   override def q(q: IntQ): this.type = strm(this.values.map(x => x.q(q)).filter(_.alive)).asInstanceOf[this.type]
-  override val q: IntQ = this.values.foldLeft(qZero)((a, b) => plusQ(a, b.q))
+  override lazy val q: IntQ = this.values.foldLeft(qZero)((a, b) => plusQ(a, b.q))
   // utility methods
   override def toStrm: Strm[this.type] = this.asInstanceOf[Strm[this.type]]
   override def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = base): this.type = strm(this.values).asInstanceOf[this.type]

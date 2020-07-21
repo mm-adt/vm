@@ -33,7 +33,7 @@ import org.mmadt.storage.StorageFactory._
 package object obj {
   type IntQ = (IntValue, IntValue)
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
-  type LstTuple[A <: Obj] = (String, List[A])
+  type LstTuple[A <: Obj] = (String, Seq[A])
   type RecTuple[A <: Obj, B <: Obj] = (String, collection.Map[A, B])
   val base: ViaTuple = (null, null)
   // less typing
@@ -41,15 +41,15 @@ package object obj {
   type OValue[+O <: Obj] = Value[O] with O
   type OStrm[+O <: Obj] = O with Strm[O]
   // quantifier utilities
-  def minZero(quantifier: IntQ): IntQ = (int(0), quantifier._2)
-  def maxZero(quantifier: IntQ): IntQ = (quantifier._2, quantifier._2)
+  def minZero(quantifier: IntQ): IntQ = (0, quantifier._2.g)
+  def maxZero(quantifier: IntQ): IntQ = (quantifier._2.g, quantifier._2.g)
   def multQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case x: IntQ if qOne.equals(x) => qA
-    case _ => (qA._1 * qB._1, qA._2 * qB._2)
+    case _ => (qA._1.g * qB._1.g, qA._2.g * qB._2.g)
   }
   def plusQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case _ if equals(qZero) => qA
-    case _: IntQ => (qA._1 + qB._1, qA._2 + qB._2)
+    case _: IntQ => (qA._1.g + qB._1.g, qA._2.g + qB._2.g)
   }
   def withinQ(objA: Obj, objB: Obj): Boolean = {
     objA.q._1.g >= objB.q._1.g &&

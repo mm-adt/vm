@@ -699,6 +699,10 @@ class mmlangScriptEngineTest extends FunSuite {
     //assertResult("[int{?}<=int[plus,2][plus,5][is,bool<=int[gt,0]]]<=[int;[plus,2]][mult,[[plus,5];[is,[gt,0]]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[is>0]]]").toString)
   }
 
+  test("DAD") {
+    println(engine.eval("str-<(str,str,str)"))
+  }
+
   test("choice type checking") {
     assertResult(btrue)(engine.eval("'marko'[a,[str|int]]"))
     assertResult(bfalse)(engine.eval("'marko'[a,[real|int]]"))
@@ -815,7 +819,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("combine parsing") {
-    assertResult("(2,2,8)")(engine.eval("(1,2,3)=(+1,_,+5)").toString)
+    assertResult("(2{2},8)")(engine.eval("(1,2,3)=(+1,_,+5)").toString)
     assertResult("(1,2,(3,(24,15)))")(engine.eval("(1,2,(3,(4,5)))=(_,_,=(int,=(+20,+10)))").toString)
     assertResult("(8,10)")(engine.eval("(1)>--<(+1,+2)=(*4,+7)").toString)
     assertResult("(8,10)")(engine.eval("1-<(+1,+2)=(*4,+7)").toString)
@@ -940,14 +944,14 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("(1,(2,(3,'a')))[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,('a',(3,(4,5))))[define,xyz<=_[int|(int,xyz)]][a,xyz]"))
     //
-    assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,xyz<=_[is==1|(is==1,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(1,(1,(1,2))))[define,xyz<=_[is==1|(is==1,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(1,(2,(1,1))))[define,xyz<=_[is==1|(is==1,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1;(1;(1;(1;1))))[define,xyz<=_[is==1|(is==1;xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1;(1;(1;(1;2))))[define,xyz<=_[is==1|(is==1;xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1;(1;(2;(1;1))))[define,xyz<=_[is==1|(is==1;xyz)]][a,xyz]"))
     //
     assertResult(btrue)(engine.eval("(2,1)[define,wxy<=_[is==1]][define,xyz<=_[wxy|(2,xyz)]][a,xyz]"))
-    assertResult(btrue)(engine.eval("(1,(1,(1,(1,1))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(2,(1,(1,1))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
-    assertResult(bfalse)(engine.eval("(1,(1,(1,(1,'1'))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("(1;(1;(1;(1;1))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy;xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1;(2;(1;(1;1))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy;xyz)]][a,xyz]"))
+    assertResult(bfalse)(engine.eval("(1;(1;(1;(1;'1'))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy;xyz)]][a,xyz]"))
     assertResult(btrue)(engine.eval("1[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("2[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
     /*    assertThrows[StackOverflowError] {

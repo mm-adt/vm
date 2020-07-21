@@ -21,12 +21,14 @@
  */
 
 package org.mmadt.storage.obj
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`.TLst
 import org.mmadt.storage.obj.value.VLst
+import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,7 +42,19 @@ abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] 
 }
 object OLst {
   def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base): Lst[A] = {
-    if (g._2.nonEmpty && !g._2.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]])) new VLst[A](name, g, q, via)
+    if (g._2.nonEmpty && !g._2.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]])) new VLst[A](name, valueTuple(g), q, via)
     else new TLst[A](name, g, q, via)
+  }
+  def valueTuple[A <: Obj](g: LstTuple[A]): LstTuple[A] = {
+    g._1 match {
+      case Tokens.`,` => (g._1, MultiSet(g._2.filter(x => x.alive)))
+      case _ => g
+    }
+  }
+  def typeTuple[A <: Obj](g: LstTuple[A]): LstTuple[A] = {
+    g._1 match {
+      case Tokens.`,` => (g._1, g._2.filter(x => x.alive).foldLeft(Map[A, IntQ]())((a, b) => a + (b.hardQ(qOne) -> a.get(b.hardQ(qOne)).map(x => plusQ(x, b.q)).getOrElse(b.q))).map(x => x._1.hardQ(x._2).asInstanceOf[A]).toSeq)
+      case _ => g
+    }
   }
 }
