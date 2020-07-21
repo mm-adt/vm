@@ -358,17 +358,17 @@ a|
 ''[[plus,'a']{2},[plus,'a']{3}]
 ----
 {blank}
-| Applying  | \$2a \cdot 3a = 6a\$
+| Applying  | \$2a \cdot 3b = 6ab\$
 a|
 [exec]
 ----
-'a'{2}['a'{3}]
+'a'{2}['b'{3}]
 ----
 {blank}
 a|
 [exec]
 ----
-'a'{2}[[plus,'a']{3}]
+'a'{2}[[plus,'b']{3}]
 ----
 {blank}
 | Splitting  | \$2a \cdot (3b + 4c) = 6ab + 8ac\$
