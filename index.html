@@ -478,6 +478,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_types_and_values">Types and Values</a></li>
 </ul>
 </li>
+<li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 <li><a href="#_the_type">The Type</a>
 <ul class="sectlevel3">
 <li><a href="#_type_structure">Type Structure</a>
@@ -544,12 +545,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_model_adts">Model-ADTs</a></li>
 <li><a href="#_language_algebras">Language Algebras</a>
 <ul class="sectlevel3">
-<li><a href="#_obj_magma">Obj Magma</a></li>
-<li><a href="#_inst_monoid">Inst Monoid</a>
+<li><a href="#_obj_magma">Obj Magma</a>
 <ul class="sectlevel4">
 <li><a href="#_monoidal_cayley_graph">Monoidal Cayley Graph</a>
 <ul class="sectlevel5">
-<li><a href="#_the_foundational_obj_graph">The Foundational obj Graph</a></li>
 <li><a href="#_subgraph_algebras">Subgraph Algebras</a></li>
 </ul>
 </li>
@@ -1202,6 +1201,14 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </table>
 <div class="sect3">
 <h4 id="_types_and_values">Types and Values</h4>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Monoids</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the associative binary operator \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.</p>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two notable consequences of computable types and values are</p>
 </div>
@@ -1303,7 +1310,7 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 </div>
 </div>
 <div class="sect2">
-<h3 id="_the_type">The Type</h3>
+<h3 id="_the_inst_monoid">The Inst Monoid</h3>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Free Algebra</div>
@@ -1325,6 +1332,22 @@ While the individual elements of the \$A\$-program are in \$A\$, the program as 
 </div>
 </div>
 </div>
+<div class="paragraph">
+<p>The mm-ADT virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (ISA) is denoted <code>inst</code> \$\subset\$ <code>obj</code>. In <code>mmlang</code>, an <code>inst</code> is defined by the grammar fragment</p>
+</div>
+<div class="paragraph text-center">
+<p><code>inst  ::= '[' op(','obj)* ']' q?</code>,</p>
+</div>
+<div class="paragraph">
+<p>where <code>op</code> is an <a href="https://en.wikipedia.org/wiki/Opcode">opcode</a> from a predefined set of character string. Example opcodes include <code>plus</code>, <code>mult</code>, <code>branch</code>, <code>is</code>, <code>gt</code>, <code>lt</code>, etc. An mm-ADT program is a sequence of instructions commonly known as <a href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a>. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a faithful embedding of this richer ring structure into a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a> called the <code>inst</code> monoid defined as
+\[
+(\texttt{inst}^\ast,\circ,\texttt{[noop]}),
+\]
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and <code>[noop]</code> is the identity element as it&#8217;s action doesn&#8217;t yield a concatenation.</p>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_type">The Type</h3>
 <div class="paragraph">
 <p>An <code>obj</code> was previously defined as
 \[
@@ -1436,10 +1459,13 @@ The <code>obj</code> graph will be studied at length from the perspective of <a 
 </div>
 </div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of the structure of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. If \$\langle A, \cdot, I \rangle \$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and edges \$E = (A \times (A \times I))\$ is the Cayley graph of the group. The directed edge \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i = b\$.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b)\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i \mapsto b\$.</p>
 </div>
 <div class="paragraph">
-<p>When constructed in full, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. A <em>generalized</em> Cayley Graph is a graph with respective vertex/edge structure, but for other <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> and <a href="https://en.wikipedia.org/wiki/Semigroup">semigroups</a>.</p>
+<p>When constructed in full, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. Interestingly, a Cayley graph captures both the free and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\circ)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
+</div>
+<div class="paragraph">
+<p>A <em>generalized</em> Cayley Graph is a graph with respective vertex/edge structure, but for other <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> and <a href="https://en.wikipedia.org/wiki/Semigroup">semigroups</a>.</p>
 </div>
 </div>
 </div>
@@ -1499,6 +1525,49 @@ mmlang&gt; int{2}[is&gt;0][mult,[neg]]                     <i class="conum" data
 <div class="imageblock text-center">
 <div class="content">
 <img src="./images/language/type-signature-definition.png" alt="type signature definition" width="650">
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Deep Dive 1. The Instruction Only Free Monoid</div>
+<div class="content">
+<div class="paragraph">
+<p>The mm-ADT <code>obj</code> graph has 5 roots serving as the <strong>1</strong> identity for each of the 5 ctypes. There is a single root for all of mm-ADT in <code>obj{0}</code>. The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{[start,x]}: \texttt{obj{0}} \to \texttt{x}
+\]</p>
+</div>
+<div class="paragraph">
+<p>An mm-ADT program is a <em>type</em> defined recurssively as \$ \tt{type} = (\tt{type} \times \tt{i\nst})\$. As such, an mm-ADT program is not a composition of instructions. The way in which a dtype can be ground to a ctype using only instructions is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.</p>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/start-ctypes.png" alt="start ctypes" width="315">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int]
+==&gt;int
+mmlang&gt; [start,int][plus,5]
+==&gt;int[plus,5]
+mmlang&gt; [start,int][plus,5][gt,10]
+==&gt;bool&lt;=int[plus,5][gt,10]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>[noop]</code> instruction is the only mm-ADT instruction that does not alter the state of the <code>obj</code> graph and thus, the state of the computation. In other words, there is no \$x \to_{\tt{[no\op]}} y\$ edge.
+The instruction <code>[id]</code>, on the other hand, does.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int][plus,5][gt,10][noop]
+==&gt;bool&lt;=int[plus,5][gt,10]
+mmlang&gt; [start,int][plus,5][gt,10][id]
+==&gt;bool&lt;=int[plus,5][gt,10][id]</code></pre>
+</div>
+</div>
 </div>
 </div>
 <div class="sect4">
@@ -1788,6 +1857,31 @@ mmlang&gt;
 mmlang&gt; int{2}[_,_]
 ==&gt;int{4}&lt;=int{2}[branch,(int{2},int{2})]</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Every aspect of an mm-ADT computation from composition to evaluation is realized on the <code>obj</code> graph.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
+</li>
+<li>
+<p><strong>Compilation</strong>: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
+</li>
+<li>
+<p><strong>Rewrite</strong>: The vertices can be "merged" using <code>[rewrite]</code> instructions that specify a domain pattern that is equivalent to a range pattern.</p>
+</li>
+<li>
+<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
+</li>
+<li>
+<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively). When the current monoid operation requires historic state information, the co-<code>obj</code> graph is searched for previously encoded stated-based <code>insts</code>.</p>
+</li>
+<li>
+<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place whereby an element of the free <code>inst</code> monoid is mapped to the <code>obj</code> magma, whereby the binary operator <code>=&gt;</code> collapses two <code>objs</code> to one. The resultant path&#8217;s tail vertex is the result of the computation.</p>
+</li>
+</ol>
 </div>
 </div>
 </div>
@@ -2162,7 +2256,7 @@ mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4">
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 1. Poly Constructs in mmlang</div>
+<div class="title">Deep Dive 2. Poly Constructs in mmlang</div>
 <div class="content">
 <table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
@@ -2954,7 +3048,7 @@ mmlang&gt; (1,'2',(1,1,1))[a,(int,str,(int,int,int))]
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. Type Ringoid Addition Embedded in ,-poly</div>
+<div class="title">Deep Dive 3. Type Ringoid Addition Embedded in ,-poly</div>
 <div class="content">
 <div class="paragraph">
 <p>mm-ADT&#8217;s processor algebra is a <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> called the <strong>type ringoid</strong> (detailed presentation forthcoming). Elements of the free type ringoid have a structure that is similar in form and function to <a href="https://en.wikipedia.org/wiki/Central_processing_unit">hardware circuits</a>. While the <code>inst</code> monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a <code>+</code>-operator that captures the semantics of parallel data <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipelining</a>. <a href="https://en.wikipedia.org/wiki/Isomorphism">Isomorphic</a> branchings structures are realized in the <code>inst</code> monoid via <code>,-poly</code>. However, at the execution-level, there exists an <code>inst</code> monoid-to-type ringoid <a href="https://en.wikipedia.org/wiki/Functor">functor</a> (\$\tt{i\nst} \to \tt{type}\$) that maps a <code>,-poly</code>-type construction to a parallel data pipeline structure. From this "<em>parallel data pipeline</em>"-perspective, perhaps the rationale for the aforementioned <code>obj</code> ring addition equation becomes obvious.</p>
@@ -4128,7 +4222,7 @@ instruction                                    domain      range state
 <p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 3. mm-ADT Types are Graphs and their Values Realize Paths</div>
+<div class="title">Deep Dive 4. mm-ADT Types are Graphs and their Values Realize Paths</div>
 <div class="content">
 <div class="paragraph">
 <p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type</p>
@@ -4244,28 +4338,6 @@ be a magma with <code>obj</code> denoting the set of all quantified mm-ADT objec
 <div class="paragraph text-center">
 <p><code>(t0 v1) t2</code> \$ne\$ <code>t0 (v1 t2)</code>.</p>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_inst_monoid">Inst Monoid</h4>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Monoids</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$\langle A,\ast \rangle\$, where \$A\$ is the carrier set closed under the associative binary operator \$\ast: A \times A \rightarrow A\$ with \$1 \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \ast b) \ast c = a \ast (b \ast c)\$ and \$a \ast 1 = 1 \ast a = a\$.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>mm-ADT types serve numerous roles which are typically realized by many sorts of objects in other programming environments. The reason for this singular use is quite literally because the mm-ADT type system (and value system) is inductively generated from the mm-ADT VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> which is the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generating set</a> of the <a href="https://en.wikipedia.org/wiki/Free_monoid">free</a> <strong>inst monoid</strong></p>
-</div>
-<div class="paragraph">
-<p>\[
-  \langle F(\texttt{obj}), \ast, \texttt{inst}, \texttt{[id]} \rangle,
-\]</p>
-</div>
-<div class="paragraph">
-<p>where <code>obj</code> is the carrier set, \$\ast: \tt{obj} \times \tt{i\nst} \to \tt{obj} \$ is the binary instruction application operator, \$\tt{i\nst} \subset \tt{obj}\$ are parameterized instructions, and \$\tt{[id]} \in \tt{i\nst}\$ is the identity element. While the richest algebra describing mm-ADT is a ring with unity, it is important to note that this "instruction-application" interpretation provides enough expressivity to faithfully capture all possible mm-ADT computations. For this reason, the <code>inst</code> monoid is a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a> as any language capable of generating its elements can express any mm-ADT VM computation.</p>
-</div>
 <div class="sect4">
 <h5 id="_monoidal_cayley_graph">Monoidal Cayley Graph</h5>
 <div class="paragraph">
@@ -4314,82 +4386,6 @@ instruction            domain      range state
 <td>The domain/range (source/target) of \$a \to_i b\$ edges in the Cayley graph via <code>[explain]</code>.</td>
 </tr>
 </table>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 4. An Instruction Only Free Monoid</div>
-<div class="content">
-<div class="paragraph">
-<p>The mm-ADT <code>obj</code> graph has 5 roots serving as the <strong>1</strong> identity for each of the 5 ctypes. There is a single root for all of mm-ADT in <code>obj{0}</code>. The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
-</div>
-<div class="paragraph">
-<p>\[
-\texttt{[start,x]}: \texttt{obj{0}} \to \texttt{x}
-\]</p>
-</div>
-<div class="paragraph">
-<p>An mm-ADT program is a <em>type</em> defined recurssively as \$ \tt{type} = (\tt{type} \times \tt{i\nst})\$. As such, an mm-ADT program is not a composition of instructions. The way in which a dtype can be ground to a ctype using only instructions is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/start-ctypes.png" alt="start ctypes" width="315">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int]
-==&gt;int
-mmlang&gt; [start,int][plus,5]
-==&gt;int[plus,5]
-mmlang&gt; [start,int][plus,5][gt,10]
-==&gt;bool&lt;=int[plus,5][gt,10]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>[noop]</code> instruction is the only mm-ADT instruction that does not alter the state of the <code>obj</code> trace graph and thus, the state of the computation.
-The instruction <code>[id]</code>, on the other hand, does.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int][plus,5][gt,10][noop]
-==&gt;bool&lt;=int[plus,5][gt,10]
-mmlang&gt; [start,int][plus,5][gt,10][id]
-==&gt;bool&lt;=int[plus,5][gt,10][id]</code></pre>
-</div>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_the_foundational_obj_graph">The Foundational obj Graph</h6>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/cayley-example.png" alt="cayley example">
-</div>
-</div>
-<div class="paragraph">
-<p>Every aspect of an mm-ADT computation from composition to evaluation is realized on this graph:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
-</li>
-<li>
-<p><strong>Compilation</strong>: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
-</li>
-<li>
-<p><strong>Rewrite</strong>: The vertices can be "merged" using <code>[rewrite]</code> instructions that specify a domain pattern that is equivalent to a range pattern.</p>
-</li>
-<li>
-<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
-</li>
-<li>
-<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively). When the current monoid operation requires historic state information, the co-Cayley graph is searched for previously encoded <code>inst</code> terms.</p>
-</li>
-<li>
-<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place whereby the binary <code>*</code> operator no longer operates as a free algebra, but collapses two elements to one. The path&#8217;s tail element is the result of the computation.</p>
-</li>
-</ol>
-</div>
 </div>
 <div class="sect5">
 <h6 id="_subgraph_algebras">Subgraph Algebras</h6>
@@ -5172,7 +5168,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-20 16:55:28 -0600
+Last updated 2020-07-21 01:37:35 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
