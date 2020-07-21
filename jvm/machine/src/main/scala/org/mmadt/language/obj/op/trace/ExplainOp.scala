@@ -52,7 +52,7 @@ object ExplainOp extends Func[Obj, Str] {
       if (b._2.isInstanceOf[TraceInstruction] && b._2.op != Tokens.a) state += (if (b._2.op == Tokens.define)(b._2.arg0[Obj].name-> b._2.arg0[Obj]) else b._2.arg0[Str].g -> b._2.exec(b._1).range)
       val temp = if (b._2.isInstanceOf[TraceInstruction]) a else a :+ (depth, b._2, lastRange(b._1.asInstanceOf[Type[Obj]]), b._2.exec(b._1).asInstanceOf[Type[Obj]].range, mutable.LinkedHashMap(state.toSeq: _*), prefix)
       val inner = b._2.args.foldLeft(List[Row]())((x, y) => x ++ (y match {
-        case branches: Rec[Obj, Obj] if b._2.op.equals(Tokens.split) => branches.gmap.flatMap { a => {
+        case branches: Rec[Obj, Obj] if b._2.isInstanceOf[BranchInstruction] => branches.gmap.flatMap { a => {
           List(explain(a._1 match {
             case btype: Type[_] => btype
             case bvalue: Value[_] => bvalue.start()

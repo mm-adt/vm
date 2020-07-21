@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language
+
 import org.mmadt.language.obj.Obj
 
 /**
@@ -29,7 +30,7 @@ import org.mmadt.language.obj.Obj
 object Tokens {
 
   lazy val reservedOps: List[String] = List(
-    Tokens.define, Tokens.neg,
+    Tokens.define, Tokens.neg, Tokens.branch,
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.defs, Tokens.load,
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.given, Tokens.trace, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last,
@@ -48,6 +49,7 @@ object Tokens {
   val lst = "lst"
   val inst = "inst"
 
+  val branch = "branch"
   val load = "load"
   val defs = "defs"
   val define = "define"

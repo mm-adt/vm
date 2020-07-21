@@ -25,7 +25,7 @@ package org.mmadt.storage.obj.value
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.op.{BranchInstruction, TraceInstruction}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -36,10 +36,11 @@ class VInst[S <: Obj, E <: Obj](val name: String = Tokens.inst, val g: LstTuple[
                      g: Any = this.g,
                      q: IntQ = this.q,
                      via: ViaTuple = this.via): this.type = {
-    if (this.isInstanceOf[TraceInstruction])
-      (new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func) with TraceInstruction).asInstanceOf[this.type]
-    else
-      new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func).asInstanceOf[this.type]
+    this match {
+      case _: TraceInstruction => (new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func) with TraceInstruction).asInstanceOf[this.type]
+      case _: BranchInstruction => (new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func) with BranchInstruction).asInstanceOf[this.type]
+      case _ => new VInst[S, E](name, g.asInstanceOf[LstTuple[S]], q, via, this.func).asInstanceOf[this.type]
+    }
   }
   override lazy val hashCode: scala.Int = this.op.hashCode ^ this.glist.hashCode()
   override def equals(other: Any): Boolean = other match {
