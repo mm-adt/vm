@@ -1343,9 +1343,9 @@ While the individual elements of the \$A\$-program are in \$A\$, the program as 
 \[
 (\texttt{inst}^\ast,\circ,\emptyset),
 \]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and \$\emptyset\$ is the <a href="https://en.wikipedia.org/wiki/Empty_set">empty set</a> behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free <code>inst</code> monoid called bytecode, there exists a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> from the <code>inst</code> monoid to the <code>obj</code> magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.</p>
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and \$\emptyset\$ is the <a href="https://en.wikipedia.org/wiki/Empty_set">empty set</a> behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free <code>inst</code> monoid, there exists a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> from the <code>inst</code> monoid to the <code>obj</code> magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.</p>
 </div>
-<table class="tableblock frame-all grid-all right small" style="width: 30%;">
+<table class="tableblock frame-all grid-all right" style="width: 35%;">
 <caption class="title">Table 2. Rosetta Stone</caption>
 <colgroup>
 <col style="width: 20%;">
@@ -1386,10 +1386,11 @@ where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ conca
 <div class="title"><code>inst</code> monoid to <code>obj</code> magma homomorphism</div>
 <p>\[
 \begin{split}
-&amp; \eta: \texttt{inst}^\ast &amp;\to \texttt{type} \\ \\
+&amp; \eta: \texttt{inst}^\ast &amp;\to \texttt{type} \\\\
+&amp; \eta(\emptyset) &amp;= \underline{\mathbf{1}} \\
+&amp; \eta(a \circ b) &amp;= a \Rightarrow b \\\\
 &amp; \eta(x) &amp;=    \prod_{i \in x}^{\Rightarrow} i \\
-&amp;         &amp;=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1} \\ \\
-&amp; \eta(\emptyset) &amp;= \underline{\mathbf{1}}
+&amp;         &amp;=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1}
 \end{split}
 \]</p>
 </div>
@@ -5230,7 +5231,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 02:51:41 -0600
+Last updated 2020-07-21 04:39:18 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
