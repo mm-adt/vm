@@ -23,7 +23,7 @@ object BranchOp extends Func[Obj, Obj] {
     val branches: Poly[Obj] = Inst.oldInst(inst).arg0[Poly[Obj]]
     val split: Poly[Obj] = start.split(branches)
     MergeOp().q(inst.q).exec(split) match {
-      case astrm: Strm[Obj] => strm(astrm.values.map(x => x.clone(via = (start, inst))))
+      case astrm: Strm[Obj] => strm(astrm.values.map(x => x.clone(via = (start, inst))).filter(_.alive))
       case atype: Type[_] => atype.clone(via = (start, inst.clone(g = (Tokens.branch, List(Poly.resolveSlots(start, branches))))))
       case avalue: Value[_] => avalue.clone(via = (start, inst))
     }
