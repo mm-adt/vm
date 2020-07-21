@@ -92,6 +92,8 @@ image:obj-algebras.png[width=350,float=right]
 
 The following table provides a review of the ring theoretic axioms and their realization in mm-ADT via `mmlang` over both `obj` *values* and *types*. This table serves as a consolidated summary. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.
 
+===== Ring Axioms
+
 [.small]
 [cols="2,4,6,7"]
 |===
@@ -228,7 +230,7 @@ a|
 {blank}
 |===
 
-'''
+===== Ring Theorems
 
 [.small]
 [cols="2,4,6,7"]
@@ -336,6 +338,84 @@ a|
 {blank}
 |===
 
+===== Stream Ring Axioms
+
+[.small]
+[cols="2,4,6,7"]
+|===
+|  axiom   | equation           | mmlang values | mmlang types
+
+| Bulking  | \$2a + 3a = 5a\$
+a|
+[exec]
+----
+['a'{2},'a'{3}]
+----
+{blank}
+a|
+[exec]
+----
+''[[plus,'a']{2},[plus,'a']{3}]
+----
+{blank}
+| Applying  | \$2a \cdot 3a = 6a\$
+a|
+[exec]
+----
+'a'{2}['a'{3}]
+----
+{blank}
+a|
+[exec]
+----
+'a'{2}[[plus,'a']{3}]
+----
+{blank}
+| Splitting  | \$2a \cdot (3b + 4c) = 6ab + 8ac\$
+a|
+[exec]
+----
+'a'{2}['b'{3},'c'{4}]
+['b'{6},'c'{8}]
+----
+{blank}
+a|
+[exec]
+----
+'a'{2}[[plus,'b']{3},[plus,'c']{4}]
+['ab'{6},'ac'{8}]
+----
+{blank}
+| Merging  | \$\((2a) + (3b)) = (2a + 3b)\$
+a|
+[exec]
+----
+[['a'{2}],['b'{3}]]
+['a'{2},'b'{3}]
+----
+{blank}
+a|
+[exec]
+----
+''[[[plus,'a']{2}],[[plus,'b']{3}]]
+''[[plus,'a']{2},[plus,'b']{3}]
+----
+{blank}
+| Removing  | \$(0a + b) = b\$
+a|
+[exec]
+----
+['a'{0},'b']
+----
+{blank}
+a|
+[exec]
+----
+''[[plus,'a']{0},+'b']
+----
+{blank}
+|===
+
 
 ==== Types and Values
 
@@ -345,7 +425,7 @@ Many modern programming environments make a sharp distinction between types and 
 . Types serve as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions] when a value is applied: \$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$.
 
 [exec]
-----   
+----
 int => int[is,[gt,0]]                   //<1>
 5 => int{?}<=int[is,bool<=int[gt,0]]    //<2>
 ----
