@@ -228,6 +228,115 @@ a|
 {blank}
 |===
 
+'''
+
+[.small]
+[cols="2,4,6,7"]
+|===
+| theorem | equation  | mmlang values | mmlang types
+
+4.+^h| Useful Deductions -- \$(\tt{obj},[;],[,],\underline{\mathbf{1}},\underline{\mathbf{0}})\$
+
+| Additive factoring
+| \$a + b = a + c\$ +
+  \$=> b = c\$
+a|
+{blank}
+a|
+{blank}
+| Unique factoring
+| \$a + b = 0\$ +
+  \$=> a = -b\$ +
+  \$=> b = -a\$
+a|
+{blank}
+a|
+{blank}
+| Inverse distributivity
+| \$-(a+b) = (-a) + (-b)\$
+a|
+[exec]
+----
+['a','b']{-1}
+['a'{-1},'b'{-1}]
+----
+{blank}
+a|
+[exec]
+----
+''[+'a',+'b']{-1}
+''[[plus,'a']{-1},[plus,'b']{-1}]
+----
+{blank}
+| Inverse distributivity
+| \$-(-a) = a\$
+a|
+[exec]
+----
+['a'{-1}]{-1}
+----
+{blank}
+a|
+[exec]
+----
+''[[plus,'a']{-1}]{-1}
+----
+{blank}
+| Annihilator
+| \$a*0 = 0 = 0*a\$
+a|
+[exec]
+----
+['a';_{0}]
+[_{0};'a']
+----
+{blank}
+a|
+[exec]
+----
+''[+'a';_{0}]
+''[_{0};+'a']
+----
+{blank}
+| Factoring
+| \$a * (-b)\$ +
+  \$= -a * b\$ +
+  \$= -(a * b)\$
+a|
+[exec]
+----
+['a';'b'{-1}]
+['a'{-1};'b']
+['a';'b']{-1}
+----
+{blank}
+a|
+[exec]
+----
+''[+'a';[plus,'b']{-1}]
+''[[plus,'a']{-1};+'b']
+''[+'a';+'b']{-1}
+----
+{blank}
+| Factoring
+| \$(-a) * (-b) = a * b\$
+a|
+[exec]
+----
+['a'{-1};'b'{-1}]
+['a';'b']
+----
+{blank}
+a|
+[exec]
+----
+''[[plus,'a']{-1};[plus,'b']{-1}]
+''[+'a';+'b']
+----
+{blank}
+|===
+
+
 ==== Types and Values
 
 Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two notable consequences of computable types and values are
@@ -887,38 +996,9 @@ NOTE: The polynomial literature distinguishes https://en.wikipedia.org/wiki/Univ
 
 ===== The Type Ringoid
 
-.Rings
+.Ringoids
 ****
-A ring is an algebraic structure \$ \langle A,\*,\+,1,0 \rangle \$, where \$A\$ is the carrier set, \$\*: A \times A \rightarrow A\$ is the _multiplicative_ operator, \$\+: A \times A \rightarrow A \$ is the _additive_ operator, \$1 \in A\$ is the multiplicative identity, and \$0 \in A\$ is the additive identity. A ring satisfies the following axioms, where \$ a,b,c \in A \$.
 
-[.small]
-[cols="^4,^4,^5"]
-|===
-| common notation                    | terminology                              | mmlang notation
-
-|\$(a + b) + c = a + (b + c)\$       | additive associativity                   | `\((a,b),c) == (a,(b,c))`
-|\$0 + a = a + 0 = a\$               | additive identity                        | `(\_{0},a) == (a,_{0}) == a`
-|\$a - a = a + (-a) = 0\$            | additive inverses                        | `(a,a{-1}) == _{0}`
-|\$a + b = b + a\$                   | additive commutativity                   | `(a,b) == (b,a)`
-|\$(a * b) * c = a * (b * c)\$       | multiplicative associativity             | `\((a;b);c) == (a;(b;c))`
-|\$1 * a = a * 1 = a\$               | multiplicative identity                  | `(\_{1};a) == (a;_{1}) == a`
-|\$(a + b) * c = (a * c) + (b * c)\$ | multiplicative left distributivity       | `\((a,b);c) == ((a;c),(b;c))`
-|\$a * (b + c) = (a * b) + (a * c)\$ | multiplicative right distributivity      | `(a;(b,c)) == \((a;b),(a;c))`
-|===
-
-[.small]
-[cols="^4,^2,^4"]
-|===
-| common notation                    | deduction                                | mmlang notation
-
-|\$a + b = a + c \=> b = c\$         | factors                                  |
-|\$a + b = 0 \=> a = -b & b = -a\$   | unique inverse                           |
-|\$-(a+b) = (-a) + (-b)\$            | distributivity                           | `(a,b){-1} == (a{-1},b{-1})`
-|\$-(-a) = a\$                       | distributivity                           | `(a{-1}){-1} == a`
-|\$a*0 = 0 = 0*a\$                   | annihilator                              | `(a;{0}) == {0} == ({0};a)`
-|\$a * (-b) = -a * b = -(a * b)\$    | factors                                  | `(a;b{-1}) == (a{-1};b) == (a;b){-1}`
-|\$(-a) * (-b) = a * b\$             | factors                                  | `(a{-1};b{-1}) == (a;b)`
-|===
 ****
 
 mm-ADT's type system is founded on a multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] called the mm-ADT *type ringoid*.
