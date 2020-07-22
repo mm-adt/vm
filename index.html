@@ -944,9 +944,9 @@ The algebra is useful in asynchronous distributed computing environments that pr
 <div class="paragraph">
 <p>The <strong><code>obj</code> stream ring</strong> is the algebraic ring
 \[
-(\texttt{obj},[;],[,],\;\underline{\mathbf{1}}\;\underline{\mathbf{0}}),
+(\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}),
 \]
-where <code>obj</code> is the carrier set, <code>[;]</code> is the multiplicative binary operator, <code>[,]</code> is the additive binary operator, \$\underline{\mathbf{1}}\$ the multiplicative identity, and \$\underline{\mathbf{0}}\$ the additive identity. Along with the standard ring axioms, the <code>obj</code> stream ring respects the seven axioms of <strong>stream ring theory</strong>. mm-ADT defines three homomorphisms from the foundational <code>obj</code> stream ring algebra to component-specific algebras that inherit aspects of its structure.</p>
+where <code>obj</code> is the carrier set, <code>[,]</code> is the additive binary operator, <code>[;]</code> is the multiplicative binary operator, \$\underline{\mathbf{0}}\$ the additive identity, and \$\underline{\mathbf{1}}\$ the multiplicative identity. Along with the standard ring axioms, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. mm-ADT defines three homomorphisms from the foundational <code>obj</code> stream ring algebra to component-specific algebras that inherit aspects of its structure.</p>
 </div>
 <div class="paragraph">
 <p><span class="image right"><img src="./images/language/obj-algebras.png" alt="obj algebras" width="350"></span></p>
@@ -985,57 +985,6 @@ where <code>obj</code> is the carrier set, <code>[;]</code> is the multiplicativ
 </tr>
 </thead>
 <tbody>
-<tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Multiplicative Monoid&#8201;&#8212;&#8201;\$(\tt{obj},[;],\underline{\mathbf{1}})\$</p></th>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative associativity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a';'b'];'c']
-==&gt;'c'
-mmlang&gt; ['a';['b';'c']]
-==&gt;'c'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[+'a';+'b'];+'c']
-==&gt;'abc'
-mmlang&gt; ''[+'a';[+'b';+'c']]
-==&gt;'abc'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative identity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \cdot \mathbf{1} = a\$</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';_{1}]
-==&gt;'a'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';_{1}]
-==&gt;'a'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
 <tr>
 <th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Additive Abelian Group&#8201;&#8212;&#8201;\$(\tt{obj},[,],\underline{\mathbf{0}})\$</p></th>
 </tr>
@@ -1148,7 +1097,58 @@ mmlang&gt;</code></pre>
 </div></div></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},[;],[,],\underline{\mathbf{1}},\underline{\mathbf{0}})\$</p></th>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Multiplicative Monoid&#8201;&#8212;&#8201;\$(\tt{obj},[;],\underline{\mathbf{1}})\$</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative associativity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a';'b'];'c']
+==&gt;'c'
+mmlang&gt; ['a';['b';'c']]
+==&gt;'c'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[+'a';+'b'];+'c']
+==&gt;'abc'
+mmlang&gt; ''[+'a';[+'b';+'c']]
+==&gt;'abc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \cdot \mathbf{1} = a\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';_{1}]
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';_{1}]
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$</p></th>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Left distributivity</p></td>
@@ -1230,7 +1230,7 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </thead>
 <tbody>
 <tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Useful Deductions&#8201;&#8212;&#8201;\$(\tt{obj},[;],[,],\underline{\mathbf{1}},\underline{\mathbf{0}})\$</p></th>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Useful Deductions&#8201;&#8212;&#8201;\$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$</p></th>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additive factoring</p></td>
@@ -1245,7 +1245,7 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unique factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = 0\$<br>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = \mathbf{0}\$<br>
   \$&#8658; a = -b\$<br>
   \$&#8658; b = -a\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
@@ -1309,7 +1309,7 @@ mmlang&gt; ''[[plus,'a']{-1},[plus,'b']{-1}]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Annihilator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a*0 = 0 = 0*a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a*\mathbf{0} = \mathbf{0} = \mathbf{0}*a\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';_{0}]
@@ -1397,7 +1397,7 @@ mmlang&gt; ''[+'a';+'b']
 <div class="sect4">
 <h5 id="_stream_ring_axioms">Stream Ring Axioms</h5>
 <div class="paragraph">
-<p>Stream ring theory studies <em>quantified objects</em>. The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier mathematics and their significance in efficient stream computing.</p>
+<p>Stream ring theory studies <em>quantified objects</em>. The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient <a href="https://en.wikipedia.org/wiki/Stream_(computing)">stream computing</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch small">
 <colgroup>
@@ -1522,7 +1522,7 @@ mmlang&gt; ''[[plus,'a']{2},[plus,'b']{3}]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Removing</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(0a + b) = b\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(\mathbf{0}a + b) = b\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{0},'b']
@@ -1545,7 +1545,7 @@ mmlang&gt; ''[[plus,'a']{2},[plus,'b']{3}]
 </tbody>
 </table>
 <div class="paragraph">
-<p>The <strong>bulking</strong>, <strong>merging</strong>, and <strong>removing</strong> axioms are aimed at reducing the amount of data flowing through a stream. The <strong>applying</strong> and <strong>splitting</strong> axioms ensure quantifier semantics during \$\ast\$ and \$+\$ operations on the <em>object</em> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> are maintained, respectively. Without quantifiers and the stream ring axioms, the stream
+<p>The <strong>bulking</strong>, <strong>merging</strong>, and <strong>removing</strong> axioms are aimed at reducing the amount of data flowing through a stream. The <strong>splitting</strong> and <strong>applying</strong>  axioms ensure quantifier semantics during \$+\$ and \$\ast\$ operations on the <em>object</em> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> are maintained, respectively. Without quantifiers and the stream ring axioms, the stream
 \[
 \{a,a,a,b,a,b,b,a,a\}
 \]
@@ -1584,6 +1584,8 @@ mmlang&gt; 5 =&gt; int+1-&lt;(_,_)
 ==&gt;(6,6)
 mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)
 ==&gt;(12,12)
+mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)&gt;-
+==&gt;12{2}
 mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)&gt;-+2
 ==&gt;14{2}</code></pre>
 </div>
@@ -1930,6 +1932,11 @@ where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ conca
 \end{split}
 \]</p>
 </div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/start-ctypes.png" alt="start ctypes" width="315">
+</div>
+</div>
 <div class="paragraph">
 <p>For example, if \$abcde \in \tt{i\nst}^\ast\$, then
 \[
@@ -1944,6 +1951,7 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 ==&gt;int[plus,1][mult,2]</code></pre>
 </div>
 </div>
+<hr>
 </div>
 <div class="sect3">
 <h4 id="_type_structure">Type Structure</h4>
@@ -2064,7 +2072,7 @@ Every <code>obj</code> has an associated quantifier. The coupling of objects and
 \[
 G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
 \]
-The <code>obj</code> graph will be studied at length from the perspective of <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graphs</a>, where the <code>obj</code> graph is understood as a ring-<a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> <a href="https://en.wikipedia.org/wiki/Monoidal_category">monoidal</a> Cayley graph.</p>
+The <code>obj</code> graph will be studied at length from the perspective of <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graphs</a>, where the <code>obj</code> graph is understood as a ringoid-<a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> <a href="https://en.wikipedia.org/wiki/Monoidal_category">monoidal</a> Cayley graph.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
@@ -2124,49 +2132,6 @@ mmlang&gt; int{2}[is&gt;0][mult,[neg]]                     <i class="conum" data
 <img src="./images/language/type-signature-definition.png" alt="type signature definition" width="650">
 </div>
 </div>
-<div class="exampleblock">
-<div class="title">Deep Dive 1. The Instruction Only Free Monoid</div>
-<div class="content">
-<div class="paragraph">
-<p>The mm-ADT <code>obj</code> graph has 5 roots serving as the <strong>1</strong> identity for each of the 5 ctypes. There is a single root for all of mm-ADT in <code>obj{0}</code>. The <code>x&lt;=[start,x]</code> instruction is an <strong>initial instruction</strong> in that it returns it&#8217;s arguments regardless of the input <code>obj</code> (or lack thereof).</p>
-</div>
-<div class="paragraph">
-<p>\[
-\texttt{[start,x]}: \texttt{obj{0}} \to \texttt{x}
-\]</p>
-</div>
-<div class="paragraph">
-<p>An mm-ADT program is a <em>type</em> defined recurssively as \$ \tt{type} = (\tt{type} \times \tt{i\nst})\$. As such, an mm-ADT program is not a composition of instructions. The way in which a dtype can be ground to a ctype using only instructions is via the <code>[start]</code> instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/start-ctypes.png" alt="start ctypes" width="315">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int]
-==&gt;int
-mmlang&gt; [start,int][plus,5]
-==&gt;int[plus,5]
-mmlang&gt; [start,int][plus,5][gt,10]
-==&gt;bool&lt;=int[plus,5][gt,10]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>[noop]</code> instruction is the only mm-ADT instruction that does not alter the state of the <code>obj</code> graph and thus, the state of the computation. In other words, there is no \$x \to_{\tt{[no\op]}} y\$ edge.
-The instruction <code>[id]</code>, on the other hand, does.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int][plus,5][gt,10][noop]
-==&gt;bool&lt;=int[plus,5][gt,10]
-mmlang&gt; [start,int][plus,5][gt,10][id]
-==&gt;bool&lt;=int[plus,5][gt,10][id]</code></pre>
-</div>
-</div>
-</div>
-</div>
 <div class="sect4">
 <h5 id="_type_signature">Type Signature</h5>
 <div class="paragraph">
@@ -2209,7 +2174,7 @@ In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ a
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">From the perspective of "type-as-function," An mm-ADT <code>int</code> is a <a href="https://en.wikipedia.org/wiki/NOP_(code)">no-op</a> on the set of integers. Given any integer, <code>int</code> returns that integer. In <code>mmlang</code>, when the domain and range are the same, the <code>&lt;=</code> and repeated type are not displayed. That is <code>int&lt;=int</code> is more concisely displayed as <code>int</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">From the perspective of "<em>type-as-function</em>," An mm-ADT <code>int</code> is a <a href="https://en.wikipedia.org/wiki/NOP_(code)">no-op</a> on the set of integers. Given any integer, <code>int</code> returns that integer. In <code>mmlang</code>, when the domain and range are the same, the <code>&lt;=</code> and repeated type are not displayed. That is <code>int&lt;=int</code> is more concisely displayed as <code>int</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
@@ -2409,9 +2374,9 @@ Thus, besides labels, two initials are isomorphic.</p>
 <div class="paragraph">
 <p>The default quantifier ring of the mm-ADT VM is
 \[
-\langle \mathbb{N}^+ \times \mathbb{N}^+, \ast, + \rangle,
+(\mathbb{N}^+ \times \mathbb{N}^+, +, \ast),
 \]
-where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In <code>mmlang</code> if an <code>obj</code> quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or <code>{1,1}</code>. Moreover, if a single value is provided, it is assumed to be repeated where <code>{n}</code> is shorthand for <code>{n,n}</code>. Thus, <code>int</code> is <code>int{1}</code>  is <code>int{1,1}</code>.</p>
+where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (unity). The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively. In <code>mmlang</code> if an <code>obj</code> quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or <code>{1,1}</code>. Moreover, if a single value is provided, it is assumed to be repeated, where <code>{n}</code> is shorthand for <code>{n,n}</code>. Thus, <code>int</code> is <code>int{1}</code>  is <code>int{1,1}</code>.</p>
 </div>
 <div class="paragraph">
 <p>One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>&#8201;&#8212;&#8201;<code>{0}</code>. All <code>objs</code> quantified with the respective quantifier ring&#8217;s annihilator are <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial object</a>.</p>
@@ -2423,7 +2388,7 @@ where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the addi
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;0]</code> are isomorphic due to their quantifiers both being <code>{0}</code>. Typically, throughout the documentation, both will be referred to simply as <code>obj{0}</code> or <code>{0}</code> (the <strong>zero object</strong>).
+Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;0]</code> are isomorphic due to their quantifiers both being <code>{0}</code>. Typically, throughout the documentation, both will be referred to simply as <code>obj{0}</code>, <code>_{0}</code>, or \$\underline{\mathbf{0}}\$ (the <strong>zero object</strong>).
 </td>
 </tr>
 </table>
@@ -2738,7 +2703,7 @@ mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4">
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. Poly Constructs in mmlang</div>
+<div class="title">Deep Dive 1. Poly Constructs in mmlang</div>
 <div class="content">
 <table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
@@ -2972,7 +2937,13 @@ The polynomial literature distinguishes <a href="https://en.wikipedia.org/wiki/U
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Ringoids</div>
-
+<div class="paragraph">
+<p>Let \$(A,+,\cdot,\mathbf{0},\mathbf{1})\$ be a ring over \$A\$ such that \$A\$ is <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closed</a> under the ring&#8217;s binary operators: \$+: A \times A \to A\$ and \$\cdot: A \times A \to A\$. Closure requires that for every \$a,b \in A\$, \$a+b \in A\$ and \$ab \in A\$. A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> relaxes this requirement by introducing a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> carrier set. In a ringoid, the carrier set is a <a href="https://en.wikipedia.org/wiki/Indexed_family">sort-indexed</a> set
+\[
+\bar{A} = \{A_0,A_1,\ldots,A_n\},
+\]
+where each \$A_i\$ contains elements of a paritcular type&#8212;&#8203;e.g., \$\mathbb{Z}\$ (integers), \$\mathbb{R}\$ (reals), \$\mathbb{B}\$ (booleans), \$\mathbb{C}\$ (complex numbers), etc.</p>
+</div>
 </div>
 </div>
 <div class="paragraph">
@@ -3738,7 +3709,7 @@ mmlang&gt; (1,'2',(1,1,1))[a,(int,str,(int,int,int))]
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 3. Type Ringoid Addition Embedded in ,-poly</div>
+<div class="title">Deep Dive 2. Type Ringoid Addition Embedded in ,-poly</div>
 <div class="content">
 <div class="paragraph">
 <p>mm-ADT&#8217;s processor algebra is a <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> called the <strong>type ringoid</strong> (detailed presentation forthcoming). Elements of the free type ringoid have a structure that is similar in form and function to <a href="https://en.wikipedia.org/wiki/Central_processing_unit">hardware circuits</a>. While the <code>inst</code> monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a <code>+</code>-operator that captures the semantics of parallel data <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipelining</a>. <a href="https://en.wikipedia.org/wiki/Isomorphism">Isomorphic</a> branchings structures are realized in the <code>inst</code> monoid via <code>,-poly</code>. However, at the execution-level, there exists an <code>inst</code> monoid-to-type ringoid <a href="https://en.wikipedia.org/wiki/Functor">functor</a> (\$\tt{i\nst} \to \tt{type}\$) that maps a <code>,-poly</code>-type construction to a parallel data pipeline structure. From this "<em>parallel data pipeline</em>"-perspective, perhaps the rationale for the aforementioned <code>obj</code> ring addition equation becomes obvious.</p>
@@ -4912,7 +4883,7 @@ instruction                                    domain      range state
 <p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 4. mm-ADT Types are Graphs and their Values Realize Paths</div>
+<div class="title">Deep Dive 3. mm-ADT Types are Graphs and their Values Realize Paths</div>
 <div class="content">
 <div class="paragraph">
 <p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type</p>
@@ -5496,7 +5467,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 14:28:54 -0600
+Last updated 2020-07-21 17:30:53 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
