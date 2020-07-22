@@ -2069,7 +2069,7 @@ It is through *multiple distinct identities* in `inst` that mm-ADT supports the 
 
 ====== Obj Dependent
 
-mm-ADT represents computations via https://en.wikipedia.org/wiki/Unary_function[unary functions]. For instance, the instruction `[neg]` takes an input `int` and returns the inverse (or negative) `int`. Thus, `[neg]` behaves as its classic unary function counterpart \$\tt{n\eg}(x) \mapsto -x\$, where `5 \=> int[neg]` maps to `-5`. Next, suppose the instruction `[plus,2]`. Given an input of \$6\$, `[plus,2]` ultimately evaluates the https://en.wikipedia.org/wiki/Binary_function[binary function] \$6+2\$. However, instruction's argument \$2\$ is a https://en.wikipedia.org/wiki/Constant_function[constant] value and therefore, `[plus,2]` acts in a manner analogous to a https://en.wikipedia.org/wiki/Currying[curried] unary function.
+mm-ADT represents computations via https://en.wikipedia.org/wiki/Unary_function[unary functions]. For instance, the instruction `[neg]` takes an input `int` and returns the inverse (or negative) `int`. Thus, `[neg]` behaves as its classic unary function counterpart \$\tt{n\eg}(x) \mapsto -x\$, where `5 \=> int[neg]` maps to `-5`. Next, suppose the instruction `[plus,2]`. Given an input of \$6\$, `[plus,2]` ultimately evaluates the https://en.wikipedia.org/wiki/Binary_function[binary function] \$6+2\$. However, the instruction's argument is the https://en.wikipedia.org/wiki/Constant_function[constant] value \$2\$ and therefore, `[plus,2]` acts in a manner analogous to a https://en.wikipedia.org/wiki/Currying[curried] unary function.
 
 [.small]
 [cols="1,2,3,3"]
@@ -2118,7 +2118,7 @@ mm-ADT represents computations via https://en.wikipedia.org/wiki/Unary_function[
 \end{split}
 \]
 |===
-If the argument to `[plus]` is a type (as opposed to a value), then the argument's value resolution is https://en.wikipedia.org/wiki/Dependent_type[dependent] on the incoming `obj`. For instance, if `int[plus,[mult,2]]` has an incoming `int` of 6, the argument to `[plus]` is 12. However, if the incoming `int` is 8, then the `[plus]` argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming `obj`. Dependent types are used to access computational state. In particular, computational state that is encoded in the path history of the `obj` that the type is dependent upon.
+If the argument to `[plus]` is a type (as opposed to a value), then the argument's value resolution is https://en.wikipedia.org/wiki/Dependent_type[dependent] on the incoming `obj`. For instance, if `int[plus,[mult,2]]` has an incoming `int` of 6, the argument to `[plus]` is 12. However, if the incoming `int` is 8, then the `[plus]` argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming `obj`. In particular, state stored in the path history of the `obj`.
 
 [exec]
 ----
@@ -2128,7 +2128,7 @@ If the argument to `[plus]` is a type (as opposed to a value), then the argument
 
 ====== Path Dependent
 
-Every `obj` exists as a distinct vertex in the `obj` graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming `obj` that yielded the `obj` at the head of the edge. The `obj` at the tail of the edge may also have incoming edges in the `obj` graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a *path*. The computational path of an `obj` is accessed via `[trace]`. The output is a `;-lst` that can be introspected as any other `lst`.
+Every `obj` exists as a distinct vertex in the `obj` graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming `obj` that yielded the `obj` at the head of the edge. The `obj` at the tail of the edge may also have incoming edges in the `obj` graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a *path*. The computational path of an `obj` is accessed via `[trace]`. The output of `[trace]` is a `;-lst` that can be https://en.wikipedia.org/wiki/Reflection_(computer_programming)[introspected] as any other `lst`.
 
 [exec]
 ----
