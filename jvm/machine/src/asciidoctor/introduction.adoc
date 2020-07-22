@@ -101,7 +101,7 @@ All the examples contained herein are presented using `mmlang`.
 
 ==== mmlang Syntax and Semantics
 
-The https://en.wikipedia.org/wiki/Context-free_grammar[context-free grammar] for `mmlang` is presented below. `mmlang` is best understood as a https://en.wikipedia.org/wiki/Free_algebra[free ringoid] whose elements denote mm-ADT programs which https://en.wikipedia.org/wiki/Module_(mathematics)[act, as modules,] on the instruction monoid implemented by every mm-ADT processor.
+The https://en.wikipedia.org/wiki/Context-free_grammar[context-free grammar] for `mmlang` is presented below. Every `mmlang` expression denotes an element of the https://en.wikipedia.org/wiki/Free_algebra[free] `inst` monoid.
 
 [source]
 ----
