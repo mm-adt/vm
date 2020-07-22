@@ -551,8 +551,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel4">
 <li><a href="#_state">State</a>
 <ul class="sectlevel5">
-<li><a href="#_obj_dependent_state">Obj Dependent State</a></li>
-<li><a href="#_path_dependent_state">Path Dependent State</a></li>
+<li><a href="#_obj_dependent">Obj Dependent</a></li>
+<li><a href="#_path_dependent">Path Dependent</a></li>
 </ul>
 </li>
 <li><a href="#_variables">Variables</a></li>
@@ -4744,7 +4744,7 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 <div class="sect4">
 <h5 id="_state">State</h5>
 <div class="sect5">
-<h6 id="_obj_dependent_state">Obj Dependent State</h6>
+<h6 id="_obj_dependent">Obj Dependent</h6>
 <div class="paragraph">
 <p>mm-ADT represents computations via <a href="https://en.wikipedia.org/wiki/Unary_function">unary functions</a>. For instance, the instruction <code>[neg]</code> takes an input <code>int</code> and returns the inverse (or negative) <code>int</code>. Thus, <code>1 =&gt; int[neg]</code> outputs -1. The <code>[neg]</code> instruction acts as a classic unary function. Next, increasing the complexity, the instruction <code>[plus,2]</code> is unary even though it has a constant argument of <code>2</code>. Thus, if the input is 6, ultimately the <a href="https://en.wikipedia.org/wiki/Binary_function">binary function</a> \$6+2\$ is evaluated. Regardless, the argument value is static as <code>[plus,2]</code> acts in a manner analogous to a <a href="https://en.wikipedia.org/wiki/Currying">curried</a> unary function.</p>
 </div>
@@ -4810,17 +4810,38 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 </div>
 </div>
 <div class="sect5">
-<h6 id="_path_dependent_state">Path Dependent State</h6>
+<h6 id="_path_dependent">Path Dependent</h6>
 <div class="paragraph">
-<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the <code>obj</code> graph edge \$a \to_i b\$ provides information as the history of the computation. These edges can be followed back to root such that the result composition is a <strong>path</strong>.</p>
+<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the <code>obj</code> graph edge \$a \to_i b\$ provides information as the history of the computation. These edges can be followed back to root such that the result composition is a <strong>path</strong>. The path is accessed via <code>[trace]</code> which is returned as a <code>;-lst</code>. This <code>lst</code> can then be introspected as any other <code>lst</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8 =&gt; int[plus,1][mult,2][gt,10]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8 =&gt; int[plus,1][mult,2][gt,10]                        <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;true
-mmlang&gt; 8 =&gt; int[plus,1][mult,2][gt,10][trace]
-==&gt;(8;[plus,1];9;[mult,2];18;[gt,10])</code></pre>
+mmlang&gt; 8 =&gt; int[plus,1][mult,2][gt,10][trace]                 <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;(8;[plus,1];9;[mult,2];18;[gt,10])
+mmlang&gt; 8 =&gt; int[plus,1][mult,2][gt,10][trace][get,5][get,0]   <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;10</code></pre>
 </div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The evaluation of an <code>bool&lt;=int</code> type via 8.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>obj</code> graph path from 8 to <code>[gt,10]</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A projection of the instruction <code>[gt,10]</code> from the path and then the first argument of the <code>inst</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>mm-ADT has a collection of <strong>distinct identity instructions</strong>, such that as instructions, they simply compute \$f(x) \mapsto x\$, but as edge labels in the <code>obj</code> Cayley graph, they store computational state that can be accessed in the future via path analysis. In effect, the execution context is transformed from a memory-less <a href="https://en.wikipedia.org/wiki/Finite-state_machine">finite state automata</a> into <a href="https://en.wikipedia.org/wiki/Processor_register">register</a>-based <a href="https://en.wikipedia.org/wiki/Turing_machine">Turing machine</a>.</p>
 </div>
 </div>
 </div>
@@ -5522,7 +5543,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 23:10:00 -0600
+Last updated 2020-07-22 02:05:46 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
