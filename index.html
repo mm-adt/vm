@@ -549,6 +549,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_identity_types">Identity Types</a>
 <ul class="sectlevel4">
+<li><a href="#_state">State</a>
+<ul class="sectlevel5">
+<li><a href="#_obj_dependent_state">Obj Dependent State</a></li>
+<li><a href="#_path_dependent_state">Path Dependent State</a></li>
+</ul>
+</li>
 <li><a href="#_variables">Variables</a></li>
 <li><a href="#_definitions">Definitions</a></li>
 <li><a href="#_rewrites">Rewrites</a></li>
@@ -1557,8 +1563,8 @@ Compression is achieved by removing redundant information in a <a href="https://
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 35.7142%;">
-<col style="width: 64.2858%;">
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
 </colgroup>
 <tbody>
 <tr>
@@ -4694,7 +4700,7 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 <div class="sect3">
 <h4 id="_identity_types">Identity Types</h4>
 <div class="paragraph">
-<p>If \$\langle M,\cdot,e\rangle\$ is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>, where \$e \in M\$ is the <a href="https://en.wikipedia.org/wiki/Identity_element">identity element</a> and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$. Thus, every monoid has a <strong>single unique identity</strong>. However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a>, where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly <em>labeled</em> elements even though their role in the non-free monoid&#8217;s binary composition are the same&#8201;&#8212;&#8201;namely, that they both act as identities.</p>
+<p>Let \$(M,\cdot,e)\$ be a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>, where \$e \in M\$ is the <a href="https://en.wikipedia.org/wiki/Identity_element">identity element</a> and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$. Thus, every monoid has a <strong>single unique identity</strong>. However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a>, where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly <em>labeled</em> elements even though their role in the non-free monoid&#8217;s binary composition are the same&#8201;&#8212;&#8201;namely, that they both act as identities.</p>
 </div>
 <div class="paragraph">
 <p>It is through <strong>multiple distinct identities</strong> in <code>inst</code> that mm-ADT supports the programming idioms below.</p>
@@ -4728,13 +4734,96 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 <td class="tableblock halign-left valign-top"><p class="tableblock">user defined types</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">rewrite rules</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Rewriting">rewrite rules</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[rewrite]</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type equivalences</p></td>
 </tr>
 </tbody>
 </table>
+<div class="sect4">
+<h5 id="_state">State</h5>
+<div class="sect5">
+<h6 id="_obj_dependent_state">Obj Dependent State</h6>
+<div class="paragraph">
+<p>mm-ADT represents computations via <a href="https://en.wikipedia.org/wiki/Unary_function">unary functions</a>. For instance, the instruction <code>[neg]</code> takes an input <code>int</code> and returns the inverse (or negative) <code>int</code>. Thus, <code>1 =&gt; int[neg]</code> outputs -1. The <code>[neg]</code> instruction acts as a classic unary function. Next, increasing the complexity, the instruction <code>[plus,2]</code> is unary even though it has a constant argument of <code>2</code>. Thus, if the input is 6, ultimately the <a href="https://en.wikipedia.org/wiki/Binary_function">binary function</a> \$6+2\$ is evaluated. Regardless, the argument value is static as <code>[plus,2]</code> acts in a manner analogous to a <a href="https://en.wikipedia.org/wiki/Currying">curried</a> unary function.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch small">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">pure unary</th>
+<th class="tableblock halign-center valign-top">curried unary</th>
+<th class="tableblock halign-center valign-top">dependent unary</th>
+<th class="tableblock halign-center valign-top">dependent unary</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
+\begin{split}
+1 &amp;&#8658; \text{int}[\texttt{neg}]  \\
+-1
+\end{split}
+\]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
+\begin{split}
+6 &amp;&#8658; \texttt{int}[\texttt{plus},2]      \\
+6 &amp;&#8658; \texttt{int}[\texttt{plus},6 &#8658; 2] \\
+6 &amp;&#8658; \texttt{int}[\texttt{plus},2]      \\
+6 &amp;&#8658; 8 \\
+8
+\end{split}
+\]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
+\begin{split}
+6 &amp;&#8658; \texttt{int}[\texttt{plus},[\texttt{mult},2]]            \\
+6 &amp;&#8658; \texttt{int}[\texttt{plus},6 &#8658; [\texttt{mult},2]]        \\
+6 &amp;&#8658; \texttt{int}[\texttt{plus},6 &#8658; [\texttt{mult},6 &#8658; 2]]   \\
+6 &amp;&#8658; \texttt{int}[\texttt{plus},6 &#8658; [\texttt{mult},2]]        \\
+6 &amp;&#8658; \texttt{int}[\texttt{plus},12]                            \\
+6 &amp;&#8658; 18                                                         \\
+18
+\end{split}
+\]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
+\begin{split}
+8 &amp;&#8658; \texttt{int}[\texttt{plus},[\texttt{mult},2]]            \\
+8 &amp;&#8658; \texttt{int}[\texttt{plus},8 &#8658; [\texttt{mult},2]]        \\
+8 &amp;&#8658; \texttt{int}[\texttt{plus},8 &#8658; [\texttt{mult},8 &#8658; 2]]   \\
+8 &amp;&#8658; \texttt{int}[\texttt{plus},8 &#8658; [\texttt{mult},2]]        \\
+8 &amp;&#8658; \texttt{int}[\texttt{plus},16]                            \\
+8 &amp;&#8658; 24                                                         \\
+24
+\end{split}
+\]</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>If the argument to <code>[plus]</code> is a type (as opposed to a value), then the argument&#8217;s value resolution is dependent on the incoming <code>obj</code>. For instance, if <code>int[plus,[mult,2]]</code> has an incoming <code>int</code> of 6, the argument to <code>[plus]</code> is 12. However, if the incoming <code>int</code> is 8, then the <code>[plus]</code> argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior, via types, can be made <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> on the state of the incoming <code>obj</code>.</p>
+</div>
+</div>
+<div class="sect5">
+<h6 id="_path_dependent_state">Path Dependent State</h6>
+<div class="paragraph">
+<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the <code>obj</code> graph edge \$a \to_i b\$ provides information as the history of the computation. These edges can be followed back to root such that the result composition is a <strong>path</strong>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8 =&gt; int[plus,1][mult,2][gt,10]
+==&gt;true
+mmlang&gt; 8 =&gt; int[plus,1][mult,2][gt,10][trace]
+==&gt;(8;[plus,1];9;[mult,2];18;[gt,10])</code></pre>
+</div>
+</div>
+</div>
+</div>
 <div class="sect4">
 <h5 id="_variables">Variables</h5>
 <div class="imageblock text-center">
@@ -4831,7 +4920,7 @@ instruction                                    domain      range state
 <div class="sect4">
 <h5 id="_rewrites">Rewrites</h5>
 <div class="paragraph">
-<p>In mm-ADT, every type \$A\$ is a <a href="https://en.wikipedia.org/wiki/Space_(mathematics)">space</a>, where the points of the space are mm-ADT <code>objs</code> (types and values) and the structure distinguishing \$A\$ from being a common set is the <code>inst</code> relations linking the <code>objs</code>. Every mm-ADT type defines a directed labeled <a href="https://en.wikipedia.org/wiki/Multigraph">multigraph</a> called a <strong>type graph</strong>. If \$x,y:A\$ are two <code>objs</code> in \$A\$, then the <a href="https://en.wikipedia.org/wiki/Path_(topology)">path</a> \$x \to_{A} y\$ denotes a continuous walk that starts at \$x\$ and ends at \$y\$ <a href="https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence">proving</a> that \$x\$ is "\$A\$-reduced" to \$y\$. Each step of that walk is an instruction forming an edge in the type graph. For instance, the type</p>
+<p>Each step of that walk is an instruction forming an edge in the type graph. For instance, the type</p>
 </div>
 <div class="paragraph text-center">
 <p><code>int[is,[eq,int]]</code></p>
@@ -4881,40 +4970,6 @@ instruction                                    domain      range state
 </div>
 <div class="paragraph">
 <p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 3. mm-ADT Types are Graphs and their Values Realize Paths</div>
-<div class="content">
-<div class="paragraph">
-<p>In the <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> interpretation of <em>types</em>, the mm-ADT type</p>
-</div>
-<div class="paragraph">
-<p><code>int[is&gt;0]</code></p>
-</div>
-<div class="paragraph">
-<p>would be considered a reasonable type&#8201;&#8212;&#8201;it is the set of integers greater than <code>0</code>. This type defines a subtype of <code>int</code> using a <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a> (\$ \tt{g\t}:\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type</p>
-</div>
-<div class="paragraph">
-<p><code>int[plus,1]</code></p>
-</div>
-<div class="paragraph">
-<p>would be considered unreasonable as it is a transformation function, not a <a href="https://en.wikipedia.org/wiki/Indicator_function">characteristic function</a>. However, in mm-ADT, <em>both are types</em>. An <code>obj</code> is a member of a particular type if and only if the type&#8217;s function (as algorithmically defined by its instructions) <em>does not</em> map the <code>obj</code> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">terminal</a> <code>obj{0}</code>. If
-\[
-f: A \rightarrow B
-\]
-is the function of type <code>B&lt;=A[f]</code>, then
-\[
-f(a) =
-\begin{cases}
-b\{*\} &amp; \text{if $a$ is a value of the type},  \\
-b\{ 0\} &amp; \text{otherwise.}
-\end{cases}
-\]</p>
-</div>
-<div class="paragraph">
-<p>An mm-ADT <strong>type graph</strong> denotes a type whose values are those <code>objs</code> that realize a path in that graph.</p>
-</div>
-</div>
 </div>
 </div>
 </div>
@@ -5467,7 +5522,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-21 17:30:53 -0600
+Last updated 2020-07-21 23:10:00 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
