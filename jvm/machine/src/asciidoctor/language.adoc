@@ -431,7 +431,7 @@ is fully compressed. However, with \$\mathbb{Z}\$-quantifiers and axioms, the ab
 Compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification. From a data structures perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset]. The two examples below demonstrate type and value *bulking*, where the former is a compile type optimization and the latter a runtime optimization.
 
 
-[cols="5,9"]
+[cols="4,8"]
 |===
 
 a|
@@ -2052,7 +2052,7 @@ However, with pair-wise product, only the main diagonol remains.
 
 ==== Identity Types
 
-If \$\langle M,\cdot,e\rangle\$ is a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e \in M\$ is the https://en.wikipedia.org/wiki/Identity_element[identity element] and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$. Thus, every monoid has a *single unique identity*. However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
+Let \$(M,\cdot,e)\$ be a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e \in M\$ is the https://en.wikipedia.org/wiki/Identity_element[identity element] and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$. Thus, every monoid has a *single unique identity*. However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
 
 It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms below.
 
@@ -2062,8 +2062,73 @@ It is through *multiple distinct identities* in `inst` that mm-ADT supports the 
 
 | https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]   | `[to]`       | `< >` | nominal `obj` references
 | https://en.wikipedia.org/wiki/Data_type[type definitions]                  | `[define]`   |       | user defined types
-| rewrite rules                                                              | `[rewrite]`  |       | type equivalences
+| https://en.wikipedia.org/wiki/Rewriting[rewrite rules]                     | `[rewrite]`  |       | type equivalences
 |===
+
+===== State
+
+====== Obj Dependent State
+
+mm-ADT represents computations via https://en.wikipedia.org/wiki/Unary_function[unary functions]. For instance, the instruction `[neg]` takes an input `int` and returns the inverse (or negative) `int`. Thus, `1 \=> int[neg]` outputs -1. The `[neg]` instruction acts as a classic unary function. Next, increasing the complexity, the instruction `[plus,2]` is unary even though it has a constant argument of `2`. Thus, if the input is 6, ultimately the https://en.wikipedia.org/wiki/Binary_function[binary function] \$6+2\$ is evaluated. Regardless, the argument value is static as `[plus,2]` acts in a manner analogous to a https://en.wikipedia.org/wiki/Currying[curried] unary function.
+
+[.small]
+[cols="1,2,3,3"]
+|===
+^| pure unary  ^| curried unary ^| dependent unary ^| dependent unary
+
+|
+\[
+\begin{split}
+1 &=> \text{int}[\texttt{neg}]  \\
+-1
+\end{split}
+\]
+|
+\[
+\begin{split}
+6 &=> \texttt{int}[\texttt{plus\},2]      \\
+6 &=> \texttt{int}[\texttt{plus\},6 => 2] \\
+6 &=> \texttt{int}[\texttt{plus\},2]      \\
+6 &=> 8 \\
+8
+\end{split}
+\]
+|
+\[
+\begin{split}
+6 &=> \texttt{int}[\texttt{plus\},[\texttt{mult},2]]            \\
+6 &=> \texttt{int}[\texttt{plus\},6 => [\texttt{mult},2]]        \\
+6 &=> \texttt{int}[\texttt{plus\},6 => [\texttt{mult},6 => 2]]   \\
+6 &=> \texttt{int}[\texttt{plus\},6 => [\texttt{mult},2]]        \\
+6 &=> \texttt{int}[\texttt{plus\},12]                            \\
+6 &=> 18                                                         \\
+18
+\end{split}
+\]
+|
+\[
+\begin{split}
+8 &=> \texttt{int}[\texttt{plus\},[\texttt{mult},2]]            \\
+8 &=> \texttt{int}[\texttt{plus\},8 => [\texttt{mult},2]]        \\
+8 &=> \texttt{int}[\texttt{plus\},8 => [\texttt{mult},8 => 2]]   \\
+8 &=> \texttt{int}[\texttt{plus\},8 => [\texttt{mult},2]]        \\
+8 &=> \texttt{int}[\texttt{plus\},16]                            \\
+8 &=> 24                                                         \\
+24
+\end{split}
+\]
+|===
+If the argument to `[plus]` is a type (as opposed to a value), then the argument's value resolution is dependent on the incoming `obj`. For instance, if `int[plus,[mult,2]]` has an incoming `int` of 6, the argument to `[plus]` is 12. However, if the incoming `int` is 8, then the `[plus]` argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior, via types, can be made https://en.wikipedia.org/wiki/Dependent_type[dependent] on the state of the incoming `obj`.
+
+====== Path Dependent State
+
+Every `obj` exists as a distinct vertex in the `obj` graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the `obj` graph edge \$a \to_i b\$ provides information as the history of the computation. These edges can be followed back to root such that the result composition is a *path*.
+
+[exec]
+----
+8 => int[plus,1][mult,2][gt,10]
+8 => int[plus,1][mult,2][gt,10][trace]
+----
 
 ===== Variables
 
@@ -2097,7 +2162,7 @@ int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain
 
 ===== Rewrites
 
-In mm-ADT, every type \$A\$ is a https://en.wikipedia.org/wiki/Space_(mathematics)[space], where the points of the space are mm-ADT `objs` (types and values) and the structure distinguishing \$A\$ from being a common set is the `inst` relations linking the `objs`. Every mm-ADT type defines a directed labeled https://en.wikipedia.org/wiki/Multigraph[multigraph] called a *type graph*. If \$x,y:A\$ are two `objs` in \$A\$, then the https://en.wikipedia.org/wiki/Path_(topology)[path] \$x \to_{A} y\$ denotes a continuous walk that starts at \$x\$ and ends at \$y\$ https://en.wikipedia.org/wiki/Curry%E2%80%93Howard_correspondence[proving] that \$x\$ is "\$A\$-reduced" to \$y\$. Each step of that walk is an instruction forming an edge in the type graph. For instance, the type
+Each step of that walk is an instruction forming an edge in the type graph. For instance, the type
 
 [.text-center]
 `int[is,[eq,int]]`
@@ -2139,34 +2204,6 @@ mmlang> [define,int<=(int[is,[eq,int]])]
 ----
 
 The composition of two structure preserving type morphisms yields a new type--namely, `int\<=(int[plus,x:int][plus,x:int[neg]])`.
-
-.mm-ADT Types are Graphs and their Values Realize Paths
-================================================================
-In the https://en.wikipedia.org/wiki/Set_theory[set theoretic] interpretation of _types_, the mm-ADT type
-
-
-`int[is>0]`
-
-would be considered a reasonable type -- it is the set of integers greater than `0`. This type defines a subtype of `int` using a https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate] (\$ \tt{g\t}:\mathbb{N} \times \mathbb{N} \rightarrow \mathbb{B}\$). On the other hand, the type
-
-
-`int[plus,1]`
-
-would be considered unreasonable as it is a transformation function, not a https://en.wikipedia.org/wiki/Indicator_function[characteristic function]. However, in mm-ADT, _both are types_. An `obj` is a member of a particular type if and only if the type's function (as algorithmically defined by its instructions) _does not_ map the `obj` to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[terminal] `obj{0}`. If
-\[
-f: A \rightarrow B
-\]
-is the function of type `B\<=A[f]`, then
-\[
-f(a) =
-\begin{cases}
-b\{*\} & \text{if $a$ is a value of the type},  \\
-b\{ 0\} & \text{otherwise.}
-\end{cases}
-\]
-
-An mm-ADT *type graph* denotes a type whose values are those `objs` that realize a path in that graph.
-================================================================
 
 === Model-ADTs
 
