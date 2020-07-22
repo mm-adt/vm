@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{LstType, Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.map.IdOp
 import org.mmadt.language.obj.value.Value
@@ -34,10 +34,10 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Inst[S <: Obj, +E <: Obj] extends Poly[S] with Type[Poly[S]] {
+trait Inst[S <: Obj, +E <: Obj] extends LstType[S] {
   val func: Func[_ <: Obj, _ <: Obj] = null
   final def op: String = this.gsep
-  final def args: List[Obj] = this.glist.toList
+  final def args: List[Obj] = this.glist
   final def arg0[O <: Obj]: O = this.glist.head.asInstanceOf[O]
   final def arg1[O <: Obj]: O = this.glist.tail.head.asInstanceOf[O]
   final def arg2[O <: Obj]: O = this.glist.tail.tail.head.asInstanceOf[O]
@@ -75,7 +75,7 @@ object Inst {
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
 
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
-    if(!obj.alive || !arg.alive) return arg.hardQ(qZero)
+    if (!obj.alive || !arg.alive) return arg.hardQ(qZero)
     resolveToken(obj, arg) match {
       case anon: __ if __.isTokenRoot(anon) => anon.asInstanceOf[E]
       case valueArg: OValue[E] => valueArg

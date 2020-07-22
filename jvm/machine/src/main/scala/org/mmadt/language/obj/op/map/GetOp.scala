@@ -24,9 +24,9 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{LstType, Type, __}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.{IntValue, LstValue, Value}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -48,7 +48,11 @@ object GetOp extends Func[Obj, Obj] {
     val value: Obj = start match {
       case arec: Rec[Obj, Obj] => strm(arec.gmap.filter(a => key.test(a._1)).values.toSeq)
       case alst: Lst[_] if key.isInstanceOf[Int] => key match {
-        case aint: IntValue => LanguageException.PolyException.testIndex(alst, aint.g.toInt); alst.glist(aint.g.toInt) // TODO: multi-get with int types like rec
+        case aint: IntValue => alst match {
+          case _: LstValue[_] => LanguageException.PolyException.testIndex(alst, aint.g.toInt); alst.glist(aint.g.toInt)
+          case _: LstType[_] if LanguageException.testIndex(alst, aint.g.toInt) => alst.glist(aint.g.toInt) // TODO: multi-get with int types like rec
+          case _ => typeHint
+        }
         case _ => typeHint
       }
       case _: Value[_] => zeroObj

@@ -25,6 +25,7 @@ package org.mmadt.language.mmlang
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -283,6 +284,15 @@ class mmlangScriptEngineTest extends FunSuite {
     assert(engine.eval("int{3}[+1,+2,+3][explain]").toString.contains("(int{3}[plus,1],int{3}[plus,2],i..."))
     assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("instruction"))
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("z->bool"))
+  }
+
+  test("trace access parsing") {
+    println(engine.eval("5[plus,7][mult,4][plus,11][trace].1"))
+    assertResult(int(5))(engine.eval("5[plus,1][mult,2][trace].0"))
+    assertResult(PlusOp(1))(engine.eval("5[plus,1][mult,2][trace].1"))
+    assertResult(int(6))(engine.eval("5[plus,1][mult,2][trace].2"))
+    assertResult(MultOp(2))(engine.eval("5[plus,1][mult,2][trace].3"))
+    // assertResult(int(12))(engine.eval("5[plus,1][mult,2][trace].4"))
   }
 
   test("map instruction parsing") {

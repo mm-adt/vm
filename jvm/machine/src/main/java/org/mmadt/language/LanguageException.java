@@ -88,6 +88,10 @@ public class LanguageException extends VmException {
             throw LanguageException.typingError(obj, type);
     }
 
+    public static boolean testIndex(final Lst<?> lst, final int index) {
+        return !(index<0) && lst.glist().length() >= (index + 1);
+    }
+
     public static class PolyException {
         public static LanguageException noHead() {
             return new LanguageException("empty polys do not have heads");
