@@ -80,9 +80,9 @@ mm-ADT adopts the algebra of stream ring theory, where functions are *instructio
 
 The *`obj` stream ring* is the algebraic ring
 \[
-(\texttt{obj},[;],[,],\;\underline{\mathbf{1}}\;\underline{\mathbf{0}}),
+(\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}),
 \]
-where `obj` is the carrier set, `[;]` is the multiplicative binary operator, `[,]` is the additive binary operator, \$\underline{\mathbf{1}}\$ the multiplicative identity, and \$\underline{\mathbf{0}}\$ the additive identity. Along with the standard ring axioms, the `obj` stream ring respects the seven axioms of *stream ring theory*. mm-ADT defines three homomorphisms from the foundational `obj` stream ring algebra to component-specific algebras that inherit aspects of its structure.
+where `obj` is the carrier set, `[,]` is the additive binary operator, `[;]` is the multiplicative binary operator, \$\underline{\mathbf{0}}\$ the additive identity, and \$\underline{\mathbf{1}}\$ the multiplicative identity. Along with the standard ring axioms, the `obj` stream ring respects the five additional axioms of *stream ring theory*. mm-ADT defines three homomorphisms from the foundational `obj` stream ring algebra to component-specific algebras that inherit aspects of its structure.
 
 image:obj-algebras.png[width=350,float=right]
 
@@ -98,38 +98,6 @@ The following table provides a review of the ring theoretic axioms and their rea
 [cols="2,4,6,7"]
 |===
 |  axiom | equation  | mmlang values | mmlang types
-
-4.+^h| Multiplicative Monoid -- \$(\tt{obj},[;],\underline{\mathbf{1}})\$
-| Multiplicative associativity
-| \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$
-a|
-[exec]
-----
-[['a';'b'];'c']
-['a';['b';'c']]
-----
-{blank}
-a|
-[exec]
-----
-''[[+'a';+'b'];+'c']
-''[+'a';[+'b';+'c']]
-----
-{blank}
-| Multiplicative identity
-| \$a \cdot \mathbf{1} = a\$
-a|
-[exec]
-----
-['a';_{1}]
-----
-{blank}
-a|
-[exec]
-----
-''[+'a';_{1}]
-----
-{blank}
 
 4.+^h| Additive Abelian Group -- \$(\tt{obj},[,],\underline{\mathbf{0}})\$
 
@@ -194,7 +162,39 @@ a|
 ----
 {blank}
 
-4.+^h| Ring with Unity -- \$(\tt{obj},[;],[,],\underline{\mathbf{1}},\underline{\mathbf{0}})\$
+4.+^h| Multiplicative Monoid -- \$(\tt{obj},[;],\underline{\mathbf{1}})\$
+| Multiplicative associativity
+| \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$
+a|
+[exec]
+----
+[['a';'b'];'c']
+['a';['b';'c']]
+----
+{blank}
+a|
+[exec]
+----
+''[[+'a';+'b'];+'c']
+''[+'a';[+'b';+'c']]
+----
+{blank}
+| Multiplicative identity
+| \$a \cdot \mathbf{1} = a\$
+a|
+[exec]
+----
+['a';_{1}]
+----
+{blank}
+a|
+[exec]
+----
+''[+'a';_{1}]
+----
+{blank}
+
+4.+^h| Ring with Unity -- \$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$
 
 | Left distributivity
 | \$a \cdot (b + c) = ab + ac\$
@@ -237,7 +237,7 @@ a|
 |===
 | theorem | equation  | mmlang values | mmlang types
 
-4.+^h| Useful Deductions -- \$(\tt{obj},[;],[,],\underline{\mathbf{1}},\underline{\mathbf{0}})\$
+4.+^h| Useful Deductions -- \$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$
 
 | Additive factoring
 | \$a + b = a + c\$ +
@@ -247,7 +247,7 @@ a|
 a|
 {blank}
 | Unique factoring
-| \$a + b = 0\$ +
+| \$a + b = \mathbf{0}\$ +
   \$=> a = -b\$ +
   \$=> b = -a\$
 a|
@@ -285,7 +285,7 @@ a|
 ----
 {blank}
 | Annihilator
-| \$a*0 = 0 = 0*a\$
+| \$a*\mathbf{0} = \mathbf{0} = \mathbf{0}*a\$
 a|
 [exec]
 ----
@@ -340,7 +340,7 @@ a|
 
 ===== Stream Ring Axioms
 
-Stream ring theory studies _quantified objects_. The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier mathematics and their significance in efficient stream computing.
+Stream ring theory studies _quantified objects_. The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient https://en.wikipedia.org/wiki/Stream_(computing)[stream computing].
 
 [.small]
 [cols="2,4,6,7"]
@@ -405,7 +405,7 @@ a|
 ''[[plus,'a']{2},[plus,'b']{3}]
 ----
 {blank}
-| Removing  | \$(0a + b) = b\$
+| Removing  | \$(\mathbf{0}a + b) = b\$
 a|
 [exec]
 ----
@@ -420,7 +420,7 @@ a|
 {blank}
 |===
 
-The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount of data flowing through a stream. The *applying* and *splitting* axioms ensure quantifier semantics during \$\ast\$ and \$+\$ operations on the _object_ https://en.wikipedia.org/wiki/Semiring[semiring] are maintained, respectively. Without quantifiers and the stream ring axioms, the stream
+The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount of data flowing through a stream. The *splitting* and *applying*  axioms ensure quantifier semantics during \$+\$ and \$\ast\$ operations on the _object_ https://en.wikipedia.org/wiki/Semiring[semiring] are maintained, respectively. Without quantifiers and the stream ring axioms, the stream
 \[
 \{a,a,a,b,a,b,b,a,a\}
 \]
@@ -448,6 +448,7 @@ a|
 5 => int+1
 5 => int+1-<(_,_)
 5 => int+1-<(*2,+6)
+5 => int+1-<(*2,+6)>-
 5 => int+1-<(*2,+6)>-+2
 ----
 {blank}
@@ -617,6 +618,8 @@ where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ conca
 \end{split}
 \]
 
+image::start-ctypes.png[float="right",width=315]
+
 For example, if \$abcde \in \tt{i\nst}^\ast\$, then
 \[
 \eta(abcde) \mapsto  a => b => c => d => e.
@@ -627,6 +630,8 @@ For example, if \$abcde \in \tt{i\nst}^\ast\$, then
 [start,int][plus,1][mult,2]
 [start,int]=>[plus,1]=>[mult,2]
 ----
+
+'''
 
 ==== Type Structure
 
@@ -693,7 +698,7 @@ The diagram above is an instance of a structure that is core to various aspects 
 \[
 G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
 \]
-The `obj` graph will be studied at length from the perspective of https://en.wikipedia.org/wiki/Cayley_graph[Cayley graphs], where the `obj` graph is understood as a ring-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] Cayley graph.
+The `obj` graph will be studied at length from the perspective of https://en.wikipedia.org/wiki/Cayley_graph[Cayley graphs], where the `obj` graph is understood as a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] Cayley graph.
 
 
 image::obj-full.png[float=right,width=320]
@@ -719,37 +724,6 @@ The diagram below captures the salient features of a type, where the three proje
 
 image::type-signature-definition.png[align=center,width=650]
 
-.The Instruction Only Free Monoid
-================================================================
-
-The mm-ADT `obj` graph has 5 roots serving as the *1* identity for each of the 5 ctypes. There is a single root for all of mm-ADT in `obj{0}`. The `x\<=[start,x]` instruction is an *initial instruction* in that it returns it's arguments regardless of the input `obj` (or lack thereof).
-
-\[
-\texttt{[start,x]}: \texttt{obj\{0\}} \to \texttt{x}
-\]
-
-An mm-ADT program is a _type_ defined recurssively as \$ \tt{type} = (\tt{type} \times \tt{i\nst})\$. As such, an mm-ADT program is not a composition of instructions. The way in which a dtype can be ground to a ctype using only instructions is via the `[start]` instruction. A single pass through the mm-ADT compiler yields a type trace based at a ctype.
-
-image::start-ctypes.png[float="right",width=315]
-
-[exec]
-----
-[start,int]
-[start,int][plus,5]
-[start,int][plus,5][gt,10]
-----
-
-The `[noop]` instruction is the only mm-ADT instruction that does not alter the state of the `obj` graph and thus, the state of the computation. In other words, there is no \$x \to_{\tt{[no\op]}} y\$ edge.
-The instruction `[id]`, on the other hand, does.
-
-[exec]
-----
-[start,int][plus,5][gt,10][noop]
-[start,int][plus,5][gt,10][id]
-----
-
-================================================================
-
 ===== Type Signature
 
 Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type, and the _range_ is the target type. Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`. The general pattern of a type signature is
@@ -769,7 +743,7 @@ NOTE: In common mathematical vernacular, if the function \$f\$ has a domain of \
 int<=int
 ----
 {blank}
-|From the perspective of "type-as-function," An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `\<=` and repeated type are not displayed. That is `int\<=int` is more concisely displayed as `int`.
+|From the perspective of "_type-as-function_," An mm-ADT `int` is a https://en.wikipedia.org/wiki/NOP_(code)[no-op] on the set of integers. Given any integer, `int` returns that integer. In `mmlang`, when the domain and range are the same, the `\<=` and repeated type are not displayed. That is `int\<=int` is more concisely displayed as `int`.
 
 <.^a|
 [exec]
@@ -868,13 +842,13 @@ In order to quantify the _amount_ of values denoted by a type, every mm-ADT type
 
 The default quantifier ring of the mm-ADT VM is
 \[
-\langle \mathbb{N}^+ \times \mathbb{N}^+, \ast, + \rangle,
+(\mathbb{N}^+ \times \mathbb{N}^+, +, \ast),
 \]
-where \$(1,1)\$ is the multiplicative identity (unity) and \$(0,0)\$ is the additive identity. The \$\ast\$ and \$ +\$ binary operators are pairwise integer multiplication and addition, respectively. In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`. Moreover, if a single value is provided, it is assumed to be repeated where `{n}` is shorthand for `{n,n}`. Thus, `int` is `int{1}`  is `int{1,1}`.
+where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (unity). The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively. In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`. Moreover, if a single value is provided, it is assumed to be repeated, where `{n}` is shorthand for `{n,n}`. Thus, `int` is `int{1}`  is `int{1,1}`.
 
 One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial object].
 
-NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}` or `{0}` (the *zero object*).
+NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
 
 Common programming concepts that are usually captured by typeclasses or functors (via https://en.wikipedia.org/wiki/Lift_(mathematics)[lifting]) are expressed in mm-ADT via quantification.
 
@@ -1115,7 +1089,11 @@ NOTE: The polynomial literature distinguishes https://en.wikipedia.org/wiki/Univ
 
 .Ringoids
 ****
-
+Let \$(A,\+,\cdot,\mathbf{0},\mathbf{1})\$ be a ring over \$A\$ such that \$A\$ is https://en.wikipedia.org/wiki/Closure_(mathematics)[closed] under the ring's binary operators: \$+: A \times A \to A\$ and \$\cdot: A \times A \to A\$. Closure requires that for every \$a,b \in A\$, \$a+b \in A\$ and \$ab \in A\$. A https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] relaxes this requirement by introducing a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] carrier set. In a ringoid, the carrier set is a https://en.wikipedia.org/wiki/Indexed_family[sort-indexed] set
+\[
+\bar{A} = \{A_0,A_1,\ldots,A_n\},
+\]
+where each \$A_i\$ contains elements of a paritcular type--e.g., \$\mathbb{Z}\$ (integers), \$\mathbb{R}\$ (reals), \$\mathbb{B}\$ (booleans), \$\mathbb{C}\$ (complex numbers), etc.
 ****
 
 mm-ADT's type system is founded on a multi-sorted https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] called the mm-ADT *type ringoid*.
