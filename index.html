@@ -4746,7 +4746,7 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 <div class="sect5">
 <h6 id="_obj_dependent">Obj Dependent</h6>
 <div class="paragraph">
-<p>mm-ADT represents computations via <a href="https://en.wikipedia.org/wiki/Unary_function">unary functions</a>. For instance, the instruction <code>[neg]</code> takes an input <code>int</code> and returns the inverse (or negative) <code>int</code>. Thus, <code>[neg]</code> behaves as its classic unary function counterpart \$\tt{n\eg}(x) \mapsto -x\$, where <code>5 =&gt; int[neg]</code> maps to <code>-5</code>. Next, suppose the instruction <code>[plus,2]</code>. Given an input of \$6\$, <code>[plus,2]</code> ultimately evaluates the <a href="https://en.wikipedia.org/wiki/Binary_function">binary function</a> \$6+2\$. However, instruction&#8217;s argument \$2\$ is a <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> value and therefore, <code>[plus,2]</code> acts in a manner analogous to a <a href="https://en.wikipedia.org/wiki/Currying">curried</a> unary function.</p>
+<p>mm-ADT represents computations via <a href="https://en.wikipedia.org/wiki/Unary_function">unary functions</a>. For instance, the instruction <code>[neg]</code> takes an input <code>int</code> and returns the inverse (or negative) <code>int</code>. Thus, <code>[neg]</code> behaves as its classic unary function counterpart \$\tt{n\eg}(x) \mapsto -x\$, where <code>5 =&gt; int[neg]</code> maps to <code>-5</code>. Next, suppose the instruction <code>[plus,2]</code>. Given an input of \$6\$, <code>[plus,2]</code> ultimately evaluates the <a href="https://en.wikipedia.org/wiki/Binary_function">binary function</a> \$6+2\$. However, the instruction&#8217;s argument is the <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> value \$2\$ and therefore, <code>[plus,2]</code> acts in a manner analogous to a <a href="https://en.wikipedia.org/wiki/Currying">curried</a> unary function.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch small">
 <colgroup>
@@ -4806,7 +4806,7 @@ mmlang&gt; (<span style="background-color:hsla(0,100%,50%,0.05)"><span style="co
 </tbody>
 </table>
 <div class="paragraph">
-<p>If the argument to <code>[plus]</code> is a type (as opposed to a value), then the argument&#8217;s value resolution is <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> on the incoming <code>obj</code>. For instance, if <code>int[plus,[mult,2]]</code> has an incoming <code>int</code> of 6, the argument to <code>[plus]</code> is 12. However, if the incoming <code>int</code> is 8, then the <code>[plus]</code> argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming <code>obj</code>. Dependent types are used to access computational state. In particular, computational state that is encoded in the path history of the <code>obj</code> that the type is dependent upon.</p>
+<p>If the argument to <code>[plus]</code> is a type (as opposed to a value), then the argument&#8217;s value resolution is <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> on the incoming <code>obj</code>. For instance, if <code>int[plus,[mult,2]]</code> has an incoming <code>int</code> of 6, the argument to <code>[plus]</code> is 12. However, if the incoming <code>int</code> is 8, then the <code>[plus]</code> argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming <code>obj</code>. In particular, state stored in the path history of the <code>obj</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4820,7 +4820,7 @@ mmlang&gt; 8 =&gt; int[plus,[mult,2]][trace]
 <div class="sect5">
 <h6 id="_path_dependent">Path Dependent</h6>
 <div class="paragraph">
-<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming <code>obj</code> that yielded the <code>obj</code> at the head of the edge. The <code>obj</code> at the tail of the edge may also have incoming edges in the <code>obj</code> graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a <strong>path</strong>. The computational path of an <code>obj</code> is accessed via <code>[trace]</code>. The output is a <code>;-lst</code> that can be introspected as any other <code>lst</code>.</p>
+<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming <code>obj</code> that yielded the <code>obj</code> at the head of the edge. The <code>obj</code> at the tail of the edge may also have incoming edges in the <code>obj</code> graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a <strong>path</strong>. The computational path of an <code>obj</code> is accessed via <code>[trace]</code>. The output of <code>[trace]</code> is a <code>;-lst</code> that can be <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">introspected</a> as any other <code>lst</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5551,7 +5551,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-22 11:06:26 -0600
+Last updated 2020-07-22 11:38:23 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
