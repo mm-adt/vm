@@ -1094,7 +1094,7 @@ mmlang&gt;</code></pre>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',[plus,'a']{-1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',+{-1}'a']
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -1282,7 +1282,7 @@ mmlang&gt; ['a'{-1},'b'{-1}]
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',+'b']{-1}
 ==&gt;'a'{-1}
 ==&gt;'b'{-1}
-mmlang&gt; ''[[plus,'a']{-1},[plus,'b']{-1}]
+mmlang&gt; ''[+{-1}'a',+{-1}'b']
 ==&gt;'a'{-1}
 ==&gt;'b'{-1}</code></pre>
 </div>
@@ -1305,7 +1305,7 @@ mmlang&gt; ''[[plus,'a']{-1},[plus,'b']{-1}]
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[plus,'a']{-1}]{-1}
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+{-1}'a']{-1}
 ==&gt;'a'</code></pre>
 </div>
 </div>
@@ -1359,9 +1359,9 @@ mmlang&gt; ['a';'b']{-1}
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';[plus,'b']{-1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';+{-1}'b']
 ==&gt;'ab'{-1}
-mmlang&gt; ''[[plus,'a']{-1};+'b']
+mmlang&gt; ''[+{-1}'a';+'b']
 ==&gt;'ab'{-1}
 mmlang&gt; ''[+'a';+'b']{-1}
 ==&gt;'ab'{-1}</code></pre>
@@ -1387,7 +1387,7 @@ mmlang&gt; ['a';'b']
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[plus,'a']{-1};[plus,'b']{-1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+{-1}'a';+{-1}'b']
 ==&gt;'ab'
 mmlang&gt; ''[+'a';+'b']
 ==&gt;'ab'</code></pre>
@@ -1435,7 +1435,7 @@ mmlang&gt; ''[+'a';+'b']
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[plus,'a']{2},[plus,'a']{3}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+{2}'a',+{3}'a']
 ==&gt;'a'{5}</code></pre>
 </div>
 </div>
@@ -1457,7 +1457,7 @@ mmlang&gt; ''[+'a';+'b']
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}[[plus,'b']{3}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}[+{3}'b']
 ==&gt;'ab'{6}</code></pre>
 </div>
 </div>
@@ -1484,7 +1484,7 @@ mmlang&gt; ['b'{6},'c'{8}]
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}[[plus,'b']{3},[plus,'c']{4}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}[+{3}'b',+{4}'c']
 ==&gt;'ab'{6}
 ==&gt;'ac'{8}
 mmlang&gt; ['ab'{6},'ac'{8}]
@@ -1514,10 +1514,10 @@ mmlang&gt; ['a'{2},'b'{3}]
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[[plus,'a']{2}],[[plus,'b']{3}]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[+{2}'a'],[+{3}'b']]
 ==&gt;'a'{2}
 ==&gt;'b'{3}
-mmlang&gt; ''[[plus,'a']{2},[plus,'b']{3}]
+mmlang&gt; ''[+{2}'a',+{3}'b']
 ==&gt;'a'{2}
 ==&gt;'b'{3}</code></pre>
 </div>
@@ -1540,7 +1540,7 @@ mmlang&gt; ''[[plus,'a']{2},[plus,'b']{3}]
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[[plus,'a']{0},+'b']
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+{0}'a',+'b']
 ==&gt;'b'</code></pre>
 </div>
 </div>
@@ -1572,7 +1572,7 @@ Compression is achieved by removing redundant information in a <a href="https://
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)&gt;-+2
 ==&gt;14{2}
-mmlang&gt; 5 =&gt; int+1[mult,2]{2}+2
+mmlang&gt; 5 =&gt; int+1*{2}2+2
 ==&gt;14{2}</code></pre>
 </div>
 </div>
@@ -5576,7 +5576,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-22 17:32:32 -0600
+Last updated 2020-07-23 01:06:59 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
