@@ -34,19 +34,22 @@ import org.mmadt.storage.obj.value.VInst
 trait MergeOp[A <: Obj] {
   this: Poly[A] =>
   def merge[B <: Obj]: B = MergeOp[A]().exec(this).asInstanceOf[B]
+
   final def `>-`: A = this.merge[A]
+
   final def `]`: A = this.merge[A]
 }
+
 object MergeOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.merge, Nil), func = this)
+
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case apoly: PolyValue[_, _] if apoly.isChoice => Poly.keepFirst(apoly, apoly).glist.map(x => multPolyQ(x, apoly, inst)).find(_.alive).getOrElse(zeroObj)
-      case apoly: PolyValue[_, _] if apoly.isParallel => strm(apoly.glist.map(x => multPolyQ(x, apoly, inst)).filter(_.alive))
-      case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => multPolyQ(x, apoly, inst)).filter(_.alive).getOrElse(zeroObj)
-      case apoly: PolyType[_, _] => BranchInstruction.brchType[Obj](apoly).clone(via = (start, inst))
+      case apoly: PolyValue[_, _] if apoly.isChoice => Poly.keepFirst(apoly, apoly).glist.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).find(_.alive).getOrElse(zeroObj)
+      case apoly: PolyValue[_, _] if apoly.isParallel => strm(apoly.glist.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).filter(_.alive))
+      case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).filter(_.alive).getOrElse(zeroObj)
+      case apoly: PolyType[_, _] => BranchInstruction.multPolyQ(BranchInstruction.brchType[Obj](apoly), lst, inst).clone(via = (start, inst)) // lst is acting a _{1}
       case _ => start.via(start, inst)
     }
   }
-  private def multPolyQ(obj: Obj, poly: Poly[_], inst: Inst[_, _]): Obj = obj.hardQ(multQ(multQ(poly.q, obj.q), inst.q))
 }

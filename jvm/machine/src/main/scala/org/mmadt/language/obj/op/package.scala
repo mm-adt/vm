@@ -57,6 +57,8 @@ package object op {
       }
       x.hardQ(multQ(brch.q, x.q))
     }
+
+    def multPolyQ(obj: Obj, poly: Poly[_], inst: Inst[_, _]): Obj = obj.hardQ(multQ(multQ(obj.q, poly.q), inst.q))
   }
 
   trait FilterInstruction
@@ -79,4 +81,5 @@ package object op {
   trait TerminalInstruction
 
   trait TraceInstruction
+
 }

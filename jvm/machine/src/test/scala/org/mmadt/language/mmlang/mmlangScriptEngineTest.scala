@@ -326,6 +326,15 @@ class mmlangScriptEngineTest extends FunSuite {
     // assertResult(branchString)(engine.eval("int[plus,2][[is,int[gt,10]]-->int[gt,20] ; int-->int[plus,10]]").toString) // TODO: choice generalization
   }
 
+  test("split/merge/branch quantification parsing") {
+    assertResult(int.q(8))(engine.eval("[split,(int,int)][merge]{4}").range)
+    assertResult(int.q(8))(engine.eval("_-<(int,int)>-{4}").range)
+    assertResult(int.q(80))(engine.eval("_-<(int,int){10}>-{4}").range)
+    assertResult(int.q(80))(engine.eval("[split,(int,int)]{10}[merge]{4}").range)
+    assertResult(int.q(8))(engine.eval("[int,int]{4}").range)
+    assertResult(int.q(8))(engine.eval("[branch,(int,int)]{4}").range)
+  }
+
   test("choice with given") {
     assertResult(int -< (int.plus(1) | int.plus(2)))(engine.eval("int-<(+1|+2)"))
     assertResult(int(6) | zeroObj)(engine.eval("5-<(+1|+2)"))

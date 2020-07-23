@@ -33,7 +33,9 @@ import org.mmadt.storage.obj.value.VInst
 trait SplitOp {
   this: Obj =>
   def split[A <: Obj](branches: Poly[A]): Poly[A] = SplitOp(branches).exec(this.asInstanceOf[A])
+
   final def -<[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
+
   final def `[`[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
 }
 
@@ -47,14 +49,14 @@ object SplitOp extends Func[Obj, Obj] {
       case x: Poly[Obj] => x
       case _ => if (inst.arg0[Obj].alive) inst.arg0[Poly[Obj]] else return zeroObj
     }
-    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(startUnit.clone(via = (startUnit, oldInst)), apoly))
+    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(startUnit.clone(via = (startUnit, oldInst)), apoly)).hardQ(inst.q)
     (apoly match {
       case _: RecType[_, _] if apoly.isSerial => newInst.arg0[Obj].clone(via = (start, oldInst))
       case _: RecType[_, _] if apoly.isChoice => processFirst(startUnit, oldInst).clone(via = (start, newInst)) // TODO: cause the same resolutions map to the same keys
       //
       case _: Poly[_] if apoly.isChoice => processFirst(startUnit, newInst).clone(via = (start, newInst))
       case _ => newInst.arg0[Poly[Obj]].clone(via = (start, newInst))
-    }).hardQ(multQ(start.q, apoly.q))
+    }).hardQ(BranchInstruction.multPolyQ(start, apoly, inst).q)
   }
 
   private def processFirst(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = start match {
