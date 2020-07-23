@@ -1267,8 +1267,10 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additive factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = a + c\$<br>
-  \$&#8658; b = c\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a + b = a + c \\
+&#8658;&amp; b = c
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p></p>
 </div></div></td>
@@ -1278,9 +1280,11 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Unique factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + b = \mathbf{0}\$<br>
-  \$&#8658; a = -b\$<br>
-  \$&#8658; b = -a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a + b = \mathbf{0} \\
+&#8658;&amp; a = -b \\
+&#8658;&amp; b = -a
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
 <p></p>
 </div></div></td>
@@ -1290,8 +1294,10 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$-(a+b) =\$<br>
-\$(-a) + (-b)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;-(a+b) \\
+=&amp; (-a) + (-b)
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b']{-1}
@@ -1321,7 +1327,7 @@ mmlang&gt; ''[+{-1}'a',+{-1}'b']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$-(-a) = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[-(-a) = a\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{-1}]{-1}
@@ -1343,7 +1349,11 @@ mmlang&gt; ''[+{-1}'a',+{-1}'b']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Annihilator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a*\mathbf{0} = \mathbf{0} = \mathbf{0}*a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a*\mathbf{0} \\
+=&amp; \mathbf{0} \\
+=&amp; \mathbf{0}*a
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';_{0}]
@@ -1369,9 +1379,11 @@ mmlang&gt;</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a * (-b)\$<br>
-  \$= -a * b\$<br>
-  \$= -(a * b)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a * (-b) \\
+=&amp; -a * b \\
+=&amp; -(a*b)
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';'b'{-1}]
@@ -1401,8 +1413,10 @@ mmlang&gt; ''[+'a';+'b']{-1}
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(-a) * (-b)\$<br>
-\$= a * b\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;(-a) * (-b) \\
+=&amp; a * b
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{-1};'b'{-1}]
@@ -1432,7 +1446,7 @@ mmlang&gt; ''[+'a';+'b']
 <div class="sect4">
 <h5 id="_stream_ring_axioms">Stream Ring Axioms</h5>
 <div class="paragraph">
-<p>Stream ring theory studies <em>quantified objects</em>. The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient <a href="https://en.wikipedia.org/wiki/Stream_(computing)">stream computing</a>.</p>
+<p>Stream ring theory studies <em>quantified objects</em>. The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient <a href="https://en.wikipedia.org/wiki/Stream_(computing)">stream computing</a>. The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1452,7 +1466,10 @@ mmlang&gt; ''[+'a';+'b']
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Bulking</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa + ya = (x+y)a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp; xa + ya \\
+=&amp; (x+y)a
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{2},'a'{3}]
@@ -1496,8 +1513,10 @@ mmlang&gt; ''[+'a';+'b']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Splitting</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa \cdot (yb + zc)\$<br>
-\$= (xy)ab + (xz)ac\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp; xa \cdot (yb + zc) \\
+=&amp; (xy)ab + (xz)ac
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}['b'{3},'c'{4}]
@@ -1527,8 +1546,10 @@ mmlang&gt; ['ab'{6},'ac'{8}]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Merging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$((xa) + (yb))\$<br>
-\$= (xa + yb)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+ &amp; xa) + (yb \\
+=&amp; (xa + yb)
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a'{2}],['b'{3}]]
@@ -1583,11 +1604,11 @@ mmlang&gt; ''[+{2}'a',+{3}'b']
 <div class="paragraph">
 <p>The <strong>bulking</strong>, <strong>merging</strong>, and <strong>removing</strong> axioms are aimed at reducing the amount of data flowing through a stream. The <strong>splitting</strong> and <strong>applying</strong>  axioms ensure quantifier semantics during \$+\$ and \$\ast\$ operations on the <em>object</em> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> are maintained, respectively. Without quantifiers and the stream ring axioms, the stream
 \[
-\{a,a,a,b,a,b,b,a,a\}
+[ a,a,a,b,a,b,b,a,a ]
 \]
 is fully compressed. However, with \$\mathbb{Z}\$-quantifiers and axioms, the above stream is equivalent to
 \[
-\{6a,3b\}.
+[ 6a,3b ].
 \]
 Compression is achieved by removing redundant information in a <a href="https://en.wikipedia.org/wiki/Lossless_compression">lossless</a> manner such that <a href="https://en.wikipedia.org/wiki/Enumeration">enumeration</a> is replaced with quantification. From a data structures perspective, an unordered <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> is converted into a weighted <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a>. The two examples below demonstrate type and value <strong>bulking</strong>, where the former is a compile type optimization and the latter a runtime optimization.</p>
 </div>
@@ -5606,7 +5627,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-23 01:47:23 -0600
+Last updated 2020-07-23 11:21:27 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
