@@ -255,23 +255,29 @@ a|
 4.+^h| Useful Deductions -- \$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$
 
 | Additive factoring
-| \$a + b = a + c\$ +
-  \$=> b = c\$
+| \[\begin{split}
+&a + b = a + c \\
+=>& b = c
+\end{split}\]
 a|
 {blank}
 a|
 {blank}
 | Unique factoring
-| \$a + b = \mathbf{0}\$ +
-  \$=> a = -b\$ +
-  \$=> b = -a\$
+|  \[\begin{split}
+&a + b = \mathbf{0} \\
+=>& a = -b \\
+=>& b = -a
+\end{split}\]
 a|
 {blank}
 a|
 {blank}
 | Inverse distributivity
-| \$-(a+b) =\$ +
-\$(-a) + (-b)\$
+| \[\begin{split}
+&-(a+b) \\
+=& (-a) + (-b)
+\end{split}\]
 a|
 [exec]
 ----
@@ -287,7 +293,7 @@ a|
 ----
 {blank}
 | Inverse distributivity
-| \$-(-a) = a\$
+| \[-(-a) = a\]
 a|
 [exec]
 ----
@@ -301,7 +307,11 @@ a|
 ----
 {blank}
 | Annihilator
-| \$a*\mathbf{0} = \mathbf{0} = \mathbf{0}*a\$
+| \[\begin{split}
+&a*\mathbf{0} \\
+=& \mathbf{0} \\
+=& \mathbf{0}*a
+\end{split}\]
 a|
 [exec]
 ----
@@ -317,9 +327,11 @@ a|
 ----
 {blank}
 | Factoring
-| \$a * (-b)\$ +
-  \$= -a * b\$ +
-  \$= -(a * b)\$
+| \[\begin{split}
+&a * (-b) \\
+=& -a * b \\
+=& -(a*b)
+\end{split}\]
 a|
 [exec]
 ----
@@ -337,8 +349,10 @@ a|
 ----
 {blank}
 | Factoring
-| \$(-a) * (-b)\$ +
-\$= a * b\$
+|  \[\begin{split}
+&(-a) * (-b) \\
+=& a * b
+\end{split}\]
 a|
 [exec]
 ----
@@ -357,13 +371,16 @@ a|
 
 ===== Stream Ring Axioms
 
-Stream ring theory studies _quantified objects_. The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient https://en.wikipedia.org/wiki/Stream_(computing)[stream computing].
+Stream ring theory studies _quantified objects_. The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient https://en.wikipedia.org/wiki/Stream_(computing)[stream computing]. The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.
 
 [cols="2,2,7,7"]
 |===
 |  axiom   | equation           | mmlang values | mmlang types
 
-| Bulking  | \$xa + ya = (x+y)a\$
+| Bulking  | \[\begin{split}
+& xa + ya \\
+=& (x+y)a
+\end{split}\]
 a|
 [exec]
 ----
@@ -389,9 +406,10 @@ a|
 'a'{2}[+{3}'b']
 ----
 {blank}
-| Splitting  |
-\$xa \cdot (yb + zc)\$ +
-\$= (xy)ab + (xz)ac\$
+| Splitting  | \[\begin{split}
+& xa \cdot (yb + zc) \\
+=& (xy)ab + (xz)ac
+\end{split}\]
 a|
 [exec]
 ----
@@ -406,9 +424,10 @@ a|
 ['ab'{6},'ac'{8}]
 ----
 {blank}
-| Merging  |
-\$\((xa) + (yb))\$ +
-\$= (xa + yb)\$
+| Merging  | \[\begin{split}
+ & ((xa) + (yb)) \\
+=& (xa + yb)
+\end{split}\]
 a|
 [exec]
 ----
@@ -440,11 +459,11 @@ a|
 
 The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount of data flowing through a stream. The *splitting* and *applying*  axioms ensure quantifier semantics during \$+\$ and \$\ast\$ operations on the _object_ https://en.wikipedia.org/wiki/Semiring[semiring] are maintained, respectively. Without quantifiers and the stream ring axioms, the stream
 \[
-\{a,a,a,b,a,b,b,a,a\}
+[ a,a,a,b,a,b,b,a,a ]
 \]
 is fully compressed. However, with \$\mathbb{Z}\$-quantifiers and axioms, the above stream is equivalent to
 \[
-\{6a,3b\}.
+[ 6a,3b ].
 \]
 Compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification. From a data structures perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset]. The two examples below demonstrate type and value *bulking*, where the former is a compile type optimization and the latter a runtime optimization.
 
