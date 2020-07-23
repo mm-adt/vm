@@ -1614,7 +1614,7 @@ mmlang&gt; ''[+{2}'a',+{3}'b']
 </tbody>
 </table>
 <div class="paragraph">
-<p>The <strong>bulking</strong>, <strong>merging</strong>, and <strong>removing</strong> axioms are aimed at reducing the amount of data flowing through a stream, while the <strong>splitting</strong> and <strong>applying</strong> axioms maintain quantifier semantics as elements of the <em>object</em> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> are operated on. Without the stream ring axioms, the stream</p>
+<p>The <strong>bulking</strong>, <strong>merging</strong>, and <strong>removing</strong> axioms are aimed at reducing the amount of data flowing through a stream, while the <strong>splitting</strong> and <strong>applying</strong> axioms maintain quantifier semantics as elements of the <em>object</em> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> are operated on. When only considering the standard ring axioms, the stream</p>
 </div>
 <table class="tableblock frame-all grid-all right" style="width: 45%;">
 <colgroup>
@@ -1642,14 +1642,26 @@ mmlang&gt; ['a'{5},'b'{3}]
 <p>\[
 [ a,a,b,a,b,b,a,a ]
 \]
-is irreducible when only considering the ring axioms. However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to
+is irreducible. However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to
 \[
 [ 5a,3b ],
 \]
-where <code>[,]</code>, as the operator of the abelian group, is <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>&#8201;&#8212;&#8201;i.e., \$[ 5a,3b ] \equiv [3b,5a]\$.</p>
+where the abelian group operator <code>[,]</code> is <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>&#8201;&#8212;&#8201;i.e., \$[ 5a,3b ] \equiv [3b,5a]\$.</p>
 </div>
 <div class="paragraph">
-<p>Stream compression is achieved by removing redundant information in a <a href="https://en.wikipedia.org/wiki/Lossless_compression">lossless</a> manner such that <a href="https://en.wikipedia.org/wiki/Enumeration">enumeration</a> is replaced with quantification. From a data structure perspective, an unordered <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> is converted into a weighted <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a>. The two examples below demonstrate type and value <strong>bulking</strong>, where the former is a <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compile time optimization</a> and the latter a <a href="https://en.wikipedia.org/wiki/Program_optimization#Run_time">runtime optimization</a>.</p>
+<p>Stream compression is achieved by removing redundant information in a <a href="https://en.wikipedia.org/wiki/Lossless_compression">lossless</a> manner such that <a href="https://en.wikipedia.org/wiki/Enumeration">enumeration</a> is replaced with quantification. From a data structure perspective, an unordered <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> is converted into a weighted <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a>. Relying on the same axiomatic principle, but reframed in terms of types (programs), the <em>atemporal stream theorem</em> guarantees equivalent outcomes for both <a href="https://en.wikipedia.org/wiki/Synchronous_circuit">synchronous</a> and <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> execution strategies. The two examples below highlight this time/space entailment, where the former realizes a <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compile time optimization</a> and the latter a <a href="https://en.wikipedia.org/wiki/Program_optimization#Run_time">runtime optimization</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Expressions of the form <code>-&lt;(a,b,c)&gt;-</code> are decomposed representations of <code>[a,b,c]</code>, where <code>-&lt;(a,b,c)</code> <em>splits</em>, but does not <em>merge</em>.
+</td>
+</tr>
+</table>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -5666,7 +5678,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-23 12:27:38 -0600
+Last updated 2020-07-23 17:27:13 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
