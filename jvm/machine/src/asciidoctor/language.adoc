@@ -66,8 +66,6 @@ int{5}           //<3>
 <4> Five `1` `int` values.
 <5> A `str` _stream_ containing `'a'`,`'b'`, and `'a'`.
 
-NOTE: The *stream* is a foundational concept in mm-ADT. It's algebraic properties are discussed at length when discussing values. In the meantime, note that a stream is an `obj`. A stream's type is the type of it's constituent values. A stream's quantifier is the sum of the quantifiers of it's constituent values. Streams are unordered and do not nest in that `{1,{2,3},4}` is equivalent to `{1,2,3,4}`.
-
 ==== The Obj Stream Ring
 
 .Stream Ring Theory
@@ -97,7 +95,7 @@ NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntacti
 
 [cols="2,2,7,7"]
 |===
-|  axiom | equation  | mmlang values | mmlang types
+^|  axiom ^| equation  ^| mmlang values ^| mmlang types
 
 4.+^h| Additive Abelian Group -- \$(\tt{obj},[,],\underline{\mathbf{0}})\$
 
@@ -249,9 +247,9 @@ a|
 
 [cols="2,2,7,7"]
 |===
-| theorem | equation  | mmlang values | mmlang types
+^| theorem ^| equation  ^| mmlang values ^| mmlang types
 
-4.+^h| Useful Deductions -- \$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$
+4.+^h| Ring with Unity -- \$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$
 
 | Additive factoring
 | \[\begin{split}
@@ -374,7 +372,7 @@ Stream ring theory studies _quantified objects_. The quantifiers must be element
 
 [cols="2,2,7,7"]
 |===
-|  axiom   | equation           | mmlang values | mmlang types
+^| axiom   ^| equation    ^| mmlang values ^| mmlang types
 
 | Bulking  | \[\begin{split}
 & xa + ya \\
@@ -424,7 +422,7 @@ a|
 ----
 {blank}
 | Merging  | \[\begin{split}
- & ((xa) + (yb)) \\
+ & \((xa) + (yb)) \\
 =& (xa + yb)
 \end{split}\]
 a|
