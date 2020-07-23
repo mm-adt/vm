@@ -72,10 +72,9 @@ NOTE: The *stream* is a foundational concept in mm-ADT. It's algebraic propertie
 
 .Stream Ring Theory
 ****
-https://zenodo.org/record/2565243[Stream ring theory] is a ring algebra defined by the https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* and *coefficient* ring, where every function/coefficient pair is an element of the carrier of the ring.
-The algebra is useful in asynchronous distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, large amounts of data need to be co-located for processing.
+https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* and *coefficient* ring. Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] specifying coefficient dynamics. Categorically, every stream ring is in an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts]. Biproducts have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located.
 
-mm-ADT adopts the algebra of stream ring theory, where functions are *instructions* and coefficients are *quantifiers*. mm-ADT's type system is realized as a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] extension of the algebra in the *type ringoid*.
+mm-ADT adopts the algebra of stream ring theory, but uses the term *instruction* for _function_ and *quantifier* for _coefficient_. Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wiki/Inductive_type[inductive], https://en.wikipedia.org/wiki/Dependent_type[dependent] https://en.wikipedia.org/wiki/Type_theory[type theory] based on a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] stream ring with https://en.wikipedia.org/wiki/Interval_(mathematics)[interval] quantifiers called a *type ringoid*.
 ****
 
 The *`obj` stream ring* is the algebraic ring
@@ -461,11 +460,11 @@ The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount
 \[
 [ a,a,a,b,a,b,b,a,a ]
 \]
-is fully compressed. However, with \$\mathbb{Z}\$-quantifiers and axioms, the above stream is equivalent to
+is considered irreducible. However, with \$\mathbb{Z}\$-quantifiers and the stream axioms, the above stream is equivalent to
 \[
 [ 6a,3b ].
 \]
-Compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification. From a data structures perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset]. The two examples below demonstrate type and value *bulking*, where the former is a compile type optimization and the latter a runtime optimization.
+Compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification. From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset]. The two examples below demonstrate type and value *bulking*, where the former is a https://en.wikipedia.org/wiki/Optimizing_compiler[compile time optimization] and the latter a https://en.wikipedia.org/wiki/Program_optimization#Run_time[runtime optimization].
 
 
 [cols="4,8"]
