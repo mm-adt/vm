@@ -104,7 +104,7 @@ NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntacti
 
 | Additive associativity
 | \[\begin{split}
-&(a+b)+c \\
+&(a+b)\+c \\
 =& a+(b+c)
 \end{split}\]
 a|
