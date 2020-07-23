@@ -3556,14 +3556,14 @@ x_{q_2}[a_{q_0},b_{q_1}] =
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}-&lt;([plus,'a']{3},[plus,'a']{4})&gt;-
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}-&lt;(+{3}'a',+{4}'a')&gt;-
 ==&gt;'xa'{14}
-mmlang&gt; 'x'{2}-&lt;([plus,'a']{3},[plus,'b']{4})&gt;-
+mmlang&gt; 'x'{2}-&lt;(+{3}'a',+{4}'b')&gt;-
 ==&gt;'xa'{6}
 ==&gt;'xb'{8}
-mmlang&gt; 'x'{2}[[plus,'a']{3},[plus,'a']{4}]
+mmlang&gt; 'x'{2}[+{3}'a',+{4}'a']
 ==&gt;'xa'{14}
-mmlang&gt; 'x'{2}[[plus,'a']{3},[plus,'b']{4}]
+mmlang&gt; 'x'{2}[+{3}'a',+{4}'b']
 ==&gt;'xa'{6}
 ==&gt;'xb'{8}</code></pre>
 </div>
@@ -3580,11 +3580,11 @@ mmlang&gt; 'x'{2}[[plus,'a']{3},[plus,'b']{4}]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[[plus,'ko'],[plus,'ko']]    <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[+'ko',+'ko']      <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;'marko'{2}
-mmlang&gt; 'mar'[[plus,'ko']{2}]             <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 'mar'[+{2}'ko']         <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'marko'{2}
-mmlang&gt; 'mar'[plus,'ko']{2}               <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 'mar'+{2}'ko'           <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;'marko'{2}</code></pre>
 </div>
 </div>
@@ -3608,7 +3608,8 @@ mmlang&gt; 'mar'[plus,'ko']{2}               <i class="conum" data-value="3"></i
 <p>The equality</p>
 </div>
 <div class="paragraph text-center">
-<p><code>'mar'[[plus,'ko']{2}] == 'mar'[plus,'ko']{2}</code></p>
+<p><code>'mar'[+{2}'ko'] == 'mar'+{2}'ko'</code><br>
+<code>'mar'[[plus,'ko']{2}] == 'mar'[plus,'ko']{2}</code></p>
 </div>
 <div class="paragraph">
 <p>is due to ring theory&#8217;s <strong>distributivity axiom</strong> that requires multiplication both left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distribute</a> over addition such that if \$(R,\ast,+,\mathbf{1},\mathbf{0})\$ is a ring and \$a,b,c \in R\$, then
@@ -3872,11 +3873,11 @@ x_{q_2} [a_{q_0} | b_{q_1}] =
 <hr>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[[plus,'a']{3} | [plus,'b']{4}]  <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[+{3}'a' | +{4}'b']  <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;'xa'{6}
-mmlang&gt; 'x'{2}[[plus,'a']{0} | [plus,'b']{4}]  <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 'x'{2}[+{0}'a' | +{4}'b']  <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'xb'{8}
-mmlang&gt; 'x'{2}[[plus,'a']{0} | [plus,'b']{0}]  <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 'x'{2}[+{0}'a' | +{0}'b']  <i class="conum" data-value="3"></i><b>(3)</b>
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -3911,11 +3912,11 @@ x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[[plus,'a']{3} -&gt; [plus,'b']{4} | [plus,'c']{5} -&gt; [plus,'d']{6}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[+{3}'a' -&gt; +{4}'b' | +{5}'c' -&gt; +{6}'d']
 ==&gt;'xb'{8}
-mmlang&gt; 'x'{2}[[plus,'a']{0} -&gt; [plus,'b']{4} | [plus,'c']{5} -&gt; [plus,'d']{6}]
+mmlang&gt; 'x'{2}[+{0}'a' -&gt; +{4}'b' | +{5}'c' -&gt; +{6}'d']
 ==&gt;'xd'{12}
-mmlang&gt; 'x'{2}[[plus,'a']{0} -&gt; [plus,'b']{4} | [plus,'c']{0} -&gt; [plus,'d']{6}]
+mmlang&gt; 'x'{2}[+{0}'a' -&gt; +{4}'b' | +{0}'c' -&gt; +{6}'d']
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -4109,7 +4110,7 @@ mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)&gt;-   <i class="conum" data-value="4"></i><b>
 ==&gt;20
 mmlang&gt; 5[+1;+2;+3;+4;+5]       <i class="conum" data-value="5"></i><b>(5)</b>
 ==&gt;20
-mmlang&gt; 5[plus,15]              <i class="conum" data-value="6"></i><b>(6)</b>
+mmlang&gt; 5+15                    <i class="conum" data-value="6"></i><b>(6)</b>
 ==&gt;20</code></pre>
 </div>
 </div>
@@ -4153,11 +4154,11 @@ mmlang&gt; 5[plus,15]              <i class="conum" data-value="6"></i><b>(6)</b
 <td class="tableblock halign-left valign-top"><p class="tableblock">Each of these expressions is equivalent to <code>obj{0}</code>. This is demonstrated using the <code>;-poly</code> quantifier equation. <code>2*3*0 = 2*0*4 = 0*3*4</code>. In general, if there exists a <strong>0</strong>-quantified <code>obj</code> in a <code>obj</code>  monoid expression, then the result is always <code>obj{0}</code>.</p></td>
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{0}
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{0}2
 mmlang&gt;
-mmlang&gt; 6{2}[plus,1]{0}[plus,2]{4}
+mmlang&gt; 6{2}+{0}1+{4}2
 mmlang&gt;
-mmlang&gt; 6{0}[plus,1]{3}[plus,2]{4}
+mmlang&gt; 6{0}+{3}1+{4}2
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -4169,11 +4170,11 @@ mmlang&gt;</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">All three expression evaluate to the same <code>9{24}</code> value. The quantifier ring has a <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> multiplicative monoid such that <code>2*3*4 = 3*4*2 = 4*2*1</code>.</p></td>
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{4}
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{4}2
 ==&gt;9{24}
-mmlang&gt; 6{3}[plus,1]{4}[plus,2]{2}
+mmlang&gt; 6{3}+{4}1+{2}2
 ==&gt;9{24}
-mmlang&gt; 6{4}[plus,1]{2}[plus,2]{3}
+mmlang&gt; 6{4}+{2}1+{3}2
 ==&gt;9{24}</code></pre>
 </div>
 </div>
@@ -4185,15 +4186,15 @@ mmlang&gt; 6{4}[plus,1]{2}[plus,2]{3}
 <td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is still possible to propagate coefficients left or right through an <code>obj</code> <code>*</code>-expression. Regardless of the quantifiers being <a href="https://en.wikipedia.org/wiki/Prime_element">prime elements</a>, quantifier propagation need not preserve the factors of a <code>*</code>. In this way, if the <a href="https://en.wikipedia.org/wiki/Geometric_progression">geometric sequence</a> remains the same, any quantifier distribution is allowed.</p></td>
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}[plus,1]{3}[plus,2]{4}
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{4}2
 ==&gt;9{24}
-mmlang&gt; 6[plus,1]{6}[plus,2]{4}
+mmlang&gt; 6+{6}1+{4}2
 ==&gt;9{24}
-mmlang&gt; 6[plus,1][plus,2]{24}
+mmlang&gt; 6+1+{24}2
 ==&gt;9{24}
-mmlang&gt; 6[plus,1]{12}[plus,2]{2}
+mmlang&gt; 6+{12}1+{2}2
 ==&gt;9{24}
-mmlang&gt; 6{6}[plus,1]{2}[plus,2]{2}
+mmlang&gt; 6{6}+{2}1+{2}2
 ==&gt;9{24}</code></pre>
 </div>
 </div>
@@ -4205,11 +4206,11 @@ mmlang&gt; 6{6}[plus,1]{2}[plus,2]{2}
 <td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers propagate along the the multiplicative <code>obj</code> monoid via their <code>*</code>-operator. They propagate along the additive <code>obj</code> group via their <code>+</code>-operator. In this way, if two branches have <a href="https://en.wikipedia.org/wiki/Orthogonality">orthogonal</a> quantifiers of the same magnitude, then when they leave the <code>+</code>-group to be additively merged onto the <code>*</code>-monoid, they cancel each other out. Various set theoretic and <a href="https://en.wikipedia.org/wiki/Quantum_computing">quantum</a> operations make use of constructive and deconstructive quantifier <a href="https://en.wikipedia.org/wiki/Orthogonality">interference</a> when computing.</p></td>
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[[plus,1]{-1}[plus,1]{2},[plus,2]{2}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[+{-1}1+{2}1,+{2}2]
 mmlang&gt;
-mmlang&gt; 6[[plus,1]{-1}[plus,1],[plus,2]]{2}
+mmlang&gt; 6[+{-1}1+1,+2]{2}
 mmlang&gt;
-mmlang&gt; 6{2}[[plus,1]{-1}[plus,1],[plus,2]]
+mmlang&gt; 6{2}[+{-1}1+1,+2]
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -5575,7 +5576,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-22 14:47:44 -0600
+Last updated 2020-07-22 17:32:32 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
