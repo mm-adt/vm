@@ -26,6 +26,7 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 
@@ -38,8 +39,11 @@ trait Lst[A <: Obj] extends Poly[A]
   with ZeroOp[Lst[A]] {
 
   def g: LstTuple[A]
+
   def gsep: String = g._1
+
   lazy val glist: List[A] = g._2 /*.map(x => x.hardQ(multQ(this.q, x.q)))*/ .map(x => if (this.isInstanceOf[Type[_]]) x else Obj.copyDefinitions(this, x))
+
   override def equals(other: Any): Boolean = other match {
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
@@ -49,21 +53,25 @@ trait Lst[A <: Obj] extends Poly[A]
     case _ => true
   }
 }
+
 object Lst {
   def test[A <: Obj](alst: Lst[A], blst: Lst[A]): Boolean = Poly.sameSep(alst, blst) && // TODO: this.name.equals(other.name) &&
     withinQ(alst, blst) &&
     (blst.glist.isEmpty || alst.glist.size == blst.glist.size) && // TODO: should lists only check up to their length
     alst.glist.zip(blst.glist).find(b => !b._1.test(b._2)).forall(_ => return false)
+
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
     apoly.clone(g = (apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
   }
+
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A]): Lst[A] = {
     if (apoly.isSerial) {
       var local = start
       apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => {
         local = local match {
           case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
+          case x if slot.isInstanceOf[Value[_]] => slot.hardQ(multQ(x.q, slot.q)) // TODO: hardcoded hack -- should really be part of Inst.resolveArg() and Obj.compute()
           case _ => Inst.resolveArg(local, slot)
         }
         local

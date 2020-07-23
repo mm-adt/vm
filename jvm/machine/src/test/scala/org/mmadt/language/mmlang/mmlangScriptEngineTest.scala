@@ -339,6 +339,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.q(8))(engine.eval("[int,int]{4}").range)
     assertResult(int(5).q(8))(engine.eval("5[int,int]{4}"))
     assertResult(int.q(8))(engine.eval("[branch,(int,int)]{4}").range)
+    //
+    assertResult(int.q(-1))(engine.eval("[int{-1};int]").range)
+    //assertResult(int.q(-1))(engine.eval("[int;int{-1}]").range)
+    //assertResult(int)(engine.eval("[int{-5};int{-1};int{1}]").range)
+    assertResult(int(5).q(-1))(engine.eval("[1{-1};5]"))
+    assertResult(int(5))(engine.eval("[1{-1};5{-1}]"))
   }
 
   test("choice with given") {
