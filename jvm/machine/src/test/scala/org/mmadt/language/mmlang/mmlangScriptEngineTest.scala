@@ -328,10 +328,15 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("split/merge/branch quantification parsing") {
     assertResult(int.q(8))(engine.eval("[split,(int,int)][merge]{4}").range)
+    assertResult(int(5).q(8))(engine.eval("5[split,(int,int)][merge]{4}"))
     assertResult(int.q(8))(engine.eval("_-<(int,int)>-{4}").range)
+    assertResult(int(5).q(8))(engine.eval("5-<(int,int)>-{4}"))
     assertResult(int.q(80))(engine.eval("_-<(int,int){10}>-{4}").range)
+    assertResult(int(5).q(80))(engine.eval("5-<(int,int){10}>-{4}"))
     assertResult(int.q(80))(engine.eval("[split,(int,int)]{10}[merge]{4}").range)
+    assertResult(int(5).q(80))(engine.eval("5=>[split,(int,int)]{10}[merge]{4}"))
     assertResult(int.q(8))(engine.eval("[int,int]{4}").range)
+    assertResult(int(5).q(8))(engine.eval("5[int,int]{4}"))
     assertResult(int.q(8))(engine.eval("[branch,(int,int)]{4}").range)
   }
 
