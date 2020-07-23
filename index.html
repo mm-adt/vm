@@ -973,14 +973,26 @@ where <code>obj</code> is the carrier set, <code>[,]</code> is the additive bina
 <div class="paragraph">
 <p>The following table provides a review of the ring theoretic axioms and their realization in mm-ADT via <code>mmlang</code> over both <code>obj</code> <strong>values</strong> and <strong>types</strong>. This table serves as a consolidated summary. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>mmlang</code> examples are rife with <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugars</a>, where <code>[a;b;c]</code> denotes <code>[branch,(a;b;c)]</code> and <code>+{q}n</code> denotes <code>[plus,n]{q}</code>.
+</td>
+</tr>
+</table>
+</div>
 <div class="sect4">
 <h5 id="_ring_axioms">Ring Axioms</h5>
-<table class="tableblock frame-all grid-all stretch small">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 21.0526%;">
-<col style="width: 31.5789%;">
-<col style="width: 36.8422%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 38.8888%;">
+<col style="width: 38.889%;">
 </colgroup>
 <thead>
 <tr>
@@ -996,7 +1008,10 @@ where <code>obj</code> is the carrier set, <code>[,]</code> is the additive bina
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additive associativity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a+b)+c = a+(b+c)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;(a+b)c \\
+=&amp; a(b+c)
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a','b'],'c']
@@ -1030,7 +1045,10 @@ mmlang&gt; ''[+'a',[+'b',+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additive commutativity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a+b = b+a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+ &amp;a+b \\
+=&amp; b+a
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b']
@@ -1060,7 +1078,7 @@ mmlang&gt; ''[+'b',+'a']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additive identity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a+\mathbf{0} = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[a+\mathbf{0} = a\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a',_{0}]
@@ -1082,7 +1100,7 @@ mmlang&gt; ''[+'b',+'a']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additive inverse</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a + (-a) =\mathbf{0}\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[a + ({-a}) = \mathbf{0}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','a'{-1}]
@@ -1107,7 +1125,10 @@ mmlang&gt;</code></pre>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative associativity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;(a \cdot b) \cdot c \\
+=&amp; a \cdot (b \cdot c)
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a';'b'];'c']
@@ -1133,7 +1154,7 @@ mmlang&gt; ''[+'a';[+'b';+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative identity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \cdot \mathbf{1} = a\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[a \cdot \mathbf{1} = a\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';_{1}]
@@ -1158,7 +1179,10 @@ mmlang&gt; ''[+'a';[+'b';+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Left distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a \cdot (b + c) = ab + ac\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a \cdot (b + c) \\
+=&amp; ab + ac
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';['b','c']]
@@ -1188,7 +1212,10 @@ mmlang&gt; ''[[+'a';+'b'],[+'a';+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Right distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(a + b) \cdot c = ac + bc\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;(a+b) \cdot c \\
+=&amp; ac + bc
+\end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a','b'];'c']
@@ -1219,12 +1246,12 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </div>
 <div class="sect4">
 <h5 id="_ring_theorems">Ring Theorems</h5>
-<table class="tableblock frame-all grid-all stretch small">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 21.0526%;">
-<col style="width: 31.5789%;">
-<col style="width: 36.8422%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 38.8888%;">
+<col style="width: 38.889%;">
 </colgroup>
 <thead>
 <tr>
@@ -1263,7 +1290,8 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$-(a+b) = (-a) + (-b)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$-(a+b) =\$<br>
+\$(-a) + (-b)\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b']{-1}
@@ -1373,7 +1401,8 @@ mmlang&gt; ''[+'a';+'b']{-1}
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(-a) * (-b) = a * b\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$(-a) * (-b)\$<br>
+\$= a * b\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{-1};'b'{-1}]
@@ -1405,12 +1434,12 @@ mmlang&gt; ''[+'a';+'b']
 <div class="paragraph">
 <p>Stream ring theory studies <em>quantified objects</em>. The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity. The most common quantifier ring is the integers with standard addition and multiplication, \$(\mathbb{Z},+,\ast,0,1)\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient <a href="https://en.wikipedia.org/wiki/Stream_(computing)">stream computing</a>.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch small">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 21.0526%;">
-<col style="width: 31.5789%;">
-<col style="width: 36.8422%;">
+<col style="width: 11.1111%;">
+<col style="width: 11.1111%;">
+<col style="width: 38.8888%;">
+<col style="width: 38.889%;">
 </colgroup>
 <thead>
 <tr>
@@ -1498,7 +1527,8 @@ mmlang&gt; ['ab'{6},'ac'{8}]
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Merging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$((xa) + (yb)) = (xa + yb)\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$((xa) + (yb))\$<br>
+\$= (xa + yb)\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [['a'{2}],['b'{3}]]
@@ -1607,7 +1637,7 @@ mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)&gt;-+2
 <div class="title">Deep Dive 1. Process Architectures Sympathetic to the Type Ringoid</div>
 <div class="content">
 <div class="paragraph">
-<p>The <code>mmlang</code> examples are generated by a language that acts on the <code>inst</code> monoid. The <strong>type ringoid</strong> has an <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> in the <code>inst</code> monoid, but this is not the intended algebra of the language component. The preferred embedding is in the logic of the processor component. By what is <em>undefined</em> by the type ringoid axioms, a diversity of modern processor architectures naturally respect the type ringoid axioms.</p>
+<p>The <code>mmlang</code> examples are generated by a language that acts on the <code>inst</code> monoid. The <strong>type ringoid</strong> has an <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> in the <code>inst</code> monoid, but this is not the intended algebra of the language component. The preferred embedding is in the logic of the processor component, where what is <em>undefined</em> in the type ringoid axioms, enables a diversity of modern processor architectures to interface with the mm-ADT VM.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -5576,7 +5606,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-23 01:06:59 -0600
+Last updated 2020-07-23 01:20:54 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
