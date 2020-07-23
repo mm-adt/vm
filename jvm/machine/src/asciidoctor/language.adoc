@@ -464,7 +464,7 @@ a|
 {blank}
 |===
 
-The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount of data flowing through a stream, while the *splitting* and *applying* axioms maintain quantifier semantics as elements of the _object_ https://en.wikipedia.org/wiki/Semiring[semiring] are operated on. Without the stream ring axioms, the stream
+The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount of data flowing through a stream, while the *splitting* and *applying* axioms maintain quantifier semantics as elements of the _object_ https://en.wikipedia.org/wiki/Semiring[semiring] are operated on. When only considering the standard ring axioms, the stream
 [float=right,width=45]
 |===
 a|
@@ -478,13 +478,15 @@ a|
 \[
 [ a,a,b,a,b,b,a,a ]
 \]
-is irreducible when only considering the ring axioms. However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to
+is irreducible. However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to
 \[
 [ 5a,3b ],
 \]
-where `[,]`, as the operator of the abelian group, is https://en.wikipedia.org/wiki/Commutative_property[commutative] -- i.e., \$[ 5a,3b ] \equiv [3b,5a]\$.
+where the abelian group operator `[,]` is https://en.wikipedia.org/wiki/Commutative_property[commutative] -- i.e., \$[ 5a,3b ] \equiv [3b,5a]\$.
 
-Stream compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification. From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset]. The two examples below demonstrate type and value *bulking*, where the former is a https://en.wikipedia.org/wiki/Optimizing_compiler[compile time optimization] and the latter a https://en.wikipedia.org/wiki/Program_optimization#Run_time[runtime optimization].
+Stream compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification. From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset]. Relying on the same axiomatic principle, but reframed in terms of types (programs), the _atemporal stream theorem_ guarantees equivalent outcomes for both https://en.wikipedia.org/wiki/Synchronous_circuit[synchronous] and https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] execution strategies. The two examples below highlight this time/space entailment, where the former realizes a https://en.wikipedia.org/wiki/Optimizing_compiler[compile time optimization] and the latter a https://en.wikipedia.org/wiki/Program_optimization#Run_time[runtime optimization].
+
+NOTE: Expressions of the form `-<(a,b,c)>-` are decomposed representations of `[a,b,c]`, where `-<(a,b,c)` _splits_, but does not _merge_.
 
 
 [cols="4,8"]
