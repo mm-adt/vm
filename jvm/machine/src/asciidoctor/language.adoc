@@ -1425,10 +1425,10 @@ The two cases above are expressed in `mmlang` below with the last two examples b
 
 [exec]
 ----
-'x'{2}-<([plus,'a']{3},[plus,'a']{4})>-
-'x'{2}-<([plus,'a']{3},[plus,'b']{4})>-
-'x'{2}[[plus,'a']{3},[plus,'a']{4}]
-'x'{2}[[plus,'a']{3},[plus,'b']{4}]
+'x'{2}-<(+{3}'a',+{4}'a')>-
+'x'{2}-<(+{3}'a',+{4}'b')>-
+'x'{2}[+{3}'a',+{4}'a']
+'x'{2}[+{3}'a',+{4}'b']
 ----
 
 ====== Data Flow Unions
@@ -1439,9 +1439,9 @@ image::comma-lst-tensor-example.png[align=center,width=725]
 
 [exec]
 ----
-'mar'[[plus,'ko'],[plus,'ko']]    //<1>
-'mar'[[plus,'ko']{2}]             //<2>
-'mar'[plus,'ko']{2}               //<3>
+'mar'[+'ko',+'ko']      //<1>
+'mar'[+{2}'ko']         //<2>
+'mar'+{2}'ko'           //<3>
 ----
 <1> The `'mar'` `str` is copied (\$ \Delta \$) and applied (\$ => \$) to each `[plus,'ko']` polynomial term and then linearly combined (\$ \nabla \$).
 <2> Polynomial term summation via quantifier summation when two `,-lst` terms are equal -- \$\{1\} + \{1\} = \{2\} \$.
@@ -1450,6 +1450,7 @@ image::comma-lst-tensor-example.png[align=center,width=725]
 The equality
 
 [.text-center]
+`'mar'[+{2}'ko'] == 'mar'+{2}'ko'` +
 `'mar'[[plus,'ko']{2}] == 'mar'[plus,'ko']{2}`
 
 is due to ring theory's *distributivity axiom* that requires multiplication both left and right https://en.wikipedia.org/wiki/Distributive_property[distribute] over addition such that if \$(R,\ast,+,\mathbf{1},\mathbf{0})\$ is a ring and \$a,b,c \in R\$, then
@@ -1603,9 +1604,9 @@ Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_the
 
 [exec]
 ----
-'x'{2}[[plus,'a']{3} | [plus,'b']{4}]  //<1>
-'x'{2}[[plus,'a']{0} | [plus,'b']{4}]  //<2>
-'x'{2}[[plus,'a']{0} | [plus,'b']{0}]  //<3>
+'x'{2}[+{3}'a' | +{4}'b']  //<1>
+'x'{2}[+{0}'a' | +{4}'b']  //<2>
+'x'{2}[+{0}'a' | +{0}'b']  //<3>
 ----
 <1> The first term applied to `x` is not `obj{0}` so `'a'` is added to `'x'`. The polynomial reduces to `[plus,'a']{3}`.
 <2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
@@ -1624,9 +1625,9 @@ x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
 
 [exec]
 ----
-'x'{2}[[plus,'a']{3} -> [plus,'b']{4} | [plus,'c']{5} -> [plus,'d']{6}]
-'x'{2}[[plus,'a']{0} -> [plus,'b']{4} | [plus,'c']{5} -> [plus,'d']{6}]
-'x'{2}[[plus,'a']{0} -> [plus,'b']{4} | [plus,'c']{0} -> [plus,'d']{6}]
+'x'{2}[+{3}'a' -> +{4}'b' | +{5}'c' -> +{6}'d']
+'x'{2}[+{0}'a' -> +{4}'b' | +{5}'c' -> +{6}'d']
+'x'{2}[+{0}'a' -> +{4}'b' | +{0}'c' -> +{6}'d']
 ----
 
 The previous `mmlang` examples are contrived. In practice, they keys of `|-rec` will typically leverage `[is,bool]` with the anonymous type `_` serving as the link:https://en.wikipedia.org/wiki/Switch_statement#Fallthrough[default case] of the switch.
@@ -1729,7 +1730,7 @@ image:bubble-chamber.png[width=200,float=left] The equation above realizes a str
 5-<(+1+2+3+4+5)         //<3>
 5-<(+1;+2;+3;+4;+5)>-   //<4>
 5[+1;+2;+3;+4;+5]       //<5>
-5[plus,15]              //<6>
+5+15                    //<6>
 ----
 <1> `5` is propagated through the `;-poly` terms leaving a trace of it's state at each term slot.
 <2> Since the elements of the \$R\$-module \$M\$ are in \$M\$, any monoid element is a legal term.
@@ -1747,38 +1748,38 @@ image:bubble-chamber.png[width=200,float=left] The equation above realizes a str
 <.^a|
 [exec]
 ----
-6{2}[plus,1]{3}[plus,2]{0}
-6{2}[plus,1]{0}[plus,2]{4}
-6{0}[plus,1]{3}[plus,2]{4}
+6{2}+{3}1+{0}2
+6{2}+{0}1+{4}2
+6{0}+{3}1+{4}2
 ----
 {blank}
 | All three expression evaluate to the same `9{24}` value. The quantifier ring has a https://en.wikipedia.org/wiki/Commutative_property[commutative] multiplicative monoid such that `2*3*4 = 3*4*2 = 4*2*1`.
 <.^a|
 [exec]
 ----
-6{2}[plus,1]{3}[plus,2]{4}
-6{3}[plus,1]{4}[plus,2]{2}
-6{4}[plus,1]{2}[plus,2]{3}
+6{2}+{3}1+{4}2
+6{3}+{4}1+{2}2
+6{4}+{2}1+{3}2
 ----
 {blank}
 | If the quantifier ring is not commutative, it is still possible to propagate coefficients left or right through an `obj` `\*`-expression. Regardless of the quantifiers being https://en.wikipedia.org/wiki/Prime_element[prime elements], quantifier propagation need not preserve the factors of a `*`. In this way, if the https://en.wikipedia.org/wiki/Geometric_progression[geometric sequence] remains the same, any quantifier distribution is allowed.
 <.^a|
 [exec]
 ----
-6{2}[plus,1]{3}[plus,2]{4}
-6[plus,1]{6}[plus,2]{4}
-6[plus,1][plus,2]{24}
-6[plus,1]{12}[plus,2]{2}
-6{6}[plus,1]{2}[plus,2]{2}
+6{2}+{3}1+{4}2
+6+{6}1+{4}2
+6+1+{24}2
+6+{12}1+{2}2
+6{6}+{2}1+{2}2
 ----
 {blank}
 | Quantifiers propagate along the the multiplicative `obj` monoid via their `\*`-operator. They propagate along the additive `obj` group via their `+`-operator. In this way, if two branches have https://en.wikipedia.org/wiki/Orthogonality[orthogonal] quantifiers of the same magnitude, then when they leave the `+`-group to be additively merged onto the `*`-monoid, they cancel each other out. Various set theoretic and https://en.wikipedia.org/wiki/Quantum_computing[quantum] operations make use of constructive and deconstructive quantifier https://en.wikipedia.org/wiki/Orthogonality[interference] when computing.
 <.^a|
 [exec]
 ----
-6[[plus,1]{-1}[plus,1]{2},[plus,2]{2}]
-6[[plus,1]{-1}[plus,1],[plus,2]]{2}
-6{2}[[plus,1]{-1}[plus,1],[plus,2]]
+6[+{-1}1+{2}1,+{2}2]
+6[+{-1}1+1,+2]{2}
+6{2}[+{-1}1+1,+2]
 ----
 {blank}
 |===
