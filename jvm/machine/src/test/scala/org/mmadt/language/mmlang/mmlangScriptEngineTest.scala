@@ -998,8 +998,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("frobenius axioms parsing") {
-    assertResult(int(1) `,` 1)(engine.eval("(1,1)=(_,-<(_,_))=(>-,_)"))
-    assertResult(int(1) `,` 1)(engine.eval("(1,1)=(-<(_,_),_)=(_,>-)"))
+    assertResult(int(1) `,` 1)(engine.eval("(1,1)=(_,>-)=(>-,_)"))
+    assertResult(int(1) `,` 1)(engine.eval("(1,1)=(>-,_)=(_,>-)"))
     assertResult((int(1) `,` 1).q(2))(engine.eval("(1,1)>--<(_,_)"))
     assertResult(int(1).q(2))(engine.eval("1-<(_,_)>-"))
     // complex quantifier examples

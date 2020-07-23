@@ -27,7 +27,7 @@ import org.mmadt.language.Tokens.{bool => _, int => _, lst => _, real => _, rec 
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.op.branch.{BranchOp, MergeOp, RepeatOp, SplitOp}
+import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
 import org.mmadt.language.obj.value.strm.Strm
@@ -148,12 +148,13 @@ class mmlangParser extends JavaTokenParsers {
 
 
   // instruction parsing
-  lazy val inst: Parser[Inst[Obj, Obj]] = (sugarlessInst | fromSugar | toSugar | splitSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar | branchSugar) ~ opt(quantifier) ^^
+  lazy val inst: Parser[Inst[Obj, Obj]] = (sugarlessInst | fromSugar | toSugar | splitSugar | combineSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar | branchSugar) ~ opt(quantifier) ^^
     (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = not(Tokens.:<=) ~> (
     Tokens.as_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.juxt_op | Tokens.lte_op | Tokens.gt_op |
       Tokens.lt_op | Tokens.eqs_op | Tokens.and_op | Tokens.or_op | Tokens.given_op | Tokens.product_op | Tokens.sum_op |
-      Tokens.combine_op | Tokens.is_a_op | Tokens.is | Tokens.not_op) ~ obj ^^ (x => OpInstResolver.resolve(x._1, List(x._2)))
+      Tokens.is_a_op | Tokens.is | Tokens.not_op) ~ obj ^^ (x => OpInstResolver.resolve(x._1, List(x._2)))
+  lazy val combineSugar: Parser[Inst[Obj, Obj]] = Tokens.combine_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => CombineOp(x._1.q(q))).getOrElse(CombineOp(x._1)))
   lazy val splitSugar: Parser[Inst[Obj, Obj]] = Tokens.split_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => SplitOp[Obj](x._1.q(q))).getOrElse(SplitOp(x._1)))
   lazy val mergeSugar: Parser[Inst[Obj, Obj]] = Tokens.merge_op ^^ (_ => MergeOp().asInstanceOf[Inst[Obj, Obj]])
   lazy val getStrSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
