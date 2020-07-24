@@ -87,23 +87,18 @@ Thus, algebraically, a type is an element of the https://en.wikipedia.org/wiki/F
 
 .Modules
 ****
-A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$.
-If \$A = X\$, the action is defined by the group's additive operator.
-However, modules are useful when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free.
-A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an abelian group, then both axioms hold and \$X\$ is a https://en.wikipedia.org/wiki/Bimodule[bimodule].
+A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called *scalar multiplication*. If \$A = X\$, the action is defined by the group's additive operator. However, modules are useful when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free. A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. In other words, modules provide a ring theoretic interpretation of various https://en.wikipedia.org/wiki/Linear_algebra[linear algebraic] structures. The axioms for both left and right modules are provided below, where if \$A\$ is an https://en.wikipedia.org/wiki/Abelian_group[abelian group], then \$X\$ is a https://en.wikipedia.org/wiki/Bimodule[bimodule] and both sets of axioms hold.
 
-.Left X-Module
-. \$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$
-. \$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$
-. \$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$
-. \$\mathbf{1}_X \cdot a = a\$
+[.center]
+[cols="^1,^1",width=70]
+|===
+| Left \$X\$-Module Axioms                             | Right \$X\$-Module Axioms
 
-.Right X-Module
-. \$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$
-. \$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$
-. \$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$
-. \$a \cdot \mathbf{1}_X = a\$
-
+| \$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$ | \$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$
+| \$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$ | \$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$
+| \$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$       | \$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$
+| \$\mathbf{1}_X \cdot a = a\$                         | \$a \cdot \mathbf{1}_X = a\$
+|===
 ****
 
 ====== Polynomial Ring Modules
@@ -118,25 +113,32 @@ int[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
 
 image::module-example-2.png[align=center]
 
-The above representation is a polynomial ring where elements of the multiplicative monoid are linearly combined in the free additive abelian group. With abuse of notation, the expression below binds the monoid elements with `+` to reflect the polynomial form \$a + b + c\$.
+The above expression denotes a polynomial ring whose linearly combined terms are elements of the multiplicative monoid. With abuse of notation, the expression below binds the monoidal terms with `+` to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.
 
 \[
-\texttt{int+2[is>-]\*5<44} \;\;+\;\; \texttt{int+2[is>0]*-6<44} \;\;+\;\; \texttt{int+2[is>0]*10+7<44}
+\texttt{int+2[is>0]\*5<44} \;\;+\;\; \texttt{int+2[is>0]*-6<44} \;\;+\;\; \texttt{int+2[is>0]*10+7<44}
 \]
 
-Due to the left and right https://en.wikipedia.org/wiki/Distributive_property[distributive] ring axioms, the following derivation yields the following equivalence.
+Rings support both left and right https://en.wikipedia.org/wiki/Distributive_property[distributivity] such that the following derivation yields the respective equivalence.
 
 \[
 \begin{split}
-&& abcf + abdf + abef \\
-&=& a \ast (bcf + bdf + bef) \\
-&=& a \ast b \ast (cf + df + ef) \\
-&=& a \ast b \ast (c + d + e) \ast f \\
+abcg + abdg + abefg &= a \ast (bcg + bdg + befg) \\
+&= a \ast b \ast (cg + dg + efg) \\
+&= a \ast b \ast (c + d + ef) \ast g \\
 \end{split}
 \]
 
+Thus `int+2[is>0]` is https://en.wikipedia.org/wiki/Factorization[factored] out on the left and `<44` is factored out on the right.
+
 [.text-center]
 `int+2[is>0][\*5,*-6,*10+7]<44`
+
+Again with an abuse of notation to emphasize the lexical structure.
+
+\[
+\texttt{int+2[is>0]} \;\ast\; (\texttt{\*5} \;\;+\;\; \texttt{*-6} \;\;+\;\; \texttt{*10+7}) \;\ast\; \texttt{<44}
+\]
 
 [exec]
 ----
@@ -145,9 +147,7 @@ int+2[is>0][*5,*-6,*10+7]<44
 
 image::module-example-1.png[align=center]
 
-The above expression begins with a monoidal chain of three types: `int`, `int[plus,2]`, and `int{?}\<=int[is,[gt,0]]`. This chain then splits into three independent monoid chains due to the abelian group's additive operator and the distributivity axiom. The three compositions are merged to a single, final monoidal chain containing a single type `bool{0,3}\<=int{0,3}[lt,44]`. Given that the three group branches share the same left and right monoid chains, then according to left and right distributivity,
-
-To be certain, both expressions return the same result.
+To be certain, both the factored and unfactored forms of the expression return the same result for the same input.
 
 [exec]
 ----
@@ -155,11 +155,13 @@ To be certain, both expressions return the same result.
 5 => int+2[is>0][*5,*-6,*10+7]<44
 ----
 
-A split/merge form is provided to better illustrate the intermediate results of the computation.
+A progressive _split/merge_ example is provided to better illustrate the intermediate results of the computation.
 
 [exec]
 ----
 5 => -<(int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44)
+5 => -<(int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44)>-
+
 5 => int
 5 => int+2
 5 => int+2[is>0]
@@ -170,7 +172,9 @@ A split/merge form is provided to better illustrate the intermediate results of 
 
 ====== Type Ringoid Modules
 
-A non-free element is a _zero_-dimensional point. A free element is a _one_-dimensional line. The carrier set of the *type ringoid* is formed from the union the elements of `obj` stream ring's free additive abelian group and free multiplicative monoid -- a https://en.wikipedia.org/wiki/Free_algebra[free ring]. With two free magmas, the elements of the type ringoid are _two_-dimensional rectangles. One dimension represents multiplication and the other addition. The type ringoid's completely free structure is encoded in a `,-lst` (additive) with terms that are `;-lst` (multiplicative). The following is an example of a two-dimensional type ringoid element.
+image:type-ringoid-illustration.png[float=left,width=350]
+
+A non-free element is a _zero_-dimensional point. A free element is a _one_-dimensional line. The carrier set of the *type ringoid* is formed from the union the elements of `obj` stream ring's https://en.wikipedia.org/wiki/Free_abelian_group[free additive abelian group] and https://en.wikipedia.org/wiki/Free_monoid[free multiplicative monoid]. This is the _freest_ possible stream ring representation -- a https://en.wikipedia.org/wiki/Free_algebra[free ring]. With two free magmas, the type ringoid's elements are _two_-dimensional planes. One dimension represents multiplication and the other addition. The type ringoid is encoded in `mmlang` as a `,-lst` (additive) with zero or more `;-lst` (multiplicative) terms. The following is an example of a two-dimensional type ringoid element.
 
 [.text-center]
 `[[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]`
@@ -180,7 +184,7 @@ A non-free element is a _zero_-dimensional point. A free element is a _one_-dime
 [[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]
 ----
 
-In a manner analogous to polynomials in https://en.wikipedia.org/wiki/Linear_algebra[linear algebra], the free monoids of the polynomial can be organized into a https://en.wikipedia.org/wiki/Matrix_(mathematics)[matrix] where the multiplicative identity `_` is used to pad the first two rows, ensuring an \$n \times m\$-matrix.
+In a manner analogous to polynomials in https://en.wikipedia.org/wiki/Linear_algebra[linear algebra], the free monoids of the polynomial can be organized into a https://en.wikipedia.org/wiki/Matrix_(mathematics)[matrix], where the following equations maintain `,` and `;` tokens to help orient the reader and the multiplicative identity `_` pads rows to ensure a proper \$n \times m\$-matrix.
 
 \begin{bmatrix}
  \tt{int}; & +2; & \tt{[is>0]}; & *5; & \_ ; & <44, \\
@@ -234,13 +238,17 @@ This fully factored form can be evaluated with `obj`-scalar left multiplication.
 
 \[
 \begin{split}
-5; \begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix}
-*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44 \\ \begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix}
-*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44  \\ 7 ; & \begin{bmatrix}
-*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44  \\ & \begin{bmatrix}
-35; & \_ , \\ -42; & \_ , \\ 70; & +7 \\ \end{bmatrix} ;  <44  \\ & \begin{bmatrix}
-35, \\ -42, \\ 77 \\ \end{bmatrix} ;  <44 \\ & \begin{bmatrix}
-\tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix} \\ & \begin{bmatrix}
+& 5; \begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix} *5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44  \\
+&= \begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix} *5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44  \\
+&=7 ;  \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44
+= & \begin{bmatrix}
+35; & \_ , \\ -42; & \_ , \\ 70; & +7 \\ \end{bmatrix} ;  <44
+= \begin{bmatrix}
+35, \\ -42, \\ 77 \\ \end{bmatrix} ;  <44
+=\begin{bmatrix}
+\tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix}
+= \begin{bmatrix}
 \tt{true}\{ 2 \}, \\ \tt{false}           \\ \end{bmatrix}
 \end{split}
 \]
@@ -248,6 +256,9 @@ This fully factored form can be evaluated with `obj`-scalar left multiplication.
 [exec]
 ----
 [5;[[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]]
+
+5-<(int;+2;[is>0];-<(*5,*-6,-<(*10;+7)))
+5-<(int;+2;[is>0];-<(*5,*-6,-<(*10;+7)>-)>-;<44)>-
 ----
 
 Again, to be certain, all three derivations yield the same result for the same input.
@@ -259,7 +270,7 @@ Again, to be certain, all three derivations yield the same result for the same i
 [5;[[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]]
 ----
 
-The linear algebraic type ringoid compartmentalizes each type induced by an instruction. This _absolutely_ free representation is well suited for manipulation by the processor. As a compiler, matrix operations analagous to the above can be leveraged for compile time optimizations/rewrites. As an evaluator, the free type ringoid provides a decomposed, 2-dimensional https://en.wikipedia.org/wiki/Pipeline[pipeline] structure convenient for partitioning across machines of a cluster and/or threads of a machine.
+The linear algebraic type ringoid compartmentalizes the type induced at the individual instruction-level. This is the _absolutely_ freest representation of a ring(oid). This "cellular form" is well suited to manipulation by the processor. At compile-time, factoring a matrix representation can be leveraged for optimization and rewriting. At evaluation runtime, the free type ringoid provides a deconstructed, 2-dimensional https://en.wikipedia.org/wiki/Pipeline[pipeline] architecture that can be partitioned across machines of a cluster and/or threads of a machine.
 
 ==== Type Optimization
 
