@@ -489,7 +489,7 @@ Stream compression is achieved by removing redundant information in a https://en
 NOTE: Expressions of the form `-<(a,b,c)>-` are decomposed representations of `[a,b,c]`, where `-<(a,b,c)` _splits_, but does not _merge_.
 
 
-[cols="4,8"]
+[cols="5,8"]
 |===
 
 a|
