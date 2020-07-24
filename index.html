@@ -569,7 +569,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_type_specification">Type Specification</a></li>
 <li><a href="#_type_compilation">Type Compilation</a>
 <ul class="sectlevel4">
-<li><a href="#_obj_modules">obj-Modules</a></li>
+<li><a href="#_obj_modules">obj-Modules</a>
+<ul class="sectlevel5">
+<li><a href="#_modules_of_a_polynomial_ring">Modules of a Polynomial Ring</a></li>
+<li><a href="#_modules_of_the_type_ringoid">Modules of the Type Ringoid</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_type_optimization">Type Optimization</a></li>
@@ -5340,11 +5345,45 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 </div>
 </div>
 </div>
+<div class="sect5">
+<h6 id="_modules_of_a_polynomial_ring">Modules of a Polynomial Ring</h6>
+<div class="paragraph text-center">
+<p><code>int[int+2[is&gt;0]<strong>5&lt;44, int+2[is&gt;0]</strong>-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]
+==&gt;bool{0,3}&lt;=int[branch,(bool{?}&lt;=int[plus,2][is,bool&lt;=int[gt,0]][mult,5][lt,44],bool{?}&lt;=int[plus,2][is,bool&lt;=int[gt,0]][mult,-6][lt,44],bool{?}&lt;=int[plus,2][is,bool&lt;=int[gt,0]][mult,10][plus,7][lt,44])]</code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/module-example-2.png" alt="module example 2">
+</div>
+</div>
 <div class="paragraph">
-<p>Free elements are lexicographically one dimensional&#8212;&#8203;lines. The type ringoid&#8217;s carrier set is the union of the free <code>obj</code> stream ring&#8217;s additive abelian group and multiplicative monoid. Thus, with two free magmas, the elements of the type ringoid are two dimensional&#8212;&#8203;rectangles. In <code>mmlang</code>, the horizontal axis is denote <code>[;]</code> and the vertical axis is denoted <code>[,]</code>. For example, the following type is two-dimensional.</p>
+<p>The above representation is a polynomial ring where elements of the multiplicative monoid are linearly combined in the free additive abelian group. With abuse of notation, the expression below binds the monoid elements with <code>+</code> to reflect the polynomial form \$a + b + c\$.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{int+2[is&gt;-]*5&lt;44} \;\;+\;\; \texttt{int+2[is&gt;0]*-6&lt;44} \;\;+\;\; \texttt{int+2[is&gt;0]*10+7&lt;44}
+\]</p>
+</div>
+<div class="paragraph">
+<p>Due to the left and right distributive ring axioms, the following derivation yields the following equivalence.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{split}
+&amp;&amp; abcf + abdf + abef \\
+&amp;=&amp; a \ast (bcf + bdf + bef) \\
+&amp;=&amp; a \ast b \ast (cf + df + ef) \\
+&amp;=&amp; a \ast b \ast (c + d + e) \ast f \\
+\end{split}
+\]</p>
 </div>
 <div class="paragraph text-center">
-<p><code>int[plus,2][is,[gt,0]][[mult,5],[mult,-6],[mult,10][plus,7]][lt,44]</code></p>
+<p><code>int+2[is&gt;0][<strong>5,</strong>-6,*10+7]&lt;44</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5358,67 +5397,14 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 </div>
 </div>
 <div class="paragraph">
-<p>The above expression begins with a monoidal chain of three types: <code>int</code>, <code>int[plus,2]</code>, and <code>int{?}&lt;=int[is,[gt,0]]</code>. This chain then splits into three independent monoid chains due to the abelian group&#8217;s additive operator and the distributivity axiom. The three compositions are merged to a single, final monoidal chain containing a single type <code>bool{0,3}&lt;=int{0,3}[lt,44]</code>. Given that the three group branches share the same left and right monoid chains, then according to left and right distributivity,
-\[
-\begin{split}
-&amp;&amp; a \ast b \ast (c + d + e) \ast f \\
-&amp;=&amp; a \ast b \ast (cf + df + ef) \\
-&amp;=&amp; a \ast (bcf + bdf + bef) \\
-&amp;=&amp; (abcf + abdf + abef).
-\end{split}
-\]</p>
+<p>The above expression begins with a monoidal chain of three types: <code>int</code>, <code>int[plus,2]</code>, and <code>int{?}&lt;=int[is,[gt,0]]</code>. This chain then splits into three independent monoid chains due to the abelian group&#8217;s additive operator and the distributivity axiom. The three compositions are merged to a single, final monoidal chain containing a single type <code>bool{0,3}&lt;=int{0,3}[lt,44]</code>. Given that the three group branches share the same left and right monoid chains, then according to left and right distributivity,</p>
 </div>
 <div class="paragraph">
-<p>The resultant polynomial ring composition is expressed in <code>mmlang</code> below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]
-==&gt;bool{0,3}&lt;=_[branch,(bool{?}&lt;=_[plus,2][is,bool&lt;=_[gt,0]][mult,5][lt,44],bool{?}&lt;=_[plus,2][is,bool&lt;=_[gt,0]][mult,-6][lt,44],bool{?}&lt;=_[plus,2][is,bool&lt;=_[gt,0]][mult,10][plus,7][lt,44])]</code></pre>
-</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/module-example-2.png" alt="module example 2">
-</div>
-</div>
-<div class="paragraph">
-<p>The above representation take the form of a free monoid ring where elements of the free monoid are linearly combined by in a free abelian group. This takes the form of a matrix where the rows are monoid chains.</p>
-</div>
-<div class="paragraph">
-<p>\begin{bmatrix}
-\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *5; &amp; \_ ; &amp; &lt;44, \\ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *{-6}; &amp; \_ ; &amp; &lt;44, \\ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *10; &amp; +7 ; &amp; &lt;44 \\ \end{bmatrix}</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int+2[is&gt;0][*5&lt;44,*-6&lt;44,*10+7&lt;44]
-==&gt;bool{0,3}&lt;=int[plus,2][is,bool&lt;=int[gt,0]][branch,(bool{?}&lt;=int{?}[mult,5][lt,44],bool{?}&lt;=int{?}[mult,-6][lt,44],bool{?}&lt;=int{?}[mult,10][plus,7][lt,44])]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; \begin{bmatrix}
-*5; &amp; \_ ; &amp; &lt;44, \\ *{-6}; &amp; \_ ; &amp; &lt;44, \\ *10; &amp; +7 ; &amp; &lt;44 \\ \end{bmatrix}
-\]</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
-==&gt;bool{0,3}&lt;=int[plus,2][is,bool&lt;=int[gt,0]][branch,(int{?}[mult,5],int{?}[mult,-6],int{?}[mult,10][plus,7])][lt,44]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix}
-\]</p>
+<p>To be certain, both expressions return the same result.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]
-==&gt;true{2}
-==&gt;false
-mmlang&gt; 5 =&gt; int+2[is&gt;0][*5&lt;44,*-6&lt;44,*10+7&lt;44]
 ==&gt;true{2}
 ==&gt;false
 mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
@@ -5426,15 +5412,91 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 ==&gt;false</code></pre>
 </div>
 </div>
+</div>
+<div class="sect5">
+<h6 id="_modules_of_the_type_ringoid">Modules of the Type Ringoid</h6>
+<div class="paragraph">
+<p>Free elements are lexicographically one dimensional&#8212;&#8203;lines. The type ringoid&#8217;s carrier set is the union of the free <code>obj</code> stream ring&#8217;s additive abelian group and multiplicative monoid. Thus, with two free magmas, the elements of the type ringoid are two dimensional&#8212;&#8203;rectangles. In <code>mmlang</code>, the horizontal axis is denote <code>[;]</code> and the vertical axis is denoted <code>[,]</code>. For example, the following type is two-dimensional. The original reducible free polynomial rings are expressed in the free type ringoid using <code>[,]</code> and <code>[;]</code>.</p>
+</div>
+<div class="paragraph text-center">
+<p><code>[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]
+==&gt;bool{0,3}&lt;=_[branch,(bool{?}&lt;=_[branch,(int;int[plus,2];int{?}&lt;=int[is,bool&lt;=int[gt,0]];int{?}[mult,5];int{?};bool{?}&lt;=int{?}[lt,44])],bool{?}&lt;=_[branch,(int;int[plus,2];int{?}&lt;=int[is,bool&lt;=int[gt,0]];int{?}[mult,-6];int{?};bool{?}&lt;=int{?}[lt,44])],bool{?}&lt;=_[branch,(int;int[plus,2];int{?}&lt;=int[is,bool&lt;=int[gt,0]];int{?}[mult,10];int{?}[plus,7];bool{?}&lt;=int{?}[lt,44])])]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In a manner analogous to polynomials in linear algebra, these free polynomials can be organized into a matrix where the multiplicative identity <code>_</code> is used to pad the first two rows to ensure an \$n \times m\$-matrix.</p>
+</div>
+<div class="paragraph">
+<p>\begin{bmatrix}
+ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *5; &amp; \_ ; &amp; &lt;44, \\
+ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *{-6}; &amp; \_ ; &amp; &lt;44, \\
+ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *10; &amp; +7 ; &amp; &lt;44 \\
+\end{bmatrix}</p>
+</div>
+<div class="paragraph">
+<p>A left <code>obj</code>-module can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.</p>
+</div>
+<div class="paragraph text-center">
+<p><code>[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]
+==&gt;bool{0,3}&lt;=_[branch,(int{?}&lt;=_[branch,(int;int[plus,2];int{?}&lt;=int[is,bool&lt;=int[gt,0]])];bool{0,3}&lt;=int{?}[branch,(bool{?}&lt;=int{?}[branch,(int{?}[mult,5];bool{?}&lt;=int{?}[lt,44])],bool{?}&lt;=int{?}[branch,(int{?}[mult,-6];bool{?}&lt;=int{?}[lt,44])],bool{?}&lt;=int{?}[branch,(int{?}[mult,10];int{?}[plus,7];bool{?}&lt;=int{?}[lt,44])])])]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{bmatrix}
+  \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}
+\end{bmatrix} ;
+\begin{bmatrix}
+  *5; &amp; \_ ; &amp; &lt;44, \\
+  *{-6}; &amp; \_ ; &amp; &lt;44, \\
+  *10; &amp; +7 ; &amp; &lt;44 \\
+\end{bmatrix}
+\]</p>
+</div>
+<div class="paragraph">
+<p>In an analogous manner, a right scalar <code>obj</code>-module can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.</p>
+</div>
+<div class="paragraph text-center">
+<p><code>[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]
+==&gt;bool{0,3}&lt;=_[branch,(int{?}&lt;=_[branch,(int;int[plus,2];int{?}&lt;=int[is,bool&lt;=int[gt,0]])];int{0,3}&lt;=int{?}[branch,(int{?}[mult,5],int{?}[mult,-6],int{?}[branch,(int{?}[mult,10];int{?}[plus,7])])];bool{0,3}&lt;=int{0,3}[lt,44])]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{bmatrix}
+  \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}
+\end{bmatrix} ;
+\begin{bmatrix}
+  *5; &amp; \_ ,    \\
+  *{-6}; &amp; \_ , \\
+  *10; &amp; +7     \\
+\end{bmatrix} ;  &lt;44
+\]</p>
+</div>
+<div class="paragraph">
+<p>This factored form can then be evaluated via <code>obj</code> scalar left multiplication.</p>
+</div>
 <div class="paragraph">
 <p>\[
 \begin{split}
 5; \begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ \begin{bmatrix}5; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ 7 ; &amp; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ &amp; \begin{bmatrix}
-35; &amp; \_ , \\ -42; &amp; \_ , \\ 70; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ &amp; \begin{bmatrix}
-35, \\ -42, \\ 77 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ &amp; \begin{bmatrix}
+*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44 \\ \begin{bmatrix}5; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix}
+*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44  \\ 7 ; &amp; \begin{bmatrix}
+*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44  \\ &amp; \begin{bmatrix}
+35; &amp; \_ , \\ -42; &amp; \_ , \\ 70; &amp; +7 \\ \end{bmatrix} ;  &lt;44  \\ &amp; \begin{bmatrix}
+35, \\ -42, \\ 77 \\ \end{bmatrix} ;  &lt;44 \\ &amp; \begin{bmatrix}
 \tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix} \\ &amp; \begin{bmatrix}
 \tt{true}\{ 2 \}, \\ \tt{false}           \\ \end{bmatrix}
 \end{split}
@@ -5442,24 +5504,29 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[+2;[is&gt;0];[[*5;_],[*-6;_],[*10;+7]];[&lt;44]]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
 ==&gt;true{2}
 ==&gt;false</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p>Again, to be certain, all 3 forms yield the same result.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int
-==&gt;5
-mmlang&gt; 5 =&gt; int+2
-==&gt;7
-mmlang&gt; 5 =&gt; int+2[is&gt;0]
-==&gt;7
-mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)
-==&gt;(35,-42,77)
-mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]]
+==&gt;true{2}
+==&gt;false
+mmlang&gt; [5;[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]]
+==&gt;true{2}
+==&gt;false
+mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
 ==&gt;true{2}
 ==&gt;false</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The linear algebraic type ringoid compartmentalizes each type induced by an instruction. This completely free representation is staged for manipulation via matrix operations and ultimately, during execution, provides a 2-dimensional circuit diagram of the computational pipeline convenient for distributing across machines of a cluster and/or threads of a machine.</p>
 </div>
 </div>
 </div>
@@ -5893,7 +5960,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 07:40:23 -0600
+Last updated 2020-07-24 11:54:06 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
