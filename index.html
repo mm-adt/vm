@@ -815,6 +815,69 @@ The recommended target language for all higher-level language compilers is <code
 </div>
 <div class="sidebarblock">
 <div class="content">
+<div class="title">Abstract Algebra</div>
+<div class="paragraph">
+<p>There are two operations: addition (\$ +\$) and multiplication (\$\ast\$). <a href="https://en.wikipedia.org/wiki/Abstract_algebra">Abstract algebra</a> is the study of these two operations across a wide range of slightly different generalized <a href="https://en.wikipedia.org/wiki/Algebraic_structure">structures</a> devoid of any other particulars of their manifestation: integers, digital circuits, quantum systems in a superposition, etc. Theoreticians deduce <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a> based on the <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> of the structures and experimentalists apply the patterns to other systems, real or designed.</p>
+</div>
+<div class="paragraph">
+<p>The pedagogical masterpiece of the discipline is the <strong>magma hiearchy</strong>.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">Magma</a> \$(A,\ast)\$: a set \$A\$ with a potentially associative binary operator \$ast: A \times A \to A\$.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Semigroup">Semigroup</a> \$(A,\ast)\$: a magma with an associative binary operator \$(a \ast b) \ast c = a \ast (b \ast c)\$.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Monoid">Monoid</a> \$(A,\ast,\mathbf{1})\$: a semigroup with an identity element such that \$a \ast \mathbf{1} = a = \mathbf{1} \ast a\$.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Group_(mathematics)">Group</a> \$(A,\ast,\mathbf{1})\$: a monoid with ever element having an inverse such that \$a \ast a^{-1} = \mathbf{1} = a^{-1} \ast a\$.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">Ring</a> \$(A,+,\ast,\mathbf{0},\mathbf{1})\$: a \$ +\$-group and a \$\ast\$-monoid bound by distributivity, \$a \ast (b + c) = (a \ast b) + (a \ast c)\$.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Field_(mathematics)">Field</a> \$(A,+,\ast,\mathbf{0},\mathbf{1})\$: a ring where the \$\ast\$-monoid is a \$\ast\$-group.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>Numerous <em>enrichments</em> to these structures blur the sharp lines that divide them.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Commutative_property">Abelian</a> \$a \cdot b=b \cdot a\$: the binary operator is agnostic to the order of the arguments.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Idempotence">Idempotent</a> \$a \cdot a = a\$: the binary operator reaches a fixpoint on self compositions.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Free_algebra">Free</a> \$A^\ast\$: the binary operator is replaced with <em>concatenation</em> to record operation sequences, not evaluate them.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">Module</a> \$A[x]\$: a binary magma that respects the abstract form of linear algebra via <em>scalars</em> and <em>vectors</em>.</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Polynomial_ring">Polynomial</a> \$x_1a + x_2a^2 + \ldots + x_na^n\$: a binary magma with free addition and non-free multiplication.</p>
+</li>
+<li>
+<p>&#8230;&#8203;</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>No one practitioner will ever have a complete grasp of the intricacies that bind \$ +\$ and \$\ast\$ together over \$A\$.</p>
+</div>
+</div>
+</div>
+<div class="sect2">
+<h3 id="_the_obj">The Obj</h3>
+<div class="sidebarblock">
+<div class="content">
 <div class="title">Products and Coproducts</div>
 <div class="paragraph">
 <p><a href="https://en.wikipedia.org/wiki/Category_theory">Category theory</a> is the study of structure via manipulations that expose (or generate) other structures.
@@ -844,8 +907,6 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_the_obj">The Obj</h3>
 <div class="imageblock left">
 <div class="content">
 <img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="280">
@@ -5678,7 +5739,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-23 17:27:13 -0600
+Last updated 2020-07-23 17:53:28 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
