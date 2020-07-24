@@ -25,9 +25,8 @@ package org.mmadt.language.obj.op.sideeffect
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.value.IntValue
-import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.`type`.{LstType, RecType, __}
+import org.mmadt.language.obj.value.{IntValue, LstValue, RecValue}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -37,17 +36,38 @@ trait PutOp[A <: Obj, B <: Obj] {
   this: Obj =>
   def put(key: A, value: B): this.type = PutOp(key, value).exec(this).asInstanceOf[this.type]
 }
+
 object PutOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, value: B): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.put, List(key, value)), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
-    case anon: __ => anon.via(start, inst)
-    case arec: Rec[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap + (inst.arg0[Obj] -> inst.arg1[Obj].hardQ(1))),via=(start, inst)) // TODO: {0} on int (probably cause of lazy Q loading)
-    case alst: Lst[_] => inst.arg0[Obj] match {
-      case avalue: IntValue =>
-        val (front, back) = alst.glist.splitAt(avalue.g.toInt)
-        alst.clone(g = (alst.gsep, (front :+ inst.arg1[Obj]) ++ back), via = (start, inst))
-      case _ => alst.via(start, inst)
-    }
 
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val key: Obj = inst.arg0[Obj]
+    val value: Obj = inst.arg1[Obj]
+    val oldKey: Obj = Inst.oldInst(inst).arg0[Obj]
+    val oldValue: Obj = Inst.oldInst(inst).arg1[Obj]
+    start match {
+      case _: __ => start.via(start, inst)
+      // REC
+      case arec: RecValue[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap + (key -> value))).via(start, inst)
+      case arec: RecType[Obj, Obj] => (oldKey.alive, key.alive, oldValue.alive, value.alive) match {
+        //case (true, false, true, true) => arec.clone(g = (arec.gsep, arec.gmap + (oldKey -> value))).via(start, Inst.oldInst(inst))
+        //case (true, false, true, false) => arec.clone(g = (arec.gsep, arec.gmap + (oldKey -> oldValue))).via(start, Inst.oldInst(inst))
+        case (true, true, true, false) => arec.clone(g = (arec.gsep, arec.gmap + (key -> oldValue))).via(start, Inst.oldInst(inst))
+        case _ => arec.clone(g = (arec.gsep, arec.gmap + (key -> value))).via(start, inst)
+      }
+      // LST
+      case alst: LstValue[Obj] =>
+        val (front, back) = alst.glist.splitAt(key.asInstanceOf[IntValue].g.toInt)
+        alst.clone(g = (alst.gsep, (front :+ value) ++ back)).via(start, inst)
+      case alst: LstType[Obj] => key match {
+        case aint: IntValue =>
+          val (front, back) = alst.glist.splitAt(aint.g.toInt)
+          (oldValue.alive, value.alive) match {
+            case (true, false) => alst.clone(g = (alst.gsep, (front :+ oldValue) ++ back)).via(start, Inst.oldInst(inst))
+            case _ => alst.clone(g = (alst.gsep, (front :+ value) ++ back)).via(start, inst)
+          }
+        case _ => alst.via(start, inst)
+      }
+    }
   }
 }
