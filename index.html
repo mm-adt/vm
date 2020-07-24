@@ -5168,10 +5168,13 @@ instruction                                    domain      range state
 <h2 id="_processor_structures">Processor Structures</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>The programs of the mm-ADT virtual machine are <strong>types</strong>. From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. Every mm-ADT type has a corresponding <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">diagrammatic</a> representation that is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to a directed labeled <strong>type graph</strong> composed of <em>type</em>-vertices and <em>instruction</em>-edges.</p>
+<p>The programs of the mm-ADT virtual machine are <strong>types</strong>.
+From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>.
+Every mm-ADT type has a corresponding <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">diagrammatic</a> representation that is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to a directed labeled <strong>type graph</strong> composed of <em>type</em>-vertices and <em>instruction</em>-edges.</p>
 </div>
 <div class="paragraph">
-<p>A program&#8217;s type graph is the <a href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize). At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the <strong>value graph</strong>, where the resultant structure of an mm-ADT computation is the <strong>obj graph</strong>, where</p>
+<p>A program&#8217;s type graph is the <a href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize).
+At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the <strong>value graph</strong>, where the resultant structure of an mm-ADT computation is the <strong>obj graph</strong>, where</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -5184,7 +5187,8 @@ instruction                                    domain      range state
 </div>
 </div>
 <div class="paragraph">
-<p>Type composition, compilation, and evaluation are carried out by mm-ADT compliant <strong>processors</strong>. Processors ground the mm-ADT VM to the underlying physical computer (whether on a single machine, via multiple threads, or across compute cluster), where, at the bottom of this <em>process stack</em>, the natural world&#8217;s physics provides the baseline dynamics (the fundamental ground of the computation).</p>
+<p>Type composition, compilation, and evaluation are carried out by mm-ADT compliant <strong>processors</strong>.
+Processors ground the mm-ADT VM to the underlying physical computer (whether on a single machine, via multiple threads, or across compute cluster), where, at the bottom of this <em>process stack</em>, the natural world&#8217;s physics provides the baseline dynamics (the fundamental ground of the computation).</p>
 </div>
 <div class="paragraph">
 <p>This section details the specifics of the relationships between types, values, and processors.</p>
@@ -5211,7 +5215,9 @@ instruction                                    domain      range state
 <div class="sect2">
 <h3 id="_algebraic_actions">Algebraic Actions</h3>
 <div class="paragraph">
-<p>A thread of execution in the VM maintains two primary references: 1.) a reference to an <code>obj</code> and 2.) a reference to an <code>inst</code>. Via the juxtaposition of <code>obj</code> and <code>inst</code> another <code>obj</code> is realized. When a VM process refers to the <code>obj</code> \$a\$ and the instruction <code>inst</code> \$i\$, then the VM will perform one of the following operations:</p>
+<p>A thread of execution in the VM maintains two primary references: 1.) a reference to an <code>obj</code> and 2.) a reference to an <code>inst</code>.
+Via the juxtaposition of <code>obj</code> and <code>inst</code> another <code>obj</code> is realized.
+When a VM process refers to the <code>obj</code> \$a\$ and the instruction <code>inst</code> \$i\$, then the VM will perform one of the following operations:</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -5224,12 +5230,15 @@ instruction                                    domain      range state
 </ol>
 </div>
 <div class="paragraph">
-<p>The first situation is computing via function <a href="https://en.wikipedia.org/wiki/Evaluation_strategy">evaluation</a> (save space). The second situation leverages <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> to avoid recomputing (save time). These two situations offer three high-level perspectives on the <code>obj</code> graph.</p>
+<p>The first situation is computing via function <a href="https://en.wikipedia.org/wiki/Evaluation_strategy">evaluation</a> (save space).
+The second situation leverages <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> to avoid recomputing (save time).
+These two situations offer three high-level perspectives on the <code>obj</code> graph.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Mathematically</strong>: The <code>obj</code> graph has an infinite number of <code>obj</code> vertices connected to each other by edges labeled from the infinite <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> <code>inst</code>. From this perspective, computing is traversal (i.e. <a href="https://en.wikipedia.org/wiki/Lookup_table">look-up</a>) as the <code>obj</code> graph is fully materialized.</p>
+<p><strong>Mathematically</strong>: The <code>obj</code> graph has an infinite number of <code>obj</code> vertices connected to each other by edges labeled from the infinite <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> <code>inst</code>.
+From this perspective, computing is traversal (i.e. <a href="https://en.wikipedia.org/wiki/Lookup_table">look-up</a>) as the <code>obj</code> graph is fully materialized.</p>
 </li>
 <li>
 <p><strong>Theoretically</strong>: The <code>obj</code> graph is manifested as computations proceed where, if \$a \in \tt{obj}\$ and \$i \in \tt{i\nst}\$, then any binary operation \$ai\$ that has already been evaluated already exists in the <code>obj</code> graph and as such, can be traversed.</p>
@@ -5242,7 +5251,14 @@ instruction                                    domain      range state
 <div class="sect3">
 <h4 id="_type_specification">Type Specification</h4>
 <div class="paragraph">
-<p>An mm-ADT <strong>program</strong> in an mm-ADT <strong>type</strong>. In the type graph (a subgraph of the <code>obj</code> graph) a type is denoted by a vertex (an <em>ungrounded</em> vertex). That vertex is the type&#8217;s <strong>range</strong>. The type&#8217;s <strong>definition</strong> is encoded in the directed, <a href="https://en.wikipedia.org/wiki/Deterministic_automaton">deterministic</a> path that ends at a vertex with no outgoing edges. The resultant vertex is a <em>root</em> vertex and is the type&#8217;s <strong>domain</strong>. If the type definition&#8217;s path length is 0, then the domain and the range are equal, and the type is a ctype (a canonical type). If the path length is greater than 0, then the directed binary edges of the path are labeled with instructions from <code>inst</code>. This construction is abstractly represented in the diagram below.</p>
+<p>An mm-ADT <strong>program</strong> in an mm-ADT <strong>type</strong>.
+In the type graph (a subgraph of the <code>obj</code> graph) a type is denoted by a vertex (an <em>ungrounded</em> vertex).
+That vertex is the type&#8217;s <strong>range</strong>.
+The type&#8217;s <strong>definition</strong> is encoded in the directed, <a href="https://en.wikipedia.org/wiki/Deterministic_automaton">deterministic</a> path that ends at a vertex with no outgoing edges.
+The resultant vertex is a <em>root</em> vertex and is the type&#8217;s <strong>domain</strong>.
+If the type definition&#8217;s path length is 0, then the domain and the range are equal, and the type is a ctype (a canonical type).
+If the path length is greater than 0, then the directed binary edges of the path are labeled with instructions from <code>inst</code>.
+This construction is abstractly represented in the diagram below.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -5250,7 +5266,13 @@ instruction                                    domain      range state
 </div>
 </div>
 <div class="paragraph">
-<p>The type graph forms the central structure upon by which various VM processes are enacted. These processes include type/program specification, compilation, optimization, and ultimately, via a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> from the type graph to the value graph, evaluation. Given finite computing resources, the type graph does not exist eternally in a static form ready-made. No, instead, subgraphs of it must be generated. This is accomplished via an action of <code>inst</code> monoid on the set <code>inst<sup>*</sup></code> (the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene star</a> closure of <code>inst</code>). For instance, in <code>mmlang</code> the user juxtaposes a ctype (domain) and an <code>inst</code> to construct a dtype. That dtype is juxtaposed with another <code>inst</code> to yield another dtype so forth until a desired type is reached.</p>
+<p>The type graph forms the central structure upon by which various VM processes are enacted.
+These processes include type/program specification, compilation, optimization, and ultimately, via a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> from the type graph to the value graph, evaluation.
+Given finite computing resources, the type graph does not exist eternally in a static form ready-made.
+No, instead, subgraphs of it must be generated.
+This is accomplished via an action of <code>inst</code> monoid on the set <code>inst<sup>*</sup></code> (the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene star</a> closure of <code>inst</code>).
+For instance, in <code>mmlang</code> the user juxtaposes a ctype (domain) and an <code>inst</code> to construct a dtype.
+That dtype is juxtaposed with another <code>inst</code> to yield another dtype so forth until a desired type is reached.</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -5258,25 +5280,96 @@ instruction                                    domain      range state
 \]</p>
 </div>
 <div class="paragraph">
-<p>In general, the action of an <code>inst</code> on a type is the function
-\[
-\texttt{inst}: T \to T,
-\]
-where if \$a \in \tt{i\nst}\$, then
-\[
+<p>In general, the action of an <code>inst</code> on a type is the function \[
+\texttt{inst}: T \to T, \]
+where if \$a \in \tt{i\nst}\$, then \[
 a(x) = xa.
 \]</p>
 </div>
 <div class="paragraph">
-<p>Said plainly, instructions in <code>inst</code> act on types by concatenating themselves to the type definition. Thus, algebraically, a type is an element of the <a href="https://en.wikipedia.org/wiki/Free_algebra">free</a> inst monoid rooted at a ctype.</p>
+<p>Said plainly, instructions in <code>inst</code> act on types by concatenating themselves to the type definition.
+Thus, algebraically, a type is an element of the <a href="https://en.wikipedia.org/wiki/Free_algebra">free</a> inst monoid rooted at a ctype.</p>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_type_compilation">Type Compilation</h4>
 <div class="sect4">
 <h5 id="_obj_modules">obj-Modules</h5>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Modules</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$.
+If \$A = X\$, the action is defined by the group&#8217;s additive operator.
+However, modules are useful when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free.
+A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an abelian group, then both axioms hold and \$X\$ is a <a href="https://en.wikipedia.org/wiki/Bimodule">bimodule</a>.</p>
+</div>
+<div class="olist arabic">
+<div class="title">Left X-Module</div>
+<ol class="arabic">
+<li>
+<p>\$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$</p>
+</li>
+<li>
+<p>\$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$</p>
+</li>
+<li>
+<p>\$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$</p>
+</li>
+<li>
+<p>\$\mathbf{1}_X \cdot a = a\$</p>
+</li>
+</ol>
+</div>
+<div class="olist arabic">
+<div class="title">Right X-Module</div>
+<ol class="arabic">
+<li>
+<p>\$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$</p>
+</li>
+<li>
+<p>\$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$</p>
+</li>
+<li>
+<p>\$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$</p>
+</li>
+<li>
+<p>\$a \cdot \mathbf{1}_X = a\$</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>Free elements are lexicographically one dimensional&#8212;&#8203;lines. The type ringoid&#8217;s carrier set is the union of the free <code>obj</code> stream ring&#8217;s additive abelian group and multiplicative monoid. Thus, with two free magmas, the elements of the type ringoid are two dimensional&#8212;&#8203;rectangles. In <code>mmlang</code>, the horizontal axis is denote <code>[;]</code> and the vertical axis is denoted <code>[,]</code>. For example, the following type is two-dimensional.</p>
+</div>
 <div class="paragraph text-center">
 <p><code>int[plus,2][is,[gt,0]][[mult,5],[mult,-6],[mult,10][plus,7]][lt,44]</code></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
+==&gt;bool{0,3}&lt;=int[plus,2][is,bool&lt;=int[gt,0]][branch,(int{?}[mult,5],int{?}[mult,-6],int{?}[mult,10][plus,7])][lt,44]</code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/module-example-1.png" alt="module example 1">
+</div>
+</div>
+<div class="paragraph">
+<p>The above expression begins with a monoidal chain of three types: <code>int</code>, <code>int[plus,2]</code>, and <code>int{?}&lt;=int[is,[gt,0]]</code>. This chain then splits into three independent monoid chains due to the abelian group&#8217;s additive operator and the distributivity axiom. The three compositions are merged to a single, final monoidal chain containing a single type <code>bool{0,3}&lt;=int{0,3}[lt,44]</code>. Given that the three group branches share the same left and right monoid chains, then according to left and right distributivity,
+\[
+\begin{split}
+&amp;&amp; a \ast b \ast (c + d + e) \ast f \\
+&amp;=&amp; a \ast b \ast (cf + df + ef) \\
+&amp;=&amp; a \ast (bcf + bdf + bef) \\
+&amp;=&amp; (abcf + abdf + abef).
+\end{split}
+\]</p>
+</div>
+<div class="paragraph">
+<p>The resultant polynomial ring composition is expressed in <code>mmlang</code> below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5284,12 +5377,17 @@ a(x) = xa.
 ==&gt;bool{0,3}&lt;=_[branch,(bool{?}&lt;=_[plus,2][is,bool&lt;=_[gt,0]][mult,5][lt,44],bool{?}&lt;=_[plus,2][is,bool&lt;=_[gt,0]][mult,-6][lt,44],bool{?}&lt;=_[plus,2][is,bool&lt;=_[gt,0]][mult,10][plus,7][lt,44])]</code></pre>
 </div>
 </div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/processor/module-example-2.png" alt="module example 2">
+</div>
+</div>
+<div class="paragraph">
+<p>The above representation take the form of a free monoid ring where elements of the free monoid are linearly combined by in a free abelian group. This takes the form of a matrix where the rows are monoid chains.</p>
+</div>
 <div class="paragraph">
 <p>\begin{bmatrix}
-\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *5;    &amp; \_ ;   &amp; &lt;44, \\
-\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *{-6}; &amp; \_ ;   &amp; &lt;44, \\
-\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *10;   &amp; +7 ;   &amp; &lt;44 \\
-\end{bmatrix}</p>
+\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *5; &amp; \_ ; &amp; &lt;44, \\ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *{-6}; &amp; \_ ; &amp; &lt;44, \\ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *10; &amp; +7 ; &amp; &lt;44 \\ \end{bmatrix}</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5299,12 +5397,8 @@ a(x) = xa.
 </div>
 <div class="paragraph">
 <p>\[
-\begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ;
-\begin{bmatrix}
-*5;    &amp; \_ ;  &amp; &lt;44, \\
-*{-6}; &amp; \_ ;  &amp; &lt;44, \\
-*10;   &amp; +7 ;  &amp; &lt;44  \\
-\end{bmatrix}
+\begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; \begin{bmatrix}
+*5; &amp; \_ ; &amp; &lt;44, \\ *{-6}; &amp; \_ ; &amp; &lt;44, \\ *10; &amp; +7 ; &amp; &lt;44 \\ \end{bmatrix}
 \]</p>
 </div>
 <div class="listingblock">
@@ -5315,13 +5409,8 @@ a(x) = xa.
 </div>
 <div class="paragraph">
 <p>\[
-\begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ;
-\begin{bmatrix}
-*5;    &amp; \_ , \\
-*{-6}; &amp; \_ , \\
-*10;   &amp; +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} &lt;44 \end{bmatrix}
+\begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; \begin{bmatrix}
+*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix}
 \]</p>
 </div>
 <div class="listingblock">
@@ -5340,49 +5429,14 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 <div class="paragraph">
 <p>\[
 \begin{split}
-5;
-\begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ;
-&amp; \begin{bmatrix}
-*5;    &amp; \_ , \\
-*{-6}; &amp; \_ , \\
-*10;   &amp; +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} &lt;44 \end{bmatrix} \\
-\begin{bmatrix}5; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ;
-&amp; \begin{bmatrix}
-*5;    &amp; \_ , \\
-*{-6}; &amp; \_ , \\
-*10;   &amp; +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} &lt;44 \end{bmatrix} \\
-7 ;
-&amp; \begin{bmatrix}
-*5;    &amp; \_ , \\
-*{-6}; &amp; \_ , \\
-*10;   &amp; +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} &lt;44 \end{bmatrix} \\
-&amp; \begin{bmatrix}
-35;    &amp; \_ , \\
--42; &amp; \_ , \\
-70;   &amp; +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} &lt;44 \end{bmatrix} \\
-&amp; \begin{bmatrix}
-35,   \\
--42, \\
-77   \\
-\end{bmatrix} ;
-\begin{bmatrix} &lt;44 \end{bmatrix} \\
-&amp; \begin{bmatrix}
-\tt{true},   \\
-\tt{true},   \\
-\tt{false}   \\
-\end{bmatrix} \\
-&amp; \begin{bmatrix}
-\tt{true}\{ 2 \},   \\
-\tt{false}           \\
-\end{bmatrix}
+5; \begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix}
+*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ \begin{bmatrix}5; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix}
+*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ 7 ; &amp; \begin{bmatrix}
+*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ &amp; \begin{bmatrix}
+35; &amp; \_ , \\ -42; &amp; \_ , \\ 70; &amp; +7 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ &amp; \begin{bmatrix}
+35, \\ -42, \\ 77 \\ \end{bmatrix} ; \begin{bmatrix} &lt;44 \end{bmatrix} \\ &amp; \begin{bmatrix}
+\tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix} \\ &amp; \begin{bmatrix}
+\tt{true}\{ 2 \}, \\ \tt{false}           \\ \end{bmatrix}
 \end{split}
 \]</p>
 </div>
@@ -5417,7 +5471,10 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 <div class="sect3">
 <h4 id="_type_evaluation">Type Evaluation</h4>
 <div class="paragraph">
-<p>A type <a href="https://en.wikipedia.org/wiki/Compiler">compiles</a> a type. A type <a href="https://en.wikipedia.org/wiki/Executable">evaluates</a> a value. The <code>inst</code> monoid&#8217;s <strong>type specification</strong> action yields an element in the free <code>inst</code> monoid, which, in the <code>obj</code> graph, is realized as a path from a range vertex to a domain vertex. In the example <code>obj</code> graph encoding below, the range vertex is the <strong>type path</strong>'s <em>source</em> and the domain vertex is the path&#8217;s <em>target</em>.</p>
+<p>A type <a href="https://en.wikipedia.org/wiki/Compiler">compiles</a> a type.
+A type <a href="https://en.wikipedia.org/wiki/Executable">evaluates</a> a value.
+The <code>inst</code> monoid&#8217;s <strong>type specification</strong> action yields an element in the free <code>inst</code> monoid, which, in the <code>obj</code> graph, is realized as a path from a range vertex to a domain vertex.
+In the example <code>obj</code> graph encoding below, the range vertex is the <strong>type path</strong>'s <em>source</em> and the domain vertex is the path&#8217;s <em>target</em>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -5479,7 +5536,8 @@ mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <
 </table>
 </div>
 <div class="paragraph">
-<p>In the <code>mmlang</code> example above, the step-wise <code>=&gt;</code> evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM&#8217;s execution plan. The mm-ADT algebras are particular constraints on the most general algebraic specification of mm-ADT: the <code>obj</code> magma.</p>
+<p>In the <code>mmlang</code> example above, the step-wise <code>=&gt;</code> evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM&#8217;s execution plan.
+The mm-ADT algebras are particular constraints on the most general algebraic specification of mm-ADT: the <code>obj</code> magma.</p>
 </div>
 <div class="paragraph text-center">
 <p><code>1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int</code></p>
@@ -5835,7 +5893,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 06:55:00 -0600
+Last updated 2020-07-24 07:40:23 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
