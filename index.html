@@ -1728,9 +1728,24 @@ Expressions of the form <code>-&lt;(a,b,c)&gt;-</code> are decomposed representa
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)&gt;-+2
-==&gt;14{2}
-mmlang&gt; 5 =&gt; int+1*{2}2+2
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1
+==&gt;6
+mmlang&gt; 5 =&gt; int+1-&lt;(_,_)
+==&gt;(6,6)
+mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)
+==&gt;(12,12)
+mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)&gt;-
+==&gt;12{2}
+mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)&gt;-+2
+==&gt;14{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1*{2}2+2
 ==&gt;14{2}</code></pre>
 </div>
 </div>
@@ -1751,6 +1766,17 @@ mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)
 mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)&gt;-
 ==&gt;12{2}
 mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)&gt;-+2
+==&gt;14{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)
+==&gt;(14,14)
+mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)&gt;-
 ==&gt;14{2}</code></pre>
 </div>
 </div>
@@ -5670,7 +5696,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-23 23:41:44 -0600
+Last updated 2020-07-24 02:39:46 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
