@@ -571,8 +571,8 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel4">
 <li><a href="#_obj_modules">obj-Modules</a>
 <ul class="sectlevel5">
-<li><a href="#_modules_of_a_polynomial_ring">Modules of a Polynomial Ring</a></li>
-<li><a href="#_modules_of_the_type_ringoid">Modules of the Type Ringoid</a></li>
+<li><a href="#_polynomial_ring_modules">Polynomial Ring Modules</a></li>
+<li><a href="#_type_ringoid_modules">Type Ringoid Modules</a></li>
 </ul>
 </li>
 </ul>
@@ -5346,9 +5346,9 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 </div>
 </div>
 <div class="sect5">
-<h6 id="_modules_of_a_polynomial_ring">Modules of a Polynomial Ring</h6>
+<h6 id="_polynomial_ring_modules">Polynomial Ring Modules</h6>
 <div class="paragraph text-center">
-<p><code>int[int+2[is&gt;0]<strong>5&lt;44, int+2[is&gt;0]</strong>-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></p>
+<p><code>int[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5370,7 +5370,7 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 \]</p>
 </div>
 <div class="paragraph">
-<p>Due to the left and right distributive ring axioms, the following derivation yields the following equivalence.</p>
+<p>Due to the left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distributive</a> ring axioms, the following derivation yields the following equivalence.</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -5383,7 +5383,7 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 \]</p>
 </div>
 <div class="paragraph text-center">
-<p><code>int+2[is&gt;0][<strong>5,</strong>-6,*10+7]&lt;44</code></p>
+<p><code>int+2[is&gt;0][*5,*-6,*10+7]&lt;44</code></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5412,11 +5412,35 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 ==&gt;false</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p>A split/merge form is provided to better illustrate the intermediate results of the computation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; -&lt;(int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44)
+==&gt;(true,true,false)
+mmlang&gt; 5 =&gt; int
+==&gt;5
+mmlang&gt; 5 =&gt; int+2
+==&gt;7
+mmlang&gt; 5 =&gt; int+2[is&gt;0]
+==&gt;7
+mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)
+==&gt;(35,-42,77)
+mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-
+==&gt;35
+==&gt;-42
+==&gt;77
+mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
+==&gt;true{2}
+==&gt;false</code></pre>
+</div>
+</div>
 </div>
 <div class="sect5">
-<h6 id="_modules_of_the_type_ringoid">Modules of the Type Ringoid</h6>
+<h6 id="_type_ringoid_modules">Type Ringoid Modules</h6>
 <div class="paragraph">
-<p>Free elements are lexicographically one dimensional&#8212;&#8203;lines. The type ringoid&#8217;s carrier set is the union of the free <code>obj</code> stream ring&#8217;s additive abelian group and multiplicative monoid. Thus, with two free magmas, the elements of the type ringoid are two dimensional&#8212;&#8203;rectangles. In <code>mmlang</code>, the horizontal axis is denote <code>[;]</code> and the vertical axis is denoted <code>[,]</code>. For example, the following type is two-dimensional. The original reducible free polynomial rings are expressed in the free type ringoid using <code>[,]</code> and <code>[;]</code>.</p>
+<p>A non-free element is a <em>zero</em>-dimensional point. A free element is a <em>one</em>-dimensional line. The carrier set of the <strong>type ringoid</strong> is formed from the union the elements of <code>obj</code> stream ring&#8217;s free additive abelian group and free multiplicative monoid&#8201;&#8212;&#8201;a <a href="https://en.wikipedia.org/wiki/Free_algebra">free ring</a>. With two free magmas, the elements of the type ringoid are <em>two</em>-dimensional rectangles. One dimension represents multiplication and the other addition. The type ringoid&#8217;s completely free structure is encoded in a <code>,-lst</code> (additive) with terms that are <code>;-lst</code> (multiplicative). The following is an example of a two-dimensional type ringoid element.</p>
 </div>
 <div class="paragraph text-center">
 <p><code>[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]</code></p>
@@ -5428,7 +5452,7 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 </div>
 </div>
 <div class="paragraph">
-<p>In a manner analogous to polynomials in linear algebra, these free polynomials can be organized into a matrix where the multiplicative identity <code>_</code> is used to pad the first two rows to ensure an \$n \times m\$-matrix.</p>
+<p>In a manner analogous to polynomials in <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebra</a>, the free monoids of the polynomial can be organized into a <a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)">matrix</a> where the multiplicative identity <code>_</code> is used to pad the first two rows, ensuring an \$n \times m\$-matrix.</p>
 </div>
 <div class="paragraph">
 <p>\begin{bmatrix}
@@ -5438,7 +5462,7 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 \end{bmatrix}</p>
 </div>
 <div class="paragraph">
-<p>A left <code>obj</code>-module can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.</p>
+<p>A left <code>obj</code>-module (a row vector) can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.</p>
 </div>
 <div class="paragraph text-center">
 <p><code>[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]</code></p>
@@ -5462,7 +5486,7 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 \]</p>
 </div>
 <div class="paragraph">
-<p>In an analogous manner, a right scalar <code>obj</code>-module can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.</p>
+<p>Similarly, a right <code>obj</code>-module <a href="https://en.wikipedia.org/wiki/Scalar_(mathematics)">scalar</a> can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.</p>
 </div>
 <div class="paragraph text-center">
 <p><code>[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]</code></p>
@@ -5486,7 +5510,7 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 \]</p>
 </div>
 <div class="paragraph">
-<p>This factored form can then be evaluated via <code>obj</code> scalar left multiplication.</p>
+<p>This fully factored form can be evaluated with <code>obj</code>-scalar left multiplication.</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -5510,7 +5534,7 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 </div>
 </div>
 <div class="paragraph">
-<p>Again, to be certain, all 3 forms yield the same result.</p>
+<p>Again, to be certain, all three derivations yield the same result for the same input.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5526,7 +5550,7 @@ mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
 </div>
 </div>
 <div class="paragraph">
-<p>The linear algebraic type ringoid compartmentalizes each type induced by an instruction. This completely free representation is staged for manipulation via matrix operations and ultimately, during execution, provides a 2-dimensional circuit diagram of the computational pipeline convenient for distributing across machines of a cluster and/or threads of a machine.</p>
+<p>The linear algebraic type ringoid compartmentalizes each type induced by an instruction. This <em>absolutely</em> free representation is well suited for manipulation by the processor. As a compiler, matrix operations analagous to the above can be leveraged for compile time optimizations/rewrites. As an evaluator, the free type ringoid provides a decomposed, 2-dimensional <a href="https://en.wikipedia.org/wiki/Pipeline">pipeline</a> structure convenient for partitioning across machines of a cluster and/or threads of a machine.</p>
 </div>
 </div>
 </div>
@@ -5960,7 +5984,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 11:54:06 -0600
+Last updated 2020-07-24 12:47:31 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
