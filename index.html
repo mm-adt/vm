@@ -507,12 +507,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_anonymous_type">Anonymous Type</a></li>
 <li><a href="#_poly_types">Poly Types</a>
 <ul class="sectlevel4">
-<li><a href="#_the_type_ringoid">The Type Ringoid</a>
-<ul class="sectlevel5">
-<li><a href="#_the_free_poly_monoid">The Free Poly Monoid</a></li>
-<li><a href="#_free_type_ringoid">Free Type Ringoid</a></li>
-</ul>
-</li>
+<li><a href="#_the_type_ringoid">The Type Ringoid</a></li>
 <li><a href="#_lst_and_rec">Lst and Rec</a></li>
 <li><a href="#_orthen_poly">orThen ,-poly</a>
 <ul class="sectlevel5">
@@ -784,35 +779,6 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
           <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">q</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">repeat</span><span style="color:#710">'</span></span> |<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">split</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">start</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">tail</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">to</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">trace</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">zero</span><span style="color:#710">'</span></span></code></pre>
 </div>
 </div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_language_structures">Language Structures</h2>
-<div class="sectionbody">
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/compiling-languages.png" alt="compiling languages" width="300">
-</div>
-</div>
-<div class="paragraph">
-<p>The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a>.
-It contains a fluent program builder <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> as direct access to the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> and the full JDK can create unsafe mm-ADT programs. Instead, <code>mmlang</code> should be the target language for most compilers.
-Moreover, all compilers targeting <code>mmlang</code> can be used across different mm-ADT VM implementations.</p>
-</div>
-<div class="admonitionblock important">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-important" title="Important"></i>
-</td>
-<td class="content">
-The recommended target language for all higher-level language compilers is <code>mmlang</code>.
-</td>
-</tr>
-</table>
-</div>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Abstract Algebra</div>
@@ -873,6 +839,35 @@ The recommended target language for all higher-level language compilers is <code
 <p>No one practitioner will ever have a complete grasp of the intricacies that bind \$ +\$ and \$\ast\$ together over \$A\$.</p>
 </div>
 </div>
+</div>
+</div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<h2 id="_language_structures">Language Structures</h2>
+<div class="sectionbody">
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/compiling-languages.png" alt="compiling languages" width="300">
+</div>
+</div>
+<div class="paragraph">
+<p>The mm-ADT VM is written in <a href="https://scala-lang.org/">Scala</a>.
+It contains a fluent program builder <a href="https://en.wikipedia.org/wiki/Application_programming_interface">API</a> called <code>mmscala</code>. Most compiler designers should avoid <code>mmscala</code> as direct access to the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a> and the full JDK can create unsafe mm-ADT programs. Instead, <code>mmlang</code> should be the target language for most compilers.
+Moreover, all compilers targeting <code>mmlang</code> can be used across different mm-ADT VM implementations.</p>
+</div>
+<div class="admonitionblock important">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-important" title="Important"></i>
+</td>
+<td class="content">
+The recommended target language for all higher-level language compilers is <code>mmlang</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_the_obj">The Obj</h3>
@@ -3140,26 +3135,59 @@ where each \$A_i\$ contains elements of a paritcular type&#8212;&#8203;e.g., \$\
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT&#8217;s type system is founded on a multi-sorted <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a> called the mm-ADT <strong>type ringoid</strong>.
-An algebraic ring is composed of a multiplicative monoid \$\langle A,\ast,1 \rangle\$ and a commutative additive group \$\langle A,+,0\rangle\$ that share the same carrier set \$A\$.
-A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes the mathematics of a ring to support the ring axioms on multi-sorted carriers \$A,B,C\$, etc. (i.e. typed structures).
-The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all ctypes and single instruction dypes covering <code>inst</code>, where, with the ringoid&#8217;s multiplicative operator (<code>*</code>) and commutative additive operator (<code>+</code>), when faithfully applied according to sort, induce the set of all possible mm-ADT types.</p>
+<p>An algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$. A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes a ring to a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the binary operators are <a href="https://en.wikipedia.org/wiki/Partial_function">partial functions</a> lacking <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>. mm-ADT leverages this structure in the <em>process algebra</em> called <strong>the type ringoid</strong>.
+\[
+(\texttt{,;-lst},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}}),
+\]
+where</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>The <strong>additive operator</strong> <code>+</code> is structurally encoded using a <code>,-poly</code>, where each slot of the polynomial is an independent parallel type.</p>
+<p><code>,;-lst</code>: types freely encoded as <code>lsts</code>.</p>
 </li>
 <li>
-<p>The <strong>multiplicative operator</strong> <code>*</code> is structurally encoded using a <code>;-poly</code>, where each slot of the polynomial is a dependent serial type.</p>
+<p><code>[,]</code>: a free additive group,</p>
 </li>
 <li>
-<p>The <strong>additive identity</strong> <code>0</code> is the polymorphic anonymous ctype <code>_{0}</code>.</p>
+<p><code>[;]</code>: a free multiplicative monoid,</p>
 </li>
 <li>
-<p>The <strong>multiplicative identity</strong> <code>1</code> is the polymorphic anonymous ctype <code>_{1}</code>, which in <code>mmlang</code> is simply denoted <code>_</code>.</p>
+<p><code>_{0}</code>: the additive identity, and</p>
+</li>
+<li>
+<p><code>_{1}</code>: the multiplicative identity.</p>
 </li>
 </ul>
+</div>
+<div class="paragraph">
+<p>The type ringoid&#8217;s <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generator</a> is the set of all <code>[ctypes]</code> and single instruction <code>[ctype;inst]</code>, where a faithful application according to sort, induces the set of all possible free mm-ADT types.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,10][is,[gt,10]][lt,50]                                                              <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;bool{?}&lt;=int[plus,10][is,bool&lt;=int[gt,10]][lt,50]
+mmlang&gt; [10,40] =&gt; int[plus,10][is,[gt,10]][lt,50]
+==&gt;true
+==&gt;false
+mmlang&gt; -&lt;(int;[plus,10];int;[is,-&lt;(int;[gt,10];bool)&gt;-];int{?};[lt,50];bool{?})&gt;-                   <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;bool{?}&lt;=_-&lt;(int;int[plus,10];int;int{?}&lt;=int[is,bool&lt;=int-&lt;(int;bool&lt;=int[gt,10];bool)&gt;-];int{?};bool{?}&lt;=int{?}[lt,50];bool{?})&gt;-
+mmlang&gt; [10,40] =&gt; -&lt;(int;[plus,10];int;[is,-&lt;(int;[gt,10];bool)&gt;-];int{?};[lt,50];bool{?})&gt;-
+==&gt;true
+==&gt;false</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A <code>bool{?}&lt;=int</code> type of the free <code>inst</code> monoid.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>A <code>bool{?}&lt;=int</code> type of the free type ringoid.</td>
+</tr>
+</table>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3168,104 +3196,27 @@ The mm-ADT type ringoid <a href="https://en.wikipedia.org/wiki/Generator_(mathem
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring(oid)</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.
-In mm-ADT, the elements of the additive component can be inverted by their corresponding <em>negative type</em> (or negative <code>obj</code> in general).
-Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoid">groupoid</a>, where, for example, the <code>,-poly</code> <code>[int{1},int{-1}]</code> merges to <code>int{0}</code> which is isomorphic to the initial <code>obj{0}</code>.
+The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring(oid)</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. In mm-ADT, the elements of the additive component can be inverted by their corresponding <em>negative type</em> (or negative <code>obj</code> in general).
+Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoid">groupoid</a>, where, for example, the <code>,-poly</code> <code>[int{1},int{-1}]</code> is <code>int{0}</code> which is isomorphic to the initial <code>obj{0}</code>.
 </td>
 </tr>
 </table>
 </div>
-<div class="sect5">
-<h6 id="_the_free_poly_monoid">The Free Poly Monoid</h6>
 <div class="paragraph">
-<p>Every corresponding <code>mmlang</code> expression makes use of <code>poly</code>-types.
-In <code>mmlang</code>, a <code>poly</code> can be denoted as a <em>structure</em> via <code>[ ]</code> (a value) or as a <em>process</em> via <code>&lt; &gt;</code> (a type).
-The example 3-slot <code>int</code> <code>,-poly</code> below has a domain of <code>int</code> and a range of <code>int{1,3}</code>.
-This branch structure will product one, two, or three <code>ints</code> given a single <code>int</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[int[is&gt;0],int[is&lt;0],int]
-==&gt;int{1,3}&lt;=int[branch,(int{?}&lt;=int[is,bool&lt;=int[gt,0]],int{?}&lt;=int[is,bool&lt;=int[lt,0]],int)]</code></pre>
-</div>
-</div>
-<table class="tableblock frame-all grid-all left small" style="width: 30%;">
-<colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">op</th>
-<th class="tableblock halign-left valign-top">poly</th>
-<th class="tableblock halign-left valign-top">inst</th>
-<th class="tableblock halign-left valign-top">meta</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\ast\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[compose]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[mult]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$+\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[plus]</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$o+\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[choose]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[plus]</code></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>An mm-ADT <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a>) is an element of either a <em>serial</em> (<code>;</code>), <em>parallel</em> (<code>,</code>), or <em>choice</em> (<code>|</code>) <a href="https://en.wikipedia.org/wiki/Free_object">free</a> <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a> that is <a href="https://en.wikipedia.org/wiki/Adjoint_functors">left-adjoint</a> to a respective \$langle \tt{obj},\tt{[compose] \rangle\$, \$langle \tt{obj},\tt{[branch]} \rangle\$, or \$langle \tt{obj}, \tt{[cho\ose]} \rangle\$ non-free, reductive monoid.
-The <em>nabla functions</em>, \$\nabla: \text{-poly} \rightarrow \tt{obj} \$, folds a free <code>poly</code> structure into an <code>obj{*}</code> via the applications of the reducing monoid&#8217;s operator in <code>inst</code> such that \[
+<p>\[
 \begin{split}
-\nabla^;(\texttt{poly}) &amp;=&amp; \texttt{[compose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\prod_{i&lt;n} q_i, \\ \nabla^,(\texttt{poly}) &amp;=&amp; \texttt{[branch}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=\sum_{i&lt;n} q_i, \\ \nabla^|(\texttt{poly}) &amp;=&amp; \texttt{[choose}, \texttt{poly}^{q_0}_0, \texttt{poly}^{q_1}_1,\ldots, \texttt{poly}^{q_n}_n,\texttt{]} \text{ with } q=(\min_{i&lt;n}(q_i),\max_{i&lt;n}(q_i)), \end{split}
-\]
-where \$\nabla\$ is realized as the <a href="https://ncatlab.org/nlab/show/codiagonal">codiagonal</a> <code>&gt;-</code> (i.e. <code>[merge]</code>) instruction. the resultant <code>obj</code> is quantified within the specified <code>q</code> range.
-This is the general solution to deriving the type quantifier during compilation and can be further refined using instruction semantics.
-The following diagrams specify three <a href="https://en.wikipedia.org/wiki/Monoid#Monoid_homomorphisms">monoid homomorphisms</a> that couple the <code>poly</code> to <code>inst</code> monoids such that the underlying monoidal processes of the mm-ADT VM can be directly manipulated by any mm-ADT language that supports <code>poly</code>&#8201;&#8212;&#8201;e.g., within <code>mmlang</code>.</p>
-</div>
-<hr>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/free-monoid-homomorphisms.png" alt="free monoid homomorphisms">
-</div>
-</div>
-<hr>
-<div class="paragraph">
-<p>Both the <code>-poly</code> and \$\langle \tt{obj},- \rangle\$ monoids derive their <a href="https://en.wikipedia.org/wiki/Algebraic_structure">carrier sets</a> from the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial</a> set of mm-ADT <code>objs</code>.
-The injective <em>delta functions</em>, \$\Delta:\tt{obj} \rightarrow \text{-poly}\$, yield the <a href="https://en.wikipedia.org/wiki/Generator_(mathematics)">generators</a> of the <code>-poly</code> monoid&#8217;s, where \[
-\begin{split}
-\Delta^{;}(\texttt{obj}) &amp;=&amp; [\texttt{obj};], \\ \Delta^{,}(\texttt{obj}) &amp;=&amp; [\texttt{obj},], \\ \Delta^{|}(\texttt{obj}) &amp;=&amp; [\texttt{obj}|], \end{split}
-\]
-and \$\Delta\$ the <a href="https://en.wikipedia.org/wiki/Diagonal_morphism">diagonal</a> <code>-&lt;</code> (i.e. <code>[split]</code>) instruction.
-Likewise, <code>[compose]</code>, <code>[branch]</code>, and <code>[choose]</code> are the instruction representations of the composition of <code>objs</code>.
-If \[
-\begin{split}
-U: M \rightarrow \textbf{Set}
+  \nabla( a^1_{q_1}, a^2_{q_2}, \ldots, a^n_{q_n} ) &amp;= [a^1_{q_1}, a^2_{q_2}, \ldots, a^n_{q_n}], \\
+\nabla( a^1_{q_1}; a^2_{q_2}; \ldots; a^n_{q_n} ) &amp;= a^1_{q_1} &#8658; a^2_{q_2} &#8658; \ldots &#8658; a^n_{q_n}
 \end{split}
-\]
-maps a monoid to its carrier set, then the diagrams below commute, where the <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings is realized as the "lifted" <code>poly</code> syntactic category encoding of the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>.</p>
+\]</p>
+</div>
+<div class="paragraph">
+<p>The <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings is realized as the "lifted" <code>poly</code> syntactic encoding of an mm-ADT type.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/monoid-homomorphisms.png" alt="monoid homomorphisms">
+<img src="./images/language/monoid-homomorphisms.png" alt="monoid homomorphisms" width="500">
 </div>
-</div>
-<div class="paragraph">
-<p>The following diagrams detail the operational semantics of the mm-ADT VM with respects to the coupling between the corresponding free and reductive monoids.
-The dashed lines provide a disentangled, parallel (product) view of the respective double-line compositions.
-Finally, the squiggly line joining the two parallel morphisms in the <code>|-poly</code> diagram makes clear that, unlike the branches in <code>,-poly</code> these branches are coupled to ensure the proper <a href="https://en.wikipedia.org/wiki/Tagged_union">sum type</a> (disjoint union) semantics of the <em>either</em> <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3308,25 +3259,6 @@ coproduct<br>
 </tr>
 </tbody>
 </table>
-</div>
-<div class="sect5">
-<h6 id="_free_type_ringoid">Free Type Ringoid</h6>
-<div class="paragraph">
-<p>The two <code>;,-poly</code> monoids serve as components of a <a href="https://en.wikipedia.org/wiki/Universal_algebra">universal algebra</a> that implements the <a href="https://zenodo.org/record/2565243">stream ring</a> algebra&#8201;&#8212;&#8201;the foundational algebra of the mm-ADT VM. The two <code>poly</code> monoids form a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and thus, a syntactic <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> that enables mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a> by way of a <a href="https://en.wikipedia.org/wiki/Ring_homomorphism">ring homomorphism</a> from the <strong>structural</strong> <code>;,-poly</code> free ring to the corresponding reductive <strong>procedural</strong> ring such that \[
-;,-\texttt{poly}  \xrightarrow{\;\;\;\nabla^{;}\;\;\;} \langle \texttt{obj},\texttt{[compose][branch]}, \rangle \]
-where the <em>branch</em> component is, in fact, a group with <code>(a{q},a{-q}) == {0}</code> and <code>[branch,a{q},a{-q}] == {0}</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; -&lt;('a'{2},'a'{-2})
-==&gt;('a'{2},'a'{-2})
-mmlang&gt; -&lt;('a'{2},'a'{-2})&gt;-
-==&gt;'a'{0}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>|-poly</code> can be appended to the <code>;,-poly</code> ring, where it serves as an <a href="https://en.wikipedia.org/wiki/Idempotence">idempotent</a> variation of the additive group commonly used to denote <a href="https://en.wikipedia.org/wiki/Tagged_union">sum types</a>.</p>
-</div>
 <div class="paragraph">
 <p>In terms of the mm-ADT VMs component architecture, this ring homomorphism maps a <strong>language</strong> to a <strong>processor</strong> through the common communication medium of <code>objs</code> provided by <strong>storage</strong>.
 All mm-ADT compliant components are faithful to <code>obj</code> and the stream ring axioms that bind them regardless of their particular ring encoding.
@@ -3335,7 +3267,6 @@ In this way, the mm-ADT VM remains agnostic to the specifics of the component im
 <div class="imageblock text-center">
 <div class="content">
 <img src="./images/language/ring-homomorphisms.png" alt="ring homomorphisms" width="320">
-</div>
 </div>
 </div>
 </div>
@@ -5739,7 +5670,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-23 17:53:28 -0600
+Last updated 2020-07-23 23:41:44 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
