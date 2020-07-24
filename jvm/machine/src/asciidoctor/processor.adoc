@@ -87,10 +87,10 @@ Thus, algebraically, a type is an element of the https://en.wikipedia.org/wiki/F
 
 .Modules
 ****
-A module for an group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$.
+A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$.
 If \$A = X\$, the action is defined by the group's additive operator.
 However, modules are useful when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free.
-A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an abelian group, then both axioms hold and \$X\$ is a bimodule.
+A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an abelian group, then both axioms hold and \$X\$ is a https://en.wikipedia.org/wiki/Bimodule[bimodule].
 
 .Left X-Module
 . \$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$
@@ -106,13 +106,38 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 
 ****
 
+Free elements are lexicographically one dimensional--lines. The type ringoid's carrier set is the union of the free `obj` stream ring's additive abelian group and multiplicative monoid. Thus, with two free magmas, the elements of the type ringoid are two dimensional--rectangles. In `mmlang`, the horizontal axis is denote `[;]` and the vertical axis is denoted `[,]`. For example, the following type is two-dimensional.
+
 [.text-center]
 `int[plus,2][is,[gt,0]]\[[mult,5],[mult,-6],[mult,10][plus,7]][lt,44]`
 
 [exec]
 ----
+int+2[is>0][*5,*-6,*10+7]<44
+----
+
+image::module-example-1.png[align=center]
+
+The above expression begins with a monoidal chain of three types: `int`, `int[plus,2]`, and `int{?}\<=int[is,[gt,0]]`. This chain then splits into three independent monoid chains due to the abelian group's additive operator and the distributivity axiom. The three compositions are merged to a single, final monoidal chain containing a single type `bool{0,3}\<=int{0,3}[lt,44]`. Given that the three group branches share the same left and right monoid chains, then according to left and right distributivity,
+\[
+\begin{split}
+&& a \ast b \ast (c + d + e) \ast f \\
+&=& a \ast b \ast (cf + df + ef) \\
+&=& a \ast (bcf + bdf + bef) \\
+&=& (abcf + abdf + abef).
+\end{split}
+\]
+
+The resultant polynomial ring composition is expressed in `mmlang` below.
+
+[exec]
+----
 [int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
 ----
+
+image::module-example-2.png[align=center]
+
+The above representation take the form of a free monoid ring where elements of the free monoid are linearly combined by in a free abelian group. This takes the form of a matrix where the rows are monoid chains.
 
 \begin{bmatrix}
 \tt{int}; & +2; & \tt{[is>0]}; & *5; & \_ ; & <44, \\ \tt{int}; & +2; & \tt{[is>0]}; & *{-6}; & \_ ; & <44, \\ \tt{int}; & +2; & \tt{[is>0]}; & *10; & +7 ; & <44 \\ \end{bmatrix}
