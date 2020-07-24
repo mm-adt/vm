@@ -106,10 +106,37 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 
 ****
 
-Free elements are lexicographically one dimensional--lines. The type ringoid's carrier set is the union of the free `obj` stream ring's additive abelian group and multiplicative monoid. Thus, with two free magmas, the elements of the type ringoid are two dimensional--rectangles. In `mmlang`, the horizontal axis is denote `[;]` and the vertical axis is denoted `[,]`. For example, the following type is two-dimensional.
+====== Modules of a Polynomial Ring
 
 [.text-center]
-`int[plus,2][is,[gt,0]]\[[mult,5],[mult,-6],[mult,10][plus,7]][lt,44]`
+`int[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]`
+
+[exec]
+----
+int[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
+----
+
+image::module-example-2.png[align=center]
+
+The above representation is a polynomial ring where elements of the multiplicative monoid are linearly combined in the free additive abelian group. With abuse of notation, the expression below binds the monoid elements with `+` to reflect the polynomial form \$a + b + c\$.
+
+\[
+\texttt{int+2[is>-]\*5<44} \;\;+\;\; \texttt{int+2[is>0]*-6<44} \;\;+\;\; \texttt{int+2[is>0]*10+7<44}
+\]
+
+Due to the left and right distributive ring axioms, the following derivation yields the following equivalence.
+
+\[
+\begin{split}
+&& abcf + abdf + abef \\
+&=& a \ast (bcf + bdf + bef) \\
+&=& a \ast b \ast (cf + df + ef) \\
+&=& a \ast b \ast (c + d + e) \ast f \\
+\end{split}
+\]
+
+[.text-center]
+`int+2[is>0][*5,*-6,*10+7]<44`
 
 [exec]
 ----
@@ -119,64 +146,87 @@ int+2[is>0][*5,*-6,*10+7]<44
 image::module-example-1.png[align=center]
 
 The above expression begins with a monoidal chain of three types: `int`, `int[plus,2]`, and `int{?}\<=int[is,[gt,0]]`. This chain then splits into three independent monoid chains due to the abelian group's additive operator and the distributivity axiom. The three compositions are merged to a single, final monoidal chain containing a single type `bool{0,3}\<=int{0,3}[lt,44]`. Given that the three group branches share the same left and right monoid chains, then according to left and right distributivity,
-\[
-\begin{split}
-&& a \ast b \ast (c + d + e) \ast f \\
-&=& a \ast b \ast (cf + df + ef) \\
-&=& a \ast (bcf + bdf + bef) \\
-&=& (abcf + abdf + abef).
-\end{split}
-\]
 
-The resultant polynomial ring composition is expressed in `mmlang` below.
-
-[exec]
-----
-[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
-----
-
-image::module-example-2.png[align=center]
-
-The above representation take the form of a free monoid ring where elements of the free monoid are linearly combined by in a free abelian group. This takes the form of a matrix where the rows are monoid chains.
-
-\begin{bmatrix}
-\tt{int}; & +2; & \tt{[is>0]}; & *5; & \_ ; & <44, \\ \tt{int}; & +2; & \tt{[is>0]}; & *{-6}; & \_ ; & <44, \\ \tt{int}; & +2; & \tt{[is>0]}; & *10; & +7 ; & <44 \\ \end{bmatrix}
-
-[exec]
-----
-int+2[is>0][*5<44,*-6<44,*10+7<44]
-----
-
-\[
-\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; \begin{bmatrix}
-*5; & \_ ; & <44, \\ *{-6}; & \_ ; & <44, \\ *10; & +7 ; & <44 \\ \end{bmatrix}
-\]
-
-[exec]
-----
-int+2[is>0][*5,*-6,*10+7]<44
-----
-
-\[
-\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; \begin{bmatrix}
-*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix}
-\]
+To be certain, both expressions return the same result.
 
 [exec]
 ----
 5 => [int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
-5 => int+2[is>0][*5<44,*-6<44,*10+7<44]
 5 => int+2[is>0][*5,*-6,*10+7]<44
 ----
+
+====== Modules of the Type Ringoid
+
+Free elements are lexicographically one dimensional--lines. The type ringoid's carrier set is the union of the free `obj` stream ring's additive abelian group and multiplicative monoid. Thus, with two free magmas, the elements of the type ringoid are two dimensional--rectangles. In `mmlang`, the horizontal axis is denote `[;]` and the vertical axis is denoted `[,]`. For example, the following type is two-dimensional. The original reducible free polynomial rings are expressed in the free type ringoid using `[,]` and `[;]`.
+
+[.text-center]
+`[[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]`
+
+[exec]
+----
+[[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]
+----
+
+In a manner analogous to polynomials in linear algebra, these free polynomials can be organized into a matrix where the multiplicative identity `_` is used to pad the first two rows to ensure an \$n \times m\$-matrix.
+
+\begin{bmatrix}
+ \tt{int}; & +2; & \tt{[is>0]}; & *5; & \_ ; & <44, \\
+ \tt{int}; & +2; & \tt{[is>0]}; & *{-6}; & \_ ; & <44, \\
+ \tt{int}; & +2; & \tt{[is>0]}; & *10; & +7 ; & <44 \\
+\end{bmatrix}
+
+A left `obj`-module can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.
+
+[.text-center]
+`[[int;+2;[is>0]];[[\*5;<44],[*-6;<44],[*10;+7;<44]]]`
+
+[exec]
+----
+[[int;+2;[is>0]];[[*5;<44],[*-6;<44],[*10;+7;<44]]]
+----
+
+\[
+\begin{bmatrix}
+  \tt{int}; & +2; & \tt{[is>0]}
+\end{bmatrix} ;
+\begin{bmatrix}
+  *5; & \_ ; & <44, \\
+  *{-6}; & \_ ; & <44, \\
+  *10; & +7 ; & <44 \\
+\end{bmatrix}
+\]
+
+In an analogous manner, a right scalar `obj`-module can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.
+
+[.text-center]
+`[[int;+2;[is>0]];[\*5,*-6,[*10;+7]];<44]`
+
+[exec]
+----
+[[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]
+----
+
+\[
+\begin{bmatrix}
+  \tt{int}; & +2; & \tt{[is>0]}
+\end{bmatrix} ;
+\begin{bmatrix}
+  *5; & \_ ,    \\
+  *{-6}; & \_ , \\
+  *10; & +7     \\
+\end{bmatrix} ;  <44
+\]
+
+This factored form can then be evaluated via `obj` scalar left multiplication.
 
 \[
 \begin{split}
 5; \begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix}
-*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ \begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix}
-*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ 7 ; & \begin{bmatrix}
-*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ & \begin{bmatrix}
-35; & \_ , \\ -42; & \_ , \\ 70; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ & \begin{bmatrix}
-35, \\ -42, \\ 77 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ & \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44 \\ \begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44  \\ 7 ; & \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44  \\ & \begin{bmatrix}
+35; & \_ , \\ -42; & \_ , \\ 70; & +7 \\ \end{bmatrix} ;  <44  \\ & \begin{bmatrix}
+35, \\ -42, \\ 77 \\ \end{bmatrix} ;  <44 \\ & \begin{bmatrix}
 \tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix} \\ & \begin{bmatrix}
 \tt{true}\{ 2 \}, \\ \tt{false}           \\ \end{bmatrix}
 \end{split}
@@ -184,17 +234,19 @@ int+2[is>0][*5,*-6,*10+7]<44
 
 [exec]
 ----
-[5;[+2;[is>0];[[*5;_],[*-6;_],[*10;+7]];[<44]]]
+[5;[[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]]
 ----
+
+Again, to be certain, all 3 forms yield the same result.
 
 [exec]
 ----
-5 => int
-5 => int+2
-5 => int+2[is>0]
-5 => int+2[is>0]-<(*5,*-6,*10+7)
-5 => int+2[is>0]-<(*5,*-6,*10+7)>-<44
+[5;[[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]]
+[5;[[int;+2;[is>0]];[[*5;<44],[*-6;<44],[*10;+7;<44]]]]
+[5;[[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]]
 ----
+
+The linear algebraic type ringoid compartmentalizes each type induced by an instruction. This completely free representation is staged for manipulation via matrix operations and ultimately, during execution, provides a 2-dimensional circuit diagram of the computational pipeline convenient for distributing across machines of a cluster and/or threads of a machine.
 
 ==== Type Optimization
 
