@@ -2,9 +2,12 @@
 
 == Processor Structures
 
-The programs of the mm-ADT virtual machine are *types*. From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. Every mm-ADT type has a corresponding https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrammatic] representation that is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to a directed labeled *type graph* composed of _type_-vertices and _instruction_-edges.
+The programs of the mm-ADT virtual machine are *types*.
+From a set of canonical types (_ctypes_), derived types (_dtypes_) of arbitrary complexity can be constructed using instructions from the VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture].
+Every mm-ADT type has a corresponding https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrammatic] representation that is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to a directed labeled *type graph* composed of _type_-vertices and _instruction_-edges.
 
-A program's type graph is the https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize). At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the *value graph*, where the resultant structure of an mm-ADT computation is the *obj graph*, where
+A program's type graph is the https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize).
+At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the *value graph*, where the resultant structure of an mm-ADT computation is the *obj graph*, where
 
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
@@ -12,7 +15,8 @@ A program's type graph is the https://en.wikipedia.org/wiki/Intermediate_represe
 
 image::process-stack.png[float="right",width=200]
 
-Type composition, compilation, and evaluation are carried out by mm-ADT compliant *processors*. Processors ground the mm-ADT VM to the underlying physical computer (whether on a single machine, via multiple threads, or across compute cluster), where, at the bottom of this _process stack_, the natural world's physics provides the baseline dynamics (the fundamental ground of the computation).
+Type composition, compilation, and evaluation are carried out by mm-ADT compliant *processors*.
+Processors ground the mm-ADT VM to the underlying physical computer (whether on a single machine, via multiple threads, or across compute cluster), where, at the bottom of this _process stack_, the natural world's physics provides the baseline dynamics (the fundamental ground of the computation).
 
 This section details the specifics of the relationships between types, values, and processors.
 
@@ -26,44 +30,81 @@ Processors are used in the following three situations:
 
 === Algebraic Actions
 
-A thread of execution in the VM maintains two primary references: 1.) a reference to an `obj` and 2.) a reference to an `inst`. Via the juxtaposition of `obj` and `inst` another `obj` is realized. When a VM process refers to the `obj` \$a\$ and the instruction `inst` \$i\$, then the VM will perform one of the following operations:
+A thread of execution in the VM maintains two primary references: 1.) a reference to an `obj` and 2.) a reference to an `inst`.
+Via the juxtaposition of `obj` and `inst` another `obj` is realized.
+When a VM process refers to the `obj` \$a\$ and the instruction `inst` \$i\$, then the VM will perform one of the following operations:
 
 . If the vertex \$a\$ has no outgoing \$i\$-labeled edge, then the VM _applies_ \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (*compute*).
 . If the vertex \$a\$ has an outgoing \$i\$-labeled edge, then the VM _traverses_ the edge \$a \to_i b\$ to arrive at \$b\$ (*memoize*).
 
-The first situation is computing via function https://en.wikipedia.org/wiki/Evaluation_strategy[evaluation] (save space). The second situation leverages https://en.wikipedia.org/wiki/Memoization[memoization] to avoid recomputing (save time). These two situations offer three high-level perspectives on the `obj` graph.
+The first situation is computing via function https://en.wikipedia.org/wiki/Evaluation_strategy[evaluation] (save space).
+The second situation leverages https://en.wikipedia.org/wiki/Memoization[memoization] to avoid recomputing (save time).
+These two situations offer three high-level perspectives on the `obj` graph.
 
-. *Mathematically*: The `obj` graph has an infinite number of `obj` vertices connected to each other by edges labeled from the infinite https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] `inst`. From this perspective, computing is traversal (i.e. https://en.wikipedia.org/wiki/Lookup_table[look-up]) as the `obj` graph is fully materialized.
+. *Mathematically*: The `obj` graph has an infinite number of `obj` vertices connected to each other by edges labeled from the infinite https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] `inst`.
+From this perspective, computing is traversal (i.e. https://en.wikipedia.org/wiki/Lookup_table[look-up]) as the `obj` graph is fully materialized.
 . *Theoretically*: The `obj` graph is manifested as computations proceed where, if \$a \in \tt{obj}\$ and \$i \in \tt{i\nst}\$, then any binary operation \$ai\$ that has already been evaluated already exists in the `obj` graph and as such, can be traversed.
 . *Physically*: The `obj` graph is a dynamic entity that expands and contracts given the resource constraints of the underlying physical machines supporting its manifestation across all levels of the https://en.wikipedia.org/wiki/Memory_hierarchy[memory hierarchy], where https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection] prunes the graph and computation grows the graph.
 
 ==== Type Specification
 
-An mm-ADT *program* in an mm-ADT *type*. In the type graph (a subgraph of the `obj` graph) a type is denoted by a vertex (an _ungrounded_ vertex). That vertex is the type's *range*. The type's *definition* is encoded in the directed, https://en.wikipedia.org/wiki/Deterministic_automaton[deterministic] path that ends at a vertex with no outgoing edges. The resultant vertex is a _root_ vertex and is the type's *domain*. If the type definition's path length is 0, then the domain and the range are equal, and the type is a ctype (a canonical type). If the path length is greater than 0, then the directed binary edges of the path are labeled with instructions from `inst`. This construction is abstractly represented in the diagram below.
+An mm-ADT *program* in an mm-ADT *type*.
+In the type graph (a subgraph of the `obj` graph) a type is denoted by a vertex (an _ungrounded_ vertex).
+That vertex is the type's *range*.
+The type's *definition* is encoded in the directed, https://en.wikipedia.org/wiki/Deterministic_automaton[deterministic] path that ends at a vertex with no outgoing edges.
+The resultant vertex is a _root_ vertex and is the type's *domain*.
+If the type definition's path length is 0, then the domain and the range are equal, and the type is a ctype (a canonical type).
+If the path length is greater than 0, then the directed binary edges of the path are labeled with instructions from `inst`.
+This construction is abstractly represented in the diagram below.
 
 
 image::../processor/type-path.png[align=center,width=800]
 
-The type graph forms the central structure upon by which various VM processes are enacted. These processes include type/program specification, compilation, optimization, and ultimately, via a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] from the type graph to the value graph, evaluation. Given finite computing resources, the type graph does not exist eternally in a static form ready-made. No, instead, subgraphs of it must be generated. This is accomplished via an action of `inst` monoid on the set `inst^*^` (the https://en.wikipedia.org/wiki/Kleene_star[Kleene star] closure of `inst`). For instance, in `mmlang` the user juxtaposes a ctype (domain) and an `inst` to construct a dtype. That dtype is juxtaposed with another `inst` to yield another dtype so forth until a desired type is reached.
+The type graph forms the central structure upon by which various VM processes are enacted.
+These processes include type/program specification, compilation, optimization, and ultimately, via a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] from the type graph to the value graph, evaluation.
+Given finite computing resources, the type graph does not exist eternally in a static form ready-made.
+No, instead, subgraphs of it must be generated.
+This is accomplished via an action of `inst` monoid on the set `inst^*^` (the https://en.wikipedia.org/wiki/Kleene_star[Kleene star] closure of `inst`).
+For instance, in `mmlang` the user juxtaposes a ctype (domain) and an `inst` to construct a dtype.
+That dtype is juxtaposed with another `inst` to yield another dtype so forth until a desired type is reached.
 
 \[
 \texttt{range} = ((((((\texttt{domain} \cdot \texttt{inst}_0) \cdot \texttt{inst}_1) \cdot \texttt{inst}_2) \ldots) \cdot \texttt{inst}_{n-2}) \cdot \texttt{inst}_{n-1}).
 \]
 
-In general, the action of an `inst` on a type is the function
-\[
-\texttt{inst}: T \to T,
-\]
-where if \$a \in \tt{i\nst}\$, then
-\[
+In general, the action of an `inst` on a type is the function \[
+\texttt{inst}: T \to T, \]
+where if \$a \in \tt{i\nst}\$, then \[
 a(x) = xa.
 \]
 
-Said plainly, instructions in `inst` act on types by concatenating themselves to the type definition. Thus, algebraically, a type is an element of the https://en.wikipedia.org/wiki/Free_algebra[free] inst monoid rooted at a ctype.
+Said plainly, instructions in `inst` act on types by concatenating themselves to the type definition.
+Thus, algebraically, a type is an element of the https://en.wikipedia.org/wiki/Free_algebra[free] inst monoid rooted at a ctype.
 
 ==== Type Compilation
 
 ===== obj-Modules
+
+.Modules
+****
+A module for an group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$.
+If \$A = X\$, the action is defined by the group's additive operator.
+However, modules are useful when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free.
+A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an abelian group, then both axioms hold and \$X\$ is a bimodule.
+
+.Left X-Module
+. \$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$
+. \$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$
+. \$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$
+. \$\mathbf{1}_X \cdot a = a\$
+
+.Right X-Module
+. \$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$
+. \$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$
+. \$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$
+. \$a \cdot \mathbf{1}_X = a\$
+
+****
 
 [.text-center]
 `int[plus,2][is,[gt,0]]\[[mult,5],[mult,-6],[mult,10][plus,7]][lt,44]`
@@ -74,10 +115,7 @@ Said plainly, instructions in `inst` act on types by concatenating themselves to
 ----
 
 \begin{bmatrix}
-\tt{int}; & +2; & \tt{[is>0]}; & *5;    & \_ ;   & <44, \\
-\tt{int}; & +2; & \tt{[is>0]}; & *{-6}; & \_ ;   & <44, \\
-\tt{int}; & +2; & \tt{[is>0]}; & *10;   & +7 ;   & <44 \\
-\end{bmatrix}
+\tt{int}; & +2; & \tt{[is>0]}; & *5; & \_ ; & <44, \\ \tt{int}; & +2; & \tt{[is>0]}; & *{-6}; & \_ ; & <44, \\ \tt{int}; & +2; & \tt{[is>0]}; & *10; & +7 ; & <44 \\ \end{bmatrix}
 
 [exec]
 ----
@@ -85,12 +123,8 @@ int+2[is>0][*5<44,*-6<44,*10+7<44]
 ----
 
 \[
-\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ;
-\begin{bmatrix}
-*5;    & \_ ;  & <44, \\
-*{-6}; & \_ ;  & <44, \\
-*10;   & +7 ;  & <44  \\
-\end{bmatrix}
+\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; \begin{bmatrix}
+*5; & \_ ; & <44, \\ *{-6}; & \_ ; & <44, \\ *10; & +7 ; & <44 \\ \end{bmatrix}
 \]
 
 [exec]
@@ -99,13 +133,8 @@ int+2[is>0][*5,*-6,*10+7]<44
 ----
 
 \[
-\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ;
-\begin{bmatrix}
-*5;    & \_ , \\
-*{-6}; & \_ , \\
-*10;   & +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} <44 \end{bmatrix}
+\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix}
 \]
 
 [exec]
@@ -117,49 +146,14 @@ int+2[is>0][*5,*-6,*10+7]<44
 
 \[
 \begin{split}
-5;
-\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ;
-& \begin{bmatrix}
-*5;    & \_ , \\
-*{-6}; & \_ , \\
-*10;   & +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} <44 \end{bmatrix} \\
-\begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ;
-& \begin{bmatrix}
-*5;    & \_ , \\
-*{-6}; & \_ , \\
-*10;   & +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} <44 \end{bmatrix} \\
-7 ;
-& \begin{bmatrix}
-*5;    & \_ , \\
-*{-6}; & \_ , \\
-*10;   & +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} <44 \end{bmatrix} \\
-& \begin{bmatrix}
-35;    & \_ , \\
--42; & \_ , \\
-70;   & +7   \\
-\end{bmatrix} ;
-\begin{bmatrix} <44 \end{bmatrix} \\
-& \begin{bmatrix}
-35,   \\
--42, \\
-77   \\
-\end{bmatrix} ;
-\begin{bmatrix} <44 \end{bmatrix} \\
-& \begin{bmatrix}
-\tt{true},   \\
-\tt{true},   \\
-\tt{false}   \\
-\end{bmatrix} \\
-& \begin{bmatrix}
-\tt{true}\{ 2 \},   \\
-\tt{false}           \\
-\end{bmatrix}
+5; \begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ \begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ 7 ; & \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ & \begin{bmatrix}
+35; & \_ , \\ -42; & \_ , \\ 70; & +7 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ & \begin{bmatrix}
+35, \\ -42, \\ 77 \\ \end{bmatrix} ; \begin{bmatrix} <44 \end{bmatrix} \\ & \begin{bmatrix}
+\tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix} \\ & \begin{bmatrix}
+\tt{true}\{ 2 \}, \\ \tt{false}           \\ \end{bmatrix}
 \end{split}
 \]
 
@@ -177,14 +171,14 @@ int+2[is>0][*5,*-6,*10+7]<44
 5 => int+2[is>0]-<(*5,*-6,*10+7)>-<44
 ----
 
-
-
-
 ==== Type Optimization
 
 ==== Type Evaluation
 
-A type https://en.wikipedia.org/wiki/Compiler[compiles] a type. A type https://en.wikipedia.org/wiki/Executable[evaluates] a value. The `inst` monoid's *type specification* action yields an element in the free `inst` monoid, which, in the `obj` graph, is realized as a path from a range vertex to a domain vertex. In the example `obj` graph encoding below, the range vertex is the *type path*'s _source_ and the domain vertex is the path's _target_.
+A type https://en.wikipedia.org/wiki/Compiler[compiles] a type.
+A type https://en.wikipedia.org/wiki/Executable[evaluates] a value.
+The `inst` monoid's *type specification* action yields an element in the free `inst` monoid, which, in the `obj` graph, is realized as a path from a range vertex to a domain vertex.
+In the example `obj` graph encoding below, the range vertex is the *type path*'s _source_ and the domain vertex is the path's _target_.
 
 image::../processor/type-path.png[align=center,width=800]
 
@@ -212,14 +206,13 @@ int[plus,1][plus,2][plus,3][path]                             //<2>
 <4> The step-wise `\=>` evaluation of the co-type path chambered in a `;-poly`.
 <5> The evaluation of the `;-poly` simply returns the last path value.
 
-In the `mmlang` example above, the step-wise `\=>` evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM's execution plan. The mm-ADT algebras are particular constraints on the most general algebraic specification of mm-ADT: the `obj` magma.
+In the `mmlang` example above, the step-wise `\=>` evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM's execution plan.
+The mm-ADT algebras are particular constraints on the most general algebraic specification of mm-ADT: the `obj` magma.
 
 [.text-center]
 `1\=>int\=>[plus,1]\=>[plus,2]\=>[plus,3]\=>int`
 
 ===== Type Checking
-
-
 
 ===== Instruction Evaluation
 
