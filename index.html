@@ -5326,7 +5326,13 @@ a(x) = xa.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]
+==&gt;true{2}
+==&gt;false
+mmlang&gt; 5 =&gt; int+2[is&gt;0][*5&lt;44,*-6&lt;44,*10+7&lt;44]
+==&gt;true{2}
+==&gt;false
+mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 ==&gt;true{2}
 ==&gt;false</code></pre>
 </div>
@@ -5334,7 +5340,7 @@ a(x) = xa.
 <div class="paragraph">
 <p>\[
 \begin{split}
- \begin{bmatrix}5; &amp; \_ ; &amp; \_ \end{bmatrix} ;
+5;
 \begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ;
 &amp; \begin{bmatrix}
 *5;    &amp; \_ , \\
@@ -5358,13 +5364,13 @@ a(x) = xa.
 \begin{bmatrix} &lt;44 \end{bmatrix} \\
 &amp; \begin{bmatrix}
 35;    &amp; \_ , \\
--112; &amp; \_ , \\
+-42; &amp; \_ , \\
 70;   &amp; +7   \\
 \end{bmatrix} ;
 \begin{bmatrix} &lt;44 \end{bmatrix} \\
 &amp; \begin{bmatrix}
 35,   \\
--112, \\
+-42, \\
 77   \\
 \end{bmatrix} ;
 \begin{bmatrix} &lt;44 \end{bmatrix} \\
@@ -5382,13 +5388,22 @@ a(x) = xa.
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[+2;[is&gt;0];[[*5;_],[*-6;_],[*10;+7]];[&lt;44]]]
 ==&gt;true{2}
-==&gt;false
-mmlang&gt; 5 =&gt; int+2[is&gt;0][*5&lt;44,*-6&lt;44,*10+7&lt;44]
-==&gt;true{2}
-==&gt;false
-mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
+==&gt;false</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int
+==&gt;5
+mmlang&gt; 5 =&gt; int+2
+==&gt;7
+mmlang&gt; 5 =&gt; int+2[is&gt;0]
+==&gt;7
+mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)
+==&gt;(35,-42,77)
+mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 ==&gt;true{2}
 ==&gt;false</code></pre>
 </div>
@@ -5820,7 +5835,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 03:38:10 -0600
+Last updated 2020-07-24 06:55:00 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
