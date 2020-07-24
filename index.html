@@ -5304,45 +5304,38 @@ Thus, algebraically, a type is an element of the <a href="https://en.wikipedia.o
 <div class="content">
 <div class="title">Modules</div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$.
-If \$A = X\$, the action is defined by the group&#8217;s additive operator.
-However, modules are useful when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free.
-A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an abelian group, then both axioms hold and \$X\$ is a <a href="https://en.wikipedia.org/wiki/Bimodule">bimodule</a>.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called <strong>scalar multiplication</strong>. If \$A = X\$, the action is defined by the group&#8217;s additive operator. However, modules are useful when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free. A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. In other words, modules provide a ring theoretic interpretation of various <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebraic</a> structures. The axioms for both left and right modules are provided below, where if \$A\$ is an <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>, then \$X\$ is a <a href="https://en.wikipedia.org/wiki/Bimodule">bimodule</a> and both sets of axioms hold.</p>
 </div>
-<div class="olist arabic">
-<div class="title">Left X-Module</div>
-<ol class="arabic">
-<li>
-<p>\$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$</p>
-</li>
-<li>
-<p>\$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$</p>
-</li>
-<li>
-<p>\$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$</p>
-</li>
-<li>
-<p>\$\mathbf{1}_X \cdot a = a\$</p>
-</li>
-</ol>
-</div>
-<div class="olist arabic">
-<div class="title">Right X-Module</div>
-<ol class="arabic">
-<li>
-<p>\$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$</p>
-</li>
-<li>
-<p>\$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$</p>
-</li>
-<li>
-<p>\$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$</p>
-</li>
-<li>
-<p>\$a \cdot \mathbf{1}_X = a\$</p>
-</li>
-</ol>
-</div>
+<table class="tableblock frame-all grid-all center" style="width: 70%;">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">Left \$X\$-Module Axioms</th>
+<th class="tableblock halign-center valign-top">Right \$X\$-Module Axioms</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$\mathbf{1}_X \cdot a = a\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot \mathbf{1}_X = a\$</p></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect5">
@@ -5362,28 +5355,38 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 </div>
 </div>
 <div class="paragraph">
-<p>The above representation is a polynomial ring where elements of the multiplicative monoid are linearly combined in the free additive abelian group. With abuse of notation, the expression below binds the monoid elements with <code>+</code> to reflect the polynomial form \$a + b + c\$.</p>
+<p>The above expression denotes a polynomial ring whose linearly combined terms are elements of the multiplicative monoid. With abuse of notation, the expression below binds the monoidal terms with <code>+</code> to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.</p>
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{int+2[is&gt;-]*5&lt;44} \;\;+\;\; \texttt{int+2[is&gt;0]*-6&lt;44} \;\;+\;\; \texttt{int+2[is&gt;0]*10+7&lt;44}
+\texttt{int+2[is&gt;0]*5&lt;44} \;\;+\;\; \texttt{int+2[is&gt;0]*-6&lt;44} \;\;+\;\; \texttt{int+2[is&gt;0]*10+7&lt;44}
 \]</p>
 </div>
 <div class="paragraph">
-<p>Due to the left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distributive</a> ring axioms, the following derivation yields the following equivalence.</p>
+<p>Rings support both left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distributivity</a> such that the following derivation yields the respective equivalence.</p>
 </div>
 <div class="paragraph">
 <p>\[
 \begin{split}
-&amp;&amp; abcf + abdf + abef \\
-&amp;=&amp; a \ast (bcf + bdf + bef) \\
-&amp;=&amp; a \ast b \ast (cf + df + ef) \\
-&amp;=&amp; a \ast b \ast (c + d + e) \ast f \\
+abcg + abdg + abefg &amp;= a \ast (bcg + bdg + befg) \\
+&amp;= a \ast b \ast (cg + dg + efg) \\
+&amp;= a \ast b \ast (c + d + ef) \ast g \\
 \end{split}
 \]</p>
 </div>
+<div class="paragraph">
+<p>Thus <code>int+2[is&gt;0]</code> is <a href="https://en.wikipedia.org/wiki/Factorization">factored</a> out on the left and <code>&lt;44</code> is factored out on the right.</p>
+</div>
 <div class="paragraph text-center">
 <p><code>int+2[is&gt;0][*5,*-6,*10+7]&lt;44</code></p>
+</div>
+<div class="paragraph">
+<p>Again with an abuse of notation to emphasize the lexical structure.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{int+2[is&gt;0]} \;\ast\; (\texttt{*5} \;\;+\;\; \texttt{*-6} \;\;+\;\; \texttt{*10+7}) \;\ast\; \texttt{&lt;44}
+\]</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5397,10 +5400,7 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 </div>
 </div>
 <div class="paragraph">
-<p>The above expression begins with a monoidal chain of three types: <code>int</code>, <code>int[plus,2]</code>, and <code>int{?}&lt;=int[is,[gt,0]]</code>. This chain then splits into three independent monoid chains due to the abelian group&#8217;s additive operator and the distributivity axiom. The three compositions are merged to a single, final monoidal chain containing a single type <code>bool{0,3}&lt;=int{0,3}[lt,44]</code>. Given that the three group branches share the same left and right monoid chains, then according to left and right distributivity,</p>
-</div>
-<div class="paragraph">
-<p>To be certain, both expressions return the same result.</p>
+<p>To be certain, both the factored and unfactored forms of the expression return the same result for the same input.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -5413,12 +5413,17 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 </div>
 </div>
 <div class="paragraph">
-<p>A split/merge form is provided to better illustrate the intermediate results of the computation.</p>
+<p>A progressive <em>split/merge</em> example is provided to better illustrate the intermediate results of the computation.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; -&lt;(int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44)
 ==&gt;(true,true,false)
+mmlang&gt; 5 =&gt; -&lt;(int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44)&gt;-
+==&gt;true{2}
+==&gt;false
+mmlang&gt;
+mmlang&gt;
 mmlang&gt; 5 =&gt; int
 ==&gt;5
 mmlang&gt; 5 =&gt; int+2
@@ -5440,7 +5445,10 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 <div class="sect5">
 <h6 id="_type_ringoid_modules">Type Ringoid Modules</h6>
 <div class="paragraph">
-<p>A non-free element is a <em>zero</em>-dimensional point. A free element is a <em>one</em>-dimensional line. The carrier set of the <strong>type ringoid</strong> is formed from the union the elements of <code>obj</code> stream ring&#8217;s free additive abelian group and free multiplicative monoid&#8201;&#8212;&#8201;a <a href="https://en.wikipedia.org/wiki/Free_algebra">free ring</a>. With two free magmas, the elements of the type ringoid are <em>two</em>-dimensional rectangles. One dimension represents multiplication and the other addition. The type ringoid&#8217;s completely free structure is encoded in a <code>,-lst</code> (additive) with terms that are <code>;-lst</code> (multiplicative). The following is an example of a two-dimensional type ringoid element.</p>
+<p><span class="image left"><img src="./images/processor/type-ringoid-illustration.png" alt="type ringoid illustration" width="350"></span></p>
+</div>
+<div class="paragraph">
+<p>A non-free element is a <em>zero</em>-dimensional point. A free element is a <em>one</em>-dimensional line. The carrier set of the <strong>type ringoid</strong> is formed from the union the elements of <code>obj</code> stream ring&#8217;s <a href="https://en.wikipedia.org/wiki/Free_abelian_group">free additive abelian group</a> and <a href="https://en.wikipedia.org/wiki/Free_monoid">free multiplicative monoid</a>. This is the <em>freest</em> possible stream ring representation&#8201;&#8212;&#8201;a <a href="https://en.wikipedia.org/wiki/Free_algebra">free ring</a>. With two free magmas, the type ringoid&#8217;s elements are <em>two</em>-dimensional planes. One dimension represents multiplication and the other addition. The type ringoid is encoded in <code>mmlang</code> as a <code>,-lst</code> (additive) with zero or more <code>;-lst</code> (multiplicative) terms. The following is an example of a two-dimensional type ringoid element.</p>
 </div>
 <div class="paragraph text-center">
 <p><code>[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]</code></p>
@@ -5452,7 +5460,7 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 </div>
 </div>
 <div class="paragraph">
-<p>In a manner analogous to polynomials in <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebra</a>, the free monoids of the polynomial can be organized into a <a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)">matrix</a> where the multiplicative identity <code>_</code> is used to pad the first two rows, ensuring an \$n \times m\$-matrix.</p>
+<p>In a manner analogous to polynomials in <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebra</a>, the free monoids of the polynomial can be organized into a <a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)">matrix</a>, where the following equations maintain <code>,</code> and <code>;</code> tokens to help orient the reader and the multiplicative identity <code>_</code> pads rows to ensure a proper \$n \times m\$-matrix.</p>
 </div>
 <div class="paragraph">
 <p>\begin{bmatrix}
@@ -5515,13 +5523,17 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 <div class="paragraph">
 <p>\[
 \begin{split}
-5; \begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44 \\ \begin{bmatrix}5; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44  \\ 7 ; &amp; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44  \\ &amp; \begin{bmatrix}
-35; &amp; \_ , \\ -42; &amp; \_ , \\ 70; &amp; +7 \\ \end{bmatrix} ;  &lt;44  \\ &amp; \begin{bmatrix}
-35, \\ -42, \\ 77 \\ \end{bmatrix} ;  &lt;44 \\ &amp; \begin{bmatrix}
-\tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix} \\ &amp; \begin{bmatrix}
+&amp; 5; \begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix} *5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44  \\
+&amp;= \begin{bmatrix}5; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix} *5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44  \\
+&amp;=7 ;  \begin{bmatrix}
+*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ;  &lt;44
+= &amp; \begin{bmatrix}
+35; &amp; \_ , \\ -42; &amp; \_ , \\ 70; &amp; +7 \\ \end{bmatrix} ;  &lt;44
+= \begin{bmatrix}
+35, \\ -42, \\ 77 \\ \end{bmatrix} ;  &lt;44
+=\begin{bmatrix}
+\tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix}
+= \begin{bmatrix}
 \tt{true}\{ 2 \}, \\ \tt{false}           \\ \end{bmatrix}
 \end{split}
 \]</p>
@@ -5529,6 +5541,13 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
+==&gt;true{2}
+==&gt;false
+mmlang&gt;
+mmlang&gt;
+mmlang&gt; 5-&lt;(int;+2;[is&gt;0];-&lt;(*5,*-6,-&lt;(*10;+7)))
+==&gt;(5;7;7;(35,-42,(70;77)))
+mmlang&gt; 5-&lt;(int;+2;[is&gt;0];-&lt;(*5,*-6,-&lt;(*10;+7)&gt;-)&gt;-;&lt;44)&gt;-
 ==&gt;true{2}
 ==&gt;false</code></pre>
 </div>
@@ -5550,7 +5569,7 @@ mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
 </div>
 </div>
 <div class="paragraph">
-<p>The linear algebraic type ringoid compartmentalizes each type induced by an instruction. This <em>absolutely</em> free representation is well suited for manipulation by the processor. As a compiler, matrix operations analagous to the above can be leveraged for compile time optimizations/rewrites. As an evaluator, the free type ringoid provides a decomposed, 2-dimensional <a href="https://en.wikipedia.org/wiki/Pipeline">pipeline</a> structure convenient for partitioning across machines of a cluster and/or threads of a machine.</p>
+<p>The linear algebraic type ringoid compartmentalizes the type induced at the individual instruction-level. This is the <em>absolutely</em> freest representation of a ring(oid). This "cellular form" is well suited to manipulation by the processor. At compile-time, factoring a matrix representation can be leveraged for optimization and rewriting. At evaluation runtime, the free type ringoid provides a deconstructed, 2-dimensional <a href="https://en.wikipedia.org/wiki/Pipeline">pipeline</a> architecture that can be partitioned across machines of a cluster and/or threads of a machine.</p>
 </div>
 </div>
 </div>
@@ -5984,7 +6003,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 12:47:31 -0600
+Last updated 2020-07-24 13:14:04 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
