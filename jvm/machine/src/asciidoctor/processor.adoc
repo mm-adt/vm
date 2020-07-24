@@ -63,6 +63,111 @@ Said plainly, instructions in `inst` act on types by concatenating themselves to
 
 ==== Type Compilation
 
+===== obj-Modules
+
+[.text-center]
+`int[plus,2][is,[gt,0]]\[[mult,5],[mult,-6],[mult,10][plus,7]][lt,44]`
+
+[exec]
+----
+[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
+----
+
+\begin{bmatrix}
+\tt{int}; & +2; & \tt{[is>0]}; & *5;    & \_ ;   & <44, \\
+\tt{int}; & +2; & \tt{[is>0]}; & *{-6}; & \_ ;   & <44, \\
+\tt{int}; & +2; & \tt{[is>0]}; & *10;   & +7 ;   & <44 \\
+\end{bmatrix}
+
+[exec]
+----
+int+2[is>0][*5<44,*-6<44,*10+7<44]
+----
+
+\[
+\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ;
+\begin{bmatrix}
+*5;    & \_ ;  & <44, \\
+*{-6}; & \_ ;  & <44, \\
+*10;   & +7 ;  & <44  \\
+\end{bmatrix}
+\]
+
+[exec]
+----
+int+2[is>0][*5,*-6,*10+7]<44
+----
+
+\[
+\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ;
+\begin{bmatrix}
+*5;    & \_ , \\
+*{-6}; & \_ , \\
+*10;   & +7   \\
+\end{bmatrix} ;
+\begin{bmatrix} <44 \end{bmatrix}
+\]
+
+[exec]
+----
+5 => int+2[is>0][*5,*-6,*10+7]<44
+----
+
+\[
+\begin{split}
+ \begin{bmatrix}5; & \_ ; & \_ \end{bmatrix} ;
+\begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ;
+& \begin{bmatrix}
+*5;    & \_ , \\
+*{-6}; & \_ , \\
+*10;   & +7   \\
+\end{bmatrix} ;
+\begin{bmatrix} <44 \end{bmatrix} \\
+\begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ;
+& \begin{bmatrix}
+*5;    & \_ , \\
+*{-6}; & \_ , \\
+*10;   & +7   \\
+\end{bmatrix} ;
+\begin{bmatrix} <44 \end{bmatrix} \\
+7 ;
+& \begin{bmatrix}
+*5;    & \_ , \\
+*{-6}; & \_ , \\
+*10;   & +7   \\
+\end{bmatrix} ;
+\begin{bmatrix} <44 \end{bmatrix} \\
+& \begin{bmatrix}
+35;    & \_ , \\
+-112; & \_ , \\
+70;   & +7   \\
+\end{bmatrix} ;
+\begin{bmatrix} <44 \end{bmatrix} \\
+& \begin{bmatrix}
+35,   \\
+-112, \\
+77   \\
+\end{bmatrix} ;
+\begin{bmatrix} <44 \end{bmatrix} \\
+& \begin{bmatrix}
+\tt{true},   \\
+\tt{true},   \\
+\tt{false}   \\
+\end{bmatrix} \\
+& \begin{bmatrix}
+\tt{true}\{ 2 \},   \\
+\tt{false}           \\
+\end{bmatrix}
+\end{split}
+\]
+
+[exec]
+----
+5 => [int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
+5 => int+2[is>0][*5<44,*-6<44,*10+7<44]
+5 => int+2[is>0][*5,*-6,*10+7]<44
+----
+
 ==== Type Optimization
 
 ==== Type Evaluation
