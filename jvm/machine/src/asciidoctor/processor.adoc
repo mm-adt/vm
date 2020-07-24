@@ -110,12 +110,14 @@ int+2[is>0][*5,*-6,*10+7]<44
 
 [exec]
 ----
+5 => [int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
+5 => int+2[is>0][*5<44,*-6<44,*10+7<44]
 5 => int+2[is>0][*5,*-6,*10+7]<44
 ----
 
 \[
 \begin{split}
- \begin{bmatrix}5; & \_ ; & \_ \end{bmatrix} ;
+5;
 \begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ;
 & \begin{bmatrix}
 *5;    & \_ , \\
@@ -139,13 +141,13 @@ int+2[is>0][*5,*-6,*10+7]<44
 \begin{bmatrix} <44 \end{bmatrix} \\
 & \begin{bmatrix}
 35;    & \_ , \\
--112; & \_ , \\
+-42; & \_ , \\
 70;   & +7   \\
 \end{bmatrix} ;
 \begin{bmatrix} <44 \end{bmatrix} \\
 & \begin{bmatrix}
 35,   \\
--112, \\
+-42, \\
 77   \\
 \end{bmatrix} ;
 \begin{bmatrix} <44 \end{bmatrix} \\
@@ -163,10 +165,20 @@ int+2[is>0][*5,*-6,*10+7]<44
 
 [exec]
 ----
-5 => [int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
-5 => int+2[is>0][*5<44,*-6<44,*10+7<44]
-5 => int+2[is>0][*5,*-6,*10+7]<44
+[5;[+2;[is>0];[[*5;_],[*-6;_],[*10;+7]];[<44]]]
 ----
+
+[exec]
+----
+5 => int
+5 => int+2
+5 => int+2[is>0]
+5 => int+2[is>0]-<(*5,*-6,*10+7)
+5 => int+2[is>0]-<(*5,*-6,*10+7)>-<44
+----
+
+
+
 
 ==== Type Optimization
 
