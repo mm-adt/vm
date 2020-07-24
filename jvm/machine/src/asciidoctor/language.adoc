@@ -495,7 +495,15 @@ NOTE: Expressions of the form `-<(a,b,c)>-` are decomposed representations of `[
 a|
 [exec]
 ----
+5 => int+1
+5 => int+1-<(_,_)
+5 => int+1-<(*2,*2)
+5 => int+1-<(*2,*2)>-
 5 => int+1-<(*2,*2)>-+2
+----
+{blank}
+[exec]
+----
 5 => int+1*{2}2+2
 ----
 {blank}
@@ -508,6 +516,12 @@ a|
 5 => int+1-<(*2,+6)
 5 => int+1-<(*2,+6)>-
 5 => int+1-<(*2,+6)>-+2
+----
+{blank}
+[exec]
+----
+5 => int-<(+1*2+2,+1+6+2)
+5 => int-<(+1*2+2,+1+6+2)>-
 ----
 {blank}
 | image:value-bulk-example.png[]
