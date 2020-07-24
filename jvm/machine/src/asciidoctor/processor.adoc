@@ -106,10 +106,10 @@ A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by
 
 ****
 
-====== Modules of a Polynomial Ring
+====== Polynomial Ring Modules
 
 [.text-center]
-`int[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]`
+`int[int+2[is>0]\*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]`
 
 [exec]
 ----
@@ -124,7 +124,7 @@ The above representation is a polynomial ring where elements of the multiplicati
 \texttt{int+2[is>-]\*5<44} \;\;+\;\; \texttt{int+2[is>0]*-6<44} \;\;+\;\; \texttt{int+2[is>0]*10+7<44}
 \]
 
-Due to the left and right distributive ring axioms, the following derivation yields the following equivalence.
+Due to the left and right https://en.wikipedia.org/wiki/Distributive_property[distributive] ring axioms, the following derivation yields the following equivalence.
 
 \[
 \begin{split}
@@ -136,7 +136,7 @@ Due to the left and right distributive ring axioms, the following derivation yie
 \]
 
 [.text-center]
-`int+2[is>0][*5,*-6,*10+7]<44`
+`int+2[is>0][\*5,*-6,*10+7]<44`
 
 [exec]
 ----
@@ -155,9 +155,22 @@ To be certain, both expressions return the same result.
 5 => int+2[is>0][*5,*-6,*10+7]<44
 ----
 
-====== Modules of the Type Ringoid
+A split/merge form is provided to better illustrate the intermediate results of the computation.
 
-Free elements are lexicographically one dimensional--lines. The type ringoid's carrier set is the union of the free `obj` stream ring's additive abelian group and multiplicative monoid. Thus, with two free magmas, the elements of the type ringoid are two dimensional--rectangles. In `mmlang`, the horizontal axis is denote `[;]` and the vertical axis is denoted `[,]`. For example, the following type is two-dimensional. The original reducible free polynomial rings are expressed in the free type ringoid using `[,]` and `[;]`.
+[exec]
+----
+5 => -<(int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44)
+5 => int
+5 => int+2
+5 => int+2[is>0]
+5 => int+2[is>0]-<(*5,*-6,*10+7)
+5 => int+2[is>0]-<(*5,*-6,*10+7)>-
+5 => int+2[is>0]-<(*5,*-6,*10+7)>-<44
+----
+
+====== Type Ringoid Modules
+
+A non-free element is a _zero_-dimensional point. A free element is a _one_-dimensional line. The carrier set of the *type ringoid* is formed from the union the elements of `obj` stream ring's free additive abelian group and free multiplicative monoid -- a https://en.wikipedia.org/wiki/Free_algebra[free ring]. With two free magmas, the elements of the type ringoid are _two_-dimensional rectangles. One dimension represents multiplication and the other addition. The type ringoid's completely free structure is encoded in a `,-lst` (additive) with terms that are `;-lst` (multiplicative). The following is an example of a two-dimensional type ringoid element.
 
 [.text-center]
 `[[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]`
@@ -167,7 +180,7 @@ Free elements are lexicographically one dimensional--lines. The type ringoid's c
 [[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]
 ----
 
-In a manner analogous to polynomials in linear algebra, these free polynomials can be organized into a matrix where the multiplicative identity `_` is used to pad the first two rows to ensure an \$n \times m\$-matrix.
+In a manner analogous to polynomials in https://en.wikipedia.org/wiki/Linear_algebra[linear algebra], the free monoids of the polynomial can be organized into a https://en.wikipedia.org/wiki/Matrix_(mathematics)[matrix] where the multiplicative identity `_` is used to pad the first two rows, ensuring an \$n \times m\$-matrix.
 
 \begin{bmatrix}
  \tt{int}; & +2; & \tt{[is>0]}; & *5; & \_ ; & <44, \\
@@ -175,7 +188,7 @@ In a manner analogous to polynomials in linear algebra, these free polynomials c
  \tt{int}; & +2; & \tt{[is>0]}; & *10; & +7 ; & <44 \\
 \end{bmatrix}
 
-A left `obj`-module can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.
+A left `obj`-module (a row vector) can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.
 
 [.text-center]
 `[[int;+2;[is>0]];[[\*5;<44],[*-6;<44],[*10;+7;<44]]]`
@@ -196,7 +209,7 @@ A left `obj`-module can be factored out of the matrix leaving an expression of t
 \end{bmatrix}
 \]
 
-In an analogous manner, a right scalar `obj`-module can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.
+Similarly, a right `obj`-module https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar] can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.
 
 [.text-center]
 `[[int;+2;[is>0]];[\*5,*-6,[*10;+7]];<44]`
@@ -217,7 +230,7 @@ In an analogous manner, a right scalar `obj`-module can be factored out leaving 
 \end{bmatrix} ;  <44
 \]
 
-This factored form can then be evaluated via `obj` scalar left multiplication.
+This fully factored form can be evaluated with `obj`-scalar left multiplication.
 
 \[
 \begin{split}
@@ -237,7 +250,7 @@ This factored form can then be evaluated via `obj` scalar left multiplication.
 [5;[[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]]
 ----
 
-Again, to be certain, all 3 forms yield the same result.
+Again, to be certain, all three derivations yield the same result for the same input.
 
 [exec]
 ----
@@ -246,7 +259,7 @@ Again, to be certain, all 3 forms yield the same result.
 [5;[[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]]
 ----
 
-The linear algebraic type ringoid compartmentalizes each type induced by an instruction. This completely free representation is staged for manipulation via matrix operations and ultimately, during execution, provides a 2-dimensional circuit diagram of the computational pipeline convenient for distributing across machines of a cluster and/or threads of a machine.
+The linear algebraic type ringoid compartmentalizes each type induced by an instruction. This _absolutely_ free representation is well suited for manipulation by the processor. As a compiler, matrix operations analagous to the above can be leveraged for compile time optimizations/rewrites. As an evaluator, the free type ringoid provides a decomposed, 2-dimensional https://en.wikipedia.org/wiki/Pipeline[pipeline] structure convenient for partitioning across machines of a cluster and/or threads of a machine.
 
 ==== Type Optimization
 
