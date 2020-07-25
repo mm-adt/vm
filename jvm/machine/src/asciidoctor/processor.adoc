@@ -113,7 +113,7 @@ int[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
 
 image::module-example-2.png[align=center]
 
-The above expression denotes a polynomial ring whose linearly combined terms are elements of the multiplicative monoid. With abuse of notation, the expression below binds the monoidal terms with `+` to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.
+The above expression denotes a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] whose linearly combined terms are elements of the multiplicative monoid. With abuse of notation, the expression below binds the monoidal terms with `+` to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.
 
 \[
 \texttt{int+2[is>0]\*5<44} \;\;+\;\; \texttt{int+2[is>0]*-6<44} \;\;+\;\; \texttt{int+2[is>0]*10+7<44}
@@ -174,7 +174,10 @@ A progressive _split/merge_ example is provided to better illustrate the interme
 
 image:type-ringoid-illustration.png[float=left,width=350]
 
-A non-free element is a _zero_-dimensional point. A free element is a _one_-dimensional line. The carrier set of the *type ringoid* is formed from the union the elements of `obj` stream ring's https://en.wikipedia.org/wiki/Free_abelian_group[free additive abelian group] and https://en.wikipedia.org/wiki/Free_monoid[free multiplicative monoid]. This is the _freest_ possible stream ring representation -- a https://en.wikipedia.org/wiki/Free_algebra[free ring]. With two free magmas, the type ringoid's elements are _two_-dimensional planes. One dimension represents multiplication and the other addition. The type ringoid is encoded in `mmlang` as a `,-lst` (additive) with zero or more `;-lst` (multiplicative) terms. The following is an example of a two-dimensional type ringoid element.
+A non-free element is a _zero_-dimensional point. A free element is a _one_-dimensional line. The carrier set of the *type ringoid* is formed from the union of the elements of `obj` stream ring's https://en.wikipedia.org/wiki/Free_abelian_group[free additive abelian group] and https://en.wikipedia.org/wiki/Free_monoid[free multiplicative monoid]. This is the _freest_ possible stream ring representation -- a https://en.wikipedia.org/wiki/Free_algebra[free ring]. With two free magmas, the type ringoid's elements are _two_-dimensional planes. One dimension represents multiplication and the other addition. The type ringoid is encoded in `mmlang` as a `,-lst` (additive) with zero or more `;-lst` (multiplicative) terms. The unfactored type from the previous section is presented, followed by its two-dimensional encoding as an element of the type ringoid.
+
+[.text-center]
+`[int+2[is>0]\*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]`
 
 [.text-center]
 `[[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]`
