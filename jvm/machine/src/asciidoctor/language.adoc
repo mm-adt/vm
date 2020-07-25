@@ -857,7 +857,7 @@ int{0,5}<=int{0,5}
 |Quantifiers must be elements from a ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] is two integers and represents uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
 
 <.^a|
-[exec]
+[exec,exception=true]
 ----
 int<=bool
 ----
@@ -1867,7 +1867,7 @@ a|
 | `[get]`  | `int`     | `obj`   | array | term access by index
 a|
 [.small]
-[exec]
+[exec,exception=true]
 ----
 ('a','b','c').1
 ('a','b','c').3
@@ -2197,7 +2197,7 @@ int[plus,1]<x>[plus,2][mult,x][explain]     //<3>
 
 The scope of a variable starts at the moment of declaration (`[to]`) and ends when the declaring branch is complete. If an `inst` has a type argument, that type has access to the variables declared in any parent branch.
 
-[exec]
+[exec,exception=true]
 ----
 2 => int<x>[plus,<y>][plus,y]                                                      //<1>
 2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x]                                      //<2>

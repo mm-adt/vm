@@ -47,26 +47,30 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
 
   override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
     val builder: StringBuilder = new StringBuilder
+    val eval = java.lang.Boolean.valueOf(attributes.getOrDefault("eval", "true").toString)
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
-      builder.append(prompt).append(w).append("\n")
-      Try[Obj] {
-        engine.eval(w)
-      } match {
-        case Failure(exception) if exception.isInstanceOf[LanguageException] => builder.append("language error: ").append(exception.getLocalizedMessage).append("\n")
-        case Failure(exception) => throw exception
-        case Success(value) =>
-          val results = value.toStrm.values.toList
-          if (results.isEmpty) builder.append(prompt).append("\n")
-          else results.foreach(a => {
-            builder.append(Tokens.RRDARROW).append(a).append("\n")
-          })
-      }
+      if (eval) {
+        builder.append(prompt).append(w).append("\n")
+        Try[Obj] {
+          engine.eval(w)
+        } match {
+          case Failure(exception) if exception.isInstanceOf[LanguageException] && java.lang.Boolean.valueOf(attributes.getOrDefault("exception", "false").toString) => builder.append("language error: ").append(exception.getLocalizedMessage).append("\n")
+          case Failure(exception) => throw new Exception(exception.getMessage + ":::" + builder, exception)
+          case Success(value) =>
+            val results = value.toStrm.values.toList
+            if (results.isEmpty) builder.append(prompt).append("\n")
+            else results.foreach(a => {
+              builder.append(Tokens.RRDARROW).append(a).append("\n")
+            })
+        }
+      } else
+        builder.append(w).append("\n")
     })
     println(builder)
     val endAttributes: java.util.Map[String, Object] = new util.HashMap[String, Object]
     endAttributes.putAll(config)
     endAttributes.putAll(JavaConverters.mapAsJavaMap(Map("style" -> style, "language" -> language)))
-    this.createBlock(parent, "listing", builder.toString(), endAttributes)
+    this.createBlock(parent, "listing", builder.toString().trim(), endAttributes)
   }
 }
 

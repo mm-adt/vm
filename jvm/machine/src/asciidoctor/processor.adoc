@@ -129,9 +129,7 @@ The \$\Delta\$ (_split_) copys an `obj` that is _outside_ of a `poly` to the lef
 ====== Polynomial Ring Modules
 
 [.text-center]
-`int[int+2[is>0]\*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]`
-
-[exec]
+[exec,eval=false]
 ----
 int[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
 ----
@@ -157,7 +155,10 @@ abcg + abdg + abefg &= a \ast (bcg + bdg + befg) \\
 Thus `int+2[is>0]` is https://en.wikipedia.org/wiki/Factorization[factored] out on the left and `<44` is factored out on the right.
 
 [.text-center]
-`int+2[is>0][\*5,*-6,*10+7]<44`
+[exec,eval=false]
+----
+int+2[is>0][*5,*-6,*10+7]<44
+----
 
 Again with an abuse of notation to emphasize the lexical structure.
 
@@ -165,10 +166,7 @@ Again with an abuse of notation to emphasize the lexical structure.
 \texttt{int+2[is>0]} \;\ast\; (\texttt{\*5} \;\;+\;\; \texttt{*-6} \;\;+\;\; \texttt{*10+7}) \;\ast\; \texttt{<44}
 \]
 
-[exec]
-----
-int+2[is>0][*5,*-6,*10+7]<44
-----
+
 
 image::module-example-1.png[align=center]
 
@@ -202,12 +200,13 @@ image:type-ringoid-illustration.png[float=left,width=350]
 A non-free element is a _zero_-dimensional point. A free element is a _one_-dimensional line. The carrier set of the *type ringoid* is formed from the union of the elements of `obj` stream ring's https://en.wikipedia.org/wiki/Free_abelian_group[free additive abelian group] and https://en.wikipedia.org/wiki/Free_monoid[free multiplicative monoid]. This is the _freest_ possible stream ring representation -- a https://en.wikipedia.org/wiki/Free_algebra[free ring]. With two free magmas, the type ringoid's elements are _two_-dimensional planes. One dimension represents multiplication and the other addition. The type ringoid is encoded in `mmlang` as a `,-lst` (additive) with zero or more `;-lst` (multiplicative) terms. The unfactored type from the previous section is presented, followed by its two-dimensional encoding as an element of the type ringoid.
 
 [.text-center]
-`[int+2[is>0]\*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]`
+[exec,eval=false]
+----
+[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
+----
 
 [.text-center]
-`[[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]`
-
-[exec]
+[exec,eval=false]
 ----
 [[int;+2;[is>0];*5;_;<44],[int;+2;[is>0];*-6;_;<44],[int;+2;[is>0];*10;+7;<44]]
 ----
@@ -223,9 +222,7 @@ In a manner analogous to polynomials in https://en.wikipedia.org/wiki/Linear_alg
 A left `obj`-module (a row vector) can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.
 
 [.text-center]
-`[[int;+2;[is>0]];[[\*5;<44],[*-6;<44],[*10;+7;<44]]]`
-
-[exec]
+[exec,eval=false]
 ----
 [[int;+2;[is>0]];[[*5;<44],[*-6;<44],[*10;+7;<44]]]
 ----
@@ -244,9 +241,7 @@ A left `obj`-module (a row vector) can be factored out of the matrix leaving an 
 Similarly, a right `obj`-module https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar] can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.
 
 [.text-center]
-`[[int;+2;[is>0]];[\*5,*-6,[*10;+7]];<44]`
-
-[exec]
+[exec,eval=false]
 ----
 [[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]
 ----
