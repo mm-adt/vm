@@ -5306,7 +5306,7 @@ Thus, algebraically, a type is an element of the <a href="https://en.wikipedia.o
 <div class="paragraph">
 <p>A <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called <strong>scalar multiplication</strong>. If \$A = X\$, the action is defined by the ring&#8217;s multiplicative operator. However, when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free, a ring theoretic interpretation of <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebraic</a> emerges with \$A\$-based vectors (free magma) and matrices (two free magmas) being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>, then \$X\$ is a <a href="https://en.wikipedia.org/wiki/Bimodule">bimodule</a> and both sets of axioms hold.</p>
 </div>
-<table class="tableblock frame-all grid-all center" style="width: 70%;">
+<table class="tableblock frame-all grid-all" style="width: 70%;">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5349,7 +5349,7 @@ x \Delta (a + b) \mapsto (x&#8658;a,x&#8658;b).
 \]
 The \$\Delta\$ (<em>split</em>) copys an <code>obj</code> that is <em>outside</em> of a <code>poly</code> to the left of one or more <code>objs</code> <em>inside</em> the <code>poly</code>. When juxtaposed to the left and an internal <code>obj</code>, the <code>obj</code> magma&#8217;s binary operator \$&#8658;:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution. The following table provides a translation of the standard module axioms to mm-ADT.</p>
 </div>
-<table class="tableblock frame-all grid-all center" style="width: 90%;">
+<table class="tableblock frame-all grid-all" style="width: 75%;">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -5362,42 +5362,42 @@ The \$\Delta\$ (<em>split</em>) copys an <code>obj</code> that is <em>outside</e
 </thead>
 <tbody>
 <tr>
-<th class="tableblock halign-center valign-top" colspan="2"><p class="tableblock">Right \$X\$-Module Axioms</p></th>
+<th class="tableblock halign-center valign-top" colspan="2"><p class="tableblock">Left \$X\$-Module Axioms</p></th>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$x \Delta (a,b) \mapsto (x&#8658;a,x&#8658;b)\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$x \Delta (a,b) = (x&#8658;a,x&#8658;b)\$</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(x,y) \nabla a \mapsto (x&#8658;a,y&#8658;a) \$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(x,y) \nabla a = (x&#8658;a,y&#8658;a)\nabla \$</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(x;y) \nabla a \mapsto x \Delta (y;a)\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(x;y) \nabla a = x &#8658; y &#8658; a\$</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$\mathbf{1}_X \cdot a = a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$\underline\mathbf{1} &#8658; a \mapsto a\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$\underline\mathbf{1} &#8658; a = a\$</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top" colspan="2"><p class="tableblock">Right \$X\$-Module Axioms</p></th>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a,b) \nabla x \mapsto (a&#8658;x,b&#8658;x)\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a,b) \nabla x = (a&#8658;x,b&#8658;x)\nabla \$</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \Delta (x,y) \mapsto (a&#8658;x,a&#8658;y) \$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \Delta (x,y) = (a&#8658;x,a&#8658;y) \$</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \Delta (x;y) \mapsto (a;x) \nabla y \$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \Delta (x;y) = (a&#8658;x;a &#8658;x&#8658;y) \$</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot \mathbf{1}_X = a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a &#8658; \underline\mathbf{1} \mapsto a\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a &#8658; \underline\mathbf{1} = a\$</p></td>
 </tr>
 </tbody>
 </table>
@@ -6069,7 +6069,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 19:55:50 -0600
+Last updated 2020-07-25 00:00:08 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
