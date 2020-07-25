@@ -5355,7 +5355,7 @@ Thus, algebraically, a type is an element of the <a href="https://en.wikipedia.o
 </div>
 </div>
 <div class="paragraph">
-<p>The above expression denotes a polynomial ring whose linearly combined terms are elements of the multiplicative monoid. With abuse of notation, the expression below binds the monoidal terms with <code>+</code> to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.</p>
+<p>The above expression denotes a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> whose linearly combined terms are elements of the multiplicative monoid. With abuse of notation, the expression below binds the monoidal terms with <code>+</code> to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -5448,7 +5448,10 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 <p><span class="image left"><img src="./images/processor/type-ringoid-illustration.png" alt="type ringoid illustration" width="350"></span></p>
 </div>
 <div class="paragraph">
-<p>A non-free element is a <em>zero</em>-dimensional point. A free element is a <em>one</em>-dimensional line. The carrier set of the <strong>type ringoid</strong> is formed from the union the elements of <code>obj</code> stream ring&#8217;s <a href="https://en.wikipedia.org/wiki/Free_abelian_group">free additive abelian group</a> and <a href="https://en.wikipedia.org/wiki/Free_monoid">free multiplicative monoid</a>. This is the <em>freest</em> possible stream ring representation&#8201;&#8212;&#8201;a <a href="https://en.wikipedia.org/wiki/Free_algebra">free ring</a>. With two free magmas, the type ringoid&#8217;s elements are <em>two</em>-dimensional planes. One dimension represents multiplication and the other addition. The type ringoid is encoded in <code>mmlang</code> as a <code>,-lst</code> (additive) with zero or more <code>;-lst</code> (multiplicative) terms. The following is an example of a two-dimensional type ringoid element.</p>
+<p>A non-free element is a <em>zero</em>-dimensional point. A free element is a <em>one</em>-dimensional line. The carrier set of the <strong>type ringoid</strong> is formed from the union of the elements of <code>obj</code> stream ring&#8217;s <a href="https://en.wikipedia.org/wiki/Free_abelian_group">free additive abelian group</a> and <a href="https://en.wikipedia.org/wiki/Free_monoid">free multiplicative monoid</a>. This is the <em>freest</em> possible stream ring representation&#8201;&#8212;&#8201;a <a href="https://en.wikipedia.org/wiki/Free_algebra">free ring</a>. With two free magmas, the type ringoid&#8217;s elements are <em>two</em>-dimensional planes. One dimension represents multiplication and the other addition. The type ringoid is encoded in <code>mmlang</code> as a <code>,-lst</code> (additive) with zero or more <code>;-lst</code> (multiplicative) terms. The unfactored type from the previous section is presented, followed by its two-dimensional encoding as an element of the type ringoid.</p>
+</div>
+<div class="paragraph text-center">
+<p><code>[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></p>
 </div>
 <div class="paragraph text-center">
 <p><code>[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]</code></p>
@@ -6003,7 +6006,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-24 13:14:04 -0600
+Last updated 2020-07-24 15:12:44 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
