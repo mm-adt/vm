@@ -651,18 +651,18 @@ As an economic model, each integration point offers the respective development t
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Programming Languages</strong>: Language designers can create custom languages or develop parsers for existing languages that compile to mm-ADT VM bytecode (binary machine code) or unicode (text assembly code).</p>
+<p><strong>Programming Languages</strong>: Language designers can create custom languages or develop parsers for existing languages that compile to mm-ADT VM assembly code (<code>mmlang</code>) or bytecode (binary encoding of <code>mmlang</code>).</p>
 </li>
 <li>
-<p><strong>Processing Engines</strong>: Processor developers enable their push- or pull-based execution engines to be programmed by any mm-ADT language for evaluation via mm-ADT&#8217;s abstract execution model for processing data structures via single-machine, multi-threaded, agent-based, distributed near-time, and/or cluster-oriented, batch-analytic processors.</p>
+<p><strong>Processing Engines</strong>: Processor developers can enable their push- or pull-based execution engines to be programmed by any mm-ADT language. The abstract processing model supports single-machine, multi-threaded, agent-based, distributed near-time, and/or cluster-oriented, batch-analytic processors.</p>
 </li>
 <li>
-<p><strong>Storage Systems</strong>: Storage engineers can embed their systems using <em>model-ADTs</em> expressed in mm-ADT&#8217;s dependent type system that enable the lossless encoding of key/value store, document store, wide-column store, graph store, relational store, and other novel or hybrid structures such as hypergraph, docu-graph, and quantum data structures.</p>
+<p><strong>Storage Systems</strong>: Storage engineers can expose their systems via <em>model-ADTs</em> expressed in mm-ADT&#8217;s dependent type system that enable the lossless encoding of key/value store, document store, wide-column store, graph store, relational store, and other novel or hybrid structures such as hypergraph, docu-graph, and quantum data structures.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>The mm-ADT VM enables the intermingling of any language, any processor, and any storage system, that can faithfully implement the core language semantics (<em>types and values</em>), processor semantics (<em>process trace graphs</em>), and/or storage semantics (<em>data structure streams</em>).</p>
+<p>The mm-ADT VM enables the intermingling of any language, any processor, and any storage system that can faithfully implement the core language semantics (<em>types and values</em>), processor semantics (<em>instruction set architecture</em>), and/or storage semantics (<em>data structure streams</em>).</p>
 </div>
 <div class="sect2">
 <h3 id="_mm_adt_theory">mm-ADT Theory</h3>
@@ -684,14 +684,16 @@ f: S \rightarrow E.
 <h4 id="_mm_adt_algebras">mm-ADT Algebras</h4>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/introduction/the-algebras.png" alt="the algebras" width="550">
+<img src="./images/introduction/the-algebras.png" alt="the algebras" width="500">
 </div>
 </div>
 <div class="paragraph">
-<p>Each of the three aforementioned mm-ADT VM components has an associated algebra that best describes its structures and processes and which serve as each component&#8217;s particular interpretation of mm-ADT. The <strong>language algebra</strong>
-is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturing the serial composition of parameterized instructions (<code>inst</code>) in the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) used for compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong> is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a partially <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary operator. These algebras represent the particular perspective that each component has on a shared data structure called the <strong>obj graph</strong> which realizes <em>a ringoid-embedded monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
+<p>The base algebra of mm-ADT is a type-oriented ring algebra called the <strong>obj stream ring</strong>. There are three surjective <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphisms</a> yielding the three algebras of the aforementioned components.  The <strong>language algebra</strong>'s (<code>inst</code> monoid) <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> enables the nested, serial composition of parameterized instructions (<code>inst</code>) from the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> (type ringoid) is a free <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) for the compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong>  (<code>obj</code> magma) is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a partially <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary operator for constructing data streams.</p>
 </div>
-<table class="tableblock frame-all grid-all left" style="width: 30%;">
+<div class="paragraph">
+<p>These component algebras represent the particular perspective that each component has on a shared data structure known as the <strong>obj graph</strong> which realizes <em>a ringoid-embedded monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
+</div>
+<table class="tableblock frame-all grid-all left" style="width: 25%;">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -704,21 +706,21 @@ is a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> capturi
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Language</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">language</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code> monoid</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Processor</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">processor</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code> ringoid</p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Storage</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">storage</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> magma</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated by mm-ADT technologies. Data system engineers will learn how to integrate their technology so end users may compose their work with others' to create <em>synthetic data systems</em> tailored to their problem&#8217;s particular computational requirements.</p>
+<p>The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated by mm-ADT technologies. Data system engineers will learn how to integrate their technology so end users may compose their efforts with others' to create <em>synthetic data systems</em> tailored to a problem&#8217;s particular computational requirements.</p>
 </div>
 <hr>
 </div>
@@ -792,7 +794,7 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 <div class="content">
 <div class="title">Abstract Algebra</div>
 <div class="paragraph">
-<p>There are two operations: addition (\$ +\$) and multiplication (\$\ast\$). <a href="https://en.wikipedia.org/wiki/Abstract_algebra">Abstract algebra</a> is the study of these two operations across a wide range of slightly different generalized <a href="https://en.wikipedia.org/wiki/Algebraic_structure">structures</a> devoid of any other particulars of their manifestation: integers, digital circuits, quantum systems in a superposition, etc. Theoreticians deduce <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a> based on the <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> of the structures and experimentalists apply the patterns to other systems, real or designed.</p>
+<p>There are two operations: addition (\$ +\$) and multiplication (\$\ast\$). <a href="https://en.wikipedia.org/wiki/Abstract_algebra">Abstract algebra</a> is the study of these two operations across a wide range of slightly different generalized <a href="https://en.wikipedia.org/wiki/Algebraic_structure">structures</a> devoid of considerations regarding the particulars of their implementation: integers, digital circuits, quantum systems in a superposition, etc. Theoreticians deduce <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a> based on the <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> of the structures and experimentalists apply the structural patterns to other systems, real or designed.</p>
 </div>
 <div class="paragraph">
 <p>The pedagogical masterpiece of the discipline is the <strong>magma hiearchy</strong>.</p>
@@ -6069,7 +6071,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-25 00:00:08 -0600
+Last updated 2020-07-25 00:15:35 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
