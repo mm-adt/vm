@@ -29,9 +29,10 @@ import org.asciidoctor.ast.{ContentModel, StructuralNode}
 import org.asciidoctor.extension.{BlockProcessor, Contexts, Name, Reader}
 import org.asciidoctor.jruby.{AsciiDocDirectoryWalker, DirectoryWalker}
 import org.asciidoctor.{Asciidoctor, OptionsBuilder, SafeMode}
+import org.mmadt.VmException
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
+import org.mmadt.language.{LanguageFactory, Tokens}
 
 import scala.collection.JavaConverters
 import scala.util.{Failure, Success, Try}
@@ -54,7 +55,8 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
         Try[Obj] {
           engine.eval(w)
         } match {
-          case Failure(exception) if exception.isInstanceOf[LanguageException] && java.lang.Boolean.valueOf(attributes.getOrDefault("exception", "false").toString) => builder.append("language error: ").append(exception.getLocalizedMessage).append("\n")
+          case Failure(exception) if exception.isInstanceOf[VmException] && java.lang.Boolean.valueOf(attributes.getOrDefault("exception", "false").toString) =>
+            builder.append("language error: ").append(exception.getLocalizedMessage).append("\n")
           case Failure(exception) => throw new Exception(exception.getMessage + ":::" + builder, exception)
           case Success(value) =>
             val results = value.toStrm.values.toList
