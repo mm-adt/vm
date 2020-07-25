@@ -87,7 +87,7 @@ Thus, algebraically, a type is an element of the https://en.wikipedia.org/wiki/F
 
 .Modules
 ****
-A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called *scalar multiplication*. If \$A = X\$, the action is defined by the group's additive operator. However, modules are useful when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free. A free \$A\$ leads to the notion of \$A\$-vectors and matrices being operated by \$X\$ scalars, vectors, and matrices. In other words, modules provide a ring theoretic interpretation of various https://en.wikipedia.org/wiki/Linear_algebra[linear algebraic] structures. The axioms for both left and right modules are provided below, where if \$A\$ is an https://en.wikipedia.org/wiki/Abelian_group[abelian group], then \$X\$ is a https://en.wikipedia.org/wiki/Bimodule[bimodule] and both sets of axioms hold.
+A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called *scalar multiplication*. If \$A = X\$, the action is defined by the ring's multiplicative operator. However, when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free, a ring theoretic interpretation of https://en.wikipedia.org/wiki/Linear_algebra[linear algebraic] emerges with \$A\$-based vectors (free magma) and matrices (two free magmas) being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an https://en.wikipedia.org/wiki/Abelian_group[abelian group], then \$X\$ is a https://en.wikipedia.org/wiki/Bimodule[bimodule] and both sets of axioms hold.
 
 [.center]
 [cols="^1,^1",width=70]
@@ -100,6 +100,33 @@ A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\
 | \$\mathbf{1}_X \cdot a = a\$                         | \$a \cdot \mathbf{1}_X = a\$
 |===
 ****
+
+Modules introduce a new _scalar multiplication_ binary operator \$cdot: X \times A \to A\$ typically denoted as \$X\$/\$A\$-element juxtaposition. In mm-ADT, the module expression
+\[
+x \cdot (a + b) \mapsto (xa + xb)
+\]
+is realized as
+\[
+x \Delta (a + b) \mapsto (x=>a,x=>b).
+\]
+The \$\Delta\$ (_split_) copys an `obj` that is _outside_ of a `poly` to the left of one or more `objs` _inside_ the `poly`. When juxtaposed to the left and an internal `obj`, the `obj` magma's binary operator \$=>:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution. The following table provides a translation of the standard module axioms to mm-ADT.
+
+[.center]
+[cols="^1,^1",width=90]
+|===
+| Module Algebra                                      | mm-ADT Algebra
+
+2.+^h| Right \$X\$-Module Axioms
+| \$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$ | \$x \Delta (a,b) \mapsto (x=>a,x=>b)\$
+| \$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$ | \$(x,y) \nabla a \mapsto (x=>a,y=>a) \$
+| \$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$       | \$(x;y) \nabla a \mapsto x \Delta (y;a)\$
+| \$\mathbf{1}_X \cdot a = a\$                         | \$\underline\mathbf{1} => a \mapsto a\$
+2.+^h| Right \$X\$-Module Axioms
+| \$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$ | \$(a,b) \nabla x \mapsto (a=>x,b=>x)\$
+| \$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$ | \$a \Delta (x,y) \mapsto (a=>x,a=>y) \$
+| \$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$       | \$a \Delta (x;y) \mapsto (a;x) \nabla y \$
+| \$a \cdot \mathbf{1}_X = a\$                         | \$a => \underline\mathbf{1} \mapsto a\$
+|===
 
 ====== Polynomial Ring Modules
 
