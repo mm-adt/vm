@@ -28,7 +28,7 @@ As an economic model, each integration point offers the respective development t
 +--------+ +---------+ +---------+
 ....
 
-The mm-ADT VM is the integration point for the following data processing technologies:
+The mm-ADT VM integrates the following data processing technologies:
 
 * *Programming Languages*: Language designers can create custom languages or develop parsers for existing languages that compile to mm-ADT VM assembly code (`mmlang`) or bytecode (binary encoding of `mmlang`).
 * *Processing Engines*: Processor developers can enable their push- or pull-based execution engines to be programmed by any mm-ADT language. The abstract processing model supports single-machine, multi-threaded, agent-based, distributed near-time, and/or cluster-oriented, batch-analytic processors.
