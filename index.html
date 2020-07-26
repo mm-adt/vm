@@ -480,6 +480,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_ring_axioms">Ring Axioms</a></li>
 <li><a href="#_ring_theorems">Ring Theorems</a></li>
 <li><a href="#_stream_ring_axioms">Stream Ring Axioms</a></li>
+<li><a href="#_component_algebras">Component Algebras</a></li>
 </ul>
 </li>
 <li><a href="#_types_and_values">Types and Values</a></li>
@@ -994,7 +995,7 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 <div class="content">
 <div class="title">Stream Ring Theory</div>
 <div class="paragraph">
-<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> and <strong>coefficient</strong> ring. Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> specifying coefficient dynamics. Categorically, every stream ring is in an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. Biproducts have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
+<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> and <strong>coefficient</strong> ring. Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding coefficient dynamics. Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. A biproduct supports both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams. Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproducts streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
 </div>
 <div class="paragraph">
 <p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>. Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called a <strong>type ringoid</strong>.</p>
@@ -1014,10 +1015,10 @@ where</p>
 <p><code>obj</code> is the carrier set,</p>
 </li>
 <li>
-<p><code>[,]</code> is the additive binary operator (<em>stream construction</em>),</p>
+<p><code>[,]</code> is the additive binary operator (<em>parallel branching</em>),</p>
 </li>
 <li>
-<p><code>[;]</code> is the multiplicative binary operator (<em>stream evaluation</em>),</p>
+<p><code>[;]</code> is the multiplicative binary operator (<em>serial composition</em>),</p>
 </li>
 <li>
 <p>\$\underline{\mathbf{0}}\$ is the additive identity, and</p>
@@ -1028,29 +1029,7 @@ where</p>
 </ul>
 </div>
 <div class="paragraph">
-<p>Along with the standard ring axioms, the <code>obj</code> stream ring respects five additional axioms required by <strong>stream ring theory</strong>. These axioms are itemized with examples in the summary table to follow.</p>
-</div>
-<div class="paragraph">
-<p>There are three <a href="https://en.wikipedia.org/wiki/Monomorphism">monomorphisms</a> (injective homomorphisms) from the <code>obj</code> stream ring to a particular substructure. Each sub-algebra contains only those aspects of stream ring theory that are necessary for an mm-ADT component to integrate with the mm-ADT virtual machine. In this way, the mm-ADT VM is the component that realizes the full stream ring algebra.</p>
-</div>
-<div class="paragraph">
-<p><span class="image right"><img src="./images/language/obj-algebras.png" alt="obj algebras" width="350"></span></p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong><code>inst</code> monoid</strong>: the <em>language algebra</em> generated by <code>inst</code> \$subset\$ <code>obj</code> for creating machine <a href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a>.</p>
-</li>
-<li>
-<p><strong><code>type</code> ringoid</strong>: the <em>processor algebra</em> capable of forming structures isomorphic to a 3D <a href="https://en.wikipedia.org/wiki/Asynchronous_circuit">asynchronous</a> digital circuit.</p>
-</li>
-<li>
-<p><strong><code>obj</code> magma</strong>: the <em>storage algebra</em> enabling the lossless embedding of complex <code>obj</code> structures called <code>polys</code>.</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The following table provides a review of the <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a> and their realization in mm-ADT via <code>mmlang</code> over both <code>obj</code> <strong>values</strong> and <strong>types</strong>. This table serves as a consolidated summary. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
+<p>Along with the standard ring axioms, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following table provides a review of the <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a>, stream ring axioms, and their realization in mm-ADT via <code>mmlang</code> over both <code>obj</code> <strong>values</strong> and <strong>types</strong>. This table serves as a consolidated summary. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1798,11 +1777,33 @@ mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)&gt;-
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="_component_algebras">Component Algebras</h5>
+<div class="paragraph">
+<p>There are three <a href="https://en.wikipedia.org/wiki/Monomorphism">monomorphisms</a> (injective homomorphisms) from the <code>obj</code> stream ring to a <em>component algebra</em>. Each component algebra contains only those aspects of stream ring theory that are necessary for an mm-ADT component to integrate with the mm-ADT virtual machine.</p>
+</div>
+<div class="paragraph">
+<p><span class="image right"><img src="./images/language/obj-algebras.png" alt="obj algebras" width="350"></span></p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong><code>inst</code> monoid</strong>: the <em>language algebra</em> generated by <code>inst</code> \$subset\$ <code>obj</code> for creating machine <a href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a>.</p>
+</li>
+<li>
+<p><strong><code>type</code> ringoid</strong>: the <em>processor algebra</em> capable of forming structures isomorphic to a 3D <a href="https://en.wikipedia.org/wiki/Asynchronous_circuit">asynchronous</a> digital circuit.</p>
+</li>
+<li>
+<p><strong><code>obj</code> magma</strong>: the <em>storage algebra</em> enabling the lossless embedding of complex <code>obj</code> structures called <code>polys</code>.</p>
+</li>
+</ol>
+</div>
 <div class="exampleblock">
 <div class="title">Deep Dive 1. Process Architectures Sympathetic to the Type Ringoid</div>
 <div class="content">
 <div class="paragraph">
-<p>The <code>mmlang</code> examples are generated by a language that acts on the <code>inst</code> monoid. The <strong>type ringoid</strong> has an <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> in the <code>inst</code> monoid, but this is not the intended algebra of the language component. The preferred embedding is in the logic of the processor component, where what is <em>undefined</em> in the type ringoid axioms, enables a diversity of modern processor architectures to interface with the mm-ADT VM.</p>
+<p>The <code>mmlang</code> examples in the proceeding tables were generated by a language that acts on the <code>inst</code> monoid. The <strong>type ringoid</strong> has an <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> in the <code>inst</code> monoid, but this is not the intended algebra of the language component. The preferred embedding is in the logic of the processor component, where what is <em>undefined</em> in the type ringoid axioms, enables a diversity of modern processor architectures to interface with the mm-ADT VM.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -6053,7 +6054,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-25 12:38:27 -0600
+Last updated 2020-07-25 16:59:19 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
