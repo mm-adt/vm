@@ -70,7 +70,7 @@ int{5}           //<3>
 
 .Stream Ring Theory
 ****
-https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* and *coefficient* ring. Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding coefficient dynamics. Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts]. A biproduct supports both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams. Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproducts streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located.
+https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* https://en.wikipedia.org/wiki/Semiring[semiring] and *coefficient* ring. Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding coefficient dynamics. Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts]. A biproduct supports both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams. Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located.
 
 mm-ADT adopts the algebra of stream ring theory, but uses the term *instruction* for _function_ and *quantifier* for _coefficient_. Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wiki/Inductive_type[inductive], https://en.wikipedia.org/wiki/Dependent_type[dependent] https://en.wikipedia.org/wiki/Type_theory[type theory] based on a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] stream ring with https://en.wikipedia.org/wiki/Interval_(mathematics)[interval] quantifiers called a *type ringoid*.
 ****
@@ -79,15 +79,23 @@ The *`obj` stream ring* is the https://en.wikipedia.org/wiki/Ring_theory[algebra
 \[
 (\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}),
 \]
+
+image::type-value-illustration.png[float=right,width=525]
+
 where
 
 * `obj` is the carrier set,
-* `[,]` is the additive binary operator (_parallel branching_),
-* `[;]` is the multiplicative binary operator (_serial composition_),
-* \$\underline{\mathbf{0}}\$ is the additive identity, and
-* \$\underline{\mathbf{1}}\$ is the multiplicative identity.
+* `[,]` the additive _parallel branching_ operator,
+* `[;]` the multiplicative _serial composition_ operator,
+* \$\underline{\mathbf{0}}\$ the additive identity, and
+* \$\underline{\mathbf{1}}\$ the multiplicative identity.
 
-Along with the standard ring axioms, the `obj` stream ring respects the five additional axioms of *stream ring theory*. The following table provides a review of the https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition[ring axioms], stream ring axioms, and their realization in mm-ADT via `mmlang` over both `obj` *values* and *types*. This table serves as a consolidated summary. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.
+Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the illustrative diagram, the stream ring binary operators
+
+* \$,;: \tt{type} \times \tt{type} \to \tt{type}\$ generate function graphs called _streams_ (*program compilation*) and,
+* \$,;: \tt{value} \times \tt{type} \to \tt{value}\$ propagate data through the stream structure (*program evaluation*).
+
+Along with the standard ring axioms, the `obj` stream ring respects the five additional axioms of *stream ring theory*. The following tables provide a consolidated summary of the ring axioms, stream ring axioms, and their realization in mm-ADT via `mmlang` over both `obj` *values* and *types*. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.
 
 NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugars]. The term `\_{0}` is \$\underline{\mathbf{0}}\$, `_{1}` is \$\underline{\mathbf{1}}\$, `[a;b;c]` denotes `[branch,(a;b;c)]` and `+{q}n` denotes `[plus,n]{q}`. Finally, `[,]` and `[;]` were previously defined as binary operators, but due to the link:https://en.wikipedia.org/wiki/Associative_property[associative] axioms of the respective additive group and multiplicative monoid  of a ring, `[,]` and `[;]` effectively function as \$n\$-ary operators.
 
@@ -390,7 +398,7 @@ a|
 ''[+{2}'a',+{3}'a']
 ----
 {blank}
-| Applying  | \$xa \cdot yb = (xy)ab\$
+| Applying  | \$xa \ast yb = (xy)ab\$
 a|
 [exec]
 ----
@@ -404,7 +412,7 @@ a|
 ----
 {blank}
 | Splitting  | \[\begin{split}
-& xa \cdot (yb + zc) \\
+& xa \ast (yb + zc) \\
 =& (xy)ab + (xz)ac
 \end{split}\]
 a|
@@ -439,7 +447,7 @@ a|
 ''[+{2}'a',+{3}'b']
 ----
 {blank}
-| Removing  | \$(\mathbf{0}a + b) = b\$
+| Removing  | \[ (\mathbf{0}a + b) = b \]
 a|
 [exec]
 ----
@@ -546,8 +554,8 @@ Many modern programming environments make a sharp distinction between types and 
 
 [exec]
 ----
-int => int[is,[gt,0]]                   //<1>
-5 => int{?}<=int[is,bool<=int[gt,0]]    //<2>
+int => int[is,[gt,0]]                     //<1>
+5   => int{?}<=int[is,bool<=int[gt,0]]    //<2>
 ----
 <1> The `int`-type is applied to the `int[is,[gt,0]]`-type to yield an `int{?}`-type denoting either 0 or 1 `int` (*compilation*).
 <2> The type `bool\<=int[gt,0]` serves as a lambda that yields `true` or `false` for every incoming `int` value (*evaluation*).
