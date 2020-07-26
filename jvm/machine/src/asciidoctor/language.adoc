@@ -80,15 +80,17 @@ The *`obj` stream ring* is the https://en.wikipedia.org/wiki/Ring_theory[algebra
 (\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}),
 \]
 
-image::type-value-illustration.png[float=right,width=525]
-
 where
 
-* `obj` is the carrier set,
-* `[,]` the additive _parallel branching_ operator,
-* `[;]` the multiplicative _serial composition_ operator,
+image::type-value-illustration.png[float=right,width=525]
+
+* `obj` is the set of all quantified objects,
+* `[,]` the additive _parallel branch_ operator,
+* `[;]` the multiplicative _serial chain_ operator,
 * \$\underline{\mathbf{0}}\$ the additive identity, and
 * \$\underline{\mathbf{1}}\$ the multiplicative identity.
+
+'''
 
 Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the suggestive illustration above, the stream ring binary operators
 
@@ -620,11 +622,11 @@ str[plus,'a']{2} => str{2}[plus,'b']{6}
 {blank}
 |===
 
-For the two \$x => \tt{type}\$ argument patterns, the type https://en.wikipedia.org/wiki/Semigroup_action[acts] on \$x\$ -- i.e., \$\tt{type}(x)\$. The \$=>\$ operator is a higher order functional https://en.wikipedia.org/wiki/Closure_(computer_programming)[closure], where the semantics of the application are contained in the type's definition. For instance, in the expression `'a' \=> str[plus,'b']`, `'a'` is being applied to `str[plus,'b']`, and only when `str[plus,b]` acts on `'a'` is \$=>\$ closed (i.e. fully defined). Thus, the complexity of the `obj` magma lies in the elements of its carrier set -- in particular, in the virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`) which, by definition, is expressive enough to https://en.wikipedia.org/wiki/Embedding[embed] the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras.
+For the two \$x => \tt{type}\$ argument patterns, the type https://en.wikipedia.org/wiki/Semigroup_action[acts] on \$x\$ -- i.e., \$\tt{type}(x)\$. The \$=>\$ operator is a higher order functional https://en.wikipedia.org/wiki/Closure_(computer_programming)[closure], where the semantics of the application are contained in the type's definition. For instance, in the expression `'a' \=> str[plus,'b']`, `'a'` is being applied to `str[plus,'b']`, and only when `str[plus,'b']` acts on `'a'` is \$=>\$ closed (i.e. fully defined). Thus, the complexity of the `obj` magma lies in the elements of its carrier set -- in particular, in the virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`) which, by definition, is expressive enough to https://en.wikipedia.org/wiki/Embedding[embed] the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras.
 
 NOTE: The \$=>\$ (apply) operator is a monoidal generalization of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] that respects the axioms of a ring theoretic https://en.wikipedia.org/wiki/Bimodule[bimodule]. In this interpretation, \$=>\$ is a third binary operator of the `obj` stream ring. A complete formalization of the `obj` https://en.wikipedia.org/wiki/Vector_space[vector space] is forthcoming.
 
-The example below demonstrates a value/type argument pattern via the `int[plus,int[mult,2]]` right action on `5`. Note that within the initial action, a cascade of further actions take place demonstrating the value/type and value/value argument patterns.
+The example below demonstrates the value/type argument pattern via the `int[plus,int[mult,2]]` right action on `5`. Note that within the initial action, a cascade of further actions take place highlighting the value/type and value/value argument patterns.
 \[
 \begin{split}
 5 =>&\; \texttt{int}[\texttt{plus\},\texttt{int}[\texttt{mult},2]]        \\
