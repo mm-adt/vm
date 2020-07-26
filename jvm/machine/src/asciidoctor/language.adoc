@@ -90,7 +90,7 @@ where
 * \$\underline{\mathbf{0}}\$ the additive identity, and
 * \$\underline{\mathbf{1}}\$ the multiplicative identity.
 
-Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the illustrative diagram, the stream ring binary operators
+Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the suggestive illustration above, the stream ring binary operators
 
 * \$,;: \tt{type} \times \tt{type} \to \tt{type}\$ generate function graphs called _streams_ (*program compilation*) and,
 * \$,;: \tt{value} \times \tt{type} \to \tt{value}\$ propagate data through the stream structure (*program evaluation*).
@@ -580,55 +580,51 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 
 ==== The Obj Magma
 
-A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a partially https://en.wikipedia.org/wiki/Associative_property[associative] algebraic structure with a single https://en.wikipedia.org/wiki/Binary_operation[binary operator]. Let
+A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a partially https://en.wikipedia.org/wiki/Associative_property[associative] algebraic structure with a single https://en.wikipedia.org/wiki/Binary_operation[binary operator]. The `obj` magma is defined
 \[
-(\texttt{obj},=>,\underline{\mathbf{1}})
+(\texttt{obj},=>,\underline{\mathbf{1}}),
 \]
-be a magma with `obj` denoting the set of all quantified mm-ADT objects, \$ =>: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary _apply_ operator, and \$\underline{\mathbf{1}}\$ the https://en.wikipedia.org/wiki/Identity_element[identity element]. Given that an `obj` is the coproduct of the set of all types and values, there are four type/value-patterns that \$=>\$ will encounter.
+where `obj` is the set of all quantified mm-ADT objects, \$ =>: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary _apply_ operator, and \$\underline{\mathbf{1}}\$ the https://en.wikipedia.org/wiki/Identity_element[identity element]. Given that an `obj` is either exclusively a type or a value, \$=>\$ supports four https://en.wikipedia.org/wiki/Argument_of_a_function[argument] combinations.
 
 [cols="1,1,2,5"]
 |===
-| pattern      | note   | algebra    | mmlang
+| arguments    | name   | algebra    | mmlang
 
-| value/value  | push                | \$x_{q_0} => y_{q_1} \mapsto y_{q_0 \ast q_1}\$
+| value/value  | push                | \$a_{q_0} => b_{q_1} \mapsto b_{q_0 \ast q_1}\$
 a|
 [exec]
 ----
-4{2} => 'a'{6}
+'a'{2} => 'b'{6}
 ----
 {blank}
-| value/type    | evaluation         | \$x_{q_0} => a_{q_1} \mapsto a(x)_{q_0 \ast q_1}\$
+| value/type    | evaluation         | \$a_{q_0} => b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$
 a|
 [exec]
 ----
-4{2} => int{2}[plus,2]{6}
+'a'{2} => str{2}[plus,'b']{6}
 ----
 {blank}
-| type/value  |  push                |\$a_{q_0} => x_{q_1} \mapsto x_{q_0 \ast q_1}\$
+| type/value  |  push                |\$a_{q_0} => b_{q_1} \mapsto b_{q_0 \ast q_1}\$
 a|
 [exec]
 ----
-int[plus,4]{2} => 'a'{6}
+str[plus,'a']{2} => 'b'{6}
 ----
 {blank}
-| type/type  |  composition          | \$a_{q_0} => b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$
+| type/type  |  compilation          | \$a_{q_0} => b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$
 a|
 [exec]
 ----
-int[plus,4]{2} => int{2}[plus,2]{6}
+str[plus,'a']{2} => str{2}[plus,'b']{6}
 ----
 {blank}
 |===
 
-The two non-associative patterns that render the algebra a partially associative magma are
-\[
-\begin{split}
-\texttt{type} &=> (\texttt{value} => \texttt{type}) &\;\neq\; (\texttt{type} => \texttt{value}) &=> \texttt{type} \\
-\texttt{type} &=> (\texttt{type} => \texttt{type})  &\;\neq\; (\texttt{type} => \texttt{type})  &=> \texttt{type}.
-\end{split}
-\]
+For the two \$x => \tt{type}\$ argument patterns, the type https://en.wikipedia.org/wiki/Semigroup_action[acts] on \$x\$. The \$=>\$ operator is a higher order functional https://en.wikipedia.org/wiki/Closure_(computer_programming)[closure], where the semantics of the application are contained in the type definition. For instance, in the expression `'a' => str[plus,'b']`, `'a'` is being applied to `str[plus,'b']`, and only when `str[plus,b]` acts on `'a'` is \$=>\$ closed (i.e. fully defined). Thus, the complexity of the `obj` magma lies in the elements of its carrier set -- in particular, in the virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`) which, by definition, is expressive enough to https://en.wikipedia.org/wiki/Embedding[embed] the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras.
 
-The `obj` magma is a simple core algebra allowing any `obj` to https://en.wikipedia.org/wiki/Semigroup_action[act] on any other `obj`. The `obj` magma is sufficiently expressive to https://en.wikipedia.org/wiki/Embedding[embed] the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras. Of particular import, the `\=>` (apply) operator is leveraged by numerous https://en.wikipedia.org/wiki/Homomorphism[homomorphism]. In particular, the `inst` right action on an `obj` uses `\=>` to resolve instruction arguments. The value/type-pattern below demonstrates type evaluation via its reliance on `\=>`.
+NOTE: The \$=>\$ (apply) operator is a monoidal generalization of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] that respects the axioms of a ring theoretic https://en.wikipedia.org/wiki/Bimodule[bimodule]. In this interpretation, \$=>\$ is a third binary operator of the `obj` stream ring. A complete formalization of the `obj` https://en.wikipedia.org/wiki/Vector_space[vector space] is forthcoming.
+
+The example below demonstrates a value/type argument pattern via the `int[plus,int[mult,2]]` right action on `5`. Note that within the initial action, a cascade of further actions take place demonstrating the value/type and value/value argument patterns.
 \[
 \begin{split}
 5 =>&\; \texttt{int}[\texttt{plus\},\texttt{int}[\texttt{mult},2]]        \\
@@ -647,8 +643,6 @@ The `obj` magma is a simple core algebra allowing any `obj` to https://en.wikipe
 5 => int[plus,int[mult,2]][explain]
 5 => int[plus,int[mult,2]][trace]
 ----
-
-NOTE: When an `obj` is applied to a type, the type's instruction arguments are resolved in a "cascading" fashion that will be later be demonstrated to be equivalent to an monoidal generalization of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication].
 
 === The Type
 
