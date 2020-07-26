@@ -2030,7 +2030,7 @@ where <code>obj</code> is the set of all quantified mm-ADT objects, \$ &#8658;: 
 </tbody>
 </table>
 <div class="paragraph">
-<p>For the two \$x &#8658; \tt{type}\$ argument patterns, the type <a href="https://en.wikipedia.org/wiki/Semigroup_action">acts</a> on \$x\$. The \$&#8658;\$ operator is a higher order functional <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a>, where the semantics of the application are contained in the type definition. For instance, in the expression <code>'a' &#8658; str[plus,'b']</code>, <code>'a'</code> is being applied to <code>str[plus,'b']</code>, and only when <code>str[plus,b]</code> acts on <code>'a'</code> is \$&#8658;\$ closed (i.e. fully defined). Thus, the complexity of the <code>obj</code> magma lies in the elements of its carrier set&#8201;&#8212;&#8201;in particular, in the virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>) which, by definition, is expressive enough to <a href="https://en.wikipedia.org/wiki/Embedding">embed</a> the fundamental <code>obj</code> stream ring, the <code>inst</code> monoid, and the type ringoid algebras.</p>
+<p>For the two \$x &#8658; \tt{type}\$ argument patterns, the type <a href="https://en.wikipedia.org/wiki/Semigroup_action">acts</a> on \$x\$&#8201;&#8212;&#8201;i.e., \$\tt{type}(x)\$. The \$&#8658;\$ operator is a higher order functional <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a>, where the semantics of the application are contained in the type&#8217;s definition. For instance, in the expression <code>'a' =&gt; str[plus,'b']</code>, <code>'a'</code> is being applied to <code>str[plus,'b']</code>, and only when <code>str[plus,b]</code> acts on <code>'a'</code> is \$&#8658;\$ closed (i.e. fully defined). Thus, the complexity of the <code>obj</code> magma lies in the elements of its carrier set&#8201;&#8212;&#8201;in particular, in the virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>) which, by definition, is expressive enough to <a href="https://en.wikipedia.org/wiki/Embedding">embed</a> the fundamental <code>obj</code> stream ring, the <code>inst</code> monoid, and the type ringoid algebras.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -6068,7 +6068,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-25 23:20:07 -0600
+Last updated 2020-07-26 00:36:50 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
