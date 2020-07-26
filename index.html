@@ -887,8 +887,8 @@ The recommended target language for all higher-level language compilers is <code
 <div class="content">
 <div class="title">Products and Coproducts</div>
 <div class="paragraph">
-<p><a href="https://en.wikipedia.org/wiki/Category_theory">Category theory</a> is the study of structure via manipulations that expose (or generate) other structures.
-Two important category theoretic concepts used throughout this section are <strong>products</strong> and <strong>coproducts</strong>.</p>
+<p><a href="https://en.wikipedia.org/wiki/Category_theory">Category theory</a> is the study of structure via <a href="https://en.wikipedia.org/wiki/Morphism">morphisms</a> that expose (or generate) other structures.
+Two important category theoretic concepts dealing with substructures are <strong>products</strong> and <strong>coproducts</strong>.</p>
 </div>
 <div class="imageblock left">
 <div class="content">
@@ -905,7 +905,7 @@ That is, from a single object, via \$\pi_n\$ projection morphisms, the product i
 </div>
 </div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> is any object defined in terms the component objects used to construct it.
+<p>A <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> is any object defined in terms of the component objects used to construct it.
 That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can be composed from constituent parts.</p>
 </div>
 <div class="paragraph">
@@ -995,7 +995,10 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 <div class="content">
 <div class="title">Stream Ring Theory</div>
 <div class="paragraph">
-<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring. Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding coefficient dynamics. Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. A biproduct supports both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams. Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
+<p><span class="image right"><img src="./images/language/biproduct.png" alt="biproduct" width="250"></span></p>
+</div>
+<div class="paragraph">
+<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring. Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding coefficient dynamics. Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. A biproduct has both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams. Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
 </div>
 <div class="paragraph">
 <p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>. Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called a <strong>type ringoid</strong>.</p>
@@ -1050,7 +1053,7 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 </ul>
 </div>
 <div class="paragraph">
-<p>Along with the standard ring axioms, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following tables provide a consolidated summary of the ring axioms, stream ring axioms, and their realization in mm-ADT via <code>mmlang</code> over both <code>obj</code> <strong>values</strong> and <strong>types</strong>. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
+<p>Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in <code>mmlang</code> using both <code>obj</code> <strong>values</strong> and <strong>types</strong>. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1066,6 +1069,9 @@ The <code>mmlang</code> examples are rife with <a href="https://en.wikipedia.org
 </div>
 <div class="sect4">
 <h5 id="_ring_axioms">Ring Axioms</h5>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Axiom">Axioms</a> are the "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" equations of a system. Regardless of any other behaviors the system may reveal, if the system always respects the ring axioms, then the system is (in part) a ring.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 11.1111%;">
@@ -1325,6 +1331,9 @@ mmlang&gt; ''[[+'a';+'c'],[+'b';+'c']]
 </div>
 <div class="sect4">
 <h5 id="_ring_theorems">Ring Theorems</h5>
+<div class="paragraph">
+<p>The axioms of a theory entail its <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>. Stated in reverse, theorems are the derivations of an <a href="https://en.wikipedia.org/wiki/Axiomatic_system">axiomatic system</a>. Once a system is determined to be a ring, then all the theorems that have been proved about rings in general are also true for that system.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 11.1111%;">
@@ -1525,6 +1534,9 @@ mmlang&gt; ''[+'a';+'b']
 <div class="sect4">
 <h5 id="_stream_ring_axioms">Stream Ring Axioms</h5>
 <div class="paragraph">
+<p><span class="image right"><img src="./images/language/obj-semiring-orderedring.png" alt="obj semiring orderedring" width="350"></span></p>
+</div>
+<div class="paragraph">
 <p>Stream ring theory studies <em>quantified objects</em>. The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient <a href="https://en.wikipedia.org/wiki/Stream_(computing)">stream computing</a>. The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -1709,7 +1721,7 @@ mmlang&gt; ['a'{5},'b'{3}]
 <p>\[
 [ a,a,b,a,b,b,a,a ]
 \]
-is irreducible. However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to
+is <a href="https://en.wikipedia.org/wiki/Irreducible_polynomial">irreducible</a>. However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to
 \[
 [ 5a,3b ],
 \]
@@ -1967,8 +1979,8 @@ where <code>obj</code> is the set of all quantified mm-ADT objects, \$ &#8658;: 
 <tr>
 <th class="tableblock halign-left valign-top">arguments</th>
 <th class="tableblock halign-left valign-top">name</th>
-<th class="tableblock halign-left valign-top">algebra</th>
-<th class="tableblock halign-left valign-top">mmlang</th>
+<th class="tableblock halign-left valign-top">equation</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
 </tr>
 </thead>
 <tbody>
@@ -2031,7 +2043,7 @@ where <code>obj</code> is the set of all quantified mm-ADT objects, \$ &#8658;: 
 </tbody>
 </table>
 <div class="paragraph">
-<p>For the two \$x &#8658; \tt{type}\$ argument patterns, the type <a href="https://en.wikipedia.org/wiki/Semigroup_action">acts</a> on \$x\$&#8201;&#8212;&#8201;i.e., \$\tt{type}(x)\$. The \$&#8658;\$ operator is a higher order functional <a href="https://en.wikipedia.org/wiki/Closure_(computer_programming)">closure</a>, where the semantics of the application are contained in the type&#8217;s definition. For instance, in the expression <code>'a' =&gt; str[plus,'b']</code>, <code>'a'</code> is being applied to <code>str[plus,'b']</code>, and only when <code>str[plus,'b']</code> acts on <code>'a'</code> is \$&#8658;\$ closed (i.e. fully defined). Thus, the complexity of the <code>obj</code> magma lies in the elements of its carrier set&#8201;&#8212;&#8201;in particular, in the virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>) which, by definition, is expressive enough to <a href="https://en.wikipedia.org/wiki/Embedding">embed</a> the fundamental <code>obj</code> stream ring, the <code>inst</code> monoid, and the type ringoid algebras.</p>
+<p>For the two \$x &#8658; \tt{type}\$ argument patterns, the type <a href="https://en.wikipedia.org/wiki/Semigroup_action">acts</a> on \$x\$&#8201;&#8212;&#8201;i.e., \$\tt{type}(x)\$. The \$&#8658;\$ operator is a <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher order function</a>, where the semantics of the application are in the type&#8217;s definition. For instance, in the expression <code>'a' =&gt; str[plus,'b']</code>, <code>'a'</code> is being applied to <code>str[plus,'b']</code>, and only when <code>str[plus,'b']</code> acts on <code>'a'</code> is \$&#8658;\$ full defined. Thus, the complexity of the <code>obj</code> magma lies in the elements of its carrier set&#8201;&#8212;&#8201;in particular, in the virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>) which, by definition, is expressive enough to <a href="https://en.wikipedia.org/wiki/Embedding">embed</a> the fundamental <code>obj</code> stream ring, the <code>inst</code> monoid, and the type ringoid algebras.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -6069,7 +6081,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-26 00:46:50 -0600
+Last updated 2020-07-26 01:20:27 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
