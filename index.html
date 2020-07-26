@@ -995,7 +995,7 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 <div class="content">
 <div class="title">Stream Ring Theory</div>
 <div class="paragraph">
-<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> and <strong>coefficient</strong> ring. Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding coefficient dynamics. Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. A biproduct supports both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams. Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproducts streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
+<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring. Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding coefficient dynamics. Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. A biproduct supports both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams. Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
 </div>
 <div class="paragraph">
 <p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>. Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called a <strong>type ringoid</strong>.</p>
@@ -1006,8 +1006,15 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 <p>The <strong><code>obj</code> stream ring</strong> is the <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring</a>
 \[
 (\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}),
-\]
-where</p>
+\]</p>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/type-value-illustration.png" alt="type value illustration" width="525">
+</div>
+</div>
+<div class="paragraph">
+<p>where</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1015,21 +1022,34 @@ where</p>
 <p><code>obj</code> is the carrier set,</p>
 </li>
 <li>
-<p><code>[,]</code> is the additive binary operator (<em>parallel branching</em>),</p>
+<p><code>[,]</code> the additive <em>parallel branching</em> operator,</p>
 </li>
 <li>
-<p><code>[;]</code> is the multiplicative binary operator (<em>serial composition</em>),</p>
+<p><code>[;]</code> the multiplicative <em>serial composition</em> operator,</p>
 </li>
 <li>
-<p>\$\underline{\mathbf{0}}\$ is the additive identity, and</p>
+<p>\$\underline{\mathbf{0}}\$ the additive identity, and</p>
 </li>
 <li>
-<p>\$\underline{\mathbf{1}}\$ is the multiplicative identity.</p>
+<p>\$\underline{\mathbf{1}}\$ the multiplicative identity.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Along with the standard ring axioms, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following table provides a review of the <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29#Definition">ring axioms</a>, stream ring axioms, and their realization in mm-ADT via <code>mmlang</code> over both <code>obj</code> <strong>values</strong> and <strong>types</strong>. This table serves as a consolidated summary. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
+<p>Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the illustrative diagram, the stream ring binary operators</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>\$,;: \tt{type} \times \tt{type} \to \tt{type}\$ generate function graphs called <em>streams</em> (<strong>program compilation</strong>) and,</p>
+</li>
+<li>
+<p>\$,;: \tt{value} \times \tt{type} \to \tt{value}\$ propagate data through the stream structure (<strong>program evaluation</strong>).</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Along with the standard ring axioms, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following tables provide a consolidated summary of the ring axioms, stream ring axioms, and their realization in mm-ADT via <code>mmlang</code> over both <code>obj</code> <strong>values</strong> and <strong>types</strong>. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1549,7 +1569,7 @@ mmlang&gt; ''[+'a';+'b']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Applying</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa \cdot yb = (xy)ab\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa \ast yb = (xy)ab\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2}['b'{3}]
@@ -1572,7 +1592,7 @@ mmlang&gt; ''[+'a';+'b']
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Splitting</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp; xa \cdot (yb + zc) \\
+&amp; xa \ast (yb + zc) \\
 =&amp; (xy)ab + (xz)ac
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -1637,7 +1657,7 @@ mmlang&gt; ''[+{2}'a',+{3}'b']
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Removing</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$(\mathbf{0}a + b) = b\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[ (\mathbf{0}a + b) = b \]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a'{0},'b']
@@ -1842,9 +1862,9 @@ mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)&gt;-
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; int[is,[gt,0]]                   <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; int[is,[gt,0]]                     <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]
-mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 5   =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;5</code></pre>
 </div>
 </div>
@@ -6054,7 +6074,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-25 16:59:19 -0600
+Last updated 2020-07-25 22:31:34 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
