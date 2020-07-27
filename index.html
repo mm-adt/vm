@@ -5128,7 +5128,77 @@ instruction                                    domain      range state
 </div>
 <div class="sect4">
 <h5 id="_definitions">Definitions</h5>
-
+<div class="paragraph">
+<p>mm-ADT organizes types into <strong>models</strong>. The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in a model called <code>mm</code> (the <em>mm</em> of mm-ADT). The <code>mm</code> <strong>model-ADT</strong> is the canonical model by which all other models are derived. Much like ctypes and dtypes, <code>mm</code> can be understood as a "cmodel" and all derived models as "dmodels" (though these terms are not used beyond this section). While model-ADT design and development will be discussed in a latter section, this section introduces the <code>[define]</code> instruction and it&#8217;s use as an identity type.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>[define]</code>: Associates a type with a range composed of an object <em>token</em> and a quantifier.</p>
+</li>
+<li>
+<p><code>[as]</code>: Locates the first type definition capable of mapping the incoming <code>obj</code> to the token argument.</p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [define,nat&lt;=int[is&gt;0]]                 <i class="conum" data-value="1"></i><b>(1)</b>
+mmlang&gt;
+mmlang&gt; int =&gt; [define,nat&lt;=int[is&gt;0]]          <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;int
+mmlang&gt;  6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]  <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;nat:6
+mmlang&gt; -6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]  <i class="conum" data-value="4"></i><b>(4)</b>
+language error: -6 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>An identity <code>inst</code> that associates the token <code>nat</code> as the unit (<code>{1}</code>) range of <code>int[is&lt;0]]</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>mmlang</code> does not display <code>[define]</code> instructions in a type&#8217;s <code>inst</code> <code>obj</code> graph path.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>[as]</code> searches the <code>obj</code> graph for a <code>nat&#8656;int</code> type definition and evaluates the mapping.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The definition requires <code>nat</code> be <code>_{1}</code> but <code>-6</code> is <code>_{0}</code>.</td>
+</tr>
+</table>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">[define,nat&lt;=int[is&gt;0],
+        person&lt;=('name'-&gt;str,'age'-&gt;nat)]</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)  =&gt; [define,nat&lt;=int[is&gt;0],person&lt;=('name'-&gt;str,'age'-&gt;nat)][as,person]  <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;-29) =&gt; [define,nat&lt;=int[is&gt;0],person&lt;=('name'-&gt;str,'age'-&gt;nat)][as,person]  <i class="conum" data-value="2"></i><b>(2)</b>
+language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>rec</code> is mapped to a <code>person</code> with the <code>age</code> value being mapped resolved accordingly.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>rec</code> does not have an <code>age</code> value that maps to <code>nat</code>.</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_rewrites">Rewrites</h5>
@@ -6081,7 +6151,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-26 20:15:30 -0600
+Last updated 2020-07-26 20:37:42 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
