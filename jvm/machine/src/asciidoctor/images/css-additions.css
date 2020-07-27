@@ -1,11 +1,22 @@
+/* Margins */
 .imageblock.left{margin:.25em 3em 1.25em 0}
 .imageblock.right{margin:.25em 0 1.25em .625em}
 table.tableblock{max-width:100%;border-collapse:separate; margin:1em 1em 1em 1em}
+/* Hidden Line Separator */
 hr{border-width:0px 0 0; margin:1em 0 3em}
+/* Source Highlighting */
 .listingblock pre.CodeRay{font-size:0.9em;background-color:whitesmoke}
+/* Wikipedia Preview */
 object,embed{width:100%;min-height:1000px;}
 iframe {
-margin-top: 20px;
-margin-bottom: 30px;
-border-radius: 2px;
+  margin-top: 20px;
+  margin-bottom: 30px;
+  border-radius: 2px;
+}
+/* LaTeX Equations */
+.MathJax {
+ font-size: 90%;
+}
+.math {
+ font-size: 90%;
 }
