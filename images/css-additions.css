@@ -14,6 +14,6 @@ iframe {
   border-radius: 2px;
 }
 /* LaTeX Equations */
-.math {
+.MathJax {
  font-size: 90%;
 }
