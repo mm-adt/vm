@@ -104,7 +104,7 @@ object mmlangPrinter {
   }
   def instString(inst: Inst[_, _]): String = {
     (inst.op match {
-     // case Tokens.define => Tokens.empty
+      case Tokens.define => Tokens.empty
       case Tokens.to => LANGLE + inst.arg0[StrValue].g + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue].g + RANGLE
       case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]].toString

@@ -51,7 +51,7 @@ object AsOp extends Func[Obj, Obj] {
     val dObj: Obj = pickMapping(start, asObj)
     val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, asObj.range) else dObj
     val result = (if (Tokens.named(inst.arg0[Obj].name)) rObj.named(inst.arg0[Obj].name) else rObj).via(start, inst)
-    if (!result.alive) throw LanguageException.typingError(start, asType(asObj))
+    if (!result.alive) throw LanguageException.typingError(start, asType(asObj.named(inst.arg0[Obj].name)))
     result
   }
   private def pickMapping(start: Obj, asObj: Obj): Obj = {

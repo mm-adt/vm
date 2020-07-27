@@ -2224,6 +2224,38 @@ int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain
 
 ===== Definitions
 
+mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT). The `mm` *model-ADT* is the canonical model by which all other models are derived. Much like ctypes and dtypes, `mm` can be understood as a "cmodel" and all derived models as "dmodels" (though these terms are not used beyond this section). While model-ADT design and development will be discussed in a latter section, this section introduces the `[define]` instruction and it's use as an identity type.
+
+* `[define]`: Associates a type with a range composed of an object _token_ and a quantifier.
+* `[as]`: Locates the first type definition capable of mapping the incoming `obj` to the token argument.
+
+[exec,exception=true]
+----
+[define,nat<=int[is>0]]                 //<1>
+int => [define,nat<=int[is>0]]          //<2>
+ 6  => [define,nat<=int[is>0]][as,nat]  //<3>
+-6  => [define,nat<=int[is>0]][as,nat]  //<4>
+----
+<1> An identity `inst` that associates the token `nat` as the unit (`{1}`) range of `int[is<0]]`.
+<2> `mmlang` does not display `[define]` instructions in a type's `inst` `obj` graph path.
+<3> `[as]` searches the `obj` graph for a `nat<=int` type definition and evaluates the mapping.
+<4> The definition requires `nat` be `\_{1}` but `-6` is `_{0}`.
+
+[exec,eval=false]
+----
+[define,nat<=int[is>0],
+        person<=('name'->str,'age'->nat)]
+----
+
+[.small]
+[exec,exception=true]
+----
+('name'->'marko','age'->29)  => [define,nat<=int[is>0],person<=('name'->str,'age'->nat)][as,person]  //<1>
+('name'->'marko','age'->-29) => [define,nat<=int[is>0],person<=('name'->str,'age'->nat)][as,person]  //<2>
+----
+<1> The `rec` is mapped to a `person` with the `age` value being mapped resolved accordingly.
+<2> The `rec` does not have an `age` value that maps to `nat`.
+
 ===== Rewrites
 
 Each step of that walk is an instruction forming an edge in the type graph. For instance, the type
