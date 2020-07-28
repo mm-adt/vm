@@ -50,6 +50,30 @@ The complexities of mm-ADT are realized in the definition of an `obj` (which inc
 
 ==== mm-ADT Algebras
 
+****
+There are two operations: addition (\$ +\$) and multiplication (\$\ast\$). https://en.wikipedia.org/wiki/Abstract_algebra[Abstract algebra] is the study of these two operations across a wide range of slightly different generalized https://en.wikipedia.org/wiki/Algebraic_structure[structures] devoid of considerations regarding the particulars of their implementation: integers, digital circuits, quantum systems in a superposition, etc. Theoreticians deduce https://en.wikipedia.org/wiki/Theorem[theorems] based on the https://en.wikipedia.org/wiki/Axiom[axioms] of the structures and experimentalists apply the structural patterns to other systems, real or designed.
+
+The pedagogical masterpiece of the discipline is the *magma hiearchy*.
+
+. https://en.wikipedia.org/wiki/Magma_%28algebra%29[Magma] \$(A,\ast)\$: a set \$A\$ with a potentially associative binary operator \$ast: A \times A \to A\$.
+. https://en.wikipedia.org/wiki/Semigroup[Semigroup] \$(A,\ast)\$: a magma with an associative binary operator \$(a \ast b) \ast c = a \ast (b \ast c)\$.
+. https://en.wikipedia.org/wiki/Monoid[Monoid] \$(A,\ast,\mathbf{1})\$: a semigroup with an identity element such that \$a \ast \mathbf{1} = a = \mathbf{1} \ast a\$.
+. https://en.wikipedia.org/wiki/Group_(mathematics)[Group] \$(A,\ast,\mathbf{1})\$: a monoid with ever element having an inverse such that \$a \ast a^{-1} = \mathbf{1} = a^{-1} \ast a\$.
+. https://en.wikipedia.org/wiki/Ring_(mathematics)[Ring] \$(A,+,\ast,\mathbf{0},\mathbf{1})\$: a \$ +\$-group and a \$\ast\$-monoid bound by distributivity, \$a \ast (b + c) = (a \ast b) + (a \ast c)\$.
+. https://en.wikipedia.org/wiki/Field_(mathematics)[Field] \$(A,+,\ast,\mathbf{0},\mathbf{1})\$: a ring where the \$\ast\$-monoid is a \$\ast\$-group.
+
+Numerous _enrichments_ to these structures blur the sharp lines that divide them.
+
+* https://en.wikipedia.org/wiki/Commutative_property[Abelian] \$a \cdot b=b \cdot a\$: the binary operator is agnostic to the order of the arguments.
+* https://en.wikipedia.org/wiki/Idempotence[Idempotent] \$a \cdot a = a\$: the binary operator reaches a fixpoint on self compositions.
+* https://en.wikipedia.org/wiki/Free_algebra[Free] \$A^\ast\$: the binary operator is replaced with _concatenation_ to record operation sequences, not evaluate them.
+* https://en.wikipedia.org/wiki/Module_(mathematics)[Module] \$A[x]\$: a binary magma that respects the abstract form of linear algebra via _scalars_ and _vectors_.
+* https://en.wikipedia.org/wiki/Polynomial_ring[Polynomial] \$x_1a + x_2a^2 + \ldots + x_na^n\$: a binary magma with free addition and non-free multiplication.
+* ...
+
+No one practitioner will ever have a complete grasp of the intricacies that bind \$ +\$ and \$\ast\$ together over \$A\$.
+
+****
 
 image::../introduction/the-algebras.png[width=500,float=right]
 
