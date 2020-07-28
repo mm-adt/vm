@@ -300,7 +300,7 @@ In order to quantify the _amount_ of values denoted by a type, every mm-ADT type
 
 The default quantifier ring of the mm-ADT VM is
 \[
-(\mathbb{N}^+ \times \mathbb{N}^+, +, \ast),
+(\mathbb{Z} \times \mathbb{Z}, +, \ast),
 \]
 where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (unity). The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively. In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`. Moreover, if a single value is provided, it is assumed to be repeated, where `{n}` is shorthand for `{n,n}`. Thus, `int` is `int{1}`  is `int{1,1}`.
 
