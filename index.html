@@ -1753,81 +1753,6 @@ mmlang&gt; 3-&lt;([plus,1];[mult,2])     <i class="conum" data-value="3"></i><b>
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>Mathematically, this is</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a>: \$x(a + b) = xa + xb\$,</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Disjoint_union">disjoint multiplication</a>: \$x(a \oplus b) = xa \oplus xb\$ , and</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Left_and_right_(algebra)">left module multiplication</a>: \$x(ab) = xab\$.</p>
-</li>
-</ol>
-</div>
-<table class="tableblock frame-none grid-none stretch">
-<colgroup>
-<col style="width: 63.6363%;">
-<col style="width: 36.3637%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The resultant <code>lsts</code> have their terms <code>[merged]</code> (<code>&gt;-</code>, \$\nabla\$) into a single <code>int{1,2}</code> <code>strm</code>. There is a subtlety to highlight. The result of any <code>inst</code> is a single <code>obj</code>. In particular, to the <code>[merge]</code> in these examples, the output is a single <code>int</code> or a single <code>int</code> <code>strm</code> containing two <code>ints</code>. mm-ADT evaluates unary functions: one <code>obj</code> input yields one <code>obj</code> output.</p></td>
-<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])&gt;-
-==&gt;4
-==&gt;6
-mmlang&gt; 3-&lt;([plus,1]|[mult,2])&gt;-
-==&gt;4
-mmlang&gt; 3-&lt;([plus,1];[mult,2])&gt;-
-==&gt;8</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">The <code>[split]</code> (<code>-&lt;</code>) instruction creates a <code>poly</code> for each incoming <code>obj</code>. This <code>poly</code> denotes <em>coupled parallel streams</em>, where each subsequent instruction operates on each term of the <code>poly</code> in a lock-step manner. However, if there are no intermediate instructions between <code>[split]</code> and <code>[merge]</code> (typically specified with <code>[combine]</code>), then this is semantically equivalent to <em>decoupled parallel streams</em> whereby whenever an <code>obj</code> is made available by <code>poly</code> type term, it can be immediately placed on the outgoing merged stream. Decoupled parallel streams are common enough that the "<em>branch</em>"-pattern (<code>-&lt;()&gt;-</code>) is captured by a single <code>[branch]</code> (<code>[ ]</code>, \$◊\$).</p></td>
-<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[[plus,1],[mult,2]]
-==&gt;4
-==&gt;6
-mmlang&gt; 3[[plus,1]|[mult,2]]
-==&gt;4
-mmlang&gt; 3[[plus,1];[mult,2]]
-==&gt;8</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Finally, the most compact <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugar</a> forms of the running examples are presented. Given the verbosity of branching expressions, all subsequent <code>mmlang</code> examples will favor sugar constructs.</p></td>
-<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3[+1,*2]
-==&gt;4
-==&gt;6
-mmlang&gt; 3[+1|*2]
-==&gt;4
-mmlang&gt; 3[+1;*2]
-==&gt;8</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </div>
@@ -3315,31 +3240,51 @@ The reason for the <code>[split]</code> sugar symbol <code>-&lt;</code>, is that
 <div class="paragraph">
 <p>A <a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a> is a <em>linear combination</em> of <em>terms</em> composed of <em>coefficients</em> and <em>indeterminates</em> typically expressed as
 \[
-q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n,
+f(x) = q_1 x^1 + q_2 x^2 + q_3 x^3 + \ldots + q_n x^n,
 \]
-where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via <code>+</code>.</p>
+where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via <code>+</code>. If \$x \in \mathbb{Z}\$, then \$f: \mathbb{Z} \to \mathbb{Z}\$ and thus, when the \$x\$ indeterminate is provided, the polynomial is reduced. For instance,
+\[
+f(x) = 2x + 3x^2 + 6x^3
+\]
+is irreducible due to \$x\$ being a \$Z\$-variable called an <em>indeterminate</em>. When \$x\$ is determined, then the polynomial \$f\$ can be solved via the reduction
+\[
+\begin{split}
+f(4) &amp;= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\
+     &amp;= 8 + 48 + 384 \\
+     &amp;= 440.
+\end{split}
+\]</p>
 </div>
 <div class="paragraph">
-<p>In mm-ADT, <code>poly</code> \$\subset\$ <code>obj</code> is the infinite set of polynomials. The polynomial expression above is a <code>,-poly</code> \$\subset\$ <code>poly</code> (pronounced "comma poly") and, in <code>mmlang</code>, are expressions of the form</p>
+<p>In mm-ADT, <code>poly</code> \$\subset\$ <code>obj</code> is the (infinite) set of polynomials. The polynomial expression above is a <code>,-poly</code> \$\subset\$ <code>poly</code> (pronounced "comma poly") and, in <code>mmlang</code>, are expressions of the form</p>
 </div>
 <div class="paragraph text-center">
-<p><code>(x0{q0},x1{q1},x2{q2},&#8230;&#8203;,xn{qn})</code></p>
+<p><code>x =&gt; [x1{q1},x2{q2},x3{q3},&#8230;&#8203;,xn{qn}]</code></p>
 </div>
 <div class="paragraph">
-<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is an <em>object</em> (indeterminate), <code>xi{qi}</code> is an <code>obj</code> (term), and the <code>objs</code> are linearly combined via <code>,</code> (addition). If a <code>,-poly</code> is composed of <code>obj</code> values, then due to the commutativity of addition, <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiset">multi-set</a> (or bag) data structure. If a <code>,-poly</code> is composed of <code>obj</code> types and values, then the <code>,-poly</code> is a <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> operator. In this way, every <code>,-poly</code> is either a value <code>,-poly</code> or a type <code>,-poly</code>. Both forms are instances of a more general algebraic structure called a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a>. In <a href="https://en.wikipedia.org/wiki/Ring_theory">ring theory</a>, every ring combines an <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">additive group</a> and a multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> by <a href="https://en.wikipedia.org/wiki/Distributive_property">distributivity</a>. The <code>,-poly</code> group and monoid are</p>
+<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is an <em>object</em> (indeterminate), <code>xi{qi}</code> is an <code>obj</code> (term), and the <code>objs</code> are linearly combined via <code>,</code> (addition). Instead of the terms being raised to a power (as is typical of numeric polynomials), terms are "raised" by instructions. The polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is equivalent to the following mm-ADT <code>int&lt;=int</code> type.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>an additive <a href="https://en.wikipedia.org/wiki/Free_group">free abelian group</a> \$( \tt{obj}^\ast,◊,\underline{\mathbf{0}}) \$ and</p>
-</li>
-<li>
-<p>a multiplicative (non-free) monoid \$( \tt{obj},&#8658;,\underline{\mathbf{1}}) \$,</p>
-</li>
-</ol>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
+==&gt;int[branch,(int{2}&lt;=int[id]{2},int{3}&lt;=int[mult,int]{3},int{6}&lt;=int[mult,int[mult,int]]{6})][sum]</code></pre>
+</div>
 </div>
 <div class="paragraph">
-<p>where <code>obj<sup>*</sup></code> is the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene star</a> of <code>obj</code> (i.e. the infinite set of all <code>obj</code> <a href="https://en.wikipedia.org/wiki/Sequence">sequences</a>), \$◊\$ is the <code>[branch]</code> instruction as a binary operator, \$\underline\mathbf{0}\$ is the zero element <code>_{0}</code> (i.e. <code>obj{0}</code>), \$&#8658;\$ is the binary juxtaposition operator, and \$\underline\mathbf{1}\$ is the one element <code>_</code> (or <code>_{1}</code> when displaying the unit quantifier).</p>
+<p>In \$f\$, addition and multiplication is with respects to the integer ring \$(\mathbb{Z},+,\ast,0,1)\$. In <code>,-poly</code>, they are with respects to the stream ring, where multiplication is \$\Delta\$ and addition is \$\nabla\$. The mm-ADT <code>,-poly</code> is a generalized algebraic structure known as a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> that, when used to solve <code>int</code> based polynomials, the instructions <code>[mult]</code> and <code>[sum]</code> are required, where <code>int&lt;=int</code> type is reducible when the domain <code>int</code> is determined.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4 =&gt; [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}]
+==&gt;4{2}
+==&gt;16{3}
+==&gt;64{6}
+mmlang&gt; 4 =&gt; [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
+==&gt;440
+
+mmlang&gt; 4 =&gt; [int[id]{2},int*{3}int,int*{6}*int][sum]
+==&gt;440</code></pre>
+</div>
 </div>
 <div class="imageblock left">
 <div class="content">
@@ -3388,26 +3333,6 @@ For visual simplicity, quantifiers are not illustrated. Furthermore, the reason 
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>If the multiplicative monoid compositions yielded values (<strong>evaluations</strong>) as opposed to types (<strong>compilations</strong>) and \$x_0 = a(bc)\$, \$x_1 = ad\$, \$x_2 = a(be)\$, and \$x_3 = a(d(eb))\$, then the <code>,-poly</code> is denoted</p>
-</div>
-<div class="paragraph text-center">
-<p><code>(x0{q0},x1{q1},x2{q2},x3{q3})</code>,</p>
-</div>
-<div class="paragraph">
-<p>and with <code>,</code> equivalent to <code>+</code>, the original polynomial expression is realized as
-\[
-q_0 x^0 + q_1 x^1 + q_2 x^2 + q_3 x^3.
-\]</p>
-</div>
-<div class="paragraph">
-<p>In general, an mm-ADT <code>poly</code> is used to <em>decouple</em> two algebraic structures such that one is <strong>free</strong> and the other <strong>non-free</strong>. From the perspective of applied computing, the free algebras are <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">delayed</a>, unevaluated structures and the non-free algebras are <a href="https://en.wikipedia.org/wiki/Eager_evaluation">eager</a>, evaluated structures. There are three kinds of <code>poly</code>. Each draws their terms from the same <code>obj</code> carrier set and are distinguished, in <code>mmlang</code>, by their respective term separator which denotes a particular "additive" binary operator: <code>,</code> (<em>orThen</em>), <code>|</code> (<em>xorThen</em>), and  <code>;</code> (<em>andThen</em>), where <code>,</code> is the operator of a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>, <code>|</code> the operator of a free additive <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>, and <code>;</code> is the operator of a free partially commutative multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. The general form of each kind of <code>poly</code> is expressed below in <code>mmlang</code>.</p>
-</div>
-<div class="paragraph text-center">
-<p><code>(x0{q0},x1{q1},&#8230;&#8203;,xn{qn})</code><br>
-<code>(x0{q0}|x1{q1}|&#8230;&#8203;|xn{qn})</code><br>
-<code>(x0{q0};x1{q1};&#8230;&#8203;;xn{qn})</code></p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 6.25%;">
@@ -3449,18 +3374,6 @@ q_0 x^0 + q_1 x^1 + q_2 x^2 + q_3 x^3.
 </tr>
 </tbody>
 </table>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The polynomial literature distinguishes <a href="https://en.wikipedia.org/wiki/Univariate">univariate</a> and <a href="https://en.wikipedia.org/wiki/Polynomial#Multivariate_polynomial">multivariate</a> polynomials, where if all the <em>object</em> components of the <code>obj</code> product are equal, then the polynomial is univariate, else it is multivariate. In mm-ADT, multivariate <code>polys</code> are much more common than univariate <code>polys</code>. However, a primary function of the mm-ADT <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">optimizing compiler</a> is to deduce <code>obj</code> equivalences via <a href="https://en.wikipedia.org/wiki/Rewriting">term rewriting</a> such that <code>obj</code> <strong>bulking</strong> can occur via the additive and multiplicative operators of the expression&#8217;s associated quantifier ring (i.e. the ring of coefficients).
-</td>
-</tr>
-</table>
-</div>
 <div class="sect5">
 <h6 id="_poly">,-poly</h6>
 <table class="tableblock frame-all grid-all stretch">
@@ -4115,7 +4028,7 @@ mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')&gt;-
 mmlang&gt; (1;;3)&gt;-
 ==&gt;3
 mmlang&gt; (;;3)&gt;-
-==&gt;3</code></pre>
+mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5461,7 +5374,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-27 00:16:39 -0600
+Last updated 2020-07-27 23:34:17 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
