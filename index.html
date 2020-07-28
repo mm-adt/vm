@@ -2092,7 +2092,7 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 </ul>
 </div>
 <div class="paragraph">
-<p>Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in <code>mmlang</code> using both <code>obj</code> <strong>values</strong> and <strong>types</strong>. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.</p>
+<p>Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in <code>mmlang</code> using both <code>obj</code> <strong>values</strong> and <strong>types</strong>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3224,10 +3224,14 @@ f(4) &amp;= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\
 ==&gt;4{2}
 ==&gt;16{3}
 ==&gt;64{6}
+
 mmlang&gt; 4 =&gt; [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
 ==&gt;440
 
 mmlang&gt; 4 =&gt; [int[id]{2},int*{3}int,int*{6}*int][sum]
+==&gt;440
+
+mmlang&gt; [4;[int[id]{2},int*{3}int,int*{6}*int][sum]]
 ==&gt;440</code></pre>
 </div>
 </div>
@@ -3289,7 +3293,7 @@ For visual simplicity, quantifiers are not illustrated. Furthermore, the reason 
 <tr>
 <th class="tableblock halign-left valign-top">symbol</th>
 <th class="tableblock halign-left valign-top">structure</th>
-<th class="tableblock halign-left valign-top">value use</th>
+<th class="tableblock halign-left valign-top">branch use</th>
 <th class="tableblock halign-left valign-top">illustration</th>
 </tr>
 </thead>
@@ -3302,18 +3306,59 @@ nondeterministic branching</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-poly-example.png" alt="comma poly example"></span></p></td>
 </tr>
 <tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ordered biproducts<br>
+serial branching</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-poly-example.png" alt="semi poly example"></span></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid ring</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">unary biproducts<br>
 deterministic branching</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-poly-example.png" alt="pipe poly example"></span></p></td>
 </tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 22.2222%;">
+<col style="width: 77.7778%;">
+</colgroup>
+<tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ordered biproducts<br>
-serial branching</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-poly-example.png" alt="semi poly example"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code>
+\[
+[f,g] \\
+\Delta (f,g) \nabla = \Diamond(f,g)
+\]
+copy/clone-branching<br>
+independent terms<br>
+\[A \times A = 2A\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="500"></a></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code>
+\[
+[f;g] \\
+\Delta (f;g) \nabla = \Diamond(f;g)
+\]
+serial/compose-chain<br>
+dependent terms<br>
+\[A^{_A A} = A \]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla"></a></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code>
+\[
+[f | g] \\
+\Delta (f | g) \nabla = \Diamond(f | g) \\
+\]
+either/choice-branching<br>
+dependent terms<br>
+\[A + A = A\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="500"></a></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -4064,44 +4109,6 @@ mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
 <img src="./images/language/monoid-homomorphisms.png" alt="monoid homomorphisms" width="500">
 </div>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 22.2222%;">
-<col style="width: 77.7778%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code>
-\[
-\Delta \circ (f,g) \circ \nabla
-\]
-copy/clone-branching<br>
-independent slots<br>
-\$A+A = 2A\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="500"></a></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code>
-\[
-\Delta \circ (f;g) \circ \nabla
-\]
-serial/compose-chain<br>
-dependent slots<br>
-\$A \ast A = A^2\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla" width="500"></a></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code>
-\[
-\Delta \circ (f | g) \circ \nabla
-\]
-either/choice-branching<br>
-dependent slots<br>
-\$A \oplus A \implies A\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="500"></a></span></p></td>
-</tr>
-</tbody>
-</table>
 </div>
 </div>
 </div>
@@ -4997,7 +5004,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-28 02:58:34 -0600
+Last updated 2020-07-28 04:47:49 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
