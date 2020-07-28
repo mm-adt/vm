@@ -875,13 +875,13 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 </div>
-<div class="imageblock left">
-<div class="content">
-<img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="340">
-</div>
-</div>
 <div class="paragraph">
 <p>Everything that can be denoted in <code>mmlang</code> is an <code>obj</code>. Within the VM and outside the referential purview of an interfacing language, every <code>obj</code> is the product of</p>
+</div>
+<div class="imageblock left">
+<div class="content">
+<img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="375">
+</div>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -895,9 +895,11 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 <div class="paragraph">
 <p>\[
+\text{ } \\
 \texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}.
 \]</p>
 </div>
+<hr>
 <div class="imageblock right">
 <div class="content">
 <img src="./images/language/obj-type-q-value-q.png" alt="obj type q value q" width="375">
@@ -1031,7 +1033,7 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">function</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">functions are (dependent) types with values generated at evaluation.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">functions are (<a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a>) types with values generated at evaluation.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">state</p></td>
@@ -1175,13 +1177,13 @@ Every <code>obj</code> has an associated quantifier. When the typographical repr
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                               <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int
-mmlang&gt; int{2}                                            <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; int{2}                                                <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;int{2}
-mmlang&gt; int{2}[is&gt;0]                                      <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; int{2}[is&gt;0]                                          <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]]
-mmlang&gt; int{2}[is&gt;0][plus,[neg]]                          <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; int{2}[is&gt;0][plus,[neg]]                              <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]][plus,int{0,2}[neg]]</code></pre>
 </div>
 </div>
@@ -1332,6 +1334,30 @@ language error: bool is not an int</code></pre>
 </div>
 <div class="sect4">
 <h5 id="_type_definition">Type Definition</h5>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Commuting Diagrams</div>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Category_theory">Category theory</a> is a branch of abstract algebra that studies algebraic structures via their homomorphic image within a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> monoid called a <strong>category</strong>. A category is defined as
+\[
+(\mathbf{A},\circ,\mathbf{1}_\mathbf{A}),
+\]
+where \$\mathbf{A}\$ is a set of <em>morphisms</em>, \$\mathbf{A}(A)\$ is an <em>object</em> morphism simply denoted \$A\$, \$circ: \mathbf{A}(A,B) \times \mathbf{A}(B,C) \to \mathbf{A}(A,C) \$ is an associative, binary, morphism composition operator, and for every \$A\$, there is an identity morphism \$\mathbf{1}_A \in \mathbf{1}_\mathbf{A}\$ such that \$A \circ \mathbf{1}_A = A = \mathbf{1}_A \circ A\$. Unlike classical monoids, a category&#8217;s \$\circ\$ operator is generally not <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closed</a>. That is, there are compositions which may not be defined. It is this aspect of a category that makes it a <em>multi-sorted</em> (or typed) monoid.</p>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/commuting-diagram.png" alt="commuting diagram" width="125">
+</div>
+</div>
+<div class="paragraph">
+<p>In a manner analogous to Cayley graphs, category theory has <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">diagrams</a>. If \$f:A \to B \in \mathbf{A}(A,B)\$ and \$g: B \to C \in \mathbf{A}(B,C)\$, then there exists the morphism path
+\[
+A \xrightarrow{f} B \xrightarrow{g} C.
+\]
+A <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> is one such that every morphism path starting at the same source and ending at the same destination is equal. Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram <em>commutes</em>.</p>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>. For a type, this history is called the <strong>type definition</strong> and is a path in the <strong>type graph</strong>.</p>
 </div>
@@ -1377,6 +1403,14 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 </tr>
 </table>
 </div>
+<div class="exampleblock">
+<div class="title">Deep Dive 1. Commutative Obj Graph</div>
+<div class="content">
+<div class="paragraph">
+<p>The <code>obj</code> graph has an analogous structure to a category theoretic diagram, where the vertices are the category objects and the edges are labeled with instruction morphisms. In mm-ADT, every <code>obj</code> graph <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutes</a>. It is this feature that makes the <code>obj</code> graph a universal <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> cache where the vertices may be types or values.</p>
+</div>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_type_quantification">Type Quantification</h5>
@@ -1397,6 +1431,7 @@ Initial objects, via their morphisms, generate all the objects of the category.
 If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity.
 Thus, besides labels, two initials are isomorphic.</p>
 </div>
+<hr>
 <div class="imageblock right">
 <div class="content">
 <img src="./images/language/terminal.png" alt="terminal" width="130">
@@ -1445,7 +1480,7 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">name</th>
+<th class="tableblock halign-center valign-top"></th>
 <th class="tableblock halign-left valign-top">description</th>
 <th class="tableblock halign-left valign-top">sugar</th>
 <th class="tableblock halign-left valign-top">unsugared</th>
@@ -1454,7 +1489,7 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">some</p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock">some</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a single <code>int</code></p></td>
 <td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,1}</code></p></td>
@@ -1469,7 +1504,7 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">option</p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock">option</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0 or 1 <code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{?}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,1}</code></p></td>
@@ -1484,7 +1519,7 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock">none</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0 <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,0}</code></p></td>
@@ -1499,7 +1534,7 @@ mmlang&gt;</code></pre>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">exact</p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock">exact</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock">4 <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{4}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{4,4}</code></p></td>
@@ -1514,7 +1549,7 @@ mmlang&gt;</code></pre>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">any</p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock">any</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock">0 or more <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{*}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,max}</code></p></td>
@@ -1529,7 +1564,7 @@ mmlang&gt;</code></pre>
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">given</p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock">given</p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock">1 or more <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{+}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,max}</code></p></td>
@@ -2785,7 +2820,7 @@ mmlang&gt; ''[+{2}'a',+{3}'b']
 </tbody>
 </table>
 <div class="exampleblock">
-<div class="title">Deep Dive 1. Process Architectures Sympathetic to the Type Ringoid</div>
+<div class="title">Deep Dive 2. Process Architectures Sympathetic to the Type Ringoid</div>
 <div class="content">
 <div class="paragraph">
 <p>The <code>mmlang</code> examples used to describe the type ringoid are generated by a language that acts on the <code>inst</code> monoid. The <strong>type ringoid</strong> has an <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> in the <code>inst</code> monoid, but this is not the intended algebra of the language component. The preferred embedding is in the logic of the processor component, where what is <em>undefined</em> in the type ringoid axioms, enables a diversity of modern processor architectures to interface with the mm-ADT VM.</p>
@@ -3050,7 +3085,7 @@ mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. Poly Constructs in mmlang</div>
+<div class="title">Deep Dive 3. Poly Constructs in mmlang</div>
 <div class="content">
 <table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
@@ -5025,7 +5060,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-28 11:29:40 -0600
+Last updated 2020-07-28 11:33:38 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
