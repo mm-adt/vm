@@ -877,7 +877,7 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 <div class="imageblock left">
 <div class="content">
-<img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="280">
+<img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="340">
 </div>
 </div>
 <div class="paragraph">
@@ -886,7 +886,7 @@ That is, product and coproduct equality are defined via component equality.</p>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>An <strong>object</strong> that is either a <strong>type</strong> or a <strong>value</strong> and</p>
+<p>An <strong>object</strong> that is either a <strong>type object</strong> or a <strong>value object</strong> and</p>
 </li>
 <li>
 <p>A <strong>quantifier</strong> specifying the "amount" of objects being denoted.</p>
@@ -900,15 +900,17 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/language/obj-type-q-value-q.png" alt="obj type q value q" width="450">
+<img src="./images/language/obj-type-q-value-q.png" alt="obj type q value q" width="375">
 </div>
 </div>
 <div class="paragraph">
-<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">algebraic ring</a>. The ring axioms specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over coproducts. Thus, the previous formula can be rewritten as
-\[
+<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">algebraic ring</a>. The ring axioms specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over coproducts. Thus, the previous formula can be rewritten as</p>
+</div>
+<div class="paragraph">
+<p>\[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>quantified types</strong> and <strong>quantified values</strong>.
+This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>types</strong> and <strong>values</strong>.
 This is the <strong>obj meta-model</strong>.</p>
 </div>
 <div class="listingblock">
@@ -946,28 +948,28 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>A <code>str</code> <em>stream</em> containing <code>'a'</code>,<code>'b'</code>, and <code>'a'</code>.</td>
+<td>A <code>str</code> <strong>stream</strong> composed of <code>'a'</code>,<code>'b'</code>, and <code>'a'</code>.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two notable consequences of computable types and values are</p>
+<p>Both types and values can be operated on by types, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or <a href="https://en.wikipedia.org/wiki/Execution_(computing)">evaluation</a> (values). Two notable consequences of computable types and values are</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p><a href="https://en.wikipedia.org/wiki/Compiler">Compilation</a> is the evaluation of a program (a type) with a type argument: \$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$.</p>
+<p>\$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$: Used in <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> for <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a> and rewrite, and</p>
 </li>
 <li>
-<p>Types serve as <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda (or anonymous) functions</a> when a value is applied: \$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$.</p>
+<p>\$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$: Used in <a href="https://en.wikipedia.org/wiki/Execution_(computing)">evaluation</a> of <a href="https://en.wikipedia.org/wiki/Computer_program">programs</a> and <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda functions</a>.</p>
 </li>
-</ol>
+</ul>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; int[is,[gt,0]]                     <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; int[is,[gt,0]]                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]
-mmlang&gt; 5   =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;5</code></pre>
 </div>
 </div>
@@ -975,11 +977,11 @@ mmlang&gt; 5   =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" d
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>int</code>-type is applied to the <code>int[is,[gt,0]]</code>-type to yield an <code>int{?}</code>-type denoting either 0 or 1 <code>int</code> (<strong>compilation</strong>).</td>
+<td>The <code>int</code>-type is applied to the <code>int[is,[gt,0]]</code>-type to yield a <em>maybe</em> <code>int{?}</code>-type (<strong>compilation</strong>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The type <code>bool&lt;=int[gt,0]</code> serves as a lambda that yields <code>true</code> or <code>false</code> for every incoming <code>int</code> value (<strong>evaluation</strong>).</td>
+<td>The nested <code>bool&lt;=int[gt,0]</code>-type is a lamba function yielding <code>true</code> or <code>false</code> (<strong>evaluation</strong>).</td>
 </tr>
 </table>
 </div>
@@ -1060,20 +1062,20 @@ mmlang&gt; 5   =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" d
 </div>
 </div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b)\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i \mapsto b\$.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the group operation \$a \cdot i \mapsto b\$.</p>
 </div>
 <div class="paragraph">
-<p>When constructed in full, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. Interestingly, a Cayley graph captures both the free and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\circ)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
+<p>When constructed in <a href="https://en.wikipedia.org/wiki/Eager_evaluation">full</a>, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of all possible transitions from any one element to the next given the generators. When <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">lazily</a> constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. A Cayley graph captures both the <a href="https://en.wikipedia.org/wiki/Free_group">free</a> and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\odot)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
 </div>
 <div class="paragraph">
-<p>A <em>generalized</em> Cayley Graph is a graph with respective vertex/edge structure, but for other <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> and <a href="https://en.wikipedia.org/wiki/Semigroup">semigroups</a>.</p>
+<p>A <em>generalized</em> Cayley Graph is a graph with an analogous vertex/edge structure, but for other <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> and <a href="https://en.wikipedia.org/wiki/Semigroup">semigroups</a>.</p>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>An <code>obj</code> was previously defined as
+<p>An <code>obj</code> is either a type or a value:
 \[
-\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
+\texttt{obj} = \texttt{type}  + \texttt{value}.
 \]</p>
 </div>
 <div class="paragraph">
@@ -1117,16 +1119,13 @@ mmlang&gt; 5   =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" d
 </div>
 </div>
 <div class="paragraph">
-<p>The dtypes are <a href="https://en.wikipedia.org/wiki/Structural_type_system">structural types</a> whose <a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive definition</a>'s base case is a ctype realized via a chain of instructions (<code>inst</code>) that operate on types to yield types. Formally, the type coproduct is defined as</p>
+<p>The dtypes are <a href="https://en.wikipedia.org/wiki/Structural_type_system">structural types</a> whose <a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive definition</a>'s base case is a ctype realized via a chain of instructions (<code>inst</code>) that operate on types to yield types. In other words, instructions are the <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> of the type <code>objs</code>. Formally, the type coproduct is defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
 \begin{split}
-\texttt{type} &amp;=\;&amp; (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{poly}) + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &amp;=\;&amp; \texttt{ctype} + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &amp;=\;&amp; \texttt{ctype} + \texttt{dtype}, \end{split}
+\texttt{type} &amp;=\;&amp; (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{poly}) + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &amp;=\;&amp; \texttt{ctype} + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &amp;=\;&amp; \texttt{ctype} + \texttt{dtype}. \end{split}
 \]</p>
-</div>
-<div class="paragraph">
-<p>where each component of the coproduct also has a respective quantifier as previously defined for all <code>objs</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1135,7 +1134,7 @@ mmlang&gt; 5   =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" d
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Every <code>obj</code> has an associated quantifier. The coupling of objects and quantifiers may not always be apparent, especially when not discussing quantifiers in particular. When the typographical representation of an <code>obj</code> lacks an associated quantifier, the quantifier is <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>. More specifically, the <code>real</code> <code>1.35{1}</code> is written <code>1.35</code>.
+Every <code>obj</code> has an associated quantifier. When the typographical representation of an <code>obj</code> lacks an associated quantifier, the quantifier is <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>. For instance, the <code>real</code> <code>1.35{1}</code> is written <code>1.35</code>.
 </td>
 </tr>
 </table>
@@ -1164,15 +1163,11 @@ Every <code>obj</code> has an associated quantifier. The coupling of objects and
 </div>
 </div>
 <div class="paragraph">
-<p>The diagram above is an instance of a structure that is core to various aspects of mm-ADT including <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more. It has a name. The <strong>obj graph</strong> for which the subgraph concerned with type specification is called the <strong>type graph</strong> such that
-\[
-G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
-\]
-The <code>obj</code> graph will be studied at length from the perspective of <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graphs</a>, where the <code>obj</code> graph is understood as a ringoid-<a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> <a href="https://en.wikipedia.org/wiki/Monoidal_category">monoidal</a> Cayley graph.</p>
+<p>The diagram above is an instance of a structure that is core to various aspects of mm-ADT including <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more. This structure is called the <strong>obj graph</strong>. The subgraph concerned with type definitions is called the <strong>type graph</strong>. The subgraph considered with value history is called the <strong>value graph</strong>. The <code>obj</code> graph is a ringoid-<a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> <a href="https://en.wikipedia.org/wiki/Monoidal_category">monoidal</a> <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a>. This graph will be the subject of study throughout the documentation.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/language/obj-full.png" alt="obj full" width="320">
+<img src="./images/language/obj-full.png" alt="obj full" width="275">
 </div>
 </div>
 <div class="paragraph">
@@ -1180,14 +1175,14 @@ The <code>obj</code> graph will be studied at length from the perspective of <a 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                          <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                               <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int
-mmlang&gt; int{2}                                       <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; int{2}                                            <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;int{2}
-mmlang&gt; int{2}[is&gt;0]                                 <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; int{2}[is&gt;0]                                      <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]]
-mmlang&gt; int{2}[is&gt;0][mult,[neg]]                     <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]][mult,int{0,2}[neg]]</code></pre>
+mmlang&gt; int{2}[is&gt;0][plus,[neg]]                          <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]][plus,int{0,2}[neg]]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -1206,7 +1201,7 @@ mmlang&gt; int{2}[is&gt;0][mult,[neg]]                     <i class="conum" data
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>A dtype extending the previous type by their negative complement.</td>
+<td>A dtype extending the previous type with negative integer addition.</td>
 </tr>
 </table>
 </div>
@@ -1278,6 +1273,8 @@ In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ a
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{1}
+==&gt;int
+mmlang&gt; int
 ==&gt;int</code></pre>
 </div>
 </div>
@@ -1298,7 +1295,7 @@ In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ a
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int{5}</code> is a type referring to 5 integers. As a point of comparison, <code>int</code> refers to a single integer. This is why <code>int</code> is syntactic sugar for <code>int{1}</code> in <code>mmlang</code>.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>int{5}</code> is a type referring to 5 integers. As a point of comparison, <code>int{1}</code> refers to a single integer with a syntax sugar of <code>int</code> in <code>mmlang</code>.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
@@ -1312,7 +1309,11 @@ mmlang&gt; int{0,5}&lt;=int{0,5}
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers must be elements from a ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">carrier set</a> is two integers and represents uncertainty as to the number of elements being referred to. <code>int{0,5}</code> is a type referring to either 0, 1, 2, 3, 4, or 5 integers.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers must be elements from a ring with unity. In the previous examples, the quantifier ring was \$(\mathbb{Z}, +,\ast)\$. In this example, the quantifier ring is \$(\mathbb{Z} \times \mathbb{Z}, +,\ast)\$, where the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">carrier set</a> is the set of all pairs of integers and addition and multiplication operate pairwise,
+\[
+(a,b) \cdot (c,d) \mapsto (a \cdot c,b \cdot d).
+\]
+The type <code>int{0,5}</code> denotes either 0, 1, 2, 3, 4, or 5 integers. In general, this quantifier ring represents uncertainty as to the number of elements being referred to.</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
@@ -1324,7 +1325,7 @@ language error: bool is not an int</code></pre>
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Types that are fully specified by their type signature are always canonical types. Therefore, <code>bool&lt;=int</code> is meaningless as there are no instructions to map an <code>int</code> to a <code>bool</code>. This example does not assume an underlying <em>model</em>. When model-ADTs are defined, it is possible for <code>bool&lt;=int</code> to yield a result.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Types that are fully specified by their type signature are always canonical types. Therefore, <code>bool&lt;=int</code> is meaningless as there are no instructions to map an <code>int</code> to a <code>bool</code>. This example does not assume an underlying <em>model</em>. With model-ADTs, it is possible for <code>bool&lt;=int</code> to yield a result.</p></td>
 </tr>
 </tbody>
 </table>
@@ -1332,7 +1333,7 @@ language error: bool is not an int</code></pre>
 <div class="sect4">
 <h5 id="_type_definition">Type Definition</h5>
 <div class="paragraph">
-<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>. For a type, this history is called the <strong>type definition</strong> and is a subgraph of the larger type graph (which is a subgraph of an even larger <code>obj</code> graph).</p>
+<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>. For a type, this history is called the <strong>type definition</strong> and is a path in the <strong>type graph</strong>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1362,7 +1363,7 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 </div>
 </div>
 <div class="paragraph">
-<p>Both types and values exist in a larger graph called the <strong>obj graph</strong> for which a type&#8217;s type graph is a component. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that are no longer required by the program. This process is called <strong>trace retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
+<p>Both types and values exist in a larger graph called the <strong>obj graph</strong>. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes histories (particular paths through the graph) that are no longer required by the program. This process is called <strong>path retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1409,63 +1410,6 @@ Thus, besides labels, two initials are isomorphic.</p>
 </div>
 </div>
 </div>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
-<caption class="title">Table 2. Quantifier Symbols in mmlang</caption>
-<colgroup>
-<col style="width: 40%;">
-<col style="width: 20%;">
-<col style="width: 40%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">usage</th>
-<th class="tableblock halign-left valign-top">sugar</th>
-<th class="tableblock halign-left valign-top">unsugared</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Option_type">none</a>/nothing</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,0}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Option_type">some</a>/just</p></td>
-<td class="tableblock halign-left valign-top"></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,1}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">exact</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{x}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{x,x}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">least <sup class="footnote" id="_footnote_order">[<a id="_footnoteref_1" class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{x,}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{x,max}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">most <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{,x}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{min,x}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Option_type">option</a>/maybe</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{?}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,1}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">given <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{+}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,max}</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">any <sup class="footnoteref">[<a class="footnote" href="#_footnotedef_1" title="View footnote.">1</a>]</sup></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{*}</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,max}</code></p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
 <p>In order to quantify the <em>amount</em> of values denoted by a type, every mm-ADT type has an associated quantifier <code>q</code> denoted <code>{q}</code> in <code>mmlang</code>. Quantifiers are typically integers, but can be any element from an ordered algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, <a href="https://en.wikipedia.org/wiki/Unitary_matrix">unitary matrices</a>, etc.). While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description as values can be negative where <code>objs</code> interact with constructive and destructive <a href="https://en.wikipedia.org/wiki/Wave_interference">interference</a>.</p>
 </div>
@@ -1491,35 +1435,122 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;
 </tr>
 </table>
 </div>
-<div class="paragraph">
-<p>Common programming concepts that are usually captured by typeclasses or functors (via <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifting</a>) are expressed in mm-ADT via quantification.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">int</span>                                   // a single <span style="color:#369;font-weight:bold">int</span>    (some)
-<span style="color:#369;font-weight:bold">int</span>{<span style="color:#F00;background-color:#FAA">?</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>&gt;<span style="color:#00D">0</span>]                     // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> <span style="color:#00D">1</span> <span style="color:#369;font-weight:bold">int</span>      (option)
-<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">0</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,false]                 // <span style="color:#00D">0</span> ints          (none)
-<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">4</span>}&lt;=<span style="color:#369;font-weight:bold">int</span>{<span style="color:#00D">2</span>}[_,_]                   // <span style="color:#00D">4</span> ints          (exact)
-<span style="color:#369;font-weight:bold">int</span>{*}&lt;=[=db][get,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">people</span><span style="color:#710">'</span></span>][age]      // <span style="color:#00D">0</span> <span style="color:#080;font-weight:bold">or</span> <span style="color:#369;font-weight:bold">any</span> ints   (<span style="color:#369;font-weight:bold">any</span>)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>An mm-ADT program is a type. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. The mm-ADT VM encodes a type <code>obj</code> as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within the larger mm-ADT type graph (a Cayley graph). The type&#8217;s graph is traversed and rewritten by different <a href="https://en.wikipedia.org/wiki/Automata_theory">automata</a> from the mm-ADT compiler and ultimately, the evaluating processor. While a type&#8217;s graph is a graphical encoding of the monoidal structure of a particular subset of <code>obj</code>, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that realizes elements of the type (i.e. computed resultant values). From the vantage point of the latter perspective, various techniques from the field of <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a> are leveraged. Or particular import to this section, the expressions above are rewritten below by a compiler automata performing type and quantifier <a href="https://en.wikipedia.org/wiki/Type_inference">inference</a>.</p>
-</div>
-<div class="listingblock">
+<table class="tableblock frame-all grid-all center" style="width: 85%;">
+<colgroup>
+<col style="width: 6.6666%;">
+<col style="width: 20%;">
+<col style="width: 6.6666%;">
+<col style="width: 6.6666%;">
+<col style="width: 60.0002%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">name</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">sugar</th>
+<th class="tableblock halign-left valign-top">unsugared</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">some</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a single <code>int</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,1}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int
-==&gt;int
-mmlang&gt; int[is&gt;0]
-==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]
-mmlang&gt; int[is,false]
-mmlang&gt;
-mmlang&gt; int{2}[_,_]
+==&gt;int</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">option</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 or 1 <code>int</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{?}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,1}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{?}&lt;=int[is&gt;0]
+==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">none</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 <code>ints</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,0}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{0}&lt;=int[is,false]
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">exact</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4 <code>ints</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{4}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{4,4}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{4}&lt;=int{2}[_,_]
 ==&gt;int{4}&lt;=int{2}[branch,(int{2},int{2})]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Every aspect of an mm-ADT computation from composition to evaluation is realized on the <code>obj</code> graph.</p>
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">any</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 or more <code>ints</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{*}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,max}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{*}&lt;=rec{*}[get,'age',int]
+==&gt;int{*}&lt;=(-&gt;){*}[get,'age',int]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">given</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 or more <code>ints</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{+}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,max}</code></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{*}&lt;=rec{*}[get,'age',int]
+==&gt;int{*}&lt;=(-&gt;){*}[get,'age',int]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_type_system">Type System</h4>
+<div class="paragraph">
+<p>An mm-ADT program is a type. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. The mm-ADT VM encodes a type <code>obj</code> as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger type graph (a Cayley graph). While a type graph is a graphical encoding of the monoidal structure of a particular subset of <code>obj</code>, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that realizes elements of the type (i.e. computed resultant values). These values are encoded in the value graph subgraph of the <code>obj</code> graph. Every aspect of an mm-ADT computation from composition to evaluation is materialized in the <code>obj</code> graph.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
@@ -1530,7 +1561,7 @@ mmlang&gt; int{2}[_,_]
 <p><strong>Compilation</strong>: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
 </li>
 <li>
-<p><strong>Rewrite</strong>: The vertices can be "merged" using <code>[rewrite]</code> instructions that specify a domain pattern that is equivalent to a range pattern.</p>
+<p><strong>Rewrite</strong>: The vertices can be "merged" using the <code>[rewrite]</code> instruction to link two type vertices.</p>
 </li>
 <li>
 <p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
@@ -1539,14 +1570,10 @@ mmlang&gt; int{2}[_,_]
 <p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively). When the current monoid operation requires historic state information, the co-<code>obj</code> graph is searched for previously encoded stated-based <code>insts</code>.</p>
 </li>
 <li>
-<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place whereby an element of the free <code>inst</code> monoid is mapped to the <code>obj</code> magma, whereby the binary operator <code>=&gt;</code> collapses two <code>objs</code> to one. The resultant path&#8217;s tail vertex is the result of the computation.</p>
+<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place. The resultant path&#8217;s tail vertex is the result of the computation.</p>
 </li>
 </ol>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_type_system">Type System</h4>
 <div class="sect4">
 <h5 id="_anonymous_types">Anonymous Types</h5>
 <div class="paragraph">
@@ -1959,7 +1986,7 @@ While the individual elements of the \$A\$-program are in \$A\$, the program as 
 where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and \$\emptyset\$ is the <a href="https://en.wikipedia.org/wiki/Empty_set">empty set</a> behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free <code>inst</code> monoid, there exists a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> (<a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a>) from the <code>inst</code> monoid to the <code>obj</code> magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.</p>
 </div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
-<caption class="title">Table 3. Rosetta Stone</caption>
+<caption class="title">Table 2. Rosetta Stone</caption>
 <colgroup>
 <col style="width: 16.6666%;">
 <col style="width: 33.3333%;">
@@ -4897,7 +4924,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
 <table class="tableblock frame-all grid-all" style="width: 80%;">
-<caption class="title">Table 4. Instruction classes</caption>
+<caption class="title">Table 3. Instruction classes</caption>
 <colgroup>
 <col style="width: 9.0909%;">
 <col style="width: 36.3636%;">
@@ -4996,15 +5023,9 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 </div>
 </div>
-<div id="footnotes">
-<hr>
-<div class="footnote" id="_footnotedef_1">
-<a href="#_footnoteref_1">1</a>. Applicable to quantifier rings with an total order over the carrier.
-</div>
-</div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-28 04:47:49 -0600
+Last updated 2020-07-28 05:45:32 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
