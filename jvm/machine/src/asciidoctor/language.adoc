@@ -32,17 +32,21 @@ Along with these decomposition (and composition) morphisms, there exists an http
 That is, product and coproduct equality are defined via component equality.
 ****
 
-image::obj-type-value-q.png[float=left,width=340]
+
 
 Everything that can be denoted in `mmlang` is an `obj`. Within the VM and outside the referential purview of an interfacing language, every `obj` is the product of
+
+image::obj-type-value-q.png[float=left,width=375]
 
 . An *object* that is either a *type object* or a *value object* and
 . A *quantifier* specifying the "amount" of objects being denoted.
 
-
 \[
+\text{ } \\
 \texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}.
 \]
+
+'''
 
 image::obj-type-q-value-q.png[float=right,width=375]
 
@@ -95,7 +99,7 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 |type        | value      | quantifiers expand the cardinality of values and constrain the cardinality of types.
 |type        | variable   | types refer to values across contexts and variables refer to values within a context.
 |type        | https://en.wikipedia.org/wiki/Abstract_syntax_tree[AST]        | a single https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] is used in compilation, optimization, and evaluation.
-|type        | function   | functions are (dependent) types with values generated at evaluation.
+|type        | function   | functions are (https://en.wikipedia.org/wiki/Dependent_type[dependent]) types with values generated at evaluation.
 |state       | trace      | types and values both encode state information in their process traces.
 |classical   | quantum    | quantum computing is classical computing with a unitary matrix quantifier ring.
 |canonical   | atomics    | atomic values and canonical types are both "tokens" by which all other constructs are built.
@@ -171,10 +175,10 @@ The full `obj` structure thus far is diagrammed on the right. On the left are so
 
 [exec]
 ----
-int                                               //<1>
-int{2}                                            //<2>
-int{2}[is>0]                                      //<3>
-int{2}[is>0][plus,[neg]]                          //<4>
+int                                                   //<1>
+int{2}                                                //<2>
+int{2}[is>0]                                          //<3>
+int{2}[is>0][plus,[neg]]                              //<4>
 ----
 <1> A ctype denoting a single integer.
 <2> A ctype denoting two integers.
@@ -257,6 +261,23 @@ int<=bool
 
 ===== Type Definition
 
+.Commuting Diagrams
+****
+https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies algebraic structures via their homomorphic image within a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*. A category is defined as
+\[
+(\mathbf{A},\circ,\mathbf{1}_\mathbf{A}),
+\]
+where \$\mathbf{A}\$ is a set of _morphisms_, \$\mathbf{A}(A)\$ is an _object_ morphism simply denoted \$A\$, \$circ: \mathbf{A}(A,B) \times \mathbf{A}(B,C) \to \mathbf{A}(A,C) \$ is an associative, binary, morphism composition operator, and for every \$A\$, there is an identity morphism \$\mathbf{1}_A \in \mathbf{1}_\mathbf{A}\$ such that \$A \circ \mathbf{1}_A = A = \mathbf{1}_A \circ A\$. Unlike classical monoids, a category's \$\circ\$ operator is generally not https://en.wikipedia.org/wiki/Closure_(mathematics)[closed]. That is, there are compositions which may not be defined. It is this aspect of a category that makes it a _multi-sorted_ (or typed) monoid.
+
+image::commuting-diagram.png[float=right,width=125]
+
+In a manner analogous to Cayley graphs, category theory has https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrams]. If \$f:A \to B \in \mathbf{A}(A,B)\$ and \$g: B \to C \in \mathbf{A}(B,C)\$, then there exists the morphism path
+\[
+A \xrightarrow{f} B \xrightarrow{g} C.
+\]
+A https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] is one such that every morphism path starting at the same source and ending at the same destination is equal. Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram _commutes_.
+****
+
 Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`. For a type, this history is called the *type definition* and is a path in the *type graph*.
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _trace_.
@@ -274,6 +295,12 @@ Both types and values exist in a larger graph called the *obj graph*. In theory,
 
 NOTE: image:type-value-trace-short.png[float=right,width=300] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace `[type]`-labeled arrows. All subsequent diagrams will follow this convention.
 
+
+.Commutative Obj Graph
+================================================================
+The `obj` graph has an analogous structure to a category theoretic diagram, where the vertices are the category objects and the edges are labeled with instruction morphisms. In mm-ADT, every `obj` graph https://en.wikipedia.org/wiki/Commutative_diagram[commutes]. It is this feature that makes the `obj` graph a universal https://en.wikipedia.org/wiki/Memoization[memoization] cache where the vertices may be types or values.
+================================================================
+
 ===== Type Quantification
 
 .Initial and Terminal Objects
@@ -286,6 +313,8 @@ An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n
 Initial objects, via their morphisms, generate all the objects of the category.
 If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity.
 Thus, besides labels, two initials are isomorphic.
+
+'''
 
 image::terminal.png[width=130,float=right]
 
@@ -309,9 +338,9 @@ One quantifier serves an important role in mm-ADT as both the additive identity 
 NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
 
 [.center]
-[cols="1,3,1,1,9",width=85]
+[cols="^1h,3,1,1,9",width=85]
 |===
-| name | description | sugar | unsugared | mmlang example
+|   | description | sugar | unsugared | mmlang example
 
 | some | a single `int` |  | `{1,1}`  a|
 [exec]
