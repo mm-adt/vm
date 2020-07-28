@@ -50,7 +50,9 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
     val builder: StringBuilder = new StringBuilder
     val eval = java.lang.Boolean.valueOf(attributes.getOrDefault("eval", "true").toString)
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
-      if (eval) {
+      if (w.trim.isBlank)
+        builder.append("\n")
+      else if (eval) {
         builder.append(prompt).append(w).append("\n")
         Try[Obj] {
           engine.eval(w)
