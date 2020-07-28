@@ -1040,9 +1040,13 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model parsing") {
-    println(engine.eval("[model,mm<=mm,(bool->(bool),int->((int)<=(int+0)),nat->(nat<=int[is>0]))]"))
-    engine.put(":model", engine.eval("[model,mm<=mm,(bool->(bool),int->((int)<=(int+0)),nat->(nat<=int[is>0]))]"))
+    val mm: String = getClass.getResource("/model/mm.mm").getPath
+    engine.put(":model", engine.eval(s"[load,'${mm}']"))
     assertResult("int")(engine.eval("int[plus,0]").toString)
+    // assertResult("0")(engine.eval("int[mult,0]").toString)
+    assertResult("int")(engine.eval("int[mult,1]").toString)
+    assertResult("int[plus,int[neg]]")(engine.eval("int[mult,1][plus,0][plus,[neg]]").toString)
+    assertResult("int[plus,1][plus,2]")(engine.eval("int[plus,1][mult,1][plus,2][mult,1][plus,0]").toString)
     engine.put(":model", null)
   }
 
