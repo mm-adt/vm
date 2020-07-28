@@ -456,19 +456,6 @@ image:poly-kinds.png[width=225,float=left]
 <3> A three term *type* `,-lst` (w/ sugar).
 <4> A three term *type* `,-rec` (w/ sugar).
 
-The examples to follow highlight the effect of the combinators `,`, `|`, `;` on `lst`. The value 3 is `[split]` (`-<`, \$\Delta\$) across the respective `poly` terms.
-
-[exec]
-----
-3-<([plus,1],[mult,2])     //<1>
-3-<([plus,1]|[mult,2])     //<2>
-3-<([plus,1];[mult,2])     //<3>
-----
-<1> A `,-lst` type yielding a `,-lst` value via `(3+1,3*2)` (_orThen_).
-<2> A `|-lst` type yielding a `|-lst` value via `(3+1,obj{0})` (_xorThen_).
-<3> A `;-lst` type yielding a `;-lst` value via `(3+1,3+1*2)`  (_andThen_).
-
-
 
 === The Algebras
 
@@ -1289,14 +1276,15 @@ A https://en.wikipedia.org/wiki/Polynomial[polynomial] is a _linear combination_
 \[
 f(x) = q_1 x^1 + q_2 x^2 + q_3 x^3 + \ldots + q_n x^n,
 \]
-where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via `+`. If \$x \in \mathbb{Z}\$, then \$f: \mathbb{Z} \to \mathbb{Z}\$ and thus, when the \$x\$ indeterminate is provided, the polynomial is reduced. For instance,
+where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate raised to the \$i^\text{th}\$ power, \$q_i x^i\$ is a term, and the terms are linearly combined via \$+\$. If \$x \in \mathbb{Z}\$, then the https://en.wikipedia.org/wiki/Function_(mathematics)#Arrow_notation[signature] of \$f\$ is \$f: \mathbb{Z} \to \mathbb{Z}\$. When \$f(x)\$ is evaluated with some \$x \in \mathbb{Z}\$, \$x\$ becomes determined and the polynomial is reduced to a single \mathbb{Z}. For instance,
 \[
 f(x) = 2x + 3x^2 + 6x^3
 \]
-is irreducible due to \$x\$ being a \$Z\$-variable called an _indeterminate_. When \$x\$ is determined, then the polynomial \$f\$ can be solved via the reduction
+is irreducible due to \$x\$ being an indeterminant variable. If \$x =4\$, then the polynomial is solved via the reduction
 \[
 \begin{split}
 f(4) &= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\
+     &= (2 \ast 4) + (3 \ast 16)  + (6 \ast 64) \\
      &= 8 + 48 + 384 \\
      &= 440.
 \end{split}
@@ -1307,7 +1295,9 @@ In mm-ADT, `poly` \$\subset\$ `obj` is the (infinite) set of polynomials. The po
 [.text-center]
 `x \=> [x1{q1},x2{q2},x3{q3},...,xn{qn}]`
 
-where `qi` is a _quantifier_ (coefficient), `xi` is an _object_ (indeterminate), `xi{qi}` is an `obj` (term), and the `objs` are linearly combined via `,` (addition). Instead of the terms being raised to a power (as is typical of numeric polynomials), terms are "raised" by instructions. The polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is equivalent to the following mm-ADT `int\<=int` type.
+where `qi` is a _quantifier_ (coefficient), `xi` is a _type_ (indeterminate), `xi{qi}` is a quantified type (term), and the type are linearly combined via `[,]` (addition). Instead of the terms being raised to a power (as is typical of numeric polynomials), `,-poly` terms are "raised" to a type with instructions. This is https://en.wikipedia.org/wiki/Exponential_object[type exponentiation] which is the type-equivalent of https://en.wikipedia.org/wiki/Exponentiation[numeric exponentiation].
+
+The aforementioned polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is denoted in mm-ADT by the following `int\<=int` type.
 
 [exec]
 ----
@@ -1323,6 +1313,8 @@ In \$f\$, addition and multiplication is with respects to the integer ring \$(\m
 
 4 => [int[id]{2},int*{3}int,int*{6}*int][sum]
 ----
+
+===== Free Rings
 
 image::poly-columns.png[float=left,width=275]
 
@@ -1345,16 +1337,17 @@ and specified in `mmlang` as
 NOTE: For visual simplicity, quantifiers are not illustrated. Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the _universal commutativity of coefficients theorem_ of https://zenodo.org/record/2565243[stream ring theory]. This theorem is used in mm-ADT's optimizing compiler and will be discussed at length in a latter section of the documentation.
 
 
-[cols="1,3,3,4,5"]
+[cols="1,3,7,8"]
 |===
-| symbol    | structure                                                        | value use            | type use                          | illustration
+| symbol    | structure                                                        | value use                                      | illustration
 
-| `,-poly`  | https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring]   | unordered products   | nondeterministic branching        | image:comma-poly-example.png[]
-| `\|-poly` | https://en.wikipedia.org/wiki/Monoid_ring[monoid ring]           | coproducts           | deterministic branching           | image:pipe-poly-example.png[]
-| `;-poly`  | https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]         | ordered products     | metaprogramming                   | image:semi-poly-example.png[]
+| `,-poly`  | https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring]   | unordered biproducts +
+nondeterministic branching        | image:comma-poly-example.png[]
+| `\|-poly` | https://en.wikipedia.org/wiki/Monoid_ring[monoid ring]           | unary biproducts +
+deterministic branching           | image:pipe-poly-example.png[]
+| `;-poly`  | https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]         | ordered biproducts +
+serial branching                  | image:semi-poly-example.png[]
 |===
-
-
 
 ====== ,-poly
 
@@ -1379,11 +1372,6 @@ a|
 {blank}
 |===
 
-image:obj-type-value-q.png[float=right,width=275] A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] composed of a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. Recall that the mm-ADT `obj` stream ring is formed via a https://en.wikipedia.org/wiki/Product_ring[direct product] of the following https://en.wikipedia.org/wiki/Semiring[semiring] and https://en.wikipedia.org/wiki/Ring_(mathematics)[ring]:
-
-* *object semiring* \$(\tt{object},=>,\diamond, \underline{\mathbf{1}} , \underline{\mathbf{0}} ) \$
-* *quantifier ring* \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$.
-
 [float=right,width=35]
 |===
 ^| \$\nabla\$ on value ,-poly
@@ -1405,7 +1393,8 @@ a|
 ----
 {blank}
 |===
-where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/Ordered_ring[ordered] with https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity] and can vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). Thus, the operators \$\ast\$ and \$+\$ of \$\mathbf{q}\$ are dependent on the chosen quantifier ring. Regardless, as long as the quantifier respects the axioms of ring theory, then if \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising `obj` products, then the additive operator of the `obj` stream ring is defined as
+
+A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] composed of a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising `obj` products, then the additive operator of the `obj` stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -1414,7 +1403,7 @@ where the quantifier ring, by definition, must be https://en.wikipedia.org/wiki/
 \end{cases}
 \]
 
-where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Regarding _object_ addition \$\diamond\$ (not `obj` \$◊\$), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, https://en.wikipedia.org/wiki/Tautology_(logic)[tautolgically], \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, https://en.wikipedia.org/wiki/Idempotence[idempotently], \$a+a=a\$. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged such that when any two `,`-adjacent objects are equal, then their `objs` can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
+where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
 
 
 [cols="7,9"]
@@ -1444,112 +1433,83 @@ The two cases above are expressed in `mmlang` below with the last two examples b
 'x'{2}[+{3}'a',+{4}'b']
 ----
 
-======= Data Flow Unions
+====== ;-poly
 
-The https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagram] below depicts the equalities of the subsequent `mmlang` examples.
-
-image::comma-lst-tensor-example.png[align=center,width=725]
-
-[exec]
-----
-'mar'[+'ko',+'ko']      //<1>
-'mar'[+{2}'ko']         //<2>
-'mar'+{2}'ko'           //<3>
-----
-<1> The `'mar'` `str` is copied (\$ \Delta \$) and applied (\$ => \$) to each `[plus,'ko']` polynomial term and then linearly combined (\$ \nabla \$).
-<2> Polynomial term summation via quantifier summation when two `,-lst` terms are equal -- \$\{1\} + \{1\} = \{2\} \$.
-<3> The single term in the `,-lst` can be https://en.wikipedia.org/wiki/Factorization[factored] out. In other words, composing a single split expression is equivalent to composing the expression.
-
-The equality
-
-[.text-center]
-`'mar'[+{2}'ko'] == 'mar'+{2}'ko'` +
-`'mar'[[plus,'ko']{2}] == 'mar'[plus,'ko']{2}`
-
-is due to ring theory's *distributivity axiom* that requires multiplication both left and right https://en.wikipedia.org/wiki/Distributive_property[distribute] over addition such that if \$(R,\ast,+,\mathbf{1},\mathbf{0})\$ is a ring and \$a,b,c \in R\$, then
-\[
-\begin{split}
-  a(b+c) &=& \; ab + ac \\
-  (b+c)a &=& \; ba + ca
-\end{split}
-\]
-
-These equalities enable https://en.wikipedia.org/wiki/Factorization_of_polynomials[polynomial factorization] across the coupled monoids of a group element. This is demonstrated in `mmlang` below.
-
-[exec]
-----
-'a'[+'b',+'c']     //<1>
-['b','c']+'a'      //<2>
-----
-<1> The value `a` is split (\$ \Delta \$) and applied (\$=>\$) to `[plus,'b']` and `[plus,'c']` elements before being merge (\$ \nabla \$).
-<2> The values `a` and `b` are merged (\$ \nabla \$) and then applied (\$=>\$) to `[plus,'a']`.
-
-Polynomial factorization plays an important role in compile-time type optimization, where for example, different processors will rewrite branch types to be sympathetic to their architecture.
-
-* https://en.wikipedia.org/wiki/Multithreading_(computer_architecture)[Multi-threaded processors] will tend to not factor out polynomial terms as with native parallelism, repeating computations may be less detrimental to performance than waiting for incoming `objs` to process.
-* Single-threaded processors will tend to factor out as many terms as possible from a polynomial in order to reduce repeated evaluation.
-
-[exec]
-----
-'a'[+'b'+'c'+'e',+'b'+'d'+'e']   //<1>
-'a'+'b'[+'c'+'e',+'d'+'e']       //<2>
-'a'+'b'[+'c',+'d']+'e'           //<3>
-----
-<1> The value `a` serves as the scalar in a https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] with the multi-`+` `,-lst`.
-<2> The value `ab` serves as the scalar.
-<3> The value `ab` is the left multiplicative scalar and the value `e` is a right multiplicative scalar.
-
-======= Data Type Products
-
-A https://en.wikipedia.org/wiki/Product_(category_theory)[categorical product] is a https://en.wikipedia.org/wiki/Tacit_programming[point-free] specification of a composite object. The elements of the composite are denoted with projective morphisms \$\pi_i\$, where \$i \geq 0\$ is the location of the term. For instance, the `,-poly` `(1,2)` is a product with two elements such that the following diagram commutes, where the dashed line denotes `[type]` and is the Cayley edge label that connects the `obj` value subgraph to the `obj` type subgraph.
-
-
-
-[cols="2,1,2"]
+[cols="7,9"]
 |===
-| image:comma-lst-product-example.png[]
-|
-\[
-\begin{split}
-(1,2) &\Rightarrow (\texttt{int},\texttt{int}) \\
-(1,2) &\Rightarrow (\texttt{int},\texttt{int}) \circ \pi_0 \\
-(1,2) &\Rightarrow (\texttt{int},\texttt{int}) \circ \pi_1
-\end{split}
-\]
+^| `;-lst` ^| `;-rec`
 
+| image:semi-lst-graph.png[] | image:semi-rec-graph.png[]
 a|
 [exec]
 ----
-(1,2) => (int,int)
-(1,2) => (int,int).0
-(1,2) => (int,int).1
+'x'-<(+'a';+'b';+'c')
+'x'-<(+'a';+'b';+'c')>-
+----
+{blank}
+a|
+[exec]
+----
+'x'-<(+'s'->+'a';+'r'->+'b';+'t'->+'c')
+'x'-<(+'s'->+'a';+'r'->+'b';+'t'->+'c')>-
 ----
 {blank}
 |===
 
+[float=right,width=35]
+|===
+^| \$\nabla\$ on value ;-poly
+
+a|
+[exec]
+----
+(1;2;3)>-
+(1;;3)>-
+(;;3)>-
+----
+{blank}
+
+a|
+[exec]
+----
+('a'->1;'b'->2;'c'->3)>-
+('a'->1;;'c'->3)>-
+(;;'c'->3)>-
+----
+{blank}
+|===
+
+The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the free and non-free forms of the `obj` stream ring's multiplicative monoid. The terms of `;-poly` _geometrically_ combined using the multiplicative operator \$=>\$ (denoted `;` in `poly`). A `;-poly` is a partially commutative monoid known as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the `;-poly` \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as
 
 
 
+\[
+[ a_{q\_0} ; b_{q\_1} ](x_{q\_2}) = b(a(x))_{ q_2 * q_0 * q_1 }.
+\]
+
+Of particular interest, when not merging (\$\nabla\$),
+
+\[
+\Delta(x_{q\_2}, (a_{q\_0} ; b_{q\_1}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
+\]
+
+image:bubble-chamber.png[width=200,float=left] The equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"]. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the room and the trace they leave (called their _varpor trail_) provides physicists information that they then used to understand the nature of the particle under study -- e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. In mm-ADT, \$x\$ above (and 5 below) play the role of the _particle_ and `;-poly` the _bubble chamber_ with each term in the `;-poly` acting as a _vapor droplet_.
 
 [exec]
 ----
-(1,2)[a,(int,int)]
-(1,2)[a,(int,int,int)]
-(1,2,3)[a,(int,int,int)]
-(1,2,3)[a,(int,2,int[is>=3])]
-(1,'2',(1,1,1))[a,(int,str,(int,int,int))]
+5-<(+1;+2;+3;+4;+5)     //<1>
+5-<(+1+2;+3;+4+5)       //<2>
+5-<(+1+2+3+4+5)         //<3>
+5-<(+1;+2;+3;+4;+5)>-   //<4>
+5[+1;+2;+3;+4;+5]       //<5>
+5+15                    //<6>
 ----
-
-.Type Ringoid Addition Embedded in ,-poly
-================================================================
-
-mm-ADT's processor algebra is a https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] called the *type ringoid* (detailed presentation forthcoming). Elements of the free type ringoid have a structure that is similar in form and function to https://en.wikipedia.org/wiki/Central_processing_unit[hardware circuits]. While the `inst` monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a `+`-operator that captures the semantics of parallel data https://en.wikipedia.org/wiki/Pipeline_(computing)[pipelining]. https://en.wikipedia.org/wiki/Isomorphism[Isomorphic] branchings structures are realized in the `inst` monoid via `,-poly`. However, at the execution-level, there exists an `inst` monoid-to-type ringoid https://en.wikipedia.org/wiki/Functor[functor] (\$\tt{i\nst} \to \tt{type}\$) that maps a `,-poly`-type construction to a parallel data pipeline structure. From this "_parallel data pipeline_"-perspective, perhaps the rationale for the aforementioned `obj` ring addition equation becomes obvious.
-
-image::comma-lst-string-example.png[align=center,width=450]
-
-NOTE: The previous diagram does not accurately reflect the `obj` graph's Cayley nor category diagram structure. Instead, it leverages https://en.wikipedia.org/wiki/String_diagram[string diagram] motifs. The "string diagrams" presented in this documentation do not fully respect the https://core.ac.uk/download/pdf/21747055.pdf[string diagram community's standards] due to the lack of an easy-to-use, LaTeX-based string diagram package. All mm-ADT "string diagrams" will use dotted lines to denote _apparent_ non-`poly` branching on both the \$\Delta\$ and \$\nabla\$ edges.
-
-================================================================
+<1> `5` is propagated through the `;-poly` terms leaving a trace of it's state at each term slot.
+<2> Since the elements of the \$R\$-module \$M\$ are in \$M\$, any monoid element is a legal term.
+<3> A `;-poly` with single term derived via the composition of 5 other \$M\$ elements.
+<4> The merge operator (\$\nabla\$) emits the final term of the `;-poly`.
+<5> The sugar form of the previous expression.
+<6> The last three examples are equivalent.
 
 ====== |-poly
 
@@ -1609,11 +1569,7 @@ x_{q_2} [a_{q_0} | b_{q_1}] =
 \end{cases}
 \]
 
-======= Data Flow Conditionals
-
 Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\underline{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. This is the reason that the additive group of `|-lst` (and `|-poly` in general) is not commutative.
-
-'''
 
 [exec]
 ----
@@ -1667,91 +1623,6 @@ int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 {blank}
 |===
 :prewrap:
-
-======= Data Type Coproducts
-
-
-====== ;-poly
-
-[cols="7,9"]
-|===
-^| `;-lst` ^| `;-rec`
-
-| image:semi-lst-graph.png[] | image:semi-rec-graph.png[]
-a|
-[exec]
-----
-'x'-<(+'a';+'b';+'c')
-'x'-<(+'a';+'b';+'c')>-
-----
-{blank}
-a|
-[exec]
-----
-'x'-<(+'s'->+'a';+'r'->+'b';+'t'->+'c')
-'x'-<(+'s'->+'a';+'r'->+'b';+'t'->+'c')>-
-----
-{blank}
-|===
-
-The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the free and non-free forms of the `obj` ring's multiplicative monoid. If \$R = (\tt{obj},=>,◊, \_ , \_{_0} )\$ is the `obj` ring, \$M = (\tt{obj},=>, \_)\$ the multiplicative monoid, and \$G = (\tt{obj},◊,\_{_0})\$ the additive abelian group, then `;-poly` is the left  \$R-\$ https://en.wikipedia.org/wiki/Module_(mathematics)[module] \$M^\ast\$ (the free \$M\$ monoid). That is, the terms of `;-poly` are elements of \$M^\ast\$ _geometrically_ combined using the \$M\$ multiplicative operator \$=>\$ (denoted `;` in `poly`). A `;-poly` is a partially commutative monoid known as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid].
-
-[float=right,width=35]
-|===
-^| \$\nabla\$ on value ;-poly
-
-a|
-[exec]
-----
-(1;2;3)>-
-(1;;3)>-
-(;;3)>-
-----
-{blank}
-
-a|
-[exec]
-----
-('a'->1;'b'->2;'c'->3)>-
-('a'->1;;'c'->3)>-
-(;;'c'->3)>-
-----
-{blank}
-|===
-
-If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the `;-poly` \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as
-
-\[
-[ a_{q\_0} ; b_{q\_1} ](x_{q\_2}) = b(a(x))_{ q_2 * q_0 * q_1 }.
-\]
-
-Of particular interest, when not merging (\$\nabla\$),
-
-\[
-\Delta(x_{q\_2}, (a_{q\_0} ; b_{q\_1}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
-\]
-
-image:bubble-chamber.png[width=200,float=left] The equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"]. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the room and the trace they leave (called their _varpor trail_) provides physicists information that they then used to understand the nature of the particle under study -- e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. In mm-ADT, \$x\$ above (and 5 below) play the role of the _particle_ and `;-poly` the _bubble chamber_ with each term in the `;-poly` acting as a _vapor droplet_.
-
-'''
-
-
-[exec]
-----
-5-<(+1;+2;+3;+4;+5)     //<1>
-5-<(+1+2;+3;+4+5)       //<2>
-5-<(+1+2+3+4+5)         //<3>
-5-<(+1;+2;+3;+4;+5)>-   //<4>
-5[+1;+2;+3;+4;+5]       //<5>
-5+15                    //<6>
-----
-<1> `5` is propagated through the `;-poly` terms leaving a trace of it's state at each term slot.
-<2> Since the elements of the \$R\$-module \$M\$ are in \$M\$, any monoid element is a legal term.
-<3> A `;-poly` with single term derived via the composition of 5 other \$M\$ elements.
-<4> The merge operator (\$\nabla\$) emits the final term of the `;-poly`.
-<5> The sugar form of the previous expression.
-<6> The last three examples are equivalent.
-
 
 === State
 
