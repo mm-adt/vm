@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, _}
 import org.mmadt.storage.obj.`type`.TObj
@@ -49,7 +49,11 @@ package object op {
       val x = if (brch.isParallel) { // [,] sum the min/max quantification
         result.hardQ(brch.glist.map(x => x.q).foldLeft(qZero)((a, b) => plusQ(a, b)))
       } else if (brch.isSerial) { // [;] last quantification
-        asType[OT](brch.glist.lastOption.getOrElse(zeroObj).asInstanceOf[OT])
+        brch match {
+          case alst: Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch.via._1).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
+          case arec: Rec[Obj, Obj] => asType[OT](arec.glist.lastOption.getOrElse(zeroObj).asInstanceOf[OT])
+          //asType(arec.gmap.foldLeft(Option(brch.via._1).getOrElse(__))((a, b) => if (a.test(b._1)) a.compute(b._2) else zeroObj)).asInstanceOf[OT]
+        }
       } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduceLeftOption((a, b) => (
           int(Math.min(a._1.g, b._1.g)),

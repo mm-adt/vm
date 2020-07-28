@@ -768,7 +768,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("6")(engine.eval("(1;(2;(3|(4|5|6)))).1.1.1.2").toString)
     //////
     assertResult("(str;;)<=str-<(str;;)")(engine.eval("str-<(str;int;int[plus,2])").toString)
-    assertResult("int{12}<=(int{2};int{12}<=int{3}[plus,2]{4})>-[is,true][id]")(engine.eval("(int{2};int{3}[plus,2]{4})>-[is,true][id]").toString)
+    assertResult("int{8}<=(int{2};int{4}<=int[plus,2]{4})>-[is,true][id]")(engine.eval("(int{2};int[plus,2]{4})>-[is,true][id]").toString)
     assertResult("(||str)<=str-<(||str)")(engine.eval("str-<(int|bool|str)").toString)
     assertResult("str-<(str,,)>-[plus,'hello']")(engine.eval("str-<(str,,)>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<(str,int,int[plus,2])>-[plus,'hello']").toString)
@@ -786,6 +786,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("int[plus,100][plus,200]-<(int|int[plus,2])>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<(int|int[plus,2])>-[plus,20]").toString)
     assertResult("(10;10;11)")(engine.eval("10-<(bool,int)>-[plus,1][path]").toString)
     assertResult("int{2}")(engine.eval("1[plus,1]-<(int,int[plus,2])>-[plus,10]").toString)
+    //
+    // assertResult("bool<=int[plus,10][lt,50]")(engine.eval("(int;[plus,10];int;[lt,50];bool)>-").toString)
   }
 
   test("[type] instruction parsing") {
