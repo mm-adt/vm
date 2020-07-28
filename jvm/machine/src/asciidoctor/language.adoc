@@ -632,7 +632,7 @@ Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the suggestive illustration abov
 * \$,;: \tt{type} \times \tt{type} \to \tt{type}\$ generate function graphs called _streams_ (*program compilation*) and,
 * \$,;: \tt{value} \times \tt{type} \to \tt{value}\$ propagate data through the stream structure (*program evaluation*).
 
-Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the `obj` stream ring respects the five additional axioms of *stream ring theory*. The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in `mmlang` using both `obj` *values* and *types*. The particulars surrounding the meaning and use of this algebra is the primary purpose of this documentation.
+Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the `obj` stream ring respects the five additional axioms of *stream ring theory*. The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in `mmlang` using both `obj` *values* and *types*.
 
 NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugars]. The term `\_{0}` is \$\underline{\mathbf{0}}\$, `_{1}` is \$\underline{\mathbf{1}}\$, `[a;b;c]` denotes `[branch,(a;b;c)]` and `+{q}n` denotes `[plus,n]{q}`. Finally, `[,]` and `[;]` were previously defined as binary operators, but due to the link:https://en.wikipedia.org/wiki/Associative_property[associative] axioms of the respective additive group and multiplicative monoid  of a ring, `[,]` and `[;]` effectively function as \$n\$-ary operators.
 
@@ -1245,9 +1245,12 @@ In \$f\$, addition and multiplication is with respects to the integer ring \$(\m
 [exec]
 ----
 4 => [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}]
+
 4 => [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
 
 4 => [int[id]{2},int*{3}int,int*{6}*int][sum]
+
+[4;[int[id]{2},int*{3}int,int*{6}*int][sum]]
 ----
 
 image::poly-columns.png[float=left,width=275]
@@ -1273,14 +1276,48 @@ NOTE: For visual simplicity, quantifiers are not illustrated. Furthermore, the r
 
 [cols="1,3,7,8"]
 |===
-| symbol    | structure                                                        | value use                                      | illustration
+| symbol    | structure                                                        | branch use                | illustration
 
 | `,-poly`  | https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring]   | unordered biproducts +
 nondeterministic branching        | image:comma-poly-example.png[]
-| `\|-poly` | https://en.wikipedia.org/wiki/Monoid_ring[monoid ring]           | unary biproducts +
-deterministic branching           | image:pipe-poly-example.png[]
 | `;-poly`  | https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]         | ordered biproducts +
 serial branching                  | image:semi-poly-example.png[]
+| `\|-poly` | https://en.wikipedia.org/wiki/Monoid_ring[monoid ring]           | unary biproducts +
+deterministic branching           | image:pipe-poly-example.png[]
+|===
+
+[cols="2,^7"]
+|===
+
+| `,-poly`
+\[
+[f,g] \\
+\Delta (f,g) \nabla = \Diamond(f,g)
+\]
+copy/clone-branching +
+independent terms +
+\[A \times A = 2A\]
+| image:comma-delta-nabla.png[width=500,link=images/language/comma-delta-nabla.png]
+
+| `;-poly`
+\[
+[f;g] \\
+\Delta (f;g) \nabla = \Diamond(f;g)
+\]
+serial/compose-chain +
+dependent terms +
+\[A^{_A A} = A \]
+| image:semi-delta-nabla.png[link=images/language/semi-delta-nabla.png]
+
+| `\|-poly`
+\[
+[f \| g] \\
+\Delta (f \| g) \nabla = \Diamond(f \| g) \\
+\]
+either/choice-branching +
+dependent terms +
+\[A + A = A\]
+| image:pipe-delta-nabla.png[width=500,link=images/language/pipe-delta-nabla.png]
 |===
 
 ====== ,-poly
@@ -1731,38 +1768,6 @@ The linear algebraic type ringoid compartmentalizes the type induced at the indi
 The https://en.wikipedia.org/wiki/Universal_property[universal property] of monoid mappings is realized as the "lifted" `poly` syntactic encoding of an mm-ADT type.
 
 image::monoid-homomorphisms.png[align=center,width=500]
-
-[cols="2,^7"]
-|===
-
-| `,-poly`
-\[
-\Delta \circ (f,g) \circ \nabla
-\]
-copy/clone-branching +
-independent slots +
-\$A+A = 2A\$
-| image:comma-delta-nabla.png[width=500,link=images/language/comma-delta-nabla.png]
-
-| `;-poly`
-\[
-\Delta \circ (f;g) \circ \nabla
-\]
-serial/compose-chain +
-dependent slots +
-\$A \ast A = A^2\$
-| image:semi-delta-nabla.png[width=500,link=images/language/semi-delta-nabla.png]
-
-| `\|-poly`
-\[
-\Delta \circ (f \| g) \circ \nabla
-\]
-either/choice-branching +
-dependent slots +
-\$A \oplus A \implies A\$
-| image:pipe-delta-nabla.png[width=500,link=images/language/pipe-delta-nabla.png]
-|===
-
 
 === The Obj Graph
 
