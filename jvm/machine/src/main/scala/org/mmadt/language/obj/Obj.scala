@@ -27,7 +27,7 @@ import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp}
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.strm.Strm
@@ -45,6 +45,7 @@ trait Obj
     with AndOp
     with OrOp
     with CountOp
+    with SumOp
     with DefineOp
     with DefsOp
     with IdOp
@@ -240,10 +241,15 @@ object Obj {
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
 
   @inline implicit class BooleanExtensions(b: Boolean)
+
   @inline implicit class StringExtensions(s: String)
+
   @inline implicit class IntegerExtensions(i: scala.Int)
+
   @inline implicit class LongExtensions(l: Long)
+
   @inline implicit class FloatExtensions(f: Float)
+
   @inline implicit class DoubleExtensions(d: Double)
 
 }

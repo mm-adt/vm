@@ -29,7 +29,7 @@ import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp}
+import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp, PutOp}
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.StrValue
@@ -97,6 +97,7 @@ object OpInstResolver {
       case Tokens.map => MapOp(args.head)
       case Tokens.neg => NegOp()
       case Tokens.count => CountOp()
+      case Tokens.sum => SumOp()
       case Tokens.explain => ExplainOp()
       case Tokens.path => PathOp()
       case Tokens.put => PutOp(args.head, args.tail.head)

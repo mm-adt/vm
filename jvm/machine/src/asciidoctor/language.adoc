@@ -468,42 +468,7 @@ The examples to follow highlight the effect of the combinators `,`, `|`, `;` on 
 <2> A `|-lst` type yielding a `|-lst` value via `(3+1,obj{0})` (_xorThen_).
 <3> A `;-lst` type yielding a `;-lst` value via `(3+1,3+1*2)`  (_andThen_).
 
-Mathematically, this is
 
-. https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication]: \$x(a + b) = xa + xb\$,
-. https://en.wikipedia.org/wiki/Disjoint_union[disjoint multiplication]: \$x(a \oplus b) = xa \oplus xb\$ , and
-. https://en.wikipedia.org/wiki/Left_and_right_(algebra)[left module multiplication]: \$x(ab) = xab\$.
-
-[grid=none,frame=none,cols="7,4"]
-|===
-|The resultant `lsts` have their terms `[merged]` (`>-`, \$\nabla\$) into a single `int{1,2}` `strm`. There is a subtlety to highlight. The result of any `inst` is a single `obj`. In particular, to the `[merge]` in these examples, the output is a single `int` or a single `int` `strm` containing two `ints`. mm-ADT evaluates unary functions: one `obj` input yields one `obj` output.
-<.^a|
-[exec]
-----
-3-<([plus,1],[mult,2])>-
-3-<([plus,1]\|[mult,2])>-
-3-<([plus,1];[mult,2])>-
-----
-{blank}
-|The `[split]` (`-<`) instruction creates a `poly` for each incoming `obj`. This `poly` denotes _coupled parallel streams_, where each subsequent instruction operates on each term of the `poly` in a lock-step manner. However, if there are no intermediate instructions between `[split]` and `[merge]` (typically specified with `[combine]`), then this is semantically equivalent to _decoupled parallel streams_ whereby whenever an `obj` is made available by `poly` type term, it can be immediately placed on the outgoing merged stream. Decoupled parallel streams are common enough that the "_branch_"-pattern (`-<()>-`) is captured by a single `[branch]` (`[ ]`, \$◊\$).
-<.^a|
-[exec]
-----
-3[[plus,1],[mult,2]]
-3[[plus,1]\|[mult,2]]
-3[[plus,1];[mult,2]]
-----
-{blank}
-|Finally, the most compact https://en.wikipedia.org/wiki/Syntactic_sugar[sugar] forms of the running examples are presented. Given the verbosity of branching expressions, all subsequent `mmlang` examples will favor sugar constructs.
-<.^a|
-[exec]
-----
-3[+1,*2]
-3[+1\|*2]
-3[+1;*2]
-----
-{blank}
-|===
 
 === The Algebras
 
@@ -1322,21 +1287,42 @@ NOTE: The reason for the `[split]` sugar symbol `-<`, is that it represents one 
 
 A https://en.wikipedia.org/wiki/Polynomial[polynomial] is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
 \[
-q_0 x^0 + q_1 x^1 + q_2 x^2 + \ldots + q_n x^n,
+f(x) = q_1 x^1 + q_2 x^2 + q_3 x^3 + \ldots + q_n x^n,
 \]
-where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via `+`.
+where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via `+`. If \$x \in \mathbb{Z}\$, then \$f: \mathbb{Z} \to \mathbb{Z}\$ and thus, when the \$x\$ indeterminate is provided, the polynomial is reduced. For instance,
+\[
+f(x) = 2x + 3x^2 + 6x^3
+\]
+is irreducible due to \$x\$ being a \$Z\$-variable called an _indeterminate_. When \$x\$ is determined, then the polynomial \$f\$ can be solved via the reduction
+\[
+\begin{split}
+f(4) &= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\
+     &= 8 + 48 + 384 \\
+     &= 440.
+\end{split}
+\]
 
-In mm-ADT, `poly` \$\subset\$ `obj` is the infinite set of polynomials. The polynomial expression above is a `,-poly` \$\subset\$ `poly` (pronounced "comma poly") and, in `mmlang`, are expressions of the form
+In mm-ADT, `poly` \$\subset\$ `obj` is the (infinite) set of polynomials. The polynomial expression above is a `,-poly` \$\subset\$ `poly` (pronounced "comma poly") and, in `mmlang`, are expressions of the form
 
 [.text-center]
-`(x0{q0},x1{q1},x2{q2},...,xn{qn})`
+`x \=> [x1{q1},x2{q2},x3{q3},...,xn{qn}]`
 
-where `qi` is a _quantifier_ (coefficient), `xi` is an _object_ (indeterminate), `xi{qi}` is an `obj` (term), and the `objs` are linearly combined via `,` (addition). If a `,-poly` is composed of `obj` values, then due to the commutativity of addition, `,-poly` is a https://en.wikipedia.org/wiki/Multiset[multi-set] (or bag) data structure. If a `,-poly` is composed of `obj` types and values, then the `,-poly` is a https://en.wikipedia.org/wiki/Union_(set_theory)[union] operator. In this way, every `,-poly` is either a value `,-poly` or a type `,-poly`. Both forms are instances of a more general algebraic structure called a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring]. In https://en.wikipedia.org/wiki/Ring_theory[ring theory], every ring combines an https://en.wikipedia.org/wiki/Group_(mathematics)[additive group] and a multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] by https://en.wikipedia.org/wiki/Distributive_property[distributivity]. The `,-poly` group and monoid are
+where `qi` is a _quantifier_ (coefficient), `xi` is an _object_ (indeterminate), `xi{qi}` is an `obj` (term), and the `objs` are linearly combined via `,` (addition). Instead of the terms being raised to a power (as is typical of numeric polynomials), terms are "raised" by instructions. The polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is equivalent to the following mm-ADT `int\<=int` type.
 
-. an additive https://en.wikipedia.org/wiki/Free_group[free abelian group] \$( \tt{obj}^\ast,◊,\underline{\mathbf{0}}) \$ and
-. a multiplicative (non-free) monoid \$( \tt{obj},=>,\underline{\mathbf{1}}) \$,
+[exec]
+----
+int => [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
+----
 
-where `obj^*^` is the https://en.wikipedia.org/wiki/Kleene_star[Kleene star] of `obj` (i.e. the infinite set of all `obj` https://en.wikipedia.org/wiki/Sequence[sequences]), \$◊\$ is the `[branch]` instruction as a binary operator, \$\underline\mathbf{0}\$ is the zero element `\_{0}` (i.e. `obj{0}`), \$=>\$ is the binary juxtaposition operator, and \$\underline\mathbf{1}\$ is the one element `_` (or `_{1}` when displaying the unit quantifier).
+In \$f\$, addition and multiplication is with respects to the integer ring \$(\mathbb{Z},+,\ast,0,1)\$. In `,-poly`, they are with respects to the stream ring, where multiplication is \$\Delta\$ and addition is \$\nabla\$. The mm-ADT `,-poly` is a generalized algebraic structure known as a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] that, when used to solve `int` based polynomials, the instructions `[mult]` and `[sum]` are required, where `int\<=int` type is reducible when the domain `int` is determined.
+
+[exec]
+----
+4 => [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}]
+4 => [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
+
+4 => [int[id]{2},int*{3}int,int*{6}*int][sum]
+----
 
 image::poly-columns.png[float=left,width=275]
 
@@ -1358,22 +1344,6 @@ and specified in `mmlang` as
 
 NOTE: For visual simplicity, quantifiers are not illustrated. Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the _universal commutativity of coefficients theorem_ of https://zenodo.org/record/2565243[stream ring theory]. This theorem is used in mm-ADT's optimizing compiler and will be discussed at length in a latter section of the documentation.
 
-If the multiplicative monoid compositions yielded values (*evaluations*) as opposed to types (*compilations*) and \$x_0 = a(bc)\$, \$x_1 = ad\$, \$x_2 = a(be)\$, and \$x_3 = a(d(eb))\$, then the `,-poly` is denoted
-
-[.text-center]
-`(x0{q0},x1{q1},x2{q2},x3{q3})`,
-
-and with `,` equivalent to `+`, the original polynomial expression is realized as
-\[
-q_0 x^0 + q_1 x^1 + q_2 x^2 + q_3 x^3.
-\]
-
-In general, an mm-ADT `poly` is used to _decouple_ two algebraic structures such that one is *free* and the other *non-free*. From the perspective of applied computing, the free algebras are https://en.wikipedia.org/wiki/Lazy_evaluation[delayed], unevaluated structures and the non-free algebras are https://en.wikipedia.org/wiki/Eager_evaluation[eager], evaluated structures. There are three kinds of `poly`. Each draws their terms from the same `obj` carrier set and are distinguished, in `mmlang`, by their respective term separator which denotes a particular "additive" binary operator: `,` (_orThen_), `|` (_xorThen_), and  `;` (_andThen_), where `,` is the operator of a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group], `|` the operator of a free additive https://en.wikipedia.org/wiki/Group_(mathematics)[group], and `;` is the operator of a free partially commutative multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. The general form of each kind of `poly` is expressed below in `mmlang`.
-
-[.text-center]
-`(x0{q0},x1{q1},...,xn{qn})` +
-`(x0{q0}|x1{q1}|...|xn{qn})` +
-`(x0{q0};x1{q1};...;xn{qn})`
 
 [cols="1,3,3,4,5"]
 |===
@@ -1384,7 +1354,7 @@ In general, an mm-ADT `poly` is used to _decouple_ two algebraic structures such
 | `;-poly`  | https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]         | ordered products     | metaprogramming                   | image:semi-poly-example.png[]
 |===
 
-NOTE: The polynomial literature distinguishes https://en.wikipedia.org/wiki/Univariate[univariate] and https://en.wikipedia.org/wiki/Polynomial#Multivariate_polynomial[multivariate] polynomials, where if all the _object_ components of the `obj` product are equal, then the polynomial is univariate, else it is multivariate. In mm-ADT, multivariate `polys` are much more common than univariate `polys`. However, a primary function of the mm-ADT https://en.wikipedia.org/wiki/Optimizing_compiler[optimizing compiler] is to deduce `obj` equivalences via https://en.wikipedia.org/wiki/Rewriting[term rewriting] such that `obj` *bulking* can occur via the additive and multiplicative operators of the expression's associated quantifier ring (i.e. the ring of coefficients).
+
 
 ====== ,-poly
 
