@@ -27,7 +27,7 @@ $(document).ready(function(){
                   "op":      ["a","and","or","compose","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map","trace",
                               "split","merge","last","head","tail","div","minus","choose","put","repeat","type",
-                              "define","rewrite","to","from"],
+                              "define","rewrite","to","from","sum"],
                   "tokens":  ["{","}"],
                   "infix":   ["|","&&",",","+","*"],
                   "value":   ["true","false"],

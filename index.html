@@ -506,11 +506,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_the_type_ringoid">The Type Ringoid</a>
 <ul class="sectlevel4">
 <li><a href="#_quantifier_commutativity">Quantifier Commutativity</a></li>
-<li><a href="#_polynomials">Polynomials</a>
+<li><a href="#_polynomials">Polynomials</a></li>
+<li><a href="#_free_rings">Free Rings</a>
 <ul class="sectlevel5">
 <li><a href="#_poly">,-poly</a></li>
-<li><a href="#_poly_2">|-poly</a></li>
-<li><a href="#_poly_3">;-poly</a></li>
+<li><a href="#_poly_2">;-poly</a></li>
+<li><a href="#_poly_3">|-poly</a></li>
 </ul>
 </li>
 </ul>
@@ -1721,35 +1722,6 @@ mmlang&gt; (is=='a'-&gt;1, is&gt;='b'-&gt;2, is&gt;=c-&gt;3)                    
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>A three term <strong>type</strong> <code>,-rec</code> (w/ sugar).</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The examples to follow highlight the effect of the combinators <code>,</code>, <code>|</code>, <code>;</code> on <code>lst</code>. The value 3 is <code>[split]</code> (<code>-&lt;</code>, \$\Delta\$) across the respective <code>poly</code> terms.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 3-&lt;([plus,1],[mult,2])     <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;(4,6)
-mmlang&gt; 3-&lt;([plus,1]|[mult,2])     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(4|)
-mmlang&gt; 3-&lt;([plus,1];[mult,2])     <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(4;8)</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A <code>,-lst</code> type yielding a <code>,-lst</code> value via <code>(3+1,3*2)</code> (<em>orThen</em>).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>A <code>|-lst</code> type yielding a <code>|-lst</code> value via <code>(3+1,obj{0})</code> (<em>xorThen</em>).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A <code>;-lst</code> type yielding a <code>;-lst</code> value via <code>(3+1,3+1*2)</code>  (<em>andThen</em>).</td>
 </tr>
 </table>
 </div>
@@ -3242,14 +3214,15 @@ The reason for the <code>[split]</code> sugar symbol <code>-&lt;</code>, is that
 \[
 f(x) = q_1 x^1 + q_2 x^2 + q_3 x^3 + \ldots + q_n x^n,
 \]
-where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate, \$q_i x^i\$ is a term, and the terms are linearly combined via <code>+</code>. If \$x \in \mathbb{Z}\$, then \$f: \mathbb{Z} \to \mathbb{Z}\$ and thus, when the \$x\$ indeterminate is provided, the polynomial is reduced. For instance,
+where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate raised to the \$i^\text{th}\$ power, \$q_i x^i\$ is a term, and the terms are linearly combined via \$+\$. If \$x \in \mathbb{Z}\$, then the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)#Arrow_notation">signature</a> of \$f\$ is \$f: \mathbb{Z} \to \mathbb{Z}\$. When \$f(x)\$ is evaluated with some \$x \in \mathbb{Z}\$, \$x\$ becomes determined and the polynomial is reduced to a single \mathbb{Z}. For instance,
 \[
 f(x) = 2x + 3x^2 + 6x^3
 \]
-is irreducible due to \$x\$ being a \$Z\$-variable called an <em>indeterminate</em>. When \$x\$ is determined, then the polynomial \$f\$ can be solved via the reduction
+is irreducible due to \$x\$ being an indeterminant variable. If \$x =4\$, then the polynomial is solved via the reduction
 \[
 \begin{split}
 f(4) &amp;= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\
+     &amp;= (2 \ast 4) + (3 \ast 16)  + (6 \ast 64) \\
      &amp;= 8 + 48 + 384 \\
      &amp;= 440.
 \end{split}
@@ -3262,7 +3235,10 @@ f(4) &amp;= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\
 <p><code>x =&gt; [x1{q1},x2{q2},x3{q3},&#8230;&#8203;,xn{qn}]</code></p>
 </div>
 <div class="paragraph">
-<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is an <em>object</em> (indeterminate), <code>xi{qi}</code> is an <code>obj</code> (term), and the <code>objs</code> are linearly combined via <code>,</code> (addition). Instead of the terms being raised to a power (as is typical of numeric polynomials), terms are "raised" by instructions. The polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is equivalent to the following mm-ADT <code>int&lt;=int</code> type.</p>
+<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is a <em>type</em> (indeterminate), <code>xi{qi}</code> is a quantified type (term), and the type are linearly combined via <code>[,]</code> (addition). Instead of the terms being raised to a power (as is typical of numeric polynomials), <code>,-poly</code> terms are "raised" to a type with instructions. This is <a href="https://en.wikipedia.org/wiki/Exponential_object">type exponentiation</a> which is the type-equivalent of <a href="https://en.wikipedia.org/wiki/Exponentiation">numeric exponentiation</a>.</p>
+</div>
+<div class="paragraph">
+<p>The aforementioned polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is denoted in mm-ADT by the following <code>int&lt;=int</code> type.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3286,6 +3262,9 @@ mmlang&gt; 4 =&gt; [int[id]{2},int*{3}int,int*{6}*int][sum]
 ==&gt;440</code></pre>
 </div>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_free_rings">Free Rings</h5>
 <div class="imageblock left">
 <div class="content">
 <img src="./images/language/poly-columns.png" alt="poly columns" width="275">
@@ -3335,18 +3314,16 @@ For visual simplicity, quantifiers are not illustrated. Furthermore, the reason 
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 6.25%;">
-<col style="width: 18.75%;">
-<col style="width: 18.75%;">
-<col style="width: 25%;">
-<col style="width: 31.25%;">
+<col style="width: 5.2631%;">
+<col style="width: 15.7894%;">
+<col style="width: 36.8421%;">
+<col style="width: 42.1054%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">symbol</th>
 <th class="tableblock halign-left valign-top">structure</th>
 <th class="tableblock halign-left valign-top">value use</th>
-<th class="tableblock halign-left valign-top">type use</th>
 <th class="tableblock halign-left valign-top">illustration</th>
 </tr>
 </thead>
@@ -3354,22 +3331,22 @@ For visual simplicity, quantifiers are not illustrated. Furthermore, the reason 
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unordered products</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">nondeterministic branching</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unordered biproducts<br>
+nondeterministic branching</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-poly-example.png" alt="comma poly example"></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid ring</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">coproducts</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">deterministic branching</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">unary biproducts<br>
+deterministic branching</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-poly-example.png" alt="pipe poly example"></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ordered products</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">metaprogramming</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">ordered biproducts<br>
+serial branching</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-poly-example.png" alt="semi poly example"></span></p></td>
 </tr>
 </tbody>
@@ -3422,19 +3399,6 @@ mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')&gt;-
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p><span class="image right"><img src="./images/language/obj-type-value-q.png" alt="obj type value q" width="275"></span> A <code>,-poly</code> (pronounced "comma poly") is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> composed of a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. Recall that the mm-ADT <code>obj</code> stream ring is formed via a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of the following <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a>:</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>object semiring</strong> \$(\tt{object},&#8658;,\diamond, \underline{\mathbf{1}} , \underline{\mathbf{0}} ) \$</p>
-</li>
-<li>
-<p><strong>quantifier ring</strong> \$(\tt{q}, \ast, +, \mathbf{1}, \mathbf{0})\$.</p>
-</li>
-</ul>
-</div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
 <colgroup>
 <col style="width: 100%;">
@@ -3484,7 +3448,7 @@ mmlang&gt; (,,'c'-&gt;3)&gt;-
 </tbody>
 </table>
 <div class="paragraph">
-<p>where the quantifier ring, by definition, must be <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered</a> with <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a> and can vary across different mm-ADT programs (e.g. integers, reals, complex numbers, etc.). Thus, the operators \$\ast\$ and \$+\$ of \$\mathbf{q}\$ are dependent on the chosen quantifier ring. Regardless, as long as the quantifier respects the axioms of ring theory, then if \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising <code>obj</code> products, then the additive operator of the <code>obj</code> stream ring is defined as
+<p>A <code>,-poly</code> (pronounced "comma poly") is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> composed of a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>. If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising <code>obj</code> products, then the additive operator of the <code>obj</code> stream ring is defined as
 \[
 [a_{q_0},b_{q_1}] =
 \begin{cases}
@@ -3494,7 +3458,7 @@ mmlang&gt; (,,'c'-&gt;3)&gt;-
 \]</p>
 </div>
 <div class="paragraph">
-<p>where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Regarding <em>object</em> addition \$\diamond\$ (not <code>obj</code> \$◊\$), if \$a\$ does not equal \$b\$, then \$[a,b]\$ can not be further reduced and thus, <a href="https://en.wikipedia.org/wiki/Tautology_(logic)">tautolgically</a>, \$a+b=a+b\$. On the other hand, if \$a\$ equals \$b\$, then \$[a,b]\$ becomes \$[a]\$ as, <a href="https://en.wikipedia.org/wiki/Idempotence">idempotently</a>, \$a+a=a\$. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged such that when any two <code>,</code>-adjacent objects are equal, then their <code>objs</code> can be composed, where \$[a_{q_0},a_{q_1}]=[a_{q_0+q_1}]\$. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
+<p>where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator. Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged. In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3543,156 +3507,43 @@ mmlang&gt; 'x'{2}[+{3}'a',+{4}'b']
 ==&gt;'xb'{8}</code></pre>
 </div>
 </div>
-<div class="paragraph">
-<p>======= Data Flow Unions</p>
 </div>
-<div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagram</a> below depicts the equalities of the subsequent <code>mmlang</code> examples.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/comma-lst-tensor-example.png" alt="comma lst tensor example" width="725">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'mar'[+'ko',+'ko']      <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;'marko'{2}
-mmlang&gt; 'mar'[+{2}'ko']         <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;'marko'{2}
-mmlang&gt; 'mar'+{2}'ko'           <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;'marko'{2}</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>'mar'</code> <code>str</code> is copied (\$ \Delta \$) and applied (\$ &#8658; \$) to each <code>[plus,'ko']</code> polynomial term and then linearly combined (\$ \nabla \$).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Polynomial term summation via quantifier summation when two <code>,-lst</code> terms are equal&#8201;&#8212;&#8201;\${1} + {1} = {2} \$.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The single term in the <code>,-lst</code> can be <a href="https://en.wikipedia.org/wiki/Factorization">factored</a> out. In other words, composing a single split expression is equivalent to composing the expression.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The equality</p>
-</div>
-<div class="paragraph text-center">
-<p><code>'mar'[+{2}'ko'] == 'mar'+{2}'ko'</code><br>
-<code>'mar'[[plus,'ko']{2}] == 'mar'[plus,'ko']{2}</code></p>
-</div>
-<div class="paragraph">
-<p>is due to ring theory&#8217;s <strong>distributivity axiom</strong> that requires multiplication both left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distribute</a> over addition such that if \$(R,\ast,+,\mathbf{1},\mathbf{0})\$ is a ring and \$a,b,c \in R\$, then
-\[
-\begin{split}
-  a(b+c) &amp;=&amp; \; ab + ac \\
-  (b+c)a &amp;=&amp; \; ba + ca
-\end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>These equalities enable <a href="https://en.wikipedia.org/wiki/Factorization_of_polynomials">polynomial factorization</a> across the coupled monoids of a group element. This is demonstrated in <code>mmlang</code> below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'[+'b',+'c']     <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;'ab'
-==&gt;'ac'
-mmlang&gt; ['b','c']+'a'      <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;'ba'
-==&gt;'ca'</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The value <code>a</code> is split (\$ \Delta \$) and applied (\$&#8658;\$) to <code>[plus,'b']</code> and <code>[plus,'c']</code> elements before being merge (\$ \nabla \$).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The values <code>a</code> and <code>b</code> are merged (\$ \nabla \$) and then applied (\$&#8658;\$) to <code>[plus,'a']</code>.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>Polynomial factorization plays an important role in compile-time type optimization, where for example, different processors will rewrite branch types to be sympathetic to their architecture.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Multithreading_(computer_architecture)">Multi-threaded processors</a> will tend to not factor out polynomial terms as with native parallelism, repeating computations may be less detrimental to performance than waiting for incoming <code>objs</code> to process.</p>
-</li>
-<li>
-<p>Single-threaded processors will tend to factor out as many terms as possible from a polynomial in order to reduce repeated evaluation.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'[+'b'+'c'+'e',+'b'+'d'+'e']   <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;'abce'
-==&gt;'abde'
-mmlang&gt; 'a'+'b'[+'c'+'e',+'d'+'e']       <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;'abce'
-==&gt;'abde'
-mmlang&gt; 'a'+'b'[+'c',+'d']+'e'           <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;'abce'
-==&gt;'abde'</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The value <code>a</code> serves as the scalar in a <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a> with the multi-<code>+</code> <code>,-lst</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The value <code>ab</code> serves as the scalar.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The value <code>ab</code> is the left multiplicative scalar and the value <code>e</code> is a right multiplicative scalar.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>======= Data Type Products</p>
-</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">categorical product</a> is a <a href="https://en.wikipedia.org/wiki/Tacit_programming">point-free</a> specification of a composite object. The elements of the composite are denoted with projective morphisms \$\pi_i\$, where \$i \geq 0\$ is the location of the term. For instance, the <code>,-poly</code> <code>(1,2)</code> is a product with two elements such that the following diagram commutes, where the dashed line denotes <code>[type]</code> and is the Cayley edge label that connects the <code>obj</code> value subgraph to the <code>obj</code> type subgraph.</p>
-</div>
+<div class="sect5">
+<h6 id="_poly_2">;-poly</h6>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 40%;">
-<col style="width: 20%;">
-<col style="width: 40%;">
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
 </colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"><code>;-lst</code></th>
+<th class="tableblock halign-center valign-top"><code>;-rec</code></th>
+</tr>
+</thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-lst-product-example.png" alt="comma lst product example"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[
-\begin{split}
-(1,2) &amp;\Rightarrow (\texttt{int},\texttt{int}) \\
-(1,2) &amp;\Rightarrow (\texttt{int},\texttt{int}) \circ \pi_0 \\
-(1,2) &amp;\Rightarrow (\texttt{int},\texttt{int}) \circ \pi_1
-\end{split}
-\]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-lst-graph.png" alt="semi lst graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-rec-graph.png" alt="semi rec graph"></span></p></td>
+</tr>
+<tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1,2) =&gt; (int,int)
-==&gt;(1,2)
-mmlang&gt; (1,2) =&gt; (int,int).0
-==&gt;1
-mmlang&gt; (1,2) =&gt; (int,int).1
-==&gt;2</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')
+==&gt;('xa';'xab';'xabc')
+mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')&gt;-
+==&gt;'xabc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')
+==&gt;('xs'-&gt;'xa';'xsr'-&gt;'xab';'xsrt'-&gt;'xabc')
+mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')&gt;-
+==&gt;'xabc'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3701,48 +3552,114 @@ mmlang&gt; (1,2) =&gt; (int,int).1
 </tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all right" style="width: 35%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">\$\nabla\$ on value ;-poly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1;2;3)&gt;-
+==&gt;3
+mmlang&gt; (1;;3)&gt;-
+==&gt;3
+mmlang&gt; (;;3)&gt;-
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
+==&gt;3
+mmlang&gt; ('a'-&gt;1;;'c'-&gt;3)&gt;-
+==&gt;3
+mmlang&gt; (;;'c'-&gt;3)&gt;-
+==&gt;3</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The two <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> of <code>;-poly</code> (pronounced "semi poly") are the free and non-free forms of the <code>obj</code> stream ring&#8217;s multiplicative monoid. The terms of <code>;-poly</code> <em>geometrically</em> combined using the multiplicative operator \$&#8658;\$ (denoted <code>;</code> in <code>poly</code>). A <code>;-poly</code> is a partially commutative monoid known as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the <code>;-poly</code> \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as</p>
+</div>
+<div class="paragraph">
+<p>\[
+[ a_{q_0} ; b_{q_1} ](x_{q_2}) = b(a(x))_{ q_2 * q_0 * q_1 }.
+\]</p>
+</div>
+<div class="paragraph">
+<p>Of particular interest, when not merging (\$\nabla\$),</p>
+</div>
+<div class="paragraph">
+<p>\[
+\Delta(x_{q_2}, (a_{q_0} ; b_{q_1}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
+\]</p>
+</div>
+<div class="paragraph">
+<p><span class="image left"><img src="./images/language/bubble-chamber.png" alt="bubble chamber" width="200"></span> The equation above realizes a structure and process joyfully named the <a href="https://en.wikipedia.org/wiki/Bubble_chamber">"bubble chamber"</a>. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the room and the trace they leave (called their <em>varpor trail</em>) provides physicists information that they then used to understand the nature of the particle under study&#8201;&#8212;&#8201;e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. In mm-ADT, \$x\$ above (and 5 below) play the role of the <em>particle</em> and <code>;-poly</code> the <em>bubble chamber</em> with each term in the <code>;-poly</code> acting as a <em>vapor droplet</em>.</p>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1,2)[a,(int,int)]
-==&gt;true
-mmlang&gt; (1,2)[a,(int,int,int)]
-==&gt;false
-mmlang&gt; (1,2,3)[a,(int,int,int)]
-==&gt;true
-mmlang&gt; (1,2,3)[a,(int,2,int[is&gt;=3])]
-==&gt;true
-mmlang&gt; (1,'2',(1,1,1))[a,(int,str,(int,int,int))]
-==&gt;true</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)     <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;(6;8;11;15;20)
+mmlang&gt; 5-&lt;(+1+2;+3;+4+5)       <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;(8;11;20)
+mmlang&gt; 5-&lt;(+1+2+3+4+5)         <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;(20)
+mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)&gt;-   <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;20
+mmlang&gt; 5[+1;+2;+3;+4;+5]       <i class="conum" data-value="5"></i><b>(5)</b>
+==&gt;20
+mmlang&gt; 5+15                    <i class="conum" data-value="6"></i><b>(6)</b>
+==&gt;20</code></pre>
 </div>
 </div>
-<div class="exampleblock">
-<div class="title">Deep Dive 3. Type Ringoid Addition Embedded in ,-poly</div>
-<div class="content">
-<div class="paragraph">
-<p>mm-ADT&#8217;s processor algebra is a <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> called the <strong>type ringoid</strong> (detailed presentation forthcoming). Elements of the free type ringoid have a structure that is similar in form and function to <a href="https://en.wikipedia.org/wiki/Central_processing_unit">hardware circuits</a>. While the <code>inst</code> monoid enables the concatenation of instructions (i.e. functions) in a serial chain, the type ringoid extends that functionality with a <code>+</code>-operator that captures the semantics of parallel data <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipelining</a>. <a href="https://en.wikipedia.org/wiki/Isomorphism">Isomorphic</a> branchings structures are realized in the <code>inst</code> monoid via <code>,-poly</code>. However, at the execution-level, there exists an <code>inst</code> monoid-to-type ringoid <a href="https://en.wikipedia.org/wiki/Functor">functor</a> (\$\tt{i\nst} \to \tt{type}\$) that maps a <code>,-poly</code>-type construction to a parallel data pipeline structure. From this "<em>parallel data pipeline</em>"-perspective, perhaps the rationale for the aforementioned <code>obj</code> ring addition equation becomes obvious.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/comma-lst-string-example.png" alt="comma lst string example" width="450">
-</div>
-</div>
-<div class="admonitionblock note">
+<div class="colist arabic">
 <table>
 <tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The previous diagram does not accurately reflect the <code>obj</code> graph&#8217;s Cayley nor category diagram structure. Instead, it leverages <a href="https://en.wikipedia.org/wiki/String_diagram">string diagram</a> motifs. The "string diagrams" presented in this documentation do not fully respect the <a href="https://core.ac.uk/download/pdf/21747055.pdf">string diagram community&#8217;s standards</a> due to the lack of an easy-to-use, LaTeX-based string diagram package. All mm-ADT "string diagrams" will use dotted lines to denote <em>apparent</em> non-<code>poly</code> branching on both the \$\Delta\$ and \$\nabla\$ edges.
-</td>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td><code>5</code> is propagated through the <code>;-poly</code> terms leaving a trace of it&#8217;s state at each term slot.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>Since the elements of the \$R\$-module \$M\$ are in \$M\$, any monoid element is a legal term.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A <code>;-poly</code> with single term derived via the composition of 5 other \$M\$ elements.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The merge operator (\$\nabla\$) emits the final term of the <code>;-poly</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>The sugar form of the previous expression.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>The last three examples are equivalent.</td>
 </tr>
 </table>
 </div>
 </div>
-</div>
-</div>
 <div class="sect5">
-<h6 id="_poly_2">|-poly</h6>
+<h6 id="_poly_3">|-poly</h6>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 43.75%;">
@@ -3841,12 +3758,8 @@ x_{q_2} [a_{q_0} | b_{q_1}] =
 \]</p>
 </div>
 <div class="paragraph">
-<p>======= Data Flow Conditionals</p>
-</div>
-<div class="paragraph">
 <p>Thus, while <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring&#8201;&#8212;&#8201;\$\underline{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. This is the reason that the additive group of <code>|-lst</code> (and <code>|-poly</code> in general) is not commutative.</p>
 </div>
-<hr>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[+{3}'a' | +{4}'b']  <i class="conum" data-value="1"></i><b>(1)</b>
@@ -3959,163 +3872,6 @@ instruction                                    domain         range      state
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>======= Data Type Coproducts</p>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_poly_3">;-poly</h6>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 43.75%;">
-<col style="width: 56.25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top"><code>;-lst</code></th>
-<th class="tableblock halign-center valign-top"><code>;-rec</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-lst-graph.png" alt="semi lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-rec-graph.png" alt="semi rec graph"></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')
-==&gt;('xa';'xab';'xabc')
-mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')&gt;-
-==&gt;'xabc'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')
-==&gt;('xs'-&gt;'xa';'xsr'-&gt;'xab';'xsrt'-&gt;'xabc')
-mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')&gt;-
-==&gt;'xabc'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The two <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> of <code>;-poly</code> (pronounced "semi poly") are the free and non-free forms of the <code>obj</code> ring&#8217;s multiplicative monoid. If \$R = (\tt{obj},&#8658;,◊, \_ , _{_0} )\$ is the <code>obj</code> ring, \$M = (\tt{obj},&#8658;, \_)\$ the multiplicative monoid, and \$G = (\tt{obj},◊,_{_0})\$ the additive abelian group, then <code>;-poly</code> is the left  \$R-\$ <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> \$M^\ast\$ (the free \$M\$ monoid). That is, the terms of <code>;-poly</code> are elements of \$M^\ast\$ <em>geometrically</em> combined using the \$M\$ multiplicative operator \$&#8658;\$ (denoted <code>;</code> in <code>poly</code>). A <code>;-poly</code> is a partially commutative monoid known as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>.</p>
-</div>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">\$\nabla\$ on value ;-poly</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1;2;3)&gt;-
-==&gt;3
-mmlang&gt; (1;;3)&gt;-
-==&gt;3
-mmlang&gt; (;;3)&gt;-
-mmlang&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
-==&gt;3
-mmlang&gt; ('a'-&gt;1;;'c'-&gt;3)&gt;-
-==&gt;3
-mmlang&gt; (;;'c'-&gt;3)&gt;-
-==&gt;3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the <code>;-poly</code> \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as</p>
-</div>
-<div class="paragraph">
-<p>\[
-[ a_{q_0} ; b_{q_1} ](x_{q_2}) = b(a(x))_{ q_2 * q_0 * q_1 }.
-\]</p>
-</div>
-<div class="paragraph">
-<p>Of particular interest, when not merging (\$\nabla\$),</p>
-</div>
-<div class="paragraph">
-<p>\[
-\Delta(x_{q_2}, (a_{q_0} ; b_{q_1}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
-\]</p>
-</div>
-<div class="paragraph">
-<p><span class="image left"><img src="./images/language/bubble-chamber.png" alt="bubble chamber" width="200"></span> The equation above realizes a structure and process joyfully named the <a href="https://en.wikipedia.org/wiki/Bubble_chamber">"bubble chamber"</a>. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the room and the trace they leave (called their <em>varpor trail</em>) provides physicists information that they then used to understand the nature of the particle under study&#8201;&#8212;&#8201;e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. In mm-ADT, \$x\$ above (and 5 below) play the role of the <em>particle</em> and <code>;-poly</code> the <em>bubble chamber</em> with each term in the <code>;-poly</code> acting as a <em>vapor droplet</em>.</p>
-</div>
-<hr>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)     <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;(6;8;11;15;20)
-mmlang&gt; 5-&lt;(+1+2;+3;+4+5)       <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(8;11;20)
-mmlang&gt; 5-&lt;(+1+2+3+4+5)         <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(20)
-mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)&gt;-   <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;20
-mmlang&gt; 5[+1;+2;+3;+4;+5]       <i class="conum" data-value="5"></i><b>(5)</b>
-==&gt;20
-mmlang&gt; 5+15                    <i class="conum" data-value="6"></i><b>(6)</b>
-==&gt;20</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>5</code> is propagated through the <code>;-poly</code> terms leaving a trace of it&#8217;s state at each term slot.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Since the elements of the \$R\$-module \$M\$ are in \$M\$, any monoid element is a legal term.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A <code>;-poly</code> with single term derived via the composition of 5 other \$M\$ elements.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The merge operator (\$\nabla\$) emits the final term of the <code>;-poly</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>The sugar form of the previous expression.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The last three examples are equivalent.</td>
-</tr>
-</table>
-</div>
 </div>
 </div>
 </div>
@@ -5374,7 +5130,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-27 23:34:17 -0600
+Last updated 2020-07-28 01:56:57 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
