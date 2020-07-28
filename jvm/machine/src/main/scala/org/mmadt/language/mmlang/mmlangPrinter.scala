@@ -53,7 +53,7 @@ object mmlangPrinter {
   def recString(rec: Rec[_, _]): String = {
     if (rec.isInstanceOf[Strm[_]]) return strmString(rec.asInstanceOf[Strm[Obj]])
     else if (rec.root) mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
-    if (rec.isInstanceOf[RecType[Obj,Obj]])
+    if (rec.isInstanceOf[RecType[Obj, Obj]])
       if (Tokens.named(rec.name)) rec.name
       else mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
     else
@@ -104,7 +104,9 @@ object mmlangPrinter {
   }
   def instString(inst: Inst[_, _]): String = {
     (inst.op match {
+      case Tokens.model => Tokens.empty
       case Tokens.define => Tokens.empty
+      case Tokens.noop => Tokens.empty
       case Tokens.to => LANGLE + inst.arg0[StrValue].g + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue].g + RANGLE
       case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]].toString

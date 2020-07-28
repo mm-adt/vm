@@ -36,7 +36,7 @@ class mmlangScriptEngine(factory: mmlangScriptEngineFactory) extends AbstractScr
   override def eval(script: String): Obj = super.eval(script)
   override def eval(reader: Reader): Obj = super.eval(reader)
   override def eval(script: String, context: ScriptContext): Obj = super.eval(script, context)
-  override def eval(script: String, bindings: Bindings): Obj = mmlangParser.parse[Obj](script,Option[Type[Obj]](bindings.get(":pre").asInstanceOf[Type[Obj]]))
+  override def eval(script: String, bindings: Bindings): Obj = mmlangParser.parse[Obj](script,Option[Type[Obj]](bindings.get(":model").asInstanceOf[Type[Obj]]))
   override def getFactory: ScriptEngineFactory = factory
 }
 

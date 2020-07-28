@@ -81,29 +81,40 @@ trait Obj
     LanguageException.checkAnonymousTypeName(this, name)
     this.clone(name = name)
   }
+
   def test(other: Obj): Boolean
+
   def <=[D <: Obj](domainType: D): this.type =
     if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert(), domainType.via._2))
+
   lazy val range: Type[Obj] = asType(this.isolate)
   lazy val domain: Type[Obj] = if (this.root) asType(this).asInstanceOf[Type[Obj]] else asType(this.via._1).domain
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
+
   def q(q: IntQ): this.type = if (q.equals(qZero)) this.isolate.clone(q = qZero) else this.clone(
     q = if (this.root) q else multQ(this.q, q),
     via = if (this.root) base else (this.via._1, this.via._2.q(q)))
+
   def hardQ(q: IntQ): this.type = this.clone(q = q)
+
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
+
   lazy val alive: Boolean = this.q != qZero
 
   // via methods
   def root: Boolean = null == this.via || null == this.via._1
+
   lazy val isolate: this.type = this.clone(q = this.q, via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
+
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else qZero, via = (obj, inst))
+
   def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
+
   def linvert(): this.type = {
     if (this.root) throw LanguageException.zeroLengthPath(this)
     this.trace.tail match {
@@ -118,21 +129,27 @@ trait Obj
   final def |[A <: Obj](obj: scala.Int): Lst[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def |[A <: Obj](obj: String): Lst[A] = this.|(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def |[A <: Obj]: Lst[A] = lst(Tokens.|, this.asInstanceOf[A])
+
   final def |[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.|, obj)
+
   //
   final def `;`[A <: Obj](obj: scala.Double): Lst[A] = this.`;`(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `;`[A <: Obj](obj: scala.Long): Lst[A] = this.`;`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `;`[A <: Obj](obj: scala.Int): Lst[A] = this.`;`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `;`[A <: Obj](obj: String): Lst[A] = this.`;`(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `;`[A <: Obj]: Lst[A] = lst(Tokens.`;`, this.asInstanceOf[A])
+
   final def `;`[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.`;`, obj)
+
   //
   final def `,`[A <: Obj](obj: scala.Double): Lst[A] = this.`,`(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `,`[A <: Obj](obj: scala.Long): Lst[A] = this.`,`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `,`[A <: Obj](obj: scala.Int): Lst[A] = this.`,`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `,`[A <: Obj](obj: String): Lst[A] = this.`,`(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
   final def `,`[A <: Obj]: Lst[A] = lst(Tokens.`,`, this.asInstanceOf[A])
+
   final def `,`[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.`,`, obj)
+
   /////////////////
   private final def polyMaker[A <: Obj](sep: String, obj: A): Lst[A] = {
     this match {
@@ -146,6 +163,7 @@ trait Obj
 
   // utility methods
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
+
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: E): E = rangeType match {
@@ -169,6 +187,7 @@ trait Obj
       case _: Type[_] => Processor.compiler(this, rangeType)
     }
   }
+
   def ===>[E <: Obj](rangeType: E): E = {
     rangeType match {
       case _: Type[_] => this ==> rangeType.asInstanceOf[Type[E]]
@@ -186,6 +205,7 @@ object Obj {
       case x if x.root => false
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
       case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name.equals(search.name) && y.via == search.via) => true
+      case x if x.via._2.op == Tokens.model && ModelOp.findType[Obj](x.via._2.arg1[Rec[Obj, Obj]], search.name, search).isDefined => true
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].trace == search.trace && x.via._2.arg0[Obj].equals(search) => true // TODO: trace search because poly values (bad?)
       case x => fetch(x.via._1, search)
     }
@@ -197,6 +217,7 @@ object Obj {
       case x if x.root => false
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => true
       case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label) => true
+      case x if x.via._2.op == Tokens.model && ModelOp.findType[Obj](x.via._2.arg1[Rec[Obj, Obj]], label).isDefined => true
       case x => fetchExists(x.via._1, label)
     }
   }
@@ -213,6 +234,8 @@ object Obj {
         x.via._2.args.find(y => y.name == label && source.test(y.domain)).map(y => toBaseName(y).asInstanceOf[A]).orElse(fetchOption(source, x.via._1, label))
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
         Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
+      case x if x.via._2.op == Tokens.model =>
+        ModelOp.findType[A](x.via._2.arg1[Rec[Obj, Obj]], label, source).map(y => toBaseName(y)).orElse(fetchOption(source, x.via._1, label))
       case x =>
         fetchOption(source, x.via._1, label)
     }
@@ -234,10 +257,15 @@ object Obj {
   }
 
   @inline implicit def booleanToBool(ground: Boolean): BoolValue = bool(ground)
+
   @inline implicit def longToInt(ground: Long): IntValue = int(ground)
+
   @inline implicit def intToInt(ground: scala.Int): IntValue = int(ground.longValue())
+
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
+
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
+
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
 
   @inline implicit class BooleanExtensions(b: Boolean)

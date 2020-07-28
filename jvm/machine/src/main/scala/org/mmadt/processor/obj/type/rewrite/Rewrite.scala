@@ -21,9 +21,10 @@
  */
 
 package org.mmadt.processor.obj.`type`.rewrite
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.trace.RewriteOp
+import org.mmadt.language.obj.op.trace.{ModelOp, RewriteOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Lst, Obj, _}
 
@@ -32,7 +33,9 @@ trait Rewrite {
   def apply[A <: Obj](obj: A, writer: Writer): A
 
   // utility methods
-  def getRewrites(obj: Obj): List[Obj] = obj.trace.filter(x => x._2.op == Tokens.rewrite).map(x => x._2.arg0[Obj]).sortBy(x => -x.domainObj.trace.length)
+  def getRewrites(obj: Obj): List[Obj] = (
+    obj.trace.filter(x => x._2.op == Tokens.rewrite).map(x => x._2.arg0[Obj]) ++
+      obj.trace.filter(x => x._2.op == Tokens.model).flatMap(x => ModelOp.getRewrites(x._2.arg1[Rec[Obj, Lst[Obj]]]))).sortBy(x => -x.domainObj.trace.length)
   def putRewrites(rewrites: List[Obj], obj: Obj): Obj = obj.trace.map(x => x._2).foldLeft(rewrites.foldLeft(obj.domainObj)((x, y) => RewriteOp(y).exec(x)))((x, y) => y.exec(x))
   def removeRewrites(obj: Obj): Obj = obj.trace.map(x => x._2).filter(x => x.op != Tokens.rewrite).foldLeft(obj.domainObj)((x, y) => y.exec(x))
   def getPolyOrObj(obj: Obj): Obj = obj.domain match {
