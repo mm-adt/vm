@@ -32,25 +32,29 @@ Along with these decomposition (and composition) morphisms, there exists an http
 That is, product and coproduct equality are defined via component equality.
 ****
 
-image::obj-type-value-q.png[role=left,padding-left=303,width=280]
+image::obj-type-value-q.png[float=left,width=340]
 
 Everything that can be denoted in `mmlang` is an `obj`. Within the VM and outside the referential purview of an interfacing language, every `obj` is the product of
 
-. An *object* that is either a *type* or a *value* and
+. An *object* that is either a *type object* or a *value object* and
 . A *quantifier* specifying the "amount" of objects being denoted.
+
 
 \[
 \texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}.
 \]
 
-image::obj-type-q-value-q.png[float=right,width=450]
+image::obj-type-q-value-q.png[float=right,width=375]
 
 This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring]. The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts. Thus, the previous formula can be rewritten as
+
+
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *quantified types* and *quantified values*.
+This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *types* and *values*.
 This is the *obj meta-model*.
+
 
 [exec]
 ----
@@ -64,20 +68,20 @@ int{5}           //<3>
 <2> A single `int` value of `1`.
 <3> Five `int` types.
 <4> Five `1` `int` values.
-<5> A `str` _stream_ containing `'a'`,`'b'`, and `'a'`.
+<5> A `str` *stream* composed of `'a'`,`'b'`, and `'a'`.
 
-Many modern programming environments make a sharp distinction between types and values, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or evaluation (values). In mm-ADT, instructions operate on both types and values. Two notable consequences of computable types and values are
+Both types and values can be operated on by types, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] (values). Two notable consequences of computable types and values are
 
-. https://en.wikipedia.org/wiki/Compiler[Compilation] is the evaluation of a program (a type) with a type argument: \$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$.
-. Types serve as https://en.wikipedia.org/wiki/Anonymous_function[lambda (or anonymous) functions] when a value is applied: \$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$.
+* \$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$: Used in https://en.wikipedia.org/wiki/Compiler[compilation] for https://en.wikipedia.org/wiki/Type_inference[type inference] and rewrite, and
+* \$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$: Used in https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] of https://en.wikipedia.org/wiki/Computer_program[programs] and https://en.wikipedia.org/wiki/Anonymous_function[lambda functions].
 
 [exec]
 ----
-int => int[is,[gt,0]]                     //<1>
-5   => int{?}<=int[is,bool<=int[gt,0]]    //<2>
+int => int[is,[gt,0]]                   //<1>
+5 => int{?}<=int[is,bool<=int[gt,0]]    //<2>
 ----
-<1> The `int`-type is applied to the `int[is,[gt,0]]`-type to yield an `int{?}`-type denoting either 0 or 1 `int` (*compilation*).
-<2> The type `bool\<=int[gt,0]` serves as a lambda that yields `true` or `false` for every incoming `int` value (*evaluation*).
+<1> The `int`-type is applied to the `int[is,[gt,0]]`-type to yield a _maybe_ `int{?}`-type (*compilation*).
+<2> The nested `bool\<=int[gt,0]`-type is a lamba function yielding `true` or `false` (*evaluation*).
 
 Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of the documentation.
 
@@ -104,18 +108,18 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 
 image::cayley-graph.png[width=200,float=right]
 
-A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group]. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the graph \$G = (V,E)\$ with vertices \$V = G\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b)\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the binary operation \$a \cdot i \mapsto b\$.
+A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group]. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the group operation \$a \cdot i \mapsto b\$.
 
 
-When constructed in full, a Cayley graph's vertices are the group elements and its edges represent the set of possible transitions from any one element to the next given the generators. When lazily constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. Interestingly, a Cayley graph captures both the free and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\circ)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
+When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible transitions from any one element to the next given the generators. When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\odot)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
 
 
-A _generalized_ Cayley Graph is a graph with respective vertex/edge structure, but for other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
+A _generalized_ Cayley Graph is a graph with an analogous vertex/edge structure, but for other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
 ****
 
-An `obj` was previously defined as
+An `obj` is either a type or a value:
 \[
-\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
+\texttt{obj} = \texttt{type}  + \texttt{value}.
 \]
 
 That equation is not an https://en.wikipedia.org/wiki/Axiom[axiom], but a https://en.wikipedia.org/wiki/Theorem[theorem]. Its truth can be deduced from the equations of the full https://en.wikipedia.org/wiki/Axiomatic_system[axiomatization] of `obj`. In particular, for types, they are defined relative to other types. Types are a coproduct of either a
@@ -133,16 +137,16 @@ The ctypes are https://en.wikipedia.org/wiki/Nominal_type_system[nominal types].
 
 image::type-product.png[float=right,width=295]
 
-The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. Formally, the type coproduct is defined as
+The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`. Formally, the type coproduct is defined as
 
 \[
 \begin{split}
-\texttt{type} &=\;& (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{poly}) + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &=\;& \texttt{ctype} + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &=\;& \texttt{ctype} + \texttt{dtype}, \end{split}
+\texttt{type} &=\;& (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{poly}) + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &=\;& \texttt{ctype} + (\texttt{type} \times \texttt{inst}) \\ \texttt{type} &=\;& \texttt{ctype} + \texttt{dtype}. \end{split}
 \]
 
-where each component of the coproduct also has a respective quantifier as previously defined for all `objs`.
 
-NOTE: Every `obj` has an associated quantifier. The coupling of objects and quantifiers may not always be apparent, especially when not discussing quantifiers in particular. When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity]. More specifically, the `real` `1.35{1}` is written `1.35`.
+
+NOTE: Every `obj` has an associated quantifier. When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity]. For instance, the `real` `1.35{1}` is written `1.35`.
 
 A dtype has two product projections. The _type projection_ denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the _instruction projection_ denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the aforementioned component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
 \[
@@ -158,28 +162,24 @@ For example, `int` is a ctype denoting a single `int` value from the set of all 
 
 image::int_isgt0.png[align=center,width=230]
 
-The diagram above is an instance of a structure that is core to various aspects of mm-ADT including https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. It has a name. The *obj graph* for which the subgraph concerned with type specification is called the *type graph* such that
-\[
-G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
-\]
-The `obj` graph will be studied at length from the perspective of https://en.wikipedia.org/wiki/Cayley_graph[Cayley graphs], where the `obj` graph is understood as a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] Cayley graph.
+The diagram above is an instance of a structure that is core to various aspects of mm-ADT including https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. This structure is called the *obj graph*. The subgraph concerned with type definitions is called the *type graph*. The subgraph considered with value history is called the *value graph*. The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]. This graph will be the subject of study throughout the documentation.
 
 
-image::obj-full.png[float=right,width=320]
+image::obj-full.png[float=right,width=275]
 
 The full `obj` structure thus far is diagrammed on the right. On the left are some example `mmlang` expressions.
 
 [exec]
 ----
-int                                          //<1>
-int{2}                                       //<2>
-int{2}[is>0]                                 //<3>
-int{2}[is>0][mult,[neg]]                     //<4>
+int                                               //<1>
+int{2}                                            //<2>
+int{2}[is>0]                                      //<3>
+int{2}[is>0][plus,[neg]]                          //<4>
 ----
 <1> A ctype denoting a single integer.
 <2> A ctype denoting two integers.
 <3> A dtype denoting zero, one, or two integers greater than 0.
-<4> A dtype extending the previous type by their negative complement.
+<4> A dtype extending the previous type with negative integer addition.
 
 ==== Type Structure
 
@@ -215,6 +215,7 @@ int<=int
 [exec]
 ----
 int{1}
+int
 ----
 {blank}
 |In most programming languages, a value can be typed `int` as in
@@ -229,7 +230,7 @@ Such https://en.wikipedia.org/wiki/Declaration_(computer_programming)[declaratio
 int{5}
 ----
 {blank}
-|`int{5}` is a type referring to 5 integers. As a point of comparison, `int` refers to a single integer. This is why `int` is syntactic sugar for `int{1}` in `mmlang`.
+|`int{5}` is a type referring to 5 integers. As a point of comparison, `int{1}` refers to a single integer with a syntax sugar of `int` in `mmlang`.
 
 <.^a|
 [exec]
@@ -238,7 +239,11 @@ int{0,5}
 int{0,5}<=int{0,5}
 ----
 {blank}
-|Quantifiers must be elements from a ring with unity. In the previous examples, the chosen quantifier was the integer ring \$\langle \mathbb{Z},+,\times \rangle\$. In this example, the https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] is two integers and represents uncertainty as to the number of elements being referred to. `int{0,5}` is a type referring to either 0, 1, 2, 3, 4, or 5 integers.
+|Quantifiers must be elements from a ring with unity. In the previous examples, the quantifier ring was \$(\mathbb{Z}, +,\ast)\$. In this example, the quantifier ring is \$(\mathbb{Z} \times \mathbb{Z}, +,\ast)\$, where the https://en.wikipedia.org/wiki/Algebraic_structure[carrier set] is the set of all pairs of integers and addition and multiplication operate pairwise,
+\[
+(a,b) \cdot (c,d) \mapsto (a \cdot c,b \cdot d).
+\]
+The type `int{0,5}` denotes either 0, 1, 2, 3, 4, or 5 integers. In general, this quantifier ring represents uncertainty as to the number of elements being referred to.
 
 <.^a|
 [exec,exception=true]
@@ -246,13 +251,13 @@ int{0,5}<=int{0,5}
 int<=bool
 ----
 {blank}
-|Types that are fully specified by their type signature are always canonical types. Therefore, `bool\<=int` is meaningless as there are no instructions to map an `int` to a `bool`. This example does not assume an underlying _model_. When model-ADTs are defined, it is possible for `bool\<=int` to yield a result.
+|Types that are fully specified by their type signature are always canonical types. Therefore, `bool\<=int` is meaningless as there are no instructions to map an `int` to a `bool`. This example does not assume an underlying _model_. With model-ADTs, it is possible for `bool\<=int` to yield a result.
 
 |===
 
 ===== Type Definition
 
-Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`. For a type, this history is called the *type definition* and is a subgraph of the larger type graph (which is a subgraph of an even larger `obj` graph).
+Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`. For a type, this history is called the *type definition* and is a path in the *type graph*.
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _trace_.
 
@@ -265,7 +270,7 @@ image::type-value-trace.png[align=center,width=700]
 2[plus,4][is>0][type]
 ----
 
-Both types and values exist in a larger graph called the *obj graph* for which a type's type graph is a component. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes those traces (particular paths through the graph) that are no longer required by the program. This process is called *trace retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
+Both types and values exist in a larger graph called the *obj graph*. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes histories (particular paths through the graph) that are no longer required by the program. This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
 NOTE: image:type-value-trace-short.png[float=right,width=300] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace `[type]`-labeled arrows. All subsequent diagrams will follow this convention.
 
@@ -289,20 +294,7 @@ A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E
 &nbsp;
 ****
 
-.Quantifier Symbols in mmlang
-[width=35%,cols="2,1,2",float=right]
-|===
-|usage   |sugar  | unsugared
 
-|https://en.wikipedia.org/wiki/Option_type[none]/nothing   |`{0}`  | `{0,0}`
-|https://en.wikipedia.org/wiki/Option_type[some]/just      |       | `{1,1}`
-|exact          |`{x}`  | `{x,x}`
-|least footnote:order[Applicable to quantifier rings with an total order over the carrier.]         |`{x,}` | `{x,max}`
-|most footnote:order[]          |`{,x}` | `{min,x}`
-|https://en.wikipedia.org/wiki/Option_type[option]/maybe   |`{?}`  | `{0,1}`
-|given footnote:order[]         |`{+}`  | `{1,max}`
-|any footnote:order[]           |`{*}`  | `{1,max}`
-|===
 
 In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated quantifier `q` denoted `{q}` in `mmlang`. Quantifiers are typically integers, but can be any element from an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.). While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as values can be negative where `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
 
@@ -316,37 +308,61 @@ One quantifier serves an important role in mm-ADT as both the additive identity 
 
 NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
 
-Common programming concepts that are usually captured by typeclasses or functors (via https://en.wikipedia.org/wiki/Lift_(mathematics)[lifting]) are expressed in mm-ADT via quantification.
+[.center]
+[cols="1,3,1,1,9",width=85]
+|===
+| name | description | sugar | unsugared | mmlang example
 
-[source]
-----
-int                                   // a single int    (some)
-int{?}<=int[is>0]                     // 0 or 1 int      (option)
-int{0}<=int[is,false]                 // 0 ints          (none)
-int{4}<=int{2}[_,_]                   // 4 ints          (exact)
-int{*}<=[=db][get,'people'][age]      // 0 or any ints   (any)
-----
-
-An mm-ADT program is a type. The `mmlang` parser converts a textual representation of a type into a type `obj`. The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within the larger mm-ADT type graph (a Cayley graph). The type's graph is traversed and rewritten by different https://en.wikipedia.org/wiki/Automata_theory[automata] from the mm-ADT compiler and ultimately, the evaluating processor. While a type's graph is a graphical encoding of the monoidal structure of a particular subset of `obj`, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that realizes elements of the type (i.e. computed resultant values). From the vantage point of the latter perspective, various techniques from the field of https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation] are leveraged. Or particular import to this section, the expressions above are rewritten below by a compiler automata performing type and quantifier https://en.wikipedia.org/wiki/Type_inference[inference].
-
+| some | a single `int` |  | `{1,1}`  a|
 [exec]
 ----
 int
-int[is>0]
-int[is,false]
-int{2}[_,_]
 ----
+{blank}
+| option | 0 or 1 `int` | `{?}` | `{0,1}` a|
+[exec]
+----
+int{?}<=int[is>0]
+----
+{blank}
+| none | 0 `ints` | `{0}` | `{0,0}` a|
+[exec]
+----
+int{0}<=int[is,false]
+----
+{blank}
+| exact | 4 `ints` | `{4}` | `{4,4}`  a|
+[exec]
+----
+int{4}<=int{2}[_,_]
+----
+{blank}
+| any | 0 or more `ints` | `{*}` | `{0,max}`  a|
+[exec]
+----
+int{*}<=rec{*}[get,'age',int]
+----
+{blank}
+| given | 1 or more `ints` | `{+}` | `{1,max}`  a|
+[exec]
+----
+int{*}<=rec{*}[get,'age',int]
+----
+{blank}
+|===
 
-Every aspect of an mm-ADT computation from composition to evaluation is realized on the `obj` graph.
+// |least footnote:order[Applicable to quantifier rings with an total order over the carrier.]         |`{x,}` | `{x,max}`
+//|most footnote:order[]          |`{,x}` | `{min,x}`
+==== Type System
+
+An mm-ADT program is a type. The `mmlang` parser converts a textual representation of a type into a type `obj`. The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger type graph (a Cayley graph). While a type graph is a graphical encoding of the monoidal structure of a particular subset of `obj`, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that realizes elements of the type (i.e. computed resultant values). These values are encoded in the value graph subgraph of the `obj` graph. Every aspect of an mm-ADT computation from composition to evaluation is materialized in the `obj` graph.
 
 . *Composition*: The point-free style of `mmlang` is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.
 . *Compilation*: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.
-. *Rewrite*: The vertices can be "merged" using `[rewrite]` instructions that specify a domain pattern that is equivalent to a range pattern.
+. *Rewrite*: The vertices can be "merged" using the `[rewrite]` instruction to link two type vertices.
 . *Optimization*: Every instruction in `inst` has an associated cost. Rewrites create a superposition of programs. A https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from domain to range is a simple technique for choosing an efficient execution plan.
 . *State*: Variable bindings, type definitions, and rewrite rule are encoded in instructions (`[to]`, `[define]`, `[rewrite]` respectively). When the current monoid operation requires historic state information, the co-`obj` graph is searched for previously encoded stated-based `insts`.
-. *Evaluation*: When a program path is prefixed with a value, a computation takes place whereby an element of the free `inst` monoid is mapped to the `obj` magma, whereby the binary operator `\=>` collapses two `objs` to one. The resultant path's tail vertex is the result of the computation.
-
-==== Type System
+. *Evaluation*: When a program path is prefixed with a value, a computation takes place. The resultant path's tail vertex is the result of the computation.
 
 ===== Anonymous Types
 
