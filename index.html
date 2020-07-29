@@ -505,6 +505,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel4">
 <li><a href="#_stream_compression">Stream Compression</a></li>
 <li><a href="#_commuting_quantifiers">Commuting Quantifiers</a></li>
+<li><a href="#_type_inference">Type Inference</a></li>
 </ul>
 </li>
 <li><a href="#_stream_module_axioms">Stream Module Axioms</a>
@@ -1124,7 +1125,7 @@ e &amp;= 0^\circ \\
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/language/type-product.png" alt="type product" width="295">
+<img src="./images/language/type-product.svg" alt="type product" width="295">
 </div>
 </div>
 <div class="paragraph">
@@ -1174,23 +1175,23 @@ Every <code>obj</code> has an associated quantifier. When the typographical repr
 <div class="paragraph">
 <p>The diagram above is an instance of a structure that is core to various aspects of mm-ADT including <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more. This structure is called the <strong>obj graph</strong>. The subgraph concerned with type definitions is called the <strong>type graph</strong>. The subgraph considered with value history is called the <strong>value graph</strong>. The <code>obj</code> graph is a ringoid-<a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> <a href="https://en.wikipedia.org/wiki/Monoidal_category">monoidal</a> <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a>. This graph will be the subject of study throughout the documentation.</p>
 </div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/language/obj-full.png" alt="obj full" width="275">
-</div>
-</div>
 <div class="paragraph">
 <p>The full <code>obj</code> structure thus far is diagrammed on the right. On the left are some example <code>mmlang</code> expressions.</p>
 </div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/language/obj-full.svg" alt="obj full" width="300">
+</div>
+</div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                                     <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int
-mmlang&gt; int{2}                                                <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; int{2}                                                  <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;int{2}
-mmlang&gt; int{2}[is&gt;0]                                          <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; int{2}[is&gt;0]                                            <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]]
-mmlang&gt; int{2}[is&gt;0][plus,[neg]]                              <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; int{2}[is&gt;0][plus,[neg]]                                <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]][plus,int{0,2}[neg]]</code></pre>
 </div>
 </div>
@@ -1382,7 +1383,7 @@ In practice, the string representation of a value is its <em>ground</em> and the
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/type-value-trace.png" alt="type value trace" width="700">
+<img src="./images/language/type-value-trace.svg" alt="type value trace" width="625">
 </div>
 </div>
 <div class="listingblock">
@@ -1405,7 +1406,7 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<span class="image right"><img src="./images/language/type-value-trace-short.png" alt="type value trace short" width="300"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace <code>[type]</code>-labeled arrows. All subsequent diagrams will follow this convention.
+<span class="image right"><img src="./images/language/type-value-trace-short.svg" alt="type value trace short" width="300"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace <code>[type]</code>-labeled arrows. All subsequent diagrams will follow this convention.
 </td>
 </tr>
 </table>
@@ -1960,8 +1961,16 @@ The \$&#8658;\$ (apply) operator is a monoidal generalization of <a href="https:
 </table>
 </div>
 <div class="paragraph">
-<p>The example below demonstrates the value/type argument pattern via the <code>int[plus,int[mult,2]]</code> right action on <code>5</code>. Note that within the initial action, a cascade of further actions take place highlighting the value/type and value/value argument patterns.
-\[
+<p>The example below demonstrates the value/type argument pattern via the <code>int[plus,int[mult,2]]</code> right action on <code>5</code>. Note that within the initial action, a cascade of further actions take place highlighting the value/type and value/value argument patterns.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 66.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
 \begin{split}
 5 &#8658;&amp;\; \texttt{int}[\texttt{plus},\texttt{int}[\texttt{mult},2]]        \\
 5 &#8658;&amp;\; \texttt{int}[\texttt{plus},5&#8658;\texttt{int}[\texttt{mult},2]]     \\
@@ -1971,9 +1980,8 @@ The \$&#8658;\$ (apply) operator is a monoidal generalization of <a href="https:
 5 &#8658;&amp;\; 15                                                                \\
 15\;\;\,&amp;
 \end{split}
-\]</p>
-</div>
-<div class="listingblock">
+\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int[plus,int[mult,2]]
 ==&gt;15
@@ -1990,6 +1998,12 @@ mmlang&gt; 5 =&gt; int[plus,int[mult,2]][trace]
 ==&gt;(5;[plus,10])</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_the_inst_monoid">The Inst Monoid</h3>
@@ -3049,6 +3063,10 @@ mmlang&gt;</code></pre>
 </tr>
 </tbody>
 </table>
+</div>
+<div class="sect4">
+<h5 id="_type_inference">Type Inference</h5>
+
 </div>
 </div>
 <div class="sect3">
@@ -4334,7 +4352,7 @@ mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][trace][get,5][get,0]   <i class="c
 <h5 id="_variables">Variables</h5>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/linear-variable-example.svg" alt="linear variable example" width="600">
+<img src="./images/language/linear-variable-example.svg" alt="linear variable example" width="625">
 </div>
 </div>
 <div class="listingblock">
@@ -5067,7 +5085,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-28 23:20:51 -0600
+Last updated 2020-07-28 23:55:07 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
