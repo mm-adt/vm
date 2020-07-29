@@ -168,11 +168,11 @@ A dtype has two product projections. The _type projection_ denotes the https://e
 
 The implication of the dtype product is that mm-ADT types are generated https://en.wikipedia.org/wiki/Inductive_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`). The application of an `inst` to a type (ctype or dtype) yields a dtype that is a structural expansion of the previous type.
 
-image::ctype-dtype.png[align=center,width=230]
+image::ctype-dtype.svg[align=center,width=300]
 
 For example, `int` is a ctype denoting a single `int` value from the set of all integers. When `int` is applied to the instruction `[is>0]`, the dtype `int{?}\<=int[is>0]` is formed, where `[is>0]` is https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugar] for `[is,[gt,0]]`. This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$. In terms of the "__range = domain and function__" reading, when an `int` (*domain*) is applied to `[is>0]` (*function*), the result is either an `int` greater than zero or no `int` at all (*range*).
 
-image::int_isgt0.png[align=center,width=230]
+image::int-isgt0.svg[align=center,width=230]
 
 The diagram above is an instance of a structure that is core to various aspects of mm-ADT including https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. This structure is called the *obj graph*. The subgraph concerned with type definitions is called the *type graph*. The subgraph considered with value history is called the *value graph*. The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]. This graph will be the subject of study throughout the documentation.
 
@@ -277,7 +277,7 @@ https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of ab
 \]
 where \$\mathbf{A}\$ is a set of _morphisms_, \$\mathbf{A}(A)\$ is an _object_ morphism simply denoted \$A\$, \$circ: \mathbf{A}(A,B) \times \mathbf{A}(B,C) \to \mathbf{A}(A,C) \$ is an associative, binary, morphism composition operator, and for every \$A\$, there is an identity morphism \$\mathbf{1}_A \in \mathbf{1}_\mathbf{A}\$ such that \$A \circ \mathbf{1}_A = A = \mathbf{1}_A \circ A\$. Unlike classical monoids, a category's \$\circ\$ operator is generally not https://en.wikipedia.org/wiki/Closure_(mathematics)[closed]. That is, there are compositions which may not be defined. It is this aspect of a category that makes it a _multi-sorted_ (or typed) monoid.
 
-image::commuting-diagram.png[float=right,width=125]
+image::commuting-diagram.svg[float=right,width=150]
 
 In a manner analogous to Cayley graphs, category theory has https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrams]. If \$f:A \to B \in \mathbf{A}(A,B)\$ and \$g: B \to C \in \mathbf{A}(B,C)\$, then there exists the morphism path
 \[
@@ -458,6 +458,8 @@ poly  ::= lst | rec
 
 Like every `obj`, there are *value*-`polys` and there are *type*-`polys`. A value-`poly` is composed of only value `objs` and realizes a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is composed of at least one type `obj` and realizes a https://en.wikipedia.org/wiki/Stream_processing[streaming] data process. mm-ADT provides two kinds of `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]). Each has a `,`, `|`, and `;` form such that
 
+image:poly-kinds.svg[width=250,float=left]
+
 \[
 \begin{split}
 \texttt{poly} &= \texttt{lst} &+ \texttt{rec} \\
@@ -465,8 +467,6 @@ Like every `obj`, there are *value*-`polys` and there are *type*-`polys`. A valu
 \end{split}
 \]
 
-
-image:poly-kinds.png[width=225,float=left]
 
 [.small]
 [cols="1,1,2,3,2",width=70,float=right]
@@ -1198,6 +1198,7 @@ a|
 ****
 A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called *scalar multiplication*. If \$A = X\$, the action is defined by the ring's multiplicative operator. However, when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free, a ring theoretic interpretation of https://en.wikipedia.org/wiki/Linear_algebra[linear algebraic] emerges with \$A\$-based vectors (free magma) and matrices (two free magmas) being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an https://en.wikipedia.org/wiki/Abelian_group[abelian group], then \$X\$ is a https://en.wikipedia.org/wiki/Bimodule[bimodule] and both sets of axioms hold.
 
+[.center]
 [cols="^1,^1",width=70,align=center]
 |===
 | Left \$X\$-Module Axioms                             | Right \$X\$-Module Axioms
@@ -1306,7 +1307,7 @@ In \$f\$, addition and multiplication is with respects to the integer ring \$(\m
 [4;[int[id]{2},int*{3}int,int*{6}*int][sum]]
 ----
 
-image::poly-columns.png[float=left,width=275]
+image::poly-columns.svg[float=left,width=275]
 
 The suggestive illustration on the left depicts a single element of some (free) ring. There are four multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] compositions diagrammed as vertical chains rooted at an \$a\$. There is single additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] element diagrammed horizontally, reflecting a (commutative) linear combination of the monoid elements. As 1-dimensional horizontal and vertical structures, each depicts an element of a free magma (group or monoid), where 0-dimensional elements would be drawn from a non-free algebra. Thus, the illustration contains
 
@@ -1351,7 +1352,7 @@ deterministic branching           | image:pipe-poly-example.png[]
 copy/clone-branching +
 independent terms +
 \[A \times A = 2A\]
-| image:comma-delta-nabla.png[width=475,link=images/language/comma-delta-nabla.png]
+| image:comma-delta-nabla.svg[width=475,link=images/language/comma-delta-nabla.png]
 
 | `;-poly`
 \[
@@ -1361,7 +1362,7 @@ independent terms +
 serial/compose-chain +
 dependent terms +
 \[A^{_A A} = A \]
-| image:semi-delta-nabla.png[width=500,link=images/language/semi-delta-nabla.png]
+| image:semi-delta-nabla.svg[width=500,link=images/language/semi-delta-nabla.png]
 
 | `\|-poly`
 \[
@@ -1371,7 +1372,7 @@ dependent terms +
 either/choice-branching +
 dependent terms +
 \[A + A = A\]
-| image:pipe-delta-nabla.png[width=475,link=images/language/pipe-delta-nabla.png]
+| image:pipe-delta-nabla.svg[width=475,link=images/language/pipe-delta-nabla.png]
 |===
 
 ====== ,-poly
@@ -1380,7 +1381,7 @@ dependent terms +
 |===
 ^| `,-lst` ^| `,-rec`
 
-| image:comma-lst-graph.png[] | image:comma-rec-graph.png[]
+| image:comma-lst-graph.svg[] | image:comma-rec-graph.svg[]
 a|
 [exec]
 ----
@@ -1464,7 +1465,7 @@ The two cases above are expressed in `mmlang` below with the last two examples b
 |===
 ^| `;-lst` ^| `;-rec`
 
-| image:semi-lst-graph.png[] | image:semi-rec-graph.png[]
+| image:semi-lst-graph.svg[] | image:semi-rec-graph.svg[]
 a|
 [exec]
 ----
@@ -1542,7 +1543,7 @@ image:bubble-chamber.png[width=200,float=left] The equation above realizes a str
 |===
 ^| `\|-lst` ^| `\|-rec`
 
-| image:pipe-lst-graph.png[] | image:pipe-rec-graph.png[]
+| image:pipe-lst-graph.svg[] | image:pipe-rec-graph.svg[]
 a|
 [exec]
 ----
@@ -1914,7 +1915,7 @@ mm-ADT leverages a collection of *distinct identity instructions*, such that as 
 
 ===== Variables
 
-image::../language/linear-variable-example.png[align=center,width=550]
+image::linear-variable-example.svg[align=center,width=600]
 
 [exec]
 ----
