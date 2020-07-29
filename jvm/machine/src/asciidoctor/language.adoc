@@ -1725,6 +1725,15 @@ A progressive _split/merge_ example is provided to better illustrate the interme
 5 => int+2[is>0]-<(*5,*-6,*10+7)>-<44
 ----
 
+===== Poly Expansion
+
+Polynomials are the subject of interest primarily because they contain both multiplication and addition and, through derivations, multiplication can be translated to addition and addition to multiplication. For instance, the left hand side of the the https://en.wikipedia.org/wiki/Binomial_(polynomial)[binomial] below is the serial composition of two parallel branches while the right hand side is the parallelization of 4 serial compositions.
+
+\[
+(a+2b)(a+4b) = a^2 + 2ba + 4ab + 8b^2
+\]
+
+image::binomial.svg[width=300]
 
 ===== Poly Embedding
 

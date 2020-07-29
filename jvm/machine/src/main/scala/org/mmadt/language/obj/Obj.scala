@@ -52,6 +52,7 @@ trait Obj
     with IsOp
     with FoldOp
     with MapOp
+    with ModelOp
     with NotOp
     with GivenOp
     with JuxtaOp
@@ -81,40 +82,29 @@ trait Obj
     LanguageException.checkAnonymousTypeName(this, name)
     this.clone(name = name)
   }
-
   def test(other: Obj): Boolean
-
   def <=[D <: Obj](domainType: D): this.type =
     if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert(), domainType.via._2))
-
   lazy val range: Type[Obj] = asType(this.isolate)
   lazy val domain: Type[Obj] = if (this.root) asType(this).asInstanceOf[Type[Obj]] else asType(this.via._1).domain
 
   // quantifier methods
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
-
   def q(q: IntQ): this.type = if (q.equals(qZero)) this.isolate.clone(q = qZero) else this.clone(
     q = if (this.root) q else multQ(this.q, q),
     via = if (this.root) base else (this.via._1, this.via._2.q(q)))
-
   def hardQ(q: IntQ): this.type = this.clone(q = q)
-
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
-
   lazy val alive: Boolean = this.q != qZero
 
   // via methods
   def root: Boolean = null == this.via || null == this.via._1
-
   lazy val isolate: this.type = this.clone(q = this.q, via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
-
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else qZero, via = (obj, inst))
-
   def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
-
   def linvert(): this.type = {
     if (this.root) throw LanguageException.zeroLengthPath(this)
     this.trace.tail match {
@@ -200,25 +190,14 @@ object Obj {
   def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
 
   @scala.annotation.tailrec
-  def fetch(start: Obj, search: Obj): Boolean = {
+  def fetchExists(start: Obj, search: Obj): Boolean = {
     start match {
       case x if x.root => false
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
       case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name.equals(search.name) && y.via == search.via) => true
       case x if x.via._2.op == Tokens.model && ModelOp.findType[Obj](x.via._2.arg1[Rec[Obj, Obj]], search.name, search).isDefined => true
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].trace == search.trace && x.via._2.arg0[Obj].equals(search) => true // TODO: trace search because poly values (bad?)
-      case x => fetch(x.via._1, search)
-    }
-  }
-
-  @scala.annotation.tailrec
-  def fetchExists(start: Obj, label: String): Boolean = {
-    start match {
-      case x if x.root => false
-      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => true
-      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label) => true
-      case x if x.via._2.op == Tokens.model && ModelOp.findType[Obj](x.via._2.arg1[Rec[Obj, Obj]], label).isDefined => true
-      case x => fetchExists(x.via._1, label)
+      case x => fetchExists(x.via._1, search)
     }
   }
 

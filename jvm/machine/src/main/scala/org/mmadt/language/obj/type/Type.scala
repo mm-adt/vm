@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.LanguageFactory
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.{eqQ, _}
 
@@ -51,7 +51,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
 
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
-    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && this.via == atype.via
+    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && this.trace.filter(x =>x._2.op != Tokens.model) == atype.trace.filter(x =>x._2.op != Tokens.model)
     case _ => false
   }
 }

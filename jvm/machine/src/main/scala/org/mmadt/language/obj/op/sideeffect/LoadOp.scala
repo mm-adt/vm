@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.op.sideeffect
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.mmlang.mmlangParser
 import org.mmadt.language.obj.Inst.Func
@@ -35,15 +36,18 @@ trait LoadOp {
   this: Obj =>
   def load(file: StrValue): this.type = LoadOp(file).exec(this).asInstanceOf[this.type]
 }
+
 object LoadOp extends Func[Obj, Obj] {
   def apply(file: Obj): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.load, List(file)), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start `=>` loadObj(Inst.oldInst(inst).arg0[Obj].toString)
+  def loadObj[A <: Obj](file: String): A = {
     try {
-      val file: String = Inst.oldInst(inst).arg0[Obj].toString
-      val source: BufferedSource = Source.fromFile(file.dropRight(1).drop(1))
-      val obj = mmlangParser.parse[Obj](source.getLines().foldLeft(new mutable.StringBuilder())((x, y) => x.append(y)).toString())
+      val source: BufferedSource = Source.fromFile(file.replace("'",""))
+      val obj = mmlangParser.parse[A](source.getLines().foldLeft(new mutable.StringBuilder())((x, y) => x.append(y)).toString())
       source.close()
-      start `=>` obj
+      obj
+    } catch {
+      case e: Exception => throw new RuntimeException(e.getMessage, e)
     }
   }
 }
