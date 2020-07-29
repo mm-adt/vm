@@ -24,6 +24,7 @@ package org.mmadt.language.jsr223;
 
 import org.mmadt.VmException;
 import org.mmadt.language.LanguageException;
+import org.mmadt.language.Tokens;
 import org.mmadt.language.obj.Obj;
 
 import javax.script.Bindings;
@@ -33,6 +34,7 @@ import javax.script.SimpleBindings;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
+import java.util.Optional;
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -68,6 +70,18 @@ public interface mmADTScriptEngine extends ScriptEngine {
             return eval(new BufferedReader(reader).readLine(), context);
         } catch (IOException e) {
             throw new LanguageException(e.getMessage());
+        }
+    }
+
+    public default Optional<Obj> evalMeta(String line) {
+        if (line.trim().equals(Tokens.COLON())) {
+            final Obj obj = (Obj) this.getContext().getBindings(ScriptContext.ENGINE_SCOPE).get(Tokens.COLON());
+            this.getContext().getBindings(ScriptContext.ENGINE_SCOPE).remove(Tokens.COLON());
+            return Optional.ofNullable(obj);
+        } else {
+            final Obj newValue = this.eval(line.trim().substring(1));
+            this.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.COLON(), newValue);
+            return Optional.ofNullable(newValue);
         }
     }
 

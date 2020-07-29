@@ -37,7 +37,6 @@ import org.jline.utils.AttributedStyle;
 import org.mmadt.VmException;
 import org.mmadt.language.LanguageFactory;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
-import org.mmadt.language.obj.Obj;
 import scala.collection.JavaConverters;
 
 import javax.script.ScriptContext;
@@ -66,11 +65,8 @@ public class Console {
     private static final String RESULT = "==>";
     private static final String QUIT_OP = ":q";
     private static final String LANG_OP = ":lang";
-    private static final String COLON = ":";
-    private static final String SPACE = " ";
     private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
     private static final Highlighter HIGHLIGHTER = new DefaultHighlighter();
-
 
     public static void main(final String[] args) throws Exception {
         String engineName = "mmlang";
@@ -78,18 +74,26 @@ public class Console {
         final Terminal terminal = TerminalBuilder.builder().name("mm-ADT Console").build();
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
-        final LineReader reader = LineReaderBuilder.builder().appName("mm-ADT Console").terminal(terminal).highlighter(HIGHLIGHTER).variable(LineReader.HISTORY_FILE, HISTORY).history(history).parser(parser).build();
+        parser.setEofOnUnclosedBracket(DefaultParser.Bracket.CURLY, DefaultParser.Bracket.ROUND, DefaultParser.Bracket.SQUARE);
+        final LineReader reader = LineReaderBuilder.builder()
+                .appName("mm-ADT Console")
+                .terminal(terminal)
+                .highlighter(HIGHLIGHTER)
+                .variable(LineReader.HISTORY_FILE, HISTORY)
+                .history(history).parser(parser)
+                .variable(LineReader.SECONDARY_PROMPT_PATTERN, IntStream.range(0, engineName.length()).mapToObj(x -> ".").collect(Collectors.joining()) + "> ")
+                .variable(LineReader.INDENTATION, 2)   // indentation size
+                .option(LineReader.Option.INSERT_BRACKET, true)   // insert closing bracket automatically
+                .build();
 
         ///////////////////////////////////
         terminal.writer().println(HEADER);
         terminal.flush();
-        engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(":model", engine.eval(Files.lines(Paths.get("data/model/mm.mm")).reduce("", (a, b) -> a + " " + b)));
+        // initial model is mm
+        engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(":", engine.eval(Files.lines(Paths.get("data/model/mm.mm")).reduce("", (a, b) -> a + " " + b)));
         while (true) {
             try {
                 String line = reader.readLine(engineName + "> ");
-                while (line.trim().endsWith("/")) {
-                    line = line.trim().substring(0, line.length() - 1) + reader.readLine(IntStream.range(0, engineName.length()).mapToObj(x -> ".").collect(Collectors.joining()) + "> ");
-                }
                 ///////////////////
                 if (line.equals(QUIT_OP))
                     break;
@@ -98,17 +102,6 @@ public class Console {
                 else if (line.startsWith(LANG_OP)) {
                     engineName = line.replace(LANG_OP, "").trim();
                     engine = (mmADTScriptEngine) MANAGER.getEngineByName(engineName);
-                } else if (line.startsWith(COLON)) {
-                    final int splitIndex = line.indexOf(SPACE);
-                    if (splitIndex == -1) {
-                        final Object obj = engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).get(line.trim());
-                        if (null != obj)
-                            writeHighlighter(obj, reader, terminal);
-                    } else {
-                        final String key = line.substring(0, splitIndex).trim();
-                        final String value = line.substring(splitIndex + 1).trim();
-                        engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(key, engine.eval(value));
-                    }
                 } else
                     JavaConverters.asJavaIterator(engine.eval(line).toStrm().values().iterator()).forEachRemaining(o -> writeHighlighter(o, reader, terminal));
             } catch (final UserInterruptException e) {

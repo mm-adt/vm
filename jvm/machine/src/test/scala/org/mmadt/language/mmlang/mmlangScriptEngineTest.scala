@@ -277,6 +277,13 @@ class mmlangScriptEngineTest extends FunSuite {
 
   }
 
+  test("prefix model") {
+    println(engine.eval(":[model,nat,(nat -> (nat<=int[is>0]))]"))
+    println(engine.eval("53[as,nat]"))
+    println(engine.eval(":"))
+    println(engine.eval(":"))
+  }
+
   test("explain instruction parsing") {
     assert(engine.eval("int{3}[is>50 -> +10 | is<5 -> +20 | _ -> +30][explain]").toString.contains("[is,bool{3}<=int{3}[lt,5]]"))
     assert(engine.eval("int[define,nat<=int[is>0]]<x>[plus,[mult,x]][[is,[a,nat]][plus,10]|[define,nonat<=int[plus,0]]]<y>[plus,x][explain]").toString.contains("nat->nat<=int[is,bool<=int[gt,0]] x->int nonat->nonat<=int[plus,0]"))
@@ -1041,7 +1048,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("model parsing") {
     val mm: String = getClass.getResource("/model/mm.mm").getPath
-    engine.put(":model", engine.eval(s"[load,'${mm}']"))
+    engine.put(":", engine.eval(s"[load,'${mm}']"))
     assertResult("int")(engine.eval("int[plus,0]").toString)
     // assertResult("0")(engine.eval("int[mult,0]").toString)
     assertResult("int")(engine.eval("int[mult,1]").toString)
