@@ -4078,11 +4078,103 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 (a+2b)(a+4b) = a^2 + 2ba + 4ab + 8b^2
 \]</p>
 </div>
-<div class="imageblock">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 11.1111%;">
+<col style="width: 33.3333%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">equation</th>
+<th class="tableblock halign-center valign-top">diagram</th>
+<th class="tableblock halign-left valign-top">mmlang</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[ (a+b+b)(a+b+b+b) \]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/binomial-1.svg" alt="binomial 1"></span></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<img src="./images/language/binomial.svg" alt="binomial" width="300">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b','b']
+==&gt;'a'
+==&gt;'b'{2}
+mmlang&gt; ['a','b','b'][count]
+==&gt;3
+mmlang&gt; ['a','b','b'][+'a',+'b',+'b',+'b',+'b']
+==&gt;'aa'
+==&gt;'ab'{4}
+==&gt;'ba'{2}
+==&gt;'bb'{8}
+mmlang&gt; ['a','b','b'][+'a',+'b',+'b',+'b',+'b'][count]
+==&gt;15</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[ (a+2b)(a+4b) \]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/binomial-2.svg" alt="binomial 2"></span></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b'{2}]
+==&gt;'a'
+==&gt;'b'{2}
+mmlang&gt; ['a','b'{2}][count]
+==&gt;3
+mmlang&gt; ['a','b'{2}][+'a',+{4}'b']
+==&gt;'aa'
+==&gt;'ab'{4}
+==&gt;'ba'{2}
+==&gt;'bb'{8}
+mmlang&gt; ['a','b'{2}][+'a',+{4}'b'][count]
+==&gt;15</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[ a^2 + 2ba + 4ab + 8b^2 \]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/binomial-3.svg" alt="binomial 3"></span></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['aa','ba'{2},'ab'{4},'bb'{8}]
+==&gt;'aa'
+==&gt;'ba'{2}
+==&gt;'ab'{4}
+==&gt;'bb'{8}
+mmlang&gt; ['aa','ba'{2},'ab'{4},'bb'{8}][count]
+==&gt;15</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[ a^2 + 6ab + 8b^2       \]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/binomial-4.svg" alt="binomial 4"></span></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['aa','ab'{6},'bb'{8}]
+==&gt;'aa'
+==&gt;'ab'{6}
+==&gt;'bb'{8}
+mmlang&gt; ['aa','ab'{6},'bb'{8}][count]
+==&gt;15</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="_poly_embedding">Poly Embedding</h5>
@@ -5102,7 +5194,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-29 00:19:55 -0600
+Last updated 2020-07-29 02:03:19 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
