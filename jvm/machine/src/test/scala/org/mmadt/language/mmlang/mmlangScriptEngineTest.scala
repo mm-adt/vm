@@ -1047,6 +1047,9 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model parsing") {
+    engine.eval(":[model,mm,(person -> (person<=('name'->str)))]")
+    assertResult("person:('name'->'marko')")(engine.eval("('name'->'marko') => [as,person]"))
+    engine.eval(":")
     val mm: String = getClass.getResource("/model/mm.mm").getPath
     engine.put(":", engine.eval(s"[load,'${mm}']"))
     assertResult("int")(engine.eval("int[plus,0]").toString)
@@ -1054,7 +1057,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("int")(engine.eval("int[mult,1]").toString)
     assertResult("int[plus,int[neg]]")(engine.eval("int[mult,1][plus,0][plus,[neg]]").toString)
     assertResult("int[plus,1][plus,2]")(engine.eval("int[plus,1][mult,1][plus,2][mult,1][plus,0]").toString)
-    engine.put(":model", null)
+    engine.eval(":")
   }
 
   test("play") {

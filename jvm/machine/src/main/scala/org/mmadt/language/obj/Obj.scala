@@ -187,7 +187,7 @@ trait Obj
 }
 
 object Obj {
-  def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
+  def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define) || x._2.op.equals(Tokens.model)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
 
   @scala.annotation.tailrec
   def fetchExists(start: Obj, search: Obj): Boolean = {

@@ -24,6 +24,7 @@ package org.mmadt.language.mmlang
 
 import java.io.File
 import java.util
+import java.util.stream.{Collectors, IntStream}
 
 import org.asciidoctor.ast.{ContentModel, StructuralNode}
 import org.asciidoctor.extension.{BlockProcessor, Contexts, Name, Reader}
@@ -48,24 +49,32 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
 
   override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
     val builder: StringBuilder = new StringBuilder
+    val query: StringBuilder = new StringBuilder
     val eval = java.lang.Boolean.valueOf(attributes.getOrDefault("eval", "true").toString)
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
       if (w.trim.isBlank)
         builder.append("\n")
       else if (eval) {
-        builder.append(prompt).append(w).append("\n")
-        Try[Obj] {
-          engine.eval(w)
-        } match {
-          case Failure(exception) if exception.isInstanceOf[VmException] && java.lang.Boolean.valueOf(attributes.getOrDefault("exception", "false").toString) =>
-            builder.append("language error: ").append(exception.getLocalizedMessage).append("\n")
-          case Failure(exception) => throw new Exception(exception.getMessage + ":::" + builder, exception)
-          case Success(value) =>
-            val results = value.toStrm.values.toList
-            if (results.isEmpty) builder.append(prompt).append("\n")
-            else results.foreach(a => {
-              builder.append(Tokens.RRDARROW).append(a).append("\n")
-            })
+        if (w.stripTrailing().endsWith("%")) {
+          val line = w.substring(0, w.stripTrailing().length - 2)
+          query.append(line).append("\n").append(IntStream.range(0, prompt.length).mapToObj(_ => " ").collect(Collectors.joining))
+        } else {
+          query.append(w)
+          builder.append(prompt).append(query).append("\n")
+          Try[Obj] {
+            engine.eval(query.toString().replaceAll("\n","").replace("%",""))
+          } match {
+            case Failure(exception) if exception.isInstanceOf[VmException] && java.lang.Boolean.valueOf(attributes.getOrDefault("exception", "false").toString) =>
+              builder.append("language error: ").append(exception.getLocalizedMessage).append("\n")
+            case Failure(exception) => throw new Exception(exception.getMessage + ":::" + builder, exception)
+            case Success(value) =>
+              val results = value.toStrm.values.toList
+              if (results.isEmpty) builder.append(attributes.getOrDefault("empty", prompt + "\n"))
+              else results.foreach(a => {
+                builder.append(Tokens.RRDARROW).append(a).append("\n")
+              })
+          }
+          query.clear()
         }
       } else
         builder.append(w).append("\n")

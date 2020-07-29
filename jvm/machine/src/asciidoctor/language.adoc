@@ -2005,37 +2005,7 @@ int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain
 
 ===== Definitions
 
-mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT). The `mm` *model-ADT* is the canonical model by which all other models are derived. Much like ctypes and dtypes, `mm` can be understood as a "cmodel" and all derived models as "dmodels" (though these terms are not used beyond this section). While model-ADT design and development will be discussed in a latter section, this section introduces the `[define]` instruction and it's use as an identity type.
 
-* `[define]`: Associates a type with a range composed of an object _token_ and a quantifier.
-* `[as]`: Locates the first type definition capable of mapping the incoming `obj` to the token argument.
-
-[exec,exception=true]
-----
-[define,nat<=int[is>0]]                 //<1>
-int => [define,nat<=int[is>0]]          //<2>
- 6  => [define,nat<=int[is>0]][as,nat]  //<3>
--6  => [define,nat<=int[is>0]][as,nat]  //<4>
-----
-<1> An identity `inst` that associates the token `nat` as the unit (`{1}`) range of `int[is<0]]`.
-<2> `mmlang` does not display `[define]` instructions in a type's `inst` `obj` graph path.
-<3> `[as]` searches the `obj` graph for a `nat<=int` type definition and evaluates the mapping.
-<4> The definition requires `nat` be `\_{1}` but `-6` is `_{0}`.
-
-[exec,eval=false]
-----
-[define,nat<=int[is>0],
-        person<=('name'->str,'age'->nat)]
-----
-
-[.small]
-[exec,exception=true]
-----
-('name'->'marko','age'->29)  => [define,nat<=int[is>0],person<=('name'->str,'age'->nat)][as,person]  //<1>
-('name'->'marko','age'->-29) => [define,nat<=int[is>0],person<=('name'->str,'age'->nat)][as,person]  //<2>
-----
-<1> The `rec` is mapped to a `person` with the `age` value being mapped resolved accordingly.
-<2> The `rec` does not have an `age` value that maps to `nat`.
 
 ==== Rewrites
 
@@ -2082,6 +2052,47 @@ mmlang> [define,int<=(int[is,[eq,int]])]
 
 The composition of two structure preserving type morphisms yields a new type--namely, `int\<=(int[plus,x:int][plus,x:int[neg]])`.
 
+==== Models
+
+mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT). The `mm` *model-ADT* is the canonical model by which all other models are derived. Much like ctypes and dtypes, `mm` can be understood as a "cmodel" and all derived models as "dmodels" (though these terms are not used beyond this section). While model-ADT design and development will be discussed in a latter section, this section introduces the `[define]` instruction and it's use as an identity type.
+
+* `[define]`: Associates a type with a range composed of an object _token_ and a quantifier.
+* `[as]`: Locates the first type definition capable of mapping the incoming `obj` to the token argument.
+
+[exec,exception=true]
+----
+[define,nat<=int[is>0]]                 //<1>
+int => [define,nat<=int[is>0]]          //<2>
+ 6  => [define,nat<=int[is>0]][as,nat]  //<3>
+-6  => [define,nat<=int[is>0]][as,nat]  //<4>
+----
+<1> An identity `inst` that associates the token `nat` as the unit (`{1}`) range of `int[is<0]]`.
+<2> `mmlang` does not display `[define]` instructions in a type's `inst` `obj` graph path.
+<3> `[as]` searches the `obj` graph for a `nat<=int` type definition and evaluates the mapping.
+<4> The definition requires `nat` be `\_{1}` but `-6` is `_{0}`.
+
+With a large number of definitions, expression such as the following become untenable from a usability perspective.
+
+[exec,eval=false]
+----
+('name'->'marko','age'->29)  => [define,nat<=int[is>0],person<=('name'->str,'age'->nat)][as,person]
+----
+
+For this reason, there is the `[model]` instruction which can be globally defined as the first instruction of ctype and thus, rooted in the `obj` Cayley grapj.
 
 
+image::nat-model.svg[width=350,align=center]
 
+[exec,empty="",exception=true]
+----
+:[model,social<=mm,(nat    -> (nat<=int[is>0]), %
+                    person -> (person<=('name'->str,'age'->nat)))]        //<1>
+53 => [as,nat]                                                            //<2>
+0  => [as,nat]
+('name'->'marko','age'->29)  => [as,person]                               //<3>
+('name'->'marko','age'->-29) => [as,person]                               //<4>
+----
+<1> a `social` model-ADT is defined that extends `mm` with `nat` and `person` type definition.
+<2> The `[model]` instruction is the first `inst` off the root of the `obj` graph.
+<3> The `rec` is mapped to a `person` with the `age` value being mapped accordingly.
+<4> The `rec` does not have an `age` value that maps to `nat` so the `rec` is not a `person`.
