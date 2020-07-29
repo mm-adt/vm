@@ -1733,7 +1733,7 @@ Polynomials are the subject of interest primarily because they contain both mult
 (a+2b)(a+4b) = a^2 + 2ba + 4ab + 8b^2
 \]
 
-[cols="1,3,5"]
+[cols="1,4,7"]
 |===
 ^| equation ^| diagram | mmlang
 
