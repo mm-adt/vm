@@ -147,7 +147,7 @@ The ctypes are https://en.wikipedia.org/wiki/Nominal_type_system[nominal types].
 . *str*: denotes the set of character strings -- \$ \Sigma^\ast \$.
 . *poly*: denotes the set of polynomials (composites) -- \$ \tt{obj}^n \$.
 
-image::type-product.png[float=right,width=295]
+image::type-product.svg[float=right,width=295]
 
 The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`. Formally, the type coproduct is defined as
 
@@ -176,17 +176,16 @@ image::int-isgt0.svg[align=center,width=230]
 
 The diagram above is an instance of a structure that is core to various aspects of mm-ADT including https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. This structure is called the *obj graph*. The subgraph concerned with type definitions is called the *type graph*. The subgraph considered with value history is called the *value graph*. The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]. This graph will be the subject of study throughout the documentation.
 
-
-image::obj-full.png[float=right,width=275]
-
 The full `obj` structure thus far is diagrammed on the right. On the left are some example `mmlang` expressions.
+
+image::obj-full.svg[float=right,width=300]
 
 [exec]
 ----
-int                                                   //<1>
-int{2}                                                //<2>
-int{2}[is>0]                                          //<3>
-int{2}[is>0][plus,[neg]]                              //<4>
+int                                                     //<1>
+int{2}                                                  //<2>
+int{2}[is>0]                                            //<3>
+int{2}[is>0][plus,[neg]]                                //<4>
 ----
 <1> A ctype denoting a single integer.
 <2> A ctype denoting two integers.
@@ -290,7 +289,7 @@ Types and values both have a *ground* that exists outside of the mm-ADT virtual 
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _trace_.
 
-image::type-value-trace.png[align=center,width=700]
+image::type-value-trace.svg[align=center,width=625]
 
 [exec]
 ----
@@ -301,7 +300,7 @@ image::type-value-trace.png[align=center,width=700]
 
 Both types and values exist in a larger graph called the *obj graph*. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes histories (particular paths through the graph) that are no longer required by the program. This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
-NOTE: image:type-value-trace-short.png[float=right,width=300] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace `[type]`-labeled arrows. All subsequent diagrams will follow this convention.
+NOTE: image:type-value-trace-short.svg[float=right,width=300] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace `[type]`-labeled arrows. All subsequent diagrams will follow this convention.
 
 
 .Commutative Obj Graph
@@ -566,7 +565,10 @@ For the two \$x => \tt{type}\$ argument patterns, the type https://en.wikipedia.
 NOTE: The \$=>\$ (apply) operator is a monoidal generalization of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] that respects the axioms of a ring theoretic https://en.wikipedia.org/wiki/Bimodule[bimodule]. In this interpretation, \$=>\$ is a third binary operator of the `obj` stream ring. A complete formalization of the `obj` https://en.wikipedia.org/wiki/Vector_space[vector space] is forthcoming.
 
 The example below demonstrates the value/type argument pattern via the `int[plus,int[mult,2]]` right action on `5`. Note that within the initial action, a cascade of further actions take place highlighting the value/type and value/value argument patterns.
-\[
+
+[cols="1,2"]
+|===
+| \[
 \begin{split}
 5 =>&\; \texttt{int}[\texttt{plus\},\texttt{int}[\texttt{mult},2]]        \\
 5 =>&\; \texttt{int}[\texttt{plus\},5=>\texttt{int}[\texttt{mult},2]]     \\
@@ -577,13 +579,17 @@ The example below demonstrates the value/type argument pattern via the `int[plus
 15\;\;\,&
 \end{split}
 \]
-
+a|
 [exec]
 ----
 5 => int[plus,int[mult,2]]
 5 => int[plus,int[mult,2]][explain]
 5 => int[plus,int[mult,2]][trace]
 ----
+{blank}
+|===
+
+
 
 === The Inst Monoid
 
@@ -1191,6 +1197,8 @@ a|
 ----
 {blank}
 |===
+
+===== Type Inference
 
 ==== Stream Module Axioms
 
@@ -1915,7 +1923,7 @@ mm-ADT leverages a collection of *distinct identity instructions*, such that as 
 
 ===== Variables
 
-image::linear-variable-example.svg[align=center,width=600]
+image::linear-variable-example.svg[align=center,width=625]
 
 [exec]
 ----
