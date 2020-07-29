@@ -518,6 +518,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_poly_factoring">Poly Factoring</a></li>
+<li><a href="#_poly_expansion">Poly Expansion</a></li>
 <li><a href="#_poly_embedding">Poly Embedding</a></li>
 </ul>
 </li>
@@ -4068,6 +4069,22 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
 </div>
 </div>
 <div class="sect4">
+<h5 id="_poly_expansion">Poly Expansion</h5>
+<div class="paragraph">
+<p>Polynomials are the subject of interest primarily because they contain both multiplication and addition and, through derivations, multiplication can be translated to addition and addition to multiplication. For instance, the left hand side of the the <a href="https://en.wikipedia.org/wiki/Binomial_(polynomial)">binomial</a> below is the serial composition of two parallel branches while the right hand side is the parallelization of 4 serial compositions.</p>
+</div>
+<div class="paragraph">
+<p>\[
+(a+2b)(a+4b) = a^2 + 2ba + 4ab + 8b^2
+\]</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/language/binomial.svg" alt="binomial" width="300">
+</div>
+</div>
+</div>
+<div class="sect4">
 <h5 id="_poly_embedding">Poly Embedding</h5>
 <div class="paragraph">
 <p><span class="image left"><img src="./images/language/type-ringoid-illustration.png" alt="type ringoid illustration" width="350"></span></p>
@@ -4495,7 +4512,7 @@ language error: -6 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)  =&gt; [define,nat&lt;=int[is&gt;0],person&lt;=('name'-&gt;str,'age'-&gt;nat)][as,person]  <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;-29) =&gt; [define,nat&lt;=int[is&gt;0],person&lt;=('name'-&gt;str,'age'-&gt;nat)][as,person]  <i class="conum" data-value="2"></i><b>(2)</b>
-language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
+language error: ('name'-&gt;'marko','age'-&gt;-29) does not contain the label 'person'</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -5085,7 +5102,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-28 23:55:07 -0600
+Last updated 2020-07-29 00:19:55 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
