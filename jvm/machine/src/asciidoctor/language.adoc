@@ -18,12 +18,12 @@ IMPORTANT: The recommended target language for all higher-level language compile
 https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of structure via https://en.wikipedia.org/wiki/Morphism[morphisms] that expose (or generate) other structures.
 Two important category theoretic concepts dealing with substructures are *products* and *coproducts*.
 
-image::product.png[float="left",width=225]
+image::product.svg[float="left",width=225]
 
 A https://en.wikipedia.org/wiki/Product_(category_theory)[product] is any object defined in terms of it's accessible component objects.
 That is, from a single object, via \$\pi_n\$ projection morphisms, the product is decomposed into it's constituent parts.
 
-image::coproduct.png[float="right",width=225]
+image::coproduct.svg[float="right",width=225]
 
 A https://en.wikipedia.org/wiki/Coproduct[coproduct] is any object defined in terms of the component objects used to construct it.
 That is, from many objects, via \$\iota_n\$ injection morphisms, a coproduct can be composed from constituent parts.
@@ -50,14 +50,14 @@ image::obj-type-value-q.png[float=left,width=375]
 
 image::obj-type-q-value-q.png[float=right,width=375]
 
-This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring]. The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts. Thus, the previous formula can be rewritten as
+This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring]. The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts. Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to
 
 
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-This representation, which is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the previous, states two distinct kinds of mm-ADT `objs`: *types* and *values*.
-This is the *obj meta-model*.
+
+There are two distinct kinds of mm-ADT `objs`: *types* and *values*. This is the *obj meta-model*.
 
 
 [exec]
@@ -74,7 +74,7 @@ int{5}           //<3>
 <4> Five `1` `int` values.
 <5> A `str` *stream* composed of `'a'`,`'b'`, and `'a'`.
 
-Both types and values can be operated on by types, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] (values). Two notable consequences of computable types and values are
+Both types and values can be operated on by types, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] (values).
 
 * \$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$: Used in https://en.wikipedia.org/wiki/Compiler[compilation] for https://en.wikipedia.org/wiki/Type_inference[type inference] and rewrite, and
 * \$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$: Used in https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] of https://en.wikipedia.org/wiki/Computer_program[programs] and https://en.wikipedia.org/wiki/Anonymous_function[lambda functions].
@@ -87,7 +87,7 @@ int => int[is,[gt,0]]                   //<1>
 <1> The `int`-type is applied to the `int[is,[gt,0]]`-type to yield a _maybe_ `int{?}`-type (*compilation*).
 <2> The nested `bool\<=int[gt,0]`-type is a lamba function yielding `true` or `false` (*evaluation*).
 
-Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of the documentation.
+Some interesting conceptual blurs arise from the intermixing of types and values. The particulars of the ideas in the table below will be discussed over the course of the documentation.
 
 .Consequences of Type/Value Integration
 [cols="2,2,13"]
@@ -102,7 +102,6 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 |type        | function   | functions are (https://en.wikipedia.org/wiki/Dependent_type[dependent]) types with values generated at evaluation.
 |state       | trace      | types and values both encode state information in their process traces.
 |classical   | quantum    | quantum computing is classical computing with a unitary matrix quantifier ring.
-|canonical   | atomics    | atomic values and canonical types are both "tokens" by which all other constructs are built.
 |===
 
 === The Type
@@ -110,10 +109,19 @@ Some interesting conceptual blurs arise from the co-existence of types and value
 .Cayley Graphs
 ****
 
-image::cayley-graph.png[width=200,float=right]
+image::compass.svg[width=300,float=right]
 
 A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group]. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the group operation \$a \cdot i \mapsto b\$.
 
+In the illustrative example on the right, the group is defined
+\[
+\begin{split}
+A &= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\
+I &= \{ \nearrow \} \\
+e &= 0^\circ \\
+\cdot &: A \times A \rightarrow A
+\end{split}
+\]
 
 When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible transitions from any one element to the next given the generators. When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\odot)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
 
@@ -648,7 +656,7 @@ For example, if \$abcde \in \tt{i\nst}^\ast\$, then
 .Stream Ring Theory
 ****
 
-image:biproduct.png[float=right,width=250]
+image:biproduct.svg[float=right,width=250]
 
 https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* https://en.wikipedia.org/wiki/Semiring[semiring] and *coefficient* ring. Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding https://en.wikipedia.org/wiki/Coefficient[coefficient] dynamics. Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts]. A biproduct has both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams. Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located.
 
@@ -662,7 +670,7 @@ The *`obj` stream ring* is the https://en.wikipedia.org/wiki/Ring_theory[algebra
 
 where
 
-image::type-value-illustration.png[float=right,width=525]
+image::type-value-illustration.svg[float=right,width=525]
 
 * `obj` is the set of all quantified objects,
 * `[,]` the additive _parallel branch_ operator,
