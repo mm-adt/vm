@@ -2,11 +2,7 @@
 .imageblock.left{margin:.25em 3em 1.25em 0}
 .imageblock.right{margin:.25em 0 1.25em .625em}
 table.tableblock{max-width:100%;border-collapse:separate; margin:1em 1em 1em 1em}
-table.center {
-    margin-left:auto;
-    margin-right:auto;
-  }
-
+table.center{margin-left:auto;margin-right:auto;}
 /* Hidden Line Separator */
 hr{border-width:0px 0 0; margin:1em 0 3em}
 /* Source Highlighting */

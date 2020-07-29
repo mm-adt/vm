@@ -853,7 +853,7 @@ Two important category theoretic concepts dealing with substructures are <strong
 </div>
 <div class="imageblock left">
 <div class="content">
-<img src="./images/language/product.png" alt="product" width="225">
+<img src="./images/language/product.svg" alt="product" width="225">
 </div>
 </div>
 <div class="paragraph">
@@ -862,7 +862,7 @@ That is, from a single object, via \$\pi_n\$ projection morphisms, the product i
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/language/coproduct.png" alt="coproduct" width="225">
+<img src="./images/language/coproduct.svg" alt="coproduct" width="225">
 </div>
 </div>
 <div class="paragraph">
@@ -906,14 +906,15 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 <div class="paragraph">
-<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">algebraic ring</a>. The ring axioms specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over coproducts. Thus, the previous formula can be rewritten as</p>
+<p>This internal structure is well-defined as an <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">algebraic ring</a>. The ring axioms specify how the internals of an <code>obj</code> are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right <a href="https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity">distribute</a> over coproducts. Thus, the previous formula is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to</p>
 </div>
 <div class="paragraph">
 <p>\[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
-\]
-This representation, which is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the previous, states two distinct kinds of mm-ADT <code>objs</code>: <strong>types</strong> and <strong>values</strong>.
-This is the <strong>obj meta-model</strong>.</p>
+\]</p>
+</div>
+<div class="paragraph">
+<p>There are two distinct kinds of mm-ADT <code>objs</code>: <strong>types</strong> and <strong>values</strong>. This is the <strong>obj meta-model</strong>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -955,7 +956,7 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 </table>
 </div>
 <div class="paragraph">
-<p>Both types and values can be operated on by types, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or <a href="https://en.wikipedia.org/wiki/Execution_(computing)">evaluation</a> (values). Two notable consequences of computable types and values are</p>
+<p>Both types and values can be operated on by types, where each is predominately the focus of either <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> (types) or <a href="https://en.wikipedia.org/wiki/Execution_(computing)">evaluation</a> (values).</p>
 </div>
 <div class="ulist">
 <ul>
@@ -988,7 +989,7 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 </table>
 </div>
 <div class="paragraph">
-<p>Some interesting conceptual blurs arise from the co-existence of types and values during compilation and evaluation. The particulars of the ideas in the table below will be discussed over the course of the documentation.</p>
+<p>Some interesting conceptual blurs arise from the intermixing of types and values. The particulars of the ideas in the table below will be discussed over the course of the documentation.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 1. Consequences of Type/Value Integration</caption>
@@ -1045,11 +1046,6 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 <td class="tableblock halign-left valign-top"><p class="tableblock">quantum</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">quantum computing is classical computing with a unitary matrix quantifier ring.</p></td>
 </tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">canonical</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">atomics</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">atomic values and canonical types are both "tokens" by which all other constructs are built.</p></td>
-</tr>
 </tbody>
 </table>
 </div>
@@ -1060,11 +1056,22 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 <div class="title">Cayley Graphs</div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/language/cayley-graph.png" alt="cayley graph" width="200">
+<img src="./images/language/compass.svg" alt="compass" width="300">
 </div>
 </div>
 <div class="paragraph">
 <p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the group operation \$a \cdot i \mapsto b\$.</p>
+</div>
+<div class="paragraph">
+<p>In the illustrative example on the right, the group is defined
+\[
+\begin{split}
+A &amp;= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\
+I &amp;= \{ \nearrow \} \\
+e &amp;= 0^\circ \\
+\cdot &amp;: A \times A \rightarrow A
+\end{split}
+\]</p>
 </div>
 <div class="paragraph">
 <p>When constructed in <a href="https://en.wikipedia.org/wiki/Eager_evaluation">full</a>, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of all possible transitions from any one element to the next given the generators. When <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">lazily</a> constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. A Cayley graph captures both the <a href="https://en.wikipedia.org/wiki/Free_group">free</a> and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\odot)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
@@ -2096,7 +2103,7 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 <div class="content">
 <div class="title">Stream Ring Theory</div>
 <div class="paragraph">
-<p><span class="image right"><img src="./images/language/biproduct.png" alt="biproduct" width="250"></span></p>
+<p><span class="image right"><img src="./images/language/biproduct.svg" alt="biproduct" width="250"></span></p>
 </div>
 <div class="paragraph">
 <p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring. Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding <a href="https://en.wikipedia.org/wiki/Coefficient">coefficient</a> dynamics. Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. A biproduct has both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams. Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
@@ -2117,7 +2124,7 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/language/type-value-illustration.png" alt="type value illustration" width="525">
+<img src="./images/language/type-value-illustration.svg" alt="type value illustration" width="525">
 </div>
 </div>
 <div class="ulist">
@@ -5060,7 +5067,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-28 17:11:31 -0600
+Last updated 2020-07-28 17:27:36 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
