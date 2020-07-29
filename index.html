@@ -1160,7 +1160,7 @@ Every <code>obj</code> has an associated quantifier. When the typographical repr
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/ctype-dtype.png" alt="ctype dtype" width="230">
+<img src="./images/language/ctype-dtype.svg" alt="ctype dtype" width="300">
 </div>
 </div>
 <div class="paragraph">
@@ -1168,7 +1168,7 @@ Every <code>obj</code> has an associated quantifier. When the typographical repr
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/int_isgt0.png" alt="int isgt0" width="230">
+<img src="./images/language/int-isgt0.svg" alt="int isgt0" width="230">
 </div>
 </div>
 <div class="paragraph">
@@ -1353,7 +1353,7 @@ where \$\mathbf{A}\$ is a set of <em>morphisms</em>, \$\mathbf{A}(A)\$ is an <em
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/language/commuting-diagram.png" alt="commuting diagram" width="125">
+<img src="./images/language/commuting-diagram.svg" alt="commuting diagram" width="150">
 </div>
 </div>
 <div class="paragraph">
@@ -1749,15 +1749,15 @@ poly  ::= lst | rec</code></pre>
 <p>Like every <code>obj</code>, there are <strong>value</strong>-<code>polys</code> and there are <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is composed of only value <code>objs</code> and realizes a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type-<code>poly</code> is composed of at least one type <code>obj</code> and realizes a <a href="https://en.wikipedia.org/wiki/Stream_processing">streaming</a> data process. mm-ADT provides two kinds of <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>). Each has a <code>,</code>, <code>|</code>, and <code>;</code> form such that</p>
 </div>
 <div class="paragraph">
+<p><span class="image left"><img src="./images/language/poly-kinds.svg" alt="poly kinds" width="250"></span></p>
+</div>
+<div class="paragraph">
 <p>\[
 \begin{split}
 \texttt{poly} &amp;= \texttt{lst} &amp;+ \texttt{rec} \\
 \texttt{poly} &amp;= (\texttt{,-lst} + \texttt{|-lst} + \texttt{;-lst}) &amp;+ (\texttt{,-rec} + \texttt{|-rec} + \texttt{;-rec}).
 \end{split}
 \]</p>
-</div>
-<div class="paragraph">
-<p><span class="image left"><img src="./images/language/poly-kinds.png" alt="poly kinds" width="225"></span></p>
 </div>
 <table class="tableblock frame-all grid-all right small" style="width: 70%;">
 <colgroup>
@@ -3059,7 +3059,7 @@ mmlang&gt;</code></pre>
 <div class="paragraph">
 <p>A <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called <strong>scalar multiplication</strong>. If \$A = X\$, the action is defined by the ring&#8217;s multiplicative operator. However, when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free, a ring theoretic interpretation of <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebraic</a> emerges with \$A\$-based vectors (free magma) and matrices (two free magmas) being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>, then \$X\$ is a <a href="https://en.wikipedia.org/wiki/Bimodule">bimodule</a> and both sets of axioms hold.</p>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 70%;">
+<table class="tableblock frame-all grid-all center" style="width: 70%;">
 <colgroup>
 <col style="width: 50%;">
 <col style="width: 50%;">
@@ -3306,7 +3306,7 @@ mmlang&gt; [4;[int[id]{2},int*{3}int,int*{6}*int][sum]]
 </div>
 <div class="imageblock left">
 <div class="content">
-<img src="./images/language/poly-columns.png" alt="poly columns" width="275">
+<img src="./images/language/poly-columns.svg" alt="poly columns" width="275">
 </div>
 </div>
 <div class="paragraph">
@@ -3405,7 +3405,7 @@ deterministic branching</p></td>
 copy/clone-branching<br>
 independent terms<br>
 \[A \times A = 2A\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.png" alt="comma delta nabla" width="475"></a></span></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.svg" alt="comma delta nabla" width="475"></a></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>;-poly</code>
@@ -3416,7 +3416,7 @@ independent terms<br>
 serial/compose-chain<br>
 dependent terms<br>
 \[A^{_A A} = A \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.png" alt="semi delta nabla" width="500"></a></span></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.svg" alt="semi delta nabla" width="500"></a></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>|-poly</code>
@@ -3427,7 +3427,7 @@ dependent terms<br>
 either/choice-branching<br>
 dependent terms<br>
 \[A + A = A\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.png" alt="pipe delta nabla" width="475"></a></span></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.svg" alt="pipe delta nabla" width="475"></a></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -3446,8 +3446,8 @@ dependent terms<br>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-lst-graph.png" alt="comma lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-rec-graph.png" alt="comma rec graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-lst-graph.svg" alt="comma lst graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/comma-rec-graph.svg" alt="comma rec graph"></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -3603,8 +3603,8 @@ mmlang&gt; 'x'{2}[+{3}'a',+{4}'b']
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-lst-graph.png" alt="semi lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-rec-graph.png" alt="semi rec graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-lst-graph.svg" alt="semi lst graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/semi-rec-graph.svg" alt="semi rec graph"></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -3753,8 +3753,8 @@ mmlang&gt; 5+15                    <i class="conum" data-value="6"></i><b>(6)</b
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-lst-graph.png" alt="pipe lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-rec-graph.png" alt="pipe rec graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-lst-graph.svg" alt="pipe lst graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/pipe-rec-graph.svg" alt="pipe rec graph"></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -4334,7 +4334,7 @@ mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][trace][get,5][get,0]   <i class="c
 <h5 id="_variables">Variables</h5>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/linear-variable-example.png" alt="linear variable example" width="550">
+<img src="./images/language/linear-variable-example.svg" alt="linear variable example" width="600">
 </div>
 </div>
 <div class="listingblock">
@@ -5067,7 +5067,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-28 17:27:36 -0600
+Last updated 2020-07-28 23:20:51 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
