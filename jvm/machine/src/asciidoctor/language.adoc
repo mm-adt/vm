@@ -1733,7 +1733,48 @@ Polynomials are the subject of interest primarily because they contain both mult
 (a+2b)(a+4b) = a^2 + 2ba + 4ab + 8b^2
 \]
 
-image::binomial.svg[width=300]
+[cols="1,3,5"]
+|===
+^| equation ^| diagram | mmlang
+
+| \[ (a+b+b)(a+b+b+b) \]       | image:binomial-1.svg[]
+a|
+[exec]
+----
+['a','b','b']
+['a','b','b'][count]
+['a','b','b'][+'a',+'b',+'b',+'b',+'b']
+['a','b','b'][+'a',+'b',+'b',+'b',+'b'][count]
+----
+{blank}
+| \[ (a+2b)(a+4b) \]           | image:binomial-2.svg[]
+a|
+[exec]
+----
+['a','b'{2}]
+['a','b'{2}][count]
+['a','b'{2}][+'a',+{4}'b']
+['a','b'{2}][+'a',+{4}'b'][count]
+----
+{blank}
+| \[ a^2 + 2ba + 4ab + 8b^2 \] | image:binomial-3.svg[]
+a|
+[exec]
+----
+['aa','ba'{2},'ab'{4},'bb'{8}]
+['aa','ba'{2},'ab'{4},'bb'{8}][count]
+----
+{blank}
+| \[ a^2 + 6ab + 8b^2       \] | image:binomial-4.svg[]
+a|
+[exec]
+----
+['aa','ab'{6},'bb'{8}]
+['aa','ab'{6},'bb'{8}][count]
+----
+{blank}
+|
+|===
 
 ===== Poly Embedding
 
