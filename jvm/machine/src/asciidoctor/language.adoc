@@ -1354,9 +1354,9 @@ deterministic branching           | image:pipe-poly-example.png[]
 
 | `,-poly`
 \[
-[f,g] \\
-\Delta (f,g) \nabla = \Diamond(f,g)
+[f,g] = \Delta (f,g) \nabla = \Diamond(f,g)
 \]
+
 copy/clone-branching +
 independent terms +
 \[A \times A = 2A\]
@@ -1364,9 +1364,9 @@ independent terms +
 
 | `;-poly`
 \[
-[f;g] \\
-\Delta (f;g) \nabla = \Diamond(f;g)
+[f;g] = \Delta (f;g) \nabla = \Diamond(f;g)
 \]
+
 serial/compose-chain +
 dependent terms +
 \[A^{_A A} = A \]
@@ -1374,14 +1374,24 @@ dependent terms +
 
 | `\|-poly`
 \[
-[f \| g] \\
-\Delta (f \| g) \nabla = \Diamond(f \| g) \\
+[f \| g] = \Delta (f \| g) \nabla = \Diamond(f \| g) \\
 \]
+
+\[
+\nabla \circ \iota_x \circ f \circ \Delta = B \\
+\nabla \circ \iota_y \circ g \circ \Delta = \mathbf{0} \\
+x \neq y
+\]
+
 either/choice-branching +
 dependent terms +
 \[A + A = A\]
 | image:pipe-delta-nabla.svg[width=475,link=images/language/pipe-delta-nabla.png]
 |===
+
+In mm-ADT, `polys` are both `obj` products and coproducts--called https://en.wikipedia.org/wiki/Biproduct[biproducts]. They have projections (`[get]`) and injections (`[put]`) such that the following diagram commutes.
+
+image::product-coproduct-iso.svg[width=475,align=center]
 
 ====== ,-poly
 
