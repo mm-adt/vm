@@ -538,7 +538,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_storage_structures">Storage Structures</a></li>
+<li><a href="#_storage_structures">Storage Structures</a>
+<ul class="sectlevel2">
+<li><a href="#_model_adt">Model-ADT</a></li>
+</ul>
+</li>
 <li><a href="#_processor_structures">Processor Structures</a>
 <ul class="sectlevel2">
 <li><a href="#_processes">Processes</a></li>
@@ -2568,8 +2572,7 @@ mmlang&gt; ''[+{-1}'a',+{-1}'b']
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a';_{0}]
-mmlang&gt;
-mmlang&gt; [_{0};'a']
+mmlang&gt; mmlang&gt; [_{0};'a']
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -2579,8 +2582,7 @@ mmlang&gt;</code></pre>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';_{0}]
-mmlang&gt;
-mmlang&gt; ''[_{0};+'a']
+mmlang&gt; mmlang&gt; ''[_{0};+'a']
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -3000,10 +3002,8 @@ mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)&gt;-
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{0}2
-mmlang&gt;
-mmlang&gt; 6{2}+{0}1+{4}2
-mmlang&gt;
-mmlang&gt; 6{0}+{3}1+{4}2
+mmlang&gt; mmlang&gt; 6{2}+{0}1+{4}2
+mmlang&gt; mmlang&gt; 6{0}+{3}1+{4}2
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -3052,10 +3052,8 @@ mmlang&gt; 6{6}+{2}1+{2}2
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[+{-1}1+{2}1,+{2}2]
-mmlang&gt;
-mmlang&gt; 6[+{-1}1+1,+2]{2}
-mmlang&gt;
-mmlang&gt; 6{2}[+{-1}1+1,+2]
+mmlang&gt; mmlang&gt; 6[+{-1}1+1,+2]{2}
+mmlang&gt; mmlang&gt; 6{2}[+{-1}1+1,+2]
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -4623,8 +4621,7 @@ instruction                                    domain      range state
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [define,nat&lt;=int[is&gt;0]]                 <i class="conum" data-value="1"></i><b>(1)</b>
-mmlang&gt;
-mmlang&gt; int =&gt; [define,nat&lt;=int[is&gt;0]]          <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; mmlang&gt; int =&gt; [define,nat&lt;=int[is&gt;0]]          <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;int
 mmlang&gt;  6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]  <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;nat:6
@@ -4709,7 +4706,25 @@ language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
 <div class="sect1">
 <h2 id="_storage_structures">Storage Structures</h2>
 <div class="sectionbody">
-
+<div class="sect2">
+<h3 id="_model_adt">Model-ADT</h3>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:(nat    -&gt; (nat&lt;=int[is&gt;0]),
+                        person -&gt; (person:('name'-&gt;str,'age'-&gt;nat),
+                                  ([error,'people are immutable'])&lt;=([put,_,_])))&lt;=mm]
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; [as,person]
+==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; [as,person][put,'name','mrodrig']
+language error: person:('name'-&gt;'marko','age'-&gt;nat:29) instruction error: people are immutable</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect1">
@@ -4881,11 +4896,11 @@ y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int[plus,1][plus,2][plus,3]
 mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(int;int;int[plus,1];int[plus,1][plus,2];int[plus,1][plus,2][plus,3])
+==&gt;(int;int;int;int[plus,1];int[plus,1][plus,2];int[plus,1][plus,2][plus,3])
 mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;7
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;(1;1;2;4;7)
+==&gt;(1;1;1;2;4;7)
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
 ==&gt;7</code></pre>
 </div>
@@ -5221,7 +5236,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-29 22:49:41 -0600
+Last updated 2020-07-29 23:12:00 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
