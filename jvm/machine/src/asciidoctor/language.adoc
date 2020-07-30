@@ -36,7 +36,7 @@ That is, product and coproduct equality are defined via component equality.
 
 Everything that can be denoted in `mmlang` is an `obj`. Within the VM and outside the referential purview of an interfacing language, every `obj` is the product of
 
-image::obj-type-value-q.png[float=left,width=375]
+image::obj-type-value-q.svg[float=left,width=375]
 
 . An *object* that is either a *type object* or a *value object* and
 . A *quantifier* specifying the "amount" of objects being denoted.
@@ -48,7 +48,7 @@ image::obj-type-value-q.png[float=left,width=375]
 
 '''
 
-image::obj-type-q-value-q.png[float=right,width=375]
+image::obj-type-q-value-q.svg[float=right,width=375]
 
 This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring]. The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts. Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to
 
@@ -199,7 +199,7 @@ The diagram below captures the salient features of a type, where the three proje
 . *Type signature*: the ctype specification of a type's domain and range (via the \$ \pi_\tt{domai\n} \$ and \$ \pi_\tt{rang\e} \$ projections), and
 . *Type definition*: an instruction sequence specifying a process on the domain `obj` (via the \$ \pi_\tt{i\nsts} \$ projection).
 
-image::type-signature-definition.png[align=center,width=650]
+image::type-signature-definition.svg[align=center,width=375]
 
 ===== Type Signature
 
@@ -987,7 +987,7 @@ a \ast (b + c) = ab + ac \\
 A https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are https://en.wikipedia.org/wiki/Partial_function[partial functions] lacking https://en.wikipedia.org/wiki/Closure_(mathematics)[closure]. In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.
 ****
 
-image:obj-semiring-orderedring.png[float=right,width=350]
+image:obj-semiring-orderedring.svg[float=left,width=350]
 
 Stream ring theory studies _quantified objects_. The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient https://en.wikipedia.org/wiki/Stream_(computing)[stream computing]. The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.
 
