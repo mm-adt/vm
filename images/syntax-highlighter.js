@@ -23,16 +23,17 @@ $(document).ready(function(){
                   "type":    ["",       ospan + "#369" + bold + cspan],     // dark blue
 
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
-  var items =    {"special": ["mmlang","q"],
-                  "op":      ["a","and","or","compose","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
+  var items =    {"op":      [ "instruction","state","range","domain",
+                              "and","or","compose","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map","trace",
                               "split","merge","last","head","tail","div","minus","choose","put","repeat","type",
-                              "define","rewrite","to","from","sum"],
-                  "tokens":  ["{","}"],
+                              "define","rewrite","to","from","sum","model","as","a","q"],
+                  "type":    ["_","real","rec","lst","inst","obj","int","str","bool",
+                              "nat","person"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
+                  "special": ["mmlang","language error"],
+                  "tokens":  ["{","}","(",")"],
                   "infix":   ["|","&&",",","+","*"],
                   "value":   ["true","false"],
-                  "type":    ["_","real","rec","lst","tvpoly","vpoly","tpoly","poly","inst",
-                              "obj","int","str","bool","range","domain"], 
                   "plain":   ["is not"]};
   $.each(items, function(key, values) {
     jQuery.each(values, function(index,element) {

@@ -4661,7 +4661,7 @@ language error: -6 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For this reason, there is the <code>[model]</code> instruction which can be globally defined as the first instruction of ctype and thus, rooted in the <code>obj</code> Cayley grapj.</p>
+<p>For this reason, there is the <code>[model]</code> instruction which can be globally defined as the first instruction of ctype and thus, rooted in the <code>obj</code> Cayley graph.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -4671,14 +4671,14 @@ language error: -6 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social&lt;=mm,(nat    -&gt; (nat&lt;=int[is&gt;0]),
-                            person -&gt; (person&lt;=('name'-&gt;str,'age'-&gt;nat)))]        <i class="conum" data-value="1"></i><b>(1)</b>
-mmlang&gt; 53 =&gt; [as,nat]                                                            <i class="conum" data-value="2"></i><b>(2)</b>
+                            person -&gt; (person&lt;=('name'-&gt;str,'age'-&gt;nat)))]            <i class="conum" data-value="1"></i><b>(1)</b>
+mmlang&gt; 53 =&gt; [as,nat]                                                                <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;nat:53
 mmlang&gt; 0  =&gt; [as,nat]
 language error: 0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)  =&gt; [as,person]                               <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)  =&gt; [as,person]                                   <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;-29) =&gt; [as,person]                               <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;-29) =&gt; [as,person]                                   <i class="conum" data-value="4"></i><b>(4)</b>
 language error: ('name'-&gt;'marko','age'-&gt;-29) does not contain the label 'person'</code></pre>
 </div>
 </div>
@@ -5221,7 +5221,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-29 12:27:43 -0600
+Last updated 2020-07-29 17:51:31 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
