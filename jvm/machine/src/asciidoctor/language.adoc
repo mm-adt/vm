@@ -2059,12 +2059,12 @@ mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`s
 * `[define]`: Associates a type with a range composed of an object _token_ and a quantifier.
 * `[as]`: Locates the first type definition capable of mapping the incoming `obj` to the token argument.
 
-[exec,exception=LanguageException]
+[exec,none="",exception=LanguageException]
 ----
-[define,nat<=int[is>0]]                 //<1>
-int => [define,nat<=int[is>0]]          //<2>
- 6  => [define,nat<=int[is>0]][as,nat]  //<3>
--6  => [define,nat<=int[is>0]][as,nat]  //<4>
+[define,nat<=int[is>0]]                            //<1>
+int => [define,nat<=int[is>0]]                     //<2>
+ 6  => [define,nat<=int[is>0]][as,nat]             //<3>
+-6  => [define,nat<=int[is>0]][as,nat]             //<4>
 ----
 <1> An identity `inst` that associates the token `nat` as the unit (`{1}`) range of `int[is<0]]`.
 <2> `mmlang` does not display `[define]` instructions in a type's `inst` `obj` graph path.
