@@ -30,10 +30,9 @@ import org.asciidoctor.ast.{ContentModel, StructuralNode}
 import org.asciidoctor.extension.{BlockProcessor, Contexts, Name, Reader}
 import org.asciidoctor.jruby.{AsciiDocDirectoryWalker, DirectoryWalker}
 import org.asciidoctor.{Asciidoctor, OptionsBuilder, SafeMode}
-import org.mmadt.VmException
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 
 import scala.collection.JavaConverters
 import scala.util.{Failure, Success, Try}
@@ -42,34 +41,46 @@ import scala.util.{Failure, Success, Try}
 @Contexts(Array(Contexts.LISTING))
 @ContentModel(ContentModel.RAW)
 class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, Object]) extends BlockProcessor {
-  lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
-  val style = "source"
-  val language = "mmlang"
-  val prompt = "mmlang> "
+  val STYLE = "source"
+  val LANGUAGE = "mmlang"
+  lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage(LANGUAGE).getEngine.get()
+  //////////////////////////////////////
+  val PROMPT = "prompt" // String
+  val EVAL = "eval" // Boolean
+  val NONE = "none" // String
+  val EXCEPTION = "exception" // String
+  val LINE_BREAK = "linebreak" // String
 
   override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
     val builder: StringBuilder = new StringBuilder
     val query: StringBuilder = new StringBuilder
-    val eval = java.lang.Boolean.valueOf(attributes.getOrDefault("eval", "true").toString)
+    val eval = java.lang.Boolean.valueOf(attributes.getOrDefault(EVAL, Tokens.btrue).toString)
+    val prompt = attributes.getOrDefault(PROMPT, engine.getFactory.getLanguageName + "> ").toString
+    val none = attributes.getOrDefault(NONE, prompt).toString
+    val exception = attributes.getOrDefault(EXCEPTION, Tokens.empty).toString
+    val linebreak = attributes.getOrDefault(LINE_BREAK, "%").toString
+
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
       if (w.trim.isBlank)
         builder.append("\n")
       else if (eval) {
-        if (w.stripTrailing().endsWith("%")) {
-          val line = w.substring(0, w.stripTrailing().length - 2)
-          query.append(line).append("\n").append(IntStream.range(0, prompt.length).mapToObj(_ => " ").collect(Collectors.joining))
+        if (w.stripTrailing().endsWith(linebreak)) {
+          val line = w.substring(0, w.stripTrailing().length - (linebreak.length + 1))
+          query.append(line).append("\n").append(IntStream.range(0, prompt.length).mapToObj(_ => Tokens.space).collect(Collectors.joining))
         } else {
           query.append(w)
           builder.append(prompt).append(query).append("\n")
           Try[Obj] {
-            engine.eval(query.toString().replaceAll("\n","").replace("%",""))
+            engine.eval(query.toString().replaceAll("\n", Tokens.empty).replace(linebreak, Tokens.empty))
           } match {
-            case Failure(exception) if exception.isInstanceOf[VmException] && java.lang.Boolean.valueOf(attributes.getOrDefault("exception", "false").toString) =>
-              builder.append("language error: ").append(exception.getLocalizedMessage).append("\n")
-            case Failure(exception) => throw new Exception(exception.getMessage + ":::" + builder, exception)
+            case Failure(e) if e.getClass.getSimpleName.equals(exception) => (e match {
+              case _: LanguageException => builder.append("language error: ")
+              case _ => builder.append("error: ")
+            }).append(e.getLocalizedMessage).append("\n")
+            case Failure(e) => throw new Exception(e.getMessage + ":::" + builder, e)
             case Success(value) =>
               val results = value.toStrm.values.toList
-              if (results.isEmpty) builder.append(attributes.getOrDefault("empty", prompt + "\n"))
+              if (results.isEmpty) builder.append(none)
               else results.foreach(a => {
                 builder.append(Tokens.RRDARROW).append(a).append("\n")
               })
@@ -82,7 +93,7 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
     println(builder)
     val endAttributes: java.util.Map[String, Object] = new util.HashMap[String, Object]
     endAttributes.putAll(config)
-    endAttributes.putAll(JavaConverters.mapAsJavaMap(Map("style" -> style, "language" -> language)))
+    endAttributes.putAll(JavaConverters.mapAsJavaMap(Map("style" -> STYLE, "language" -> LANGUAGE)))
     this.createBlock(parent, "listing", builder.toString().trim(), endAttributes)
   }
 }

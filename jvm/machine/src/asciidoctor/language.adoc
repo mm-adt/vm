@@ -257,7 +257,7 @@ int{0,5}<=int{0,5}
 The type `int{0,5}` denotes either 0, 1, 2, 3, 4, or 5 integers. In general, this quantifier ring represents uncertainty as to the number of elements being referred to.
 
 <.^a|
-[exec,exception=true]
+[exec,exception=LanguageException]
 ----
 int<=bool
 ----
@@ -1991,7 +1991,7 @@ int[plus,1]<x>[plus,2][mult,x][explain]     //<3>
 
 The scope of a variable starts at the moment of declaration (`[to]`) and ends when the declaring branch is complete. If an `inst` has a type argument, that type has access to the variables declared in any parent branch.
 
-[exec,exception=true]
+[exec,exception=LanguageException]
 ----
 2 => int<x>[plus,<y>][plus,y]                                                      //<1>
 2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x]                                      //<2>
@@ -2059,7 +2059,7 @@ mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`s
 * `[define]`: Associates a type with a range composed of an object _token_ and a quantifier.
 * `[as]`: Locates the first type definition capable of mapping the incoming `obj` to the token argument.
 
-[exec,exception=true]
+[exec,exception=LanguageException]
 ----
 [define,nat<=int[is>0]]                 //<1>
 int => [define,nat<=int[is>0]]          //<2>
@@ -2083,7 +2083,7 @@ For this reason, there is the `[model]` instruction which can be globally define
 
 image::nat-model.svg[width=350,align=center]
 
-[exec,empty="",exception=true]
+[exec,none="",exception=LanguageException]
 ----
 :[model,social:(nat    -> (nat<=int[is>0]), %
                 person -> (person<=('name'->str,'age'->nat)))<=mm]            //<1>
