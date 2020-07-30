@@ -2955,7 +2955,7 @@ mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)&gt;-+2
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/type-bulk-example.png" alt="type bulk example"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/type-bulk-example.svg" alt="type bulk example"></span></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -2986,7 +2986,7 @@ mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)&gt;-
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/value-bulk-example.png" alt="value bulk example"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/value-bulk-example.svg" alt="value bulk example"></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -3414,16 +3414,16 @@ deterministic branching</p></td>
 </tr>
 </tbody>
 </table>
-<table class="tableblock frame-all grid-all center" style="width: 80%;">
+<table class="tableblock frame-all grid-all center" style="width: 85%;">
 <colgroup>
-<col style="width: 30%;">
-<col style="width: 70%;">
+<col style="width: 27.2727%;">
+<col style="width: 72.7273%;">
 </colgroup>
 <tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>,-poly</code>
 \[
-[f,g] = \Delta (f,g) \nabla = \Diamond(f,g)
+[f,g] = \nabla \circ \Delta (f,g)  = \Diamond(f,g)
 \]</p>
 <p class="tableblock">copy/clone-branching<br>
 independent terms<br>
@@ -3433,7 +3433,7 @@ independent terms<br>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>;-poly</code>
 \[
-[f;g] = \Delta (f;g) \nabla = \Diamond(f;g)
+[f;g] = \nabla \circ \Delta (f;g) = \Diamond(f;g)
 \]</p>
 <p class="tableblock">serial/compose-chain<br>
 dependent terms<br>
@@ -3443,11 +3443,11 @@ dependent terms<br>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>|-poly</code>
 \[
-[f | g] = \Delta (f | g) \nabla = \Diamond(f | g) \\
+[f | g] = \nabla \circ \Delta (f | g)  = \Diamond(f | g) \\
 \]</p>
 <p class="tableblock">\[
-\nabla \circ \iota_x \circ f \circ \Delta = B \\
-\nabla \circ \iota_y \circ g \circ \Delta = \mathbf{0} \\
+\nabla \circ \iota_x \circ f \circ \pi_x \circ \Delta = B \\
+\nabla \circ \iota_y \circ g \circ \pi_y \circ \Delta = \mathbf{0} \\
 x \neq y
 \]</p>
 <p class="tableblock">either/choice-branching<br>
@@ -5252,7 +5252,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-30 02:45:46 -0600
+Last updated 2020-07-30 03:41:29 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
