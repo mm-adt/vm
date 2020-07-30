@@ -3423,10 +3423,9 @@ deterministic branching</p></td>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>,-poly</code>
 \[
-[f,g] \\
-\Delta (f,g) \nabla = \Diamond(f,g)
-\]
-copy/clone-branching<br>
+[f,g] = \Delta (f,g) \nabla = \Diamond(f,g)
+\]</p>
+<p class="tableblock">copy/clone-branching<br>
 independent terms<br>
 \[A \times A = 2A\]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/language/comma-delta-nabla.svg" alt="comma delta nabla" width="475"></a></span></p></td>
@@ -3434,10 +3433,9 @@ independent terms<br>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>;-poly</code>
 \[
-[f;g] \\
-\Delta (f;g) \nabla = \Diamond(f;g)
-\]
-serial/compose-chain<br>
+[f;g] = \Delta (f;g) \nabla = \Diamond(f;g)
+\]</p>
+<p class="tableblock">serial/compose-chain<br>
 dependent terms<br>
 \[A^{_A A} = A \]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/language/semi-delta-nabla.svg" alt="semi delta nabla" width="500"></a></span></p></td>
@@ -3445,16 +3443,28 @@ dependent terms<br>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>|-poly</code>
 \[
-[f | g] \\
-\Delta (f | g) \nabla = \Diamond(f | g) \\
-\]
-either/choice-branching<br>
+[f | g] = \Delta (f | g) \nabla = \Diamond(f | g) \\
+\]</p>
+<p class="tableblock">\[
+\nabla \circ \iota_x \circ f \circ \Delta = B \\
+\nabla \circ \iota_y \circ g \circ \Delta = \mathbf{0} \\
+x \neq y
+\]</p>
+<p class="tableblock">either/choice-branching<br>
 dependent terms<br>
 \[A + A = A\]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/language/pipe-delta-nabla.svg" alt="pipe delta nabla" width="475"></a></span></p></td>
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>In mm-ADT, <code>polys</code> are both <code>obj</code> products and coproducts&#8212;&#8203;called <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. They have projections (<code>[get]</code>) and injections (<code>[put]</code>) such that the following diagram commutes.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/product-coproduct-iso.svg" alt="product coproduct iso" width="475">
+</div>
+</div>
 <div class="sect5">
 <h6 id="_poly">,-poly</h6>
 <table class="tableblock frame-all grid-all stretch">
@@ -5242,7 +5252,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-30 00:56:52 -0600
+Last updated 2020-07-30 02:45:46 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
