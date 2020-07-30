@@ -1133,7 +1133,7 @@ a|
 5 => int+1*{2}2+2
 ----
 {blank}
-| image:type-bulk-example.png[]
+| image:type-bulk-example.svg[]
 a|
 [exec]
 ----
@@ -1150,7 +1150,7 @@ a|
 5 => int-<(+1*2+2,+1+6+2)>-
 ----
 {blank}
-| image:value-bulk-example.png[]
+| image:value-bulk-example.svg[]
 |===
 
 ===== Commuting Quantifiers
@@ -1349,12 +1349,12 @@ deterministic branching           | image:pipe-poly-example.png[]
 |===
 
 [.center]
-[cols="^3,^7",width=80]
+[cols="^3,^8",width=85]
 |===
 
 | `,-poly`
 \[
-[f,g] = \Delta (f,g) \nabla = \Diamond(f,g)
+[f,g] = \nabla \circ \Delta (f,g)  = \Diamond(f,g)
 \]
 
 copy/clone-branching +
@@ -1364,7 +1364,7 @@ independent terms +
 
 | `;-poly`
 \[
-[f;g] = \Delta (f;g) \nabla = \Diamond(f;g)
+[f;g] = \nabla \circ \Delta (f;g) = \Diamond(f;g)
 \]
 
 serial/compose-chain +
@@ -1374,12 +1374,12 @@ dependent terms +
 
 | `\|-poly`
 \[
-[f \| g] = \Delta (f \| g) \nabla = \Diamond(f \| g) \\
+[f \| g] = \nabla \circ \Delta (f \| g)  = \Diamond(f \| g) \\
 \]
 
 \[
-\nabla \circ \iota_x \circ f \circ \Delta = B \\
-\nabla \circ \iota_y \circ g \circ \Delta = \mathbf{0} \\
+\nabla \circ \iota_x \circ f \circ \pi_x \circ \Delta = B \\
+\nabla \circ \iota_y \circ g \circ \pi_y \circ \Delta = \mathbf{0} \\
 x \neq y
 \]
 
