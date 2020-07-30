@@ -60,12 +60,7 @@ object Lst {
     (blst.glist.isEmpty || alst.glist.size == blst.glist.size) && // TODO: should lists only check up to their length
     alst.glist.zip(blst.glist).find(b => !b._1.test(b._2)).forall(_ => return false)
 
-  def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
-    val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
-    apoly.clone(g = (apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
-  }
-
-  def resolveSlots[A <: Obj](start: A, apoly: Lst[A], branch:Boolean = false): Lst[A] = {
+  def resolveSlots[A <: Obj](start: A, apoly: Lst[A], branch: Boolean = false): Lst[A] = {
     if (apoly.isSerial) {
       var local = start
       apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => {
@@ -76,12 +71,12 @@ object Lst {
         }
         local
       })))
-    } else {
-      val rlst = apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot))))
-      start match {
-        case _: Type[_] if branch => rlst.clone(g = (rlst.gsep, rlst.g._2.filter(x => x.alive)))
-        case _ => rlst
-      }
-    }
+    } else
+      apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot)).filter(x => !branch || x.alive)))
+  }
+
+  def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
+    val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
+    apoly.clone(g = (apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
   }
 }

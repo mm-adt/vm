@@ -555,6 +555,10 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str.plus("a"))(engine.eval("str[str -> [plus,'a'],int -> [plus,'b'], int -> [plus,'c']]"))
     assertResult(str.branch(rec(g = (",", Map(str.is(str.gt("b")) -> str.plus("a"))))))(engine.eval("str[str[is>'b'] -> [plus,'a'],int -> [plus,'b'], int -> [plus,'c']]"))
     assertResult(str.branch(rec(g = (",", Map(str -> str.plus("a"), str -> str.plus("c"))))))(engine.eval("str[str -> [plus,'a'],int -> [plus,'b'], str -> [plus,'c']]"))
+    // assertResult(int.plus(0).q(4))(int.branch(rec(g=(",",Map(int -> int.plus(0).q(2) , int -> int.plus(0).q(2))))))
+    // assertResult(int.plus(0).q(4))(int.branch(int.plus(0).q(2) `,` int.plus(0).q(2)))
+    // assertResult(int.plus(0).q(3))(int.branch(int.plus(0) `,` int.plus(0).q(2)))
+    // assertResult(int.branch(int.plus(0).q(6)`,` int.plus(1).q(10)))(int.branch(int.plus(0).q(4) `,` int.plus(0).q(2) `,` int.plus(1).q(10)))
   }
 
   test("bool strm input parsing") {
