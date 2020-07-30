@@ -2078,7 +2078,7 @@ With a large number of definitions, expression such as the following become unte
 ('name'->'marko','age'->29)  => [define,nat<=int[is>0],person<=('name'->str,'age'->nat)][as,person]
 ----
 
-For this reason, there is the `[model]` instruction which can be globally defined as the first instruction of ctype and thus, rooted in the `obj` Cayley grapj.
+For this reason, there is the `[model]` instruction which can be globally defined as the first instruction of ctype and thus, rooted in the `obj` Cayley graph.
 
 
 image::nat-model.svg[width=350,align=center]
@@ -2086,11 +2086,11 @@ image::nat-model.svg[width=350,align=center]
 [exec,empty="",exception=true]
 ----
 :[model,social<=mm,(nat    -> (nat<=int[is>0]), %
-                    person -> (person<=('name'->str,'age'->nat)))]        //<1>
-53 => [as,nat]                                                            //<2>
+                    person -> (person<=('name'->str,'age'->nat)))]            //<1>
+53 => [as,nat]                                                                //<2>
 0  => [as,nat]
-('name'->'marko','age'->29)  => [as,person]                               //<3>
-('name'->'marko','age'->-29) => [as,person]                               //<4>
+('name'->'marko','age'->29)  => [as,person]                                   //<3>
+('name'->'marko','age'->-29) => [as,person]                                   //<4>
 ----
 <1> a `social` model-ADT is defined that extends `mm` with `nat` and `person` type definition.
 <2> The `[model]` instruction is the first `inst` off the root of the `obj` graph.
