@@ -30,7 +30,8 @@ $(document).ready(function(){
                               "define","rewrite","to","from","sum","model","as","a","q"],
                   "type":    ["_","real","rec","lst","inst","obj","int","str","bool",
                               "nat","person"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
-                  "special": ["mmlang","language error"],
+                  "special": ["mmlang","language error","mm",
+                              "social"],        // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
                   "tokens":  ["{","}","(",")"],
                   "infix":   ["|","&&",",","+","*"],
                   "value":   ["true","false"],
