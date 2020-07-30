@@ -494,7 +494,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_the_obj_magma">The Obj Magma</a></li>
 <li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
-<li><a href="#_the_type_ringoid">The Type Ringoid</a>
+<li><a href="#_the_stream_ringoid">The Stream Ringoid</a>
 <ul class="sectlevel3">
 <li><a href="#_ring_axioms">Ring Axioms</a>
 <ul class="sectlevel4">
@@ -1555,7 +1555,7 @@ mmlang&gt;</code></pre>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{4}&lt;=int{2}[_,_]
-==&gt;int{4}&lt;=int{2}[branch,(int{2},int{2})]</code></pre>
+==&gt;int{4}&lt;=int{2}[int{2},int{2}]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2118,7 +2118,7 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 <hr>
 </div>
 <div class="sect2">
-<h3 id="_the_type_ringoid">The Type Ringoid</h3>
+<h3 id="_the_stream_ringoid">The Stream Ringoid</h3>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Stream Ring Theory</div>
@@ -2129,12 +2129,12 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 <p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring. Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding <a href="https://en.wikipedia.org/wiki/Coefficient">coefficient</a> dynamics. Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>. A biproduct has both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams. Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
 </div>
 <div class="paragraph">
-<p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>. Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called a <strong>type ringoid</strong>.</p>
+<p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>. Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called the <strong>type ringoid</strong>.</p>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>The <strong><code>obj</code> stream ring</strong> is the <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring</a>
+<p>The <strong><code>obj</code> stream ringoid</strong> is the <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring</a>
 \[
 (\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}),
 \]</p>
@@ -2168,20 +2168,20 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 </div>
 <hr>
 <div class="paragraph">
-<p>Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the suggestive illustration above, the stream ring binary operators</p>
+<p>Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the suggestive illustration above, the stream ringoid&#8217;s binary operators</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p>\$,;: \tt{type} \times \tt{type} \to \tt{type}\$ generate function graphs called <em>streams</em> (<strong>program compilation</strong>) and,</p>
+<p>\$,;: \tt{type} \times \tt{type} \to \tt{type}\$ generate functions graph (<strong>program compilation</strong>) and,</p>
 </li>
 <li>
-<p>\$,;: \tt{value} \times \tt{type} \to \tt{value}\$ propagate data through the stream structure (<strong>program evaluation</strong>).</p>
+<p>\$,;: \tt{value} \times \tt{type} \to \tt{value}\$ <em>stream</em> values through the type structure (<strong>program evaluation</strong>).</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in <code>mmlang</code> using both <code>obj</code> <strong>values</strong> and <strong>types</strong>.</p>
+<p>Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> (save operator <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>), the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>. The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in <code>mmlang</code> using both <code>obj</code> <strong>values</strong> and <strong>types</strong>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2190,7 +2190,7 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-The <code>mmlang</code> examples are rife with <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugars</a>. The term <code>_{0}</code> is \$\underline{\mathbf{0}}\$, <code>_{1}</code> is \$\underline{\mathbf{1}}\$, <code>[a;b;c]</code> denotes <code>[branch,(a;b;c)]</code> and <code>+{q}n</code> denotes <code>[plus,n]{q}</code>. Finally, <code>[,]</code> and <code>[;]</code> were previously defined as binary operators, but due to the <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> axioms of the respective additive group and multiplicative monoid  of a ring, <code>[,]</code> and <code>[;]</code> effectively function as \$n\$-ary operators.
+The <code>mmlang</code> examples are rife with <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugars</a>. The term <code>_{0}</code> is \$\underline{\mathbf{0}}\$, <code>_{1}</code> is \$\underline{\mathbf{1}}\$, <code>[a;b;c]</code> denotes <code>[branch,(a;b;c)]</code> and <code>+{q}n</code> denotes <code>[plus,n]{q}</code>. Finally, while <code>[,]</code> and <code>[;]</code> are defined as binary operators, due to the <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> axioms of the respective additive group and multiplicative monoid  of a ring, <code>[,]</code> and <code>[;]</code> are effectively \$n\$-ary operators and will be used as such in examples to follow.
 </td>
 </tr>
 </table>
@@ -2198,7 +2198,7 @@ The <code>mmlang</code> examples are rife with <a href="https://en.wikipedia.org
 <div class="sect3">
 <h4 id="_ring_axioms">Ring Axioms</h4>
 <div class="paragraph">
-<p><a href="https://en.wikipedia.org/wiki/Axiom">Axioms</a> are the "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" equations of a system. Regardless of any other behaviors the system may reveal, if the system always respects the ring axioms, then the system is (in part) a ring.</p>
+<p><a href="https://en.wikipedia.org/wiki/Axiom">Axioms</a> are the "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" equations of a system. Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2303,8 +2303,8 @@ mmlang&gt; ''[+'b',+'a']
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',_{0}]
-==&gt;'a'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [str,_{0}]
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2325,7 +2325,7 @@ mmlang&gt;</code></pre>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a',+{-1}'a']
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [str,str{-1}]
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -2554,8 +2554,8 @@ mmlang&gt; ''[+{-1}'a',+{-1}'b']
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+{-1}'a']{-1}
-==&gt;'a'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [str{-1}]{-1}
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2582,9 +2582,9 @@ mmlang&gt;</code></pre>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+'a';_{0}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [str;_{0}]
 mmlang&gt;
-mmlang&gt; ''[_{0};+'a']
+mmlang&gt; [_{0};str]
 mmlang&gt;</code></pre>
 </div>
 </div>
@@ -2726,8 +2726,8 @@ Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoi
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+{2}'a',+{3}'a']
-==&gt;'a'{5}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [str{2},str{3}]
+==&gt;str{5}&lt;=_[str{2},str{3}]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2836,8 +2836,8 @@ mmlang&gt; ''[+{2}'a',+{3}'b']
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ''[+{0}'a',+'b']
-==&gt;'b'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [str{0},str]
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3305,7 +3305,7 @@ f(4) &amp;= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
-==&gt;int[branch,(int{2}&lt;=int[id]{2},int{3}&lt;=int[mult,int]{3},int{6}&lt;=int[mult,int[mult,int]]{6})][sum]</code></pre>
+==&gt;int[int{2}&lt;=int[id]{2},int{3}&lt;=int[mult,int]{3},int{6}&lt;=int[mult,int[mult,int]]{6}][sum]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3965,11 +3965,11 @@ mmlang&gt; {1,10,100}[is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30]     
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{3}[is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30][explain]
 ==&gt;'
-_{3}&lt;=int{3}[branch,(int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,50]]-&gt;int{3}[plus,10]|int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[lt,5]]-&gt;int{3}[plus,20]|int{3}-&gt;int{3}[plus,30])]
+_{3}&lt;=int{3}[int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,50]]-&gt;int{3}[plus,10]|int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[lt,5]]-&gt;int{3}[plus,20]|int{3}-&gt;int{3}[plus,30]]
 
 instruction                                    domain         range      state
 -------------------------------------------------------------------------------
-[branch,(int{0,3}&lt;=int{3}[is,bool{3}&lt;=in...    int{3}    =&gt;   int{9}
+[int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,...    int{3}    =&gt;   int{9}
  [is,bool{3}&lt;=int{3}[gt,50]]                    int{3}   =&gt;    int{0,3}
   [gt,50]                                        int{3}  =&gt;     bool{3}
  -&gt;[plus,10]                                      int{3}   =&gt;    int{3}
@@ -5252,7 +5252,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-30 03:41:29 -0600
+Last updated 2020-07-30 03:56:07 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
