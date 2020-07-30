@@ -56,7 +56,7 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
     val query: StringBuilder = new StringBuilder
     val eval = java.lang.Boolean.valueOf(attributes.getOrDefault(EVAL, Tokens.btrue).toString)
     val prompt = attributes.getOrDefault(PROMPT, engine.getFactory.getLanguageName + "> ").toString
-    val none = attributes.getOrDefault(NONE, prompt).toString
+    val none = attributes.getOrDefault(NONE, prompt + "\n").toString
     val exception = attributes.getOrDefault(EXCEPTION, Tokens.empty).toString
     val linebreak = attributes.getOrDefault(LINE_BREAK, "%").toString
 
