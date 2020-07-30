@@ -35,7 +35,6 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.language.obj.Model
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,6 +43,7 @@ trait Obj
   extends AOp
     with AsOp
     with AndOp
+    with BranchOp
     with OrOp
     with CountOp
     with SumOp

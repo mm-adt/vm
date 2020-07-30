@@ -50,11 +50,12 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
     case _ => true
   }
 }
+
 object Rec {
   def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.find(y => y._1.test(x._1) && y._2.test(x._2)).map(_ => true).getOrElse(return false))
 
-  def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = {
+  def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B], branch:Boolean=false): Rec[A, B] = {
     if (arec.isSerial) {
       if (__.isAnonRoot(start)) return arec
       var local = start -> start
@@ -67,13 +68,17 @@ object Rec {
         local
       })), q = start.q)
     } else {
-      arec.clone(g = (arec.gsep, arec.gmap.toSeq.map(slot => {
+      val rrec = arec.clone(g = (arec.gsep, arec.gmap.toSeq.map(slot => {
         val key = Inst.resolveArg(start, slot._1)
         (key, if (key.alive) Inst.resolveArg(start, slot._2) else zeroObj.asInstanceOf[B])
       }).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else {
         val alst: List[B] = List(b._2) ++ a.get(b._1).map(x => List(x)).getOrElse(List.empty)
         if (alst.size == 1) alst.head else strm(alst)
       })))))
+      start match {
+        case _: Type[_] if branch => rrec.clone(g = (rrec.gsep, rrec.g._2.filter(x => x._1.alive && x._2.alive)))
+        case _ => rrec
+      }
     }
   }
   def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {

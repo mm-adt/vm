@@ -39,11 +39,12 @@ trait Poly[A <: Obj] extends Obj
   def isPlus: Boolean = this.isParallel | this.isChoice
   def isEmpty: Boolean = this.glist.isEmpty
 }
+
 object Poly {
-  def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = {
+  def resolveSlots[A <: Obj](start: A, apoly: Poly[A], branch: Boolean = false): Poly[A] = {
     apoly match {
-      case arec: Rec[Obj, A] => Rec.resolveSlots(start, arec)
-      case alst: Lst[A] => Lst.resolveSlots(start, alst)
+      case arec: Rec[Obj, A] => Rec.resolveSlots(start, arec, branch)
+      case alst: Lst[A] => Lst.resolveSlots(start, alst, branch)
     }
   }
   def keepFirst[A <: Obj](start: Obj, apoly: Poly[A]): Poly[A] = {
