@@ -35,7 +35,7 @@ trait Rewrite {
   // utility methods
   def getRewrites(obj: Obj): List[Obj] = (
     obj.trace.filter(x => x._2.op == Tokens.rewrite).map(x => x._2.arg0[Obj]) ++
-      obj.trace.filter(x => x._2.op == Tokens.model).flatMap(x => ModelOp.getRewrites(x._2.arg1[Rec[Obj, Lst[Obj]]]))).sortBy(x => -x.domainObj.trace.length)
+      obj.trace.filter(x => x._2.op == Tokens.model).flatMap(x => ModelOp.getRewrites(x._2.arg0[Rec[Obj, Lst[Obj]]]))).sortBy(x => -x.domainObj.trace.length)
   def putRewrites(rewrites: List[Obj], obj: Obj): Obj = obj.trace.map(x => x._2).foldLeft(rewrites.foldLeft(obj.domainObj)((x, y) => RewriteOp(y).exec(x)))((x, y) => y.exec(x))
   def removeRewrites(obj: Obj): Obj = obj.trace.map(x => x._2).filter(x => x.op != Tokens.rewrite).foldLeft(obj.domainObj)((x, y) => y.exec(x))
   def getPolyOrObj(obj: Obj): Obj = obj.domain match {

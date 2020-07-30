@@ -72,7 +72,7 @@ object OpInstResolver {
       case Tokens.given | Tokens.given_op => GivenOp(args.head)
       case Tokens.trace => args.headOption.map(x => TraceOp(x.asInstanceOf[Lst[Obj]])).getOrElse(TraceOp())
       //
-      case Tokens.model => ModelOp(args.head.asInstanceOf[Type[Obj]], args.tail.head.asInstanceOf[Rec[Obj, Obj]])
+      case Tokens.model => ModelOp(args.head.asInstanceOf[Rec[Obj, Lst[Obj]]])
       case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()
       case Tokens.a => AOp(args.head)

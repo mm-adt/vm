@@ -2085,14 +2085,14 @@ image::nat-model.svg[width=350,align=center]
 
 [exec,empty="",exception=true]
 ----
-:[model,social<=mm,(nat    -> (nat<=int[is>0]), %
-                    person -> (person<=('name'->str,'age'->nat)))]            //<1>
+:[model,social:(nat    -> (nat<=int[is>0]), %
+                person -> (person<=('name'->str,'age'->nat)))<=mm]            //<1>
 53 => [as,nat]                                                                //<2>
 0  => [as,nat]
 ('name'->'marko','age'->29)  => [as,person]                                   //<3>
 ('name'->'marko','age'->-29) => [as,person]                                   //<4>
 ----
-<1> a `social` model-ADT is defined that extends `mm` with `nat` and `person` type definition.
+<1> a `social` model-ADT has `nat` and `person` type definition and a domain of `mm`.
 <2> The `[model]` instruction is the first `inst` off the root of the `obj` graph.
 <3> The `rec` is mapped to a `person` with the `age` value being mapped accordingly.
 <4> The `rec` does not have an `age` value that maps to `nat` so the `rec` is not a `person`.

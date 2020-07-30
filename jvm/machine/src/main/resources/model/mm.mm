@@ -1,5 +1,5 @@
-[model,mm<=mm,
-  (bool -> (bool),
+[model,mm:(
+   bool -> (bool),
    int  -> (int,
            (int)<=(int[neg][neg]),
            (int)<=(int[plus,0]),

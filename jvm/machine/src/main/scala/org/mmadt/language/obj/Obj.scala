@@ -35,6 +35,7 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.language.obj.Model
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -195,7 +196,7 @@ object Obj {
       case x if x.root => false
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
       case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name.equals(search.name) && y.via == search.via) => true
-      case x if x.via._2.op == Tokens.model && ModelOp.findType[Obj](x.via._2.arg1[Rec[Obj, Obj]], search.name, search).isDefined => true
+      case x if x.via._2.op == Tokens.model && ModelOp.findType[Obj](x.via._2.arg0[Model], search.name).isDefined => true
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].trace == search.trace && x.via._2.arg0[Obj].equals(search) => true // TODO: trace search because poly values (bad?)
       case x => fetchExists(x.via._1, search)
     }
@@ -214,7 +215,7 @@ object Obj {
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
         Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
       case x if x.via._2.op == Tokens.model =>
-        ModelOp.findType[A](x.via._2.arg1[Rec[Obj, Obj]], label, source).map(y => toBaseName(y)).orElse(fetchOption(source, x.via._1, label))
+        ModelOp.findType[A](x.via._2.arg0[Model], label, source).map(y => toBaseName(y)).orElse(fetchOption(source, x.via._1, label))
       case x =>
         fetchOption(source, x.via._1, label)
     }
