@@ -63,7 +63,7 @@ object Lst {
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A], branch: Boolean = false): Lst[A] = {
     if (apoly.isSerial) {
       var local = start
-      apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => {
+      val z = apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => {
         local = local match {
           case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
           case x if slot.isInstanceOf[Value[_]] => slot.hardQ(multQ(x.q, slot.q)) // TODO: hardcoded hack -- should really be part of Inst.resolveArg() and Obj.compute()
@@ -71,6 +71,7 @@ object Lst {
         }
         local
       })))
+      if (branch && z.g._2.exists(x => !x.alive)) z.q(qZero) else z
     } else
       apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot)).filter(x => !branch || x.alive)))
   }

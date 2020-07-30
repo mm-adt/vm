@@ -755,7 +755,7 @@ a|
 a|
 [exec]
 ----
-''[+'a',_{0}]
+[str,_{0}]
 ----
 {blank}
 | Additive inverse
@@ -769,7 +769,7 @@ a|
 a|
 [exec]
 ----
-''[+'a',+{-1}'a']
+[str,str{-1}]
 ----
 {blank}
 
@@ -909,7 +909,7 @@ a|
 a|
 [exec]
 ----
-''[+{-1}'a']{-1}
+[str{-1}]{-1}
 ----
 {blank}
 | Annihilator
@@ -928,8 +928,8 @@ a|
 a|
 [exec]
 ----
-''[+'a';_{0}]
-''[_{0};+'a']
+[str;_{0}]
+[_{0};str]
 ----
 {blank}
 | Factoring
@@ -1011,7 +1011,7 @@ a|
 a|
 [exec]
 ----
-''[+{2}'a',+{3}'a']
+[str{2},str{3}]
 ----
 {blank}
 | Applying  | \$xa \ast yb = (xy)ab\$
@@ -1073,7 +1073,7 @@ a|
 a|
 [exec]
 ----
-''[+{0}'a',+'b']
+[str{0},str]
 ----
 {blank}
 |===
