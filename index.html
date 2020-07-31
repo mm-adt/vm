@@ -1396,8 +1396,8 @@ In practice, the string representation of a value is its <em>ground</em> and the
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 2[plus,4][is&gt;0]
 ==&gt;6
-mmlang&gt; 2[plus,4][is&gt;0][trace]
-==&gt;(2;[plus,4];6;[is,true])
+mmlang&gt; 2[plus,4][is&gt;0][path]
+==&gt;(2;[plus,4];6;[is,true];6)
 mmlang&gt; 2[plus,4][is&gt;0][type]
 ==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]]</code></pre>
 </div>
@@ -2000,8 +2000,8 @@ instruction           domain      range state
 [plus,int[mult,2]]    int    =&gt;   int
  [mult,2]              int   =&gt;    int
 '
-mmlang&gt; 5 =&gt; int[plus,int[mult,2]][trace]
-==&gt;(5;[plus,10])</code></pre>
+mmlang&gt; 5 =&gt; int[plus,int[mult,2]][path]
+==&gt;(5;[plus,10];15)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2311,7 +2311,7 @@ mmlang&gt; [str,str{2}]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','a'{-1}]
-mmlang&gt;</code></pre>
+==&gt;'a'{0}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4416,22 +4416,22 @@ mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6 =&gt; int[plus,[mult,2]][trace]
-==&gt;(6;[plus,12])
-mmlang&gt; 8 =&gt; int[plus,[mult,2]][trace]
-==&gt;(8;[plus,16])</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6 =&gt; int[plus,[mult,2]][path]
+==&gt;(6;[plus,12];18)
+mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
+==&gt;(8;[plus,16];24)</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming <code>obj</code> that yielded the <code>obj</code> at the head of the edge. The <code>obj</code> at the tail of the edge may also have incoming edges in the <code>obj</code> graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a <strong>path</strong>. The computational path of an <code>obj</code> is accessed via <code>[trace]</code>. The output of <code>[trace]</code> is a <code>;-lst</code> that can be <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">introspected</a> as any other <code>lst</code>.</p>
+<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming <code>obj</code> that yielded the <code>obj</code> at the head of the edge. The <code>obj</code> at the tail of the edge may also have incoming edges in the <code>obj</code> graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a <strong>path</strong>. The computational path of an <code>obj</code> is accessed via <code>[path]</code>. The output of <code>[path]</code> is a <code>;-lst</code> that can be <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">introspected</a> as any other <code>lst</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63]                        <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;true
-mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][trace]                 <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(8;[plus,1];9;[mult,2];18;[lt,63])
-mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][trace][get,5][get,0]   <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path]                  <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;(8;[plus,1];9;[mult,2];18;[lt,63];true)
+mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]    <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;63</code></pre>
 </div>
 </div>
@@ -4465,8 +4465,8 @@ mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][trace][get,5][get,0]   <i class="c
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]         <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;120
-mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][trace]  <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10])
+mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]   <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10];120)
 mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;'
 int[plus,1]&lt;x&gt;[plus,2][mult,int&lt;.x&gt;]
@@ -4487,7 +4487,7 @@ instruction       domain      range state
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>[trace]</code> instruction provides the automaton&#8217;s path through the <code>obj</code> graph as <code>;-lst</code>.</td>
+<td>The <code>[path]</code> instruction provides the automaton&#8217;s path through the <code>obj</code> graph as <code>;-lst</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -4504,8 +4504,8 @@ instruction       domain      range state
 language error: 4 does not contain the label 'y'
 mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x]                                      <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;12
-mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][trace]                               <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2])
+mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]                                <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)
 mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]  <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;'
 int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,int&lt;.z&gt;]][plus,int&lt;.y&gt;]][plus,int&lt;.x&gt;]
@@ -4896,13 +4896,13 @@ y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int[plus,1][plus,2][plus,3]
 mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(int;int;int;int[plus,1];int[plus,1][plus,2];int[plus,1][plus,2][plus,3])
+==&gt;(int;;int;;int;[plus,1];int;[plus,2];int;[plus,3];int[plus,1][plus,2][plus,3])
 mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;7
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;(1;1;1;2;4;7)
+==&gt;(1;;1;;1;[plus,1];2;[plus,2];4;[plus,3];7)
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
-==&gt;7</code></pre>
+==&gt;int[plus,1][plus,2][plus,3][path,(_;_)]&gt;-</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -5236,7 +5236,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-07-30 16:55:53 -0600
+Last updated 2020-07-31 00:01:37 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
