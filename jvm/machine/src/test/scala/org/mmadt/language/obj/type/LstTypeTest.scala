@@ -31,6 +31,10 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
 
+  test("lst type toString") {
+    assertResult("lst")(lst.toString)
+  }
+
   test("lst type [split]/[merge]") {
     val clst: Lst[IntType] = lst(g = (Tokens.`,`, List(int.plus(1), int.plus(2), int.plus(3))))
     val plst: Lst[IntType] = lst(g = (Tokens.`|`, List(int.plus(1), int.plus(2), int.plus(3))))

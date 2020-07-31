@@ -55,7 +55,7 @@ object mmlangPrinter {
     else if (rec.root) mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
     if (rec.isInstanceOf[RecType[Obj, Obj]])
       if (Tokens.named(rec.name)) rec.name
-      else mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
+      else mapString(rec, map = rec.gmap, sep = rec.gsep, empty = Tokens.rec)
     else
       mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
   }
@@ -69,9 +69,12 @@ object mmlangPrinter {
   }
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
-    if (lst.glist.isEmpty)
-      LROUND + Tokens.space + RROUND
-    else
+    if (lst.glist.isEmpty) {
+      lst match {
+        case _: Type[_] => Tokens.lst
+        case _ => LROUND + Tokens.space + RROUND
+      }
+    } else
       lst.glist.foldLeft(if (lst.isInstanceOf[TLst[_]]) LROUND else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) +
         (if (lst.isInstanceOf[TLst[_]]) RROUND else RROUND)
   }

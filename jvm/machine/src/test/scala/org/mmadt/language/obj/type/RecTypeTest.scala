@@ -36,8 +36,8 @@ class RecTypeTest extends FunSuite {
   val Y: (IntValue, StrValue) = int(2) -> str("b")
   val Z: (IntValue, StrValue) = int(3) -> str("c")
 
-  test("rec value toString") {
-    assertResult("(->)")(rec.toString)
+  test("rec type toString") {
+    assertResult("rec")(rec.toString)
   }
 
   test("rec type [split]/[merge]") {
