@@ -22,9 +22,9 @@ object BranchOp extends Func[Obj, Obj] {
   def apply[A <: Obj](branches: Obj): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.branch, List(branches)), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val branches: Poly[Obj] = Inst.oldInst(inst).arg0[Poly[Obj]]
-    val split: Poly[Obj] = start.split(branches)
+    val split: Poly[Obj] = SplitOp(branches).exec(start)
     MergeOp().q(inst.q).exec(split) match {
-      case astrm: Strm[Obj] => strm(astrm.values.map(x => x.clone(via = (start, inst))).filter(_.alive))
+      case astrm: Strm[Obj] => strm(astrm.values.filter(_.alive))
       case atype: Type[_] =>
         val rpoly: Poly[Obj] = Poly.resolveSlots(start, branches, branch = true)
         if (!atype.alive || rpoly.isEmpty) zeroObj
