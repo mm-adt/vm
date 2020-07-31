@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.value
 
+import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -59,11 +60,11 @@ class VStrTest extends FunSuite {
           .plus(str.from("c"))
           .plus(str.from("d"))
           .plus(str.from("e"))))
-    assertResult(str("marko"))(str("m") ===> str.plus("a").plus("r").plus("k").plus("o").path().tail().tail().tail().tail().head())
-    assertResult(str("marko"))(str("m") ===> str.plus("a").plus("r").plus("k").plus("o").path().tail().tail().tail().head().as(str).plus("k").plus("o").path().tail().tail().tail().tail().head())
+    assertResult(str("marko"))(str("m") ===> str.plus("a").plus("r").plus("k").plus("o").path(VERTICES).tail().tail().tail().tail().head())
+    assertResult(str("marko"))(str("m") ===> str.plus("a").plus("r").plus("k").plus("o").path(VERTICES).tail().tail().tail().head().as(str).plus("k").plus("o").path(VERTICES).tail().tail().tail().tail().head())
   }
 
   test("play") {
-   str("m") ==> str.plus("a").plus("r").plus("k").plus("o")
+    str("m") ==> str.plus("a").plus("r").plus("k").plus("o")
   }
 }

@@ -294,7 +294,7 @@ image::type-value-trace.svg[align=center,width=625]
 [exec]
 ----
 2[plus,4][is>0]
-2[plus,4][is>0][trace]
+2[plus,4][is>0][path]
 2[plus,4][is>0][type]
 ----
 
@@ -584,7 +584,7 @@ a|
 ----
 5 => int[plus,int[mult,2]]
 5 => int[plus,int[mult,2]][explain]
-5 => int[plus,int[mult,2]][trace]
+5 => int[plus,int[mult,2]][path]
 ----
 {blank}
 |===
@@ -1967,17 +1967,17 @@ If the argument to `[plus]` is a type (as opposed to a value), then the argument
 
 [exec]
 ----
-6 => int[plus,[mult,2]][trace]
-8 => int[plus,[mult,2]][trace]
+6 => int[plus,[mult,2]][path]
+8 => int[plus,[mult,2]][path]
 ----
 
-Every `obj` exists as a distinct vertex in the `obj` graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming `obj` that yielded the `obj` at the head of the edge. The `obj` at the tail of the edge may also have incoming edges in the `obj` graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a *path*. The computational path of an `obj` is accessed via `[trace]`. The output of `[trace]` is a `;-lst` that can be https://en.wikipedia.org/wiki/Reflection_(computer_programming)[introspected] as any other `lst`.
+Every `obj` exists as a distinct vertex in the `obj` graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming `obj` that yielded the `obj` at the head of the edge. The `obj` at the tail of the edge may also have incoming edges in the `obj` graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a *path*. The computational path of an `obj` is accessed via `[path]`. The output of `[path]` is a `;-lst` that can be https://en.wikipedia.org/wiki/Reflection_(computer_programming)[introspected] as any other `lst`.
 
 [exec]
 ----
 8 => int[plus,1][mult,2][lt,63]                        //<1>
-8 => int[plus,1][mult,2][lt,63][trace]                 //<2>
-8 => int[plus,1][mult,2][lt,63][trace][get,5][get,0]   //<3>
+8 => int[plus,1][mult,2][lt,63][path]                  //<2>
+8 => int[plus,1][mult,2][lt,63][path][get,5][get,0]    //<3>
 ----
 <1> The evaluation of an `bool\<=int` type via 8.
 <2> The `obj` graph path from 8 to `[lt,63]`.
@@ -1992,11 +1992,11 @@ image::linear-variable-example.svg[align=center,width=625]
 [exec]
 ----
 9 => int[plus,1]<x>[plus,2][mult,x]         //<1>
-9 => int[plus,1]<x>[plus,2][mult,x][trace]  //<2>
+9 => int[plus,1]<x>[plus,2][mult,x][path]   //<2>
 int[plus,1]<x>[plus,2][mult,x][explain]     //<3>
 ----
 <1> The `<x>` instruction stores the value `10` in the value's path through the `obj` graph.
-<2> The `[trace]` instruction provides the automaton's path through the `obj` graph as `;-lst`.
+<2> The `[path]` instruction provides the automaton's path through the `obj` graph as `;-lst`.
 <3> The `[explain]` instruction details the scope of state variables.
 
 The scope of a variable starts at the moment of declaration (`[to]`) and ends when the declaring branch is complete. If an `inst` has a type argument, that type has access to the variables declared in any parent branch.
@@ -2005,7 +2005,7 @@ The scope of a variable starts at the moment of declaration (`[to]`) and ends wh
 ----
 2 => int<x>[plus,<y>][plus,y]                                                      //<1>
 2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x]                                      //<2>
-2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x][trace]                               //<3>
+2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x][path]                                //<3>
 int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]  //<4>
 ----
 <1> The variable `y` is declared in a branch nested within the retrieving branch.

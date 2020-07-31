@@ -57,7 +57,6 @@ trait Obj
     with NotOp
     with GivenOp
     with JuxtaOp
-    with PathOp
     with FromOp
     with LoadOp
     with QOp
@@ -65,7 +64,7 @@ trait Obj
     with EvalOp
     with EqsOp
     with ToOp
-    with TraceOp
+    with PathOp
     with StartOp
     with SplitOp
     with RewriteOp

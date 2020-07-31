@@ -23,8 +23,8 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.map.PathOp
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.op.trace.PathOp
+import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -34,16 +34,16 @@ class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[path] value, type, strm") {
     val starts: TableFor3[Obj, Obj, Obj] =
       new TableFor3[Obj, Obj, Obj](("input", "type", "result"),
-        (str("a"), __.plus("b").plus("c").path(), str("a") `;` "ab" `;` "abc"),
-        (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(), str("a") `;` "ab" `;` "ababcd" `;` "ababcde"),
-        //(str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path().get(1).path(), str("a")`;` "ab"`;` "ababcd"`;` "ababcde"),
-        (int(1, 2, 3), __.plus(1).path(), strm(List[Lst[IntValue]](int(1) `;` 2, int(2) `;` 3, int(3) `;` 4))),
-        (int(1, 2, 3), __.plus(1).plus(2).path(), strm(List[Lst[IntValue]](int(1) `;` 2 `;` 4, int(2) `;` 3 `;` 5, int(3) `;` 4 `;` 6))),
+        (str("a"), __.plus("b").plus("c").path(VERTICES), str("a") `;` "ab" `;` "abc"),
+        (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(VERTICES), str("a") `;` "ab" `;` "ababcd" `;` "ababcde"),
+        (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(VERTICES).get(1).path(VERTICES), str("a") `;` "ab" `;` "ababcd" `;` "ababcde"),
+        (int(1, 2, 3), __.plus(1).path(VERTICES), strm(List(int(1) `;` 2, int(2) `;` 3, int(3) `;` 4))),
+        (int(1, 2, 3), __.plus(1).plus(2).path(VERTICES), strm(List(int(1) `;` 2 `;` 4, int(2) `;` 3 `;` 5, int(3) `;` 4 `;` 6))),
       )
     forEvery(starts) { (input, atype, result) => {
       List(
         //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
-        PathOp().q(atype.trace.head._2.q).exec(input),
+        PathOp((__ `;` zeroObj).asInstanceOf[Lst[Obj]]).q(atype.trace.head._2.q).exec(input),
         input.compute(asType(atype)),
         input ===> atype.start(),
       ).foreach(x => {
@@ -53,7 +53,7 @@ class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
     }
   }
   test("[path] w/ int value") {
-    assertResult(int(0) `;` int(1) `;` int(3) `;` int(6) `;` int(10))(int(0).plus(1).plus(2).plus(3).plus(4).path())
+    assertResult(int(0) `;` 1 `;` 3 `;` 6 `;` 10)(int(0).plus(1).plus(2).plus(3).plus(4).path(VERTICES))
   }
 
 }

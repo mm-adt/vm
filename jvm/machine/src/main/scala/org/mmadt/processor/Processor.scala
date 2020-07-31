@@ -22,9 +22,8 @@
 
 package org.mmadt.processor
 
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.processor.obj.`type`.CompilingProcessor
 import org.mmadt.processor.obj.value.IteratorProcessor
 import org.mmadt.storage.StorageFactory._
@@ -45,9 +44,8 @@ object Processor {
     if (itty.hasNext) {
       val first = itty.next()
       first match {
-        case _: Value[_] if itty.hasNext => strm[O]((first +: itty.toList))
-        case _: Value[_] => first
-        case _ => asType(first).hardQ(plusQ(first.q, itty.foldLeft(qZero)((a, b) => plusQ(a, b.q))))
+        case _ if itty.hasNext => strm[O](first +: itty.toList)
+        case _ => first
       }
     } else
       zeroObj.asInstanceOf[O]

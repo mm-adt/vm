@@ -20,19 +20,31 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.map
+package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait PathOp {
   this: Obj =>
   def path(): Lst[Obj] = PathOp().exec(this)
+  def path(pattern: Lst[Obj]): Lst[Obj] = PathOp(pattern).exec(this)
 }
+
 object PathOp extends Func[Obj, Lst[Obj]] {
-  def apply(): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, Nil), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = lst(g = (Tokens.`;`, start.trace.foldRight(List.empty[Obj])((a, b) => a._1 +: b) :+ start)).via(start, inst)
+  val VERTICES: Lst[Obj] = (__ `;` zeroObj).asInstanceOf[Lst[Obj]]
+  def apply(): Inst[Obj, Lst[Obj]] = PathOp.apply((__ `;` __).asInstanceOf[Lst[Obj]])
+  def apply(pattern: Lst[Obj]): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, List(pattern)), func = this) with TraceInstruction
+  override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = (start match {
+    case _: Strm[_] => start
+    case _ => lst(
+      inst.arg0[Lst[Obj]].gsep,
+      start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(inst.arg0[Lst[Obj]]).g._2.filter(_.alive)) :+ start: _*)
+  }).via(start, inst).asInstanceOf[Lst[Obj]]
 }

@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.value.strm.util
 
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Obj, _}
@@ -33,7 +34,10 @@ import scala.collection.immutable.ListSet
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq[A] {
-  def get(a: A): Option[A] = baseSet.find(b => a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g))
+  def get(a: A): Option[A] = baseSet.find(b => a match {
+    case _:Value[_] =>  a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g)
+    case _:Type[_] =>   a.equals(b)
+  })
   def put(a: A): MultiSet[A] = {
     val oldObj: Option[A] = this.get(a)
     new MultiSet[A](oldObj.map(x => baseSet - x).getOrElse(baseSet) + oldObj.map(x => x.hardQ(plusQ(a.q, x.q))).getOrElse(a))

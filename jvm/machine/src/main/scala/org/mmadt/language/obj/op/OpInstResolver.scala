@@ -70,7 +70,7 @@ object OpInstResolver {
       case Tokens.merge | Tokens.merge_op => MergeOp()
       case Tokens.repeat => RepeatOp(args.head, args.tail.head)
       case Tokens.given | Tokens.given_op => GivenOp(args.head)
-      case Tokens.trace => args.headOption.map(x => TraceOp(x.asInstanceOf[Lst[Obj]])).getOrElse(TraceOp())
+      case Tokens.path => args.headOption.map(x => PathOp(x.asInstanceOf[Lst[Obj]])).getOrElse(PathOp())
       //
       case Tokens.model => ModelOp(args.head.asInstanceOf[Rec[Obj, Lst[Obj]]])
       case Tokens.load => LoadOp(args.head)
@@ -100,7 +100,7 @@ object OpInstResolver {
       case Tokens.count => CountOp()
       case Tokens.sum => SumOp()
       case Tokens.explain => ExplainOp()
-      case Tokens.path => PathOp()
+
       case Tokens.put => PutOp(args.head, args.tail.head)
       case Tokens.`type` => TypeOp()
       case Tokens.from =>

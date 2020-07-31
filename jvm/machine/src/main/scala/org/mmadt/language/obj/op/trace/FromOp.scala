@@ -48,7 +48,7 @@ object FromOp extends Func[Obj, Obj] {
     val history: Option[(String, Obj)] = Obj.fetchWithInstOption[Obj](start, inst.arg0[StrValue].g)
     if (history.isEmpty && !start.isInstanceOf[Type[Obj]])
       if (inst.args.length == 1)
-        throw LanguageException.labelNotFound(start.tracer(zeroObj `;` __), inst.arg0[StrValue].g)
+        throw LanguageException.labelNotFound(start.path(zeroObj `;` __), inst.arg0[StrValue].g)
       else
         Inst.resolveArg(start, inst.arg1[Obj]).via(start, inst)
     else {
