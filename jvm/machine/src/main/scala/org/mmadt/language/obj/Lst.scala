@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -71,9 +71,15 @@ object Lst {
         }
         local
       })))
-      if (branch && z.g._2.exists(x => !x.alive)) z.q(qZero) else z
-    } else
-      apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot)).filter(x => !branch || x.alive)))
+      if (branch && z.g._2.exists(x => !x.alive)) z.q(qZero)
+      else if (branch && z.g._2.forall(x => x.root)) z.clone(g = (z.gsep, List(z.g._2.last)))
+      else z
+    } else {
+      if (branch && __.isAnonRoot(start) && apoly.g._2.map(x => x.hardQ(qOne)).toSet.size == 1 && apoly.g._2.forall(x => x.root))
+        apoly.clone(g = (apoly.gsep, List(apoly.g._2.head.hardQ(apoly.g._2.foldLeft(qZero)((a, b) => plusQ(a, b.q)))))) // TODO: total hack
+      else
+        apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot)).filter(x => !branch || x.alive)))
+    }
   }
 
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {

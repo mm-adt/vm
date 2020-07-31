@@ -32,7 +32,7 @@ object BranchOp extends Func[Obj, Obj] {
           Inst.resolveArg(start,
             if (rpoly.glist.head.root) rpoly.glist.head.q(multQ(rpoly.glist.head.q, inst.q))
             else rpoly.glist.head.q(inst.q))
-        else atype.clone(via = (start, inst.clone(g = (Tokens.branch, List(rpoly)))))
+        else BranchInstruction.multPolyQ(BranchInstruction.brchType[Obj](rpoly), lst, inst).clone(via = (start, inst.clone(g = (Tokens.branch, List(rpoly)))))
       case avalue: Value[_] => avalue.clone(via = (start, inst))
     }
 

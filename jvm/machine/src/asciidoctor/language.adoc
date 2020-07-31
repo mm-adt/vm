@@ -721,8 +721,8 @@ a|
 a|
 [exec]
 ----
-''[[+'a',+'b'],+'c']
-''[+'a',[+'b',+'c']]
+[[str,str],str]
+[str,[str,str]]
 ----
 {blank}
 | Additive commutativity
@@ -740,8 +740,8 @@ a|
 a|
 [exec]
 ----
-''[+'a',+'b']
-''[+'b',+'a']
+[str{2},str]
+[str,str{2}]
 ----
 {blank}
 | Additive identity
@@ -789,8 +789,8 @@ a|
 a|
 [exec]
 ----
-''[[+'a';+'b'];+'c']
-''[+'a';[+'b';+'c']]
+[[str;str];str]
+[str;[str;str]]
 ----
 {blank}
 | Multiplicative identity
@@ -804,7 +804,7 @@ a|
 a|
 [exec]
 ----
-''[+'a';_{1}]
+[str;_{1}]
 ----
 {blank}
 
@@ -825,8 +825,8 @@ a|
 a|
 [exec]
 ----
-''[+'a';[+'b',+'c']]
-''[[+'a';+'b'],[+'a';+'c']]
+[_;[str,str]]
+[[str;str],[str;str]]
 ----
 {blank}
 | Right distributivity
@@ -844,8 +844,8 @@ a|
 a|
 [exec]
 ----
-''[[+'a',+'b'];+'c']
-''[[+'a';+'c'],[+'b';+'c']]
+[[str,str];str]
+[[str;str],[str;str]]
 ----
 {blank}
 |===
@@ -894,8 +894,8 @@ a|
 a|
 [exec]
 ----
-''[+'a',+'b']{-1}
-''[+{-1}'a',+{-1}'b']
+[str,str]{-1}
+[str{-1},str{-1}]
 ----
 {blank}
 | Inverse distributivity
@@ -949,9 +949,9 @@ a|
 a|
 [exec]
 ----
-''[+'a';+{-1}'b']
-''[+{-1}'a';+'b']
-''[+'a';+'b']{-1}
+[_;str{-1}]
+[str{-1};str]
+[str;str]{-1}
 ----
 {blank}
 | Factoring
@@ -969,8 +969,8 @@ a|
 a|
 [exec]
 ----
-''[+{-1}'a';+{-1}'b']
-''[+'a';+'b']
+[_{-1};str{-1}]
+[str;str]
 ----
 {blank}
 |===
@@ -1024,7 +1024,7 @@ a|
 a|
 [exec]
 ----
-'a'{2}[+{3}'b']
+_{2}[str{3}]
 ----
 {blank}
 | Splitting  | \[\begin{split}
@@ -1041,8 +1041,8 @@ a|
 a|
 [exec]
 ----
-'a'{2}[+{3}'b',+{4}'c']
-['ab'{6},'ac'{8}]
+_{2}[str{3},str{4}]
+[str{6},str{8}]
 ----
 {blank}
 | Merging  | \[\begin{split}
@@ -1059,8 +1059,8 @@ a|
 a|
 [exec]
 ----
-''[[+{2}'a'],[+{3}'b']]
-''[+{2}'a',+{3}'b']
+[[str{2}],[str{3}]]
+[str{2},str{3}]
 ----
 {blank}
 | Removing  | \[ (\mathbf{0}a + b) = b \]
