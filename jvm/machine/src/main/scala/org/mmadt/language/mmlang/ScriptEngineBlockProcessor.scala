@@ -63,32 +63,40 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
       if (w.trim.isBlank)
         builder.append("\n")
-      else if (eval) {
+      else {
         if (w.stripTrailing().endsWith(linebreak)) {
           val line = w.substring(0, w.stripTrailing().length - (linebreak.length + 1))
           query.append(line).append("\n").append(IntStream.range(0, prompt.length).mapToObj(_ => Tokens.space).collect(Collectors.joining))
         } else {
           query.append(w)
-          builder.append(prompt).append(query).append("\n")
+          if (eval)
+            builder.append(prompt).append(query).append("\n")
           Try[Obj] {
             engine.eval(query.toString().replaceAll("\n", Tokens.empty).replace(linebreak, Tokens.empty))
           } match {
-            case Failure(e) if e.getClass.getSimpleName.equals(exception) => (e match {
-              case _: LanguageException => builder.append("language error: ")
-              case _ => builder.append("error: ")
-            }).append(e.getLocalizedMessage).append("\n")
+            case Failure(e) if e.getClass.getSimpleName.equals(exception) =>
+              if (eval) {
+                (e match {
+                  case _: LanguageException => builder.append("language error: ")
+                  case _ => builder.append("error: ")
+                }).append(e.getLocalizedMessage).append("\n")
+              } else
+                builder.append(query)
             case Failure(e) => throw new Exception(e.getMessage + ":::" + builder, e)
             case Success(value) =>
-              val results = value.toStrm.values.toList
-              if (results.isEmpty) builder.append(none)
-              else results.foreach(a => {
-                builder.append(Tokens.RRDARROW).append(a).append("\n")
-              })
+              if (eval) {
+                val results = value.toStrm.values.toList
+                if (results.isEmpty) builder.append(none)
+                else results.foreach(a => {
+                  builder.append(Tokens.RRDARROW).append(a).append("\n")
+                })
+              } else {
+                builder.append(query)
+              }
           }
           query.clear()
         }
-      } else
-        builder.append(w).append("\n")
+      }
     })
     println(builder)
     val endAttributes: java.util.Map[String, Object] = new util.HashMap[String, Object]

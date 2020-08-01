@@ -62,7 +62,7 @@ Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorph
 \texttt{obj} = (\texttt{type object} \times \texttt{q}) + (\texttt{value object} \times \texttt{q}).
 \]
 
-There are two distinct kinds of mm-ADT `objs`: _quantified_ type objects and _quantified_ value objects. The products of the `obj` sum are called *type* and *value*. That is the *obj meta-model*.
+There are two distinct kinds of mm-ADT `objs`: _quantified_ type objects and _quantified_ value objects. The products of the `obj` coproduct are called *type* and *value*. That is the *obj meta-model*.
 
 \[
 \texttt{obj} = \texttt{type} + \texttt{value}
@@ -82,7 +82,7 @@ int{5}           //<3>
 <2> A single `int` value of `1`.
 <3> Five `int` types.
 <4> Five `1` `int` values.
-<5> A `str` *stream* composed of `'a'`,`'b'`, and `'a'`.
+<5> A `str` *stream* composed of `'a'`,`'b'`, and `'a'` (definition forthcoming).
 
 Both types and values can be operated on by types, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] (values).
 
@@ -180,7 +180,7 @@ When the typographical representation of an `obj` lacks an associated quantifier
 For instance, the `real` `1.35{1}` is written `1.35`.
 
 A dtype has two product projections.
-The _type projection_ denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the _instruction projection_ denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the aforementioned component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
+The *type projection* denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the *instruction projection* denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the aforementioned component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
 \[
 \begin{split}
 \tt{type} &=\;& (\tt{type} &\;\times\;& \tt{inst}) &\;+\;& \tt{ctype} \\ \text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"} \end{split}
@@ -198,7 +198,7 @@ In terms of the "__range = domain and function__" reading, when an `int` (*domai
 
 image::int-isgt0.svg[align=center,width=230]
 
-The diagram above is an instance of a structure that is core to various aspects of mm-ADT including https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more.
+The diagram above is generally known as the *obj graph*. The `obj` graph  is a fundamental structure in mm-ADT that is used in https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more.
 This structure is called the *obj graph*.
 The subgraph concerned with type definitions is called the *type graph*.
 The subgraph considered with value history is called the *value graph*.
@@ -233,16 +233,22 @@ image::type-signature-definition.svg[align=center,width=375]
 
 ===== Type Signature
 
-Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type.
-A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type, and the _range_ is the target type.
-Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`.
+Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type.
+A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type. As ctype `objs`, the domain and range each have an associated quantifier denoted `{q}` in `mmlang`.
 The general pattern of a type signature is
 
-[.text-center]
-`range{q}\<=domain{q}`.
+[.center]
+[width=30]
+|===
+^a|[exec,eval=false,exception=LanguageException]
+----
+range{q}<=domain{q}
+----
+{blank}
+|===
 
 NOTE: In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ and a range of \$Y\$, then it's signature is denoted \$f: X \to Y\$.
-Furthermore, given quantifiers from a ring \$Q\$, the function signature would be denoted \$f: X \times Q \to Y \times Q\$.
+Furthermore, given quantifiers from a ring \$Q\$, the function signature would be denoted \$f: X \times Q \to Y \times Q\$ or \$f: (X \times Q) \to (Y \times Q)\$.
 
 [cols="6,10"]
 |===
@@ -322,17 +328,13 @@ A https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] is one 
 Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram _commutes_.
 ****
 
-Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]).
-The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`).
-The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`.
-When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`.
-When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground.
-Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`.
-For a type, this history is called the *type definition* and is a path in the *type graph*.
+Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the reference to the instruction that was applied to `int`.
 
-NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _trace_.
+For a type, the connected chain of references is called the *type definition* and is a encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] in the *type graph*. For a value, the *value graph* encodes an analogous path called the *value history* (or _mutation history_). Both types and values exist in a larger graph called an *obj graph*. The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] below denotes an `obj` graph composed of two paths. The top horizontal path is a value history and the bottom horizontal path is a type definition. These paths are joined by the only instruction in `inst` that unites the type graph and value graph: `[type]`.
 
-image::type-value-trace.svg[align=center,width=625]
+NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _path_.
+
+image::type-value-path.svg[align=center,width=600]
 
 [exec]
 ----
@@ -341,23 +343,18 @@ image::type-value-trace.svg[align=center,width=625]
 2[plus,4][is>0][type]
 ----
 
-Both types and values exist in a larger graph called the *obj graph*.
-In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph.
-However, in practice, the mm-ADT VM removes histories (particular paths through the graph) that are no longer required by the program.
-This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
+In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes paths in the graph that are no longer required by the program. This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
-NOTE: image:type-value-trace-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid.
-However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type.
-With this convention, there is no loss of information.
-The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction).
-Furthermore, dashed arrows will replace `[type]`-labeled arrows.
-All subsequent diagrams will follow this convention.
+NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace `[type]`-labeled arrows. All subsequent diagrams will follow this convention.
 
-.Commutative Obj Graph
+.The Obj Graph as a Cayley Graph and a Commutative Diagram
 ================================================================
-The `obj` graph has an analogous structure to a category theoretic diagram, where the vertices are the category objects and the edges are labeled with instruction morphisms.
-In mm-ADT, every `obj` graph https://en.wikipedia.org/wiki/Commutative_diagram[commutes].
-It is this feature that makes the `obj` graph a universal https://en.wikipedia.org/wiki/Memoization[memoization] cache where the vertices may be types or values.
+The `obj` graph is both the generalized https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] of a https://en.wikipedia.org/wiki/Partial_function[partial] https://en.wikipedia.org/wiki/Monoid[monoid] as well as the https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] of a https://en.wikipedia.org/wiki/Free_category[free category]. More generally, the `obj` graph is the https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function[graph of unary functions] of `inst`, where instructions operate on both types and values.
+
+* *Cayley graph*: vertices denote type/value-elements of the `inst` monoid with generating edges in `inst`.
+* *Commutative diagram*: vertices denote type/value-objects of the `obj` category with `inst` morphisms.
+
+Depending on the context of use, each interpretation of the `obj` graph will be leveraged: from compilation to evaluation. For example, the object graph's commutativity is leveraged for both compile-time and runtime https://en.wikipedia.org/wiki/Graph_rewriting[type rewriting]. If two paths have the same source vertex (domain) and the same target vertex (range), then both paths yield the same result. In practice, the VM is biased towards evaluating the instructions along the https://en.wikipedia.org/wiki/Computational_complexity_theory[computationally cheaper] path. As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations exists theoretically given the https://en.wikipedia.org/wiki/Presentation_of_a_monoid[monoid presentation] containing the root `objs` (e.g. the ctypes) and its generators (`inst`). This static immutability is a perfect medium for https://en.wikipedia.org/wiki/Memoization[memoized] computations -- especially in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.
 ================================================================
 
 As a ring, an mm-ADT `obj` can be multiplied or added to another `obj`.
