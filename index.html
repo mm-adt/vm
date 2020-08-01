@@ -928,7 +928,7 @@ Thus, the previous formula is <a href="https://en.wikipedia.org/wiki/Isomorphism
 \]</p>
 </div>
 <div class="paragraph">
-<p>There are two distinct kinds of mm-ADT <code>objs</code>: <em>quantified</em> type objects and <em>quantified</em> value objects. The products of the <code>obj</code> sum are called <strong>type</strong> and <strong>value</strong>. That is the <strong>obj meta-model</strong>.</p>
+<p>There are two distinct kinds of mm-ADT <code>objs</code>: <em>quantified</em> type objects and <em>quantified</em> value objects. The products of the <code>obj</code> coproduct are called <strong>type</strong> and <strong>value</strong>. That is the <strong>obj meta-model</strong>.</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -982,7 +982,7 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>A <code>str</code> <strong>stream</strong> composed of <code>'a'</code>,<code>'b'</code>, and <code>'a'</code>.</td>
+<td>A <code>str</code> <strong>stream</strong> composed of <code>'a'</code>,<code>'b'</code>, and <code>'a'</code> (definition forthcoming).</td>
 </tr>
 </table>
 </div>
@@ -1191,7 +1191,7 @@ For instance, the <code>real</code> <code>1.35{1}</code> is written <code>1.35</
 </div>
 <div class="paragraph">
 <p>A dtype has two product projections.
-The <em>type projection</em> denotes the <a href="https://en.wikipedia.org/wiki/Domain_of_a_function">domain</a> and the <em>instruction projection</em> denotes the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">function</a>, where the type product as a whole, relative to the aforementioned component projections, is the <a href="https://en.wikipedia.org/wiki/Range_of_a_function">range</a>.
+The <strong>type projection</strong> denotes the <a href="https://en.wikipedia.org/wiki/Domain_of_a_function">domain</a> and the <strong>instruction projection</strong> denotes the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">function</a>, where the type product as a whole, relative to the aforementioned component projections, is the <a href="https://en.wikipedia.org/wiki/Range_of_a_function">range</a>.
 \[
 \begin{split}
 \tt{type} &amp;=\;&amp; (\tt{type} &amp;\;\times\;&amp; \tt{inst}) &amp;\;+\;&amp; \tt{ctype} \\ \text{“range} &amp;=\;&amp; (\text{domain} &amp;\;\text{and}\;&amp; \text{function}) &amp;\;\text{or}\;&amp; \text{base"} \end{split}
@@ -1218,7 +1218,7 @@ In terms of the "<em>range = domain and function</em>" reading, when an <code>in
 </div>
 </div>
 <div class="paragraph">
-<p>The diagram above is an instance of a structure that is core to various aspects of mm-ADT including <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more.
+<p>The diagram above is generally known as the <strong>obj graph</strong>. The <code>obj</code> graph  is a fundamental structure in mm-ADT that is used in <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more.
 This structure is called the <strong>obj graph</strong>.
 The subgraph concerned with type definitions is called the <strong>type graph</strong>.
 The subgraph considered with value history is called the <strong>value graph</strong>.
@@ -1289,14 +1289,27 @@ mmlang&gt; int{2}[is&gt;0][plus,[neg]]                                <i class="
 <div class="sect4">
 <h5 id="_type_signature">Type Signature</h5>
 <div class="paragraph">
-<p>Every mm-ADT type can be generally understood as a function that maps an <code>obj</code> of one type to an <code>obj</code> of another type.
-A <strong>type signature</strong> specifies the source and target of this mapping, where the <em>domain</em> is the source type, and the <em>range</em> is the target type.
-Both the domain and range type specifications include a respective quantifier denoted <code>{q}</code> in <code>mmlang</code>.
+<p>Every mm-ADT type can be generally understood as a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">function</a> that maps an <code>obj</code> of one type to an <code>obj</code> of another type.
+A <strong>type signature</strong> specifies the source and target of this mapping, where the <strong>domain</strong> is the source type, and the <strong>range</strong> is the target type. As ctype <code>objs</code>, the domain and range each have an associated quantifier denoted <code>{q}</code> in <code>mmlang</code>.
 The general pattern of a type signature is</p>
 </div>
-<div class="paragraph text-center">
-<p><code>range{q}&lt;=domain{q}</code>.</p>
+<table class="tableblock frame-all grid-all center" style="width: 30%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">range{q}&lt;=domain{q}</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -1305,7 +1318,7 @@ The general pattern of a type signature is</p>
 </td>
 <td class="content">
 In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ and a range of \$Y\$, then it&#8217;s signature is denoted \$f: X \to Y\$.
-Furthermore, given quantifiers from a ring \$Q\$, the function signature would be denoted \$f: X \times Q \to Y \times Q\$.
+Furthermore, given quantifiers from a ring \$Q\$, the function signature would be denoted \$f: X \times Q \to Y \times Q\$ or \$f: (X \times Q) \to (Y \times Q)\$.
 </td>
 </tr>
 </table>
@@ -1425,13 +1438,10 @@ Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram 
 </div>
 </div>
 <div class="paragraph">
-<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>).
-The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>).
-The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>.
-When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>.
-When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground.
-Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the remembrance of the instruction that was applied to <code>int</code>.
-For a type, this history is called the <strong>type definition</strong> and is a path in the <strong>type graph</strong>.</p>
+<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the reference to the instruction that was applied to <code>int</code>.</p>
+</div>
+<div class="paragraph">
+<p>For a type, the connected chain of references is called the <strong>type definition</strong> and is a encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> in the <strong>type graph</strong>. For a value, the <strong>value graph</strong> encodes an analogous path called the <strong>value history</strong> (or <em>mutation history</em>). Both types and values exist in a larger graph called an <strong>obj graph</strong>. The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> below denotes an <code>obj</code> graph composed of two paths. The top horizontal path is a value history and the bottom horizontal path is a type definition. These paths are joined by the only instruction in <code>inst</code> that unites the type graph and value graph: <code>[type]</code>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1440,14 +1450,14 @@ For a type, this history is called the <strong>type definition</strong> and is a
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In practice, the string representation of a value is its <em>ground</em> and the string representation of a type is its <em>trace</em>.
+In practice, the string representation of a value is its <em>ground</em> and the string representation of a type is its <em>path</em>.
 </td>
 </tr>
 </table>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/type-value-trace.svg" alt="type value trace" width="625">
+<img src="./images/language/type-value-path.svg" alt="type value path" width="600">
 </div>
 </div>
 <div class="listingblock">
@@ -1461,10 +1471,7 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 </div>
 </div>
 <div class="paragraph">
-<p>Both types and values exist in a larger graph called the <strong>obj graph</strong>.
-In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph.
-However, in practice, the mm-ADT VM removes histories (particular paths through the graph) that are no longer required by the program.
-This process is called <strong>path retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
+<p>In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes paths in the graph that are no longer required by the program. This process is called <strong>path retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1473,23 +1480,29 @@ This process is called <strong>path retraction</strong> and is the mm-ADT equiva
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<span class="image right"><img src="./images/language/type-value-trace-short.svg" alt="type value trace short" width="350"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid.
-However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type.
-With this convention, there is no loss of information.
-The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction).
-Furthermore, dashed arrows will replace <code>[type]</code>-labeled arrows.
-All subsequent diagrams will follow this convention.
+<span class="image right"><img src="./images/language/type-value-path-short.svg" alt="type value path short" width="350"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace <code>[type]</code>-labeled arrows. All subsequent diagrams will follow this convention.
 </td>
 </tr>
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 1. Commutative Obj Graph</div>
+<div class="title">Deep Dive 1. The Obj Graph as a Cayley Graph and a Commutative Diagram</div>
 <div class="content">
 <div class="paragraph">
-<p>The <code>obj</code> graph has an analogous structure to a category theoretic diagram, where the vertices are the category objects and the edges are labeled with instruction morphisms.
-In mm-ADT, every <code>obj</code> graph <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutes</a>.
-It is this feature that makes the <code>obj</code> graph a universal <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> cache where the vertices may be types or values.</p>
+<p>The <code>obj</code> graph is both the generalized <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> of a <a href="https://en.wikipedia.org/wiki/Partial_function">partial</a> <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as well as the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> of a <a href="https://en.wikipedia.org/wiki/Free_category">free category</a>. More generally, the <code>obj</code> graph is the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function">graph of unary functions</a> of <code>inst</code>, where instructions operate on both types and values.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Cayley graph</strong>: vertices denote type/value-elements of the <code>inst</code> monoid with generating edges in <code>inst</code>.</p>
+</li>
+<li>
+<p><strong>Commutative diagram</strong>: vertices denote type/value-objects of the <code>obj</code> category with <code>inst</code> morphisms.</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>Depending on the context of use, each interpretation of the <code>obj</code> graph will be leveraged: from compilation to evaluation. For example, the object graph&#8217;s commutativity is leveraged for both compile-time and runtime <a href="https://en.wikipedia.org/wiki/Graph_rewriting">type rewriting</a>. If two paths have the same source vertex (domain) and the same target vertex (range), then both paths yield the same result. In practice, the VM is biased towards evaluating the instructions along the <a href="https://en.wikipedia.org/wiki/Computational_complexity_theory">computationally cheaper</a> path. As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations exists theoretically given the <a href="https://en.wikipedia.org/wiki/Presentation_of_a_monoid">monoid presentation</a> containing the root <code>objs</code> (e.g. the ctypes) and its generators (<code>inst</code>). This static immutability is a perfect medium for <a href="https://en.wikipedia.org/wiki/Memoization">memoized</a> computations&#8201;&#8212;&#8201;especially in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.</p>
 </div>
 </div>
 </div>
@@ -5465,7 +5478,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-01 02:40:46 -0600
+Last updated 2020-08-01 13:14:49 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
