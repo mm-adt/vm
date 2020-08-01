@@ -338,7 +338,7 @@ In theory, the complete history of an mm-ADT program (from compilation to execut
 However, in practice, the mm-ADT VM removes histories (particular paths through the graph) that are no longer required by the program.
 This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
-NOTE: image:type-value-trace-short.svg[float=right,width=300] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid.
+NOTE: image:type-value-trace-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid.
 However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type.
 With this convention, there is no loss of information.
 The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction).
