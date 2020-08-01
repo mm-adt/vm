@@ -39,11 +39,14 @@ Within the VM and outside the referential purview of an interfacing language, ev
 
 image::obj-type-value-q.svg[float=left,width=375]
 
-. An *object* that is either a *type object* or a *value object* and
-. A *quantifier* specifying the "amount" of objects being denoted.
+. an *object* that is either a *type object* or a *value object* and
+. a *quantifier* specifying the "amount" of objects being denoted.
 
 \[
-\text{ } \\ \texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}.
+\begin{split}
+\text{ } \\ \texttt{obj} &= \texttt{object} &\;\times\; \texttt{q}
+\text{ } \\ \texttt{obj} &= (\texttt{type object} + \texttt{value object}) &\;\times\; \texttt{q}.
+\end{split}
 \]
 
 '''
@@ -56,11 +59,16 @@ Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorph
 
 
 \[
-\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
+\texttt{obj} = (\texttt{type object} \times \texttt{q}) + (\texttt{value object} \times \texttt{q}).
 \]
 
-There are two distinct kinds of mm-ADT `objs`: *types* and *values*.
-This is the *obj meta-model*.
+There are two distinct kinds of mm-ADT `objs`: _quantified_ type objects and _quantified_ value objects. The products of the `obj` sum are called *type* and *value*. That is the *obj meta-model*.
+
+\[
+\texttt{obj} = \texttt{type} + \texttt{value}
+\]
+
+NOTE: There are only a few instances in which it is necessary to consider the object component of an `obj` separate from its quantifier component. The terms _type_ and _value_ will always refer to the object/quantifier-pair as a whole -- i.e., an `obj`.
 
 [exec]
 ----
@@ -78,16 +86,16 @@ int{5}           //<3>
 
 Both types and values can be operated on by types, where each is predominately the focus of either https://en.wikipedia.org/wiki/Compiler[compilation] (types) or https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] (values).
 
-* \$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$: Used in https://en.wikipedia.org/wiki/Compiler[compilation] for https://en.wikipedia.org/wiki/Type_inference[type inference] and rewrite, and
-* \$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$: Used in https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] of https://en.wikipedia.org/wiki/Computer_program[programs] and https://en.wikipedia.org/wiki/Anonymous_function[lambda functions].
+* \$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$: Used in https://en.wikipedia.org/wiki/Compiler[compilation] for https://en.wikipedia.org/wiki/Type_inference[type inferencing] and https://en.wikipedia.org/wiki/Rewriting[type rewriting], and
+* \$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$: Used in https://en.wikipedia.org/wiki/Computer_program[program] https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] and as https://en.wikipedia.org/wiki/Anonymous_function[lambda functions].
 
 [exec]
 ----
 int => int[is,[gt,0]]                   //<1>
 5 => int{?}<=int[is,bool<=int[gt,0]]    //<2>
 ----
-<1> The `int`-type is applied to the `int[is,[gt,0]]`-type to yield a _maybe_ `int{?}`-type (*compilation*).
-<2> The nested `bool\<=int[gt,0]`-type is a lamba function yielding `true` or `false` (*evaluation*).
+<1> *Compilation*: The `int`-type is applied to the `int[is,[gt,0]]`-type to yield a https://en.wikipedia.org/wiki/Option_type[_maybe_] `int{?}`-type.
+<2> *Evaluation*: The nested `bool\<=int[gt,0]`-type is a lamba function yielding `true` or `false`.
 
 Some interesting conceptual blurs arise from the intermixing of types and values.
 The particulars of the ideas in the table below will be discussed over the course of the documentation.
