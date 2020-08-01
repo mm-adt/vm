@@ -1502,7 +1502,7 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 </ul>
 </div>
 <div class="paragraph">
-<p>Depending on the context of use, each interpretation of the <code>obj</code> graph will be leveraged: from compilation to evaluation. For example, the object graph&#8217;s commutativity is leveraged for both compile-time and runtime <a href="https://en.wikipedia.org/wiki/Graph_rewriting">type rewriting</a>. If two paths have the same source vertex (domain) and the same target vertex (range), then both paths yield the same result. In practice, the VM is biased towards evaluating the instructions along the <a href="https://en.wikipedia.org/wiki/Computational_complexity_theory">computationally cheaper</a> path. As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations exists theoretically given the <a href="https://en.wikipedia.org/wiki/Presentation_of_a_monoid">monoid presentation</a> containing the root <code>objs</code> (e.g. the ctypes) and its generators (<code>inst</code>). This static immutability is a perfect medium for <a href="https://en.wikipedia.org/wiki/Memoization">memoized</a> computations&#8201;&#8212;&#8201;especially in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.</p>
+<p>Depending on the context of use, either interpretation of the <code>obj</code> graph will be leveraged: from compilation to evaluation. For example, the object graph&#8217;s commutativity is useful in both compile-time and runtime <a href="https://en.wikipedia.org/wiki/Graph_rewriting">type rewriting</a>. If two paths have the same source vertex (domain) and the same target vertex (range), then both paths yield the same result. In practice, the VM is biased towards evaluating the instructions along the <a href="https://en.wikipedia.org/wiki/Computational_complexity_theory">computationally cheaper</a> path. As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations exists theoretically given the <a href="https://en.wikipedia.org/wiki/Presentation_of_a_monoid">monoid presentation</a> containing the root <code>objs</code> (e.g. the ctypes) and its generators (<code>inst</code>). This static immutability suffices as a medium for <a href="https://en.wikipedia.org/wiki/Memoization">memoized</a> computations&#8201;&#8212;&#8201;especially in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.</p>
 </div>
 </div>
 </div>
@@ -5478,7 +5478,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-01 13:14:49 -0600
+Last updated 2020-08-01 17:08:00 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
