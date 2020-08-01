@@ -896,16 +896,19 @@ Within the VM and outside the referential purview of an interfacing language, ev
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p>An <strong>object</strong> that is either a <strong>type object</strong> or a <strong>value object</strong> and</p>
+<p>an <strong>object</strong> that is either a <strong>type object</strong> or a <strong>value object</strong> and</p>
 </li>
 <li>
-<p>A <strong>quantifier</strong> specifying the "amount" of objects being denoted.</p>
+<p>a <strong>quantifier</strong> specifying the "amount" of objects being denoted.</p>
 </li>
 </ol>
 </div>
 <div class="paragraph">
 <p>\[
-\text{ } \\ \texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}.
+\begin{split}
+\text{ } \\ \texttt{obj} &amp;= \texttt{object} &amp;\;\times\; \texttt{q}
+\text{ } \\ \texttt{obj} &amp;= (\texttt{type object} + \texttt{value object}) &amp;\;\times\; \texttt{q}.
+\end{split}
 \]</p>
 </div>
 <hr>
@@ -921,12 +924,28 @@ Thus, the previous formula is <a href="https://en.wikipedia.org/wiki/Isomorphism
 </div>
 <div class="paragraph">
 <p>\[
-\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
+\texttt{obj} = (\texttt{type object} \times \texttt{q}) + (\texttt{value object} \times \texttt{q}).
 \]</p>
 </div>
 <div class="paragraph">
-<p>There are two distinct kinds of mm-ADT <code>objs</code>: <strong>types</strong> and <strong>values</strong>.
-This is the <strong>obj meta-model</strong>.</p>
+<p>There are two distinct kinds of mm-ADT <code>objs</code>: <em>quantified</em> type objects and <em>quantified</em> value objects. The products of the <code>obj</code> sum are called <strong>type</strong> and <strong>value</strong>. That is the <strong>obj meta-model</strong>.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\texttt{obj} = \texttt{type} + \texttt{value}
+\]</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+There are only a few instances in which it is necessary to consider the object component of an <code>obj</code> separate from its quantifier component. The terms <em>type</em> and <em>value</em> will always refer to the object/quantifier-pair as a whole&#8201;&#8212;&#8201;i.e., an <code>obj</code>.
+</td>
+</tr>
+</table>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -973,10 +992,10 @@ mmlang&gt; ['a','b','a']    <i class="conum" data-value="5"></i><b>(5)</b>
 <div class="ulist">
 <ul>
 <li>
-<p>\$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$: Used in <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> for <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a> and rewrite, and</p>
+<p>\$ (\tt{type} \times \tt{type}) \rightarrow \tt{type} \$: Used in <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a> for <a href="https://en.wikipedia.org/wiki/Type_inference">type inferencing</a> and <a href="https://en.wikipedia.org/wiki/Rewriting">type rewriting</a>, and</p>
 </li>
 <li>
-<p>\$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$: Used in <a href="https://en.wikipedia.org/wiki/Execution_(computing)">evaluation</a> of <a href="https://en.wikipedia.org/wiki/Computer_program">programs</a> and <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda functions</a>.</p>
+<p>\$ (\tt{value} \times \tt{type}) \rightarrow \tt{value} \$: Used in <a href="https://en.wikipedia.org/wiki/Computer_program">program</a> <a href="https://en.wikipedia.org/wiki/Execution_(computing)">evaluation</a> and as <a href="https://en.wikipedia.org/wiki/Anonymous_function">lambda functions</a>.</p>
 </li>
 </ul>
 </div>
@@ -992,11 +1011,11 @@ mmlang&gt; 5 =&gt; int{?}&lt;=int[is,bool&lt;=int[gt,0]]    <i class="conum" dat
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>int</code>-type is applied to the <code>int[is,[gt,0]]</code>-type to yield a <em>maybe</em> <code>int{?}</code>-type (<strong>compilation</strong>).</td>
+<td><strong>Compilation</strong>: The <code>int</code>-type is applied to the <code>int[is,[gt,0]]</code>-type to yield a <a href="https://en.wikipedia.org/wiki/Option_type"><em>maybe</em></a> <code>int{?}</code>-type.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The nested <code>bool&lt;=int[gt,0]</code>-type is a lamba function yielding <code>true</code> or <code>false</code> (<strong>evaluation</strong>).</td>
+<td><strong>Evaluation</strong>: The nested <code>bool&lt;=int[gt,0]</code>-type is a lamba function yielding <code>true</code> or <code>false</code>.</td>
 </tr>
 </table>
 </div>
@@ -5446,7 +5465,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-01 02:27:32 -0600
+Last updated 2020-08-01 02:40:46 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
