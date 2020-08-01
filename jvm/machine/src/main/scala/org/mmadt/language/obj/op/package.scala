@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, _}
 import org.mmadt.storage.obj.`type`.TObj
@@ -37,7 +37,7 @@ package object op {
   trait BranchInstruction
 
   object BranchInstruction {
-    def brchType[OT <: Obj](brch: Poly[_ <: Obj]): OT = {
+    def brchType[OT <: Obj](brch: Poly[_ <: Obj], instQ: IntQ = qOne): OT = {
       val types = brch.glist.filter(_.alive).map {
         case atype: Type[OT] => atype.hardQ(1).range
         case avalue: Value[OT] => asType(avalue)
@@ -47,19 +47,21 @@ package object op {
         case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
       val x = if (brch.isParallel) { // [,] sum the min/max quantification
-        result.hardQ(brch.glist.map(x => x.q).foldLeft(qZero)((a, b) => plusQ(a, b)))
+        brch match {
+          case arec: Rec[Obj, Obj] => result.hardQ(arec.g._2.filter(b => b._1.alive && b._2.alive).foldLeft(qZero)((a, b) => plusQ(a, (if (b._1.q._1.g == 0) int(0) else b._2.q._1, b._2.q._2))))
+          case _: Lst[Obj] => result.hardQ(brch.glist.map(x => x.q).foldLeft(qZero)((a, b) => plusQ(a, b)))
+        }
       } else if (brch.isSerial) { // [;] last quantification
         brch match {
           case alst: Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch.via._1).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
           case arec: Rec[Obj, Obj] => asType[OT](arec.glist.lastOption.getOrElse(zeroObj).asInstanceOf[OT])
-          //asType(arec.gmap.foldLeft(Option(brch.via._1).getOrElse(__))((a, b) => if (a.test(b._1)) a.compute(b._2) else zeroObj)).asInstanceOf[OT]
         }
       } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduceLeftOption((a, b) => (
           int(Math.min(a._1.g, b._1.g)),
           int(Math.max(a._2.g, b._2.g)))).getOrElse(qZero))
       }
-      x.hardQ(multQ(brch.q, x.q))
+      x.hardQ(multQ(multQ(brch.q, x.q), instQ))
     }
 
     def multPolyQ(obj: Obj, poly: Poly[_], inst: Inst[_, _]): Obj = obj.hardQ(multQ(multQ(obj.q, poly.q), inst.q))

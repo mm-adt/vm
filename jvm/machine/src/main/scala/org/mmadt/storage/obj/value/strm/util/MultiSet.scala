@@ -35,12 +35,18 @@ import scala.collection.immutable.ListSet
  */
 class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq[A] {
   def get(a: A): Option[A] = baseSet.find(b => a match {
-    case _:Value[_] =>  a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g)
-    case _:Type[_] =>   a.equals(b)
+    case _: Value[_] => a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g)
+    case _: Type[_] => a.equals(b)
   })
   def put(a: A): MultiSet[A] = {
     val oldObj: Option[A] = this.get(a)
-    new MultiSet[A](oldObj.map(x => baseSet - x).getOrElse(baseSet) + oldObj.map(x => x.hardQ(plusQ(a.q, x.q))).getOrElse(a))
+    if(oldObj.isEmpty)
+      new MultiSet[A](baseSet + a)
+    else  new MultiSet[A]({
+      val b = baseSet - oldObj.get
+      val o = oldObj.get.hardQ(plusQ(a.q, oldObj.get.q))
+      if(o.alive) b + o else b
+    })
   }
   def objSize: Long = baseSet.size
   def qSize: IntQ = baseSet.foldRight(qZero)((a, b) => plusQ(a.q, b))
