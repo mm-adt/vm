@@ -6,7 +6,9 @@
 image::compiling-languages.png[float="right",width=300]
 
 The mm-ADT VM is written in https://scala-lang.org/[Scala].
-It contains a fluent program builder https://en.wikipedia.org/wiki/Application_programming_interface[API] called `mmscala`. Most compiler designers should avoid `mmscala` as direct access to the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM] and the full JDK can create unsafe mm-ADT programs. Instead, `mmlang` should be the target language for most compilers.
+It contains a fluent program builder https://en.wikipedia.org/wiki/Application_programming_interface[API] called `mmscala`.
+Most compiler designers should avoid `mmscala` as direct access to the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM] and the full JDK can create unsafe mm-ADT programs.
+Instead, `mmlang` should be the target language for most compilers.
 Moreover, all compilers targeting `mmlang` can be used across different mm-ADT VM implementations.
 
 IMPORTANT: The recommended target language for all higher-level language compilers is `mmlang`.
@@ -32,9 +34,8 @@ Along with these decomposition (and composition) morphisms, there exists an http
 That is, product and coproduct equality are defined via component equality.
 ****
 
-
-
-Everything that can be denoted in `mmlang` is an `obj`. Within the VM and outside the referential purview of an interfacing language, every `obj` is the product of
+Everything that can be denoted in `mmlang` is an `obj`.
+Within the VM and outside the referential purview of an interfacing language, every `obj` is the product of
 
 image::obj-type-value-q.svg[float=left,width=375]
 
@@ -42,23 +43,24 @@ image::obj-type-value-q.svg[float=left,width=375]
 . A *quantifier* specifying the "amount" of objects being denoted.
 
 \[
-\text{ } \\
-\texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}.
+\text{ } \\ \texttt{obj} = (\texttt{type} + \texttt{value}) \times \texttt{q}.
 \]
 
 '''
 
 image::obj-type-q-value-q.svg[float=right,width=375]
 
-This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring]. The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts. Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to
+This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring].
+The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts.
+Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to
 
 
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
 
-There are two distinct kinds of mm-ADT `objs`: *types* and *values*. This is the *obj meta-model*.
-
+There are two distinct kinds of mm-ADT `objs`: *types* and *values*.
+This is the *obj meta-model*.
 
 [exec]
 ----
@@ -87,7 +89,8 @@ int => int[is,[gt,0]]                   //<1>
 <1> The `int`-type is applied to the `int[is,[gt,0]]`-type to yield a _maybe_ `int{?}`-type (*compilation*).
 <2> The nested `bool\<=int[gt,0]`-type is a lamba function yielding `true` or `false` (*evaluation*).
 
-Some interesting conceptual blurs arise from the intermixing of types and values. The particulars of the ideas in the table below will be discussed over the course of the documentation.
+Some interesting conceptual blurs arise from the intermixing of types and values.
+The particulars of the ideas in the table below will be discussed over the course of the documentation.
 
 .Consequences of Type/Value Integration
 [cols="2,2,13"]
@@ -111,20 +114,20 @@ Some interesting conceptual blurs arise from the intermixing of types and values
 
 image::compass.svg[width=300,float=right]
 
-A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group]. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the group operation \$a \cdot i \mapsto b\$.
+A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group].
+If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group.
+The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$.
+Thus, \$a \to_i b\$ captures the group operation \$a \cdot i \mapsto b\$.
 
-In the illustrative example on the right, the group is defined
-\[
+In the illustrative example on the right, the group is defined \[
 \begin{split}
-A &= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\
-I &= \{ \nearrow \} \\
-e &= 0^\circ \\
-\cdot &: A \times A \rightarrow A
-\end{split}
+A &= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\ I &= \{ \nearrow \} \\ e &= 0^\circ \\ \cdot &: A \times A \rightarrow A \end{split}
 \]
 
-When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible transitions from any one element to the next given the generators. When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element. A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group \$(A,\cdot,I)\$. The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\odot)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
-
+When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible transitions from any one element to the next given the generators.
+When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element.
+A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group \$(A,\cdot,I)\$.
+The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\odot)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
 
 A _generalized_ Cayley Graph is a graph with an analogous vertex/edge structure, but for other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
 ****
@@ -134,12 +137,16 @@ An `obj` is either a type or a value:
 \texttt{obj} = \texttt{type}  + \texttt{value}.
 \]
 
-That equation is not an https://en.wikipedia.org/wiki/Axiom[axiom], but a https://en.wikipedia.org/wiki/Theorem[theorem]. Its truth can be deduced from the equations of the full https://en.wikipedia.org/wiki/Axiomatic_system[axiomatization] of `obj`. In particular, for types, they are defined relative to other types. Types are a coproduct of either a
+That equation is not an https://en.wikipedia.org/wiki/Axiom[axiom], but a https://en.wikipedia.org/wiki/Theorem[theorem].
+Its truth can be deduced from the equations of the full https://en.wikipedia.org/wiki/Axiomatic_system[axiomatization] of `obj`.
+In particular, for types, they are defined relative to other types.
+Types are a coproduct of either a
 
 . *canonical type* (ctype): a https://en.wikipedia.org/wiki/Primitive_data_type[base/fundamental] type, or a
 . *derived type* (dtype): a product of a type and an https://en.wikipedia.org/wiki/Machine_code[instruction] (`inst`).
 
-The ctypes are https://en.wikipedia.org/wiki/Nominal_type_system[nominal types]. There are five ctypes:
+The ctypes are https://en.wikipedia.org/wiki/Nominal_type_system[nominal types].
+There are five ctypes:
 
 . *bool*: denotes the set of booleans -- \$ \mathbb{B} \$.
 . *int*: denotes the set of integers -- \$ \mathbb{Z} \$.
@@ -149,7 +156,9 @@ The ctypes are https://en.wikipedia.org/wiki/Nominal_type_system[nominal types].
 
 image::type-product.svg[float=right,width=295]
 
-The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`. Formally, the type coproduct is defined as
+The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types.
+In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`.
+Formally, the type coproduct is defined as
 
 \[
 \begin{split}
@@ -158,25 +167,38 @@ The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural t
 
 
 
-NOTE: Every `obj` has an associated quantifier. When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity]. For instance, the `real` `1.35{1}` is written `1.35`.
+NOTE: Every `obj` has an associated quantifier.
+When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity].
+For instance, the `real` `1.35{1}` is written `1.35`.
 
-A dtype has two product projections. The _type projection_ denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the _instruction projection_ denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the aforementioned component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
+A dtype has two product projections.
+The _type projection_ denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the _instruction projection_ denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the aforementioned component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
 \[
 \begin{split}
 \tt{type} &=\;& (\tt{type} &\;\times\;& \tt{inst}) &\;+\;& \tt{ctype} \\ \text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"} \end{split}
 \]
 
-The implication of the dtype product is that mm-ADT types are generated https://en.wikipedia.org/wiki/Inductive_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`). The application of an `inst` to a type (ctype or dtype) yields a dtype that is a structural expansion of the previous type.
+The implication of the dtype product is that mm-ADT types are generated https://en.wikipedia.org/wiki/Inductive_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`).
+The application of an `inst` to a type (ctype or dtype) yields a dtype that is a structural expansion of the previous type.
 
 image::ctype-dtype.svg[align=center,width=300]
 
-For example, `int` is a ctype denoting a single `int` value from the set of all integers. When `int` is applied to the instruction `[is>0]`, the dtype `int{?}\<=int[is>0]` is formed, where `[is>0]` is https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugar] for `[is,[gt,0]]`. This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$. In terms of the "__range = domain and function__" reading, when an `int` (*domain*) is applied to `[is>0]` (*function*), the result is either an `int` greater than zero or no `int` at all (*range*).
+For example, `int` is a ctype denoting a single `int` value from the set of all integers.
+When `int` is applied to the instruction `[is>0]`, the dtype `int{?}\<=int[is>0]` is formed, where `[is>0]` is https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugar] for `[is,[gt,0]]`.
+This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$.
+In terms of the "__range = domain and function__" reading, when an `int` (*domain*) is applied to `[is>0]` (*function*), the result is either an `int` greater than zero or no `int` at all (*range*).
 
 image::int-isgt0.svg[align=center,width=230]
 
-The diagram above is an instance of a structure that is core to various aspects of mm-ADT including https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. This structure is called the *obj graph*. The subgraph concerned with type definitions is called the *type graph*. The subgraph considered with value history is called the *value graph*. The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]. This graph will be the subject of study throughout the documentation.
+The diagram above is an instance of a structure that is core to various aspects of mm-ADT including https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more.
+This structure is called the *obj graph*.
+The subgraph concerned with type definitions is called the *type graph*.
+The subgraph considered with value history is called the *value graph*.
+The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph].
+This graph will be the subject of study throughout the documentation.
 
-The full `obj` structure thus far is diagrammed on the right. On the left are some example `mmlang` expressions.
+The full `obj` structure thus far is diagrammed on the right.
+On the left are some example `mmlang` expressions.
 
 image::obj-full.svg[float=right,width=300]
 
@@ -203,12 +225,16 @@ image::type-signature-definition.svg[align=center,width=375]
 
 ===== Type Signature
 
-Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type, and the _range_ is the target type. Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`. The general pattern of a type signature is
+Every mm-ADT type can be generally understood as a function that maps an `obj` of one type to an `obj` of another type.
+A *type signature* specifies the source and target of this mapping, where the _domain_ is the source type, and the _range_ is the target type.
+Both the domain and range type specifications include a respective quantifier denoted `{q}` in `mmlang`.
+The general pattern of a type signature is
 
 [.text-center]
 `range{q}\<=domain{q}`.
 
-NOTE: In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ and a range of \$Y\$, then it's signature is denoted \$f: X \to Y\$. Furthermore, given quantifiers from a ring \$Q\$, the function signature would be denoted \$f: X \times Q \to Y \times Q\$.
+NOTE: In common mathematical vernacular, if the function \$f\$ has a domain of \$X\$ and a range of \$Y\$, then it's signature is denoted \$f: X \to Y\$.
+Furthermore, given quantifiers from a ring \$Q\$, the function signature would be denoted \$f: X \times Q \to Y \times Q\$.
 
 [cols="6,10"]
 |===
@@ -270,22 +296,31 @@ int<=bool
 
 .Commuting Diagrams
 ****
-https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies algebraic structures via their homomorphic image within a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*. A category is defined as
-\[
-(\mathbf{A},\circ,\mathbf{1}_\mathbf{A}),
-\]
-where \$\mathbf{A}\$ is a set of _morphisms_, \$\mathbf{A}(A)\$ is an _object_ morphism simply denoted \$A\$, \$circ: \mathbf{A}(A,B) \times \mathbf{A}(B,C) \to \mathbf{A}(A,C) \$ is an associative, binary, morphism composition operator, and for every \$A\$, there is an identity morphism \$\mathbf{1}_A \in \mathbf{1}_\mathbf{A}\$ such that \$A \circ \mathbf{1}_A = A = \mathbf{1}_A \circ A\$. Unlike classical monoids, a category's \$\circ\$ operator is generally not https://en.wikipedia.org/wiki/Closure_(mathematics)[closed]. That is, there are compositions which may not be defined. It is this aspect of a category that makes it a _multi-sorted_ (or typed) monoid.
+https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies algebraic structures via their homomorphic image within a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*.
+A category is defined as \[
+(\mathbf{A},\circ,\mathbf{1}_\mathbf{A}), \]
+where \$\mathbf{A}\$ is a set of _morphisms_, \$\mathbf{A}(A)\$ is an _object_ morphism simply denoted \$A\$, \$circ: \mathbf{A}(A,B) \times \mathbf{A}(B,C) \to \mathbf{A}(A,C) \$ is an associative, binary, morphism composition operator, and for every \$A\$, there is an identity morphism \$\mathbf{1}_A \in \mathbf{1}_\mathbf{A}\$ such that \$A \circ \mathbf{1}_A = A = \mathbf{1}_A \circ A\$.
+Unlike classical monoids, a category's \$\circ\$ operator is generally not https://en.wikipedia.org/wiki/Closure_(mathematics)[closed].
+That is, there are compositions which may not be defined.
+It is this aspect of a category that makes it a _multi-sorted_ (or typed) monoid.
 
 image::commuting-diagram.svg[float=right,width=150]
 
-In a manner analogous to Cayley graphs, category theory has https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrams]. If \$f:A \to B \in \mathbf{A}(A,B)\$ and \$g: B \to C \in \mathbf{A}(B,C)\$, then there exists the morphism path
-\[
+In a manner analogous to Cayley graphs, category theory has https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrams].
+If \$f:A \to B \in \mathbf{A}(A,B)\$ and \$g: B \to C \in \mathbf{A}(B,C)\$, then there exists the morphism path \[
 A \xrightarrow{f} B \xrightarrow{g} C.
 \]
-A https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] is one such that every morphism path starting at the same source and ending at the same destination is equal. Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram _commutes_.
+A https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] is one such that every morphism path starting at the same source and ending at the same destination is equal.
+Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram _commutes_.
 ****
 
-Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`. For a type, this history is called the *type definition* and is a path in the *type graph*.
+Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]).
+The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`).
+The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`.
+When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`.
+When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground.
+Thus, the information that distinguishes `int` from `int[plus,4]` is in the remembrance of the instruction that was applied to `int`.
+For a type, this history is called the *type definition* and is a path in the *type graph*.
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _trace_.
 
@@ -298,14 +333,60 @@ image::type-value-trace.svg[align=center,width=625]
 2[plus,4][is>0][type]
 ----
 
-Both types and values exist in a larger graph called the *obj graph*. In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes histories (particular paths through the graph) that are no longer required by the program. This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
+Both types and values exist in a larger graph called the *obj graph*.
+In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph.
+However, in practice, the mm-ADT VM removes histories (particular paths through the graph) that are no longer required by the program.
+This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
-NOTE: image:type-value-trace-short.svg[float=right,width=300] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace `[type]`-labeled arrows. All subsequent diagrams will follow this convention.
-
+NOTE: image:type-value-trace-short.svg[float=right,width=300] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid.
+However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type.
+With this convention, there is no loss of information.
+The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction).
+Furthermore, dashed arrows will replace `[type]`-labeled arrows.
+All subsequent diagrams will follow this convention.
 
 .Commutative Obj Graph
 ================================================================
-The `obj` graph has an analogous structure to a category theoretic diagram, where the vertices are the category objects and the edges are labeled with instruction morphisms. In mm-ADT, every `obj` graph https://en.wikipedia.org/wiki/Commutative_diagram[commutes]. It is this feature that makes the `obj` graph a universal https://en.wikipedia.org/wiki/Memoization[memoization] cache where the vertices may be types or values.
+The `obj` graph has an analogous structure to a category theoretic diagram, where the vertices are the category objects and the edges are labeled with instruction morphisms.
+In mm-ADT, every `obj` graph https://en.wikipedia.org/wiki/Commutative_diagram[commutes].
+It is this feature that makes the `obj` graph a universal https://en.wikipedia.org/wiki/Memoization[memoization] cache where the vertices may be types or values.
+================================================================
+
+As a ring, an mm-ADT `obj` can be multiplied or added to another `obj`.
+Multiplication is denoted with `\=>` (`5 \=> int+2`) or simple term juxtaposition (`5+2`).
+Addition, on the other hand, is realized by the `[branch]` instruction which has an `mmlang` sugar of `[,]`.
+The way in which `obj` addition effects the `obj` graph is important.
+
+[exec]
+----
+int => int[+4[is>0],*5]+1                                                     //<1>
+2   => int[+4[is>0],*5]+1                                                     //<2>
+2   => int[+4[is>0],*5]+1[path]                                               //<3>
+2   => int[+4[is>0],*5]+1[type]                                               //<4>
+----
+<1> The `int`-dependent type clones the `int` to the two branches, merges the branch output, and adds `1` (*compilation*).
+<2> `2` is propagated through the `int{1,2}\<=int` type (*evalution*).
+<3> The path through the `obj` value graph taken by the resultant `objs`.
+<4> The type of each resultant value.
+
+The compilation of the `int{1,2}\<=int` type generates the path diagrammed below in the *type subgraph* of the `obj` graph.
+
+image::obj-type-path-example.svg[width=625,align=center]
+
+The evaluation of the type with the input of `2` generates two paths through the *value subgraph* of the `obj` graph -- via _split_ (\$\Delta\$) and _merge_ (\$\nabla\$). Branching (addition) is one of two fundamental operations in the mm-ADT ring algebra. It is not manifested as an `inst` in a value's path history. Likewise, the other fundamental operation, `\=>` (multiplication) has no explicit `inst` and is denoted with juxtaposition in the value path history. The significance of branching being fundamental in mm-ADT is that individual branches can evaluate in https://en.wikipedia.org/wiki/Embarrassingly_parallel[decoupled], independent manner requiring no https://en.wikipedia.org/wiki/Synchronization_(computer_science)[synchronization] nor explicit https://en.wikipedia.org/wiki/Barrier_%28computer_science%29[coordination] at merge.
+
+image::obj-value-path-example.svg[align=center]
+
+.Process Architectures Sympathetic to the Type Ringoid
+================================================================
+An `mmlang` expression denotes a *type* (program) that is executed by a processor. A type is an element of the *type ringoid* algebra. The type ringoid is not the intended algebra of the language component. The reason being, languages yield linear structures. A linear medium is sympathetic to single operator https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] or https://en.wikipedia.org/wiki/Group_(mathematics)[groups]. In order to express addition (branching) in these structures, the parallel branches are serially embedded using the `[,]` syntactic https://en.wikipedia.org/wiki/Kludge#Computer_science[hack].
+
+The *type* elements of the type ringoid are https://en.wikipedia.org/wiki/Three-dimensional_space[three dimensional] structures (where the third dimension captures nesting) and have a more natural embedding in the spatial component of the physical world. Computationally, types are evaluated by processors across a number of cores of a single machine and/or across a multi-machine compute cluster. The type ringoid algebra yields types that are sympathetic to a variety of modern processor architectures.
+
+. https://en.wikipedia.org/wiki/Iterator[Iterator]: single threaded, pull-based, lazily evaluated, functionally oriented
+. https://en.wikipedia.org/wiki/Reactive_programming[Reactive]: multi-threaded, push-based, lazily evaluated, stream oriented
+. https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[Bulk Synchronous Parallel]: cluster, pull-based, eagerly evaluated, pipeline oriented
+. https://en.wikipedia.org/wiki/Message_passing[Message-Passing]; cluster/multi-threaded, push-based, lazily evaluated, actor oriented
 ================================================================
 
 ===== Type Quantification
@@ -325,24 +406,30 @@ Thus, besides labels, two initials are isomorphic.
 
 image::terminal.png[width=130,float=right]
 
-A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
+Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
+Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
 
 &nbsp;
 ****
 
+In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated quantifier `q` denoted `{q}` in `mmlang`.
+Quantifiers are typically integers, but can be any element from an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.).
+While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as values can be negative where `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
 
+The default quantifier ring of the mm-ADT VM is \[
+(\mathbb{Z} \times \mathbb{Z}, +, \ast), \]
+where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (unity).
+The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively.
+In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`.
+Moreover, if a single value is provided, it is assumed to be repeated, where `{n}` is shorthand for `{n,n}`.
+Thus, `int` is `int{1}`  is `int{1,1}`.
 
-In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated quantifier `q` denoted `{q}` in `mmlang`. Quantifiers are typically integers, but can be any element from an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.). While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as values can be negative where `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
+One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`.
+All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial object].
 
-The default quantifier ring of the mm-ADT VM is
-\[
-(\mathbb{Z} \times \mathbb{Z}, +, \ast),
-\]
-where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (unity). The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively. In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`. Moreover, if a single value is provided, it is assumed to be repeated, where `{n}` is shorthand for `{n,n}`. Thus, `int` is `int{1}`  is `int{1,1}`.
-
-One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`. All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial object].
-
-NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`. Typically, throughout the documentation, both will be referred to simply as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
+NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`.
+Typically, throughout the documentation, both will be referred to simply as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
 
 [.center]
 [cols="^1h,3,1,1,9",width=85]
@@ -391,18 +478,31 @@ int{*}<=rec{*}[get,'age',int]
 //|most footnote:order[]          |`{,x}` | `{min,x}`
 ==== Type System
 
-An mm-ADT program is a type. The `mmlang` parser converts a textual representation of a type into a type `obj`. The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger type graph (a Cayley graph). While a type graph is a graphical encoding of the monoidal structure of a particular subset of `obj`, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that realizes elements of the type (i.e. computed resultant values). These values are encoded in the value graph subgraph of the `obj` graph. Every aspect of an mm-ADT computation from composition to evaluation is materialized in the `obj` graph.
+An mm-ADT program is a type.
+The `mmlang` parser converts a textual representation of a type into a type `obj`.
+The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger type graph (a Cayley graph).
+While a type graph is a graphical encoding of the monoidal structure of a particular subset of `obj`, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that realizes elements of the type (i.e. computed resultant values).
+These values are encoded in the value graph subgraph of the `obj` graph.
+Every aspect of an mm-ADT computation from composition to evaluation is materialized in the `obj` graph.
 
 . *Composition*: The point-free style of `mmlang` is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.
-. *Compilation*: A path in the Cayley graph represents a program. By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.
+. *Compilation*: A path in the Cayley graph represents a program.
+By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.
 . *Rewrite*: The vertices can be "merged" using the `[rewrite]` instruction to link two type vertices.
-. *Optimization*: Every instruction in `inst` has an associated cost. Rewrites create a superposition of programs. A https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from domain to range is a simple technique for choosing an efficient execution plan.
-. *State*: Variable bindings, type definitions, and rewrite rule are encoded in instructions (`[to]`, `[define]`, `[rewrite]` respectively). When the current monoid operation requires historic state information, the co-`obj` graph is searched for previously encoded stated-based `insts`.
-. *Evaluation*: When a program path is prefixed with a value, a computation takes place. The resultant path's tail vertex is the result of the computation.
+. *Optimization*: Every instruction in `inst` has an associated cost.
+Rewrites create a superposition of programs.
+A https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from domain to range is a simple technique for choosing an efficient execution plan.
+. *State*: Variable bindings, type definitions, and rewrite rule are encoded in instructions (`[to]`, `[define]`, `[rewrite]` respectively).
+When the current monoid operation requires historic state information, the co-`obj` graph is searched for previously encoded stated-based `insts`.
+. *Evaluation*: When a program path is prefixed with a value, a computation takes place.
+The resultant path's tail vertex is the result of the computation.
 
 ===== Anonymous Types
 
-The type `bool\<=int[gt,10]` has a range of `bool` and a domain of `int`. When the type is written `int[gt,10]`, the range is deduced by a compiling automata that applies `int` to `[gt,10]` to yield `bool`. In fact, the range of `int[gt,10]` is an *anonymous type* (called an *anon* for brevity) and is denoted `_` (or with no character in most situations). An anon is a type that has not been grounded to a base type.
+The type `bool\<=int[gt,10]` has a range of `bool` and a domain of `int`.
+When the type is written `int[gt,10]`, the range is deduced by a compiling automata that applies `int` to `[gt,10]` to yield `bool`.
+In fact, the range of `int[gt,10]` is an *anonymous type* (called an *anon* for brevity) and is denoted `_` (or with no character in most situations).
+An anon is a type that has not been grounded to a base type.
 
 [exec]
 ----
@@ -440,7 +540,11 @@ int[is,[gt,10]]                      //<4>
 | `str`  | `+` `>` `<` `>=` `=<`          | `''`    |
 |===
 
-The mm-ADT type system can be partitioned into *mono types* (https://en.wikipedia.org/wiki/Monomial[monomials]) and *poly types* (https://en.wikipedia.org/wiki/Polynomial[polynomials]). The `mono` types are https://en.wikipedia.org/wiki/Primitive_data_type[atomic] and there are 4 of them: `bool`, `int`, `real`, and `str`. The associated table presents the typical operators (https://en.wikipedia.org/wiki/Syntactic_sugar[sugared] instructions) that can be applied to each `mono`. The table also includes the additive (*0*) (additive) and multiplicative (*1*) https://en.wikipedia.org/wiki/Identity_element[identity] values of each `mono`. The remaining subsections will present examples of each `mono` type that also highlight important mm-ADT concepts.
+The mm-ADT type system can be partitioned into *mono types* (https://en.wikipedia.org/wiki/Monomial[monomials]) and *poly types* (https://en.wikipedia.org/wiki/Polynomial[polynomials]).
+The `mono` types are https://en.wikipedia.org/wiki/Primitive_data_type[atomic] and there are 4 of them: `bool`, `int`, `real`, and `str`.
+The associated table presents the typical operators (https://en.wikipedia.org/wiki/Syntactic_sugar[sugared] instructions) that can be applied to each `mono`.
+The table also includes the additive (*0*) (additive) and multiplicative (*1*) https://en.wikipedia.org/wiki/Identity_element[identity] values of each `mono`.
+The remaining subsections will present examples of each `mono` type that also highlight important mm-ADT concepts.
 '''
 
 ===== Poly Types
@@ -455,17 +559,18 @@ rec   ::= '(' (obj '->' obj)? (sep obj '->' obj)* ')' q?
 poly  ::= lst | rec
 ----
 
-Like every `obj`, there are *value*-`polys` and there are *type*-`polys`. A value-`poly` is composed of only value `objs` and realizes a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is composed of at least one type `obj` and realizes a https://en.wikipedia.org/wiki/Stream_processing[streaming] data process. mm-ADT provides two kinds of `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]). Each has a `,`, `|`, and `;` form such that
+Like every `obj`, there are *value*-`polys` and there are *type*-`polys`.
+A value-`poly` is composed of only value `objs` and realizes a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure.
+A type-`poly` is composed of at least one type `obj` and realizes a https://en.wikipedia.org/wiki/Stream_processing[streaming] data process. mm-ADT provides two kinds of `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
+Each has a `,`, `|`, and `;` form such that
 
 image:poly-kinds.svg[width=250,float=left]
 
 \[
 \begin{split}
-\texttt{poly} &= \texttt{lst} &+ \texttt{rec} \\
-\texttt{poly} &= (\texttt{,-lst} + \texttt{|-lst} + \texttt{;-lst}) &+ (\texttt{,-rec} + \texttt{|-rec} + \texttt{;-rec}).
+\texttt{poly} &= \texttt{lst} &+ \texttt{rec} \\ \texttt{poly} &= (\texttt{,-lst} + \texttt{|-lst} + \texttt{;-lst}) &+ (\texttt{,-rec} + \texttt{|-rec} + \texttt{;-rec}).
 \end{split}
 \]
-
 
 [.small]
 [cols="1,1,2,3,2",width=70,float=right]
@@ -492,8 +597,6 @@ image:poly-kinds.svg[width=250,float=left]
 | https://en.wikipedia.org/wiki/Method_cascading[cascade]
 |===
 
-
-
 '''
 
 [exec]
@@ -508,11 +611,6 @@ image:poly-kinds.svg[width=250,float=left]
 <3> A three term *type* `,-lst` (w/ sugar).
 <4> A three term *type* `,-rec` (w/ sugar).
 
-
-
-
-
-
 === The Obj Magma
 
 .Monoids
@@ -520,11 +618,11 @@ image:poly-kinds.svg[width=250,float=left]
 A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the associative binary operator \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.
 ****
 
-A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a partially https://en.wikipedia.org/wiki/Associative_property[associative] algebraic structure with a single https://en.wikipedia.org/wiki/Binary_operation[binary operator]. The `obj` magma is defined
-\[
-(\texttt{obj},=>,\underline{\mathbf{1}}),
-\]
-where `obj` is the set of all quantified mm-ADT objects, \$ =>: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary _apply_ operator, and \$\underline{\mathbf{1}}\$ the https://en.wikipedia.org/wiki/Identity_element[identity element]. Given that an `obj` is either exclusively a type or a value, \$=>\$ supports four https://en.wikipedia.org/wiki/Argument_of_a_function[argument] combinations.
+A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a partially https://en.wikipedia.org/wiki/Associative_property[associative] algebraic structure with a single https://en.wikipedia.org/wiki/Binary_operation[binary operator].
+The `obj` magma is defined \[
+(\texttt{obj},=>,\underline{\mathbf{1}}), \]
+where `obj` is the set of all quantified mm-ADT objects, \$ =>: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary _apply_ operator, and \$\underline{\mathbf{1}}\$ the https://en.wikipedia.org/wiki/Identity_element[identity element].
+Given that an `obj` is either exclusively a type or a value, \$=>\$ supports four https://en.wikipedia.org/wiki/Argument_of_a_function[argument] combinations.
 
 [cols="1,1,2,5"]
 |===
@@ -560,11 +658,17 @@ str[plus,'a']{2} => str{2}[plus,'b']{6}
 {blank}
 |===
 
-For the two \$x => \tt{type}\$ argument patterns, the type https://en.wikipedia.org/wiki/Semigroup_action[acts] on \$x\$ -- i.e., \$\tt{type}(x)\$. The \$=>\$ operator is a https://en.wikipedia.org/wiki/Higher-order_function[higher order function], where the semantics of the application are in the type's definition. For instance, in the expression `'a' \=> str[plus,'b']`, `'a'` is being applied to `str[plus,'b']`, and only when `str[plus,'b']` acts on `'a'` is \$=>\$ full defined. Thus, the complexity of the `obj` magma lies in the elements of its carrier set -- in particular, in the virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`) which, by definition, is expressive enough to https://en.wikipedia.org/wiki/Embedding[embed] the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras.
+For the two \$x => \tt{type}\$ argument patterns, the type https://en.wikipedia.org/wiki/Semigroup_action[acts] on \$x\$ -- i.e., \$\tt{type}(x)\$.
+The \$=>\$ operator is a https://en.wikipedia.org/wiki/Higher-order_function[higher order function], where the semantics of the application are in the type's definition.
+For instance, in the expression `'a' \=> str[plus,'b']`, `'a'` is being applied to `str[plus,'b']`, and only when `str[plus,'b']` acts on `'a'` is \$=>\$ full defined.
+Thus, the complexity of the `obj` magma lies in the elements of its carrier set -- in particular, in the virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`) which, by definition, is expressive enough to https://en.wikipedia.org/wiki/Embedding[embed] the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras.
 
-NOTE: The \$=>\$ (apply) operator is a monoidal generalization of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] that respects the axioms of a ring theoretic https://en.wikipedia.org/wiki/Bimodule[bimodule]. In this interpretation, \$=>\$ is a third binary operator of the `obj` stream ring. A complete formalization of the `obj` https://en.wikipedia.org/wiki/Vector_space[vector space] is forthcoming.
+NOTE: The \$=>\$ (apply) operator is a monoidal generalization of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] that respects the axioms of a ring theoretic https://en.wikipedia.org/wiki/Bimodule[bimodule].
+In this interpretation, \$=>\$ is a third binary operator of the `obj` stream ring.
+A complete formalization of the `obj` https://en.wikipedia.org/wiki/Vector_space[vector space] is forthcoming.
 
-The example below demonstrates the value/type argument pattern via the `int[plus,int[mult,2]]` right action on `5`. Note that within the initial action, a cascade of further actions take place highlighting the value/type and value/value argument patterns.
+The example below demonstrates the value/type argument pattern via the `int[plus,int[mult,2]]` right action on `5`.
+Note that within the initial action, a cascade of further actions take place highlighting the value/type and value/value argument patterns.
 
 [cols="1,2"]
 |===
@@ -589,37 +693,45 @@ a|
 {blank}
 |===
 
-
-
 === The Inst Monoid
 
 .Free Algebra
 ****
 A https://en.wikipedia.org/wiki/Magma_(algebra)[magma algebra] is defined by a carrier set \$A\$ along with a https://en.wikipedia.org/wiki/Binary_operation[binary operator] \$\cdot: A \times A \to A\$ that combines and two \$A\$-elements into one (\$a \cdot b \mapsto c\$), and a set of https://en.wikipedia.org/wiki/Axiom[axioms] denoting "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" \$A\$-related equations that a structure must obey should it be an instance of the https://en.wikipedia.org/wiki/Algebraic_structure[algebra] \$(A,\cdot)\$.
 
-With the more concise representation of \$ab \equiv a \cdot b\$, if \$a,b,c \in A\$, and \$ab = c\$, then should there be another element \$d \in A\$ such that \$ad = c\$, it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$. Assuming the general case that all elements do not have unique two element https://en.wikipedia.org/wiki/Factorization[factors] in \$A\$, then the binary operator \$\cdot\$ is an irreversible, https://en.wikipedia.org/wiki/Lossy_compression[lossy] operation.
+With the more concise representation of \$ab \equiv a \cdot b\$, if \$a,b,c \in A\$, and \$ab = c\$, then should there be another element \$d \in A\$ such that \$ad = c\$, it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$.
+Assuming the general case that all elements do not have unique two element https://en.wikipedia.org/wiki/Factorization[factors] in \$A\$, then the binary operator \$\cdot\$ is an irreversible, https://en.wikipedia.org/wiki/Lossy_compression[lossy] operation.
 
-A https://en.wikipedia.org/wiki/Sequence[sequence] of \$\cdot\$-compositions can be stored in a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]. Such structures are \$A\$-"link:https://en.wikipedia.org/wiki/Computer_program[programs]" that can be executed against _any_ \$A\$-machine. If \$a,b,c,d,e \in A\$, then an example \$A\$-program is
-\[
+A https://en.wikipedia.org/wiki/Sequence[sequence] of \$\cdot\$-compositions can be stored in a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list].
+Such structures are \$A\$-"link:https://en.wikipedia.org/wiki/Computer_program[programs]" that can be executed against _any_ \$A\$-machine.
+If \$a,b,c,d,e \in A\$, then an example \$A\$-program is \[
 aabbbcadebdcaecadeeeeabccbcaabb.
 \]
-While the individual elements of the \$A\$-program are in \$A\$, the program as a whole is a _single_ element in \$A^\ast\$. \$A^\ast\$ is the infinite set of all possible \$A\$-element sequences of arbitrary length called the https://en.wikipedia.org/wiki/Kleene_star[Kleene closure] over \$A\$. From this vantage point, the elements of \$A\$ are called *letters* and the elements of \$A^\ast\$ are called *words*. The set \$A^\ast\$ is the carrier set of another algebra \$(A^\ast,\circ)\$, where \$\circ: A^\ast \times A^\ast \to A^\ast\$ concatenates two words into a single word (i.e. list concatenation). This algebra is used to "link:https://en.wikipedia.org/wiki/Programmer[code]" \$A\$-programs. In the world of https://en.wikipedia.org/wiki/Abstract_algebra[abstract algebra], this new \$(A^\ast,\circ)\$ algebra is called the https://en.wikipedia.org/wiki/Free_algebra[free algebra] over \$A\$.
+While the individual elements of the \$A\$-program are in \$A\$, the program as a whole is a _single_ element in \$A^\ast\$.
+\$A^\ast\$ is the infinite set of all possible \$A\$-element sequences of arbitrary length called the https://en.wikipedia.org/wiki/Kleene_star[Kleene closure] over \$A\$.
+From this vantage point, the elements of \$A\$ are called *letters* and the elements of \$A^\ast\$ are called *words*.
+The set \$A^\ast\$ is the carrier set of another algebra \$(A^\ast,\circ)\$, where \$\circ: A^\ast \times A^\ast \to A^\ast\$ concatenates two words into a single word (i.e. list concatenation).
+This algebra is used to "link:https://en.wikipedia.org/wiki/Programmer[code]" \$A\$-programs.
+In the world of https://en.wikipedia.org/wiki/Abstract_algebra[abstract algebra], this new \$(A^\ast,\circ)\$ algebra is called the https://en.wikipedia.org/wiki/Free_algebra[free algebra] over \$A\$.
 
-A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a https://en.wikipedia.org/wiki/Algebra_homomorphism[homomorphism] that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\eta: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\eta\$ "link:https://en.wikipedia.org/wiki/Execution_(computing)[executes]" the program on some \$A\$-machine. If the \$\eta\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such mappings in a structure known as the `obj` graph. mm-ADT's link:https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph]-encoding of a free algebraic https://en.wikipedia.org/wiki/Digital_footprint[trace] is the foundation of numerous mm-ADT capabilities including https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation], https://en.wikipedia.org/wiki/State_(computer_science)[program state], https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming], and https://en.wikipedia.org/wiki/Reversible_computing[reversible computing].
+A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a https://en.wikipedia.org/wiki/Algebra_homomorphism[homomorphism] that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\eta: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\eta\$ "link:https://en.wikipedia.org/wiki/Execution_(computing)[executes]" the program on some \$A\$-machine.
+If the \$\eta\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such mappings in a structure known as the `obj` graph. mm-ADT's link:https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph]-encoding of a free algebraic https://en.wikipedia.org/wiki/Digital_footprint[trace] is the foundation of numerous mm-ADT capabilities including https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation], https://en.wikipedia.org/wiki/State_(computer_science)[program state], https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming], and https://en.wikipedia.org/wiki/Reversible_computing[reversible computing].
 ****
 
-The mm-ADT virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (ISA) is denoted `inst` \$\subset\$ `obj`. In `mmlang`, an `inst` is defined by the grammar fragment
+The mm-ADT virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (ISA) is denoted `inst` \$\subset\$ `obj`.
+In `mmlang`, an `inst` is defined by the grammar fragment
 
 [.text-center]
 `inst  ::= '[' op(','obj)* ']' q?`,
 
-
-where `op` is an https://en.wikipedia.org/wiki/Opcode[opcode] from a predefined set of character string. Example opcodes include `plus`, `mult`, `branch`, `is`, `gt`, `lt`, etc. An mm-ADT program is a https://en.wikipedia.org/wiki/Assembly_language[sequence of instructions] commonly known as https://en.wikipedia.org/wiki/Bytecode[bytecode]. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a https://en.wikipedia.org/wiki/Full_and_faithful_functors[faithful embedding] of this richer ring structure into a https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid] called the `inst` monoid defined as
-\[
-(\texttt{inst}^\ast,\circ,\emptyset),
-\]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free `inst` monoid, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] (https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler]) from the `inst` monoid to the `obj` magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.
-
+where `op` is an https://en.wikipedia.org/wiki/Opcode[opcode] from a predefined set of character string.
+Example opcodes include `plus`, `mult`, `branch`, `is`, `gt`, `lt`, etc.
+An mm-ADT program is a https://en.wikipedia.org/wiki/Assembly_language[sequence of instructions] commonly known as https://en.wikipedia.org/wiki/Bytecode[bytecode].
+While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a https://en.wikipedia.org/wiki/Full_and_faithful_functors[faithful embedding] of this richer ring structure into a https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid] called the `inst` monoid defined as \[
+(\texttt{inst}^\ast,\circ,\emptyset), \]
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element.
+An mm-ADT program is a type.
+In order to generate a type from a word of the free `inst` monoid, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] (https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler]) from the `inst` monoid to the `obj` magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.
 
 .Rosetta Stone
 [cols="1,2,3",width=35,float=right]
@@ -631,22 +743,17 @@ where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ conca
 | \$\eta\$  | assembler      | type induction
 | `type`    | program        | type
 |===
+
 .`inst` monoid to `obj` magma homomorphism
 \[
 \begin{split}
-& \eta: \texttt{inst}^\ast &\to \texttt{type} \\\\
-& \eta(\emptyset) &= \underline{\mathbf{1}} \\
-& \eta(a \circ b) &= a \Rightarrow b \\\\
-& \eta(x) &=    \prod_{i \lt |x|}^{\Rightarrow} x_i \\
-&         &=    x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1}
-\end{split}
+& \eta: \texttt{inst}^\ast &\to \texttt{type} \\\\ & \eta(\emptyset) &= \underline{\mathbf{1}} \\ & \eta(a \circ b) &= a \Rightarrow b \\\\ & \eta(x) &= \prod_{i \lt |x|}^{\Rightarrow} x_i \\ & &= x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1} \end{split}
 \]
 
 image::start-ctypes.png[float="right",width=315]
 
-For example, if \$abcde \in \tt{i\nst}^\ast\$, then
-\[
-\eta(abcde) \mapsto  a => b => c => d => e.
+For example, if \$abcde \in \tt{i\nst}^\ast\$, then \[
+\eta(abcde) \mapsto a => b => c => d => e.
 \]
 
 [exec]
@@ -664,15 +771,19 @@ For example, if \$abcde \in \tt{i\nst}^\ast\$, then
 
 image:biproduct.svg[float=right,width=250]
 
-https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* https://en.wikipedia.org/wiki/Semiring[semiring] and *coefficient* ring. Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding https://en.wikipedia.org/wiki/Coefficient[coefficient] dynamics. Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts]. A biproduct has both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams. Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located.
+https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* https://en.wikipedia.org/wiki/Semiring[semiring] and *coefficient* ring.
+Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding https://en.wikipedia.org/wiki/Coefficient[coefficient] dynamics.
+Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts].
+A biproduct has both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams.
+Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located.
 
-mm-ADT adopts the algebra of stream ring theory, but uses the term *instruction* for _function_ and *quantifier* for _coefficient_. Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wiki/Inductive_type[inductive], https://en.wikipedia.org/wiki/Dependent_type[dependent] https://en.wikipedia.org/wiki/Type_theory[type theory] based on a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] stream ring with https://en.wikipedia.org/wiki/Interval_(mathematics)[interval] quantifiers called the *type ringoid*.
+mm-ADT adopts the algebra of stream ring theory, but uses the term *instruction* for _function_ and *quantifier* for _coefficient_.
+Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wiki/Inductive_type[inductive], https://en.wikipedia.org/wiki/Dependent_type[dependent] https://en.wikipedia.org/wiki/Type_theory[type theory] based on a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] stream ring with https://en.wikipedia.org/wiki/Interval_(mathematics)[interval] quantifiers called the *type ringoid*.
 ****
 
 The *`obj` stream ringoid* is the https://en.wikipedia.org/wiki/Ring_theory[algebraic ring]
 \[
-(\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}),
-\]
+(\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}), \]
 
 where
 
@@ -691,14 +802,17 @@ Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the suggestive illustration abov
 * \$,;: \tt{type} \times \tt{type} \to \tt{type}\$ generate functions graph (*program compilation*) and,
 * \$,;: \tt{value} \times \tt{type} \to \tt{value}\$ _stream_ values through the type structure (*program evaluation*).
 
-Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms] (save operator https://en.wikipedia.org/wiki/Closure_(mathematics)[closure]), the `obj` stream ring respects the five additional axioms of *stream ring theory*. The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in `mmlang` using both `obj` *values* and *types*.
+Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms] (save operator https://en.wikipedia.org/wiki/Closure_(mathematics)[closure]), the `obj` stream ring respects the five additional axioms of *stream ring theory*.
+The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in `mmlang` using both `obj` *values* and *types*.
 
-NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugars]. The term `\_{0}` is \$\underline{\mathbf{0}}\$, `_{1}` is \$\underline{\mathbf{1}}\$, `[a;b;c]` denotes `[branch,(a;b;c)]` and `+{q}n` denotes `[plus,n]{q}`. Finally, while `[,]` and `[;]` are defined as binary operators, due to the link:https://en.wikipedia.org/wiki/Associative_property[associativity] axioms of the respective additive group and multiplicative monoid  of a ring, `[,]` and `[;]` are effectively \$n\$-ary operators and will be used as such in examples to follow.
-
+NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugars].
+The term `\_{0}` is \$\underline{\mathbf{0}}\$, `_{1}` is \$\underline{\mathbf{1}}\$, `[a;b;c]` denotes `[branch,(a;b;c)]` and `+{q}n` denotes `[plus,n]{q}`.
+Finally, while `[,]` and `[;]` are defined as binary operators, due to the link:https://en.wikipedia.org/wiki/Associative_property[associativity] axioms of the respective additive group and multiplicative monoid of a ring, `[,]` and `[;]` are effectively \$n\$-ary operators and will be used as such in examples to follow.
 
 ==== Ring Axioms
 
-https://en.wikipedia.org/wiki/Axiom[Axioms] are the "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" equations of a system. Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.
+https://en.wikipedia.org/wiki/Axiom[Axioms] are the "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" equations of a system.
+Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.
 
 [cols="2,2,7,7"]
 |===
@@ -852,7 +966,9 @@ a|
 
 ===== Ring Theorems
 
-The axioms of a theory entail its https://en.wikipedia.org/wiki/Theorem[theorems]. Stated in reverse, theorems are the derivations of an https://en.wikipedia.org/wiki/Axiomatic_system[axiomatic system]. Once a system is determined to be a ring, then all the theorems that have been proved about rings in general are also true for that system.
+The axioms of a theory entail its https://en.wikipedia.org/wiki/Theorem[theorems].
+Stated in reverse, theorems are the derivations of an https://en.wikipedia.org/wiki/Axiomatic_system[axiomatic system].
+Once a system is determined to be a ring, then all the theorems that have been proved about rings in general are also true for that system.
 
 [cols="2,2,7,7"]
 |===
@@ -979,19 +1095,23 @@ a|
 
 .Ringoids
 ****
-An algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] \$(A,\+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires
-\[
-a \ast (b + c) = ab + ac \\
-(a + b) \ast c = ac + bc.
+An algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] \$(A,\+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires \[
+a \ast (b + c) = ab + ac \\ (a + b) \ast c = ac + bc.
 \]
-A https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are https://en.wikipedia.org/wiki/Partial_function[partial functions] lacking https://en.wikipedia.org/wiki/Closure_(mathematics)[closure]. In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.
+A https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are https://en.wikipedia.org/wiki/Partial_function[partial functions] lacking https://en.wikipedia.org/wiki/Closure_(mathematics)[closure].
+In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.
 ****
 
 image:obj-semiring-orderedring.svg[float=left,width=350]
 
-Stream ring theory studies _quantified objects_. The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity. The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient https://en.wikipedia.org/wiki/Stream_(computing)[stream computing]. The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$. However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.
+Stream ring theory studies _quantified objects_.
+The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity.
+The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient https://en.wikipedia.org/wiki/Stream_(computing)[stream computing].
+The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$.
+However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.
 
-NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring(oid)], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group]. In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general).
+NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring(oid)], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group].
+In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general).
 Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoid], where, for example, the `,-poly` `[int{1},int{-1}]` is `int{0}` which is isomorphic to the initial `obj{0}`.
 
 [cols="2,2,7,7"]
@@ -1078,19 +1198,11 @@ a|
 {blank}
 |===
 
-.Process Architectures Sympathetic to the Type Ringoid
-================================================================
-The `mmlang` examples used to describe the type ringoid are generated by a language that acts on the `inst` monoid. The *type ringoid* has an https://en.wikipedia.org/wiki/Embedding[embedding] in the `inst` monoid, but this is not the intended algebra of the language component. The preferred embedding is in the logic of the processor component, where what is _undefined_ in the type ringoid axioms, enables a diversity of modern processor architectures to interface with the mm-ADT VM.
-
-. https://en.wikipedia.org/wiki/Iterator[Iterator]: single threaded, pull-based, lazily evaluated, functionally oriented
-. https://en.wikipedia.org/wiki/Reactive_programming[Reactive]: multi-threaded, push-based, lazily evaluated, stream oriented
-. https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[Bulk Synchronous Parallel]: cluster, pull-based, eagerly evaluated, pipeline oriented
-. https://en.wikipedia.org/wiki/Message_passing[Message-Passing]; cluster/multi-threaded, push-based, lazily evaluated, actor oriented
-================================================================
-
 ===== Stream Compression
 
-The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount of data flowing through a stream, while the *splitting* and *applying* axioms maintain quantifier semantics as elements of the _object_ https://en.wikipedia.org/wiki/Semiring[semiring] are operated on. When only considering the standard ring axioms, the stream
+The *bulking*, *merging*, and *removing* axioms are aimed at reducing the amount of data flowing through a stream, while the *splitting* and *applying* axioms maintain quantifier semantics as elements of the _object_ https://en.wikipedia.org/wiki/Semiring[semiring] are operated on.
+When only considering the standard ring axioms, the stream
+
 [float=right,width=45]
 |===
 a|
@@ -1101,19 +1213,21 @@ a|
 ----
 {blank}
 |===
+
 \[
 [ a,a,b,a,b,b,a,a ]
 \]
-is https://en.wikipedia.org/wiki/Irreducible_polynomial[irreducible]. However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to
-\[
-[ 5a,3b ],
-\]
+is https://en.wikipedia.org/wiki/Irreducible_polynomial[irreducible].
+However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to \[
+[ 5a,3b ], \]
 where the abelian group operator `[,]` is https://en.wikipedia.org/wiki/Commutative_property[commutative] -- i.e., \$[ 5a,3b ] \equiv [3b,5a]\$.
 
-Stream compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification. From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset]. Relying on the same axiomatic principle, but reframed in terms of types (programs), the _atemporal stream theorem_ guarantees equivalent outcomes for both https://en.wikipedia.org/wiki/Synchronous_circuit[synchronous] and https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] execution strategies. The two examples below highlight this time/space entailment, where the former realizes a https://en.wikipedia.org/wiki/Optimizing_compiler[compile time optimization] and the latter a https://en.wikipedia.org/wiki/Program_optimization#Run_time[runtime optimization].
+Stream compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification.
+From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset].
+Relying on the same axiomatic principle, but reframed in terms of types (programs), the _atemporal stream theorem_ guarantees equivalent outcomes for both https://en.wikipedia.org/wiki/Synchronous_circuit[synchronous] and https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] execution strategies.
+The two examples below highlight this time/space entailment, where the former realizes a https://en.wikipedia.org/wiki/Optimizing_compiler[compile time optimization] and the latter a https://en.wikipedia.org/wiki/Program_optimization#Run_time[runtime optimization].
 
 NOTE: Expressions of the form `-<(a,b,c)>-` are decomposed representations of `[a,b,c]`, where `-<(a,b,c)` _splits_, but does not _merge_.
-
 
 [cols="5,8"]
 |===
@@ -1204,7 +1318,10 @@ a|
 
 .Modules
 ****
-A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called *scalar multiplication*. If \$A = X\$, the action is defined by the ring's multiplicative operator. However, when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free, a ring theoretic interpretation of https://en.wikipedia.org/wiki/Linear_algebra[linear algebraic] emerges with \$A\$-based vectors (free magma) and matrices (two free magmas) being operated by \$X\$ scalars, vectors, and matrices. The axioms for both left and right modules are provided below, where if \$A\$ is an https://en.wikipedia.org/wiki/Abelian_group[abelian group], then \$X\$ is a https://en.wikipedia.org/wiki/Bimodule[bimodule] and both sets of axioms hold.
+A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called *scalar multiplication*.
+If \$A = X\$, the action is defined by the ring's multiplicative operator.
+However, when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free, a ring theoretic interpretation of https://en.wikipedia.org/wiki/Linear_algebra[linear algebraic] emerges with \$A\$-based vectors (free magma) and matrices (two free magmas) being operated by \$X\$ scalars, vectors, and matrices.
+The axioms for both left and right modules are provided below, where if \$A\$ is an https://en.wikipedia.org/wiki/Abelian_group[abelian group], then \$X\$ is a https://en.wikipedia.org/wiki/Bimodule[bimodule] and both sets of axioms hold.
 
 [.center]
 [cols="^1,^1",width=70,align=center]
@@ -1232,6 +1349,7 @@ A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\
 | _combine_   | `=`         | \$\circ\$     | pairwise juxtaposition
 
 |===
+
 . `( )` is a polynomial constructor.
 . `lst` is a polynomial with terms indexed by `int`.
 . `rec` is a polynomial with terms indexed by `obj`.
@@ -1240,15 +1358,15 @@ A https://en.wikipedia.org/wiki/Module_(mathematics)[module] for a group \$(A,+\
 . `;` is a polynomial term combinator denoting serial compose.
 ================================================================
 
-Modules introduce a new _scalar multiplication_ binary operator \$cdot: X \times A \to A\$ typically denoted as \$X\$/\$A\$-element juxtaposition. In mm-ADT, the module expression
-\[
-x \cdot (a + b) \mapsto (xa + xb)
-\]
-is realized as
-\[
+Modules introduce a new _scalar multiplication_ binary operator \$cdot: X \times A \to A\$ typically denoted as \$X\$/\$A\$-element juxtaposition.
+In mm-ADT, the module expression \[
+x \cdot (a + b) \mapsto (xa + xb) \]
+is realized as \[
 x \Delta (a + b) \mapsto (x=>a,x=>b).
 \]
-The \$\Delta\$ (_split_) copys an `obj` that is _outside_ of a `poly` to the left of one or more `objs` _inside_ the `poly`. When juxtaposed to the left and an internal `obj`, the `obj` magma's binary operator \$=>:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution. The following table provides a translation of the standard module axioms to mm-ADT.
+The \$\Delta\$ (_split_) copys an `obj` that is _outside_ of a `poly` to the left of one or more `objs` _inside_ the `poly`.
+When juxtaposed to the left and an internal `obj`, the `obj` magma's binary operator \$=>:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution.
+The following table provides a translation of the standard module axioms to mm-ADT.
 
 [cols="^1,^1,^1",width=100,align=center]
 |===
@@ -1268,32 +1386,32 @@ The \$\Delta\$ (_split_) copys an `obj` that is _outside_ of a `poly` to the lef
 
 ===== Polynomials
 
-NOTE: The reason for the `[split]` sugar symbol `-<`, is that it represents one wire (`-`) splitting into many (`<`). Likewise, the reason for `>-` being the `[merge]` sugar symbol is it represents many wires merging (`>`) into one (`-`). Finally, `[combine]` has a sugar of `=` which represents parallel wires being operated on independently.
+NOTE: The reason for the `[split]` sugar symbol `-<`, is that it represents one wire (`-`) splitting into many (`<`).
+Likewise, the reason for `>-` being the `[merge]` sugar symbol is it represents many wires merging (`>`) into one (`-`).
+Finally, `[combine]` has a sugar of `=` which represents parallel wires being operated on independently.
 
-A https://en.wikipedia.org/wiki/Polynomial[polynomial] is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as
-\[
-f(x) = q_1 x^1 + q_2 x^2 + q_3 x^3 + \ldots + q_n x^n,
-\]
-where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate raised to the \$i^\text{th}\$ power, \$q_i x^i\$ is a term, and the terms are linearly combined via \$+\$. If \$x \in \mathbb{Z}\$, then the https://en.wikipedia.org/wiki/Function_(mathematics)#Arrow_notation[signature] of \$f\$ is \$f: \mathbb{Z} \to \mathbb{Z}\$. When \$f(x)\$ is evaluated with some \$x \in \mathbb{Z}\$, \$x\$ becomes determined and the polynomial is reduced to a single \mathbb{Z}. For instance,
-\[
-f(x) = 2x + 3x^2 + 6x^3
-\]
-is irreducible due to \$x\$ being an indeterminant variable. If \$x =4\$, then the polynomial is solved via the reduction
-\[
+A https://en.wikipedia.org/wiki/Polynomial[polynomial] is a _linear combination_ of _terms_ composed of _coefficients_ and _indeterminates_ typically expressed as \[
+f(x) = q_1 x^1 + q_2 x^2 + q_3 x^3 + \ldots + q_n x^n, \]
+where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate raised to the \$i^\text{th}\$ power, \$q_i x^i\$ is a term, and the terms are linearly combined via \$+\$.
+If \$x \in \mathbb{Z}\$, then the https://en.wikipedia.org/wiki/Function_(mathematics)#Arrow_notation[signature] of \$f\$ is \$f: \mathbb{Z} \to \mathbb{Z}\$.
+When \$f(x)\$ is evaluated with some \$x \in \mathbb{Z}\$, \$x\$ becomes determined and the polynomial is reduced to a single \mathbb{Z}.
+For instance, \[
+f(x) = 2x + 3x^2 + 6x^3 \]
+is irreducible due to \$x\$ being an indeterminant variable.
+If \$x =4\$, then the polynomial is solved via the reduction \[
 \begin{split}
-f(4) &= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\
-     &= (2 \ast 4) + (3 \ast 16)  + (6 \ast 64) \\
-     &= 8 + 48 + 384 \\
-     &= 440.
-\end{split}
+f(4) &= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\ &= (2 \ast 4) + (3 \ast 16) + (6 \ast 64) \\ &= 8 + 48 + 384 \\ &= 440. \end{split}
 \]
 
-In mm-ADT, `poly` \$\subset\$ `obj` is the (infinite) set of polynomials. The polynomial expression above is a `,-poly` \$\subset\$ `poly` (pronounced "comma poly") and, in `mmlang`, are expressions of the form
+In mm-ADT, `poly` \$\subset\$ `obj` is the (infinite) set of polynomials.
+The polynomial expression above is a `,-poly` \$\subset\$ `poly` (pronounced "comma poly") and, in `mmlang`, are expressions of the form
 
 [.text-center]
 `x \=> [x1{q1},x2{q2},x3{q3},...,xn{qn}]`
 
-where `qi` is a _quantifier_ (coefficient), `xi` is a _type_ (indeterminate), `xi{qi}` is a quantified type (term), and the type are linearly combined via `[,]` (addition). Instead of the terms being raised to a power (as is typical of numeric polynomials), `,-poly` terms are "raised" to a type with instructions. This is https://en.wikipedia.org/wiki/Exponential_object[type exponentiation] which is the type-equivalent of https://en.wikipedia.org/wiki/Exponentiation[numeric exponentiation].
+where `qi` is a _quantifier_ (coefficient), `xi` is a _type_ (indeterminate), `xi{qi}` is a quantified type (term), and the type are linearly combined via `[,]` (addition).
+Instead of the terms being raised to a power (as is typical of numeric polynomials), `,-poly` terms are "raised" to a type with instructions.
+This is https://en.wikipedia.org/wiki/Exponential_object[type exponentiation] which is the type-equivalent of https://en.wikipedia.org/wiki/Exponentiation[numeric exponentiation].
 
 The aforementioned polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is denoted in mm-ADT by the following `int\<=int` type.
 
@@ -1302,7 +1420,9 @@ The aforementioned polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is denoted in mm-
 int => [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
 ----
 
-In \$f\$, addition and multiplication is with respects to the integer ring \$(\mathbb{Z},+,\ast,0,1)\$. In `,-poly`, they are with respects to the stream ring, where multiplication is \$\Delta\$ and addition is \$\nabla\$. The mm-ADT `,-poly` is a generalized algebraic structure known as a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] that, when used to solve `int` based polynomials, the instructions `[mult]` and `[sum]` are required, where `int\<=int` type is reducible when the domain `int` is determined.
+In \$f\$, addition and multiplication is with respects to the integer ring \$(\mathbb{Z},+,\ast,0,1)\$.
+In `,-poly`, they are with respects to the stream ring, where multiplication is \$\Delta\$ and addition is \$\nabla\$.
+The mm-ADT `,-poly` is a generalized algebraic structure known as a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] that, when used to solve `int` based polynomials, the instructions `[mult]` and `[sum]` are required, where `int\<=int` type is reducible when the domain `int` is determined.
 
 [exec]
 ----
@@ -1317,14 +1437,21 @@ In \$f\$, addition and multiplication is with respects to the integer ring \$(\m
 
 image::poly-columns.svg[float=left,width=275]
 
-The suggestive illustration on the left depicts a single element of some (free) ring. There are four multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] compositions diagrammed as vertical chains rooted at an \$a\$. There is single additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] element diagrammed horizontally, reflecting a (commutative) linear combination of the monoid elements. As 1-dimensional horizontal and vertical structures, each depicts an element of a free magma (group or monoid), where 0-dimensional elements would be drawn from a non-free algebra. Thus, the illustration contains
+The suggestive illustration on the left depicts a single element of some (free) ring.
+There are four multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] compositions diagrammed as vertical chains rooted at an \$a\$.
+There is single additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] element diagrammed horizontally, reflecting a (commutative) linear combination of the monoid elements.
+As 1-dimensional horizontal and vertical structures, each depicts an element of a free magma (group or monoid), where 0-dimensional elements would be drawn from a non-free algebra.
+Thus, the illustration contains
 
 . four *free monoid* elements -- `(a;b;c)`, `(a;d)`, `(a;b;e)`, `(a;d;e;b)`, and
 . one *free group* element -- `\((a;b;c),(a;d),(a;b;e),(a;d;e;b))`,
 
 where, in relation to `poly`, the illustration's `*` is denoted `;` and `+` is denoted `,`.
 
-Each mm-ADT `poly` constrains the general construction of the illustration such that one magma remain free (*unevalated*) and the other non-free (*evaluated*). In particular, as a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring], a `,-poly` maintains a *free additive group* composed of isolated *non-free multiplicative monoids*. Thus, with respects to the illustration, the vertical \$\ast\$-compositions are "collapsed" yielding four terms (`objs`) that are unable to merge horizontally due to the free nature of the additive group. Thus, the `,-poly` is suggestively illustrated as
+Each mm-ADT `poly` constrains the general construction of the illustration such that one magma remain free (*unevalated*) and the other non-free (*evaluated*).
+In particular, as a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring], a `,-poly` maintains a *free additive group* composed of isolated *non-free multiplicative monoids*.
+Thus, with respects to the illustration, the vertical \$\ast\$-compositions are "collapsed" yielding four terms (`objs`) that are unable to merge horizontally due to the free nature of the additive group.
+Thus, the `,-poly` is suggestively illustrated as
 
 image::comma-poly-example.png[width=350,align=center]
 
@@ -1333,8 +1460,8 @@ and specified in `mmlang` as
 [.text-center]
 `(abc{q0},ad{q1},abe{q2},adeb{q3})`.
 
-NOTE: For visual simplicity, quantifiers are not illustrated. Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the _universal commutativity of coefficients theorem_ of https://zenodo.org/record/2565243[stream ring theory].
-
+NOTE: For visual simplicity, quantifiers are not illustrated.
+Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the _universal commutativity of coefficients theorem_ of https://zenodo.org/record/2565243[stream ring theory].
 
 [cols="1,3,8,8"]
 |===
@@ -1389,7 +1516,8 @@ dependent terms +
 | image:pipe-delta-nabla.svg[width=475,link=images/language/pipe-delta-nabla.png]
 |===
 
-In mm-ADT, `polys` are both `obj` products and coproducts--called https://en.wikipedia.org/wiki/Biproduct[biproducts]. They have projections (`[get]`) and injections (`[put]`) such that the following diagram commutes.
+In mm-ADT, `polys` are both `obj` products and coproducts--called https://en.wikipedia.org/wiki/Biproduct[biproducts].
+They have projections (`[get]`) and injections (`[put]`) such that the following diagram commutes.
 
 image::product-coproduct-iso.svg[width=475,align=center]
 
@@ -1438,17 +1566,16 @@ a|
 {blank}
 |===
 
-A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] composed of a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising `obj` products, then the additive operator of the `obj` stream ring is defined as
-\[
-[a_{q_0},b_{q_1}] =
-\begin{cases}
-  [a_{q_0+q_1}]     & \text{if } a==b, \\
-  [a_{q_0},b_{q_1}] & \text{otherwise},
-\end{cases}
+A `,-poly` (pronounced "comma poly") is a classic https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] composed of a free additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid].
+If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising `obj` products, then the additive operator of the `obj` stream ring is defined as \[
+[a_{q_0},b_{q_1}] = \begin{cases}
+[a_{q_0+q_1}]     & \text{if } a==b, \\
+[a_{q_0},b_{q_1}] & \text{otherwise}, \end{cases}
 \]
 
-where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring's additive operator. Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged. In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
-
+where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring's additive operator.
+Given the https://en.wikipedia.org/wiki/Commutative_property[commutative] nature of the `,-poly` abelian group, the terms can be rearranged.
+In https://zenodo.org/record/2565243[stream ring theory], this equality is known as the *bulking axiom* and it is of fundamental importance to efficient stream-based computing with benefits realized in both the https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff[time and space] dimensions.
 
 [cols="7,9"]
 |===
@@ -1457,14 +1584,13 @@ where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_
 | image:obj-addition.png[]  | image:obj-scalar-multiplication.png[]
 |===
 
-When applying \$x \in \tt{obj}\$, the `,-poly` group is a https://en.wikipedia.org/wiki/Group_action[right action] on \$x\$ satisfying the equation below. As an algebraic https://en.wikipedia.org/wiki/Module_(mathematics)[module], \$x\$ is an element of the right `,-poly` https://en.wikipedia.org/wiki/Module_(mathematics)[module] `obj` realizing a generalized form of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication].
+When applying \$x \in \tt{obj}\$, the `,-poly` group is a https://en.wikipedia.org/wiki/Group_action[right action] on \$x\$ satisfying the equation below.
+As an algebraic https://en.wikipedia.org/wiki/Module_(mathematics)[module], \$x\$ is an element of the right `,-poly` https://en.wikipedia.org/wiki/Module_(mathematics)[module] `obj` realizing a generalized form of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication].
 
 \[
-x_{q_2}[a_{q_0},b_{q_1}] =
-\begin{cases}
+x_{q_2}[a_{q_0},b_{q_1}] = \begin{cases}
 [{xa}_{q_2*(q_0+q_1)}]            & \text{if } a==b, \\
-[{xa}_{q_2*q_0},{xb}_{q_2*q_1}] & \text{otherwise},
-\end{cases}
+[{xa}_{q_2*q_0},{xb}_{q_2*q_1}] & \text{otherwise}, \end{cases}
 \]
 
 The two cases above are expressed in `mmlang` below with the last two examples being the `[ ]` sugar of `-<()>-` (\$◊\$).
@@ -1523,7 +1649,10 @@ a|
 {blank}
 |===
 
-The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the free and non-free forms of the `obj` stream ring's multiplicative monoid. The terms of `;-poly` _geometrically_ combined using the multiplicative operator \$=>\$ (denoted `;` in `poly`). A `;-poly` is a partially commutative monoid known as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid]. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the `;-poly` \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as
+The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (pronounced "semi poly") are the free and non-free forms of the `obj` stream ring's multiplicative monoid.
+The terms of `;-poly` _geometrically_ combined using the multiplicative operator \$=>\$ (denoted `;` in `poly`).
+A `;-poly` is a partially commutative monoid known as a https://en.wikipedia.org/wiki/Trace_monoid[trace monoid].
+If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the `;-poly` \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as
 
 
 
@@ -1534,10 +1663,13 @@ The two https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] of `;-poly` (prono
 Of particular interest, when not merging (\$\nabla\$),
 
 \[
-\Delta(x_{q\_2}, (a_{q\_0} ; b_{q\_1}))  = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
+\Delta(x_{q\_2}, (a_{q\_0} ; b_{q\_1})) = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
 \]
 
-image:bubble-chamber.png[width=200,float=left] The equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"]. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the room and the trace they leave (called their _varpor trail_) provides physicists information that they then used to understand the nature of the particle under study -- e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. In mm-ADT, \$x\$ above (and 5 below) play the role of the _particle_ and `;-poly` the _bubble chamber_ with each term in the `;-poly` acting as a _vapor droplet_.
+image:bubble-chamber.png[width=200,float=left] The equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"].
+In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor.
+Particles are shot into the room and the trace they leave (called their _varpor trail_) provides physicists information that they then used to understand the nature of the particle under study -- e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it.
+In mm-ADT, \$x\$ above (and 5 below) play the role of the _particle_ and `;-poly` the _bubble chamber_ with each term in the `;-poly` acting as a _vapor droplet_.
 
 [exec]
 ----
@@ -1578,7 +1710,6 @@ a|
 {blank}
 |===
 
-
 [float=right,width=35]
 |===
 ^| \$\nabla\$ on value \|-poly
@@ -1602,18 +1733,21 @@ a|
 {blank}
 |===
 
-A `|-poly` (pronounced "pipe poly") uses `|` as the `obj` term separator. Like the `,-poly`, a `|-poly` maintains a https://en.wikipedia.org/wiki/Free_group[free additive group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid]. However, unlike `,-poly`, the additive group is not https://en.wikipedia.org/wiki/Commutative_property[commutative]. If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
+A `|-poly` (pronounced "pipe poly") uses `|` as the `obj` term separator.
+Like the `,-poly`, a `|-poly` maintains a https://en.wikipedia.org/wiki/Free_group[free additive group] and a non-free multiplicative https://en.wikipedia.org/wiki/Monoid[monoid].
+However, unlike `,-poly`, the additive group is not https://en.wikipedia.org/wiki/Commutative_property[commutative].
+If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as
 
 \[
-x_{q_2} [a_{q_0} | b_{q_1}] =
-\begin{cases}
+x_{q_2} [a_{q_0} | b_{q_1}] = \begin{cases}
 {xa}_{q_2 * q_0} & \text{if } x_{q_2} a_{q_0} \neq \underline{\bf{0}}, \\
-{bx}_{q_2 * q_1} & \text{if } x_{q_2} b_{q_1} \neq \underline{\bf{0}}, \\
-\underline{\bf{0}} & \text{otherwise}.
+{bx}_{q_2 * q_1} & \text{if } x_{q_2} b_{q_1} \neq \underline{\bf{0}}, \\ \underline{\bf{0}} & \text{otherwise}.
 \end{cases}
 \]
 
-Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\underline{\mathbf{0}}\$). Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation. This is the reason that the additive group of `|-lst` (and `|-poly` in general) is not commutative.
+Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\underline{\mathbf{0}}\$).
+Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation.
+This is the reason that the additive group of `|-lst` (and `|-poly` in general) is not commutative.
 
 [exec]
 ----
@@ -1621,18 +1755,22 @@ Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_the
 'x'{2}[+{0}'a' | +{4}'b']  //<2>
 'x'{2}[+{0}'a' | +{0}'b']  //<3>
 ----
-<1> The first term applied to `x` is not `obj{0}` so `'a'` is added to `'x'`. The polynomial reduces to `[plus,'a']{3}`.
-<2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`. The polynomial reduces to `[plus,'b']{4}`.
-<3> Both terms, when applied to `x` yield `obj{0}`. The polynomial reduces to `obj{0}`.
+<1> The first term applied to `x` is not `obj{0}` so `'a'` is added to `'x'`.
+The polynomial reduces to `[plus,'a']{3}`.
+<2> The first term applied to `x` is `obj{0}` and the second is not so `'b'` is added to `'x'`.
+The polynomial reduces to `[plus,'b']{4}`.
+<3> Both terms, when applied to `x` yield `obj{0}`.
+The polynomial reduces to `obj{0}`.
 
-`|-rec` enables link:https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate]-based coalescing which is a form of link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching] realized in most programming languages as link:https://en.wikipedia.org/wiki/Control_flow#If-then-(else)_statements[if/else] and link:https://en.wikipedia.org/wiki/Switch_statement[switch/case] branching. While predicate-based branching is a function of \$\mathbb{B}\$ (`bool`), in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where __false__ is `obj{0}` (\$\underline{\mathbf{0}}\$) and __true__ is any non-zero quantifier. The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics. Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then
+`|-rec` enables link:https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate]-based coalescing which is a form of link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching] realized in most programming languages as link:https://en.wikipedia.org/wiki/Control_flow#If-then-(else)_statements[if/else] and link:https://en.wikipedia.org/wiki/Switch_statement[switch/case] branching.
+While predicate-based branching is a function of \$\mathbb{B}\$ (`bool`), in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where __false__ is `obj{0}` (\$\underline{\mathbf{0}}\$) and __true__ is any non-zero quantifier.
+The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics.
+Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then
 
 \[
-x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
-\begin{cases}
+x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] = \begin{cases}
 {xb}_{q_4 * q_1} & \text{if } x_{q_4} a_{q_0} \neq \underline{\bf{0}}, \\
-{xd}_{q_4 * q_3} & \text{if } x_{q_4} c_{q_2} \neq \underline{\bf{0}}, \\
-\underline{\bf{0}} & \text{otherwise}.
+{xd}_{q_4 * q_3} & \text{if } x_{q_4} c_{q_2} \neq \underline{\bf{0}}, \\ \underline{\bf{0}} & \text{otherwise}.
 \end{cases}
 \]
 
@@ -1643,7 +1781,8 @@ x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] =
 'x'{2}[+{0}'a' -> +{4}'b' | +{0}'c' -> +{6}'d']
 ----
 
-The previous `mmlang` examples are contrived. In practice, they keys of `|-rec` will typically leverage `[is,bool]` with the anonymous type `_` serving as the link:https://en.wikipedia.org/wiki/Switch_statement#Fallthrough[default case] of the switch.
+The previous `mmlang` examples are contrived.
+In practice, they keys of `|-rec` will typically leverage `[is,bool]` with the anonymous type `_` serving as the link:https://en.wikipedia.org/wiki/Switch_statement#Fallthrough[default case] of the switch.
 
 image::pipe-rec-string-example.png[width=650,align=center]
 
@@ -1656,6 +1795,7 @@ image::pipe-rec-string-example.png[width=650,align=center]
 <2> The same expression, but leveraging `mmlang` syntax sugar.
 
 :prewrap!:
+
 [.small]
 [cols="1"]
 |===
@@ -1666,6 +1806,7 @@ int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 ----
 {blank}
 |===
+
 :prewrap:
 
 ===== Poly Factoring
@@ -1678,20 +1819,17 @@ int[int+2[is>0]*5<44, int+2[is>0]*-6<44, int+2[is>0]*10+7<44]
 
 image::module-example-2.png[align=center]
 
-The above expression denotes a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] whose linearly combined terms are elements of the multiplicative monoid. With abuse of notation, the expression below binds the monoidal terms with `+` to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.
+The above expression denotes a https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] whose linearly combined terms are elements of the multiplicative monoid.
+With abuse of notation, the expression below binds the monoidal terms with `+` to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.
 
 \[
-\texttt{int+2[is>0]\*5<44} \;\;+\;\; \texttt{int+2[is>0]*-6<44} \;\;+\;\; \texttt{int+2[is>0]*10+7<44}
-\]
+\texttt{int+2[is>0]\*5<44} \;\;+\;\; \texttt{int+2[is>0]*-6<44} \;\;+\;\; \texttt{int+2[is>0]*10+7<44} \]
 
 Rings support both left and right https://en.wikipedia.org/wiki/Distributive_property[distributivity] such that the following derivation yields the respective equivalence.
 
 \[
 \begin{split}
-abcg + abdg + abefg &= a \ast (bcg + bdg + befg) \\
-&= a \ast b \ast (cg + dg + efg) \\
-&= a \ast b \ast (c + d + ef) \ast g \\
-\end{split}
+abcg + abdg + abefg &= a \ast (bcg + bdg + befg) \\ &= a \ast b \ast (cg + dg + efg) \\ &= a \ast b \ast (c + d + ef) \ast g \\ \end{split}
 \]
 
 Thus `int+2[is>0]` is https://en.wikipedia.org/wiki/Factorization[factored] out on the left and `<44` is factored out on the right.
@@ -1705,8 +1843,7 @@ int+2[is>0][*5,*-6,*10+7]<44
 Again with an abuse of notation to emphasize the lexical structure.
 
 \[
-\texttt{int+2[is>0]} \;\ast\; (\texttt{\*5} \;\;+\;\; \texttt{*-6} \;\;+\;\; \texttt{*10+7}) \;\ast\; \texttt{<44}
-\]
+\texttt{int+2[is>0]} \;\ast\; (\texttt{\*5} \;\;+\;\; \texttt{*-6} \;\;+\;\; \texttt{*10+7}) \;\ast\; \texttt{<44} \]
 
 
 
@@ -1737,11 +1874,11 @@ A progressive _split/merge_ example is provided to better illustrate the interme
 
 ===== Poly Expansion
 
-Polynomials are the subject of interest primarily because they contain both multiplication and addition and, through derivations, multiplication can be translated to addition and addition to multiplication. For instance, the left hand side of the the https://en.wikipedia.org/wiki/Binomial_(polynomial)[binomial] below is the serial composition of two parallel branches while the right hand side is the parallelization of 4 serial compositions.
+Polynomials are the subject of interest primarily because they contain both multiplication and addition and, through derivations, multiplication can be translated to addition and addition to multiplication.
+For instance, the left hand side of the the https://en.wikipedia.org/wiki/Binomial_(polynomial)[binomial] below is the serial composition of two parallel branches while the right hand side is the parallelization of 4 serial compositions.
 
 \[
-(a+2b)(a+4b) = a^2 + 2ba + 4ab + 8b^2
-\]
+(a+2b)(a+4b) = a^2 + 2ba + 4ab + 8b^2 \]
 
 [cols="3,7"]
 |===
@@ -1794,7 +1931,14 @@ a|
 
 image:type-ringoid-illustration.png[float=left,width=350]
 
-A non-free element is a _zero_-dimensional point. A free element is a _one_-dimensional line. The carrier set of the *type ringoid* is formed from the union of the elements of `obj` stream ring's https://en.wikipedia.org/wiki/Free_abelian_group[free additive abelian group] and https://en.wikipedia.org/wiki/Free_monoid[free multiplicative monoid]. This is the _freest_ possible stream ring representation -- a https://en.wikipedia.org/wiki/Free_algebra[free ring]. With two free magmas, the type ringoid's elements are _two_-dimensional planes. One dimension represents multiplication and the other addition. The type ringoid is encoded in `mmlang` as a `,-lst` (additive) with zero or more `;-lst` (multiplicative) terms. The unfactored type from the previous section is presented, followed by its two-dimensional encoding as an element of the type ringoid.
+A non-free element is a _zero_-dimensional point.
+A free element is a _one_-dimensional line.
+The carrier set of the *type ringoid* is formed from the union of the elements of `obj` stream ring's https://en.wikipedia.org/wiki/Free_abelian_group[free additive abelian group] and https://en.wikipedia.org/wiki/Free_monoid[free multiplicative monoid].
+This is the _freest_ possible stream ring representation -- a https://en.wikipedia.org/wiki/Free_algebra[free ring].
+With two free magmas, the type ringoid's elements are _two_-dimensional planes.
+One dimension represents multiplication and the other addition.
+The type ringoid is encoded in `mmlang` as a `,-lst` (additive) with zero or more `;-lst` (multiplicative) terms.
+The unfactored type from the previous section is presented, followed by its two-dimensional encoding as an element of the type ringoid.
 
 [.text-center]
 [exec,eval=false]
@@ -1811,10 +1955,7 @@ A non-free element is a _zero_-dimensional point. A free element is a _one_-dime
 In a manner analogous to polynomials in https://en.wikipedia.org/wiki/Linear_algebra[linear algebra], the free monoids of the polynomial can be organized into a https://en.wikipedia.org/wiki/Matrix_(mathematics)[matrix], where the following equations maintain `,` and `;` tokens to help orient the reader and the multiplicative identity `_` pads rows to ensure a proper \$n \times m\$-matrix.
 
 \begin{bmatrix}
-\tt{int}; & +2; & \tt{[is>0]}; & *5; & \_ ; & <44, \\
-\tt{int}; & +2; & \tt{[is>0]}; & *{-6}; & \_ ; & <44, \\
-\tt{int}; & +2; & \tt{[is>0]}; & *10; & +7 ; & <44 \\
-\end{bmatrix}
+\tt{int}; & +2; & \tt{[is>0]}; & *5; & \_ ; & <44, \\ \tt{int}; & +2; & \tt{[is>0]}; & *{-6}; & \_ ; & <44, \\ \tt{int}; & +2; & \tt{[is>0]}; & *10; & +7 ; & <44 \\ \end{bmatrix}
 
 A left `obj`-module (a row vector) can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.
 
@@ -1826,13 +1967,8 @@ A left `obj`-module (a row vector) can be factored out of the matrix leaving an 
 
 \[
 \begin{bmatrix}
-\tt{int}; & +2; & \tt{[is>0]}
-\end{bmatrix} ;
-\begin{bmatrix}
-*5; & \_ ; & <44, \\
-*{-6}; & \_ ; & <44, \\
-*10; & +7 ; & <44 \\
-\end{bmatrix}
+\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; \begin{bmatrix}
+*5; & \_ ; & <44, \\ *{-6}; & \_ ; & <44, \\ *10; & +7 ; & <44 \\ \end{bmatrix}
 \]
 
 Similarly, a right `obj`-module https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar] can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.
@@ -1845,28 +1981,17 @@ Similarly, a right `obj`-module https://en.wikipedia.org/wiki/Scalar_(mathematic
 
 \[
 \begin{bmatrix}
-\tt{int}; & +2; & \tt{[is>0]}
-\end{bmatrix} ;
-\begin{bmatrix}
-*5; & \_ ,    \\
-*{-6}; & \_ , \\
-*10; & +7     \\
-\end{bmatrix} ;  <44
-\]
+\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; <44 \]
 
 This fully factored form can be evaluated with `obj`-scalar left multiplication.
 
 \[
 \begin{split}
-& 5; \begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix} *5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44  \\
-&= \begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix} *5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44  \\
-&=7 ;  \begin{bmatrix}
-*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ;  <44
-= & \begin{bmatrix}
-35; & \_ , \\ -42; & \_ , \\ 70; & +7 \\ \end{bmatrix} ;  <44
-= \begin{bmatrix}
-35, \\ -42, \\ 77 \\ \end{bmatrix} ;  <44
-=\begin{bmatrix}
+& 5; \begin{bmatrix}\tt{int}; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix} *5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; <44 \\ &= \begin{bmatrix}5; & +2; & \tt{[is>0]} \end{bmatrix} ; & \begin{bmatrix} *5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; <44 \\ &=7 ; \begin{bmatrix}
+*5; & \_ , \\ *{-6}; & \_ , \\ *10; & +7 \\ \end{bmatrix} ; <44 = & \begin{bmatrix}
+35; & \_ , \\ -42; & \_ , \\ 70; & +7 \\ \end{bmatrix} ; <44 = \begin{bmatrix}
+35, \\ -42, \\ 77 \\ \end{bmatrix} ; <44 =\begin{bmatrix}
 \tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix}
 = \begin{bmatrix}
 \tt{true}\{ 2 \}, \\ \tt{false}           \\ \end{bmatrix}
@@ -1890,7 +2015,11 @@ Again, to be certain, all three derivations yield the same result for the same i
 [5;[[int;+2;[is>0]];[*5,*-6,[*10;+7]];<44]]
 ----
 
-The linear algebraic type ringoid compartmentalizes the type induced at the individual instruction-level. This is the _absolutely_ freest representation of a ring(oid). This "cellular form" is well suited to manipulation by the processor. At compile-time, factoring a matrix representation can be leveraged for optimization and rewriting. At evaluation runtime, the free type ringoid provides a deconstructed, 2-dimensional https://en.wikipedia.org/wiki/Pipeline[pipeline] architecture that can be partitioned across machines of a cluster and/or threads of a machine.
+The linear algebraic type ringoid compartmentalizes the type induced at the individual instruction-level.
+This is the _absolutely_ freest representation of a ring(oid).
+This "cellular form" is well suited to manipulation by the processor.
+At compile-time, factoring a matrix representation can be leveraged for optimization and rewriting.
+At evaluation runtime, the free type ringoid provides a deconstructed, 2-dimensional https://en.wikipedia.org/wiki/Pipeline[pipeline] architecture that can be partitioned across machines of a cluster and/or threads of a machine.
 
 The https://en.wikipedia.org/wiki/Universal_property[universal property] of monoid mappings is realized as the "lifted" `poly` syntactic encoding of an mm-ADT type.
 
@@ -1900,7 +2029,9 @@ image::monoid-homomorphisms.png[align=center,width=500]
 
 ==== State
 
-Let \$(M,\cdot,e)\$ be a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e \in M\$ is the https://en.wikipedia.org/wiki/Identity_element[identity element] and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$. Thus, every monoid has a *single unique identity*. However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
+Let \$(M,\cdot,e)\$ be a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e \in M\$ is the https://en.wikipedia.org/wiki/Identity_element[identity element] and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$.
+Thus, every monoid has a *single unique identity*.
+However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
 
 It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms below.
 
@@ -1913,8 +2044,12 @@ It is through *multiple distinct identities* in `inst` that mm-ADT supports the 
 | https://en.wikipedia.org/wiki/Rewriting[rewrite rules]                     | `[rewrite]`  |       | type equivalences
 |===
 
-
-mm-ADT represents computations via https://en.wikipedia.org/wiki/Unary_function[unary functions]. For instance, the instruction `[neg]` takes an input `int` and returns the inverse (or negative) `int`. Thus, `[neg]` behaves as its classic unary function counterpart \$\tt{n\eg}(x) \mapsto -x\$, where `5 \=> int[neg]` maps to `-5`. Next, suppose the instruction `[plus,2]`. Given an input of \$6\$, `[plus,2]` ultimately evaluates the https://en.wikipedia.org/wiki/Binary_function[binary function] \$6+2\$. However, the instruction's argument is the https://en.wikipedia.org/wiki/Constant_function[constant] value \$2\$ and therefore, `[plus,2]` acts in a manner analogous to a https://en.wikipedia.org/wiki/Currying[curried] unary function.
+mm-ADT represents computations via https://en.wikipedia.org/wiki/Unary_function[unary functions].
+For instance, the instruction `[neg]` takes an input `int` and returns the inverse (or negative) `int`.
+Thus, `[neg]` behaves as its classic unary function counterpart \$\tt{n\eg}(x) \mapsto -x\$, where `5 \=> int[neg]` maps to `-5`.
+Next, suppose the instruction `[plus,2]`.
+Given an input of \$6\$, `[plus,2]` ultimately evaluates the https://en.wikipedia.org/wiki/Binary_function[binary function] \$6+2\$.
+However, the instruction's argument is the https://en.wikipedia.org/wiki/Constant_function[constant] value \$2\$ and therefore, `[plus,2]` acts in a manner analogous to a https://en.wikipedia.org/wiki/Currying[curried] unary function.
 
 [.small]
 [cols="1,2,3,3"]
@@ -1963,7 +2098,10 @@ mm-ADT represents computations via https://en.wikipedia.org/wiki/Unary_function[
 \end{split}
 \]
 |===
-If the argument to `[plus]` is a type (as opposed to a value), then the argument's value resolution is https://en.wikipedia.org/wiki/Dependent_type[dependent] on the incoming `obj`. For instance, if `int[plus,[mult,2]]` has an incoming `int` of 6, the argument to `[plus]` is 12. However, if the incoming `int` is 8, then the `[plus]` argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming `obj`. In particular, state stored in the path history of the `obj`.
+
+If the argument to `[plus]` is a type (as opposed to a value), then the argument's value resolution is https://en.wikipedia.org/wiki/Dependent_type[dependent] on the incoming `obj`.
+For instance, if `int[plus,[mult,2]]` has an incoming `int` of 6, the argument to `[plus]` is 12. However, if the incoming `int` is 8, then the `[plus]` argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming `obj`.
+In particular, state stored in the path history of the `obj`.
 
 [exec]
 ----
@@ -1971,7 +2109,13 @@ If the argument to `[plus]` is a type (as opposed to a value), then the argument
 8 => int[plus,[mult,2]][path]
 ----
 
-Every `obj` exists as a distinct vertex in the `obj` graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming `obj` that yielded the `obj` at the head of the edge. The `obj` at the tail of the edge may also have incoming edges in the `obj` graph. Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a *path*. The computational path of an `obj` is accessed via `[path]`. The output of `[path]` is a `;-lst` that can be https://en.wikipedia.org/wiki/Reflection_(computer_programming)[introspected] as any other `lst`.
+Every `obj` exists as a distinct vertex in the `obj` graph.
+If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed.
+Thus, the edge \$a \to_i b\$ records the instruction and incoming `obj` that yielded the `obj` at the head of the edge.
+The `obj` at the tail of the edge may also have incoming edges in the `obj` graph.
+Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a *path*.
+The computational path of an `obj` is accessed via `[path]`.
+The output of `[path]` is a `;-lst` that can be https://en.wikipedia.org/wiki/Reflection_(computer_programming)[introspected] as any other `lst`.
 
 [exec]
 ----
@@ -1983,7 +2127,8 @@ Every `obj` exists as a distinct vertex in the `obj` graph. If \$b \in \tt{obj}\
 <2> The `obj` graph path from 8 to `[lt,63]`.
 <3> A projection of the instruction `[lt,63]` from the path and then the first argument of the `inst`.
 
-mm-ADT leverages a collection of *distinct identity instructions*, such that as instructions, they simply compute \$f(x) \mapsto x\$, but as edge labels in the `obj` Cayley graph, they store state information that can be later accessed via trace-based path analysis. In effect, the execution context is transformed from a memory-less https://en.wikipedia.org/wiki/Finite-state_machine[finite state automata] to a https://en.wikipedia.org/wiki/Processor_register[register]-based https://en.wikipedia.org/wiki/Turing_machine[Turing machine].
+mm-ADT leverages a collection of *distinct identity instructions*, such that as instructions, they simply compute \$f(x) \mapsto x\$, but as edge labels in the `obj` Cayley graph, they store state information that can be later accessed via trace-based path analysis.
+In effect, the execution context is transformed from a memory-less https://en.wikipedia.org/wiki/Finite-state_machine[finite state automata] to a https://en.wikipedia.org/wiki/Processor_register[register]-based https://en.wikipedia.org/wiki/Turing_machine[Turing machine].
 
 ===== Variables
 
@@ -1999,7 +2144,8 @@ int[plus,1]<x>[plus,2][mult,x][explain]     //<3>
 <2> The `[path]` instruction provides the automaton's path through the `obj` graph as `;-lst`.
 <3> The `[explain]` instruction details the scope of state variables.
 
-The scope of a variable starts at the moment of declaration (`[to]`) and ends when the declaring branch is complete. If an `inst` has a type argument, that type has access to the variables declared in any parent branch.
+The scope of a variable starts at the moment of declaration (`[to]`) and ends when the declaring branch is complete.
+If an `inst` has a type argument, that type has access to the variables declared in any parent branch.
 
 [exec,exception=LanguageException]
 ----
@@ -2015,16 +2161,17 @@ int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain
 
 ===== Definitions
 
-
-
 ==== Rewrites
 
-Each step of that walk is an instruction forming an edge in the type graph. For instance, the type
+Each step of that walk is an instruction forming an edge in the type graph.
+For instance, the type
 
 [.text-center]
 `int[is,[eq,int]]`
 
-describes a https://en.wikipedia.org/wiki/Reflexive_relation[reflexive graph] with vertices are in `int` and edges labeled `[is,[eq,int]]`. There are other mm-ADT types (an infinite amount in fact) that are related to `int[is,[eq,int]]` by a https://en.wikipedia.org/wiki/Graph_homomorphism[graph homomorphism]. A few such types are itemized below.
+describes a https://en.wikipedia.org/wiki/Reflexive_relation[reflexive graph] with vertices are in `int` and edges labeled `[is,[eq,int]]`.
+There are other mm-ADT types (an infinite amount in fact) that are related to `int[is,[eq,int]]` by a https://en.wikipedia.org/wiki/Graph_homomorphism[graph homomorphism].
+A few such types are itemized below.
 
 [source]
 ----
@@ -2036,12 +2183,17 @@ int[plus,3][plus,-3]
 ...
 ----
 
-Note a common pattern. The type `int[plus,x:int][plus,x:int[neg]]` captures an infinite number of more specific types that are homomorphic to `int[is,[eq,int]]`. https://en.wikipedia.org/wiki/Higher-order_function[Higher order type] are defined using mm-ADT `polys`.
+Note a common pattern.
+The type `int[plus,x:int][plus,x:int[neg]]` captures an infinite number of more specific types that are homomorphic to `int[is,[eq,int]]`. https://en.wikipedia.org/wiki/Higher-order_function[Higher order type] are defined using mm-ADT `polys`.
 
 [.text-center]
 `(int[is,[eq,int]])\<=(int[plus,x:int][plus,x:int[neg]])`
 
-In category theory, a _type-to-type_ mapping that https://en.wikipedia.org/wiki/Morphism[preserves structure] is called a https://en.wikipedia.org/wiki/Functor[functor]. From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range `\<=`-relation within a higher-order https://en.wikipedia.org/wiki/Identity_function[identity type] with respective signature. The identity is apparent in that there are no instructions required to coerce an `obj` of the domain to an `obj` of the range. This is analogous to `int\<=int`, save that the mapping is not predicated on https://en.wikipedia.org/wiki/Isomorphism[isomorphism], but on a broader relationship called a https://en.wikipedia.org/wiki/Surjective_function[surjective] homomorphism (a  https://en.wikipedia.org/wiki/Rewriting[reduction]). Any type containing only a type signature `()\<=()` says that the domain type is equal to the range type such that the domain can be https://en.wikipedia.org/wiki/Abstract_rewriting_system[substituted] for the range.
+In category theory, a _type-to-type_ mapping that https://en.wikipedia.org/wiki/Morphism[preserves structure] is called a https://en.wikipedia.org/wiki/Functor[functor].
+From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range `\<=`-relation within a higher-order https://en.wikipedia.org/wiki/Identity_function[identity type] with respective signature.
+The identity is apparent in that there are no instructions required to coerce an `obj` of the domain to an `obj` of the range.
+This is analogous to `int\<=int`, save that the mapping is not predicated on https://en.wikipedia.org/wiki/Isomorphism[isomorphism], but on a broader relationship called a https://en.wikipedia.org/wiki/Surjective_function[surjective] homomorphism (a  https://en.wikipedia.org/wiki/Rewriting[reduction]).
+Any type containing only a type signature `()\<=()` says that the domain type is equal to the range type such that the domain can be https://en.wikipedia.org/wiki/Abstract_rewriting_system[substituted] for the range.
 
 [source]
 ----
@@ -2050,7 +2202,8 @@ In category theory, a _type-to-type_ mapping that https://en.wikipedia.org/wiki/
 
 image::type-to-type-type.png[width=700,align=center]
 
-The type `int[is,[eq,int]]` has an https://en.wikipedia.org/wiki/Isomorphism[isomorphic] image in `int`, where the reflexive self-loop paths in `int[is,[eq,int]]` are contracted to 0-length paths. The isomorphism realizes `int` as a classic set without structure because the type `int` has no instructions and thus, no type graph edges.
+The type `int[is,[eq,int]]` has an https://en.wikipedia.org/wiki/Isomorphism[isomorphic] image in `int`, where the reflexive self-loop paths in `int[is,[eq,int]]` are contracted to 0-length paths.
+The isomorphism realizes `int` as a classic set without structure because the type `int` has no instructions and thus, no type graph edges.
 
 [source]
 ----
@@ -2064,7 +2217,11 @@ The composition of two structure preserving type morphisms yields a new type--na
 
 ==== Models
 
-mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT). The `mm` *model-ADT* is the canonical model by which all other models are derived. Much like ctypes and dtypes, `mm` can be understood as a "cmodel" and all derived models as "dmodels" (though these terms are not used beyond this section). While model-ADT design and development will be discussed in a latter section, this section introduces the `[define]` instruction and it's use as an identity type.
+mm-ADT organizes types into *models*.
+The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT).
+The `mm` *model-ADT* is the canonical model by which all other models are derived.
+Much like ctypes and dtypes, `mm` can be understood as a "cmodel" and all derived models as "dmodels" (though these terms are not used beyond this section).
+While model-ADT design and development will be discussed in a latter section, this section introduces the `[define]` instruction and it's use as an identity type.
 
 * `[define]`: Associates a type with a range composed of an object _token_ and a quantifier.
 * `[as]`: Locates the first type definition capable of mapping the incoming `obj` to the token argument.
