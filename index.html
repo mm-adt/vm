@@ -504,6 +504,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_stream_ring_axioms">Stream Ring Axioms</a>
 <ul class="sectlevel4">
 <li><a href="#_stream_compression">Stream Compression</a></li>
+<li><a href="#_asynchronous_types">Asynchronous Types</a></li>
 <li><a href="#_commuting_quantifiers">Commuting Quantifiers</a></li>
 <li><a href="#_type_inference">Type Inference</a></li>
 </ul>
@@ -928,7 +929,9 @@ Thus, the previous formula is <a href="https://en.wikipedia.org/wiki/Isomorphism
 \]</p>
 </div>
 <div class="paragraph">
-<p>There are two distinct kinds of mm-ADT <code>objs</code>: <em>quantified</em> type objects and <em>quantified</em> value objects. The products of the <code>obj</code> coproduct are called <strong>type</strong> and <strong>value</strong>. That is the <strong>obj meta-model</strong>.</p>
+<p>There are two distinct kinds of mm-ADT <code>objs</code>: <em>quantified</em> type objects and <em>quantified</em> value objects.
+The products of the <code>obj</code> coproduct are called <strong>type</strong> and <strong>value</strong>.
+That is the <strong>obj meta-model</strong>.</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -942,7 +945,8 @@ Thus, the previous formula is <a href="https://en.wikipedia.org/wiki/Isomorphism
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-There are only a few instances in which it is necessary to consider the object component of an <code>obj</code> separate from its quantifier component. The terms <em>type</em> and <em>value</em> will always refer to the object/quantifier-pair as a whole&#8201;&#8212;&#8201;i.e., an <code>obj</code>.
+There are only a few instances in which it is necessary to consider the object component of an <code>obj</code> separate from its quantifier component.
+The terms <em>type</em> and <em>value</em> will always refer to the object/quantifier-pair as a whole&#8201;&#8212;&#8201;i.e., an <code>obj</code>.
 </td>
 </tr>
 </table>
@@ -1218,7 +1222,8 @@ In terms of the "<em>range = domain and function</em>" reading, when an <code>in
 </div>
 </div>
 <div class="paragraph">
-<p>The diagram above is generally known as the <strong>obj graph</strong>. The <code>obj</code> graph  is a fundamental structure in mm-ADT that is used in <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more.
+<p>The diagram above is generally known as the <strong>obj graph</strong>.
+The <code>obj</code> graph is a fundamental structure in mm-ADT that is used in <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more.
 This structure is called the <strong>obj graph</strong>.
 The subgraph concerned with type definitions is called the <strong>type graph</strong>.
 The subgraph considered with value history is called the <strong>value graph</strong>.
@@ -1290,7 +1295,8 @@ mmlang&gt; int{2}[is&gt;0][plus,[neg]]                                <i class="
 <h5 id="_type_signature">Type Signature</h5>
 <div class="paragraph">
 <p>Every mm-ADT type can be generally understood as a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">function</a> that maps an <code>obj</code> of one type to an <code>obj</code> of another type.
-A <strong>type signature</strong> specifies the source and target of this mapping, where the <strong>domain</strong> is the source type, and the <strong>range</strong> is the target type. As ctype <code>objs</code>, the domain and range each have an associated quantifier denoted <code>{q}</code> in <code>mmlang</code>.
+A <strong>type signature</strong> specifies the source and target of this mapping, where the <strong>domain</strong> is the source type, and the <strong>range</strong> is the target type.
+As ctype <code>objs</code>, the domain and range each have an associated quantifier denoted <code>{q}</code> in <code>mmlang</code>.
 The general pattern of a type signature is</p>
 </div>
 <table class="tableblock frame-all grid-all center" style="width: 30%;">
@@ -1430,18 +1436,31 @@ It is this aspect of a category that makes it a <em>multi-sorted</em> (or typed)
 <div class="paragraph">
 <p>In a manner analogous to Cayley graphs, category theory has <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">diagrams</a>.
 If \$f:A \to B \in \mathbf{A}(A,B)\$ and \$g: B \to C \in \mathbf{A}(B,C)\$, then there exists the morphism path \[
-A \xrightarrow{f} B \xrightarrow{g} C.
-\]
+A \xrightarrow{f} B \xrightarrow{g} C. \]
 A <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> is one such that every morphism path starting at the same source and ending at the same destination is equal.
 Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram <em>commutes</em>.</p>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the reference to the instruction that was applied to <code>int</code>.</p>
+<p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>).
+The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>).
+The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>.
+When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>.
+When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground.
+Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the reference to the instruction that was applied to <code>int</code>.</p>
 </div>
 <div class="paragraph">
-<p>For a type, the connected chain of references is called the <strong>type definition</strong> and is a encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> in the <strong>type graph</strong>. For a value, the <strong>value graph</strong> encodes an analogous path called the <strong>value history</strong> (or <em>mutation history</em>). Both types and values exist in a larger graph called an <strong>obj graph</strong>. The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> below denotes an <code>obj</code> graph composed of two paths. The top horizontal path is a value history and the bottom horizontal path is a type definition. These paths are joined by the only instruction in <code>inst</code> that unites the type graph and value graph: <code>[type]</code>.</p>
+<p>For a type, the deterministic chain of references is called the <strong>type definition</strong> and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> in the <strong>type graph</strong>.
+For a value, the <strong>value graph</strong> encodes an analogous path called the <strong>value history</strong> (or <em>mutation history</em>).
+Both types and values exist in a larger graph called an <strong>obj graph</strong> such that \[
+G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
+\]
+The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> below denotes an <code>obj</code> graph composed of two lateral paths.
+The top path is a value history (\$(2 \to 6 \to 6)\$ and the bottom path is a type definition \$(\tt{i\nt} \to \tt{i\nt[plus,4]} \to \tt{i\nt[plus,4][is&gt;0]})\$.
+These paths are joined by the only instruction in <code>inst</code> that unites the type graph and value graph, \[
+\texttt{[type]}: \texttt{obj} \to \texttt{type}.
+\]</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1455,12 +1474,14 @@ In practice, the string representation of a value is its <em>ground</em> and the
 </tr>
 </table>
 </div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/type-value-path.svg" alt="type value path" width="600">
-</div>
-</div>
-<div class="listingblock">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 2[plus,4][is&gt;0]
 ==&gt;6
@@ -1471,7 +1492,16 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 </div>
 </div>
 <div class="paragraph">
-<p>In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes paths in the graph that are no longer required by the program. This process is called <strong>path retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/language/type-value-path.svg" alt="type value path"></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in the <code>obj</code> graph.
+However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
+This process is called <strong>path retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1480,7 +1510,12 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<span class="image right"><img src="./images/language/type-value-path-short.svg" alt="type value path short" width="350"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace <code>[type]</code>-labeled arrows. All subsequent diagrams will follow this convention.
+<span class="image right"><img src="./images/language/type-value-path-short.svg" alt="type value path short" width="350"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid.
+However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type.
+With this convention, there is no loss of information.
+The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction).
+Furthermore, dashed arrows will replace <code>[type]</code>-labeled arrows.
+All subsequent diagrams will follow this convention.
 </td>
 </tr>
 </table>
@@ -1489,104 +1524,33 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 <div class="title">Deep Dive 1. The Obj Graph as a Cayley Graph and a Commutative Diagram</div>
 <div class="content">
 <div class="paragraph">
-<p>The <code>obj</code> graph is both the generalized <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> of a <a href="https://en.wikipedia.org/wiki/Partial_function">partial</a> <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as well as the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> of a <a href="https://en.wikipedia.org/wiki/Free_category">free category</a>. More generally, the <code>obj</code> graph is the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function">graph of unary functions</a> of <code>inst</code>, where instructions operate on both types and values.</p>
+<p>The <code>obj</code> graph is both the generalized <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> of a <a href="https://en.wikipedia.org/wiki/Partial_function">partial</a> <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> and the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> of a <a href="https://en.wikipedia.org/wiki/Free_category">free category</a>.
+More generally, the <code>obj</code> graph is the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function">graph of unary functions</a> comprising <code>inst</code>, where instructions operate on both types and values.
+From compilation to evaluation, depending on the particular context, either interpretation will be leveraged.</p>
 </div>
 <div class="ulist">
 <ul>
-<li>
-<p><strong>Cayley graph</strong>: vertices denote type/value-elements of the <code>inst</code> monoid with generating edges in <code>inst</code>.</p>
-</li>
 <li>
 <p><strong>Commutative diagram</strong>: vertices denote type/value-objects of the <code>obj</code> category with <code>inst</code> morphisms.</p>
 </li>
 </ul>
 </div>
 <div class="paragraph">
-<p>Depending on the context of use, either interpretation of the <code>obj</code> graph will be leveraged: from compilation to evaluation. For example, the object graph&#8217;s commutativity is useful in both compile-time and runtime <a href="https://en.wikipedia.org/wiki/Graph_rewriting">type rewriting</a>. If two paths have the same source vertex (domain) and the same target vertex (range), then both paths yield the same result. In practice, the VM is biased towards evaluating the instructions along the <a href="https://en.wikipedia.org/wiki/Computational_complexity_theory">computationally cheaper</a> path. As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations exists theoretically given the <a href="https://en.wikipedia.org/wiki/Presentation_of_a_monoid">monoid presentation</a> containing the root <code>objs</code> (e.g. the ctypes) and its generators (<code>inst</code>). This static immutability suffices as a medium for <a href="https://en.wikipedia.org/wiki/Memoization">memoized</a> computations&#8201;&#8212;&#8201;especially in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.</p>
+<p>The <code>obj</code> graph&#8217;s commuting property eases compile-time and runtime <a href="https://en.wikipedia.org/wiki/Graph_rewriting">type rewriting</a>.
+If two paths have the same source vertex (domain) and target vertex (range), then both paths yield the same result (the target vertex).
+In practice, evaluating the instructions along the <a href="https://en.wikipedia.org/wiki/Computational_complexity_theory">computationally cheaper</a> path is prudent.</p>
 </div>
-</div>
-</div>
-<div class="paragraph">
-<p>As a ring, an mm-ADT <code>obj</code> can be multiplied or added to another <code>obj</code>.
-Multiplication is denoted with <code>=&gt;</code> (<code>5 =&gt; int+2</code>) or simple term juxtaposition (<code>5+2</code>).
-Addition, on the other hand, is realized by the <code>[branch]</code> instruction which has an <code>mmlang</code> sugar of <code>[,]</code>.
-The way in which <code>obj</code> addition effects the <code>obj</code> graph is important.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; int[+4[is&gt;0],*5]+1                                                     <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;int{1,2}&lt;=int[int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]],int[mult,5]][plus,1]
-mmlang&gt; 2   =&gt; int[+4[is&gt;0],*5]+1                                                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;7
-==&gt;11
-mmlang&gt; 2   =&gt; int[+4[is&gt;0],*5]+1[path]                                               <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(2;[plus,4];6;[is,true];6;[plus,1];7)
-==&gt;(2;[mult,5];10;[plus,1];11)
-mmlang&gt; 2   =&gt; int[+4[is&gt;0],*5]+1[type]                                               <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]][plus,1]
-==&gt;int[mult,5][plus,1]</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>int</code>-dependent type clones the <code>int</code> to the two branches, merges the branch output, and adds <code>1</code> (<strong>compilation</strong>).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>2</code> is propagated through the <code>int{1,2}&lt;=int</code> type (<strong>evalution</strong>).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The path through the <code>obj</code> value graph taken by the resultant <code>objs</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The type of each resultant value.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The compilation of the <code>int{1,2}&lt;=int</code> type generates the path diagrammed below in the <strong>type subgraph</strong> of the <code>obj</code> graph.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/obj-type-path-example.svg" alt="obj type path example" width="625">
-</div>
-</div>
-<div class="paragraph">
-<p>The evaluation of the type with the input of <code>2</code> generates two paths through the <strong>value subgraph</strong> of the <code>obj</code> graph&#8201;&#8212;&#8201;via <em>split</em> (\$\Delta\$) and <em>merge</em> (\$\nabla\$). Branching (addition) is one of two fundamental operations in the mm-ADT ring algebra. It is not manifested as an <code>inst</code> in a value&#8217;s path history. Likewise, the other fundamental operation, <code>=&gt;</code> (multiplication) has no explicit <code>inst</code> and is denoted with juxtaposition in the value path history. The significance of branching being fundamental in mm-ADT is that individual branches can evaluate in <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">decoupled</a>, independent manner requiring no <a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)">synchronization</a> nor explicit <a href="https://en.wikipedia.org/wiki/Barrier_%28computer_science%29">coordination</a> at merge.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/language/obj-value-path-example.svg" alt="obj value path example">
-</div>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 2. Process Architectures Sympathetic to the Type Ringoid</div>
-<div class="content">
-<div class="paragraph">
-<p>An <code>mmlang</code> expression denotes a <strong>type</strong> (program) that is executed by a processor. A type is an element of the <strong>type ringoid</strong> algebra. The type ringoid is not the intended algebra of the language component. The reason being, languages yield linear structures. A linear medium is sympathetic to single operator <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> or <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">groups</a>. In order to express addition (branching) in these structures, the parallel branches are serially embedded using the <code>[,]</code> syntactic <a href="https://en.wikipedia.org/wiki/Kludge#Computer_science">hack</a>.</p>
-</div>
-<div class="paragraph">
-<p>The <strong>type</strong> elements of the type ringoid are <a href="https://en.wikipedia.org/wiki/Three-dimensional_space">three dimensional</a> structures (where the third dimension captures nesting) and have a more natural embedding in the spatial component of the physical world. Computationally, types are evaluated by processors across a number of cores of a single machine and/or across a multi-machine compute cluster. The type ringoid algebra yields types that are sympathetic to a variety of modern processor architectures.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="ulist">
+<ul>
 <li>
-<p><a href="https://en.wikipedia.org/wiki/Iterator">Iterator</a>: single threaded, pull-based, lazily evaluated, functionally oriented</p>
+<p><strong>Cayley graph</strong>: vertices denote type/value-elements of the <code>inst</code> monoid with generating edges in <code>inst</code>.</p>
 </li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Reactive_programming">Reactive</a>: multi-threaded, push-based, lazily evaluated, stream oriented</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">Bulk Synchronous Parallel</a>: cluster, pull-based, eagerly evaluated, pipeline oriented</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Message_passing">Message-Passing</a>; cluster/multi-threaded, push-based, lazily evaluated, actor oriented</p>
-</li>
-</ol>
+</ul>
+</div>
+<div class="paragraph">
+<p>As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations is theoretically predetermined given the <a href="https://en.wikipedia.org/wiki/Presentation_of_a_monoid">monoid presentation</a> containing the root <code>objs</code> (e.g. the ctypes), its generators (<code>inst</code>), and relations (path equations).
+This static immutable structure serves as a <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> of computational results.
+This is especially useful in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.</p>
 </div>
 </div>
 </div>
@@ -1629,20 +1593,32 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 <div class="paragraph">
 <p>In order to quantify the <em>amount</em> of values denoted by a type, every mm-ADT type has an associated quantifier <code>q</code> denoted <code>{q}</code> in <code>mmlang</code>.
 Quantifiers are typically integers, but can be any element from an ordered algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, <a href="https://en.wikipedia.org/wiki/Unitary_matrix">unitary matrices</a>, etc.).
-While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description as values can be negative where <code>objs</code> interact with constructive and destructive <a href="https://en.wikipedia.org/wiki/Wave_interference">interference</a>.</p>
+While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description as quantifiers can be negative such that <code>objs</code> interact with constructive and destructive <a href="https://en.wikipedia.org/wiki/Wave_interference">interference</a>.</p>
 </div>
 <div class="paragraph">
 <p>The default quantifier ring of the mm-ADT VM is \[
 (\mathbb{Z} \times \mathbb{Z}, +, \ast), \]
-where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (unity).
+where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (<a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>).
 The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively.
 In <code>mmlang</code> if an <code>obj</code> quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or <code>{1,1}</code>.
 Moreover, if a single value is provided, it is assumed to be repeated, where <code>{n}</code> is shorthand for <code>{n,n}</code>.
-Thus, <code>int</code> is <code>int{1}</code>  is <code>int{1,1}</code>.</p>
+Thus, \[
+\texttt{int} \equiv \texttt{int{1}} \equiv \texttt{int\{1,1\}}.
+\]</p>
 </div>
 <div class="paragraph">
 <p>One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>&#8201;&#8212;&#8201;<code>{0}</code>.
 All <code>objs</code> quantified with the respective quantifier ring&#8217;s annihilator are <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to the <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial object</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{0}
+==&gt;6{0}
+mmlang&gt; int{0}[plus,2]
+mmlang&gt; int[plus,2]{0}
+mmlang&gt; _{0}
+mmlang&gt; obj{0}</code></pre>
+</div>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -1651,8 +1627,8 @@ All <code>objs</code> quantified with the respective quantifier ring&#8217;s ann
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;0]</code> are isomorphic due to their quantifiers both being <code>{0}</code>.
-Typically, throughout the documentation, both will be referred to simply as <code>obj{0}</code>, <code>_{0}</code>, or \$\underline{\mathbf{0}}\$ (the <strong>zero object</strong>).
+Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;0]</code> are equivalent due to their quantifiers both being <code>{0}</code>.
+Typically, throughout the documentation, both will be referred to as <code>obj{0}</code>, <code>_{0}</code>, or \$\underline{\mathbf{0}}\$ (the <strong>zero object</strong>).
 </td>
 </tr>
 </table>
@@ -1660,26 +1636,26 @@ Typically, throughout the documentation, both will be referred to simply as <cod
 <table class="tableblock frame-all grid-all center" style="width: 85%;">
 <colgroup>
 <col style="width: 6.6666%;">
+<col style="width: 6.6666%;">
+<col style="width: 6.6666%;">
 <col style="width: 20%;">
-<col style="width: 6.6666%;">
-<col style="width: 6.6666%;">
 <col style="width: 60.0002%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top"></th>
-<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-center valign-top">name</th>
 <th class="tableblock halign-left valign-top">sugar</th>
 <th class="tableblock halign-left valign-top">unsugared</th>
+<th class="tableblock halign-left valign-top">description</th>
 <th class="tableblock halign-left valign-top">mmlang example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">some</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">a single <code>int</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,1}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">a single <code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int
@@ -1692,9 +1668,9 @@ Typically, throughout the documentation, both will be referred to simply as <cod
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">option</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0 or 1 <code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{?}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,1}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 or 1 <code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{?}&lt;=int[is&gt;0]
@@ -1707,9 +1683,9 @@ Typically, throughout the documentation, both will be referred to simply as <cod
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">none</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0 <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,0}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{0}&lt;=int[is,false]
@@ -1722,9 +1698,9 @@ mmlang&gt;</code></pre>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">exact</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">4 <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{4}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{4,4}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">4 <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{4}&lt;=int{2}[_,_]
@@ -1737,9 +1713,9 @@ mmlang&gt;</code></pre>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">any</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">0 or more <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{*}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{0,max}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">0 or more <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{*}&lt;=rec{*}[get,'age',int]
@@ -1752,13 +1728,13 @@ mmlang&gt;</code></pre>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">given</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock">1 or more <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{+}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,max}</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">1 or more <code>ints</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{*}&lt;=rec{*}[get,'age',int]
-==&gt;int{*}&lt;=rec{*}[get,'age',int]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{+}
+==&gt;int{+}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1771,41 +1747,151 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect3">
 <h4 id="_type_system">Type System</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 7.1428%;">
+<col style="width: 28.5714%;">
+<col style="width: 64.2858%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Anonymous_function">anonymous</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A type with an unspecified domain.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [plus,2]
+==&gt;7
+mmlang&gt; 5 =&gt; [plus,[plus,2]]
+==&gt;12</code></pre>
+</div>
+</div>
 <div class="paragraph">
-<p>An mm-ADT program is a type.
-The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>.
-The mm-ADT VM encodes a type <code>obj</code> as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger type graph (a Cayley graph).
-While a type graph is a graphical encoding of the monoidal structure of a particular subset of <code>obj</code>, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that realizes elements of the type (i.e. computed resultant values).
-These values are encoded in the value graph subgraph of the <code>obj</code> graph.
-Every aspect of an mm-ADT computation from composition to evaluation is materialized in the <code>obj</code> graph.</p>
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monomial">monomial</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <a href="https://en.wikipedia.org/wiki/Primitive_data_type">primitive type</a> that is a single term and coefficient.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5   =&gt; int
+==&gt;5
+mmlang&gt; '5' =&gt; int
+language error: str is not an int
+mmlang&gt; 5   =&gt; int{10}
+language error: int is not an int{10}</code></pre>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
-</li>
-<li>
-<p><strong>Compilation</strong>: A path in the Cayley graph represents a program.
-By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
-</li>
-<li>
-<p><strong>Rewrite</strong>: The vertices can be "merged" using the <code>[rewrite]</code> instruction to link two type vertices.</p>
-</li>
-<li>
-<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost.
-Rewrites create a superposition of programs.
-A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
-</li>
-<li>
-<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively).
-When the current monoid operation requires historic state information, the co-<code>obj</code> graph is searched for previously encoded stated-based <code>insts</code>.</p>
-</li>
-<li>
-<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place.
-The resultant path&#8217;s tail vertex is the result of the computation.</p>
-</li>
-</ol>
 </div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <a href="https://en.wikipedia.org/wiki/Composite_data_type">composite type</a> containing a linearly combination of terms and their coefficients.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (+{2}3,+{3}4,+{4}5)
+==&gt;(_[plus,3]{2},_[plus,4]{3},_[plus,5]{4})
+mmlang&gt; 5-&lt;(+{2}3,+{3}4,+{4}5)
+==&gt;(8{2},9{3},10{4})
+mmlang&gt; 5-&lt;(+{2}3,+{3}4,+{4}5)&gt;-[sum]
+==&gt;83
+mmlang&gt; ('a'-&gt;+{2}3,'b'-&gt;+{3}4,'c'-&gt;+{4}5)
+==&gt;('a'-&gt;_[plus,3]{2},'b'-&gt;_[plus,4]{3},'c'-&gt;_[plus,5]{4})
+mmlang&gt; 5-&lt;('a'-&gt;+{2}3,'b'-&gt;+{3}4,'c'-&gt;+{4}5)
+==&gt;('a'-&gt;8{2},'b'-&gt;9{3},'c'-&gt;10{4})
+mmlang&gt; 5-&lt;('a'-&gt;+{2}3,'b'-&gt;+{3}4,'c'-&gt;+{4}5).a
+==&gt;8</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Refinement_type">refinement</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A subset of another type.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0]]
+mmlang&gt; 5 =&gt; nat
+==&gt;nat:5
+mmlang&gt; 0 =&gt; nat
+language error: 0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A type with components of the same type.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,list&lt;=[(_)|(_,list)]]
+mmlang&gt; (1)             =&gt; list
+==&gt;list:(1)
+mmlang&gt; (1,(1))         =&gt; list
+==&gt;list:(1,(1))
+mmlang&gt; (1,(1,(1)))     =&gt; list
+==&gt;list:(1,(1,(1)))
+mmlang&gt; (1,(1,(1,(1)))) =&gt; list
+==&gt;list:(1,(1,(1,(1))))
+mmlang&gt; 1               =&gt; list
+language error: 1 is not a list&lt;=_[(_)|(_,list)]
+mmlang&gt; (1,1)           =&gt; list
+language error: (1,1) is not a list&lt;=_[(_)|(_,list)]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A type with a definition variable to the incoming <code>obj</code>.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [is&gt;int]
+mmlang&gt; 5 =&gt; [plus,int]
+==&gt;10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Category_(mathematics)">model</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of types and path equations.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:(
+          person -&gt; (person:('name'-&gt;str,'age'-&gt;int)),
+          team   -&gt; (person{*}))]
+mmlang&gt; ('name'-&gt;'marko')                         =&gt; person
+language error: ('name'-&gt;'marko') is not a person
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
+==&gt;person:('name'-&gt;'marko','age'-&gt;29)
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
+==&gt;person:('name'-&gt;'marko','age'-&gt;29)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="sect4">
 <h5 id="_anonymous_types">Anonymous Types</h5>
 <div class="paragraph">
@@ -3077,8 +3163,10 @@ mmlang&gt; ['a'{5},'b'{3}]
 </tbody>
 </table>
 <div class="paragraph">
-<p>\[
-[ a,a,b,a,b,b,a,a ]
+<p>\[</p>
+</div>
+<div class="paragraph">
+<p>[ a,a,b,a,b,b,a,a ]
 \]
 is <a href="https://en.wikipedia.org/wiki/Irreducible_polynomial">irreducible</a>.
 However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to \[
@@ -3088,8 +3176,13 @@ where the abelian group operator <code>[,]</code> is <a href="https://en.wikiped
 <div class="paragraph">
 <p>Stream compression is achieved by removing redundant information in a <a href="https://en.wikipedia.org/wiki/Lossless_compression">lossless</a> manner such that <a href="https://en.wikipedia.org/wiki/Enumeration">enumeration</a> is replaced with quantification.
 From a data structure perspective, an unordered <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> is converted into a weighted <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a>.
-Relying on the same axiomatic principle, but reframed in terms of types (programs), the <em>atemporal stream theorem</em> guarantees equivalent outcomes for both <a href="https://en.wikipedia.org/wiki/Synchronous_circuit">synchronous</a> and <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> execution strategies.
-The two examples below highlight this time/space entailment, where the former realizes a <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compile time optimization</a> and the latter a <a href="https://en.wikipedia.org/wiki/Program_optimization#Run_time">runtime optimization</a>.</p>
+Relying on the same axiomatic principle, but reframed in terms of types (programs), the <em>atemporal stream theorem</em> guarantees equivalent outcomes for both <a href="https://en.wikipedia.org/wiki/Synchronous_circuit">synchronous</a> and <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> execution strategies.</p>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_asynchronous_types">Asynchronous Types</h5>
+<div class="paragraph">
+<p>The two examples below highlight this time/space entailment, where the former realizes a <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compile time optimization</a> and the latter a <a href="https://en.wikipedia.org/wiki/Program_optimization#Run_time">runtime optimization</a>.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3171,6 +3264,101 @@ mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)&gt;-
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>As a ring, an mm-ADT <code>obj</code> can be multiplied or added to another <code>obj</code>.
+Multiplication is denoted with <code>=&gt;</code> (<code>5 =&gt; int+2</code>) or simple term juxtaposition (<code>5+2</code>).
+Addition, on the other hand, is realized by the <code>[branch]</code> instruction which has an <code>mmlang</code> sugar of <code>[,]</code>.
+The way in which <code>obj</code> addition effects the <code>obj</code> graph is important.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; int[+4[is&gt;0],*5]+1                                                   <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;int{1,2}&lt;=int[int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]],int[mult,5]][plus,1]
+mmlang&gt; 2 =&gt; int[+4[is&gt;0],*5]+1                                                     <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;7
+==&gt;11
+mmlang&gt; 2 =&gt; int[+4[is&gt;0],*5]+1[path]                                               <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;(2;[plus,4];6;[is,true];6;[plus,1];7)
+==&gt;(2;[mult,5];10;[plus,1];11)
+mmlang&gt; 2 =&gt; int[+4[is&gt;0],*5]+1[type]                                               <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]][plus,1]
+==&gt;int[mult,5][plus,1]</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>int</code>-dependent type clones the <code>int</code> to the two branches, merges the branch output, and adds <code>1</code> (<strong>compilation</strong>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td><code>2</code> is propagated through the <code>int{1,2}&lt;=int</code> type (<strong>evalution</strong>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>The path through the <code>obj</code> value graph taken by the resultant <code>objs</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The type of each resultant value.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The compilation of the <code>int{1,2}&lt;=int</code> type generates the path diagrammed below in the <strong>type subgraph</strong> of the <code>obj</code> graph.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/obj-type-path-example.svg" alt="obj type path example" width="625">
+</div>
+</div>
+<div class="paragraph">
+<p>The evaluation of the type with the input of <code>2</code> generates two paths through the <strong>value subgraph</strong> of the <code>obj</code> graph&#8201;&#8212;&#8201;via <em>split</em> (\$\Delta\$) and <em>merge</em> (\$\nabla\$).
+Branching (addition) is one of two fundamental operations in the mm-ADT ring algebra.
+It is not manifested as an <code>inst</code> in a value&#8217;s path history.
+Likewise, the other fundamental operation, <code>=&gt;</code> (multiplication) has no explicit <code>inst</code> and is denoted with juxtaposition in the value path history.
+The significance of branching being fundamental in mm-ADT is that individual branches can evaluate in <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">decoupled</a>, independent manner requiring no <a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)">synchronization</a> nor explicit <a href="https://en.wikipedia.org/wiki/Barrier_%28computer_science%29">coordination</a> at merge.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/language/obj-value-path-example.svg" alt="obj value path example">
+</div>
+</div>
+<div class="exampleblock">
+<div class="title">Deep Dive 2. Process Architectures Sympathetic to the Type Ringoid</div>
+<div class="content">
+<div class="paragraph">
+<p>An <code>mmlang</code> expression denotes a <strong>type</strong> (program) that is executed by a processor.
+A type is an element of the <strong>type ringoid</strong> algebra.
+The type ringoid is not the intended algebra of the language component.
+The reason being, languages yield linear structures.
+A linear medium is sympathetic to single operator <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> or <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">groups</a>.
+In order to express addition (branching) in these structures, the parallel branches are serially embedded using the <code>[,]</code> syntactic <a href="https://en.wikipedia.org/wiki/Kludge#Computer_science">hack</a>.</p>
+</div>
+<div class="paragraph">
+<p>The <strong>type</strong> elements of the type ringoid are <a href="https://en.wikipedia.org/wiki/Three-dimensional_space">three dimensional</a> structures (where the third dimension captures nesting) and have a more natural embedding in the spatial component of the physical world.
+Computationally, types are evaluated by processors across a number of cores of a single machine and/or across a multi-machine compute cluster.
+The type ringoid algebra yields types that are sympathetic to a variety of modern processor architectures.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Iterator">Iterator</a>: single threaded, pull-based, lazily evaluated, functionally oriented</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Reactive_programming">Reactive</a>: multi-threaded, push-based, lazily evaluated, stream oriented</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">Bulk Synchronous Parallel</a>: cluster, pull-based, eagerly evaluated, pipeline oriented</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Message_passing">Message-Passing</a>; cluster/multi-threaded, push-based, lazily evaluated, actor oriented</p>
+</li>
+</ol>
+</div>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_commuting_quantifiers">Commuting Quantifiers</h5>
@@ -4519,6 +4707,41 @@ At evaluation runtime, the free type ringoid provides a deconstructed, 2-dimensi
 </div>
 <div class="sect2">
 <h3 id="_the_obj_graph">The Obj Graph</h3>
+<div class="paragraph">
+<p>An mm-ADT program is a type.
+The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>.
+The mm-ADT VM encodes a type <code>obj</code> as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger type graph (a Cayley graph).
+While a type graph is a graphical encoding of the monoidal structure of a particular subset of <code>obj</code>, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that realizes elements of the type (i.e. computed resultant values).
+These values are encoded in the value graph subgraph of the <code>obj</code> graph.
+Every aspect of an mm-ADT computation from composition to evaluation is materialized in the <code>obj</code> graph.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
+</li>
+<li>
+<p><strong>Compilation</strong>: A path in the Cayley graph represents a program.
+By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
+</li>
+<li>
+<p><strong>Rewrite</strong>: The vertices can be "merged" using the <code>[rewrite]</code> instruction to link two type vertices.</p>
+</li>
+<li>
+<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost.
+Rewrites create a superposition of programs.
+A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
+</li>
+<li>
+<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively).
+When the current monoid operation requires historic state information, the co-<code>obj</code> graph is searched for previously encoded stated-based <code>insts</code>.</p>
+</li>
+<li>
+<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place.
+The resultant path&#8217;s tail vertex is the result of the computation.</p>
+</li>
+</ol>
+</div>
 <div class="sect3">
 <h4 id="_state">State</h4>
 <div class="paragraph">
@@ -4961,9 +5184,9 @@ mmlang&gt;</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; [as,person]
-==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
+language error: ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) does not contain the label 'person'
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; [as,person][put,'name','mrodrig']
-language error: person:('name'-&gt;'marko','age'-&gt;nat:29) instruction error: people are immutable</code></pre>
+language error: ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) does not contain the label 'person'</code></pre>
 </div>
 </div>
 </div>
@@ -5138,11 +5361,11 @@ y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int[plus,1][plus,2][plus,3]
 mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(int;;int;;int;[plus,1];int;[plus,2];int;[plus,3];int[plus,1][plus,2][plus,3])
+==&gt;(int;[plus,1];int;[plus,2];int;[plus,3];int[plus,1][plus,2][plus,3])
 mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;7
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;(1;;1;;1;[plus,1];2;[plus,2];4;[plus,3];7)
+==&gt;(1;[plus,1];2;[plus,2];4;[plus,3];7)
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
 ==&gt;int[plus,1][plus,2][plus,3][path,(_;_)]&gt;-</code></pre>
 </div>
@@ -5478,7 +5701,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-01 17:08:00 -0600
+Last updated 2020-08-01 17:13:58 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
