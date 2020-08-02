@@ -25,7 +25,7 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -65,11 +65,11 @@ class MultInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).mult(__.mult(real)), real(1.0, 8.0, 27.0), "strm"), // strm * anon = strm
         //////// POLY
         //(("a" |).mult(("1" /).asInstanceOf[Poly[Obj]]), "a" / "1", "value"),
-        (("a" `;`).mult(("1" `;`).asInstanceOf[Lst[Obj]]), "a" `;` "1", "value"),
-        (("a" `;`).mult("1" |[Obj] "2"), ("a" `;` "1") | ("a" `;` "2"), "value"),
-        (("a" `;` "b" `;` "c").mult("1" |[Obj] "2"), ("a" `;` "b" `;` "c" `;` "1") | ("a" `;` "b" `;` "c" `;` "2"), "value"),
-        (("a" `;` "b" `;` "c").mult("1" `;`[Obj] "2"), "a" `;` "b" `;` "c" `;` "1" `;` "2", "value"),
-        (("a" | "b" | "c").mult("1" `;`[Obj] "2"), lst[Obj]("|", values = List(("a" `;` "1" `;` "2"), ("b" `;` "1" `;` "2"), ("c" `;` "1" `;` "2")): _*), "value"),
+        //(("a" `;`).mult("1" `;`), "a" `;` "1", "value"),
+        //(("a" `;`).mult("1" | "2"), ("a" `;` "1") | ("a" `;` "2"), "value"),
+        //(("a" `;` "b" `;` "c").mult("1" | "2"), ("a" `;` "b" `;` "c" `;` "1") | ("a" `;` "b" `;` "c" `;` "2"), "value"),
+        (("a" `;` "b" `;` "c").asInstanceOf[Lst[StrValue]].mult(("1" `;` "2").asInstanceOf[Lst[StrValue]]), ("a" `;` "b" `;` "c" `;` "1" `;` "2"), "value"),
+      //  (("a" | "b" | "c").mult("1" `;` "2"), lst[Obj]("|", values = List(("a" `;` "1" `;` "2"), ("b" `;` "1" `;` "2"), ("c" `;` "1" `;` "2")): _*), "value"),
         //(("a" | "b" | "c").mult("1" |[Obj] "2"), lst[Obj]("|", values = ("a" | "1") | ("a" | "2") | ("b" | "1") | ("b" | "2") | ("c" | "1") | ("c" | "2")), "value")
       )
     forEvery(starts) { (query, result, atype) => {

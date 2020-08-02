@@ -62,8 +62,8 @@ Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorph
 \texttt{obj} = (\texttt{type object} \times \texttt{q}) + (\texttt{value object} \times \texttt{q}).
 \]
 
-There are two distinct kinds of mm-ADT `objs`: _quantified_ type objects and _quantified_ value objects.
-The products of the `obj` coproduct are called *type* and *value*.
+There are two distinct kinds of mm-ADT `objs`: _quantified type objects_ and _quantified value objects_.
+These products of the `obj` coproduct are called by simpler names: *type* and *value*.
 That is the *obj meta-model*.
 
 \[

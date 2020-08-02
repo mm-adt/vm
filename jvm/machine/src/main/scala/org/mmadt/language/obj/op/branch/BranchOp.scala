@@ -15,7 +15,8 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait BranchOp {
   this: Obj =>
-  def branch[O <: Obj](branches: Obj): O = BranchOp(branches).exec(this)
+  def branch[O <: Obj](branches: Poly[O]): O = BranchOp(branches).exec(this)
+  def branch[O <: Obj](branches: __): O = BranchOp(branches).exec(this)
 }
 
 object BranchOp extends Func[Obj, Obj] {

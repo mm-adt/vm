@@ -31,7 +31,7 @@ import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
-trait MergeOp[A <: Obj] {
+trait MergeOp[+A <: Obj] {
   this: Poly[A] =>
   def merge[B <: Obj]: B = MergeOp[A]().exec(this).asInstanceOf[B]
 

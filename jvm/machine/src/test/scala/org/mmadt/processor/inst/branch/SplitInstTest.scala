@@ -33,8 +33,8 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
 
 
   test("[split] value, type, strm") {
-    val check: TableFor3[Obj, Poly[Obj], Obj] =
-      new TableFor3[Obj, Poly[Obj], Obj](("input", "type", "result"),
+    val check: TableFor3[Obj, Poly[_<:Obj], Obj] =
+      new TableFor3[Obj, Poly[_<:Obj], Obj](("input", "type", "result"),
         (int(1), int.-<(int `;` int), int(1) `;` int(1)),
         (int(1, 2, 3), int.q(3).-<(int.q(3) `,` int.q(3)), strm(List(int(1) `,` 1, int(2) `,` 2, int(3) `,` 3))),
         (int(2), __.-<(int | str), int(2) | obj.q(qZero)),
@@ -141,7 +141,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
           (int.is(int.gt(10)) --> int.plus(4))).>-.plus(1))
 
     assertResult(int(33, 34))(
-      int(0) ==> int.plus(29).-<[IntType](
+      int(0) ==> int.plus(29).-<(
         (int.is(__.gt(40)) --> int.plus(1)) `,`
           (int.is(__.gt(30)) --> int.plus(2)) `,`
           (int.is(__.gt(20)) --> int.plus(3)) `,`

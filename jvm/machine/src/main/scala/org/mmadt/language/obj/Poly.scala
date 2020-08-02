@@ -26,10 +26,10 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.op.map.{HeadOp, LastOp, TailOp}
 
-trait Poly[A <: Obj] extends Obj
-  with HeadOp[A]
+trait Poly[+A <: Obj] extends Obj
+  with HeadOp[Obj]
   with TailOp
-  with LastOp[A]
+  with LastOp[Obj]
   with MergeOp[A] {
   def gsep: String
   def glist: Seq[A]

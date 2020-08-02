@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.{Int, Lst, Obj}
+import org.mmadt.language.obj.{Int, Lst, Obj, Str}
 import org.mmadt.storage.StorageFactory
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -95,8 +95,8 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
 
 
   test("parallel [tail][head][last] values") {
-    val starts: TableFor2[Lst[Obj], List[Obj]] =
-      new TableFor2[Lst[Obj], List[Obj]](("parallel", "projections"),
+    val starts: TableFor2[Lst[Str], List[Obj]] =
+      new TableFor2[Lst[Str], List[Obj]](("parallel", "projections"),
         (lst, List.empty),
         ("a" |, List(str("a"))),
         ("a" | "b", List(str("a"), str("b"))),
@@ -129,8 +129,8 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("serial value/type checking") {
-    val starts: TableFor2[Lst[Obj], Boolean] =
-      new TableFor2[Lst[Obj], Boolean](("serial", "isValue"),
+    val starts: TableFor2[Lst[_<:Obj], Boolean] =
+      new TableFor2[Lst[_<:Obj], Boolean](("serial", "isValue"),
         (lst, false),
         ("a" `;` "b", true),
         ("a" `;` "b" `;` "c" `;` "d", true),
@@ -143,10 +143,10 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("serial [put]") {
-    val starts: TableFor4[Lst[Obj], Int, Obj, Lst[Obj]] =
-      new TableFor4[Lst[Obj], Int, Obj, Lst[Obj]](("serial", "key", "value", "newProd"),
+    val starts: TableFor4[Lst[StrValue], Int, StrValue, Lst[StrValue]] =
+      new TableFor4[Lst[StrValue], Int, StrValue, Lst[StrValue]](("serial", "key", "value", "newProd"),
         // (lst, 0, "a", "a" `;`),
-        ("b" `;`, 0, "a", "a" `;` "b"),
+        (str("b") `;`, 0, "a", "a" `;` "b"),
         ("a" `;` "c", 1, "b", "a" `;` "b" `;` "c"),
         ("a" `;` "b", 2, "c", "a" `;` "b" `;` "c"),
         //(str("a")/"b", 2, str("c")/ "d", str("a")/ "b"/ (str("c")/ "d")),

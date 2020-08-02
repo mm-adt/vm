@@ -114,34 +114,14 @@ trait Obj
   }
 
   // poly fluent methods
-  final def |[A <: Obj](obj: scala.Double): Lst[A] = this.|(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def |[A <: Obj](obj: scala.Long): Lst[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def |[A <: Obj](obj: scala.Int): Lst[A] = this.|(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def |[A <: Obj](obj: String): Lst[A] = this.|(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def |[A <: Obj]: Lst[A] = lst(Tokens.|, this.asInstanceOf[A])
-
-  final def |[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.|, obj)
-
-  //
-  final def `;`[A <: Obj](obj: scala.Double): Lst[A] = this.`;`(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `;`[A <: Obj](obj: scala.Long): Lst[A] = this.`;`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `;`[A <: Obj](obj: scala.Int): Lst[A] = this.`;`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `;`[A <: Obj](obj: String): Lst[A] = this.`;`(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `;`[A <: Obj]: Lst[A] = lst(Tokens.`;`, this.asInstanceOf[A])
-
-  final def `;`[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.`;`, obj)
-
-  //
-  final def `,`[A <: Obj](obj: scala.Double): Lst[A] = this.`,`(real(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `,`[A <: Obj](obj: scala.Long): Lst[A] = this.`,`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `,`[A <: Obj](obj: scala.Int): Lst[A] = this.`,`(int(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `,`[A <: Obj](obj: String): Lst[A] = this.`,`(str(obj).asInstanceOf[A]) // TODO: figure out how to do this implicitly
-  final def `,`[A <: Obj]: Lst[A] = lst(Tokens.`,`, this.asInstanceOf[A])
-
-  final def `,`[A <: Obj](obj: A): Lst[A] = this.polyMaker(Tokens.`,`, obj)
-
+  final def `|`: Lst[this.type] = lst(Tokens.|, this).asInstanceOf[Lst[this.type]]
+  final def |(obj: Obj): Lst[obj.type] = this.lstMaker(Tokens.|, obj)
+  final def `;`: Lst[this.type] = lst(Tokens.`;`, this).asInstanceOf[Lst[this.type]]
+  final def `;`(obj: Obj): Lst[obj.type] = this.lstMaker(Tokens.`;`, obj)
+  final def `,`: Lst[this.type] = lst(Tokens.`,`, this).asInstanceOf[Lst[this.type]]
+  final def `,`(obj: Obj): Lst[obj.type] = this.lstMaker(Tokens.`,`, obj)
   /////////////////
-  private final def polyMaker[A <: Obj](sep: String, obj: A): Lst[A] = {
+  private final def lstMaker[A <: Obj](sep: String, obj: A): Lst[A] = {
     this match {
       case apoly: Lst[A] => obj match {
         case bpoly: Lst[A] => lst(g = (sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A])))
@@ -166,7 +146,7 @@ trait Obj
         .map(x => x._2.exec(this))
         .map(x => x.compute(rangeType.linvert()))
         .getOrElse(this.asInstanceOf[E]))
-    case _ => rangeType.q(multQ(this.q,rangeType.q))
+    case _ => rangeType.q(multQ(this.q, rangeType.q))
   }
 
   def ==>[E <: Obj](rangeType: Type[E]): E = {
@@ -236,27 +216,16 @@ object Obj {
   }
 
   @inline implicit def booleanToBool(ground: Boolean): BoolValue = bool(ground)
-
   @inline implicit def longToInt(ground: Long): IntValue = int(ground)
-
   @inline implicit def intToInt(ground: scala.Int): IntValue = int(ground.longValue())
-
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
-
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
-
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
-
   @inline implicit class BooleanExtensions(b: Boolean)
-
   @inline implicit class StringExtensions(s: String)
-
   @inline implicit class IntegerExtensions(i: scala.Int)
-
   @inline implicit class LongExtensions(l: Long)
-
   @inline implicit class FloatExtensions(f: Float)
-
   @inline implicit class DoubleExtensions(d: Double)
 
 }

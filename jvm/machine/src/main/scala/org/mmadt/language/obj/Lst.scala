@@ -30,13 +30,13 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 
-trait Lst[A <: Obj] extends Poly[A]
-  with CombineOp[A]
-  with GetOp[Int, A]
-  with PutOp[Int, A]
-  with PlusOp[Lst[A]]
-  with MultOp[Lst[A]]
-  with ZeroOp[Lst[A]] {
+trait Lst[+A <: Obj] extends Poly[A]
+  with CombineOp[Obj]
+  with GetOp[Int, Obj]
+  with PutOp[Int, Obj]
+  with PlusOp[Lst[Obj]]
+  with MultOp[Lst[Obj]]
+  with ZeroOp[Lst[Obj]] {
 
   def g: LstTuple[A]
 
