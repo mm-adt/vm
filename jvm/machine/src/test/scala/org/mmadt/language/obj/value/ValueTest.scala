@@ -61,20 +61,20 @@ class ValueTest extends FunSuite {
     assertResult(bool)(asType(avalue))
     assertResult(4)(avalue.trace.length)
     // rinvert
-    assertResult(int(5).plus(10).id().mult(5))(avalue.rinvert[IntValue]())
-    assertResult(int(5).plus(10).id())(avalue.rinvert[IntValue]().rinvert[IntValue]())
-    assertResult(int(5).plus(10))(avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]())
-    assertResult(int(5))(avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]())
+    assertResult(int(5).plus(10).id().mult(5))(avalue.rinvert[IntValue])
+    assertResult(int(5).plus(10).id())(avalue.rinvert[IntValue].rinvert[IntValue])
+    assertResult(int(5).plus(10))(avalue.rinvert[IntValue].rinvert[IntValue].rinvert[IntValue])
+    assertResult(int(5))(avalue.rinvert[IntValue].rinvert[IntValue].rinvert[IntValue].rinvert[IntValue])
     assertThrows[LanguageException] {
-      avalue.rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]().rinvert[IntValue]()
+      avalue.rinvert[IntValue].rinvert[IntValue].rinvert[IntValue].rinvert[IntValue].rinvert[IntValue]
     }
     // linvert
-    assertResult(int(15).id().mult(5).gt(10))(avalue.linvert())
-    assertResult(int(15).mult(5).gt(10))(avalue.linvert().linvert())
-    assertResult(int(75).gt(10))(avalue.linvert().linvert().linvert())
-    assertResult(btrue)(avalue.linvert().linvert().linvert().linvert())
+    assertResult(int(15).id().mult(5).gt(10))(avalue.linvert)
+    assertResult(int(15).mult(5).gt(10))(avalue.linvert.linvert)
+    assertResult(int(75).gt(10))(avalue.linvert.linvert.linvert)
+    assertResult(btrue)(avalue.linvert.linvert.linvert.linvert)
     assertThrows[LanguageException] {
-      avalue.linvert().linvert().linvert().linvert().linvert()
+      avalue.linvert.linvert.linvert.linvert.linvert
     }
   }
 }

@@ -64,31 +64,31 @@ class TypeTest extends FunSuite {
     assertResult(int.q(0, 1))(tobj.range)
     assertResult(3)(tobj.trace.length)
     //
-    tobj = tobj.rinvert[IntType]()
+    tobj = tobj.rinvert[IntType]
     assertResult(int)(tobj.domain)
     assertResult("int[plus,10][mult,1]")(tobj.toString)
     assertResult(int)(tobj.range)
     assertResult(int)(tobj.range.q(qOne))
     assertResult(2)(tobj.trace.length)
     //
-    tobj = tobj.rinvert[IntType]()
+    tobj = tobj.rinvert[IntType]
     assertResult(int)(tobj.domain)
     assertResult("int[plus,10]")(tobj.toString)
     assertResult(int)(tobj.range)
     assertResult(1)(tobj.trace.length)
     //
-    tobj = tobj.rinvert[IntType]()
+    tobj = tobj.rinvert[IntType]
     assertResult(int)(tobj.domain)
     assertResult("int")(tobj.toString)
     assertResult(int)(tobj.range)
     assertResult(0)(tobj.trace.length)
 
     assertThrows[LanguageException] {
-      tobj.rinvert[IntType]()
+      tobj.rinvert[IntType]
     }
     //
     assertThrows[LanguageException] {
-      tobj.linvert()
+      tobj.linvert
     }
   }
 
@@ -101,47 +101,47 @@ class TypeTest extends FunSuite {
     assertResult(bool)(boolType.range.q(qOne))
     assertResult(4)(boolType.trace.length)
     //
-    var intType = boolType.rinvert[IntType]()
+    var intType = boolType.rinvert[IntType]
     assertResult(int)(intType.domain)
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(intType.toString)
     assertResult(int.q(0, 1))(intType.range)
     assertResult(int)(intType.range.q(qOne))
     assertResult(3)(intType.trace.length)
     //
-    intType = intType.rinvert[IntType]()
+    intType = intType.rinvert[IntType]
     assertResult(int)(intType.domain)
     assertResult("int[plus,10][mult,1]")(intType.toString)
     assertResult(int)(intType.range)
     assertResult(2)(intType.trace.length)
     //
-    intType = intType.rinvert[IntType]()
+    intType = intType.rinvert[IntType]
     assertResult(int)(intType.domain)
     assertResult("int[plus,10]")(intType.toString)
     assertResult(int)(intType.range)
     assertResult(1)(intType.trace.length)
     //
-    intType = intType.rinvert[IntType]()
+    intType = intType.rinvert[IntType]
     assertResult(int)(intType.domain)
     assertResult("int")(intType.toString)
     assertResult(int)(intType.range)
     assertResult(0)(intType.trace.length)
     //
     assertThrows[LanguageException] {
-      intType.rinvert[IntType]()
+      intType.rinvert[IntType]
     }
     //
     assertThrows[LanguageException] {
-      intType.linvert()
+      intType.linvert
     }
   }
 
   def domainTest(atype: Type[_]): Unit = {
     assertResult(int)(atype.domain)
     assertThrows[LanguageException] {
-      atype.domain.rinvert()
+      atype.domain.rinvert
     }
     assertThrows[LanguageException] {
-      atype.domain.linvert()
+      atype.domain.linvert
     }
 
   }
@@ -152,12 +152,12 @@ class TypeTest extends FunSuite {
     assertResult(bool.q(0, 1))(boolType.range)
     assertResult(bool)(boolType.range.q(qOne))
     assertResult(5)(boolType.trace.length)
-    assertResult(int.mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a"))(boolType.linvert())
-    assertResult(int.is(int.gt(int(20))).map(str("hello").plus(str)).gt("a"))(boolType.linvert().linvert())
-    assertResult(int.mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)))(boolType.linvert().rinvert())
+    assertResult(int.mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a"))(boolType.linvert)
+    assertResult(int.is(int.gt(int(20))).map(str("hello").plus(str)).gt("a"))(boolType.linvert.linvert)
+    assertResult(int.mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)))(boolType.linvert.rinvert)
     domainTest(boolType)
     //
-    val strType: StrType = boolType.rinvert[StrType]()
+    val strType: StrType = boolType.rinvert[StrType]
     assertResult(int)(strType.domain)
     assertResult("str{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,'hellohello']")(strType.toString)
     assertResult(str.q(0, 1))(strType.range)
@@ -165,7 +165,7 @@ class TypeTest extends FunSuite {
     assertResult(4)(strType.trace.length)
     domainTest(strType)
     //
-    var intType = strType.rinvert[IntType]()
+    var intType = strType.rinvert[IntType]
     assertResult(int)(intType.domain)
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(intType.toString)
     assertResult(int.q(0, 1))(intType.range)
@@ -173,21 +173,21 @@ class TypeTest extends FunSuite {
     assertResult(3)(intType.trace.length)
     domainTest(intType)
     //
-    intType = intType.rinvert[IntType]()
+    intType = intType.rinvert[IntType]
     assertResult(int)(intType.domain)
     assertResult("int[plus,10][mult,1]")(intType.toString)
     assertResult(int)(intType.range)
     assertResult(2)(intType.trace.length)
     domainTest(intType)
     //
-    intType = intType.rinvert[IntType]()
+    intType = intType.rinvert[IntType]
     assertResult(int)(intType.domain)
     assertResult("int[plus,10]")(intType.toString)
     assertResult(int)(intType.range)
     assertResult(1)(intType.trace.length)
     domainTest(intType)
     //
-    intType = intType.rinvert[IntType]()
+    intType = intType.rinvert[IntType]
     assertResult(int)(intType.domain)
     assertResult("int")(intType.toString)
     assertResult(int)(intType.range)

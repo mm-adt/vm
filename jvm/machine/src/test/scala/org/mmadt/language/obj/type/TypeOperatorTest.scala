@@ -36,28 +36,28 @@ class TypeOperatorTest extends FunSuite {
     assertResult(List((int, PlusOp(int(1)))))(int.plus(1).trace)
     assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(2)))))(int.plus(1).plus(2).trace)
     assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(2))), (int.plus(1).plus(2), PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).trace)
-    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(2)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().trace)
-    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(2))), (int.plus(1).plus(2), PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().plus(3).trace)
+    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(2)))))(int.plus(1).plus(2).plus(3).rinvert[IntType].trace)
+    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(2))), (int.plus(1).plus(2), PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).rinvert[IntType].plus(3).trace)
   }
 
   test("insts analysis from type right inverse") {
-    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(2)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().trace)
-    assertResult(List((int, PlusOp(int(1)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().trace)
-    assertResult(List())(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]().trace)
-    assertResult(int)(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]())
+    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(2)))))(int.plus(1).plus(2).plus(3).rinvert[IntType].trace)
+    assertResult(List((int, PlusOp(int(1)))))(int.plus(1).plus(2).plus(3).rinvert[IntType].rinvert[IntType].trace)
+    assertResult(List())(int.plus(1).plus(2).plus(3).rinvert[IntType].rinvert[IntType].rinvert[IntType].trace)
+    assertResult(int)(int.plus(1).plus(2).plus(3).rinvert[IntType].rinvert[IntType].rinvert[IntType])
     assertThrows[LanguageException] {
-      int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().rinvert[IntType]().rinvert()
+      int.plus(1).plus(2).plus(3).rinvert[IntType].rinvert[IntType].rinvert[IntType].rinvert
     }
-    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(4)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().plus(4).trace)
-    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(4))), (int.plus(1).plus(4), PlusOp(int(5)))))(int.plus(1).plus(2).plus(3).rinvert[IntType]().rinvert[IntType]().plus(4).plus(5).trace)
+    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(4)))))(int.plus(1).plus(2).plus(3).rinvert[IntType].rinvert[IntType].plus(4).trace)
+    assertResult(List((int, PlusOp(int(1))), (int.plus(1), PlusOp(int(4))), (int.plus(1).plus(4), PlusOp(int(5)))))(int.plus(1).plus(2).plus(3).rinvert[IntType].rinvert[IntType].plus(4).plus(5).trace)
   }
 
   test("insts analysis from type left inverse") {
-    assertResult(List((int, PlusOp(int(2))), (int.plus(2), PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert().trace)
-    assertResult(List((int, PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert().linvert().trace)
-    assertResult(List())(int.plus(1).plus(2).plus(3).linvert().linvert().linvert().trace)
+    assertResult(List((int, PlusOp(int(2))), (int.plus(2), PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert.trace)
+    assertResult(List((int, PlusOp(int(3)))))(int.plus(1).plus(2).plus(3).linvert.linvert.trace)
+    assertResult(List())(int.plus(1).plus(2).plus(3).linvert.linvert.linvert.trace)
     assertThrows[LanguageException] {
-      assertResult(List())(int.plus(1).plus(2).plus(3).linvert().linvert().linvert().linvert().trace)
+      assertResult(List())(int.plus(1).plus(2).plus(3).linvert.linvert.linvert.linvert.trace)
     }
   }
 }

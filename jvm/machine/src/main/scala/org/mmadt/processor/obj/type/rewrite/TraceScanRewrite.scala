@@ -47,10 +47,10 @@ object TraceScanRewrite extends Rewrite {
           val aTraceRewrite = aTrace.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
           if (aTraceRewrite.forall(x => x.alive)) { // the entire window matches, write the range instructions to the type
             b = writer(range.trace.map(x => x._2), aTraceRewrite, b)
-            for (_ <- 1 to length) a = a.linvert()
+            for (_ <- 1 to length) a = a.linvert
           } else { // the window doesn't match, write only the next instruction to the type and try the window shifted over one
             b = aTrace.headOption.map(x => x.exec(b)).get
-            a = a.linvert()
+            a = a.linvert
           }
         } else {
           b = aTrace.foldLeft(b)((x, y) => y.exec(x)) // the window has gone over the instruction length, write unmatched instructions to type

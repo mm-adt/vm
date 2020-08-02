@@ -46,10 +46,10 @@ object LeftRightRewrite extends Rewrite {
       search(defines, atype) match {
         case Some(right: S) => rewrite(defines, right, btype, start)
         case None =>
-          val inst: Inst[Obj, Obj] = OpInstResolver.resolve(atype.via._2.op, rewriteArgs(defines, atype.rinvert[S]().range, atype.via._2.asInstanceOf[Inst[Obj, Obj]])).q(atype.via._2.q)
-          rewrite(defines, atype.rinvert(), inst.exec(atype.rinvert[Obj]().range).compute(btype), start)
+          val inst: Inst[Obj, Obj] = OpInstResolver.resolve(atype.via._2.op, rewriteArgs(defines, atype.rinvert[S].range, atype.via._2.asInstanceOf[Inst[Obj, Obj]])).q(atype.via._2.q)
+          rewrite(defines, atype.rinvert, inst.exec(atype.rinvert[Obj].range).compute(btype), start)
       }
-    } else if (!btype.root) rewrite(defines, btype.linvert(), btype.linvert().domain, btype.trace.head._2.exec(start)).asInstanceOf[S]
+    } else if (!btype.root) rewrite(defines, btype.linvert, btype.linvert.domain, btype.trace.head._2.exec(start)).asInstanceOf[S]
     else start
   }
 

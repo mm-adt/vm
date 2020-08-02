@@ -85,7 +85,7 @@ trait Obj
   def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type =
     if (domainType.root) this.clone(via = (domainType, NoOp()))
-    else this.clone(via = (domainType.rinvert(), domainType.via._2))
+    else this.clone(via = (domainType.rinvert, domainType.via._2))
   lazy val range: Type[Obj] = asType(this.isolate)
   lazy val domain: Type[Obj] = if (this.root) asType(this).asInstanceOf[Type[Obj]] else asType(this.via._1).domain
 
@@ -104,8 +104,8 @@ trait Obj
   lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else qZero, via = (obj, inst))
-  def rinvert[R <: Obj](): R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
-  def linvert(): this.type = {
+  def rinvert[R <: Obj]: R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
+  def linvert: this.type = {
     if (this.root) throw LanguageException.zeroLengthPath(this)
     this.trace.tail match {
       case Nil => this.isolate
@@ -144,7 +144,7 @@ trait Obj
       Tokens.tryName[E](rangeType, rangeType.trace
         .headOption
         .map(x => x._2.exec(this))
-        .map(x => x.compute(rangeType.linvert()))
+        .map(x => x.compute(rangeType.linvert))
         .getOrElse(this.asInstanceOf[E]))
     case _ => rangeType.q(multQ(this.q, rangeType.q))
   }
@@ -221,11 +221,11 @@ object Obj {
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
-  @inline implicit class BooleanExtensions(b: Boolean)
+  /*@inline implicit class BooleanExtensions(b: Boolean)
   @inline implicit class StringExtensions(s: String)
   @inline implicit class IntegerExtensions(i: scala.Int)
   @inline implicit class LongExtensions(l: Long)
   @inline implicit class FloatExtensions(f: Float)
-  @inline implicit class DoubleExtensions(d: Double)
+  @inline implicit class DoubleExtensions(d: Double)*/
 
 }
