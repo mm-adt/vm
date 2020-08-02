@@ -929,8 +929,8 @@ Thus, the previous formula is <a href="https://en.wikipedia.org/wiki/Isomorphism
 \]</p>
 </div>
 <div class="paragraph">
-<p>There are two distinct kinds of mm-ADT <code>objs</code>: <em>quantified</em> type objects and <em>quantified</em> value objects.
-The products of the <code>obj</code> coproduct are called <strong>type</strong> and <strong>value</strong>.
+<p>There are two distinct kinds of mm-ADT <code>objs</code>: <em>quantified type objects</em> and <em>quantified value objects</em>.
+These products of the <code>obj</code> coproduct are called by simpler names: <strong>type</strong> and <strong>value</strong>.
 That is the <strong>obj meta-model</strong>.</p>
 </div>
 <div class="paragraph">
@@ -1875,9 +1875,9 @@ mmlang&gt; 5 =&gt; [plus,int]
 <td class="tableblock halign-left valign-top"><p class="tableblock">A set of types and path equations.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:(
-          person -&gt; (person:('name'-&gt;str,'age'-&gt;int)),
-          team   -&gt; (person{*}))]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type'-&gt;
+          (person -&gt; (person:('name'-&gt;str,'age'-&gt;int)),
+           team   -&gt; (person{*})))]
 mmlang&gt; ('name'-&gt;'marko')                         =&gt; person
 language error: ('name'-&gt;'marko') is not a person
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
@@ -5132,8 +5132,8 @@ language error: -6 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:(nat    -&gt; (nat&lt;=int[is&gt;0]),
-                        person -&gt; (person&lt;=('name'-&gt;str,'age'-&gt;nat)))&lt;=mm]            <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type' -&gt; (nat    -&gt; (nat&lt;=int[is&gt;0]),
+                                   person -&gt; (person:('name'-&gt;str,'age'-&gt;nat))))&lt;=mm] <i class="conum" data-value="1"></i><b>(1)</b>
 mmlang&gt; 53 =&gt; [as,nat]                                                                <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;nat:53
 mmlang&gt; 0  =&gt; [as,nat]
@@ -5173,22 +5173,7 @@ language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
 <div class="sectionbody">
 <div class="sect2">
 <h3 id="_model_adt">Model-ADT</h3>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:(nat    -&gt; (nat&lt;=int[is&gt;0]),
-                        person -&gt; (person:('name'-&gt;str,'age'-&gt;nat),
-                                  ([error,'people are immutable'])&lt;=([put,_,_])))&lt;=mm]
-mmlang&gt;</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; [as,person]
-language error: ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) does not contain the label 'person'
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; [as,person][put,'name','mrodrig']
-language error: ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) does not contain the label 'person'</code></pre>
-</div>
-</div>
+
 </div>
 </div>
 </div>
@@ -5701,7 +5686,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-01 17:13:58 -0600
+Last updated 2020-08-02 02:11:10 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
