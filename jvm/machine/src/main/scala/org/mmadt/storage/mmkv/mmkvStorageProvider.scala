@@ -56,8 +56,8 @@ class mmkvStorageProvider extends StorageProvider {
     })
   }
   override def rewrites(): util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
-    RewriteOp((__.error("keys are immutable") `,`) <= (mmkv.put(K, __.via(__, StartOp(__))) `,`)),
-    RewriteOp((__.error("values are immutable") `,`) <= (mmkv.put(V, __.via(__, StartOp(__))) `,`)),
+    RewriteOp((__.error("keys are immutable") `,`) <= lst(",", mmkv.put(K, __.via(__, StartOp(__))))),
+    RewriteOp((__.error("values are immutable") `,`) <= lst(",", mmkv.put(V, __.via(__, StartOp(__))))),
     /*RewriteOp(
       (List(mmkvGetRecordsByKey(str, 1)).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`)
         <=
@@ -93,7 +93,7 @@ object mmkvStorageProvider {
         val key: Obj = inst.arg2[Obj]
         (start match {
           case _: Type[_] => mmkvStore.open(fileStr).schema.via(start, inst).hardQ(*)
-          case _ => rec(K -> key, V -> mmkvStore.open(fileStr).get(key)).via(start,inst)
+          case _ => rec(K -> key, V -> mmkvStore.open(fileStr).get(key)).via(start, inst)
         })
       }
     }

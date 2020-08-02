@@ -113,27 +113,8 @@ trait Obj
     }
   }
 
-  // poly fluent methods
-  final def `|`: Lst[this.type] = lst(Tokens.|, this).asInstanceOf[Lst[this.type]]
-  final def |(obj: Obj): Lst[obj.type] = this.lstMaker(Tokens.|, obj)
-  final def `;`: Lst[this.type] = lst(Tokens.`;`, this).asInstanceOf[Lst[this.type]]
-  final def `;`(obj: Obj): Lst[obj.type] = this.lstMaker(Tokens.`;`, obj)
-  final def `,`: Lst[this.type] = lst(Tokens.`,`, this).asInstanceOf[Lst[this.type]]
-  final def `,`(obj: Obj): Lst[obj.type] = this.lstMaker(Tokens.`,`, obj)
-  /////////////////
-  private final def lstMaker[A <: Obj](sep: String, obj: A): Lst[A] = {
-    this match {
-      case apoly: Lst[A] => obj match {
-        case bpoly: Lst[A] => lst(g = (sep, List(apoly.asInstanceOf[A], bpoly.asInstanceOf[A])))
-        case _ => lst(g = (apoly.gsep, apoly.glist :+ obj))
-      }
-      case _ => lst(g = (sep, List(this.asInstanceOf[A], obj)))
-    }
-  }
-
   // utility methods
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
-
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: E): E = rangeType match {
@@ -164,6 +145,15 @@ trait Obj
       case _ => rangeType
     }
   }
+
+  // lst fluent methods
+  final def `|`: Lst[this.type] = lst(Tokens.|, this).asInstanceOf[Lst[this.type]]
+  def |(obj: Obj): Lst[obj.type] = lst(g = (Tokens.`|`, List(this.asInstanceOf[obj.type], obj)))
+  final def `;`: Lst[this.type] = lst(Tokens.`;`, this).asInstanceOf[Lst[this.type]]
+  def `;`(obj: Obj): Lst[obj.type] = lst(g = (Tokens.`;`, List(this.asInstanceOf[obj.type], obj)))
+  final def `,`: Lst[this.type] = lst(Tokens.`,`, this).asInstanceOf[Lst[this.type]]
+  def `,`(obj: Obj): Lst[obj.type] = lst(g = (Tokens.`,`, List(this.asInstanceOf[obj.type], obj)))
+
 }
 
 object Obj {
@@ -221,11 +211,20 @@ object Obj {
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
-  /*@inline implicit class BooleanExtensions(b: Boolean)
-  @inline implicit class StringExtensions(s: String)
-  @inline implicit class IntegerExtensions(i: scala.Int)
-  @inline implicit class LongExtensions(l: Long)
-  @inline implicit class FloatExtensions(f: Float)
-  @inline implicit class DoubleExtensions(d: Double)*/
+  @inline implicit def tupleToRichTuple[A <: Obj, B <: Obj](ground: Tuple2[A, B]): RichTuple2[A, B] = new RichTuple2[A, B](ground)
+  class RichTuple2[A <: Obj, B <: Obj](val tuple: Tuple2[A, B]) {
+    final def `_,`(next: Tuple2[A, B]): Rec[A, B] = this.`,`(next)
+    final def `_;`(next: Tuple2[A, B]): Rec[A, B] = this.`;`(next)
+    final def `_|`(next: Tuple2[A, B]): Rec[A, B] = this.`|`(next)
+    final def `,`: Rec[A, B] = rec(g = (Tokens.`,`, Map(this.tuple._1 -> this.tuple._2)))
+    final def `,`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`,`, next)
+    final def `;`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`;`, next)
+    final def `|`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`|`, next)
+    private final def recMaker(sep: String, tuple: Tuple2[A, B]): Rec[A, B] = {
+      this match {
+        case _ => rec(g = (sep, Map(this.tuple, tuple)))
+      }
+    }
+  }
 
 }

@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -31,11 +32,11 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Rec[A <: Obj, B <: Obj] extends Poly[B]
-  with PlusOp[Rec[A, B]]
+trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
+  with PlusOp[Rec[A, Obj]]
   with GetOp[A, B]
-  with PutOp[A, B]
-  with ZeroOp[Rec[A, B]] {
+  with PutOp[A, Obj]
+  with ZeroOp[Rec[A, Obj]] {
 
   def g: RecTuple[A, B]
   def gsep: String = g._1
@@ -49,6 +50,13 @@ trait Rec[A <: Obj, B <: Obj] extends Poly[B]
       this.gmap.zip(arec.gmap).forall(x => x._1._1.equals(x._2._1) && x._1._2.equals(x._2._2))
     case _ => true
   }
+
+  final def `_,`(next: Tuple2[A, _]): this.type = this.`,`(next)
+  final def `_;`(next: Tuple2[A, _]): this.type = this.`;`(next)
+  final def `_|`(next: Tuple2[A, _]): this.type = this.`|`(next)
+  final def `,`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`,`, this.g._2 + (next._1 -> next._2)))
+  final def `;`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`;`, this.g._2 + (next._1 -> next._2)))
+  final def `|`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`|`, this.g._2 + (next._1 -> next._2)))
 }
 
 object Rec {

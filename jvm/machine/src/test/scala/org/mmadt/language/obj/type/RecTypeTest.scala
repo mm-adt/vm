@@ -40,10 +40,14 @@ class RecTypeTest extends FunSuite {
     assertResult("rec")(rec.toString)
   }
 
+  test("rich tuple") {
+    assertResult(rec(g = (Tokens.`,`, Map(int(1) -> int(2), int(2) -> int(3)))))(int(1) -> int(2) `_,` int(2) -> int(3))
+  }
+
   test("rec type [split]/[merge]") {
-    val crec: Rec[StrValue, IntType] = rec(g = (Tokens.`,`, Map(str("a") -> int.plus(1), str("b") -> int.plus(2), str("c") -> int.plus(3))))
-    val prec: Rec[StrValue, IntType] = rec(g = (Tokens.`|`, Map(str("a") -> int.plus(1), str("b") -> int.plus(2), str("c") -> int.plus(3))))
-    val srec: Rec[StrValue, IntType] = rec(g = (Tokens.`;`, Map(str("a") -> int.plus(1), str("b") -> int.plus(2), str("c") -> int.plus(3))))
+    val crec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_,` str("b") -> int.plus(2) `_,` str("c") -> int.plus(3)
+    val prec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_|` str("b") -> int.plus(2) `_|` str("c") -> int.plus(3)
+    val srec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_;` str("b") -> int.plus(2) `_;` str("c") -> int.plus(3)
 
     assertResult(int.q(3))(crec.merge.range)
     assertResult(int.q(1))(prec.merge.range)
@@ -57,13 +61,13 @@ class RecTypeTest extends FunSuite {
   test("rec values") {
     assertResult("(1->true)")(rec(int(1) -> btrue).toString)
     assertResult("(1->true,2->false)")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
-    assertResult("(1->true,2->false)")(rec(int(1) -> btrue).plus(rec(int(2) -> bfalse)).toString)
+    assertResult("(1->true,2->false)")(rec(int(1) -> btrue).plus(int(2) -> bfalse `,`).toString)
     assertResult(bfalse)(rec(int(1) -> btrue) ===> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)).get(int(2)))
-    assertResult(rec(int(1) -> btrue, int(2) -> bfalse))(rec(int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)))
-    assertResult(btrue)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(1)))
-    assertResult(bfalse)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(2)))
+    assertResult(int(1) -> btrue `_,` int(2) -> bfalse)((int(1) -> btrue `,`) ==> rec[IntValue, BoolValue].plus(int(2) -> bfalse `,`))
+    assertResult(btrue)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(1)))
+    assertResult(bfalse)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(2)))
     //intercept[LanguageException] {
-    assertResult(zeroObj)(rec(int(1) -> btrue, int(2) -> bfalse).get(int(3)))
+    assertResult(zeroObj)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(3)))
     //}
   }
 
@@ -85,13 +89,13 @@ class RecTypeTest extends FunSuite {
     assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
     assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
     // backwards keys
-    assertResult(ListMap(Y, X))(rec(Y, X).gmap)
+    assertResult(ListMap(Y, X))((Y `,` X).gmap)
     assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).gmap)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y, X).gmap)
-    assertResult(ListMap(Z, Y, X))(rec(Z).plus(rec(Y, X)).gmap)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y).plus(rec(X)).gmap)
+    assertResult(ListMap(Z, Y, X))((Z `,` Y `,` X).gmap)
+    assertResult(ListMap(Z, Y, X))(rec(Z).plus(Y `,` X).gmap)
+    assertResult(ListMap(Z, Y, X))((Z `,` Y).plus(rec(X)).gmap)
     // overwrite orderings
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).gmap) // TODO: determine overwrite order
+    assertResult(ListMap(X, Y, Z))((X `,` Y).plus((X `,` Z)).gmap) // TODO: determine overwrite order
   }
 
   test("rec value via map construction") {

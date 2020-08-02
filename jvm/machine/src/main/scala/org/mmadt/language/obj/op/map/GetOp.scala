@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait GetOp[A <: Obj, B <: Obj] {
+trait GetOp[A <: Obj, +B <: Obj] {
   this: Obj =>
   def get(key: A): B = GetOp(key, __.asInstanceOf[B]).exec(this)
   def get[BB <: Obj](key: A, btype: BB): BB = GetOp[A, BB](key, btype).exec(this)

@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
@@ -51,6 +52,16 @@ trait Lst[+A <: Obj] extends Poly[A]
       // (this.glist.size == alst.glist.size) &&
       this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))
     case _ => true
+  }
+
+  override final def `,`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`,`, next)
+  override final def `;`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`;`, next)
+  override final def `|`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`|`, next)
+  private final def lstMaker(sep: String, obj: Obj): Lst[obj.type] = {
+    obj match {
+      case blst: Lst[Obj] => lst(g = (sep, List[obj.type](this.asInstanceOf[obj.type], blst.asInstanceOf[obj.type])))
+      case _ => this.clone(g = (sep, this.g._2 :+ obj)).asInstanceOf[Lst[obj.type]]
+    }
   }
 }
 

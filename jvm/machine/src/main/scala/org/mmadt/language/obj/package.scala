@@ -35,7 +35,7 @@ package object obj {
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   type Model = Rec[Obj,Lst[Obj]]
   type LstTuple[+A <: Obj] = (String, List[A])
-  type RecTuple[A <: Obj, B <: Obj] = (String, collection.Map[A, B])
+  type RecTuple[A <: Obj, +B <: Obj] = (String, collection.Map[A, B])
   val base: ViaTuple = (null, null)
   // less typing
   type OType[+O <: Obj] = Type[O] with O
