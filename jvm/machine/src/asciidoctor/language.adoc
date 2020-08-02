@@ -564,9 +564,9 @@ a|
 a|
 [exec,exception=LanguageException,none=""]
 ----
-:[model,social:( %
-  person -> (person:('name'->str,'age'->int)), %
-  team   -> (person{*}))]
+:[model,social:('type'->  %
+  (person -> (person:('name'->str,'age'->int)), %
+   team   -> (person{*})))]
 ('name'->'marko')                         => person
 ('name'->'marko','age'->29)               => person
 ('name'->'marko','age'->29,'alive'->true) => person
@@ -2401,8 +2401,8 @@ image::nat-model.svg[width=350,align=center]
 
 [exec,none="",exception=LanguageException]
 ----
-:[model,social:(nat    -> (nat<=int[is>0]), %
-                person -> (person<=('name'->str,'age'->nat)))<=mm]            //<1>
+:[model,social:('type' -> (nat    -> (nat<=int[is>0]), %
+                           person -> (person:('name'->str,'age'->nat))))<=mm] //<1>
 53 => [as,nat]                                                                //<2>
 0  => [as,nat]
 ('name'->'marko','age'->29)  => [as,person]                                   //<3>

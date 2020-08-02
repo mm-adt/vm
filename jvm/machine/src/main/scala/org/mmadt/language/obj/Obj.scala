@@ -29,6 +29,7 @@ import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp}
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}

@@ -24,7 +24,7 @@ package org.mmadt.language
 
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -33,7 +33,6 @@ import org.mmadt.storage.StorageFactory._
 package object obj {
   type IntQ = (IntValue, IntValue)
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
-  type Model = Rec[Obj,Lst[Obj]]
   type LstTuple[+A <: Obj] = (String, List[A])
   type RecTuple[A <: Obj, +B <: Obj] = (String, collection.Map[A, B])
   val base: ViaTuple = (null, null)

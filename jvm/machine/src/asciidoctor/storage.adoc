@@ -3,17 +3,3 @@
 == Storage Structures
 
 === Model-ADT
-
-[exec,empty=""]
-----
-:[model,social:(nat    -> (nat<=int[is>0]), %
-                person -> (person:('name'->str,'age'->nat), %
-                          ([error,'people are immutable'])<=([put,_,_])))<=mm]
-----
-
-
-[exec,exception=LanguageException]
-----
-('name'->'marko','age'->29,'alive'->true) => [as,person]
-('name'->'marko','age'->29,'alive'->true) => [as,person][put,'name','mrodrig']
-----

@@ -279,7 +279,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("prefix model") {
-    println(engine.eval(":[model,numbers:(nat -> (nat<=int[is>0]))]"))
+    println(engine.eval(":[model,numbers:('type'->(nat -> (nat<=int[is>0])))]"))
     println(engine.eval("53[as,nat]"))
     println(engine.eval(":"))
     println(engine.eval(":"))
@@ -1111,7 +1111,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model parsing") {
-    engine.eval(":[model,mm:(person -> (person<=('name'->str)))]")
+    engine.eval(":[model,mm:('type' -> (person -> (person<=('name'->str))))]")
     assertResult("person:('name'->'marko')")(engine.eval("('name'->'marko') => [as,person]").toString)
     engine.eval(":")
     val mm: String = getClass.getResource("/model/mm.mm").getPath

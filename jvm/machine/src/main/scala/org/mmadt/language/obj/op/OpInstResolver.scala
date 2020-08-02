@@ -31,9 +31,10 @@ import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp, PutOp}
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
+import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageProvider
 
@@ -72,7 +73,7 @@ object OpInstResolver {
       case Tokens.given | Tokens.given_op => GivenOp(args.head)
       case Tokens.path => args.headOption.map(x => PathOp(x.asInstanceOf[Lst[Obj]])).getOrElse(PathOp())
       //
-      case Tokens.model => ModelOp(args.head.asInstanceOf[Rec[Obj, Lst[Obj]]])
+      case Tokens.model => ModelOp(args.head.asInstanceOf[Model])
       case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()
       case Tokens.a => AOp(args.head)
