@@ -705,7 +705,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("logical expressions") {
     assertResult(btrue)(engine.eval("true[and,true]"))
-    assertResult(bfalse)(engine.eval("true{3}[and,true][or,false]"))
+    assertResult(bfalse.q(3))(engine.eval("true{3}[and,true][or,false]"))
     assertResult(btrue.q(3))(engine.eval("true{3}[and,true][or,[and,bool]]"))
     assertResult(bfalse.q(3, 30))(engine.eval("true{3,30}[and,false][or,[and,bool]]"))
     assertResult(bfalse.q(3, 30))(engine.eval("true{3,30}[and,false][and,[or,bool]]"))
@@ -1006,6 +1006,29 @@ class mmlangScriptEngineTest extends FunSuite {
         | [define,o<=int[one]]
         | [as,o]""".stripMargin))
   }
+
+  test("defined types") {
+    engine.eval(":[define,nat<=int[is>0]]")
+    assertResult(5.named("nat"))(engine.eval("5 => nat"))
+    assertThrows[LanguageException] {
+      engine.eval("0 => nat")
+    }
+    engine.eval(":[define,list<=[(_)|(_,list)]]")
+    assertResult(bfalse)(engine.eval("1              => [a,list]"))
+    assertResult(bfalse)(engine.eval("(1,1)          => [a,list]"))
+    assertResult(btrue)(engine.eval("(1)             => [a,list]"))
+    assertResult(btrue)(engine.eval("(1,(1))         => [a,list]"))
+    assertResult(btrue)(engine.eval("(1,(1,(1)))     => [a,list]"))
+    assertResult(btrue)(engine.eval("(1,(1,(1,(1)))) => [a,list]"))
+    assertThrows[LanguageException] {
+      engine.eval("1 => list")
+    }
+    assertThrows[LanguageException] {
+      engine.eval("(1,1) => list")
+    }
+    engine.eval(":")
+  }
+
   test("recursive definition parsing") {
     assertResult(bfalse)(engine.eval("(1,(2,'3'))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(2,('3',4)))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))

@@ -62,13 +62,16 @@ Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorph
 \texttt{obj} = (\texttt{type object} \times \texttt{q}) + (\texttt{value object} \times \texttt{q}).
 \]
 
-There are two distinct kinds of mm-ADT `objs`: _quantified_ type objects and _quantified_ value objects. The products of the `obj` coproduct are called *type* and *value*. That is the *obj meta-model*.
+There are two distinct kinds of mm-ADT `objs`: _quantified_ type objects and _quantified_ value objects.
+The products of the `obj` coproduct are called *type* and *value*.
+That is the *obj meta-model*.
 
 \[
 \texttt{obj} = \texttt{type} + \texttt{value}
 \]
 
-NOTE: There are only a few instances in which it is necessary to consider the object component of an `obj` separate from its quantifier component. The terms _type_ and _value_ will always refer to the object/quantifier-pair as a whole -- i.e., an `obj`.
+NOTE: There are only a few instances in which it is necessary to consider the object component of an `obj` separate from its quantifier component.
+The terms _type_ and _value_ will always refer to the object/quantifier-pair as a whole -- i.e., an `obj`.
 
 [exec]
 ----
@@ -198,7 +201,8 @@ In terms of the "__range = domain and function__" reading, when an `int` (*domai
 
 image::int-isgt0.svg[align=center,width=230]
 
-The diagram above is generally known as the *obj graph*. The `obj` graph  is a fundamental structure in mm-ADT that is used in https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more.
+The diagram above is generally known as the *obj graph*.
+The `obj` graph is a fundamental structure in mm-ADT that is used in https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more.
 This structure is called the *obj graph*.
 The subgraph concerned with type definitions is called the *type graph*.
 The subgraph considered with value history is called the *value graph*.
@@ -234,13 +238,15 @@ image::type-signature-definition.svg[align=center,width=375]
 ===== Type Signature
 
 Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type.
-A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type. As ctype `objs`, the domain and range each have an associated quantifier denoted `{q}` in `mmlang`.
+A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type.
+As ctype `objs`, the domain and range each have an associated quantifier denoted `{q}` in `mmlang`.
 The general pattern of a type signature is
 
 [.center]
 [width=30]
 |===
-^a|[exec,eval=false,exception=LanguageException]
+^a|
+[exec,eval=false,exception=LanguageException]
 ----
 range{q}<=domain{q}
 ----
@@ -322,76 +328,72 @@ image::commuting-diagram.svg[float=right,width=150]
 
 In a manner analogous to Cayley graphs, category theory has https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrams].
 If \$f:A \to B \in \mathbf{A}(A,B)\$ and \$g: B \to C \in \mathbf{A}(B,C)\$, then there exists the morphism path \[
-A \xrightarrow{f} B \xrightarrow{g} C.
-\]
+A \xrightarrow{f} B \xrightarrow{g} C. \]
 A https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] is one such that every morphism path starting at the same source and ending at the same destination is equal.
 Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram _commutes_.
 ****
 
-Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the reference to the instruction that was applied to `int`.
+Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]).
+The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`).
+The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`.
+When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`.
+When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground.
+Thus, the information that distinguishes `int` from `int[plus,4]` is in the reference to the instruction that was applied to `int`.
 
-For a type, the connected chain of references is called the *type definition* and is a encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] in the *type graph*. For a value, the *value graph* encodes an analogous path called the *value history* (or _mutation history_). Both types and values exist in a larger graph called an *obj graph*. The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] below denotes an `obj` graph composed of two paths. The top horizontal path is a value history and the bottom horizontal path is a type definition. These paths are joined by the only instruction in `inst` that unites the type graph and value graph: `[type]`.
+For a type, the deterministic chain of references is called the *type definition* and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] in the *type graph*.
+For a value, the *value graph* encodes an analogous path called the *value history* (or _mutation history_).
+Both types and values exist in a larger graph called an *obj graph* such that \[
+G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
+\]
+The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] below denotes an `obj` graph composed of two lateral paths.
+The top path is a value history (\$(2 \to 6 \to 6)\$ and the bottom path is a type definition \$(\tt{i\nt} \to \tt{i\nt[plus,4]} \to \tt{i\nt[plus,4][is>0]})\$.
+These paths are joined by the only instruction in `inst` that unites the type graph and value graph, \[
+\texttt{[type]}: \texttt{obj} \to \texttt{type}.
+\]
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _path_.
 
-image::type-value-path.svg[align=center,width=600]
-
+[cols="7,9"]
+|===
+a|
 [exec]
 ----
 2[plus,4][is>0]
 2[plus,4][is>0][path]
 2[plus,4][is>0][type]
 ----
+{blank}
+|image:type-value-path.svg[]
+|===
 
-In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in this graph. However, in practice, the mm-ADT VM removes paths in the graph that are no longer required by the program. This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
+In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in the `obj` graph.
+However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
+This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
-NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, dashed arrows will replace `[type]`-labeled arrows. All subsequent diagrams will follow this convention.
+NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid.
+However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type.
+With this convention, there is no loss of information.
+The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction).
+Furthermore, dashed arrows will replace `[type]`-labeled arrows.
+All subsequent diagrams will follow this convention.
 
 .The Obj Graph as a Cayley Graph and a Commutative Diagram
 ================================================================
-The `obj` graph is both the generalized https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] of a https://en.wikipedia.org/wiki/Partial_function[partial] https://en.wikipedia.org/wiki/Monoid[monoid] as well as the https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] of a https://en.wikipedia.org/wiki/Free_category[free category]. More generally, the `obj` graph is the https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function[graph of unary functions] of `inst`, where instructions operate on both types and values.
+The `obj` graph is both the generalized https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] of a https://en.wikipedia.org/wiki/Partial_function[partial] https://en.wikipedia.org/wiki/Monoid[monoid] and the https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] of a https://en.wikipedia.org/wiki/Free_category[free category].
+More generally, the `obj` graph is the https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function[graph of unary functions] comprising `inst`, where instructions operate on both types and values.
+From compilation to evaluation, depending on the particular context, either interpretation will be leveraged.
 
-* *Cayley graph*: vertices denote type/value-elements of the `inst` monoid with generating edges in `inst`.
 * *Commutative diagram*: vertices denote type/value-objects of the `obj` category with `inst` morphisms.
 
-Depending on the context of use, either interpretation of the `obj` graph will be leveraged: from compilation to evaluation. For example, the object graph's commutativity is useful in both compile-time and runtime https://en.wikipedia.org/wiki/Graph_rewriting[type rewriting]. If two paths have the same source vertex (domain) and the same target vertex (range), then both paths yield the same result. In practice, the VM is biased towards evaluating the instructions along the https://en.wikipedia.org/wiki/Computational_complexity_theory[computationally cheaper] path. As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations exists theoretically given the https://en.wikipedia.org/wiki/Presentation_of_a_monoid[monoid presentation] containing the root `objs` (e.g. the ctypes) and its generators (`inst`). This static immutability suffices as a medium for https://en.wikipedia.org/wiki/Memoization[memoized] computations -- especially in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.
-================================================================
+The `obj` graph's commuting property eases compile-time and runtime https://en.wikipedia.org/wiki/Graph_rewriting[type rewriting].
+If two paths have the same source vertex (domain) and target vertex (range), then both paths yield the same result (the target vertex).
+In practice, evaluating the instructions along the https://en.wikipedia.org/wiki/Computational_complexity_theory[computationally cheaper] path is prudent.
 
-As a ring, an mm-ADT `obj` can be multiplied or added to another `obj`.
-Multiplication is denoted with `\=>` (`5 \=> int+2`) or simple term juxtaposition (`5+2`).
-Addition, on the other hand, is realized by the `[branch]` instruction which has an `mmlang` sugar of `[,]`.
-The way in which `obj` addition effects the `obj` graph is important.
+* *Cayley graph*: vertices denote type/value-elements of the `inst` monoid with generating edges in `inst`.
 
-[exec]
-----
-int => int[+4[is>0],*5]+1                                                     //<1>
-2   => int[+4[is>0],*5]+1                                                     //<2>
-2   => int[+4[is>0],*5]+1[path]                                               //<3>
-2   => int[+4[is>0],*5]+1[type]                                               //<4>
-----
-<1> The `int`-dependent type clones the `int` to the two branches, merges the branch output, and adds `1` (*compilation*).
-<2> `2` is propagated through the `int{1,2}\<=int` type (*evalution*).
-<3> The path through the `obj` value graph taken by the resultant `objs`.
-<4> The type of each resultant value.
-
-The compilation of the `int{1,2}\<=int` type generates the path diagrammed below in the *type subgraph* of the `obj` graph.
-
-image::obj-type-path-example.svg[width=625,align=center]
-
-The evaluation of the type with the input of `2` generates two paths through the *value subgraph* of the `obj` graph -- via _split_ (\$\Delta\$) and _merge_ (\$\nabla\$). Branching (addition) is one of two fundamental operations in the mm-ADT ring algebra. It is not manifested as an `inst` in a value's path history. Likewise, the other fundamental operation, `\=>` (multiplication) has no explicit `inst` and is denoted with juxtaposition in the value path history. The significance of branching being fundamental in mm-ADT is that individual branches can evaluate in https://en.wikipedia.org/wiki/Embarrassingly_parallel[decoupled], independent manner requiring no https://en.wikipedia.org/wiki/Synchronization_(computer_science)[synchronization] nor explicit https://en.wikipedia.org/wiki/Barrier_%28computer_science%29[coordination] at merge.
-
-image::obj-value-path-example.svg[align=center]
-
-.Process Architectures Sympathetic to the Type Ringoid
-================================================================
-An `mmlang` expression denotes a *type* (program) that is executed by a processor. A type is an element of the *type ringoid* algebra. The type ringoid is not the intended algebra of the language component. The reason being, languages yield linear structures. A linear medium is sympathetic to single operator https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] or https://en.wikipedia.org/wiki/Group_(mathematics)[groups]. In order to express addition (branching) in these structures, the parallel branches are serially embedded using the `[,]` syntactic https://en.wikipedia.org/wiki/Kludge#Computer_science[hack].
-
-The *type* elements of the type ringoid are https://en.wikipedia.org/wiki/Three-dimensional_space[three dimensional] structures (where the third dimension captures nesting) and have a more natural embedding in the spatial component of the physical world. Computationally, types are evaluated by processors across a number of cores of a single machine and/or across a multi-machine compute cluster. The type ringoid algebra yields types that are sympathetic to a variety of modern processor architectures.
-
-. https://en.wikipedia.org/wiki/Iterator[Iterator]: single threaded, pull-based, lazily evaluated, functionally oriented
-. https://en.wikipedia.org/wiki/Reactive_programming[Reactive]: multi-threaded, push-based, lazily evaluated, stream oriented
-. https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[Bulk Synchronous Parallel]: cluster, pull-based, eagerly evaluated, pipeline oriented
-. https://en.wikipedia.org/wiki/Message_passing[Message-Passing]; cluster/multi-threaded, push-based, lazily evaluated, actor oriented
+As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations is theoretically predetermined given the https://en.wikipedia.org/wiki/Presentation_of_a_monoid[monoid presentation] containing the root `objs` (e.g. the ctypes), its generators (`inst`), and relations (path equations).
+This static immutable structure serves as a https://en.wikipedia.org/wiki/Memoization[memoization] of computational results.
+This is especially useful in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.
 ================================================================
 
 ===== Type Quantification
@@ -420,61 +422,72 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 
 In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated quantifier `q` denoted `{q}` in `mmlang`.
 Quantifiers are typically integers, but can be any element from an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.).
-While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as values can be negative where `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
+While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as quantifiers can be negative such that `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
 
 The default quantifier ring of the mm-ADT VM is \[
 (\mathbb{Z} \times \mathbb{Z}, +, \ast), \]
-where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (unity).
+where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity]).
 The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively.
 In `mmlang` if an `obj` quantifier is not displayed, then the quantifier is assumed to be the unity of the ring, or `{1,1}`.
 Moreover, if a single value is provided, it is assumed to be repeated, where `{n}` is shorthand for `{n,n}`.
-Thus, `int` is `int{1}`  is `int{1,1}`.
+Thus, \[
+\texttt{int} \equiv \texttt{int\{1\}} \equiv \texttt{int\{1,1\}}.
+\]
 
 One quantifier serves an important role in mm-ADT as both the additive identity and multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator] -- `{0}`.
 All `objs` quantified with the respective quantifier ring's annihilator are https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to the https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial object].
 
-NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are isomorphic due to their quantifiers both being `{0}`.
-Typically, throughout the documentation, both will be referred to simply as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
+[exec,none=""]
+----
+6{0}
+int{0}[plus,2]
+int[plus,2]{0}
+_{0}
+obj{0}
+----
+
+NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are equivalent due to their quantifiers both being `{0}`.
+Typically, throughout the documentation, both will be referred to as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
 
 [.center]
-[cols="^1h,3,1,1,9",width=85]
+[cols="^1h,1,1,3,9",width=85]
 |===
-|   | description | sugar | unsugared | mmlang example
+| name | sugar | unsugared | description  | mmlang example
 
-| some | a single `int` |  | `{1,1}`  a|
+| some | `{1}` | `{1,1}`  | a single `int`  a|
 [exec]
 ----
 int
 ----
 {blank}
-| option | 0 or 1 `int` | `{?}` | `{0,1}` a|
+| option | `{?}` | `{0,1}` | 0 or 1 `int`  a|
 [exec]
 ----
 int{?}<=int[is>0]
 ----
 {blank}
-| none | 0 `ints` | `{0}` | `{0,0}` a|
+| none | `{0}` | `{0,0}` | 0 `ints`  a|
 [exec]
 ----
 int{0}<=int[is,false]
 ----
 {blank}
-| exact | 4 `ints` | `{4}` | `{4,4}`  a|
+| exact | `{4}` | `{4,4}` | 4 `ints`  a|
 [exec]
 ----
 int{4}<=int{2}[_,_]
 ----
 {blank}
-| any | 0 or more `ints` | `{*}` | `{0,max}`  a|
+| any | `{*}` | `{0,max}`  | 0 or more `ints`  a|
 [exec]
 ----
 int{*}<=rec{*}[get,'age',int]
 ----
 {blank}
-| given | 1 or more `ints` | `{+}` | `{1,max}`  a|
+| given  | `{+}` | `{1,max}`  | 1 or more `ints` a|
 [exec]
 ----
-int{*}<=rec{*}[get,'age',int]
+int{+}
 ----
 {blank}
 |===
@@ -483,24 +496,84 @@ int{*}<=rec{*}[get,'age',int]
 //|most footnote:order[]          |`{,x}` | `{min,x}`
 ==== Type System
 
-An mm-ADT program is a type.
-The `mmlang` parser converts a textual representation of a type into a type `obj`.
-The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger type graph (a Cayley graph).
-While a type graph is a graphical encoding of the monoidal structure of a particular subset of `obj`, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that realizes elements of the type (i.e. computed resultant values).
-These values are encoded in the value graph subgraph of the `obj` graph.
-Every aspect of an mm-ADT computation from composition to evaluation is materialized in the `obj` graph.
+[cols="^1,4,9"]
+|===
+| type      | description | mmlang example
 
-. *Composition*: The point-free style of `mmlang` is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.
-. *Compilation*: A path in the Cayley graph represents a program.
-By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.
-. *Rewrite*: The vertices can be "merged" using the `[rewrite]` instruction to link two type vertices.
-. *Optimization*: Every instruction in `inst` has an associated cost.
-Rewrites create a superposition of programs.
-A https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from domain to range is a simple technique for choosing an efficient execution plan.
-. *State*: Variable bindings, type definitions, and rewrite rule are encoded in instructions (`[to]`, `[define]`, `[rewrite]` respectively).
-When the current monoid operation requires historic state information, the co-`obj` graph is searched for previously encoded stated-based `insts`.
-. *Evaluation*: When a program path is prefixed with a value, a computation takes place.
-The resultant path's tail vertex is the result of the computation.
+| https://en.wikipedia.org/wiki/Anonymous_function[anonymous] | A type with an unspecified domain.
+a|
+[exec]
+----
+5 => [plus,2]
+5 => [plus,[plus,2]]
+----
+{blank}
+
+| https://en.wikipedia.org/wiki/Monomial[monomial] | A https://en.wikipedia.org/wiki/Primitive_data_type[primitive type] that is a single term and coefficient.
+a|
+[exec,exception=LanguageException]
+----
+5   => int
+'5' => int
+5   => int{10}
+----
+{blank}
+| https://en.wikipedia.org/wiki/Polynomial[polynomial] | A https://en.wikipedia.org/wiki/Composite_data_type[composite type] containing a linearly combination of terms and their coefficients.
+a|
+[exec,exception=LanguageException]
+----
+(+{2}3,+{3}4,+{4}5)
+5-<(+{2}3,+{3}4,+{4}5)
+5-<(+{2}3,+{3}4,+{4}5)>-[sum]
+('a'->+{2}3,'b'->+{3}4,'c'->+{4}5)
+5-<('a'->+{2}3,'b'->+{3}4,'c'->+{4}5)
+5-<('a'->+{2}3,'b'->+{3}4,'c'->+{4}5).a
+----
+{blank}
+| https://en.wikipedia.org/wiki/Refinement_type[refinement] | A subset of another type.
+a|
+[exec,exception=LanguageException,none=""]
+----
+:[define,nat<=int[is>0]]
+5 => nat
+0 => nat
+----
+{blank}
+| https://en.wikipedia.org/wiki/Recursive_data_type[recursive] | A type with components of the same type.
+a|
+[exec,exception=LanguageException,none=""]
+----
+:[define,list<=[(_)\|(_,list)]]
+(1)             => list
+(1,(1))         => list
+(1,(1,(1)))     => list
+(1,(1,(1,(1)))) => list
+1               => list
+(1,1)           => list
+----
+{blank}
+| https://en.wikipedia.org/wiki/Dependent_type[dependent] | A type with a definition variable to the incoming `obj`.
+a|
+[exec,none=""]
+----
+5 => [is>int]
+5 => [plus,int]
+----
+{blank}
+| https://en.wikipedia.org/wiki/Category_(mathematics)[model] | A set of types and path equations.
+a|
+[exec,exception=LanguageException,none=""]
+----
+:[model,social:( %
+  person -> (person:('name'->str,'age'->int)), %
+  team   -> (person{*}))]
+('name'->'marko')                         => person
+('name'->'marko','age'->29)               => person
+('name'->'marko','age'->29,'alive'->true) => person
+
+----
+{blank}
+|===
 
 ===== Anonymous Types
 
@@ -1220,6 +1293,7 @@ a|
 |===
 
 \[
+
 [ a,a,b,a,b,b,a,a ]
 \]
 is https://en.wikipedia.org/wiki/Irreducible_polynomial[irreducible].
@@ -1230,6 +1304,9 @@ where the abelian group operator `[,]` is https://en.wikipedia.org/wiki/Commutat
 Stream compression is achieved by removing redundant information in a https://en.wikipedia.org/wiki/Lossless_compression[lossless] manner such that https://en.wikipedia.org/wiki/Enumeration[enumeration] is replaced with quantification.
 From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] is converted into a weighted https://en.wikipedia.org/wiki/Multiset[multiset].
 Relying on the same axiomatic principle, but reframed in terms of types (programs), the _atemporal stream theorem_ guarantees equivalent outcomes for both https://en.wikipedia.org/wiki/Synchronous_circuit[synchronous] and https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] execution strategies.
+
+===== Asynchronous Types
+
 The two examples below highlight this time/space entailment, where the former realizes a https://en.wikipedia.org/wiki/Optimizing_compiler[compile time optimization] and the latter a https://en.wikipedia.org/wiki/Program_optimization#Run_time[runtime optimization].
 
 NOTE: Expressions of the form `-<(a,b,c)>-` are decomposed representations of `[a,b,c]`, where `-<(a,b,c)` _splits_, but does not _merge_.
@@ -1271,6 +1348,54 @@ a|
 {blank}
 | image:value-bulk-example.svg[]
 |===
+
+As a ring, an mm-ADT `obj` can be multiplied or added to another `obj`.
+Multiplication is denoted with `\=>` (`5 \=> int+2`) or simple term juxtaposition (`5+2`).
+Addition, on the other hand, is realized by the `[branch]` instruction which has an `mmlang` sugar of `[,]`.
+The way in which `obj` addition effects the `obj` graph is important.
+
+[exec]
+----
+int => int[+4[is>0],*5]+1                                                   //<1>
+2 => int[+4[is>0],*5]+1                                                     //<2>
+2 => int[+4[is>0],*5]+1[path]                                               //<3>
+2 => int[+4[is>0],*5]+1[type]                                               //<4>
+----
+<1> The `int`-dependent type clones the `int` to the two branches, merges the branch output, and adds `1` (*compilation*).
+<2> `2` is propagated through the `int{1,2}\<=int` type (*evalution*).
+<3> The path through the `obj` value graph taken by the resultant `objs`.
+<4> The type of each resultant value.
+
+The compilation of the `int{1,2}\<=int` type generates the path diagrammed below in the *type subgraph* of the `obj` graph.
+
+image::obj-type-path-example.svg[width=625,align=center]
+
+The evaluation of the type with the input of `2` generates two paths through the *value subgraph* of the `obj` graph -- via _split_ (\$\Delta\$) and _merge_ (\$\nabla\$).
+Branching (addition) is one of two fundamental operations in the mm-ADT ring algebra.
+It is not manifested as an `inst` in a value's path history.
+Likewise, the other fundamental operation, `\=>` (multiplication) has no explicit `inst` and is denoted with juxtaposition in the value path history.
+The significance of branching being fundamental in mm-ADT is that individual branches can evaluate in https://en.wikipedia.org/wiki/Embarrassingly_parallel[decoupled], independent manner requiring no https://en.wikipedia.org/wiki/Synchronization_(computer_science)[synchronization] nor explicit https://en.wikipedia.org/wiki/Barrier_%28computer_science%29[coordination] at merge.
+
+image::obj-value-path-example.svg[align=center]
+
+.Process Architectures Sympathetic to the Type Ringoid
+================================================================
+An `mmlang` expression denotes a *type* (program) that is executed by a processor.
+A type is an element of the *type ringoid* algebra.
+The type ringoid is not the intended algebra of the language component.
+The reason being, languages yield linear structures.
+A linear medium is sympathetic to single operator https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] or https://en.wikipedia.org/wiki/Group_(mathematics)[groups].
+In order to express addition (branching) in these structures, the parallel branches are serially embedded using the `[,]` syntactic https://en.wikipedia.org/wiki/Kludge#Computer_science[hack].
+
+The *type* elements of the type ringoid are https://en.wikipedia.org/wiki/Three-dimensional_space[three dimensional] structures (where the third dimension captures nesting) and have a more natural embedding in the spatial component of the physical world.
+Computationally, types are evaluated by processors across a number of cores of a single machine and/or across a multi-machine compute cluster.
+The type ringoid algebra yields types that are sympathetic to a variety of modern processor architectures.
+
+. https://en.wikipedia.org/wiki/Iterator[Iterator]: single threaded, pull-based, lazily evaluated, functionally oriented
+. https://en.wikipedia.org/wiki/Reactive_programming[Reactive]: multi-threaded, push-based, lazily evaluated, stream oriented
+. https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[Bulk Synchronous Parallel]: cluster, pull-based, eagerly evaluated, pipeline oriented
+. https://en.wikipedia.org/wiki/Message_passing[Message-Passing]; cluster/multi-threaded, push-based, lazily evaluated, actor oriented
+================================================================
 
 ===== Commuting Quantifiers
 
@@ -2031,6 +2156,25 @@ The https://en.wikipedia.org/wiki/Universal_property[universal property] of mono
 image::monoid-homomorphisms.png[align=center,width=500]
 
 === The Obj Graph
+
+An mm-ADT program is a type.
+The `mmlang` parser converts a textual representation of a type into a type `obj`.
+The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger type graph (a Cayley graph).
+While a type graph is a graphical encoding of the monoidal structure of a particular subset of `obj`, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that realizes elements of the type (i.e. computed resultant values).
+These values are encoded in the value graph subgraph of the `obj` graph.
+Every aspect of an mm-ADT computation from composition to evaluation is materialized in the `obj` graph.
+
+. *Composition*: The point-free style of `mmlang` is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.
+. *Compilation*: A path in the Cayley graph represents a program.
+By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.
+. *Rewrite*: The vertices can be "merged" using the `[rewrite]` instruction to link two type vertices.
+. *Optimization*: Every instruction in `inst` has an associated cost.
+Rewrites create a superposition of programs.
+A https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from domain to range is a simple technique for choosing an efficient execution plan.
+. *State*: Variable bindings, type definitions, and rewrite rule are encoded in instructions (`[to]`, `[define]`, `[rewrite]` respectively).
+When the current monoid operation requires historic state information, the co-`obj` graph is searched for previously encoded stated-based `insts`.
+. *Evaluation*: When a program path is prefixed with a value, a computation takes place.
+The resultant path's tail vertex is the result of the computation.
 
 ==== State
 

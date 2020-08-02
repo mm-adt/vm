@@ -112,7 +112,11 @@ object mmlangPrinter {
       case Tokens.noop => Tokens.empty
       case Tokens.to => LANGLE + inst.arg0[StrValue].g + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue].g + RANGLE
-      case Tokens.branch => LBRACKET + inst.arg0[Poly[_]].hardQ(1).toString.drop(1).dropRight(1) + RBRACKET
+      case Tokens.branch => LBRACKET +
+        Some[Poly[_]](inst.arg0[Poly[_]])
+          .filter(x => !x.isEmpty)
+          .map(x => x.hardQ(1).toString.drop(1).dropRight(1))
+          .getOrElse(inst.arg0[Poly[_]]) + RBRACKET
       case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]].toString
       case Tokens.merge => Tokens.merge_op
       case _ => inst.args match {

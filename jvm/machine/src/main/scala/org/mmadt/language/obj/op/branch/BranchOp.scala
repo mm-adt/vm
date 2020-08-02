@@ -45,8 +45,8 @@ object BranchOp extends Func[Obj, Obj] {
             val result = alst.g._2.map(b => {
               running = running match {
                 case astrm: Strm[_] => strm(astrm.values.map(r => Inst.resolveArg(r, b)))
-                case r if b.isInstanceOf[Value[_]] => b.hardQ(multQ(r.q, b.q)) // TODO: hardcoded hack -- should really be part of Inst.resolveArg() and Obj.compute()
-                case r: Type[_] if r.root && b.root && r.name == b.name => b.hardQ(multQ(r.q, b.q))
+                case r if b.isInstanceOf[Value[_]] => r `=>` b
+                case r: Type[_] if r.root && b.root && r.name == b.name => r `=>` b
                 case _ => Inst.resolveArg(running, b)
               }
               running
@@ -85,8 +85,8 @@ object BranchOp extends Func[Obj, Obj] {
             val result = arec.g._2.map(b => {
               running = running match {
                 case astrm: Strm[_] => strm(astrm.values.map(r => if (Inst.resolveArg(r, b._1).alive) Inst.resolveArg(r, b._2) else zeroObj))
-                case r if b._2.isInstanceOf[Value[_]] => if (Inst.resolveArg(r, b._1).alive) b._2.hardQ(multQ(r.q, b._2.q)) else zeroObj // TODO: hardcoded hack -- should really be part of Inst.resolveArg() and Obj.compute()
-                case r: Type[_] if r.root && b._2.root && r.name == b._2.name => if (Inst.resolveArg(r, b._1).alive) b._2.hardQ(multQ(r.q, b._2.q)) else zeroObj
+                case r if b._2.isInstanceOf[Value[_]] => if (Inst.resolveArg(r, b._1).alive) r `=>` b._2 else zeroObj
+                case r: Type[_] if r.root && b._2.root && r.name == b._2.name => if (Inst.resolveArg(r, b._1).alive) r `=>` b._2 else zeroObj
                 case _ => if (Inst.resolveArg(running, b._1).alive) Inst.resolveArg(running, b._2) else zeroObj
               }
               Inst.resolveArg(running, b._1) -> running

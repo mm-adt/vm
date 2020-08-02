@@ -98,6 +98,7 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
         }
       }
     })
+    engine.eval(":")
     println(builder)
     val endAttributes: java.util.Map[String, Object] = new util.HashMap[String, Object]
     endAttributes.putAll(config)

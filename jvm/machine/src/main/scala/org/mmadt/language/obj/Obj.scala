@@ -166,7 +166,7 @@ trait Obj
         .map(x => x._2.exec(this))
         .map(x => x.compute(rangeType.linvert()))
         .getOrElse(this.asInstanceOf[E]))
-    case _ => rangeType
+    case _ => rangeType.q(multQ(this.q,rangeType.q))
   }
 
   def ==>[E <: Obj](rangeType: Type[E]): E = {
