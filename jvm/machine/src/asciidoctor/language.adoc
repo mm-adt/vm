@@ -128,19 +128,16 @@ image::compass.svg[width=300,float=right]
 A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group].
 If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group.
 The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$.
-Thus, \$a \to_i b\$ captures the group operation \$a \cdot i \mapsto b\$.
+Thus, \$a \to_i b\$ captures the group operation \$a \cdot i = b\$.
 
-In the illustrative example on the right, the group is defined \[
-\begin{split}
-A &= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\ I &= \{ \nearrow \} \\ e &= 0^\circ \\ \cdot &: A \times A \rightarrow A \end{split}
-\]
+//In the illustrative example on the right, the group is defined \[
+//\begin{split}
+//A &= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\ I &= \{ \nearrow \} \\ e &= 0^\circ \\ \cdot &: A \times A \rightarrow A \end{split}
+//\]
 
-When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible transitions from any one element to the next given the generators.
-When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element.
-A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group \$(A,\cdot,I)\$.
-The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\odot)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
+When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible \$I\$-transitions between elements. When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming \$I\$-edge from the previous element. A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group. The non-free aspect is realized by any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\ast)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
 
-A _generalized_ Cayley Graph is a graph with an analogous vertex/edge structure, but for other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
+A _generalized_ Cayley graph does not require that every \$i \in I\$ have a corresponding \$i^{-1} \in I\$ such that \$i \cdot i^{-1} = \mathbf{1}\$ (i.e., multiplicative inverses). By lifting this constraint, the Cayley graphical structure can be used to encode other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
 ****
 
 An `obj` is either a type or a value:
@@ -167,9 +164,7 @@ There are five ctypes:
 
 image::type-product.svg[float=right,width=295]
 
-The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types.
-In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`.
-Formally, the type coproduct is defined as
+The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`. Formally, the type coproduct is defined as
 
 \[
 \begin{split}
@@ -177,10 +172,7 @@ Formally, the type coproduct is defined as
 \]
 
 
-
-NOTE: Every `obj` has an associated quantifier.
-When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity].
-For instance, the `real` `1.35{1}` is written `1.35`.
+NOTE: Every `obj` has an associated quantifier. When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity]. For instance, the `real` `1.35{1}` is written more economically as `1.35`.
 
 A dtype has two product projections.
 The *type projection* denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the *instruction projection* denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the aforementioned component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
@@ -202,12 +194,7 @@ In terms of the "__range = domain and function__" reading, when an `int` (*domai
 image::int-isgt0.svg[align=center,width=230]
 
 The diagram above is generally known as the *obj graph*.
-The `obj` graph is a fundamental structure in mm-ADT that is used in https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more.
-This structure is called the *obj graph*.
-The subgraph concerned with type definitions is called the *type graph*.
-The subgraph considered with value history is called the *value graph*.
-The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph].
-This graph will be the subject of study throughout the documentation.
+The `obj` graph is a fundamental structure in mm-ADT that is used in https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. This structure is called the *obj graph*. The subgraph concerned with type definitions is called the *type graph*. The subgraph considered with mutation history (https://en.wikipedia.org/wiki/State_(computer_science)[state]) is called the *value graph*. The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]. This graph will be the subject of study throughout the documentation.
 
 The full `obj` structure thus far is diagrammed on the right.
 On the left are some example `mmlang` expressions.
@@ -228,19 +215,16 @@ int{2}[is>0][plus,[neg]]                                //<4>
 
 ==== Type Structure
 
-The diagram below captures the salient features of a type, where the three projections encode a type's
+The diagram below highlights the two primary components of a type, where an edge is denoted \$e=(a,i,b)\$.
 
-. *Type signature*: the ctype specification of a type's domain and range (via the \$ \pi_\tt{domai\n} \$ and \$ \pi_\tt{rang\e} \$ projections), and
-. *Type definition*: an instruction sequence specifying a process on the domain `obj` (via the \$ \pi_\tt{i\nsts} \$ projection).
+. *Type signature*: the ctype specification of a type's domain and range.
+. *Type definition*: a domain rooted instruction sequence terminating at the range.
 
-image::type-signature-definition.svg[align=center,width=375]
+image::type-signature-definition.svg[align=center,width=650]
 
 ===== Type Signature
 
-Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type.
-A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type.
-As ctype `objs`, the domain and range each have an associated quantifier denoted `{q}` in `mmlang`.
-The general pattern of a type signature is
+Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type. In `mmlang` a type signature has the following general pattern where `{q}` is the ctype's associated quantifier.
 
 [.center]
 [width=30]
@@ -385,46 +369,36 @@ From compilation to evaluation, depending on the particular context, either inte
 
 * *Commutative diagram*: vertices denote type/value-objects of the `obj` category with `inst` morphisms.
 
-The `obj` graph's commuting property eases compile-time and runtime https://en.wikipedia.org/wiki/Graph_rewriting[type rewriting].
-If two paths have the same source vertex (domain) and target vertex (range), then both paths yield the same result (the target vertex).
-In practice, evaluating the instructions along the https://en.wikipedia.org/wiki/Computational_complexity_theory[computationally cheaper] path is prudent.
+The `obj` graph's commuting property eases compile-time and runtime https://en.wikipedia.org/wiki/Graph_rewriting[type rewriting]. If two paths have the same source vertex (domain) and target vertex (range), then both paths yield the same result (the target vertex). In practice, evaluating the instructions along the https://en.wikipedia.org/wiki/Computational_complexity_theory[computationally cheaper] path is prudent.
 
 * *Cayley graph*: vertices denote type/value-elements of the `inst` monoid with generating edges in `inst`.
 
-As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations is theoretically predetermined given the https://en.wikipedia.org/wiki/Presentation_of_a_monoid[monoid presentation] containing the root `objs` (e.g. the ctypes), its generators (`inst`), and relations (path equations).
-This static immutable structure serves as a https://en.wikipedia.org/wiki/Memoization[memoization] of computational results.
-This is especially useful in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.
+As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations is theoretically predetermined given the https://en.wikipedia.org/wiki/Presentation_of_a_monoid[monoid presentation] containing the root `objs` (e.g. the ctypes), its generators (`inst`), and relations (https://en.wikipedia.org/wiki/Equivalence_relation[path equations]). This static immutable structure serves as a https://en.wikipedia.org/wiki/Memoization[memoization] of computational results. This is especially useful when considering *streams* (definition forthcoming) and their role in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.
 ================================================================
 
 ===== Type Quantification
 
 .Initial and Terminal Objects
 ****
-image::initial.png[width=130,float=left]
-
 A category may have an https://en.wikipedia.org/wiki/Initial_and_terminal_objects[initial and/or terminal] object.
 
-An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
-Initial objects, via their morphisms, generate all the objects of the category.
-If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity.
-Thus, besides labels, two initials are isomorphic.
+'''
+image::initial.svg[width=125,float=left]
+
+An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.
 
 '''
 
-image::terminal.png[width=130,float=right]
+image::terminal.svg[width=125,float=right]
 
-A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
-Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
-Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
 
 &nbsp;
 ****
 
-In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated quantifier `q` denoted `{q}` in `mmlang`.
-Quantifiers are typically integers, but can be any element from an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.).
-While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as quantifiers can be negative such that `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
+In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated *quantifier* \$q \in Q\$ denoted `{q}` in `mmlang`, where \$Q\$ is the carrier of an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.). Typically, integer quantifiers signify "amount." However, other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as quantifiers can be negative such that `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
 
-The default quantifier ring of the mm-ADT VM is \[
+The default *quantifier ring* of the mm-ADT VM is \[
 (\mathbb{Z} \times \mathbb{Z}, +, \ast), \]
 where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity]).
 The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively.
@@ -446,15 +420,16 @@ _{0}
 obj{0}
 ----
 
-NOTE: Types such as `int{0}` and `int{0}\<=int[is>0&&<0]` are equivalent due to their quantifiers both being `{0}`.
-Typically, throughout the documentation, both will be referred to as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
+NOTE: Types such as `int{0}` and `int{0}\<=int[is,false]` are equivalent due to their quantifiers both being `{0}`. Throughout the documentation, all zero quantified `objs` will be referred to as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
+
+Quantifiers serve an important role in https://en.wikipedia.org/wiki/Type_inference[type inference] and determining, at compile time, the expected cost of a particular type definition (i.e., an instruction sequence). The table below itemizes common quantifier patterns along with names the are typically used in programming languages.
 
 [.center]
 [cols="^1h,1,1,3,9",width=85]
 |===
 | name | sugar | unsugared | description  | mmlang example
 
-| some | `{1}` | `{1,1}`  | a single `int`  a|
+| some |       | `{1,1}`  | a single `int`  a|
 [exec]
 ----
 int
