@@ -1265,7 +1265,6 @@ a|
 |===
 
 \[
-
 [ a,a,b,a,b,b,a,a ]
 \]
 is https://en.wikipedia.org/wiki/Irreducible_polynomial[irreducible].
