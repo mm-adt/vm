@@ -47,13 +47,26 @@ object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
-    val asObj: Obj = if (start.isInstanceOf[Type[_]])  inst.arg0[Obj] else Inst.resolveToken(start, inst.arg0[Obj])
-    val dObj: Obj = pickMapping(start, asObj)
+    internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
+  }
+
+  def convertAs(source: Obj, target: Obj): Obj = {
+    if (source.name.equals(target.name) ||
+      __.isAnonTokenObj(source) ||
+      !__.isTokenRoot(target)) return source
+    if (source.isInstanceOf[Type[_]]) source.as(target)
+    else internalConvertAs(source, target)
+  }
+
+  def internalConvertAs(source: Obj, target: Obj): Obj = {
+    val asObj: Obj = if (source.isInstanceOf[Type[_]]) target else Inst.resolveToken(source, target)
+    val dObj: Obj = pickMapping(source, asObj)
     val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, asObj.range) else dObj
-    val result = (if (Tokens.named(inst.arg0[Obj].name)) rObj.named(inst.arg0[Obj].name) else rObj).via(start, inst)
-    if (!result.alive) throw LanguageException.typingError(start, asType(asObj.named(inst.arg0[Obj].name)))
+    val result = (if (Tokens.named(target.name)) rObj.named(target.name) else rObj)
+    if (!result.alive) throw LanguageException.typingError(source, asType(asObj.named(target.name)))
     result
   }
+
   private def pickMapping(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {

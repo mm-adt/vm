@@ -118,18 +118,7 @@ trait Obj
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
-  def compute[E <: Obj](rangeType: E): E = rangeType match {
-    case _: Type[E] if __.isAnonRoot(this) && rangeType.root => rangeType.hardQ(multQ(this.q, rangeType.q))
-    case _: Type[E] =>
-      if (this.root && rangeType.root && this.isInstanceOf[Type[_]])
-        LanguageException.testTypeCheck(this, asType(rangeType).hardQ(this.q))
-      Tokens.tryName[E](rangeType, rangeType.trace
-        .headOption
-        .map(x => x._2.exec(this))
-        .map(x => x.compute(rangeType.linvert))
-        .getOrElse(this.asInstanceOf[E]))
-    case _ => rangeType.q(multQ(this.q, rangeType.q))
-  }
+  def compute[E <: Obj](rangeType: E): E = AsOp.convertAs(Obj.internal(this, rangeType), rangeType.range).asInstanceOf[E]
 
   def ==>[E <: Obj](rangeType: Type[E]): E = {
     if (!rangeType.alive) return zeroObj.asInstanceOf[E]
@@ -159,6 +148,21 @@ trait Obj
 
 object Obj {
   def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define) || x._2.op.equals(Tokens.model)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
+
+  def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
+    rangeType match {
+      case _: Type[E] if __.isAnonRoot(domainObj) && rangeType.root => rangeType.hardQ(multQ(domainObj.q, rangeType.q))
+      case _: Type[E] =>
+        if (domainObj.root && rangeType.root && domainObj.isInstanceOf[Type[_]])
+          LanguageException.testTypeCheck(domainObj, asType(rangeType).hardQ(domainObj.q))
+        rangeType.trace
+          .headOption
+          .map(x => x._2.exec(domainObj))
+          .map(x => Obj.internal(x, rangeType.linvert))
+          .getOrElse(domainObj.asInstanceOf[E])
+      case _ => rangeType.q(multQ(domainObj.q, rangeType.q))
+    }
+  }
 
   @scala.annotation.tailrec
   def fetchExists(start: Obj, search: Obj): Boolean = {
