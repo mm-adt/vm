@@ -1099,22 +1099,13 @@ The particulars of the ideas in the table below will be discussed over the cours
 <p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.
 If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group.
 The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$.
-Thus, \$a \to_i b\$ captures the group operation \$a \cdot i \mapsto b\$.</p>
+Thus, \$a \to_i b\$ captures the group operation \$a \cdot i = b\$.</p>
 </div>
 <div class="paragraph">
-<p>In the illustrative example on the right, the group is defined \[
-\begin{split}
-A &amp;= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\ I &amp;= \{ \nearrow \} \\ e &amp;= 0^\circ \\ \cdot &amp;: A \times A \rightarrow A \end{split}
-\]</p>
+<p>When constructed in <a href="https://en.wikipedia.org/wiki/Eager_evaluation">full</a>, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of all possible \$I\$-transitions between elements. When <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">lazily</a> constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming \$I\$-edge from the previous element. A Cayley graph captures both the <a href="https://en.wikipedia.org/wiki/Free_group">free</a> and non-free aspects of a group. The non-free aspect is realized by any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\ast)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
 </div>
 <div class="paragraph">
-<p>When constructed in <a href="https://en.wikipedia.org/wiki/Eager_evaluation">full</a>, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of all possible transitions from any one element to the next given the generators.
-When <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">lazily</a> constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming edge from the previous element.
-A Cayley graph captures both the <a href="https://en.wikipedia.org/wiki/Free_group">free</a> and non-free aspects of a group \$(A,\cdot,I)\$.
-The non-free aspect is realized for any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\odot)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
-</div>
-<div class="paragraph">
-<p>A <em>generalized</em> Cayley Graph is a graph with an analogous vertex/edge structure, but for other <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> and <a href="https://en.wikipedia.org/wiki/Semigroup">semigroups</a>.</p>
+<p>A <em>generalized</em> Cayley graph does not require that every \$i \in I\$ have a corresponding \$i^{-1} \in I\$ such that \$i \cdot i^{-1} = \mathbf{1}\$ (i.e., multiplicative inverses). By lifting this constraint, the Cayley graphical structure can be used to encode other <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> and <a href="https://en.wikipedia.org/wiki/Semigroup">semigroups</a>.</p>
 </div>
 </div>
 </div>
@@ -1169,9 +1160,7 @@ There are five ctypes:</p>
 </div>
 </div>
 <div class="paragraph">
-<p>The dtypes are <a href="https://en.wikipedia.org/wiki/Structural_type_system">structural types</a> whose <a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive definition</a>'s base case is a ctype realized via a chain of instructions (<code>inst</code>) that operate on types to yield types.
-In other words, instructions are the <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> of the type <code>objs</code>.
-Formally, the type coproduct is defined as</p>
+<p>The dtypes are <a href="https://en.wikipedia.org/wiki/Structural_type_system">structural types</a> whose <a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive definition</a>'s base case is a ctype realized via a chain of instructions (<code>inst</code>) that operate on types to yield types. In other words, instructions are the <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> of the type <code>objs</code>. Formally, the type coproduct is defined as</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -1186,9 +1175,7 @@ Formally, the type coproduct is defined as</p>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Every <code>obj</code> has an associated quantifier.
-When the typographical representation of an <code>obj</code> lacks an associated quantifier, the quantifier is <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>.
-For instance, the <code>real</code> <code>1.35{1}</code> is written <code>1.35</code>.
+Every <code>obj</code> has an associated quantifier. When the typographical representation of an <code>obj</code> lacks an associated quantifier, the quantifier is <a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>. For instance, the <code>real</code> <code>1.35{1}</code> is written more economically as <code>1.35</code>.
 </td>
 </tr>
 </table>
@@ -1223,12 +1210,7 @@ In terms of the "<em>range = domain and function</em>" reading, when an <code>in
 </div>
 <div class="paragraph">
 <p>The diagram above is generally known as the <strong>obj graph</strong>.
-The <code>obj</code> graph is a fundamental structure in mm-ADT that is used in <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more.
-This structure is called the <strong>obj graph</strong>.
-The subgraph concerned with type definitions is called the <strong>type graph</strong>.
-The subgraph considered with value history is called the <strong>value graph</strong>.
-The <code>obj</code> graph is a ringoid-<a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> <a href="https://en.wikipedia.org/wiki/Monoidal_category">monoidal</a> <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a>.
-This graph will be the subject of study throughout the documentation.</p>
+The <code>obj</code> graph is a fundamental structure in mm-ADT that is used in <a href="https://en.wikipedia.org/wiki/Type_system#Type_checking">type checking</a>, <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compiler optimization</a>, <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>, and more. This structure is called the <strong>obj graph</strong>. The subgraph concerned with type definitions is called the <strong>type graph</strong>. The subgraph considered with mutation history (<a href="https://en.wikipedia.org/wiki/State_(computer_science)">state</a>) is called the <strong>value graph</strong>. The <code>obj</code> graph is a ringoid-<a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> <a href="https://en.wikipedia.org/wiki/Monoidal_category">monoidal</a> <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a>. This graph will be the subject of study throughout the documentation.</p>
 </div>
 <div class="paragraph">
 <p>The full <code>obj</code> structure thus far is diagrammed on the right.
@@ -1274,30 +1256,27 @@ mmlang&gt; int{2}[is&gt;0][plus,[neg]]                                <i class="
 <div class="sect3">
 <h4 id="_type_structure">Type Structure</h4>
 <div class="paragraph">
-<p>The diagram below captures the salient features of a type, where the three projections encode a type&#8217;s</p>
+<p>The diagram below highlights the two primary components of a type, where an edge is denoted \$e=(a,i,b)\$.</p>
 </div>
 <div class="olist arabic">
 <ol class="arabic">
 <li>
-<p><strong>Type signature</strong>: the ctype specification of a type&#8217;s domain and range (via the \$ \pi_\tt{domai\n} \$ and \$ \pi_\tt{rang\e} \$ projections), and</p>
+<p><strong>Type signature</strong>: the ctype specification of a type&#8217;s domain and range.</p>
 </li>
 <li>
-<p><strong>Type definition</strong>: an instruction sequence specifying a process on the domain <code>obj</code> (via the \$ \pi_\tt{i\nsts} \$ projection).</p>
+<p><strong>Type definition</strong>: a domain rooted instruction sequence terminating at the range.</p>
 </li>
 </ol>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/language/type-signature-definition.svg" alt="type signature definition" width="375">
+<img src="./images/language/type-signature-definition.svg" alt="type signature definition" width="650">
 </div>
 </div>
 <div class="sect4">
 <h5 id="_type_signature">Type Signature</h5>
 <div class="paragraph">
-<p>Every mm-ADT type can be generally understood as a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">function</a> that maps an <code>obj</code> of one type to an <code>obj</code> of another type.
-A <strong>type signature</strong> specifies the source and target of this mapping, where the <strong>domain</strong> is the source type, and the <strong>range</strong> is the target type.
-As ctype <code>objs</code>, the domain and range each have an associated quantifier denoted <code>{q}</code> in <code>mmlang</code>.
-The general pattern of a type signature is</p>
+<p>Every mm-ADT type can be generally understood as a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">function</a> that maps an <code>obj</code> of one type to an <code>obj</code> of another type. A <strong>type signature</strong> specifies the source and target of this mapping, where the <strong>domain</strong> is the source type, and the <strong>range</strong> is the target type. In <code>mmlang</code> a type signature has the following general pattern where <code>{q}</code> is the ctype&#8217;s associated quantifier.</p>
 </div>
 <table class="tableblock frame-all grid-all center" style="width: 30%;">
 <colgroup>
@@ -1536,9 +1515,7 @@ From compilation to evaluation, depending on the particular context, either inte
 </ul>
 </div>
 <div class="paragraph">
-<p>The <code>obj</code> graph&#8217;s commuting property eases compile-time and runtime <a href="https://en.wikipedia.org/wiki/Graph_rewriting">type rewriting</a>.
-If two paths have the same source vertex (domain) and target vertex (range), then both paths yield the same result (the target vertex).
-In practice, evaluating the instructions along the <a href="https://en.wikipedia.org/wiki/Computational_complexity_theory">computationally cheaper</a> path is prudent.</p>
+<p>The <code>obj</code> graph&#8217;s commuting property eases compile-time and runtime <a href="https://en.wikipedia.org/wiki/Graph_rewriting">type rewriting</a>. If two paths have the same source vertex (domain) and target vertex (range), then both paths yield the same result (the target vertex). In practice, evaluating the instructions along the <a href="https://en.wikipedia.org/wiki/Computational_complexity_theory">computationally cheaper</a> path is prudent.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1548,9 +1525,7 @@ In practice, evaluating the instructions along the <a href="https://en.wikipedia
 </ul>
 </div>
 <div class="paragraph">
-<p>As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations is theoretically predetermined given the <a href="https://en.wikipedia.org/wiki/Presentation_of_a_monoid">monoid presentation</a> containing the root <code>objs</code> (e.g. the ctypes), its generators (<code>inst</code>), and relations (path equations).
-This static immutable structure serves as a <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> of computational results.
-This is especially useful in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.</p>
+<p>As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations is theoretically predetermined given the <a href="https://en.wikipedia.org/wiki/Presentation_of_a_monoid">monoid presentation</a> containing the root <code>objs</code> (e.g. the ctypes), its generators (<code>inst</code>), and relations (<a href="https://en.wikipedia.org/wiki/Equivalence_relation">path equations</a>). This static immutable structure serves as a <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> of computational results. This is especially useful when considering <strong>streams</strong> (definition forthcoming) and their role in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.</p>
 </div>
 </div>
 </div>
@@ -1560,30 +1535,26 @@ This is especially useful in data-intensive, cluster-oriented environments where
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Initial and Terminal Objects</div>
-<div class="imageblock left">
-<div class="content">
-<img src="./images/language/initial.png" alt="initial" width="130">
-</div>
-</div>
 <div class="paragraph">
 <p>A category may have an <a href="https://en.wikipedia.org/wiki/Initial_and_terminal_objects">initial and/or terminal</a> object.</p>
 </div>
+<hr>
+<div class="imageblock left">
+<div class="content">
+<img src="./images/language/initial.svg" alt="initial" width="125">
+</div>
+</div>
 <div class="paragraph">
-<p>An <strong>initial object</strong> \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
-Initial objects, via their morphisms, generate all the objects of the category.
-If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity.
-Thus, besides labels, two initials are isomorphic.</p>
+<p>An <strong>initial object</strong> \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology&#8201;&#8212;&#8201;all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.</p>
 </div>
 <hr>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/language/terminal.png" alt="terminal" width="130">
+<img src="./images/language/terminal.svg" alt="terminal" width="125">
 </div>
 </div>
 <div class="paragraph">
-<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
-Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
-Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
+<p>A <strong>terminal object</strong> \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).</p>
 </div>
 <div class="paragraph">
 <p>&nbsp;</p>
@@ -1591,12 +1562,10 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 </div>
 </div>
 <div class="paragraph">
-<p>In order to quantify the <em>amount</em> of values denoted by a type, every mm-ADT type has an associated quantifier <code>q</code> denoted <code>{q}</code> in <code>mmlang</code>.
-Quantifiers are typically integers, but can be any element from an ordered algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, <a href="https://en.wikipedia.org/wiki/Unitary_matrix">unitary matrices</a>, etc.).
-While integer quantifiers signify "amount," other quantifiers such as unitary matrices used in the representation of a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description as quantifiers can be negative such that <code>objs</code> interact with constructive and destructive <a href="https://en.wikipedia.org/wiki/Wave_interference">interference</a>.</p>
+<p>In order to quantify the <em>amount</em> of values denoted by a type, every mm-ADT type has an associated <strong>quantifier</strong> \$q \in Q\$ denoted <code>{q}</code> in <code>mmlang</code>, where \$Q\$ is the carrier of an ordered algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, <a href="https://en.wikipedia.org/wiki/Unitary_matrix">unitary matrices</a>, etc.). Typically, integer quantifiers signify "amount." However, other quantifiers such as unitary matrices used in the representation of a <a href="https://en.wikipedia.org/wiki/Wave_function">quantum wave function</a>, "amount" is a less accurate description as quantifiers can be negative such that <code>objs</code> interact with constructive and destructive <a href="https://en.wikipedia.org/wiki/Wave_interference">interference</a>.</p>
 </div>
 <div class="paragraph">
-<p>The default quantifier ring of the mm-ADT VM is \[
+<p>The default <strong>quantifier ring</strong> of the mm-ADT VM is \[
 (\mathbb{Z} \times \mathbb{Z}, +, \ast), \]
 where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative identity (<a href="https://en.wikipedia.org/wiki/Unit_(ring_theory)">unity</a>).
 The \$ +\$ and \$\ast\$ binary operators perform pairwise integer addition and multiplication, respectively.
@@ -1627,11 +1596,13 @@ mmlang&gt; obj{0}</code></pre>
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is&gt;0&amp;&amp;&lt;0]</code> are equivalent due to their quantifiers both being <code>{0}</code>.
-Typically, throughout the documentation, both will be referred to as <code>obj{0}</code>, <code>_{0}</code>, or \$\underline{\mathbf{0}}\$ (the <strong>zero object</strong>).
+Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is,false]</code> are equivalent due to their quantifiers both being <code>{0}</code>. Throughout the documentation, all zero quantified <code>objs</code> will be referred to as <code>obj{0}</code>, <code>_{0}</code>, or \$\underline{\mathbf{0}}\$ (the <strong>zero object</strong>).
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>Quantifiers serve an important role in <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a> and determining, at compile time, the expected cost of a particular type definition (i.e., an instruction sequence). The table below itemizes common quantifier patterns along with names the are typically used in programming languages.</p>
 </div>
 <table class="tableblock frame-all grid-all center" style="width: 85%;">
 <colgroup>
@@ -1653,7 +1624,7 @@ Typically, throughout the documentation, both will be referred to as <code>obj{0
 <tbody>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock">some</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1}</code></p></td>
+<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>{1,1}</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">a single <code>int</code></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -5686,7 +5657,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-02 02:11:10 -0600
+Last updated 2020-08-02 16:48:22 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
