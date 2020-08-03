@@ -110,6 +110,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(strm)(engine.eval("{}"))
     assertResult(strm)(engine.eval("_{0}"))
     assertResult(bool(btrue, bfalse, bfalse, bfalse))(engine.eval("{false{3},true}"))
+    assertResult("obj{0}")(engine.eval("{6{0}}").toString)
   }
 
   test("atomic named value parsing") {

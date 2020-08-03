@@ -50,7 +50,7 @@ class mmlangParser extends JavaTokenParsers {
   // all mm-ADT languages must be able to accept a string representation of an expression in the language and return an Obj
   private def parse[O <: Obj](input: String, prefix: Option[Type[Obj]] = None): O = {
     this.parseAll(expr(prefix) | emptySpace, input.trim) match {
-      case Success(result, _) => result.asInstanceOf[O]
+      case Success(result, _) => Some(result.asInstanceOf[O]).filter(_.alive).getOrElse(estrm[O])
       case NoSuccess(y) => throw LanguageException.parseError(
         y._1,
         y._2.source.toString,
