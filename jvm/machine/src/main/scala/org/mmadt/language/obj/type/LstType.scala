@@ -21,11 +21,13 @@
  */
 
 package org.mmadt.language.obj.`type`
+
 import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
 
 trait LstType[A <: Obj] extends PolyType[A, Lst[A]] with Lst[A] {
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
+    case _: __ if __.isAnon(other) => true
     case _: __ if __.isTokenRoot(other) =>
       val temp = Inst.resolveToken(this, other)
       if (temp == other) true else this.test(temp)

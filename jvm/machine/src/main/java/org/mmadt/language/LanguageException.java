@@ -84,12 +84,12 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (!(__.isAnon(type.domain()) || obj.range().test(type.domain())))
+        if (!obj.range().test(type.domain()))
             throw LanguageException.typingError(obj, type);
     }
 
     public static boolean testIndex(final Lst<?> lst, final int index) {
-        return !(index<0) && lst.glist().length() >= (index + 1);
+        return !(index < 0) && lst.glist().length() >= (index + 1);
     }
 
     public static class PolyException {

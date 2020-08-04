@@ -56,6 +56,10 @@ class mmlangScriptEngineTest extends FunSuite {
     intercept[LanguageException] {
       engine.eval("0 => nat")
     }
+    val exception = intercept[LanguageException] {
+    engine.eval("66{2} => int{10}")
+    }
+   assert(exception.getMessage.equals("int{2} is not an int{10}"))
     engine.eval(":")
   }
 

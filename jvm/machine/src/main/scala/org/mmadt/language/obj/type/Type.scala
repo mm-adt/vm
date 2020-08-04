@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.{eqQ, _}
+import org.mmadt.language.{LanguageFactory, Tokens}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,6 +37,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
+    case _: __ if __.isAnon(other) => true
     case _: __ if __.isTokenRoot(other) =>
       val temp = Inst.resolveToken(this, other)
       if (temp == other) true else this.test(temp)
@@ -51,7 +52,9 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
 
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
-    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && this.trace.filter(x =>x._2.op != Tokens.model) == atype.trace.filter(x =>x._2.op != Tokens.model)
+    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) &&
+      this.trace.filter(x => x._2.op != Tokens.model).filter(x => x._2.op != Tokens.define).filter(x => x._2.op != Tokens.rewrite) ==
+        atype.trace.filter(x => x._2.op != Tokens.model).filter(x => x._2.op != Tokens.define).filter(x => x._2.op != Tokens.rewrite)
     case _ => false
   }
 }
