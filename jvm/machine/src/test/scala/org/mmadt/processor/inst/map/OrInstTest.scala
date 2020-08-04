@@ -50,8 +50,7 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
         //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype.toString}"),
         OrOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input.asInstanceOf[Bool]),
         input.compute(asType(atype)),
-        input ===> (input.range ===> atype),
-        input ===> atype,
+        input ==> atype,
         input ==> asType(atype)).foreach(x => {
         assertResult(result)(x)
         kind match {

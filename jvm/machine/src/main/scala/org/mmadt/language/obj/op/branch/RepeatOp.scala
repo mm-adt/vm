@@ -47,8 +47,8 @@ object RepeatOp extends Func[Obj, Obj] {
       case _: Value[_] if until.isInstanceOf[Bool] =>
         def loop(y: Obj): Obj = {
           strm(y.toStrm.values.filter(_.alive).flatMap(x => {
-            val temp: Obj = x ===> oldInst.arg0[Obj]
-            val doloop: Bool = temp ===> oldInst.arg1[Bool]
+            val temp: Obj = x ==> oldInst.arg0[Obj]
+            val doloop: Bool = temp ==> oldInst.arg1[Bool]
             if (doloop.toStrm.values.last.g) loop(temp).toStrm.values else temp.toStrm.values // TODO: note strm unrolling
           }))
         }
@@ -59,7 +59,7 @@ object RepeatOp extends Func[Obj, Obj] {
         var i = 0
         while (repeatStart.alive && i < times) {
           i = i + 1
-          repeatStart = repeatStart ===> oldInst.arg0[Obj]
+          repeatStart = repeatStart ==> oldInst.arg0[Obj]
         }
         repeatStart
       case _: Type[_] => start.via(start, oldInst)

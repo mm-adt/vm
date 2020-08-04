@@ -125,19 +125,16 @@ trait Obj
     AsOp.convertAs(Obj.internal(this, rangeType), rangeType.range).asInstanceOf[E]
   }
 
-  def ==>[E <: Obj](rangeType: Type[E]): E = {
-    if (!rangeType.alive) return zeroObj.asInstanceOf[E]
-    LanguageException.testTypeCheck(this.range, rangeType.domain)
-    this match {
-      case _: Value[_] => Processor.iterator(this, rangeType)
-      case _: Type[_] => Processor.compiler(this, rangeType)
-    }
-  }
-
-  def ===>[E <: Obj](rangeType: E): E = {
-    rangeType match {
-      case _: Type[_] => this ==> rangeType.asInstanceOf[Type[E]]
-      case _ => rangeType
+  def ==>[E <: Obj](target: E): E = {
+    if (!target.alive) return zeroObj.asInstanceOf[E]
+    target match {
+      case _: Value[_] => target.hardQ(multQ(this.q, target.q)).asInstanceOf[E]
+      case rangeType: Type[E] =>
+        LanguageException.testTypeCheck(this.range, target.domain)
+        this match {
+          case _: Value[_] => Processor.iterator(AsOp.convertAs(this, rangeType.domain), rangeType)
+          case _: Type[_] => Processor.compiler(AsOp.convertAs(this, rangeType.domain), rangeType)
+        }
     }
   }
 

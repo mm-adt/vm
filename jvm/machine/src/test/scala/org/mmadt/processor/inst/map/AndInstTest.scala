@@ -29,7 +29,7 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor4}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -64,8 +64,7 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
       List(
         AndOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input.asInstanceOf[Bool]),
         input.compute(asType(atype)),
-        input ===> (input.range ===> atype),
-        input ===> atype,
+        input ==> atype,
         input ==> asType(atype)).foreach(x => {
         assertResult(result)(x)
         kind match {

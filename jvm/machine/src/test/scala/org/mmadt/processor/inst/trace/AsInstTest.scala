@@ -87,8 +87,8 @@ class AsInstTest extends FunSuite with TableDrivenPropertyChecks {
       assertResult(result)(left.compute(__.as(right)))
       assertResult(result)(left.as(right))
       assertResult(result)(AsOp(right).exec(left))
-      assertResult(result)(left ===> left.range.as(right))
-      assertResult(result)(left ===> (left.range ===> left.range.as(right)))
+      assertResult(result)(left ==> left.range.as(right))
+      assertResult(result)(left ==> (left.range ==> left.range.as(right)))
     }
     }
   }

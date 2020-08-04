@@ -33,11 +33,11 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[tail] anonymous type") {
-    assertResult("b" |)(("a" | "b") ===> __.tail())
-    assertResult("b" | "c")(("a" | "b" | "c") ===> __.tail())
+    assertResult("b" |)(("a" | "b") ==> __.tail())
+    assertResult("b" | "c")(("a" | "b" | "c") ==> __.tail())
     //
-    assertResult("b" `;`)(("a" `;` "b") ===> __.tail())
-    assertResult("b" `;` "c")(("a" `;` "b" `;` "c") ===> __.tail())
+    assertResult("b" `;`)(("a" `;` "b") ==> __.tail())
+    assertResult("b" `;` "c")(("a" `;` "b" `;` "c") ==> __.tail())
   }
 
   test("[tail] w/ parallel poly]") {

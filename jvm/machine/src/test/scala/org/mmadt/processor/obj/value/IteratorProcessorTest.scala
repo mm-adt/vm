@@ -41,27 +41,27 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
   }
   test("process multiple values w/ quantifiers") {
     assertResult(int(102, 104, 106))(Processor.iterator(int(1, 2, 3), int.q(*).mult(int(2)).plus(int(100))))
-    assertResult(int(102, 104, 106))((int(1, 2, 3) ===> int.q(1, 10).mult(int(2)).plus(int(100))))
-    assertResult(int(11, 22, 33))(int(10, 20, 30) ===> int.q(*).split(
+    assertResult(int(102, 104, 106))((int(1, 2, 3) ==> int.q(1, 10).mult(int(2)).plus(int(100))))
+    assertResult(int(11, 22, 33))(int(10, 20, 30) ==> int.q(*).split(
       int.is(int.gt(int(20))) --> int.plus(int(3)) |
         int.is(int.gt(int(10))) --> int.plus(int(2)) |
         int --> int.plus(int(1))).>-.plus(int(0)))
-    assertResult(int(50))(int(10).q(50) ===> int.q(50).plus(2).count())
+    assertResult(int(50))(int(10).q(50) ==> int.q(50).plus(2).count())
     assertResult(int(50))(int(10).q(50).plus(2).count())
-    assertResult(int(3))(int(10, 20, 30) ===> int.q(+).plus(2).count())
+    assertResult(int(3))(int(10, 20, 30) ==> int.q(+).plus(2).count())
     assertResult(int(12))(int(10, 20, int(30).q(10)).plus(2).count())
-    assertResult(int(12))(int(10, 20, int(30).q(10)) ===> int.q(+).plus(2).count())
-    assertResult(int(4))(int(10, 20, 30, 40) ===> int.q(*).plus(2).mult(100).count())
-    assertResult(int(2))(int(10, 20, 30, 40) ===> int.q(*).is(int.gt(20)).count())
-    assertResult(int(12))(int(10, 20, 30, 40) ===> int.q(1, 57).is(int.gt(20)).count().plus(10))
-    assertResult(int(1))(int(10, 20, 30, 40) ===> int.q(+).is(int.gt(20)).count().plus(10).count())
+    assertResult(int(12))(int(10, 20, int(30).q(10)) ==> int.q(+).plus(2).count())
+    assertResult(int(4))(int(10, 20, 30, 40) ==> int.q(*).plus(2).mult(100).count())
+    assertResult(int(2))(int(10, 20, 30, 40) ==> int.q(*).is(int.gt(20)).count())
+    assertResult(int(12))(int(10, 20, 30, 40) ==> int.q(1, 57).is(int.gt(20)).count().plus(10))
+    assertResult(int(1))(int(10, 20, 30, 40) ==> int.q(+).is(int.gt(20)).count().plus(10).count())
   }
   test("process nested single values w/ quantifiers") {
-    assertResult(int(2))(int(1) ===> int.mult(int(2)).is(int.gt(int(1))))
-    assertResult(int(2))(int(1) ===> int.mult(int(2)).is(int.plus(int(10)).gt(int(1))))
+    assertResult(int(2))(int(1) ==> int.mult(int(2)).is(int.gt(int(1))))
+    assertResult(int(2))(int(1) ==> int.mult(int(2)).is(int.plus(int(10)).gt(int(1))))
   }
   test("process canonical type") {
-    int(10) ===> int
+    int(10) ==> int
     int(1, 2, 3) ==> int.q(+)
     /*  assertThrows[LanguageException] {
           int(10) ===> int.q(0)
@@ -72,16 +72,16 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
         }
     */
     assertThrows[LanguageException] {
-      int(10) ===> bool.and(bool)
+      int(10) ==> bool.and(bool)
     }
     assertThrows[LanguageException] {
-      int(10) ===> str
+      int(10) ==> str
     }
     assertThrows[LanguageException] {
-      int(10) ===> str.q(2)
+      int(10) ==> str.q(2)
     }
     assertThrows[LanguageException] {
-      str("hello") ===> bool
+      str("hello") ==> bool
     }
   }
 }

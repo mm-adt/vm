@@ -46,9 +46,9 @@ class GivenInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(check) { (input, atype, result) => {
       assertResult(result)(input.compute(atype.asInstanceOf[Type[Obj]]))
       assertResult(result)(input ==> atype.asInstanceOf[Type[Obj]])
-      assertResult(result)(input ===> atype)
-      assertResult(result)(input ===> (input.range ==> atype.asInstanceOf[Type[Obj]]))
-      assertResult(result)(input ===> (input.range ===> atype))
+      assertResult(result)(input ==> atype)
+      assertResult(result)(input ==> (input.range ==> atype.asInstanceOf[Type[Obj]]))
+      assertResult(result)(input ==> (input.range ==> atype))
     }
     }
   }

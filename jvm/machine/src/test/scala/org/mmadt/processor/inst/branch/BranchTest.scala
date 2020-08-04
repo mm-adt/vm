@@ -21,7 +21,7 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
     List(
      // engine.eval(s"${stringify(start)} => ${middle}"),
       start.compute(middle),
-      start ===> middle,
+      start ==> middle,
       start `=>` middle
     ).foreach(example => {
       assertResult(end)(example)

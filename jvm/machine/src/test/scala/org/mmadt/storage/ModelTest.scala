@@ -42,7 +42,7 @@ class ModelTest extends FunSuite {
     val record1a = rec(
       str("id") -> int(1),
       str("label") -> str("person"))
-    assertResult(record1a.named("vertex"))(record1a ===> tp3.as(__("vertex")))
+    assertResult(record1a.named("vertex"))(record1a ==> tp3.as(__("vertex")))
     ///
     val record2a = rec(
       str("id") -> int(1),
@@ -52,14 +52,14 @@ class ModelTest extends FunSuite {
       str("id") -> int(1),
       str("label") -> str("person"),
       str("properties") -> rec(str("name") -> str("marko")).named("property")).named("vertex")
-    assertResult(record2b)(record2a ===> tp3.as(__("vertex")))
+    assertResult(record2b)(record2a ==> tp3.as(__("vertex")))
     ///
     val record3 = rec(
       str("id") -> int(1),
       str("label") -> str("person"),
       str("properties") -> rec(str("id") -> str("marko")).named("property")).named("vertex")
     assertThrows[LanguageException] {
-      record3 ===> tp3.as(__("vertex"))
+      record3 ==> tp3.as(__("vertex"))
     }
   }
 
@@ -67,7 +67,7 @@ class ModelTest extends FunSuite {
     val record1 = rec(
       str("k") -> int(1),
       str("v") -> str("marko"))
-    assertResult(record1.named("kv"))(record1 ===> kv.as(__("kv")))
+    assertResult(record1.named("kv"))(record1 ==> kv.as(__("kv")))
   }
 
   test("[tp3<=kv] functor") {
@@ -78,7 +78,7 @@ class ModelTest extends FunSuite {
       str("id") -> int(1),
       str("label") -> str("vertex"),
       str("properties") -> rec(str("name") -> str("marko"))).named("vertex")
-    assertResult(record1a.named("kv"))(record1a ===> kv.as(__("kv")))
+    assertResult(record1a.named("kv"))(record1a ==> kv.as(__("kv")))
     assertResult(record1b)(record1a ==> all.as(__("kv")).as(__("vertex")))
     //
     val record2a = rec(
@@ -88,7 +88,7 @@ class ModelTest extends FunSuite {
       str("id") -> int(1),
       str("label") -> str("person"),
       str("properties") -> rec(str("label") -> str("person"), str("name") -> str("marko"))).named("vertex")
-    assertResult(record2a.named("kv"))(record2a ===> kv.as(__("kv")))
+    assertResult(record2a.named("kv"))(record2a ==> kv.as(__("kv")))
     assertResult(record2b)(record2a ==> all.as(__("kv")).as(__("vertex")))
     assertResult(record2b)(record2a ==> all.as(__("vertex")))
     //
@@ -97,7 +97,7 @@ class ModelTest extends FunSuite {
     val store: Lst[Rec[StrValue, Obj]] = lst(",", strm(List(record1a, edge1)))
     val g: Type[Obj] = all.as(__("graph"))
     println(g)
-    println(store ===> g)
+    println(store ==> g)
   }
 
 

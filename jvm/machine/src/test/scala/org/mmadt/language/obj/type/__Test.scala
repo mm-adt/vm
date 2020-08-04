@@ -51,7 +51,7 @@ class __Test extends FunSuite {
     assertResult(__.q(0))(__.q(0))
     assertResult(int.q(0))(__.q(0))
     assertResult(zeroObj)(__.q(0).compute(__.q(0)))
-    assertResult(zeroObj)(__.q(0) ===> __.q(0))
+    assertResult(zeroObj)(__.q(0) ==> __.q(0))
     assert(__.root)
     assert(!__.plus(1).root)
     assertResult(__)(__.plus(1).via._1)
@@ -70,30 +70,30 @@ class __Test extends FunSuite {
   }
 
   test("__  type fluency") {
-    assertResult(str("marko!"))(rec(str("name") -> str("marko")) ===> __.id().get(str("name")).plus(str("!")))
-    assertResult(int(12))(int(5) ===> __.plus(2).plus(5).id())
-    assertResult(int(120))(int(5) ===> __.plus(2).plus(5).id().mult(10))
+    assertResult(str("marko!"))(rec(str("name") -> str("marko")) ==> __.id().get(str("name")).plus(str("!")))
+    assertResult(int(12))(int(5) ==> __.plus(2).plus(5).id())
+    assertResult(int(120))(int(5) ==> __.plus(2).plus(5).id().mult(10))
   }
 
   test("__ deep nest") {
-    assertResult(int(2))(int(1) ===> __.plus(1))
-    assertResult(int(3))(int(1) ===> __.plus(__.plus(1)))
-    assertResult(int(4))(int(1) ===> __.plus(__.plus(__.plus(1))))
-    assertResult(int(5))(int(1) ===> __.plus(__.plus(__.plus(__.plus(1)))))
-    assertResult(int(6))(int(1) ===> __.plus(__.plus(__.plus(__.plus(__.plus(1))))))
+    assertResult(int(2))(int(1) ==> __.plus(1))
+    assertResult(int(3))(int(1) ==> __.plus(__.plus(1)))
+    assertResult(int(4))(int(1) ==> __.plus(__.plus(__.plus(1))))
+    assertResult(int(5))(int(1) ==> __.plus(__.plus(__.plus(__.plus(1)))))
+    assertResult(int(6))(int(1) ==> __.plus(__.plus(__.plus(__.plus(__.plus(1))))))
   }
 
   test("__ quantifiers") {
     println(int ==> __.id().q(2))
     assertThrows[LanguageException] {
-      int(5) ===> int.q(10)
+      int(5) ==> int.q(10)
     }
-    assertResult(bfalse)(int(5) ===> __.gt(16))
-    assertResult(zeroObj)(int(5).q(*) ===> __.q(0).gt(16))
-    assertResult(zeroObj)(int(5).q(0) ===> __.q(*).gt(16))
-    assertResult(int(5))(int(5) ===> __)
-    assertResult(int(5))(int(5) ===> __.id())
-    assertResult(int(5))(int(5) ===> __.id().q(1))
+    assertResult(bfalse)(int(5) ==> __.gt(16))
+    assertResult(zeroObj)(int(5).q(*) ==> __.q(0).gt(16))
+    assertResult(zeroObj)(int(5).q(0) ==> __.q(*).gt(16))
+    assertResult(int(5))(int(5) ==> __)
+    assertResult(int(5))(int(5) ==> __.id())
+    assertResult(int(5))(int(5) ==> __.id().q(1))
     assertResult(int(5).q(2))(int(5) ==> __.id().q(2).asInstanceOf[__])
 
     assertResult(int(1))(int(1) ==> __.q(10).asInstanceOf[__])

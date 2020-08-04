@@ -46,7 +46,7 @@ class NotInstTest extends FunSuite with TableDrivenPropertyChecks {
       assertResult(right)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[not,_]"))
       //assertResult(right)(int(1).q(left.q).not(left))
       assertResult(right)(left `=>` __.not(__))
-      assertResult(right)(left ===> __.not(__))
+      assertResult(right)(left ==> __.not(__))
       //assertResult(right)(left ===> __.not(__))
     }
     }

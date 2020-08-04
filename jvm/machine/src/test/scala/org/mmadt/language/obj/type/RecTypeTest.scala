@@ -62,7 +62,7 @@ class RecTypeTest extends FunSuite {
     assertResult("(1->true)")(rec(int(1) -> btrue).toString)
     assertResult("(1->true,2->false)")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
     assertResult("(1->true,2->false)")(rec(int(1) -> btrue).plus(int(2) -> bfalse `,`).toString)
-    assertResult(bfalse)(rec(int(1) -> btrue) ===> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)).get(int(2)))
+    assertResult(bfalse)(rec(int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)).get(int(2)))
     assertResult(int(1) -> btrue `_,` int(2) -> bfalse)((int(1) -> btrue `,`) ==> rec[IntValue, BoolValue].plus(int(2) -> bfalse `,`))
     assertResult(btrue)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(2)))
@@ -72,13 +72,13 @@ class RecTypeTest extends FunSuite {
   }
 
   test("rec domain check") {
-    assertResult(rec(str("name") -> str("marko")))(rec(str("name") -> str("marko")) ===> rec(str("name") -> str))
+    assertResult(rec(str("name") -> str("marko")))(rec(str("name") -> str("marko")) ==> rec(str("name") -> str))
     assertThrows[LanguageException] {
-      rec(str("nae") -> str("marko")) ===> rec(str("name") -> str)
+      rec(str("nae") -> str("marko")) ==> rec(str("name") -> str)
     }
-    assertResult(int(11))((int(10) ===> int.split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
-    assertResult(int(11, 12, 13))((int(10, 11, 12) ===> int.q(3).split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
-    assertResult(int(11, 12, 13))((int(10) `,` 11 `,` 12) ===> (int `,` int `,` int).merge.split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj])
+    assertResult(int(11))((int(10) ==> int.split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
+    assertResult(int(11, 12, 13))((int(10, 11, 12) ==> int.q(3).split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
+    assertResult(int(11, 12, 13))((int(10) `,` 11 `,` 12) ==> (int `,` int `,` int).merge.split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj])
   }
 
   test("rec value via varargs construction") {

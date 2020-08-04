@@ -33,13 +33,13 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[head] anonymous type") {
-    assertResult(str("a"))(("a" |) ===> __.head())
-    assertResult(str("a"))(("a" | "b") ===> __.head())
-    assertResult(str("a"))(("a" | "b" | "c") ===> __.head())
+    assertResult(str("a"))(("a" |) ==> __.head())
+    assertResult(str("a"))(("a" | "b") ==> __.head())
+    assertResult(str("a"))(("a" | "b" | "c") ==> __.head())
     //
-    assertResult(str("a"))(("a" `;`) ===> __.head())
-    assertResult(str("a"))(("a" `;` "b") ===> __.head())
-    assertResult(str("a"))(("a" `;` "b" `;` "c") ===> __.head())
+    assertResult(str("a"))(("a" `;`) ==> __.head())
+    assertResult(str("a"))(("a" `;` "b") ==> __.head())
+    assertResult(str("a"))(("a" `;` "b" `;` "c") ==> __.head())
   }
 
   test("[head] w/ parallel poly") {

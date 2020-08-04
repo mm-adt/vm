@@ -70,7 +70,7 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(starts) { (lhs, rhs, result) => {
       //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${lhs})>--<${rhs}>-"))
-      assertResult(result)(lhs ===> __.-<(rhs).>-)
+      assertResult(result)(lhs ==> __.-<(rhs).>-)
     }
     }
   }

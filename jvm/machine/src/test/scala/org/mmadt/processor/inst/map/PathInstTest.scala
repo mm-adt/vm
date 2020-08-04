@@ -45,7 +45,7 @@ class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
         //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
         PathOp((__ `;` zeroObj).asInstanceOf[Lst[Obj]]).q(atype.trace.head._2.q).exec(input),
         input.compute(asType(atype)),
-        input ===> atype.start(),
+        input ==> atype.start(),
       ).foreach(x => {
         assertResult(result)(x)
       })
