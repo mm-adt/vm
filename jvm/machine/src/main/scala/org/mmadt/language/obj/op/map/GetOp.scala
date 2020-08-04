@@ -43,8 +43,8 @@ object GetOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B = __.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key, typeHint)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val key: Obj = inst.arg0[Obj]
-    val typeHint: Obj = Inst.oldInst(inst).arg1[Obj]
-    val newInst: Inst[Obj, Obj] = inst.clone(g = (Tokens.get, List(key, typeHint)))
+    val newInst: Inst[Obj, Obj] = inst.clone(g = (Tokens.get, List(key, Inst.oldInst(inst).arg1[Obj])))
+    val typeHint: Obj = Inst.oldInst(inst).arg1[Obj].hardQ(start.q)
     val value: Obj = start match {
       case arec: Rec[Obj, Obj] => strm(arec.gmap.filter(a => key.test(a._1)).values.toSeq)
       case alst: Lst[_] if key.isInstanceOf[Int] => key match {
@@ -56,7 +56,7 @@ object GetOp extends Func[Obj, Obj] {
         case _ => typeHint
       }
       case _: Value[_] => zeroObj
-      case anon: __ => anon
+      case anon: __ if anon.name.equals("x") => anon // TODO: so ghetto -- this is because defs and variables fighting for namespace
       case _ => typeHint
     }
     (value match {

@@ -34,7 +34,7 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory
-import org.mmadt.storage.StorageFactory.{strm => estrm, _}
+import org.mmadt.storage.StorageFactory.{asType, strm => estrm, _}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers
@@ -62,26 +62,15 @@ class mmlangParser extends JavaTokenParsers {
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
 
   // specific to mmlang execution
-  def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = obj ~ opt(objType) ^^ (x => {
-    x._2 match {
-      case None => x._1 match {
-        case _: Value[_] => x._1 // left hand value only, return it
-        case _: Type[_] => prefix.map(pre => x._1.domain `=>` pre).getOrElse(x._1.domain) ===> x._1 // left hand type only, compile it with it's domain
-      }
-      case Some(y) =>
-        x._1 match {
-          case _: Type[Obj] => x._1 ===> prefix.map(pre => y `=>` pre).getOrElse(y)
-          case _: Value[Obj] => x._1 ===> (prefix.map(pre => asType(x._1) `=>` pre).getOrElse(asType(x._1)) ===> y)
-        } // left and right hand, evaluate right type with left obj
-    }
-  })
-
-  /*
-  lazy val expr: Parser[Obj] = obj ^^ ({
-  case x@(_: Value[_]) => x
-  case x@(_: Type[_]) => (x.domain ===> x)
-})
- */
+  def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = opt(objValue) ~ opt(Tokens.:=>) ~ opt(obj) ^^ {
+    case Some(source) ~ _ ~ Some(target) => source ===> (target match {
+      case _: Type[_] => prefix.map(pre => pre ===> asType(source)).getOrElse(asType(source)) ===> target
+      case _: Value[_] => target.hardQ(multQ(source.q, target.q))
+    })
+    case Some(value) ~ None ~ None => value
+    case None ~ None ~ Some(z) => prefix.map(pre => z.domain ===> pre).getOrElse(z.domain) ===> z
+    case None ~ None ~ None => zeroObj
+  }
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 
