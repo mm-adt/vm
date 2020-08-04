@@ -84,9 +84,11 @@ trait Obj
     this.clone(name = name)
   }
   def test(other: Obj): Boolean
-  def <=[D <: Obj](domainType: D): this.type =
-    if (domainType.root) this.clone(via = (domainType, NoOp()))
+  def <=[D <: Obj](domainType: D): this.type = {
+    if (domainType.range.equals(this)) domainType.asInstanceOf[this.type]
+    else if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert, domainType.via._2))
+  }
   lazy val range: Type[Obj] = asType(this.isolate)
   lazy val domain: Type[Obj] = if (this.root) asType(this).asInstanceOf[Type[Obj]] else asType(this.via._1).domain
 
@@ -118,7 +120,10 @@ trait Obj
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
-  def compute[E <: Obj](rangeType: E): E = AsOp.convertAs(Obj.internal(this, rangeType), rangeType.range).asInstanceOf[E]
+  def compute[E <: Obj](rangeType: E): E = {
+    AsOp.convertAs(this, Obj.copyDefinitions(rangeType, rangeType.domain))
+    AsOp.convertAs(Obj.internal(this, rangeType), rangeType.range).asInstanceOf[E]
+  }
 
   def ==>[E <: Obj](rangeType: Type[E]): E = {
     if (!rangeType.alive) return zeroObj.asInstanceOf[E]
@@ -149,7 +154,7 @@ trait Obj
 object Obj {
   def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define) || x._2.op.equals(Tokens.model)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
 
-  def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
+  private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
       case _: Type[E] if __.isAnonRoot(domainObj) && rangeType.root => rangeType.hardQ(multQ(domainObj.q, rangeType.q))
       case _: Type[E] =>

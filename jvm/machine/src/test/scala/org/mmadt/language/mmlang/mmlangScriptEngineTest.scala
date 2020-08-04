@@ -40,9 +40,15 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("range<=domain") {
-    println(engine.eval("nat<=int[is>0]"))
+    assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
+    assertResult("nat")(engine.eval("nat").toString)
     engine.eval(":[define,nat<=int[is>0]]")
-    println(engine.eval("5 => nat"))
+    assertResult("nat")(engine.eval("nat").toString)
+    assertResult(5.named("nat"))(engine.eval("5 => nat"))
+    assertResult(zeroObj)(engine.eval("5 => nat{0}"))
+    // intercept[LanguageException]{engine.eval("0 => int<=nat[plus,1]")}
+    intercept[LanguageException]{engine.eval("0 => nat[plus,1]")}
+    intercept[LanguageException]{engine.eval("0 => nat")}
     engine.eval(":")
   }
 

@@ -40,7 +40,6 @@ import org.mmadt.storage.obj.value.VInst
 trait AsOp {
   this: Obj =>
   def as[O <: Obj](obj: O): O = AsOp(obj).exec(this).asInstanceOf[O]
-  def ~[O <: Obj](obj: O): O = this.as(obj)
 }
 
 object AsOp extends Func[Obj, Obj] {
@@ -51,14 +50,20 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   def convertAs(source: Obj, target: Obj): Obj = {
-    if (source.name.equals(target.name) ||
-      __.isAnonTokenObj(source) ||
-      !__.isTokenRoot(target)) return source
-    if (source.isInstanceOf[Type[_]]) source.as(target)
-    else internalConvertAs(source, target)
+    if (!target.alive) return zeroObj
+    source match {
+      case value: Strm[Obj] => value(x => AsOp.convertAs(x, target))
+      case _ =>
+        if (source.isolate.equals(target.isolate) || __.isAnon(target)) return source
+        if (!__.isTokenRoot(target)) return source
+        source match {
+          case _: Value[_] => if (source.name.equals(target.name)) source else internalConvertAs(source, target)
+          case _: Type[_] => target <= source
+        }
+    }
   }
 
-  def internalConvertAs(source: Obj, target: Obj): Obj = {
+  private def internalConvertAs(source: Obj, target: Obj): Obj = {
     val asObj: Obj = if (source.isInstanceOf[Type[_]]) target else Inst.resolveToken(source, target)
     val dObj: Obj = pickMapping(source, asObj)
     val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, asObj.range) else dObj

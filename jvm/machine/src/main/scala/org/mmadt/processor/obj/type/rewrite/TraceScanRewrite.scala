@@ -21,8 +21,8 @@
  */
 
 package org.mmadt.processor.obj.`type`.rewrite
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
+
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
@@ -59,7 +59,7 @@ object TraceScanRewrite extends Rewrite {
       }
     })
     if (!rewriteLessEquals(b, obj)) b = TraceScanRewrite(putRewrites(rewrites, b), writer)
-    removeRewrites(b).asInstanceOf[A]
+    (obj.range <= removeRewrites(b)).asInstanceOf[A]
   }
 
   private def rewriteInstArgs(rewrites: List[Obj], inst: Inst[Obj, Obj], rewrite: Writer): Inst[Obj, Obj] = inst match {
@@ -77,7 +77,7 @@ object TraceScanRewrite extends Rewrite {
     if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
   }
 
-  def chooseRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range.foldLeft(query.domainObj)((x, y) => y.exec(x)) `|` trace.filter(x => x.op != Tokens.rewrite).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge
+  // def chooseRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range.foldLeft(query.domainObj)((x, y) => y.exec(x)) `|` trace.filter(x => x.op != Tokens.rewrite).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge
   def replaceRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = {
     //println(range + "####" + trace)
     if (range.length == trace.length) {
