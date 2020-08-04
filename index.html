@@ -1840,14 +1840,14 @@ mmlang&gt; 5 =&gt; [plus,int]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type'-&gt;
-          (person -&gt; (person:('name'-&gt;str,'age'-&gt;int)),
-           team   -&gt; (person{*})))]
-mmlang&gt; ('name'-&gt;'marko')                         =&gt; person
-language error: ('name'-&gt;'marko') is not a person
+          (person -&gt; (person:('name'-&gt;str,'age'-&gt;nat)),
+           nat    -&gt; (nat&lt;=int[is&gt;0])))]
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;0)                =&gt; person
+language error: ('name'-&gt;'marko','age'-&gt;0) is not a person
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
-==&gt;person:('name'-&gt;'marko','age'-&gt;29)
+==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
-==&gt;person:('name'-&gt;'marko','age'-&gt;29)</code></pre>
+==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4026,7 +4026,7 @@ mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')&gt;-
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1;2;3)&gt;-
 ==&gt;3
 mmlang&gt; (1;;3)&gt;-
-==&gt;3
+mmlang&gt;
 mmlang&gt; (;;3)&gt;-
 mmlang&gt;</code></pre>
 </div>
@@ -5648,7 +5648,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-03 02:26:24 -0600
+Last updated 2020-08-03 13:06:43 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
