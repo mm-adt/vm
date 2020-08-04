@@ -41,6 +41,8 @@ object DefineOp extends Func[Obj, Obj] {
     /*val undefined = inst.args.filter(x => !Obj.fetch(start, x))
     if (undefined.isEmpty) start
     else start.via(start, inst.clone(g = (Tokens.define, undefined)))*/
+
+
     start.via(start,inst)
   }
 }

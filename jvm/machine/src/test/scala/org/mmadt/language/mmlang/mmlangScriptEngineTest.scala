@@ -1125,8 +1125,9 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("model parsing") {
-    engine.eval(":[model,mm:('type' -> (person -> (person<=('name'->str))))]")
+    engine.eval(":[model,mm:('type' -> (person -> (person:('name'->str))))]")
     assertResult("person:('name'->'marko')")(engine.eval("('name'->'marko') => [as,person]").toString)
+    assertResult("('type'->(person->(person)))<=_[map,('type'->(person->(person)))]")(engine.eval("[map,mm]").toString)
     engine.eval(":")
     val mm: String = getClass.getResource("/model/mm.mm").getPath
     engine.put(":", engine.eval(s"[load,'${mm}']"))

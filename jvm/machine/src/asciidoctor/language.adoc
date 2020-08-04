@@ -537,9 +537,9 @@ a|
 [exec,exception=LanguageException,none=""]
 ----
 :[model,social:('type'->  %
-  (person -> (person:('name'->str,'age'->int)), %
-   team   -> (person{*})))]
-('name'->'marko')                         => person
+  (person -> (person:('name'->str,'age'->nat)), %
+   nat    -> (nat<=int[is>0])))]
+('name'->'marko','age'->0)                => person
 ('name'->'marko','age'->29)               => person
 ('name'->'marko','age'->29,'alive'->true) => person
 
