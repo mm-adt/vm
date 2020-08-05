@@ -3,16 +3,6 @@
 
 == The Obj
 
-image::compiling-languages.png[float="right",width=300]
-
-The mm-ADT VM is written in https://scala-lang.org/[Scala].
-It contains a fluent program builder https://en.wikipedia.org/wiki/Application_programming_interface[API] called `mmscala`.
-Most compiler designers should avoid `mmscala` as direct access to the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM] and the full JDK can create unsafe mm-ADT programs.
-Instead, `mmlang` should be the target language for most compilers.
-Moreover, all compilers targeting `mmlang` can be used across different mm-ADT VM implementations.
-
-IMPORTANT: The recommended target language for all higher-level language compilers is `mmlang`.
-
 .Products and Coproducts
 ****
 https://en.wikipedia.org/wiki/Category_theory[Category theory] is the study of structure via https://en.wikipedia.org/wiki/Morphism[morphisms] that expose (or generate) other structures.
