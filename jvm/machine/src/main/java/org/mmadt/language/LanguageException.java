@@ -42,6 +42,14 @@ public class LanguageException extends VmException {
         super(message);
     }
 
+    public boolean equals(final Object other) {
+        return other instanceof LanguageException && ((LanguageException) other).getMessage().equals(this.getMessage());
+    }
+
+    public int hashCode() {
+        return this.getMessage().hashCode();
+    }
+
     public static LanguageException parseError(final String message, final String source, final int row, final int column) {
         final String rowString = source.split("\n")[row - 1];
         final String rowSubstring = rowString.substring(Math.max(0, column - 10), Math.min(rowString.length(), column + 10));
