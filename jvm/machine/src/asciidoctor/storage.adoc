@@ -1,5 +1,0 @@
-:imagesdir: ./images/storage
-
-== Storage Structures
-
-=== Model-ADT
