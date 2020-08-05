@@ -58,7 +58,7 @@ trait Obj
     with ModelOp
     with NotOp
     with GivenOp
-    with JuxtaOp
+    with JuxtOp
     with FromOp
     with LoadOp
     with QOp
@@ -152,7 +152,7 @@ object Obj {
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   val rootVia: ViaTuple = (null, null)
 
-  def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define) || x._2.op.equals(Tokens.model)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
+  def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => ModelOp.isMetaModel(x._2)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
@@ -222,7 +222,7 @@ object Obj {
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
   @inline implicit def tupleToRichTuple[A <: Obj, B <: Obj](ground: Tuple2[A, B]): RichTuple2[A, B] = new RichTuple2[A, B](ground)
-  @inline implicit def richTupleToRec[A <: Obj, B <: Obj](ground: RichTuple2[A, B]): Rec[A, B] = rec(g=(Tokens.`,`, Map(ground.tuple)))
+  @inline implicit def richTupleToRec[A <: Obj, B <: Obj](ground: RichTuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, Map(ground.tuple)))
   class RichTuple2[A <: Obj, B <: Obj](val tuple: Tuple2[A, B]) {
     final def `_,`(next: Tuple2[A, _]): Rec[A, B] = this.`,`(next)
     final def `_;`(next: Tuple2[A, B]): Rec[A, B] = this.`;`(next)

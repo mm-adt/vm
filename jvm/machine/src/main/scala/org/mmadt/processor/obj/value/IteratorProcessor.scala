@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.obj.value
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
@@ -38,7 +39,7 @@ class IteratorProcessor extends Processor {
       case strm: Strm[E] => strm.values.iterator
       case single: E => Iterator(single)
     }
-    for (tt <- IteratorProcessor.createInstList(Nil, rangeType)) {
+    for (tt <- rangeType.trace) {
       output = tt._2 match {
         //////////////REDUCE//////////////
         case reducer: ReduceInstruction[E] => Iterator(reducer.exec(strm(output.toSeq)).asInstanceOf[E])
@@ -55,15 +56,8 @@ class IteratorProcessor extends Processor {
           })
       }
     }
-    Processor.strmOrSingle(output.map(x => { //LanguageException.testTypeCheck(x,rangeType.hardQ(x.q)) // iterator processor linearizes the stream
+    Processor.strmOrSingle(output.map(x => { //LanguageException.testTypeCheck(x.range.hardQ(1),rangeType.range.hardQ(1)) // iterator processor linearizes the stream
       x
     }))
-  }
-}
-
-object IteratorProcessor {
-  @scala.annotation.tailrec
-  private def createInstList(list: List[(Obj, Inst[Obj, Obj])], atype: Obj): List[(Obj, Inst[Obj, Obj])] = {
-    if (atype.root) list else createInstList(List((atype.range, atype.trace.last._2.asInstanceOf[Inst[Obj, Obj]])) ::: list, atype.trace.last._1.asInstanceOf[Obj])
   }
 }

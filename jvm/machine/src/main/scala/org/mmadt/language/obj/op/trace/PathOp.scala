@@ -34,17 +34,17 @@ import org.mmadt.storage.obj.value.VInst
 trait PathOp {
   this: Obj =>
   def path(): Lst[Obj] = PathOp().exec(this)
-  def path(pattern: Lst[_<:Obj]): Lst[_<:Obj] = PathOp(pattern).exec(this)
+  def path(pattern: Lst[_ <: Obj]): Lst[_ <: Obj] = PathOp(pattern).exec(this)
 }
 
 object PathOp extends Func[Obj, Lst[Obj]] {
   val VERTICES: Lst[Obj] = (__ `;` zeroObj).asInstanceOf[Lst[Obj]]
   def apply(): Inst[Obj, Lst[Obj]] = PathOp.apply((__ `;` __).asInstanceOf[Lst[Obj]])
-  def apply(pattern: Lst[_<:Obj]): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, List(pattern)), func = this) with TraceInstruction
+  def apply(pattern: Lst[_ <: Obj]): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, List(pattern)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = (start match {
     case _: Strm[_] => start
     case _ => lst(
       inst.arg0[Lst[Obj]].gsep,
-      start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(inst.arg0[Lst[Obj]]).g._2.filter(_.alive)) :+ start: _*)
+      start.trace.filter(x => !ModelOp.isMetaModel(x._2)).foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(inst.arg0[Lst[Obj]]).g._2.filter(_.alive)) :+ start: _*)
   }).via(start, inst).asInstanceOf[Lst[Obj]]
 }

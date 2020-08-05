@@ -67,7 +67,7 @@ object Lst {
   def test[A <: Obj](alst: Lst[A], blst: Lst[A]): Boolean = Poly.sameSep(alst, blst) && // TODO: this.name.equals(other.name) &&
     withinQ(alst, blst) &&
     (blst.glist.isEmpty || alst.glist.size == blst.glist.size) && // TODO: should lists only check up to their length
-    alst.glist.zip(blst.glist).find(b => !b._1.test(b._2)).forall(_ => return false)
+    alst.glist.zip(blst.glist).forall(b => b._1.test(b._2))
 
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A], branch: Boolean = false): Lst[A] = {
     if (apoly.isSerial) {

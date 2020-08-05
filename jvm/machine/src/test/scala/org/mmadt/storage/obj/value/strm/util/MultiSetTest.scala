@@ -27,7 +27,7 @@ import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 class MultiSetTest extends FunSuite {
-  
+
   def qmaker(a: Int, b: Int): IntQ = (a, b)
   def qmaker(a: Int): IntQ = (a, a)
 

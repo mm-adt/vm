@@ -22,9 +22,9 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.op.trace.ExplainOp
+import org.mmadt.language.LanguageFactory
+import org.mmadt.language.obj.op.trace.{ExplainOp, ModelOp}
 import org.mmadt.language.obj.{eqQ, _}
-import org.mmadt.language.{LanguageFactory, Tokens}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -52,9 +52,8 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
 
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
-    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) &&
-      this.trace.filter(x => x._2.op != Tokens.model).filter(x => x._2.op != Tokens.define).filter(x => x._2.op != Tokens.rewrite) ==
-        atype.trace.filter(x => x._2.op != Tokens.model).filter(x => x._2.op != Tokens.define).filter(x => x._2.op != Tokens.rewrite)
+    case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && // sameBase(this, other.domain)
+      this.trace.filter(x => !ModelOp.isMetaModel(x._2)) == atype.trace.filter(x => !ModelOp.isMetaModel(x._2))
     case _ => false
   }
 }

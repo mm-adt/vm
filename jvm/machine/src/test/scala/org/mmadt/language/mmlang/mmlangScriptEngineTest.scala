@@ -41,14 +41,23 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("range<=domain") {
+    assertResult(int.plus(2).plus(3))(engine.eval("1 => [plus,2][plus,3][type]"))
     assertResult(int(10).q(30))(engine.eval("5{2} => 10{15}"))
     assertResult("nat")(engine.eval("nat").toString)
     //assertResult(labelNotFound(int.is(bool <= int.gt(0)), "nat"))(intercept[LanguageException](engine.eval("nat<=int[is>0]")))
     assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
     engine.eval(":[define,nat<=int[is>0]]")
+    assertResult(int)(engine.eval("1 => [type]"))
+    assertResult(__("nat") <= int.named("nat").is(bool <= int.gt(0)))(engine.eval("1 => nat[type]"))
+    assertResult(int.named("nat"))(engine.eval("1 => nat[type]").domain)
+    assertResult(__("nat"))(engine.eval("1 => nat[type]").range)
+    assertResult(int.plus(2).plus(3))(engine.eval("1 => [plus,2][plus,3][type]"))
     assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
     assertResult("nat")(engine.eval("nat").toString)
     assertResult(5.named("nat"))(engine.eval("5 => nat"))
+    assertResult(5.named("nat"))(engine.eval("5 => nat[id]"))
+    assertResult(int(5))(engine.eval("5 => int<=nat[id]"))
+    assertResult(int(5))(engine.eval("5 => int<=nat"))
     assertResult(zeroObj)(engine.eval("5 => nat{0}"))
     assertResult(2.named("nat"))(engine.eval("1 => nat[plus,1]"))
     assertResult(4.named("nat"))(engine.eval("1 => nat[plus,nat[plus,2]]"))
@@ -1077,13 +1086,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("(1,(1,(1,(1,'1'))))[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(btrue)(engine.eval("1[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("2[define,wxy<=_[is==1]][define,xyz<=_[wxy|(wxy,xyz)]][a,xyz]"))
-    /*    assertThrows[StackOverflowError] {
-          engine.eval("1[define,wxy<=xyz][define,xyz<=wxy][a,xyz]")
-        }
-        assertThrows[StackOverflowError] {
-          engine.eval("1[define,xyz<=xyz][a,xyz]")
-        }
-     */
+    assertThrows[StackOverflowError] {
+      engine.eval("1[define,wxy<=xyz][define,xyz<=wxy][a,xyz]")
+    }
+    assertThrows[StackOverflowError] {
+      engine.eval("1[define,xyz<=xyz][a,xyz]")
+    }
   }
 
   test("loading definitions parser") {

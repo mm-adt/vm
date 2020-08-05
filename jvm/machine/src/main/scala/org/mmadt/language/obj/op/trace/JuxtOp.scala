@@ -28,13 +28,13 @@ import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.{Inst, Obj, _}
 import org.mmadt.storage.obj.value.VInst
 
-trait JuxtaOp {
+trait JuxtOp {
   this: Obj =>
-  def juxta[A <: Obj](right: A): A = JuxtaOp(right).exec(this)
+  def juxta[A <: Obj](right: A): A = JuxtOp(right).exec(this)
   def `=>`[A <: Obj](right: A): A = this.juxta(right)
 }
 
-object JuxtaOp extends Func[Obj, Obj] {
+object JuxtOp extends Func[Obj, Obj] {
   def apply[A <: Obj](right: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.juxt, List(right)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.compute(inst.arg0[Obj]).hardQ(multQ(start.q, inst.arg0[Obj].q))
 }

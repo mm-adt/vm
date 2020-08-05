@@ -94,7 +94,7 @@ object OpInstResolver {
         case List(key: Obj, typeHint: Type[Obj]) => GetOp(key, typeHint)
         case List(key: Obj) => GetOp(key)
       }
-      case Tokens.juxt | Tokens.juxt_op => JuxtaOp(args.head)
+      case Tokens.juxt | Tokens.juxt_op => JuxtOp(args.head)
       case Tokens.branch => BranchOp(args.head)
       case Tokens.map => MapOp(args.head)
       case Tokens.neg => NegOp()
