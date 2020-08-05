@@ -120,10 +120,7 @@ trait Obj
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
-  def compute[E <: Obj](rangeType: E): E = {
-    AsOp.convertAs(this, Obj.copyDefinitions(rangeType, rangeType.domain))
-    AsOp.convertAs(Obj.internal(this, rangeType), rangeType.range).asInstanceOf[E]
-  }
+  def compute[E <: Obj](rangeType: E): E = AsOp.autoAsType(this, x => Obj.internal(x, rangeType), rangeType.domain, rangeType.range)
 
   def ==>[E <: Obj](target: E): E = {
     if (!target.alive) return zeroObj.asInstanceOf[E]
@@ -132,8 +129,8 @@ trait Obj
       case rangeType: Type[E] =>
         LanguageException.testTypeCheck(this.range, target.domain)
         this match {
-          case _: Value[_] => Processor.iterator(AsOp.convertAs(this, rangeType.domain), rangeType)
-          case _: Type[_] => Processor.compiler(AsOp.convertAs(this, rangeType.domain), rangeType)
+          case _: Value[_] => AsOp.autoAsType(this, x => Processor.iterator(x, rangeType), rangeType.domain, rangeType.range)
+          case _: Type[_] => AsOp.autoAsType(this, x => Processor.compiler(x, rangeType), rangeType.domain, rangeType.range)
         }
     }
   }

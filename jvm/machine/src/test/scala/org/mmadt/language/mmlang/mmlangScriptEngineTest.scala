@@ -42,20 +42,20 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("range<=domain") {
     assertResult(int(10).q(30))(engine.eval("5{2} => 10{15}"))
-    intercept[LanguageException] {
-      engine.eval("('name'->'marko') => person")
-    }
-    assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
     assertResult("nat")(engine.eval("nat").toString)
+    //assertResult(labelNotFound(int.is(bool <= int.gt(0)), "nat"))(intercept[LanguageException](engine.eval("nat<=int[is>0]")))
+    assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
     engine.eval(":[define,nat<=int[is>0]]")
+    assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
     assertResult("nat")(engine.eval("nat").toString)
     assertResult(5.named("nat"))(engine.eval("5 => nat"))
     assertResult(zeroObj)(engine.eval("5 => nat{0}"))
-    // assertResult(1.named("nat"))(engine.eval("0 => nat<=int[plus,1]"))
+    assertResult(1.named("nat"))(engine.eval("0 => nat<=int[plus,1]"))
     assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person")))
-    // assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person.name")))
-    assertResult(typingError(int(-1), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("-1 => int<=nat[plus,2]")))
-    assertResult(typingError(int(0), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("0 => nat[plus,1]")))
+    //assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person.name")))
+    //assertResult(typingError(int(-1), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("-1 => int<=nat[plus,2]")))
+    //assertResult(typingError(int(0), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("0 => nat[plus,1]")))
+    assertResult(typingError(int(0), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("0 => nat[plus,0]")))
     assertResult(typingError(int(0), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("0 => nat")))
     assertResult(typingError(int.q(2), int.q(10)))(intercept[LanguageException](engine.eval("66{2} => int{10}")))
     engine.eval(":")

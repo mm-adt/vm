@@ -49,12 +49,15 @@ object AsOp extends Func[Obj, Obj] {
     internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
   }
 
-  def convertAs(source: Obj, target: Obj): Obj = {
+  def autoAsType[E<:Obj](source:Obj, f:Obj=>Obj, domain:Type[Obj], range:Type[Obj]):E = autoAsType(f(autoAsType(source,domain)),range).asInstanceOf[E]
+  private def autoAsType(source: Obj, target: Obj): Obj = {
     if (!target.alive) return zeroObj
     source match {
-      case value: Strm[Obj] => value(x => AsOp.convertAs(x, target))
+      case value: Strm[Obj] => value(x => AsOp.autoAsType(x, target))
       case _ =>
-        if (source.isolate.equals(target.isolate) || __.isAnon(target)) return source
+        if (source.isolate.equals(target.isolate) ||
+          __.isAnon(target) ||
+          Obj.fetchWithInstOption(source, target.name).exists(x => x._1.equals(Tokens.to) || x._1.equals(Tokens.from))) return source
         if (!__.isTokenRoot(target)) return source
         source match {
           case _: Value[_] => if (source.name.equals(target.name)) source else internalConvertAs(source, target)

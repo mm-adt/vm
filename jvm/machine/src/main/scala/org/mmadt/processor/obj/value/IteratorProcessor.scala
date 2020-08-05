@@ -43,11 +43,11 @@ class IteratorProcessor extends Processor {
         //////////////REDUCE//////////////
         case reducer: ReduceInstruction[E] => Iterator(reducer.exec(strm(output.toSeq)).asInstanceOf[E])
         //////////////FILTER//////////////
-        case _: FilterInstruction => output.map(_.compute(tt._1.via(tt._1, tt._2)).asInstanceOf[E]).filter(_.alive)
+        case _: FilterInstruction => output.map(x => tt._2.exec(x).asInstanceOf[E]).filter(_.alive)
         //////////////OTHER//////////////
         case _ => output
           .filter(_.alive)
-          .map(_.compute(tt._1.via(tt._1, tt._2)))
+          .map(x => tt._2.exec(x))
           .filter(_.alive)
           .flatMap(x => x match {
             case strm: Strm[E] => strm.values.filter(_.alive)

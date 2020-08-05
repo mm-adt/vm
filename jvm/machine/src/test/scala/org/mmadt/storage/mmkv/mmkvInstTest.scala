@@ -23,7 +23,6 @@
 package org.mmadt.storage.mmkv
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.processor.Processor
@@ -83,7 +82,7 @@ class mmkvInstTest extends FunSuite {
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
     assertResult("rec{4}")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(int(1, 2, 3, 4))(Processor.iterator(int(4), int.=:[Rec[Obj, Obj]](mmkv)(str(file1)).get(str("k"), int)))
-   // assertResult("mmkv:('k'->1,'v'->'marko')")((int(1) ==> int.=:[RecType[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
+    // assertResult("mmkv:('k'->1,'v'->'marko')")((int(1) ==> int.=:[RecType[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
   }
 
   test("mmkv rewrites") {
@@ -116,17 +115,18 @@ class mmkvInstTest extends FunSuite {
     assertResult(s"mmkv{*}<=_[=mmkv,'${file5}']")(engine.eval(s"[=mmkv,'${file5}']").toString)
     assertResult("vertex:('id'->1,'name'->'marko','outE'->edge{2})")(
       engine.eval(s"1[load,'${source5}'][=mmkv,'${file5}'][is.k==1][as,vertex]").toString)
-   // assertResult("vertex{2}")(
-   //   engine.eval(s"1[load,'${source5}'][rewrite,(.outE.inV[as,vertex])<=(.out)][=mmkv,'${file5}'][is.k==1][as,vertex].out").toString)
+    assertResult("vertex{2}")(
+      engine.eval(s"1[load,'${source5}'][rewrite,(.outE.inV[as,vertex])<=(.out)][=mmkv,'${file5}'][is.k==1][as,vertex].out").toString)
   }
 
   test("mmkv tp3") {
     println(file6)
     engine.put(":", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${tp3_kv}'][load,'${social_kv}'][define,db<=[=mmkv,'${file6}']]"))
     println(engine.eval(s"'g'[as,kvstore]"))
-    println(engine.eval(s"'josh'[as,person].0"))
-    //println(engine.eval(s"'g'[as,graph]<g>.V"))
-    //println(engine.eval(s"'g'[as,graph]<g>.V[as,vertex][is,.id==1].outE[as,edge].inV[as,vertex].properties.name[fold,x.0+x.1]"))
+    println(engine.eval(s"'josh'[as,person].0[as,vertex]"))
+    println(engine.eval(s"'g'[as,graph]<g>.V"))
+    println(engine.eval(s"'g'[as,graph]<g>.V[as,vertex][is,.id==1]"))
+    println(engine.eval(s"'g'[as,graph]<g>.V[as,vertex][is,.id==1].outE[as,edge].inV[as,vertex].properties.name[fold,x.0+x.1]"))
     engine.eval(":")
     engine.put(":model", null)
   }
