@@ -22,12 +22,14 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.{Inst, Int, Lst, Obj, Real}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.{Failure, Success, Try}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,7 +45,7 @@ trait MultOp[O <: Obj] {
 }
 object MultOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.mult, List(obj.asInstanceOf[O])), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Try[Obj](start match {
     case _: Type[_] => start
     case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
     case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
@@ -56,6 +58,9 @@ object MultOp extends Func[Obj, Obj] {
       case multB: Lst[Obj] if multB.isSerial => multA.clone(g = (multA.gsep, multA.glist.map(a => lst(Tokens.`;`, a +: multB.glist: _*))))
       case plusB: Lst[Obj] if plusB.isPlus => multA.clone(g = (multA.gsep, multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b)))))
     }
-  }).via(start, inst)
+  }) match {
+    case _: Failure[_] => throw LanguageException.typingError(start, asType(inst.arg0[Obj]))
+    case x: Success[Obj] => x.value.via(start, inst)
+  }
 }
 

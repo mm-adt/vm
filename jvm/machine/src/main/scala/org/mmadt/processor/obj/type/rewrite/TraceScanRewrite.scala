@@ -59,7 +59,7 @@ object TraceScanRewrite extends Rewrite {
       }
     })
     if (!rewriteLessEquals(b, obj)) b = TraceScanRewrite(putRewrites(rewrites, b), writer)
-    (obj.range <= removeRewrites(b)).asInstanceOf[A]
+    removeRewrites(b).asInstanceOf[A]
   }
 
   private def rewriteInstArgs(rewrites: List[Obj], inst: Inst[Obj, Obj], rewrite: Writer): Inst[Obj, Obj] = inst match {

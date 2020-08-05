@@ -49,19 +49,25 @@ object AsOp extends Func[Obj, Obj] {
     internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
   }
 
-  def autoAsType[E<:Obj](source:Obj, f:Obj=>Obj, domain:Type[Obj], range:Type[Obj]):E = autoAsType(f(autoAsType(source,domain)),range).asInstanceOf[E]
-  private def autoAsType(source: Obj, target: Obj): Obj = {
+  def autoAsType[E <: Obj](source: Obj, f: Obj => Obj, target: Obj): E = autoAsType(f(autoAsType(source, target.domain, target, domain = true)), target.range, target, domain = false).asInstanceOf[E]
+
+  private def autoAsType(source: Obj, target: Obj, rangeType: Obj, domain: Boolean): Obj = {
     if (!target.alive) return zeroObj
+    if (!source.alive) return source
     source match {
-      case value: Strm[Obj] => value(x => AsOp.autoAsType(x, target))
+      case value: Strm[Obj] => value(x => AsOp.autoAsType(x, target, rangeType, domain))
       case _ =>
-        if (source.isolate.equals(target.isolate) ||
-          __.isAnon(target) ||
-          Obj.fetchWithInstOption(source, target.name).exists(x => x._1.equals(Tokens.to) || x._1.equals(Tokens.from))) return source
-        if (!__.isTokenRoot(target)) return source
-        source match {
-          case _: Value[_] => if (source.name.equals(target.name)) source else internalConvertAs(source, target)
-          case _: Type[_] => target <= source
+        if (source.isolate.equals(target.isolate) || __.isAnon(target) ||
+          Obj.fetchWithInstOption(source, target.name).exists(x => x._1.equals(Tokens.to) || x._1.equals(Tokens.from))) source
+        else if (baseName(target).equals(baseName(source))) source.named(target.name)
+        else {
+          source match {
+            case _: Value[_] =>
+              if (!__.isToken(target) || source.name.equals(target.name)) source
+              else internalConvertAs(Obj.copyDefinitions(rangeType, source), target)
+            case _: Type[_] if domain => if (!__.isToken(target)) source else Obj.copyDefinitions(source, target) // TODO: def/model equality issues
+            case _: Type[_] => target <= source
+          }
         }
     }
   }

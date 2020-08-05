@@ -22,12 +22,14 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.{Failure, Success, Try}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -44,7 +46,7 @@ trait PlusOp[O <: Obj] {
 
 object PlusOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj.asInstanceOf[O])), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Try[Obj](start match {
     case _: Type[_] => start
     case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
     case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)
@@ -59,5 +61,8 @@ object PlusOp extends Func[Obj, Obj] {
       case multB: Lst[Obj] if multB.isSerial => if (multB.isEmpty) plusA else lst(plusA.gsep, plusA, multB)
       case plusB: Lst[Obj] if plusB.isPlus => plusA.clone(g = (plusA.gsep, plusA.glist ++ plusB.glist))
     }
-  }).via(start, inst)
+  }) match {
+    case _: Failure[_] => throw LanguageException.typingError(start, asType(inst.arg0[Obj]))
+    case x: Success[Obj] => x.value.via(start, inst)
+  }
 }
