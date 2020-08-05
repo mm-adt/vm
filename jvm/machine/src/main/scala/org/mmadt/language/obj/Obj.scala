@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
@@ -96,14 +97,15 @@ trait Obj
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def q(q: IntQ): this.type = if (q.equals(qZero)) this.isolate.clone(q = qZero) else this.clone(
     q = if (this.root) q else multQ(this.q, q),
-    via = if (this.root) base else (this.via._1, this.via._2.q(q)))
+    via = if (this.root) rootVia else (this.via._1, this.via._2.q(q)))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
   lazy val alive: Boolean = this.q != qZero
 
+
   // via methods
   def root: Boolean = null == this.via || null == this.via._1
-  lazy val isolate: this.type = this.clone(q = this.q, via = base) // TODO: rename to like start/end (the non-typed versions of domain/range)
+  lazy val isolate: this.type = this.clone(q = this.q, via = rootVia) // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else qZero, via = (obj, inst))
@@ -145,6 +147,11 @@ trait Obj
 }
 
 object Obj {
+
+  type IntQ = (IntValue, IntValue)
+  type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
+  val rootVia: ViaTuple = (null, null)
+
   def copyDefinitions[A <: Obj](parent: Obj, child: A): A = parent.trace.filter(x => x._2.op.equals(Tokens.define) || x._2.op.equals(Tokens.model)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A])
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {

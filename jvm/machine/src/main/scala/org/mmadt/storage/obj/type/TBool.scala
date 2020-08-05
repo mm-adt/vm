@@ -23,14 +23,14 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.`type`.BoolType
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TBool(val name: String = Tokens.bool, val q: IntQ = qOne, val via: ViaTuple = base) extends BoolType {
+class TBool(val name: String = Tokens.bool, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends BoolType {
   override def clone(name: String = this.name,
                      g: Any = null,
                      q: IntQ = this.q,

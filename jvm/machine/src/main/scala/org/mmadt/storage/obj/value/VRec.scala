@@ -21,13 +21,16 @@
  */
 
 package org.mmadt.storage.obj.value
+
+import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
+import org.mmadt.language.obj.Rec.RecTuple
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.RecValue
-import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.ORec
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), q: IntQ = qOne, via: ViaTuple = base) extends ORec[A, B](name, g, q, via) with RecValue[A, B]
+class VRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), q: IntQ = qOne, via: ViaTuple = rootVia) extends ORec[A, B](name, g, q, via) with RecValue[A, B]

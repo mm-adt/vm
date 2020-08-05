@@ -22,13 +22,14 @@
 
 package org.mmadt.storage.obj.value
 
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{IntQ, ViaTuple}
+import org.mmadt.storage.StorageFactory.qOne
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VStr(val name: String, val g: String, val q: IntQ, val via: ViaTuple) extends StrValue {
+class VStr(val name: String, val g: String, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends StrValue {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,

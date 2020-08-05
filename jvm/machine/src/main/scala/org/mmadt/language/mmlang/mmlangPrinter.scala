@@ -24,6 +24,7 @@ package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.Tokens.{LBRACKET, int => _, obj => _, _}
+import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.strm.Strm

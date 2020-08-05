@@ -23,12 +23,12 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{ViaTuple, rootVia}
 import org.mmadt.language.obj.value.ObjValue
 import org.mmadt.language.obj.value.strm.ObjStrm
-import org.mmadt.language.obj.{ViaTuple, base}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VObjStrm(val name: String = Tokens.obj, val values: Seq[ObjValue], val via: ViaTuple = base) extends ObjStrm
+class VObjStrm(val name: String = Tokens.obj, val values: Seq[ObjValue], val via: ViaTuple = rootVia) extends ObjStrm
 

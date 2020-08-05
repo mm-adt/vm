@@ -23,11 +23,11 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{ViaTuple, rootVia}
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.value.strm.StrStrm
-import org.mmadt.language.obj.{ViaTuple, base}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VStrStrm(val name: String = Tokens.str, val values: Seq[StrValue], val via: ViaTuple = base) extends StrStrm
+class VStrStrm(val name: String = Tokens.str, val values: Seq[StrValue], val via: ViaTuple = rootVia) extends StrStrm

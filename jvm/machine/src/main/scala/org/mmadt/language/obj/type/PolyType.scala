@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.`type`
+
 import org.mmadt.language.obj.{Obj, Poly}
 
 trait PolyType[A <: Obj, B <: Poly[A]] extends Poly[A] with Type[B]

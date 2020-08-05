@@ -22,8 +22,9 @@
 
 package org.mmadt.language.obj.value.strm
 
+import org.mmadt.language.obj.Rec.RecTuple
 import org.mmadt.language.obj.value.RecValue
-import org.mmadt.language.obj.{Obj, Rec, RecTuple}
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory.{qZero, rec}
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 

@@ -23,11 +23,11 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{ViaTuple, rootVia}
 import org.mmadt.language.obj.value.RealValue
 import org.mmadt.language.obj.value.strm.RealStrm
-import org.mmadt.language.obj.{ViaTuple, base}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRealStrm(val name: String = Tokens.real, val values: Seq[RealValue], val via: ViaTuple = base) extends RealStrm
+class VRealStrm(val name: String = Tokens.real, val values: Seq[RealValue], val via: ViaTuple = rootVia) extends RealStrm

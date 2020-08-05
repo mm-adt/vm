@@ -23,11 +23,12 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.Obj.{ViaTuple, rootVia}
+import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.value.strm.RecStrm
-import org.mmadt.language.obj.value.{RecValue, Value}
-import org.mmadt.language.obj.{Obj, Rec, ViaTuple, base}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRecStrm[A <: Obj, B <: Obj](val name: String = Tokens.rec, val values: Seq[RecValue[A, B]], val via: ViaTuple = base) extends RecStrm[A, B]
+class VRecStrm[A <: Obj, B <: Obj](val name: String = Tokens.rec, val values: Seq[RecValue[A, B]], val via: ViaTuple = rootVia) extends RecStrm[A, B]

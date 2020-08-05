@@ -23,6 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Lst.LstTuple
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
@@ -38,13 +39,9 @@ trait Lst[+A <: Obj] extends Poly[A]
   with PlusOp[Lst[Obj]]
   with MultOp[Lst[Obj]]
   with ZeroOp[Lst[Obj]] {
-
   def g: LstTuple[A]
-
   def gsep: String = g._1
-
   lazy val glist: List[A] = g._2 /*.map(x => x.hardQ(multQ(this.q, x.q)))*/ .map(x => if (this.isInstanceOf[Type[_]]) x else Obj.copyDefinitions(this, x))
-
   override def equals(other: Any): Boolean = other match {
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
@@ -66,6 +63,7 @@ trait Lst[+A <: Obj] extends Poly[A]
 }
 
 object Lst {
+  type LstTuple[+A <: Obj] = (String, List[A])
   def test[A <: Obj](alst: Lst[A], blst: Lst[A]): Boolean = Poly.sameSep(alst, blst) && // TODO: this.name.equals(other.name) &&
     withinQ(alst, blst) &&
     (blst.glist.isEmpty || alst.glist.size == blst.glist.size) && // TODO: should lists only check up to their length

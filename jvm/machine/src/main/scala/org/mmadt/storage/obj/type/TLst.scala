@@ -21,7 +21,10 @@
  */
 
 package org.mmadt.storage.obj.`type`
+
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Lst.LstTuple
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.LstType
 import org.mmadt.storage.StorageFactory.qOne
@@ -30,5 +33,6 @@ import org.mmadt.storage.obj.OLst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = base) extends OLst[A](name, g, q, via) with LstType[A]
+class TLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = rootVia) extends OLst[A](name, g, q, via) with LstType[A]
+
 

@@ -21,7 +21,10 @@
  */
 
 package org.mmadt.storage.obj
+
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
+import org.mmadt.language.obj.Rec.RecTuple
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.storage.StorageFactory.qOne
@@ -31,15 +34,16 @@ import org.mmadt.storage.obj.value.VRec
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class ORec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), val q: IntQ = qOne, val via: ViaTuple = base) extends Rec[A, B] {
+abstract class ORec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), val q: IntQ = qOne, val via: ViaTuple = rootVia) extends Rec[A, B] {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
                      via: ViaTuple = this.via): this.type = ORec.makeRec(name, g.asInstanceOf[RecTuple[A, B]], q, via).asInstanceOf[this.type]
 }
 object ORec {
-  def makeRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), q: IntQ = qOne, via: ViaTuple = base): Rec[A, B] = {
+  def makeRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = {
     if (g._2.nonEmpty && !g._2.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])) new VRec[A, B](name, g = (g._1, g._2.filter(x => x._1.alive && x._2.alive)), q, via)
     else new TRec[A, B](name, g, q, via)
   }
+
 }

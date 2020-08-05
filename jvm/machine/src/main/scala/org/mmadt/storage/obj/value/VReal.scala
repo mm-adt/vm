@@ -23,14 +23,14 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.value.RealValue
-import org.mmadt.language.obj.{IntQ, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VReal(val name: String = Tokens.real, val g: Double, val q: IntQ = qOne, val via: ViaTuple = base) extends RealValue {
+class VReal(val name: String = Tokens.real, val g: Double, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends RealValue {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,

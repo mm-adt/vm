@@ -22,12 +22,12 @@
 
 package org.mmadt.storage.obj.value.strm.util
 
-import org.mmadt.language.obj.IntQ
+import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 class MultiSetTest extends FunSuite {
-
+  
   def qmaker(a: Int, b: Int): IntQ = (a, b)
   def qmaker(a: Int): IntQ = (a, a)
 

@@ -23,14 +23,14 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.`type`.ObjType
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TObj(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = base) extends ObjType {
+class TObj(val name: String = Tokens.obj, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends ObjType {
   override def clone(name: String = this.name,
                      g: Any = null,
                      q: IntQ = this.q,

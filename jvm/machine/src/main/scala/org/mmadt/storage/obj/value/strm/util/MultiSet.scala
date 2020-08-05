@@ -22,6 +22,7 @@
 
 package org.mmadt.storage.obj.value.strm.util
 
+import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
@@ -40,12 +41,12 @@ class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq
   })
   def put(a: A): MultiSet[A] = {
     val oldObj: Option[A] = this.get(a)
-    if(oldObj.isEmpty)
+    if (oldObj.isEmpty)
       new MultiSet[A](baseSet + a)
-    else  new MultiSet[A]({
+    else new MultiSet[A]({
       val b = baseSet - oldObj.get
       val o = oldObj.get.hardQ(plusQ(a.q, oldObj.get.q))
-      if(o.alive) b + o else b
+      if (o.alive) b + o else b
     })
   }
   def objSize: Long = baseSet.size

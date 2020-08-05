@@ -23,6 +23,7 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.storage.StorageFactory._
@@ -30,7 +31,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBool(val name: String = Tokens.bool, override val g: Boolean, val q: IntQ = qOne, val via: ViaTuple = base) extends BoolValue {
+class VBool(val name: String = Tokens.bool, override val g: Boolean, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends BoolValue {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,

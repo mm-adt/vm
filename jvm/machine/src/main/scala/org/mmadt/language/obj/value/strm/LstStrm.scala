@@ -22,7 +22,8 @@
 
 package org.mmadt.language.obj.value.strm
 
-import org.mmadt.language.obj.{Lst, LstTuple, Obj}
+import org.mmadt.language.obj.Lst.LstTuple
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory.{lst, qZero}
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 

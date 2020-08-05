@@ -23,17 +23,18 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.{Inst, IntQ, Obj, ViaTuple, _}
+import org.mmadt.language.obj.{Inst, Obj, _}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple = base) extends Type[__] {
+class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends Type[__] {
   override def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type = new __(name, q, via).asInstanceOf[this.type]
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(via = (obj, inst), q = multQ(this.q, inst.q))
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))
@@ -57,7 +58,7 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
 }
 
-object __ extends __(Tokens.anon, qOne, base) {
+object __ extends __(Tokens.anon, qOne, rootVia) {
   def apply(name: String): __ = __.named(name)
   def isAnonRoot(obj: Obj): Boolean = obj.root && isAnon(obj)
   def isAnon(obj: Obj): Boolean = obj.isInstanceOf[__] && obj.name.equals(Tokens.anon)

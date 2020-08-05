@@ -23,6 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Rec.RecTuple
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -37,7 +38,6 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   with GetOp[A, B]
   with PutOp[A, Obj]
   with ZeroOp[Rec[A, Obj]] {
-
   def g: RecTuple[A, B]
   def gsep: String = g._1
   lazy val gmap: collection.Map[A, B] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
@@ -60,6 +60,8 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
 }
 
 object Rec {
+  type RecTuple[A <: Obj, +B <: Obj] = (String, collection.Map[A, B])
+
   def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.find(y => y._1.test(x._1) && y._2.test(x._2)).map(_ => true).getOrElse(return false))
 

@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.`type`
+
 import org.mmadt.language.obj.{Inst, Obj, Rec, withinQ}
 
 trait RecType[A <: Obj, B <: Obj] extends PolyType[B, Rec[A, B]] with Rec[A, B] {

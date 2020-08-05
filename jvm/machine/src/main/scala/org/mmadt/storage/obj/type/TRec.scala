@@ -21,7 +21,10 @@
  */
 
 package org.mmadt.storage.obj.`type`
+
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
+import org.mmadt.language.obj.Rec.RecTuple
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.storage.StorageFactory.qOne
@@ -30,4 +33,4 @@ import org.mmadt.storage.obj.ORec
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), q: IntQ = qOne, via: ViaTuple = base) extends ORec[A, B](name, g, q, via) with RecType[A, B]
+class TRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), q: IntQ = qOne, via: ViaTuple = rootVia) extends ORec[A, B](name, g, q, via) with RecType[A, B]

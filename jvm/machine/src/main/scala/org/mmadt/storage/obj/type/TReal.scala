@@ -23,14 +23,14 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.`type`.RealType
 import org.mmadt.storage.StorageFactory.qOne
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TReal(val name: String = Tokens.real, val q: IntQ = qOne, val via: ViaTuple = base) extends RealType {
+class TReal(val name: String = Tokens.real, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends RealType {
   override def clone(name: String = this.name,
                      g: Any = null,
                      q: IntQ = this.q,

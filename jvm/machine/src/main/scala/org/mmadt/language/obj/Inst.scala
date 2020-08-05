@@ -63,7 +63,7 @@ trait Inst[S <: Obj, +E <: Obj] extends LstType[S] {
 }
 
 object Inst {
-  def oldInst[S <: Obj, E <: Obj](newInst: Inst[S, E]): Inst[S, E] = newInst.clone(g=(newInst.g._1, newInst.via._1.asInstanceOf[Inst[Obj,Obj]].g._2)).asInstanceOf[Inst[S, E]]
+  def oldInst[S <: Obj, E <: Obj](newInst: Inst[S, E]): Inst[S, E] = newInst.clone(g = (newInst.g._1, newInst.via._1.asInstanceOf[Inst[Obj, Obj]].g._2)).asInstanceOf[Inst[S, E]]
 
   def resolveToken[A <: Obj](obj: Obj, arg: A): A =
     if (__.isToken(arg))

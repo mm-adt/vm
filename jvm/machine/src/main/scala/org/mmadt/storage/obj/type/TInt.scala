@@ -23,14 +23,14 @@
 package org.mmadt.storage.obj.`type`
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.`type`.IntType
-import org.mmadt.language.obj.{IntQ, ViaTuple, base}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class TInt(val name: String = Tokens.int, val q: IntQ = qOne, val via: ViaTuple = base) extends IntType {
+class TInt(val name: String = Tokens.int, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends IntType {
   override def clone(name: String = this.name,
                      g: Any = null,
                      q: IntQ = this.q,

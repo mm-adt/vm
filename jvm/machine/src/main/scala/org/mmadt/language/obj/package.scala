@@ -22,20 +22,16 @@
 
 package org.mmadt.language
 
+import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, StrValue, Value}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 package object obj {
-  type IntQ = (IntValue, IntValue)
-  type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
-  type LstTuple[+A <: Obj] = (String, List[A])
-  type RecTuple[A <: Obj, +B <: Obj] = (String, collection.Map[A, B])
-  val base: ViaTuple = (null, null)
   // less typing
   type OType[+O <: Obj] = Type[O] with O
   type OValue[+O <: Obj] = Value[O] with O
@@ -47,6 +43,7 @@ package object obj {
     case x: IntQ if qOne.equals(x) => qA
     case _ => (qA._1.g * qB._1.g, qA._2.g * qB._2.g)
   }
+
   def plusQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case _ if equals(qZero) => qA
     case _: IntQ => (qA._1.g + qB._1.g, qA._2.g + qB._2.g)

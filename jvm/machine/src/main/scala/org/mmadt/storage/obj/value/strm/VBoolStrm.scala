@@ -23,6 +23,7 @@
 package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{ViaTuple, rootVia}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.value.strm.BoolStrm
@@ -30,4 +31,4 @@ import org.mmadt.language.obj.value.strm.BoolStrm
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VBoolStrm(val name: String = Tokens.bool, val values: Seq[BoolValue], val via: ViaTuple = base) extends BoolStrm
+class VBoolStrm(val name: String = Tokens.bool, val values: Seq[BoolValue], val via: ViaTuple = rootVia) extends BoolStrm

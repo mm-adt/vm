@@ -23,6 +23,7 @@
 package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
@@ -31,7 +32,7 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VInt(val name: String = Tokens.int, val g: Long, val q: IntQ = VInt.q1, val via: ViaTuple = base) extends IntValue {
+class VInt(val name: String = Tokens.int, val g: Long, val q: IntQ = VInt.q1, val via: ViaTuple = rootVia) extends IntValue {
   override def clone(name: String = this.name,
                      g: Any = this.g,
                      q: IntQ = this.q,
