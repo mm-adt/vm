@@ -41,12 +41,17 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("range<=domain") {
+    assertResult(13.q(8))(engine.eval("10 int[plus,1]{2}[plus,2]{4}"))
     assertResult(int.plus(2).plus(3))(engine.eval("1 => [plus,2][plus,3][type]"))
     assertResult(int(10).q(30))(engine.eval("5{2} => 10{15}"))
     assertResult("nat")(engine.eval("nat").toString)
     //assertResult(labelNotFound(int.is(bool <= int.gt(0)), "nat"))(intercept[LanguageException](engine.eval("nat<=int[is>0]")))
     assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
     engine.eval(":[define,nat<=int[is>0]]")
+    assertResult(13.q(8))(engine.eval("10 => int[plus,1]{2}[plus,2]{4}"))
+    assertResult(13.q(8).named("nat"))(engine.eval("10 => nat[plus,1]{2}[plus,2]{4}"))
+    assertResult(13.q(80).named("nat"))(engine.eval("10{10} => nat{10}[plus,1]{2}[plus,2]{4}"))
+    assertResult(13.q(80))(engine.eval("10{10} => int{80}<=nat{10}[plus,1]{2}[plus,2]{4}"))
     assertResult(int)(engine.eval("1 => [type]"))
     assertResult(__("nat") <= int.named("nat").is(bool <= int.gt(0)))(engine.eval("1 => nat[type]"))
     assertResult(int.named("nat"))(engine.eval("1 => nat[type]").domain)
@@ -1143,6 +1148,7 @@ class mmlangScriptEngineTest extends FunSuite {
     engine.eval(":")
     val mm: String = getClass.getResource("/model/mm.mm").getPath
     engine.put(":", engine.eval(s"[load,'${mm}']"))
+    // TODO: assertResult(13.q(8))(engine.eval("10 int[plus,1]{2}[plus,2]{4}"))
     assertResult("int")(engine.eval("int[plus,0]").toString)
     // assertResult("0")(engine.eval("int[mult,0]").toString)
     assertResult("int")(engine.eval("int[mult,1]").toString)

@@ -190,7 +190,7 @@ object Obj {
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
       case x if x.via._2.op == Tokens.define =>
-        x.via._2.args.find(y => y.name == label && source.test(y.domain)).map(y => toBaseName(y).asInstanceOf[A]).orElse(fetchOption(source, x.via._1, label))
+        x.via._2.args.find(y => y.name == label && source.test(y.domain.hardQ(source.q))).map(y => toBaseName(y).asInstanceOf[A]).orElse(fetchOption(source, x.via._1, label))
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
         Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
       case x if x.via._2.op == Tokens.model =>

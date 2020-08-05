@@ -64,7 +64,7 @@ object AsOp extends Func[Obj, Obj] {
           source match {
             case _: Value[_] =>
               if (!__.isToken(target) || source.name.equals(target.name)) source
-              else internalConvertAs(Obj.copyDefinitions(rangeType, source), target)
+              else internalConvertAs(Obj.copyDefinitions(rangeType, source), target).hardQ(source.q)
             case _: Type[_] if domain => if (!__.isToken(target)) source else Obj.copyDefinitions(source, target) // TODO: def/model equality issues
             case _: Type[_] => target <= source
           }
