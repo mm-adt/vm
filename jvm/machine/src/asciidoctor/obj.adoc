@@ -451,9 +451,10 @@ int{+}
 {blank}
 |===
 
-Types use quantifiers in two separate contexts.
+Types use quantifiers in two separate contexts: *type signatures* and *type definitions*.
 
-* *Type Signature Quantification*
+[discrete]
+====== Type Signature Quantification
 
 A type signature's _domain_ specifies the type and quantity of the `obj` required for evaluation. The _range_ denotes what can be expected in return. `int{6}\<=int{3}` states that given `3` `ints`, the type will return `6` `ints`. Quantifiers in a type signature are descriptive, used in https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking].
 
@@ -468,9 +469,10 @@ A type signature's _domain_ specifies the type and quantity of the `obj` require
 
 Much will be said about negative quantifiers. For now, note that negative quantifiers enable https://en.wikipedia.org/wiki/Lazy_evaluation[lazy], stream-based https://en.wikipedia.org/wiki/Set_theory[set theoretic] operations such as intersection, union, difference, etc. Extending beyond integer quantification \$(\mathbb{Z})\$, negative quantifiers enable constructive and destructive interference in https://en.wikipedia.org/wiki/Quantum_computing[quantum computating] \$(\mathbb{C})\$ and excitatory and inhibitory activations in https://en.wikipedia.org/wiki/Artificial_neural_network[neural computing] \$(\mathbb{R})\$.
 
-* *Type Description Quantification*
+[discrete]
+====== Type Definition Quantification
 
-A type description's _instructions_ can be quantified. More specifically, a type's intermediate dtypes can be quantified. During https://en.wikipedia.org/wiki/Type_inference[type inference], the quantifier ring's \$(+\$/\$\ast)\$-operators propagate the quantifiers through the types that compose the program.
+A type definition's _instructions_ can be quantified. More specifically, a type's intermediate dtypes can be quantified. During https://en.wikipedia.org/wiki/Type_inference[type inference], the quantifier ring's \$(+\$/\$\ast)\$-operators propagate the quantifiers through the types that compose the program.
 
 [exec]
 ----
@@ -498,7 +500,7 @@ a(b+b)c &= a(2b)c \\
 | image:branch-q-addition.svg[align=center,width=500]
 |===
 
-The following two examples highlight the fact that type signature quantifiers are used for https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking] and type description quantifiers are used for https://en.wikipedia.org/wiki/Type_inference[type inference].
+The following two examples highlight the fact that type signature quantifiers are used for https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking] and type definition quantifiers are used for https://en.wikipedia.org/wiki/Type_inference[type inference].
 
 [.center]
 [cols="4,2",width=80]
