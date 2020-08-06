@@ -30,15 +30,13 @@ object BranchOp extends Func[Obj, Obj] {
         /////////////////////////////////////////////////////////////////////////////////
         case alst: Lst[Obj] => alst.gsep match {
           case Tokens.`,` =>
-            val result: List[Obj] = alst.g._2.map(b => Inst.resolveArg(start, b)).filter(_.alive)
+            val result: List[Obj] = Type.mergeObjs(alst.g._2.map(b => Inst.resolveArg(start, b)).filter(_.alive))
             val apoly: Lst[Obj] = alst.clone(g = (alst.gsep, result))
             apoly match {
               case _: Value[_] => strm(result.map(x => x.hardQ(multQ(x.q, inst.q))).filter(_.alive))
               case _: Type[_] =>
                 if (result.isEmpty) zeroObj
-                else if (1 == result.size) if (result.head.alive) result.head.hardQ(multQ(result.head.q, inst.q)) else zeroObj
-                else if (__.isAnonRoot(start) && result.map(x => x.hardQ(qOne)).toSet.size == 1 && result.forall(x => x.root))
-                  Option(result.head.hardQ(multQ(result.foldLeft(qZero)((a, b) => plusQ(a, b.q)), inst.q))).filter(_.alive).getOrElse(zeroObj)
+                else if (1 == result.size) if (result.head.alive) Type.tryCtype(start `=>` result.head.q(inst.q)) else zeroObj
                 else BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
             }
           case Tokens.`;` =>
@@ -54,7 +52,13 @@ object BranchOp extends Func[Obj, Obj] {
             })
             val apoly = alst.clone(g = (alst.gsep, result))
             if (result.exists(b => !b.alive)) zeroObj
-            else if (result.forall(x => x.root)) result.last.hardQ(multQ(result.last.q, inst.q))
+            else if (result.forall(x => Type.isIdentity(x))) {
+              val finalQ = multQ(result.last.q, inst.q)
+              if (result.last.isInstanceOf[Value[_]]) return result.last.hardQ(finalQ)
+              var finalO = if (!result.last.root) result.last.hardQ(finalQ) else Type.unity(result.last).q(finalQ)
+              finalO = if (Type.isIdentity(finalO) && finalO.domain.q == qOne && finalO.range.q == qOne) finalO.range else Type.unity(finalO).q(finalQ) // TODO: ghetto repeat.
+              if (Type.isIdentity(finalO) && finalO.domain.q == qOne && finalO.range.q == qOne) finalO.range else Type.unity(finalO).q(finalQ)
+            }
             else apoly match {
               case _: Value[_] => result.last.hardQ(multQ(result.last.q, inst.q))
               case _: Type[_] => BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))

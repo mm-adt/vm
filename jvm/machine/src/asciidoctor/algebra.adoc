@@ -206,7 +206,7 @@ Finally, while `[,]` and `[;]` are defined as binary operators, due to the link:
 https://en.wikipedia.org/wiki/Axiom[Axioms] are the "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" equations of a system.
 Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.
 
-[cols="2,2,7,7"]
+[cols="2,2,7,9"]
 |===
 ^|  axiom ^| equation  ^| mmlang values ^| mmlang types
 
@@ -218,17 +218,17 @@ Regardless of any other behaviors the system may express, if the system always r
 =& a+(b+c)
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 [['a','b'],'c']
 ['a',['b','c']]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[[str,str],str]
-[str,[str,str]]
+str[[[id],[id]],[id]]
+str[[id],[[id],[id]]]
 ----
 {blank}
 | Additive commutativity
@@ -237,45 +237,45 @@ a|
 =& b+a
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a','b']
 ['b','a']
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str{2},str]
-[str,str{2}]
+str[[id]{2},[id]{3}]
+str[[id]{3},[id]{2}]
 ----
 {blank}
 | Additive identity
 | \[a+\mathbf{0} = a\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a',_{0}]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str,_{0}]
+str[[id],_{0}]
 ----
 {blank}
 | Additive inverse
 | \[a + ({-a}) = \mathbf{0}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a','a'{-1}]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str,str{-1}]
+str[[id],[id]{-1}]
 ----
 {blank}
 
@@ -286,31 +286,31 @@ a|
 =& a \cdot (b \cdot c)
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 [['a';'b'];'c']
 ['a';['b';'c']]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[[str;str];str]
-[str;[str;str]]
+str[[[id];[id]];[id]]
+str[[id];[[id];[id]]]
 ----
 {blank}
 | Multiplicative identity
 | \[a \cdot \mathbf{1} = a\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a';_{1}]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str;_{1}]
+str[[id];_{1}]
 ----
 {blank}
 
@@ -322,17 +322,17 @@ a|
 =& ab + ac
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a';['b','c']]
 [['a';'b'],['a';'c']]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[_;[str,str]]
-[[str;str],[str;str]]
+str[[id];[[id],[id]]]
+str[[[id];[id]],[[id];[id]]]
 ----
 {blank}
 | Right distributivity
@@ -341,17 +341,17 @@ a|
 =& ac + bc
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 [['a','b'];'c']
 [['a';'c'],['b';'c']]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[[str,str];str]
-[[str;str],[str;str]]
+str[[[id],[id]];[id]]
+str[[[id];[id]],[[id];[id]]]
 ----
 {blank}
 |===
@@ -362,7 +362,7 @@ The axioms of a theory entail its https://en.wikipedia.org/wiki/Theorem[theorems
 Stated in reverse, theorems are the derivations of an https://en.wikipedia.org/wiki/Axiomatic_system[axiomatic system].
 Once a system is determined to be a ring, then all the theorems that have been proved about rings in general are also true for that system.
 
-[cols="2,2,7,7"]
+[cols="2,2,7,9"]
 |===
 ^| theorem ^| equation  ^| mmlang values ^| mmlang types
 
@@ -393,31 +393,31 @@ a|
 =& (-a) + (-b)
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a','b']{-1}
 ['a'{-1},'b'{-1}]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str,str]{-1}
-[str{-1},str{-1}]
+str[[id],[id]]{-1}
+str[[id]{-1},[id]{-1}]
 ----
 {blank}
 | Inverse distributivity
 | \[-(-a) = a\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a'{-1}]{-1}
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str{-1}]{-1}
+str[[id]{-1}]{-1}
 ----
 {blank}
 | Annihilator
@@ -427,17 +427,17 @@ a|
 =& \mathbf{0}*a
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a';_{0}]
 [_{0};'a']
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str;_{0}]
-[_{0};str]
+str[[id];_{0}]
+str[_{0};[id]]
 ----
 {blank}
 | Factoring
@@ -447,7 +447,7 @@ a|
 =& -(a*b)
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a';'b'{-1}]
 ['a'{-1};'b']
@@ -455,11 +455,11 @@ a|
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[_;str{-1}]
-[str{-1};str]
-[str;str]{-1}
+str[[id];[id]{-1}]
+str[[id]{-1};[id]]
+str[[id];[id]]{-1}
 ----
 {blank}
 | Factoring
@@ -468,17 +468,17 @@ a|
 =& a * b
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a'{-1};'b'{-1}]
 ['a';'b']
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[_{-1};str{-1}]
-[str;str]
+str[[id]{-1};[id]{-1}]
+str[[id];[id]]
 ----
 {blank}
 |===
@@ -506,7 +506,7 @@ NOTE: The algebra underlying most type theories operate as a https://en.wikipedi
 In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general).
 Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoid], where, for example, the `,-poly` `[int{1},int{-1}]` is `int{0}` which is isomorphic to the initial `obj{0}`.
 
-[cols="2,2,7,7"]
+[cols="2,2,7,9"]
 |===
 ^| axiom   ^| equation    ^| mmlang values ^| mmlang types
 
@@ -515,28 +515,28 @@ Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoi
 =& (x+y)a
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a'{2},'a'{3}]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str{2},str{3}]
+str[[id]{2},[id]{3}]
 ----
 {blank}
 | Applying  | \$xa \ast yb = (xy)ab\$
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 'a'{2}['b'{3}]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-_{2}[str{3}]
+str{2}[[id]{3}]
 ----
 {blank}
 | Splitting  | \[\begin{split}
@@ -544,17 +544,17 @@ _{2}[str{3}]
 =& (xy)ab + (xz)ac
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 'a'{2}['b'{3},'c'{4}]
 ['b'{6},'c'{8}]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-_{2}[str{3},str{4}]
-[str{6},str{8}]
+str{2}[[id]{3},[id]{4}]
+str[[id]{6},[id]{8}]
 ----
 {blank}
 | Merging  | \[\begin{split}
@@ -562,30 +562,30 @@ _{2}[str{3},str{4}]
 =& (xa + yb)
 \end{split}\]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 [['a'{2}],['b'{3}]]
 ['a'{2},'b'{3}]
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[[str{2}],[str{3}]]
-[str{2},str{3}]
+str[[[id]{2}],[[id]{3}]]
+str[[id]{2},[id]{3}]
 ----
 {blank}
 | Removing  | \[ (\mathbf{0}a + b) = b \]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ['a'{0},'b']
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-[str{0},str]
+str[_{0},[id]]
 ----
 {blank}
 |===

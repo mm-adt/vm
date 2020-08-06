@@ -22,9 +22,14 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.LanguageFactory
+import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.op.trace.{ExplainOp, ModelOp}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
+import org.mmadt.language.{LanguageFactory, Tokens}
+import org.mmadt.storage.StorageFactory.{qOne, qZero, zeroObj}
+
+import scala.collection.mutable.ListBuffer
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -56,4 +61,40 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
       this.trace.filter(x => !ModelOp.isMetaModel(x._2)) == atype.trace.filter(x => !ModelOp.isMetaModel(x._2))
     case _ => false
   }
+}
+object Type {
+
+  def mergeObjs(objs: List[Obj]): List[Obj] = {
+    var newList: ListBuffer[Obj] = ListBuffer.empty[Obj]
+    objs.foreach(x =>
+      newList += newList.find(y => unity(x).equals(unity(y))).map(y => {
+        newList = newList -= y
+        merge(x, y)
+      }).getOrElse(x))
+    newList.toList
+  }
+  def merge[A <: Obj](objA: A, objB: A): A = {
+    if (qZero == plusQ(objA.q, objB.q))
+      zeroObj.asInstanceOf[A]
+    else
+      unity(objA).q(plusQ(pureQ(objA), pureQ(objB)))
+  }
+
+  def pureQ(obj: Obj): IntQ = {
+    obj.trace.foldLeft(qOne)((a, b) => multQ(a, b._2.q))
+  }
+
+  def unity[A <: Obj](obj: A): A = {
+    if (obj.trace.isEmpty) obj.domainObj.hardQ(qOne).id().asInstanceOf[A]
+    else obj.trace.foldLeft(obj.domainObj.hardQ(qOne).asInstanceOf[A])((a, b) => b._2.hardQ(qOne).asInstanceOf[Inst[A, A]].exec(a))
+  }
+
+  def isIdentity(obj: Obj): Boolean = {
+    if (obj.isInstanceOf[Value[_]]) return true
+    if (obj.root) return true
+    !obj.trace.filter(x => !ModelOp.isMetaModel(x._2)).exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
+  }
+
+  def tryCtype[A <: Obj](obj: A): A = if (obj.isInstanceOf[Type[_]] && isIdentity(obj) && obj.domain.q == qOne && pureQ(obj)==qOne) obj.isolate else obj
+
 }
