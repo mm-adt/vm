@@ -497,9 +497,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel4">
 <li><a href="#_variables">Variables</a></li>
 <li><a href="#_definitions">Definitions</a></li>
+<li><a href="#_rewrites">Rewrites</a></li>
 </ul>
 </li>
-<li><a href="#_rewrites">Rewrites</a></li>
 <li><a href="#_models">Models</a></li>
 </ul>
 </li>
@@ -1570,7 +1570,7 @@ Types such as <code>int{0}</code> and <code>int{0}&lt;=int[is,false]</code> are 
 <div class="paragraph">
 <p>Quantifiers serve an important role in <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a> and determining, at compile time, the expected cost of a particular type definition (i.e., an instruction sequence). The table below itemizes common quantifier patterns along with names the are typically used in programming languages.</p>
 </div>
-<table class="tableblock frame-all grid-all center" style="width: 85%;">
+<table class="tableblock frame-all grid-all center" style="width: 80%;">
 <colgroup>
 <col style="width: 6.6666%;">
 <col style="width: 6.6666%;">
@@ -1681,7 +1681,7 @@ mmlang&gt;</code></pre>
 </tbody>
 </table>
 <div class="paragraph">
-<p>Quantifiers are used in three contexts.</p>
+<p>Types use quantifiers in two separate contexts.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1691,7 +1691,28 @@ mmlang&gt;</code></pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>A type signature&#8217;s <em>domain</em> specifies the type and quantity of <code>objs</code> required for evaluation. The <em>range</em> states what can be expected in return. <code>int{6}&lt;=int{3}</code> states that given <code>3</code> <code>ints</code>, the type will return <code>6</code> <code>insts</code>. Quantifiers in a type signature are descriptive, used in type checking.</p>
+<p>A type signature&#8217;s <em>domain</em> specifies the type and quantity of the <code>obj</code> required for evaluation. The <em>range</em> denotes what can be expected in return. <code>int{6}&lt;=int{3}</code> states that given <code>3</code> <code>ints</code>, the type will return <code>6</code> <code>ints</code>. Quantifiers in a type signature are descriptive, used in <a href="https://en.wikipedia.org/wiki/Type_system#Static_type_checking">type checking</a>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4 =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
+language error: int is not an int{3}
+mmlang&gt; 4{3} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
+==&gt;5{6}
+mmlang&gt; {4,5,6} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
+==&gt;5{2}
+==&gt;6{2}
+==&gt;7{2}
+mmlang&gt; {4{2},5{1},6{2}} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
+language error: int{5} is not an int{3}
+mmlang&gt; {4{2},5{-1},6{2}} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
+==&gt;5{4}
+==&gt;6{-2}
+==&gt;7{4}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Much will be said about negative quantifiers. For now, note that negative quantifiers enable <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">lazy</a>, stream-based <a href="https://en.wikipedia.org/wiki/Set_theory">set theoretic</a> operations such as intersection, union, difference, etc. Extending beyond integer quantification \$(\mathbb{Z})\$, negative quantifiers enable constructive and destructive interference in <a href="https://en.wikipedia.org/wiki/Quantum_computing">quantum computating</a> \$(\mathbb{C})\$ and excitatory and inhibitory activations in <a href="https://en.wikipedia.org/wiki/Artificial_neural_network">neural computing</a> \$(\mathbb{R})\$.</p>
 </div>
 <div class="ulist">
 <ul>
@@ -1701,13 +1722,13 @@ mmlang&gt;</code></pre>
 </ul>
 </div>
 <div class="paragraph">
-<p>A type description&#8217;s <em>instructions</em> can be quantified. Their use is deductive, used in type inference.</p>
+<p>A type description&#8217;s <em>instructions</em> can be quantified. More specifically, a type&#8217;s intermediate dtypes can be quantified. During <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>, the quantifier ring&#8217;s \$(+\$/\$\ast)\$-operators propagate the quantifiers through the types that compose the program.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{3}[plus,1]{2}                      <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{3}[[plus,1],[plus,1]]              <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int{6}&lt;=int{3}[plus,1]{2}
-mmlang&gt; int{3}[[plus,1],[plus,1]]              <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; int{3}[plus,1]{2}                      <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;int{6}&lt;=int{3}[plus,1]{2}</code></pre>
 </div>
 </div>
@@ -1723,13 +1744,29 @@ mmlang&gt; int{3}[[plus,1],[plus,1]]              <i class="conum" data-value="2
 </tr>
 </table>
 </div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/obj/branch-q-addition.svg" alt="branch q addition" width="500">
-</div>
-</div>
 <div class="paragraph">
-<p>When two parallel branches are equivalent, type optimization "collapses" them into a single branch with quantifiers added given the quantifier rings additive (\$+\$) operator. It is more efficient (especially as branches grow in complexity) to evaluate <code>[plus,1]</code> once update the branching <code>objs</code> using the rings multiplicative (\$\ast\$) operator. The following two examples highlight the fact that type signature quantifiers are used for <a href="https://en.wikipedia.org/wiki/Type_system#Static_type_checking">type checking</a> and type description quantifiers are used for <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>.</p>
+<p>At <a href="https://en.wikipedia.org/wiki/Compiler#Middle_end">type compilation</a>, the <a href="https://en.wikipedia.org/wiki/Branch_(computer_science)">branch</a> optimizer "collapses" <em>type object</em> equivalent branches with no effect to the results. The branches' <em>type quantifiers</em> are added using the quantifier ring&#8217;s \$+\$-operator (the quantifier group). Once collapsed, quantifiers can be moved left-or-right using the quantifier ring&#8217;s multiplicative \$\ast\$-operator due to the <em>commutativity of quantifiers theorem</em> (the quantifier monoid). It is more efficient (especially as branches grow in complexity) to compute \$2b\$ than \$b + b\$.</p>
+</div>
+<table class="tableblock frame-none grid-none center" style="width: 65%;">
+<colgroup>
+<col style="width: 16.6666%;">
+<col style="width: 83.3334%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">\[
+\begin{split}
+a(b+b)c &amp;= a(2b)c \\
+&amp;= a2bc   \\
+&amp;= 2abc
+\end{split}
+\]</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/branch-q-addition.svg" alt="branch q addition" width="500"></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The following two examples highlight the fact that type signature quantifiers are used for <a href="https://en.wikipedia.org/wiki/Type_system#Static_type_checking">type checking</a> and type description quantifiers are used for <a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>.</p>
 </div>
 <table class="tableblock frame-all grid-all center" style="width: 80%;">
 <colgroup>
@@ -1745,13 +1782,7 @@ mmlang&gt; int{3}[[plus,1],[plus,1]]              <i class="conum" data-value="2
 mmlang&gt; 4{3} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
 ==&gt;5{6}
 mmlang&gt; 4{2} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
-language error: int{2} is not an int{3}
-mmlang&gt; [4,5{2}] =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
-==&gt;5{2}
-==&gt;6{4}
-mmlang&gt; [4,5{2}][[plus,1],[plus,1]]
-==&gt;5{2}
-==&gt;6{4}</code></pre>
+language error: int{2} is not an int{3}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1775,13 +1806,7 @@ mmlang&gt; [4,5{2}][[plus,1],[plus,1]]
 mmlang&gt; 4{3} =&gt; int{6}&lt;=int{3}[plus,1]{2}
 ==&gt;5{6}
 mmlang&gt; 4{2} =&gt; int{6}&lt;=int{3}[plus,1]{2}
-language error: int{2} is not an int{3}
-mmlang&gt; [4,5{2}] =&gt; int{6}&lt;=int{3}[plus,1]{2}
-==&gt;5{2}
-==&gt;6{4}
-mmlang&gt; [4,5{2}][plus,1]{2}
-==&gt;5{2}
-==&gt;6{4}</code></pre>
+language error: int{2} is not an int{3}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1797,42 +1822,6 @@ mmlang&gt; [4,5{2}][plus,1]{2}
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Type inference deduces the smallest range quantifier given the provided information.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[is&gt;0]
-==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]
-mmlang&gt; 5 =&gt; int[is&gt;0]
-==&gt;5
-mmlang&gt; int{29} =&gt; [is&gt;0]
-==&gt;int{0,29}&lt;=int{29}[is,bool{29}&lt;=int{29}[gt,0]]
-mmlang&gt; int{29}[is&gt;0]
-==&gt;int{0,29}&lt;=int{29}[is,bool{29}&lt;=int{29}[gt,0]]
-mmlang&gt; {-1{19},3{7},45{3}} =&gt; int{29}[is&gt;0]
-==&gt;3{7}
-==&gt;45{3}
-mmlang&gt; {-1{19},3{7},45{3}} =&gt; int{29}[is&gt;0][count]
-==&gt;10</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>If a stricter range is provided, then the type inference will only it.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int&lt;=int[is&gt;0]
-==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><strong>Value Bulking</strong></p>
-</li>
-</ul>
-</div>
 </div>
 </div>
 <div class="sect3">
@@ -2426,7 +2415,7 @@ In effect, the execution context is transformed from a memory-less <a href="http
 <h5 id="_variables">Variables</h5>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/linear-variable-example.svg" alt="linear variable example" width="625">
+<img src="./images/obj/linear-variable-example.svg" alt="linear variable example" width="600">
 </div>
 </div>
 <div class="listingblock">
@@ -2516,9 +2505,8 @@ instruction                                    domain      range state
 <h5 id="_definitions">Definitions</h5>
 
 </div>
-</div>
-<div class="sect3">
-<h4 id="_rewrites">Rewrites</h4>
+<div class="sect4">
+<h5 id="_rewrites">Rewrites</h5>
 <div class="paragraph">
 <p>Each step of that walk is an instruction forming an edge in the type graph.
 For instance, the type</p>
@@ -2579,6 +2567,7 @@ The isomorphism realizes <code>int</code> as a classic set without structure bec
 </div>
 <div class="paragraph">
 <p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -2644,7 +2633,7 @@ language error: -6 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/nat-model.svg" alt="nat model" width="350">
+<img src="./images/obj/nat-model.svg" alt="nat model" width="450">
 </div>
 </div>
 <div class="listingblock">
@@ -5764,7 +5753,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-05 23:28:23 -0600
+Last updated 2020-08-05 23:43:20 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
