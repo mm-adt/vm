@@ -409,7 +409,7 @@ NOTE: Types such as `int{0}` and `int{0}\<=int[is,false]` are equivalent due to 
 Quantifiers serve an important role in https://en.wikipedia.org/wiki/Type_inference[type inference] and determining, at compile time, the expected cost of a particular type definition (i.e., an instruction sequence). The table below itemizes common quantifier patterns along with names the are typically used in programming languages.
 
 [.center]
-[cols="^1h,1,1,3,9",width=85]
+[cols="^1h,1,1,3,9",width=80]
 |===
 | name | sugar | unsugared | description  | mmlang example
 
@@ -451,28 +451,54 @@ int{+}
 {blank}
 |===
 
-Quantifiers are used in three contexts.
+Types use quantifiers in two separate contexts.
 
 * *Type Signature Quantification*
 
-A type signature's _domain_ specifies the type and quantity of `objs` required for evaluation. The _range_ states what can be expected in return. `int{6}\<=int{3}` states that given `3` `ints`, the type will return `6` `insts`. Quantifiers in a type signature are descriptive, used in type checking.
+A type signature's _domain_ specifies the type and quantity of the `obj` required for evaluation. The _range_ denotes what can be expected in return. `int{6}\<=int{3}` states that given `3` `ints`, the type will return `6` `ints`. Quantifiers in a type signature are descriptive, used in https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking].
+
+[exec,exception=LanguageException]
+----
+4 => int{6}<=int{3}[[plus,1],[plus,1]]
+4{3} => int{6}<=int{3}[[plus,1],[plus,1]]
+{4,5,6} => int{6}<=int{3}[[plus,1],[plus,1]]
+{4{2},5{1},6{2}} => int{6}<=int{3}[[plus,1],[plus,1]]
+{4{2},5{-1},6{2}} => int{6}<=int{3}[[plus,1],[plus,1]]
+----
+
+Much will be said about negative quantifiers. For now, note that negative quantifiers enable https://en.wikipedia.org/wiki/Lazy_evaluation[lazy], stream-based https://en.wikipedia.org/wiki/Set_theory[set theoretic] operations such as intersection, union, difference, etc. Extending beyond integer quantification \$(\mathbb{Z})\$, negative quantifiers enable constructive and destructive interference in https://en.wikipedia.org/wiki/Quantum_computing[quantum computating] \$(\mathbb{C})\$ and excitatory and inhibitory activations in https://en.wikipedia.org/wiki/Artificial_neural_network[neural computing] \$(\mathbb{R})\$.
 
 * *Type Description Quantification*
 
-A type description's _instructions_ can be quantified. Their use is deductive, used in type inference.
+A type description's _instructions_ can be quantified. More specifically, a type's intermediate dtypes can be quantified. During https://en.wikipedia.org/wiki/Type_inference[type inference], the quantifier ring's \$(+\$/\$\ast)\$-operators propagate the quantifiers through the types that compose the program.
 
 [exec]
 ----
-int{3}[plus,1]{2}                      //<1>
-int{3}[[plus,1],[plus,1]]              //<2>
+int{3}[[plus,1],[plus,1]]              //<1>
+int{3}[plus,1]{2}                      //<2>
 ----
 <1> Given `3` `ints`, `[plus,1]` will be evaluated (in parallel) `2` twice. The result is `6` `ints`.
 <2> The instruction `[plus,1]{2}` is the merging of two `[plus,1]` _branches_.
 
-image::branch-q-addition.svg[align=center,width=500]
 
+At https://en.wikipedia.org/wiki/Compiler#Middle_end[type compilation], the https://en.wikipedia.org/wiki/Branch_(computer_science)[branch] optimizer "collapses" _type object_ equivalent branches with no effect to the results. The branches' _type quantifiers_ are added using the quantifier ring's \$+\$-operator (the quantifier group). Once collapsed, quantifiers can be moved left-or-right using the quantifier ring's multiplicative \$\ast\$-operator due to the _commutativity of quantifiers theorem_ (the quantifier monoid). It is more efficient (especially as branches grow in complexity) to compute \$2b\$ than \$b + b\$.
 
-When two parallel branches are equivalent, type optimization "collapses" them into a single branch with quantifiers added given the quantifier rings additive (\$+\$) operator. It is more efficient (especially as branches grow in complexity) to evaluate `[plus,1]` once update the branching `objs` using the rings multiplicative (\$\ast\$) operator. The following two examples highlight the fact that type signature quantifiers are used for https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking] and type description quantifiers are used for https://en.wikipedia.org/wiki/Type_inference[type inference].
+[.center]
+[cols=".^1,5",width=65,frame=none,grid=none]
+|===
+
+|
+\[
+\begin{split}
+a(b+b)c &= a(2b)c \\
+&= a2bc   \\
+&= 2abc
+\end{split}
+\]
+| image:branch-q-addition.svg[align=center,width=500]
+|===
+
+The following two examples highlight the fact that type signature quantifiers are used for https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking] and type description quantifiers are used for https://en.wikipedia.org/wiki/Type_inference[type inference].
 
 [.center]
 [cols="4,2",width=80]
@@ -482,8 +508,6 @@ a|[exec,exception=LanguageException]
 4{3} => [[plus,1],[plus,1]]
 4{3} => int{6}<=int{3}[[plus,1],[plus,1]]
 4{2} => int{6}<=int{3}[[plus,1],[plus,1]]
-[4,5{2}] => int{6}<=int{3}[[plus,1],[plus,1]]
-[4,5{2}][[plus,1],[plus,1]]
 ----
 {blank}
 <|
@@ -502,8 +526,6 @@ a|[exec,exception=LanguageException]
 4{3} => [plus,1]{2}
 4{3} => int{6}<=int{3}[plus,1]{2}
 4{2} => int{6}<=int{3}[plus,1]{2}
-[4,5{2}] => int{6}<=int{3}[plus,1]{2}
-[4,5{2}][plus,1]{2}
 ----
 {blank}
 <|
@@ -515,29 +537,6 @@ a|[exec,exception=LanguageException]
 \end{split}
 \]
 |===
-
-Type inference deduces the smallest range quantifier given the provided information.
-
-[exec,exception=LanguageException]]
-----
-int[is>0]
-5 => int[is>0]
-int{29} => [is>0]
-int{29}[is>0]
-{-1{19},3{7},45{3}} => int{29}[is>0]
-{-1{19},3{7},45{3}} => int{29}[is>0][count]
-----
-
-If a stricter range is provided, then the type inference will only it.
-
-[exec]
-----
-int<=int[is>0]
-----
-
-* *Value Bulking*
-
-
 
 ==== Type System
 
@@ -857,7 +856,7 @@ In effect, the execution context is transformed from a memory-less https://en.wi
 
 ===== Variables
 
-image::linear-variable-example.svg[align=center,width=625]
+image::linear-variable-example.svg[align=center,width=600]
 
 [exec]
 ----
@@ -886,7 +885,7 @@ int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain
 
 ===== Definitions
 
-==== Rewrites
+===== Rewrites
 
 Each step of that walk is an instruction forming an edge in the type graph.
 For instance, the type
@@ -973,7 +972,7 @@ With a large number of definitions, expression such as the following become unte
 For this reason, there is the `[model]` instruction which can be globally defined as the first instruction of ctype and thus, rooted in the `obj` Cayley graph.
 
 
-image::nat-model.svg[width=350,align=center]
+image::nat-model.svg[width=450,align=center]
 
 [exec,none="",exception=LanguageException]
 ----
