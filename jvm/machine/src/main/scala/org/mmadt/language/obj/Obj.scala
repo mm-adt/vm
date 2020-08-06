@@ -94,10 +94,12 @@ trait Obj
   lazy val domain: Type[Obj] = if (this.root) asType(this).asInstanceOf[Type[Obj]] else asType(this.via._1).domain
 
   // quantifier methods
+  def q(f: IntQ => IntQ): this.type = this.q(f.apply(this.q))
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def q(q: IntQ): this.type = if (q.equals(qZero)) this.isolate.clone(q = qZero) else this.clone(
     q = if (this.root) q else multQ(this.q, q),
     via = if (this.root) rootVia else (this.via._1, this.via._2.q(q)))
+  def hardQ(f: IntQ => IntQ): this.type = this.hardQ(f.apply(this.q))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
   lazy val alive: Boolean = this.q != qZero
@@ -126,7 +128,7 @@ trait Obj
   def ==>[E <: Obj](target: E): E = {
     if (!target.alive) return zeroObj.asInstanceOf[E]
     target match {
-      case _: Value[_] => target.hardQ(multQ(this.q, target.q)).asInstanceOf[E]
+      case _: Value[_] => target.hardQ(q => multQ(this.q, q)).asInstanceOf[E]
       case rangeType: Type[E] =>
         LanguageException.testTypeCheck(this.range, target.domain)
         this match {
@@ -156,7 +158,7 @@ object Obj {
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
-      case _: Type[E] if __.isAnonRoot(domainObj) && rangeType.root => rangeType.hardQ(multQ(domainObj.q, rangeType.q))
+      case _: Type[E] if __.isAnonRoot(domainObj) && rangeType.root => rangeType.hardQ(q => multQ(domainObj.q, q))
       case _: Type[E] =>
         if (domainObj.root && rangeType.root && domainObj.isInstanceOf[Type[_]])
           LanguageException.testTypeCheck(domainObj, asType(rangeType).hardQ(domainObj.q))

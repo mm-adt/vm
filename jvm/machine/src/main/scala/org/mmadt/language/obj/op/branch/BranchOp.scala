@@ -33,7 +33,7 @@ object BranchOp extends Func[Obj, Obj] {
             val result: List[Obj] = Type.mergeObjs(alst.g._2.map(b => Inst.resolveArg(start, b)).filter(_.alive))
             val apoly: Lst[Obj] = alst.clone(g = (alst.gsep, result))
             apoly match {
-              case _: Value[_] => strm(result.map(x => x.hardQ(multQ(x.q, inst.q))).filter(_.alive))
+              case _: Value[_] => strm(result.map(x => x.hardQ(q => multQ(q, inst.q))).filter(_.alive))
               case _: Type[_] =>
                 if (result.isEmpty) zeroObj
                 else if (1 == result.size) if (result.head.alive) Type.tryCtype(start `=>` result.head.q(inst.q)) else zeroObj
@@ -60,14 +60,14 @@ object BranchOp extends Func[Obj, Obj] {
               if (Type.isIdentity(finalO) && finalO.domain.q == qOne && finalO.range.q == qOne) finalO.range else Type.unity(finalO).q(finalQ)
             }
             else apoly match {
-              case _: Value[_] => result.last.hardQ(multQ(result.last.q, inst.q))
+              case _: Value[_] => result.last.hardQ(q => multQ(q, inst.q))
               case _: Type[_] => BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
             }
           case Tokens.`|` =>
             val result: List[Obj] = alst.g._2.map(b => Inst.resolveArg(start, b)).filter(_.alive)
             val apoly: Lst[Obj] = alst.clone(g = (alst.gsep, result))
             apoly match {
-              case _: Value[_] => result.find(b => b.alive).map(x => x.hardQ(multQ(x.q, inst.q))).getOrElse(zeroObj)
+              case _: Value[_] => result.find(b => b.alive).map(x => x.hardQ(q => multQ(q, inst.q))).getOrElse(zeroObj)
               case _: Type[_] => BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
             }
         }
@@ -82,8 +82,8 @@ object BranchOp extends Func[Obj, Obj] {
             }).filter(b => b._1.alive).toMap
             val apoly = arec.clone(g = (arec.gsep, result))
             apoly match {
-              case _: Value[_] => strm(result.map(x => x._2.hardQ(multQ(x._2.q, inst.q))).toList.asInstanceOf[List[Obj]])
-              case _: Type[_] => if (1 == result.size) result.head._2.hardQ(multQ(result.head._2.q, inst.q)) else BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
+              case _: Value[_] => strm(result.map(x => x._2.hardQ(q => multQ(q, inst.q))).toList.asInstanceOf[List[Obj]])
+              case _: Type[_] => if (1 == result.size) result.head._2.hardQ(q => multQ(q, inst.q)) else BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
             }
           case Tokens.`;` =>
             var running = start
@@ -112,7 +112,7 @@ object BranchOp extends Func[Obj, Obj] {
               case _: Value[_] => result.find(b => b.head.alive).map(b => b.tail.head).getOrElse(zeroObj)
               case _: Type[_] =>
                 if (result.size == 1)
-                  result.head.tail.head.hardQ(multQ(result.head.tail.head.q, inst.q))
+                  result.head.tail.head.hardQ(q => multQ(q, inst.q))
                 else
                   BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
             }

@@ -42,9 +42,7 @@ object MapOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val oldInst = Inst.oldInst(inst)
     start match {
-      case _: Value[_] =>
-        val x = inst.arg0[Obj].via(start, oldInst)
-        x.hardQ(multQ(x.q, oldInst.arg0[Obj].q))
+      case _: Value[_] => inst.arg0[Obj].via(start, oldInst).hardQ(q => multQ(q, oldInst.arg0[Obj].q))
       case _: Type[_] => asType(inst.arg0[Obj]).via(start, inst)
     }
   }

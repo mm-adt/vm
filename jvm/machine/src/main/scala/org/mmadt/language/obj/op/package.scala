@@ -62,10 +62,10 @@ package object op {
           int(Math.min(a._1.g, b._1.g)),
           int(Math.max(a._2.g, b._2.g)))).getOrElse(qZero))
       }
-      x.hardQ(multQ(multQ(brch.q, x.q), instQ))
+      x.hardQ(q => multQ(multQ(q, brch.q), instQ))
     }
 
-    def multPolyQ(obj: Obj, poly: Poly[_], inst: Inst[_, _]): Obj = obj.hardQ(multQ(multQ(obj.q, poly.q), inst.q))
+    def multPolyQ(obj: Obj, poly: Poly[_], inst: Inst[_, _]): Obj = obj.hardQ(q=>multQ(multQ(q, poly.q), inst.q))
   }
 
   trait FilterInstruction

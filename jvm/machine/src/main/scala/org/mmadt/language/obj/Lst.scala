@@ -75,7 +75,7 @@ object Lst {
       val z = apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => {
         local = local match {
           case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
-          case x if slot.isInstanceOf[Value[_]] => slot.hardQ(multQ(x.q, slot.q)) // TODO: hardcoded hack -- should really be part of Inst.resolveArg() and Obj.compute()
+          case x if slot.isInstanceOf[Value[_]] => slot.hardQ(q => multQ(x.q, q)) // TODO: hardcoded hack -- should really be part of Inst.resolveArg() and Obj.compute()
           case _ => Inst.resolveArg(local, slot)
         }
         local
