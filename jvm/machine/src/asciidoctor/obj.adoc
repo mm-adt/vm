@@ -346,8 +346,7 @@ NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram abov
 However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type.
 With this convention, there is no loss of information.
 The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction).
-Furthermore, dashed arrows will replace `[type]`-labeled arrows.
-All subsequent diagrams will follow this convention.
+Furthermore, dashed arrows will replace `[type]`-labeled arrows. All subsequent diagrams will follow this convention.
 
 .The Obj Graph as a Cayley Graph and a Commutative Diagram
 ================================================================
@@ -455,8 +454,93 @@ int{+}
 {blank}
 |===
 
-// |least footnote:order[Applicable to quantifier rings with an total order over the carrier.]         |`{x,}` | `{x,max}`
-//|most footnote:order[]          |`{,x}` | `{min,x}`
+Quantifiers are used in three contexts.
+
+* *Type Signature Quantification*
+
+A type signature's _domain_ specifies the type and quantity of `objs` required for evaluation. The _range_ states what can be expected in return. `int{6}\<=int{3}` states that given `3` `ints`, the type will return `6` `insts`. Quantifiers in a type signature are descriptive, used in type checking.
+
+* *Type Description Quantification*
+
+A type description's _instructions_ can be quantified. Their use is deductive, used in type inference.
+
+[exec]
+----
+int{3}[plus,1]{2}                      //<1>
+int{3}[[plus,1],[plus,1]]              //<2>
+----
+<1> Given `3` `ints`, `[plus,1]` will be evaluated (in parallel) `2` twice. The result is `6` `ints`.
+<2> The instruction `[plus,1]{2}` is the merging of two `[plus,1]` _branches_.
+
+image::branch-q-addition.svg[align=center,width=500]
+
+When two parallel branches are equivalent, type optimization "collapses" them into a single branch with quantifiers added given the quantifier rings additive (\$+\$) operator. It is more efficient (especially as branches grow in complexity) to evaluate `[plus,1]` once update the branching `objs` using the rings multiplicative (\$\ast\$) operator. The following two examples highlight the fact that type signature quantifiers are used for https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking] and type description quantifiers are used for https://en.wikipedia.org/wiki/Type_inference[type inference].
+
+[.center]
+[cols="4,2",width=80]
+|===
+a|[exec,exception=LanguageException]
+----
+4{3} => [[plus,1],[plus,1]]
+4{3} => int{6}<=int{3}[[plus,1],[plus,1]]
+4{2} => int{6}<=int{3}[[plus,1],[plus,1]]
+[4,5{2}] => int{6}<=int{3}[[plus,1],[plus,1]]
+[4,5{2}][[plus,1],[plus,1]]
+----
+{blank}
+<|
+\[
+\begin{split}
+\texttt{int\{q\}}
+  &= 3 \ast (1 + 1) \\
+  &= (3 \ast 1) + (3 \ast 1) \\
+  &= 3 + 3 \\
+  &= 6
+\end{split}
+\]
+
+a|[exec,exception=LanguageException]
+----
+4{3} => [plus,1]{2}
+4{3} => int{6}<=int{3}[plus,1]{2}
+4{2} => int{6}<=int{3}[plus,1]{2}
+[4,5{2}] => int{6}<=int{3}[plus,1]{2}
+[4,5{2}][plus,1]{2}
+----
+{blank}
+<|
+\[
+\begin{split}
+\texttt{int\{q\}}
+  &= 3 \ast 2 \\
+  &= 6
+\end{split}
+\]
+|===
+
+Type inference deduces the smallest range quantifier given the provided information.
+
+[exec,exception=LanguageException]]
+----
+int[is>0]
+5 => int[is>0]
+int{29} => [is>0]
+int{29}[is>0]
+{-1{19},3{7},45{3}} => int{29}[is>0]
+{-1{19},3{7},45{3}} => int{29}[is>0][count]
+----
+
+If a stricter range is provided, then the type inference will only it.
+
+[exec]
+----
+int<=int[is>0]
+----
+
+* *Value Bulking*
+
+
+
 ==== Type System
 
 [cols="^1,4,9"]
