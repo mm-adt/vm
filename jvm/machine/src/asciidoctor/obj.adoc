@@ -474,6 +474,7 @@ int{3}[[plus,1],[plus,1]]              //<2>
 
 image::branch-q-addition.svg[align=center,width=500]
 
+
 When two parallel branches are equivalent, type optimization "collapses" them into a single branch with quantifiers added given the quantifier rings additive (\$+\$) operator. It is more efficient (especially as branches grow in complexity) to evaluate `[plus,1]` once update the branching `objs` using the rings multiplicative (\$\ast\$) operator. The following two examples highlight the fact that type signature quantifiers are used for https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking] and type description quantifiers are used for https://en.wikipedia.org/wiki/Type_inference[type inference].
 
 [.center]
