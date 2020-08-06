@@ -43,6 +43,7 @@ package object obj {
     case x: IntQ if qOne.equals(x) => qA
     case _ => (qA._1.g * qB._1.g, qA._2.g * qB._2.g)
   }
+  def zeroable(quantifier: IntQ): Boolean = quantifier._1.g == 0 || quantifier._2.g == 0
 
   def plusQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case _ if equals(qZero) => qA

@@ -1189,6 +1189,16 @@ class mmlangScriptEngineTest extends FunSuite {
     engine.eval(":")
   }
 
+  test("model rec parsing") {
+    engine.eval(":[model,mm:('type' -> (person -> (person:('name'->str[plus,str],'age'->int{*}+10))))]")
+    assertResult("person:('name'->'markomarko')")(engine.eval("('name'->'marko') => [as,person]").toString)
+    assertResult("person:('name'->'markomarko')")(engine.eval("('name'->23) person<=rec[put,'name','marko']").toString)
+    assertResult("'markomarko'")(engine.eval("('name'->'marko') rec[plus,person[get,'name']-<('name'->_)][get,'name']").toString)
+    // TODO:
+    assertResult("person:('name'->'markomarko','age'->45)")(engine.eval("('name'->'marko') rec[plus,person<=rec[get,'name']-<('name'->_)][is,[a,person]][as,person][put,'age',45]").toString)
+    engine.eval(":")
+  }
+
   test("play") {
     /* val x: Obj = engine.eval(
        """int

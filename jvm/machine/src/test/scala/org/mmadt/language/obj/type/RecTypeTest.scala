@@ -133,6 +133,7 @@ class RecTypeTest extends FunSuite {
     val extraLess = rec(__ -> __)
     val markoLess = rec(str("name") -> str("marko"))
     val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
+    val markoNoAge = rec(str("name") -> str("marko"))
     val markoMore = rec(str("name") -> str("marko"), str("age") -> int(29), str("alive") -> bfalse)
     val person = rec(str("name") -> str, str("age") -> int)
     val personLess = rec(str("age") -> int)
@@ -142,6 +143,7 @@ class RecTypeTest extends FunSuite {
     val personName = rec(str("name") -> str, str("age") -> int).named("person")
     val personNameBackwards = rec(str("age") -> int, str("name") -> str).named("person")
     val personBackwards = rec(str("age") -> int, str("name") -> str)
+    val personMaybeAge = (str("name")->str)`,`(str("age")->int.q(*))
     assert(marko.test(marko))
     assert(markoMore.test(markoMore))
     assert(markoLess.test(markoLess))
@@ -186,6 +188,8 @@ class RecTypeTest extends FunSuite {
     assert(!rec.test(person))
     assert(rec.test(rec))
     assert(rec.test(rec))
+    assert(marko.test(personMaybeAge))
+    assert(markoNoAge.test(personMaybeAge))
   }
 
 }

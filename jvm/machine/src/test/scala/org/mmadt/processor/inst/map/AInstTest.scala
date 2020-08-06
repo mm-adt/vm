@@ -33,12 +33,12 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class AInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  val marko: Rec[StrValue, Obj] = rec(str("name") -> str("marko"), str("age") -> int(29))
-  val vadas: Rec[StrValue, Obj] = rec(str("name") -> str("vadas"), str("age") -> int(27))
-  val person: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> int)
-  val oldPerson: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> int.is(int.gt(28)))
-  val youngPerson: Rec[StrValue, Obj] = rec(str("name") -> str, str("age") -> __.is(__.lt(28)))
-  val car: Rec[StrValue, Obj] = rec(str("name") -> str, str("year") -> int)
+  val marko: Rec[StrValue, Obj] = (str("name") -> str("marko")) `,` (str("age") -> int(29))
+  val vadas: Rec[StrValue, Obj] = (str("name") -> str("vadas")) `,` (str("age") -> int(27))
+  val person: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("age") -> int)
+  val oldPerson: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("age") -> int.is(int.gt(28)))
+  val youngPerson: Rec[StrValue, Obj] = str("name") -> str `_,` str("age") -> __.is(__.lt(28))
+  val car: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("year") -> int)
   val alst: Lst[StrValue] = str("a") `,` "b"
 
 
