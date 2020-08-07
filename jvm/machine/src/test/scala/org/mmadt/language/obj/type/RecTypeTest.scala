@@ -36,8 +36,18 @@ class RecTypeTest extends FunSuite {
   val Y: (IntValue, StrValue) = int(2) -> str("b")
   val Z: (IntValue, StrValue) = int(3) -> str("c")
 
-  test("rec type toString") {
+  test("rec type token") {
     assertResult("rec")(rec.toString)
+    assert(rec.isInstanceOf[RecType[_,_]])
+    assert(rec.test(rec))
+    assert(!rec.test(lst))
+    assert(!rec.test(str))
+    assert(rec(X).test(rec))
+    assert((X `,` Y).test(rec))
+    assert((X `|` Y).test(rec))
+    assert((X `;` Y).test(rec))
+    assert(!(X `;` Y).test(rec.q(20)))
+    assert((X `;` Y).test(rec.q(1, 20)))
   }
 
   test("rich tuple") {
@@ -143,7 +153,7 @@ class RecTypeTest extends FunSuite {
     val personName = rec(str("name") -> str, str("age") -> int).named("person")
     val personNameBackwards = rec(str("age") -> int, str("name") -> str).named("person")
     val personBackwards = rec(str("age") -> int, str("name") -> str)
-    val personMaybeAge = (str("name")->str)`,`(str("age")->int.q(*))
+    val personMaybeAge = (str("name") -> str) `,` (str("age") -> int.q(*))
     assert(marko.test(marko))
     assert(markoMore.test(markoMore))
     assert(markoLess.test(markoLess))

@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
@@ -59,8 +59,7 @@ class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("a", "b", "c").id(), str("a", "b", "c"), "strm"),
       )
     forEvery(starts) { (query, result, atype) => {
-      // assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[${query}]"))
-      assertResult(result)(query)
+      TestUtil.evaluate(query, __, result)
       atype match {
         case "value" => assert(query.isInstanceOf[Value[_]])
         case "type" => assert(query.isInstanceOf[Type[_]])

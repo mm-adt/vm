@@ -22,7 +22,10 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.TestUtil
 import org.mmadt.language.Tokens
+import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.{Int, Lst, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
@@ -31,8 +34,24 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("lst type toString") {
+  private val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+
+  test("lst type token") {
     assertResult("lst")(lst.toString)
+    assert(lst.isInstanceOf[LstType[_]])
+    assert(lst.test(lst))
+    assert(!lst.test(rec))
+    assert(!lst.test(int))
+    assert(lst("a").test(lst))
+    assert((str("a") `,` "b").test(lst))
+    assert((str("a") `|` "b").test(lst))
+    assert((str("a") `;` "b").test(lst))
+    assert(!(str("a") `;` "b").test(lst.q(20)))
+    assert((str("a") `;` "b").test(lst.q(0, 20)))
+  }
+
+  test("lst type basics") {
+    assert((int(1) `,` 2).test(int `,` int))
   }
 
   test("lst type [split]/[merge]") {
@@ -63,16 +82,12 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         (int(int(1).q(5), int(100)), int | int.plus(2).q(10), int(int(1).q(5), int(100))),
         (int(1, 2), int | (int | int), int(1, 2)), // TODO: this is not computing the lst as a type
         (int(1, 2), (int | int) | int, int(1, 2)), // TODO: this is not computing the lst as a type
-        //(int(1, 2), (int | int) | (int | int), int(1, 2)),
-        //(int(int(1), int(2)).-<(int `,` (int -< (int | int))), strm[Obj](List(int(1), int(1) |, int(2), int(2) |))),
+        (int(1, 2), (int | int) | obj, int(1, 2)),
+        (int(1, 2), (str | str) | str, zeroObj),
+        ((int(1) `,` 2), lst[Obj](g = (Tokens.|, List[Obj](lst(g = (Tokens.`,`, List(int, int))), str))), (int(1) `,` 2)),
         (int(1), str | int, int(1)),
-        //(strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
-    forEvery(starts) { (lhs, rhs, result) => {
-      //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${lhs})>--<${rhs}>-"))
-      assertResult(result)(lhs ==> __.-<(rhs).>-)
-    }
-    }
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, __.split(rhs).merge, result) }
   }
 
   test("parallel [get] types") {

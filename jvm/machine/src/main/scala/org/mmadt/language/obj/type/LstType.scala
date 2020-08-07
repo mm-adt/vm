@@ -37,7 +37,11 @@ trait LstType[A <: Obj] extends PolyType[A, Lst[A]] with Lst[A] {
     })
     case _ => false
   }
-  override def equals(other: Any): Boolean = other.isInstanceOf[LstType[_]] && super[Lst].equals(other) && super[PolyType].equals(other)
+  override def equals(other: Any): Boolean = other match {
+    case alst: Lst[_] if alst.isEmpty && this.isEmpty => super[Lst].equals(other)
+    case _: LstType[_] => super[Lst].equals(other) && super[PolyType].equals(other)
+    case _ => false
+  }
 }
 
 

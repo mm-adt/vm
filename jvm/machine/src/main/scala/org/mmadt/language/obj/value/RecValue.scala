@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.value
+
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.{Inst, Obj, Rec, withinQ}
 
@@ -42,5 +43,9 @@ trait RecValue[A <: Obj, B <: Obj] extends PolyValue[B, Rec[A, B]] with Rec[A, B
     }) && this.compute(other).alive
     case _ => false
   }
-  override def equals(other: Any): Boolean = other.isInstanceOf[RecValue[_, _]] && super[Rec].equals(other) && super[PolyValue].equals(other)
+  override def equals(other: Any): Boolean = other match {
+    case alst: Rec[_, _] if alst.isEmpty && this.isEmpty => super[Rec].equals(other)
+    case _: RecValue[_, _] => super[Rec].equals(other) && super[PolyValue].equals(other)
+    case _ => false
+  }
 }

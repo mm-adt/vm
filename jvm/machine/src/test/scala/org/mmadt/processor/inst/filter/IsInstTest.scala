@@ -22,8 +22,8 @@
 
 package org.mmadt.processor.inst.filter
 
+import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.value.Value
@@ -71,9 +71,7 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
 
       )
     forEvery(starts) { (expr, result, atype) => {
-      if (!expr.isInstanceOf[Strm[_]])
-        assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${expr}"))
-      assertResult(result)(expr)
+      TestUtil.evaluate(expr, __, result)
       atype match {
         case "value" => assert(expr.isInstanceOf[Value[_]])
         case "type" => assert(expr.isInstanceOf[Type[_]])

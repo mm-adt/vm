@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
@@ -57,10 +57,6 @@ class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(-1.0, -2.0, -3.0).id().q(10).one(), real(1.0).q(30)),
         (real(-1.0, -2.0, -3.0).q(3).id().q(10).one(), real(1.0).q(90)),
       )
-    forEvery(starts) { (query, result) => {
-      assertResult(result)(query)
-//      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
-    }
-    }
+    forEvery(starts) { (query, result) => TestUtil.evaluate(query, __, result) }
   }
 }

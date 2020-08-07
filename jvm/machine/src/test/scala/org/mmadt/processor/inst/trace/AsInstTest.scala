@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.trace
 
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.{Obj, Str}
@@ -73,30 +74,13 @@ class AsInstTest extends FunSuite with TableDrivenPropertyChecks {
         ((int(1) `,` 2 `,` 3), (__.plus(1) `,` __.plus(2) `,` __.plus(3)), (int(2) `,` 4 `,` 6)),
         ((int(1) `,` 2 `,` 3), (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int(2) `,` 4 `,` 6)),
         ((int(1) `,` 2 `,` 3), (int(8) `,` 9 `,` 10), (int(8) `,` 9 `,` 10)),
-        // ((int(1) `,` 2 `,` 3), lst, lst),
+        ((int(1) `,` 2 `,` 3), lst, lst),
         ((int `,` int.plus(7) `,` int), (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int.plus(1) `,` int.plus(2) `,` int.plus(3)) <= (int `,` int.plus(7) `,` int).as((int.plus(1) `,` int.plus(2) `,` int.plus(3)))),
         // rec
         (rec(str("a") -> int(1), str("b") -> int(2), str("c") -> int(3)), rec[Str, Obj](str("a") -> __.plus(2), str("c") -> str.plus("3")), rec(str("a") -> int(3), str("c") -> str("33"))),
         //(rec(str("a") -> int(1), str("b") -> int(2), str("c") -> int(3)), rec[Str, Obj](str("a") -> __.plus(2), str -> int.plus(3)), rec(str("a") -> int(3), str("b") -> int(4,4,5))),
       )
-    forEvery(check) { (left, right, result) => {
-      //      if (!left.isInstanceOf[Strm[_]])
-      //      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${left}[as,${right}]"))
-      //else
-      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"(${left})[a,${right}]"))
-      assertResult(result)(left.compute(__.as(right)))
-      assertResult(result)(left.as(right))
-      assertResult(result)(AsOp(right).exec(left))
-      assertResult(result)(left ==> left.range.as(right))
-      assertResult(result)(left ==> (left.range ==> left.range.as(right)))
-    }
+    forEvery(check) { (left, right, result) => TestUtil.evaluate(left, __.as(right), result, AsOp(right))
     }
   }
 }
-/*
-  test("int[as,rec]") {
-    assertResult(rec(str("age") -> int(5)))(int(5) ===> int.as(rec(str("age") -> int)))
-    assertResult(rec(str("X") -> int(5), str("Y") -> int(15)))(int(5) ===> int.to("x").plus(10).to("y").as(rec(str("X") -> int.from("x"), str("Y") -> int.from("y"))))
-    assertResult(str("14hello"))(int(5) ===> int.plus(2).mult(2).as(str).plus("hello"))
-  }
- */

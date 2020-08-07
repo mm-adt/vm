@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.inst.branch
 
-import org.mmadt.language.obj.`type`.{IntType, Type, __}
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.language.obj.{Int, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
@@ -33,8 +33,8 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
 
 
   test("[split] value, type, strm") {
-    val check: TableFor3[Obj, Poly[_<:Obj], Obj] =
-      new TableFor3[Obj, Poly[_<:Obj], Obj](("input", "type", "result"),
+    val check: TableFor3[Obj, Poly[_ <: Obj], Obj] =
+      new TableFor3[Obj, Poly[_ <: Obj], Obj](("input", "type", "result"),
         (int(1), int.-<(int `;` int), int(1) `;` int(1)),
         (int(1, 2, 3), int.q(3).-<(int.q(3) `,` int.q(3)), strm(List(int(1) `,` 1, int(2) `,` 2, int(3) `,` 3))),
         (int(2), __.-<(int | str), int(2) | obj.q(qZero)),
@@ -44,6 +44,7 @@ class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(2), int.-<(int.-<(int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero)),
       )
     forEvery(check) { (input, atype, result) => {
+      // TestUtil.evaluate(input,atype,result)
       assertResult(result)(input.compute(atype.asInstanceOf[Type[Obj]]))
       assertResult(result)(input ==> atype.asInstanceOf[Type[Obj]])
       assertResult(result)(input ==> atype)

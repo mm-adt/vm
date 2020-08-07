@@ -40,8 +40,10 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   with ZeroOp[Rec[A, Obj]] {
   def g: RecTuple[A, B]
   def gsep: String = g._1
-  lazy val gmap: collection.Map[A, B] = if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
+  lazy val gmap: collection.Map[A, B] = if(null == this.g._2) Map.empty[A,B] else if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
   def glist: Seq[B] = gmap.values.toSeq
+  def ctype: Boolean = null == g._2 // type token
+
   override def equals(other: Any): Boolean = other match {
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
       this.name.equals(arec.name) &&
@@ -54,16 +56,16 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   final def `_,`(next: Tuple2[A, _]): this.type = this.`,`(next)
   final def `_;`(next: Tuple2[A, _]): this.type = this.`;`(next)
   final def `_|`(next: Tuple2[A, _]): this.type = this.`|`(next)
-  final def `,`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`,`, this.g._2 + (next._1 -> next._2)))
-  final def `;`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`;`, this.g._2 + (next._1 -> next._2)))
-  final def `|`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`|`, this.g._2 + (next._1 -> next._2)))
+  final def `,`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`,`, this.gmap + (next._1 -> next._2)))
+  final def `;`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`;`, this.gmap + (next._1 -> next._2)))
+  final def `|`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`|`, this.gmap + (next._1 -> next._2)))
 }
 
 object Rec {
   type RecTuple[A <: Obj, +B <: Obj] = (String, collection.Map[A, B])
 
   def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
-    brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.find(y => y._1.test(x._1) && y._2.test(x._2)).map(_ => true).getOrElse(return false))
+    (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.find(y => y._1.test(x._1) && y._2.test(x._2)).map(_ => true).getOrElse(return false)))
 
   def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B], branch: Boolean = false): Rec[A, B] = {
     if (arec.isSerial) {

@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{LstType, Type}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`.TLst
 import org.mmadt.storage.obj.value.VLst
@@ -43,7 +43,8 @@ abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] 
 }
 object OLst {
   def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = {
-    if (g._2.nonEmpty && !g._2.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]])) new VLst[A](name, g, q, via)
+    if (null != g._2 && (g._2.isEmpty || !g._2.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]]))) new VLst[A](name, g, q, via)
     else new TLst[A](name, g, q, via)
   }
+  def emptyType[A <: Obj]: LstType[A] = new TLst[A](g = (Tokens.`,`, null))
 }

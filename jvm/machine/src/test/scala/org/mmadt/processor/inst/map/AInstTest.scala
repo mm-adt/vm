@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.TestUtil
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.AOp
@@ -152,14 +153,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         //
         (alst, str("a"), bfalse)
       )
-    forEvery(check) { (left, right, result) => {
-      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[${left}][a,${right}]"))
-      assertResult(result)(left.compute(__.a(right)))
-      assertResult(result)(left.a(right))
-      assertResult(result)(AOp(right).exec(left))
-      assertResult(result)(left ==> left.range.a(right))
-      assertResult(result)(left ==> (left.range ==> left.range.a(right)))
-    }
+    forEvery(check) { (left, right, result) => TestUtil.evaluate(left, __.a(right), result, AOp(right))
     }
   }
 

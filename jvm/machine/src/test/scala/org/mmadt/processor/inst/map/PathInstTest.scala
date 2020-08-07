@@ -22,10 +22,11 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.TestUtil
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.PathOp
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
-import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -40,16 +41,7 @@ class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2, 3), __.plus(1).path(VERTICES), strm(List(int(1) `;` 2, int(2) `;` 3, int(3) `;` 4))),
         (int(1, 2, 3), __.plus(1).plus(2).path(VERTICES), strm(List(int(1) `;` 2 `;` 4, int(2) `;` 3 `;` 5, int(3) `;` 4 `;` 6))),
       )
-    forEvery(starts) { (input, atype, result) => {
-      List(
-        //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
-        PathOp((__ `;` zeroObj).asInstanceOf[Lst[Obj]]).q(atype.trace.head._2.q).exec(input),
-        input.compute(asType(atype)),
-        input ==> atype.start(),
-      ).foreach(x => {
-        assertResult(result)(x)
-      })
-    }
+    forEvery(starts) { (input, atype, result) => TestUtil.evaluate(input, atype, result, PathOp((__ `;` zeroObj)).q(atype.trace.head._2.q))
     }
   }
   test("[path] w/ int value") {

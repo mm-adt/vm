@@ -61,6 +61,7 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
         (bool(true, true, false), __.and(__.and(bool.q(10))), bool(true, true, false), "strm"), // strm * anon = strm
       )
     forEvery(starts) { (input, atype, result, kind) => {
+      // TestUtil.evaluate(input,atype,result)
       List(
         AndOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input.asInstanceOf[Bool]),
         input.compute(asType(atype)),

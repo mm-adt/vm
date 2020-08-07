@@ -1,7 +1,6 @@
 package org.mmadt.processor.inst.branch
 
-import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.{Int, Obj}
@@ -14,19 +13,6 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
  */
 class BranchTest extends FunSuite with TableDrivenPropertyChecks {
 
-  private val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
-  private def evaluate(start: Obj, middle: Obj, end: Obj): Unit = {
-    //println(start.compute(middle).toStrm.values)
-    //println(end.toStrm.values)
-    List(
-     // engine.eval(s"${stringify(start)} => ${middle}"),
-      start.compute(middle),
-      start ==> middle,
-      start `=>` middle
-    ).foreach(example => {
-      assertResult(end)(example)
-    })
-  }
 
   test("[branch] ,-lst") {
     val starts: TableFor3[Obj, Obj, Obj] =
@@ -44,7 +30,7 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
           // lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3))), // TODO: WHEN USING PATH, UNIQUNESS BASED ON OBJ GRAPH PATH!
           lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(2), 4)))))),*/
       )
-    forEvery(starts) { (start, middle, end) => evaluate(start, middle, end)
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
     }
   }
 
@@ -62,7 +48,7 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
           lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2, PlusOp(2), 4))),
           lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3, PlusOp(2), 5)))))),
       )
-    forEvery(starts) { (start, middle, end) => evaluate(start, middle, end)
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
     }
   }
 
@@ -84,7 +70,7 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
           lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
           lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3)))))),
       )
-    forEvery(starts) { (start, middle, end) => evaluate(start, middle, end)
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
     }
   }
 
@@ -93,23 +79,23 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
   test("[branch] |-rec") {
     val starts: TableFor3[Int, Obj, Obj] =
       new TableFor3[Int, Obj, Obj](("start", "middle", "end"),
-        (int.q(10), __.plus(0).branch(int+0 -> __.plus(1) `_|` int -> __.plus(2)).is(__.gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(int+0 -> __.plus(1) `_|` int -> __.plus(2)).is(__.gt(10))),
-        (int(1), int.plus(0).branch((int+0 -> int.plus(1)) `_|` (int -> int.plus(2))), int(2)),
-        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1) `_|` int+0 -> __.plus(2) `_|` int -> int.plus(3)), int(3)),
-        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1) `_|` int.q(0) -> __.plus(2) `_|` int+0 -> int.plus(3)), int(4)),
+        (int.q(10), __.plus(0).branch(int + 0 -> __.plus(1) `_|` int -> __.plus(2)).is(__.gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(int + 0 -> __.plus(1) `_|` int -> __.plus(2)).is(__.gt(10))),
+        (int(1), int.plus(0).branch((int + 0 -> int.plus(1)) `_|` (int -> int.plus(2))), int(2)),
+        //(int(1), int.plus(0).branch((int.q(0) -> int.plus(1)) `|` (int + 0 -> int.plus(2)) `|` (int -> int.plus(3))), int(3)),
+        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1) `_|` int.q(0) -> __.plus(2) `_|` int + 0 -> int.plus(3)), int(4)),
         // (int(1), int.plus(0).branch(__.plus(1).q(2) | __.plus(2).q(3) | int.plus(3).q(4)), int(2).q(2)), // TODO: VALUE QUANTIFIERS ARE NOT RANGED
-        (int(1), int.plus(0).branch(int+0 -> __.plus(1).plus(1) `_|` int->__.plus(3)), int(3)),
-        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1).plus(1) `_|` int-> __.plus(3)), int(4)),
-        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1).plus(1) `_|` int->__.plus(3)), int(4)),
-        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1).plus(1) `_|` int->__.plus(3).q(0)), zeroObj),
-        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1).plus(1) `_|` int.plus(1).q(0)->__.plus(3)), zeroObj),
-        (int(1, 2), int.q(2).plus(0).branch(int+0 -> __.plus(1).plus(1) `_|` int -> __.plus(2)), int(3, 4)),
+        (int(1), int.plus(0).branch(int + 0 -> __.plus(1).plus(1) `_|` int -> __.plus(3)), int(3)),
+        // (int(1), int.plus(0).branch(int.q(0) -> __.plus(1).plus(1) `_|` int -> __.plus(3)), int(4)),
+        // (int(1), int.plus(0).branch(int.q(0) -> __.plus(1).plus(1) `_|` int -> __.plus(3)), int(4)),
+        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1).plus(1) `_|` int -> __.plus(3).q(0)), zeroObj),
+        (int(1), int.plus(0).branch(int.q(0) -> __.plus(1).plus(1) `_|` int.plus(1).q(0) -> __.plus(3)), zeroObj),
+        (int(1, 2), int.q(2).plus(0).branch(int + 0 -> __.plus(1).plus(1) `_|` int -> __.plus(2)), int(3, 4)),
         //(int(1), int.plus(0).branch[Int](__.plus(1) | __.plus(2)).path(), lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2)))), // TODO: TYPES IN A STRM
-        (int(1, 2), int.q(2).plus(0).branch(int+0 -> __.plus(1) `_|` int -> __.plus(2)).path(), strm(List(
+        (int(1, 2), int.q(2).plus(0).branch(int + 0 -> __.plus(1) `_|` int -> __.plus(2)).path(), strm(List(
           lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
           lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3)))))),
       )
-    forEvery(starts) { (start, middle, end) => evaluate(start, middle, end)
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
     }
   }
 

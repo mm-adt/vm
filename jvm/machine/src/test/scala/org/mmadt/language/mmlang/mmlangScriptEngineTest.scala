@@ -811,7 +811,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(zeroObj | zeroObj | "c")(engine.eval("(||'c')"))
     assertResult(zeroObj | zeroObj | "c" | zeroObj)(engine.eval("(||'c'|)"))
     // mult
-    assertResult("('a';'b';'c';'d')")(engine.eval("('a';'b')[mult,('c';'d')]").toString)
+    assertResult("('a';'b';'c';'d')")(engine.eval("('a';'b')(str;str;str;str)<=(str;str)[mult,('c';'d')]").toString)
     assertResult("(('a';'b';'c')|('a';'b';'d'))")(engine.eval("('a';'b')[mult,('c'|'d')]").toString)
     assertResult("(('a';'b';'c')|('a';'b';'d'))")(engine.eval("('a';'b')*('c'|'d')").toString)
     assertResult("(('a'|'c')|('a'|'d')|('b'|'c')|('b'|'d'))")(engine.eval("('a'|'b')[mult,('c'|'d')]").toString) // ac+ad + bc+bd

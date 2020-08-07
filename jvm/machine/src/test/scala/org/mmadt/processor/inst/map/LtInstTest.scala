@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
@@ -65,8 +65,7 @@ class LtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).lt(__.mult(real)), bool(false, true, true), "strm"), // strm * anon = strm
       )
     forEvery(starts) { (query, result, atype) => {
-      //assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
-      assertResult(result)(query)
+      TestUtil.evaluate(query, __, result)
       atype match {
         case "value" => assert(query.isInstanceOf[Value[_]])
         case "type" => assert(query.isInstanceOf[Type[_]])

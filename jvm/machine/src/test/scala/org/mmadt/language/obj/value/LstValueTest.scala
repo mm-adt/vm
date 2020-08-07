@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.language.Tokens
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -35,9 +35,9 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3, Tabl
 class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("lst value [split]/[merge]") {
-    val clst: Lst[IntValue] = lst(g = (Tokens.`,`, List(int(1), int(2), int(3))))
-    val plst: Lst[IntValue] = lst(g = (Tokens.`|`, List(int(1), int(2), int(3))))
-    val slst: Lst[IntValue] = lst(g = (Tokens.`;`, List(int(1), int(2), int(3))))
+    val clst: Lst[IntValue] = 1 `,` 2 `,` 3
+    val plst: Lst[IntValue] = int(1) `|` 2 `|` 3
+    val slst: Lst[IntValue] = 1 `;` 2 `;` 3
 
     assertResult(int(1, 2, 3))(clst.merge)
     assertResult(int(1))(plst.merge)
@@ -53,12 +53,16 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
     assert(("a" | "b").q(0).test(str.q(0)))
     //
     assert(("a" | "b").test("a" | "b"))
-    assert(!("a" | "b").test("a" |))
-    assert(!("a" |).test("a" | "b"))
+    assert(("a" | "b").test("a" |))
+    assert(("a" |).test("a" | "b"))
     //
     assert(("a" | ("b" | "c")).test("a" | ("b" | "c")))
-    assert(!("a" | ("b" | "c")).test("a" | ("b" |)))
-    assert(!("a" | ("b" |)).test("a" | ("b" | "c")))
+    assert(("a" | ("b" | "c")).test("a" | ("b" |)))
+    assert(("a" | ("b" |)).test("a" | ("b" | "c")))
+    assert(!("z" | ("b" |)).test("a" | ("b" | "c")))
+    //
+    assertResult(btrue)(lst.zero().eqs(lst))
+    assertResult(lst)(lst ==> lst.is(lst.eqs(lst.zero())))
   }
 
   test("basic poly") {
@@ -71,26 +75,25 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
   test("parallel expressions") {
     val starts: TableFor3[Obj, Obj, Obj] =
       new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        (int(1), __ -< (int `,` int), int(1) `,` int(1)),
-        (int(1), __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
-        (int(1), __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
-        (int(1).q(5), __ -< (int `,` int.plus(2).q(10)), (int(1) `,` int(3).q(10)).q(5)),
-        (int(1).q(5), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
+        (lst, __.is(lst.eqs(lst.zero())), lst),
+        (lst, __.eqs(lst.zero()), btrue),
+        (1, __.map(lst).eqs(lst.zero()), btrue),
+        (1, __ -< (int `,` int), int(1) `,` int(1)),
+        (1, __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
+        (1, __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
+        (1.q(5), __ -< (int `,` int.plus(2).q(10)), (int(1) `,` int(3).q(10)).q(5)),
+        (1.q(5), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
         (int(1, 100), __ -< (int | int) >-, int(int(1), int(100))),
         (int(1, 100), __ -< (int `,` int) >-, int(1, 1, 100, 100)),
         (int(1, 100), __ -< (int `,` int) >-, int(int(1).q(2), int(100).q(2))),
-        (int(int(1).q(5), 100), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
-        (int(int(1).q(5), 100), __ -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
+        (int(1.q(5), 100), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
+        (int(1.q(5), 100), __ -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
         (int(1, 2), __ -< (int | (int -< (int | int))), StorageFactory.strm[Obj](List[Obj](int(1) `|`, int(2) `|`))),
         (int(1, 2), __ -< (int `,` (int -< (int | int))), StorageFactory.strm[Obj](List(int(1) `,` (int(1) |), int(2) `,` (int(2) |)))),
-        (int(1), __ -< (str | int), zeroObj | int(1)),
-        //(strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
+        (1, __ -< (str | int), zeroObj | int(1)),
+        // (strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
-    forEvery(starts) { (lhs, rhs, result) => {
-      // assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"[start,${lhs}] ${rhs}"))
-      assertResult(result)(lhs `=>` rhs)
-    }
-    }
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result) }
   }
 
 
@@ -129,8 +132,8 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("serial value/type checking") {
-    val starts: TableFor2[Lst[_<:Obj], Boolean] =
-      new TableFor2[Lst[_<:Obj], Boolean](("serial", "isValue"),
+    val starts: TableFor2[Lst[_ <: Obj], Boolean] =
+      new TableFor2[Lst[_ <: Obj], Boolean](("serial", "isValue"),
         (lst, false),
         ("a" `;` "b", true),
         ("a" `;` "b" `;` "c" `;` "d", true),

@@ -41,19 +41,21 @@ trait Lst[+A <: Obj] extends Poly[A]
   with ZeroOp[Lst[Obj]] {
   def g: LstTuple[A]
   def gsep: String = g._1
-  lazy val glist: List[A] = g._2 /*.map(x => x.hardQ(multQ(this.q, x.q)))*/ .map(x => if (this.isInstanceOf[Type[_]]) x else Obj.copyDefinitions(this, x))
+  lazy val glist: List[A] = if (null == g._2) List.empty[A] else g._2 /*.map(x => x.hardQ(multQ(this.q, x.q)))*/ .map(x => if (this.isInstanceOf[Type[_]]) x else Obj.copyDefinitions(this, x))
+  def ctype: Boolean = null == g._2 // type token
+
   override def equals(other: Any): Boolean = other match {
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
       eqQ(this, alst) &&
-      // (this.glist.size == alst.glist.size) &&
       this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))
-    case _ => true
+    case _ => true // MAIN EQUALS IS IN TYPE
   }
 
   override final def `,`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`,`, next)
   override final def `;`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`;`, next)
   override final def `|`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`|`, next)
+
   private final def lstMaker(sep: String, obj: Obj): Lst[obj.type] = {
     obj match {
       case blst: Lst[Obj] => lst(g = (sep, List[obj.type](this.asInstanceOf[obj.type], blst.asInstanceOf[obj.type])))
@@ -64,10 +66,14 @@ trait Lst[+A <: Obj] extends Poly[A]
 
 object Lst {
   type LstTuple[+A <: Obj] = (String, List[A])
-  def test[A <: Obj](alst: Lst[A], blst: Lst[A]): Boolean = Poly.sameSep(alst, blst) && // TODO: this.name.equals(other.name) &&
-    withinQ(alst, blst) &&
-    (blst.glist.isEmpty || alst.glist.size == blst.glist.size) && // TODO: should lists only check up to their length
-    alst.glist.zip(blst.glist).forall(b => b._1.test(b._2))
+  def test[A <: Obj](alst: Lst[A], blst: Lst[A]): Boolean =
+    Poly.sameSep(alst, blst) &&
+      withinQ(alst, blst) &&
+      (blst.ctype || {
+        if (blst.isChoice) alst.g._2.exists(x => x.alive)
+        else alst.g._2.size == blst.g._2.size
+      }) &&
+      alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && !pair._1.alive) true else pair._1.test(pair._2))
 
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A], branch: Boolean = false): Lst[A] = {
     if (apoly.isSerial) {

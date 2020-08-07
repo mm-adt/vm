@@ -95,6 +95,6 @@ object Type {
     !obj.trace.filter(x => !ModelOp.isMetaModel(x._2)).exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
   }
 
-  def tryCtype[A <: Obj](obj: A): A = if (obj.isInstanceOf[Type[_]] && isIdentity(obj) && obj.domain.q == qOne && pureQ(obj)==qOne) obj.isolate else obj
+  def tryCtype[A <: Obj](obj: A): A = if (obj.isInstanceOf[Type[_]] && isIdentity(obj) && obj.domain.q == qOne && pureQ(obj) == qOne) obj.isolate else obj
 
 }

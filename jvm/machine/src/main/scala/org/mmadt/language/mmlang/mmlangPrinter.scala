@@ -63,14 +63,14 @@ object mmlangPrinter {
 
   private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else Tokens.empty
   private def mapString(rec: Rec[_, _], map: collection.Map[_, _], sep: String = COMMA, empty: String = Tokens.empty): String = {
-    if (map.isEmpty)
+    if (rec.isEmpty)
       empty else
       map.foldLeft(if (rec.isInstanceOf[TRec[_, _]]) LROUND else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) +
         (if (rec.isInstanceOf[TRec[_, _]]) RROUND else RROUND)
   }
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
-    if (lst.glist.isEmpty) {
+    if (lst.isEmpty) {
       lst match {
         case _: Type[_] => Tokens.lst
         case _ => LROUND + Tokens.space + RROUND

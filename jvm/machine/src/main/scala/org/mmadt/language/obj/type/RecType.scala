@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{Inst, Obj, Rec, withinQ}
+import org.mmadt.language.obj.{Inst, Lst, Obj, Rec, withinQ}
 
 trait RecType[A <: Obj, B <: Obj] extends PolyType[B, Rec[A, B]] with Rec[A, B] {
   override def test(other: Obj): Boolean = other match {
@@ -37,7 +37,11 @@ trait RecType[A <: Obj, B <: Obj] extends PolyType[B, Rec[A, B]] with Rec[A, B] 
     })
     case _ => false
   }
-  override def equals(other: Any): Boolean = other.isInstanceOf[RecType[_, _]] && super[Rec].equals(other) && super[PolyType].equals(other)
+  override def equals(other: Any): Boolean = other match {
+    case alst: Rec[_, _] if alst.isEmpty && this.isEmpty => super[Rec].equals(other)
+    case _: RecType[_,_] => super[Rec].equals(other) && super[PolyType].equals(other)
+    case _ => false
+  }
 }
 
 

@@ -40,6 +40,6 @@ object ModelOp extends Func[Obj, Obj] {
   def findType[A <: Obj](model: Model, label: String): Option[A] = findTypeBase[A](model, label).find(y => y.name.equals(label))
   def findType[A <: Obj](model: Model, label: String, source: Obj): Option[A] = findTypeBase[A](model, label).find(y => source.test(y.domain))
   def findType[A <: Obj](model: Model, source: Obj): Option[A] = findTypeBase[A](model, source.name).find(y => source.via.equals(y.via))
-  def getRewrites(model: Model): List[Obj] = model.g._2.getOrElse(PATH, NOREC).g._2.values.flatMap(y => y.g._2).filter(y => y.isInstanceOf[Lst[Obj]] && y.domain.isInstanceOf[Lst[Obj]] && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty).toList
+  def getRewrites(model: Model): List[Obj] = model.gmap.getOrElse(PATH, NOREC).gmap.values.flatMap(y => y.g._2).filter(y => y.isInstanceOf[Lst[Obj]] && y.domain.isInstanceOf[Lst[Obj]] && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty).toList
   def isMetaModel(inst: Inst[_, _]): Boolean = inst.op.equals(Tokens.model) || inst.op.equals(Tokens.define) || inst.op.equals(Tokens.rewrite)
 }

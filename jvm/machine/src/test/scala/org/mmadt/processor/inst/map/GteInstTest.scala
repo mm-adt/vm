@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.Value
@@ -63,7 +64,7 @@ class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).gte(__.mult(real)), bool(true, false, false), "strm"), // strm * anon = strm
       )
     forEvery(starts) { (query, result, atype) => {
-      assertResult(result)(query)
+      TestUtil.evaluate(query, __, result)
       atype match {
         case "value" => assert(query.isInstanceOf[Value[_]])
         case "type" => assert(query.isInstanceOf[Type[_]])

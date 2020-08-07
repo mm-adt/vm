@@ -50,10 +50,10 @@ trait StorageFactory {
   lazy val int: IntType = tint()
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
-  def rec[A <: Obj, B <: Obj]: Rec[A, B] = ORec.makeRec()
+  def rec[A <: Obj, B <: Obj]: Rec[A, B] = ORec.emptyType
   def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): Rec[A, B] = ORec.makeRec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
   def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = ORec.makeRec(name, g, q, via)
-  def lst[A <: Obj]: Lst[A] = OLst.makeLst()
+  def lst[A <: Obj]: Lst[A] = OLst.emptyType
   def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = OLst.makeLst(name, g, q, via)
 
   def lst[A <: Obj](sep: String, values: A*): Lst[A] = OLst.makeLst(g = (sep, values.toList))
@@ -150,11 +150,12 @@ object StorageFactory {
   }
   def toBaseName[A <: Obj](obj: A): A = obj.clone(name = baseName(obj))
   def asType[O <: Obj](obj: O): OType[O] = (obj match {
-    case arec: RecStrm[Obj, Obj] => rec.q(arec.q)
-    case alst: LstStrm[Obj] => lst.q(alst.q)
-    case alst: LstValue[Obj] => lst(name = obj.name, g = (alst.gsep, alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
-    case arec: Rec[Obj, Obj] => rec(name = obj.name, g = (arec.gsep, arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
     case atype: Type[_] => atype
+    case arec: RecStrm[Obj, Obj] => asType[O](arec.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
+    case alst: LstStrm[Obj] => asType[O](alst.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
+    case alst: LstValue[Obj] => lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
+    case arec: RecValue[Obj, Obj] => rec(name = obj.name, g = (arec.gsep, if (arec.ctype) null else arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
+    //
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
     case _: StrValue | _: StrStrm => tstr(name = obj.name, q = obj.q)

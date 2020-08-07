@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.obj.value
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{FilterInstruction, ReduceInstruction}
@@ -35,10 +34,10 @@ import org.mmadt.storage.StorageFactory._
  */
 class IteratorProcessor extends Processor {
   override def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E = {
-    var output: Iterator[E] = domainObj match {
+    var output: Iterator[E] = (domainObj match {
       case strm: Strm[E] => strm.values.iterator
       case single: E => Iterator(single)
-    }
+    }).filter(_.alive)
     for (tt <- rangeType.trace) {
       output = tt._2 match {
         //////////////REDUCE//////////////
@@ -47,7 +46,6 @@ class IteratorProcessor extends Processor {
         case _: FilterInstruction => output.map(x => tt._2.exec(x).asInstanceOf[E]).filter(_.alive)
         //////////////OTHER//////////////
         case _ => output
-          .filter(_.alive)
           .map(x => tt._2.exec(x))
           .filter(_.alive)
           .flatMap(x => x match {
@@ -56,7 +54,7 @@ class IteratorProcessor extends Processor {
           })
       }
     }
-    Processor.strmOrSingle(output.map(x => { //LanguageException.testTypeCheck(x.range.hardQ(1),rangeType.range.hardQ(1)) // iterator processor linearizes the stream
+    Processor.strmOrSingle(output.map(x => { //LanguageException.testTypeCheck(x.range,rangeType.range.hardQ(1)) // iterator processor linearizes the stream
       x
     }))
   }

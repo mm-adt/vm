@@ -22,11 +22,11 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.`type`.{IntType, RealType, Type, __}
+import org.mmadt.language.obj.`type`.{IntType, RealType, __}
 import org.mmadt.language.obj.op.map.PlusOp
-import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, RealValue, Value}
+import org.mmadt.language.obj.value.{IntValue, RealValue}
 import org.mmadt.language.obj.{Int, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -62,23 +62,7 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0), __.plus(real), real(2.0, 4.0, 6.0), "strm"), // strm * type = strm
         (real(1.0, 2.0, 3.0), __.plus(__.plus(real)), real(3.0, 6.0, 9.0), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (input, atype, result, kind) => {
-      List(
-        // new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
-        PlusOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input),
-        input.compute(asType(atype)),
-        input ==> (input.range ==> atype),
-        input ==> atype,
-        input ==> asType(atype)).foreach(x => {
-        assertResult(result)(x)
-        kind match {
-          case "value" => assert(x.isInstanceOf[Value[_]])
-          case "type" => assert(x.isInstanceOf[Type[_]])
-          case "strm" => assert(x.isInstanceOf[Strm[_]])
-        }
-      })
-    }
-    }
+    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, PlusOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q)) }
   }
   ///////////////////////////////////////////////////////////////////////
 
