@@ -191,10 +191,10 @@ image::obj-full.svg[float=right,width=300]
 
 [exec]
 ----
-int                                                     //<1>
-int{2}                                                  //<2>
-int{2}[is>0]                                            //<3>
-int{2}[is>0][plus,[neg]]                                //<4>
+int                                                         //<1>
+int{2}                                                      //<2>
+int{2}[is>0]                                                //<3>
+int{2}[is>0][plus,[neg]]                                    //<4>
 ----
 <1> A ctype denoting a single integer.
 <2> A ctype denoting two integers.
