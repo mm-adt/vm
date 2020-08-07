@@ -24,8 +24,13 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
+import org.mmadt.storage.StorageFactory.{lst, rec, str}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -38,11 +43,26 @@ trait DefineOp {
 object DefineOp extends Func[Obj, Obj] {
   def apply[O <: Obj](objs: Obj*): Inst[O, O] = new VInst[O, O](g = (Tokens.define, objs.toList.asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    /*val undefined = inst.args.filter(x => !Obj.fetch(start, x))
-    if (undefined.isEmpty) start
-    else start.via(start, inst.clone(g = (Tokens.define, undefined)))*/
+    start match {
+      case astrm: Strm[_] => astrm(x => inst.exec(x))
+      case _: Value[_] => inst.args.foldLeft(start)((a, b) => a.model(a.model.defining(b))).via(start, inst)
+      case _: Type[_] => inst.args.foldLeft(start)((a, b) => a.model(a.model.defining(b))).via(start, inst)
+    }
+  }
+
+  @inline implicit def modelToRichModel(ground: Model): RichModel = new RichModel(ground)
+  class RichModel(val model: Model) {
+    final def defining(definition: Obj): Model = {
+      val map: collection.Map[StrValue, ModelOp.ModelMap] = model.gmap.asInstanceOf[collection.Map[StrValue, ModelOp.ModelMap]]
+      val typesMap: collection.Map[Type[Obj], Lst[Obj]] = map.getOrElse[Rec[Type[Obj], Lst[Obj]]](str("type"), rec[Type[Obj], Lst[Obj]]).gmap
+      val typeList: Lst[Obj] = typesMap.getOrElse[Lst[Obj]](definition.domain, lst)
+      rec(g = (Tokens.`,`, map + (str("type") -> rec(g = (Tokens.`,`, typesMap + (definition.domain -> lst(g = (Tokens.`,`, typeList.glist :+ definition))))))))
+    }
+    final def merging(other:Model):Model = {
+      val x = other.gmap.getOrElse[Rec[Type[Obj], Lst[Obj]]](str("type"), rec[Type[Obj], Lst[Obj]]).gmap.flatMap(x=>x._2.glist).foldLeft(model)((a,b)=>a.defining(b))
+      rec(g=(Tokens.`,`,x.gmap + (str("path")->other.gmap.getOrElse(str("path"),rec[Type[Obj], Lst[Obj]]))))
+    }
 
 
-    start.via(start,inst)
   }
 }

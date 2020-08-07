@@ -98,7 +98,7 @@ trait Obj
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
   def q(q: IntQ): this.type = if (q.equals(qZero)) this.isolate.clone(q = qZero) else this.clone(
     q = if (this.root) q else multQ(this.q, q),
-    via = if (this.root) (if (this.model.isEmpty) null else this.model, null) else (this.via._1, this.via._2.q(q)))
+    via = if (this.root) this.via else (this.via._1, this.via._2.q(q)))
   def hardQ(f: IntQ => IntQ): this.type = this.hardQ(f.apply(this.q))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
@@ -107,7 +107,7 @@ trait Obj
 
   // via methods
   def root: Boolean = null == this.via || null == this.via._2
-  lazy val isolate: this.type = this.clone(q = this.q, via = (if (this.model.isEmpty) null else this.model, null)) // TODO: rename to like start/end (the non-typed versions of domain/range)
+  lazy val isolate: this.type = this.clone(q = this.q, via = this.domainObj.via) // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj // TODO: rename to like start/end (the non-typed versions of domain/range)
   lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else qZero, via = (obj, inst))
@@ -133,8 +133,8 @@ trait Obj
       case rangeType: Type[E] =>
         LanguageException.testTypeCheck(this.range, target.domain)
         this match {
-          case _: Value[_] => AsOp.autoAsType(this, x => Processor.iterator(Obj.updateModel(rangeType, x), rangeType), rangeType)
-          case _: Type[_] => AsOp.autoAsType(this, x => Processor.compiler(Obj.updateModel(rangeType, x), rangeType), rangeType)
+          case _: Value[_] => AsOp.autoAsType(this, x => Processor.iterator(x, rangeType), rangeType)
+          case _: Type[_] => AsOp.autoAsType(this, x => Processor.compiler(x, rangeType), rangeType)
         }
     }
   }
@@ -155,13 +155,7 @@ object Obj {
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   val rootVia: ViaTuple = (null, null)
 
-  def copyDefinitions[A <: Obj](parent: Obj, child: A): A = Obj.updateModel(parent, parent.trace.filter(x => ModelOp.isMetaModel(x._2)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A]))
-
-  def updateModel(from: Obj, to: Obj): to.type = {
-    if (from.model.isEmpty) to
-    else if (to.root) to.clone(via = (from.model, null))
-    else to.isolate.clone(via = (to.trace.dropRight(1).foldLeft(to.domainObj.clone(via = (from.model, null)))((a, b) => b._1.via(a, b._2).asInstanceOf[Obj]), to.via._2))
-  }
+  def copyDefinitions[A <: Obj](parent: Obj, child: A): A = ModelOp.updateModel(parent.model, parent.trace.filter(x => ModelOp.isMetaModel(x._2)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A]))
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
@@ -181,16 +175,14 @@ object Obj {
   @scala.annotation.tailrec
   def fetchExists(start: Obj, search: Obj): Boolean = {
     start match {
-      case x if x.root => if (null != x.via._1) ModelOp.findType[Obj](x.via._1.asInstanceOf[Model], search.name).isDefined else false
+      case x if x.root => ModelOp.findType[Obj](x.model, search.name).isDefined
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
-      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name.equals(search.name) && y.via == search.via) => true
-      //case x if x.via._2.op == Tokens.model && ModelOp.findType[Obj](x.via._2.arg0[Model], search.name).isDefined => true
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].trace == search.trace && x.via._2.arg0[Obj].equals(search) => true // TODO: trace search because poly values (bad?)
       case x => fetchExists(x.via._1, search)
     }
   }
 
-  // @scala.annotation.tailrec
+  //   @scala.annotation.tailrec
   def fetchOption[A <: Obj](source: Obj, obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => ModelOp.findType[A](x.model, label, source).map(y => toBaseName(y))
@@ -202,22 +194,17 @@ object Obj {
         x.via._2.args.find(y => y.name == label && source.test(y.domain.hardQ(source.q))).map(y => toBaseName(y).asInstanceOf[A]).orElse(fetchOption(source, x.via._1, label))
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
         Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
-      //  case x if x.via._2.op == Tokens.model =>
-      //    ModelOp.findType[A](x.via._2.arg0[Model], label, source).map(y => toBaseName(y)).orElse(fetchOption(source, x.via._1, label))
       case x =>
         fetchOption(source, x.via._1, label)
     }
   }
 
-
   @scala.annotation.tailrec
   def fetchWithInstOption[A <: Obj](obj: Obj, label: String): Option[(String, A)] = {
     obj match {
-      case x if x.root => None
+      case x if x.root => ModelOp.findType[A](x.model, label).map(y => (Tokens.define, y))
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label =>
         Some((Tokens.to, x.via._1.asInstanceOf[A]))
-      case x if x.via._2.op == Tokens.define && x.via._2.args.exists(y => y.name == label) =>
-        Some((Tokens.define, x.via._2.args.find(y => y.name == label).get.asInstanceOf[A]))
       case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
         Some((Tokens.rewrite, x.via._2.arg0[A]))
       case x => fetchWithInstOption(x.via._1, label)
@@ -246,5 +233,4 @@ object Obj {
       }
     }
   }
-
 }
