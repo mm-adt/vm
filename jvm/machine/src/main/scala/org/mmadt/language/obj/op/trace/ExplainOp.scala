@@ -29,7 +29,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{BranchInstruction, TraceInstruction}
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{str, _}
 import org.mmadt.storage.obj.value.VInst
 
@@ -47,27 +47,28 @@ object ExplainOp extends Func[Obj, Str] {
   def apply(): Inst[Obj, Str] = new VInst[Obj, Str](g = (Tokens.explain, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Str]): Str = str(printableTable(asType(start))).start()
   private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj], String)
-  private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0, prefix: String = ""): List[Row] = {
+  private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0, prefix: String = Tokens.empty): List[Row] = {
+    atype.model.definitions.foldLeft(state)((c, d) => c += (d.name -> d))
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {
-      if (b._2.isInstanceOf[TraceInstruction] && b._2.op != Tokens.a) state += (if (b._2.op == Tokens.define)(b._2.arg0[Obj].name-> b._2.arg0[Obj]) else b._2.arg0[Str].g -> b._2.exec(b._1).range)
+      if (b._2.op == Tokens.from || b._2.op == Tokens.to) state += b._2.arg0[Str].g -> b._2.exec(b._1).range
       val temp = if (b._2.isInstanceOf[TraceInstruction]) a else a :+ (depth, b._2, lastRange(b._1.asInstanceOf[Type[Obj]]), b._2.exec(b._1).asInstanceOf[Type[Obj]].range, mutable.LinkedHashMap(state.toSeq: _*), prefix)
       val inner = b._2.args.foldLeft(List[Row]())((x, y) => x ++ (y match {
         case branches: Rec[Obj, Obj] if b._2.isInstanceOf[BranchInstruction] => branches.gmap.flatMap { a => {
           List(explain(a._1 match {
             case btype: Type[_] => btype
             case bvalue: Value[_] => bvalue.start()
-          }, mutable.LinkedHashMap(state.toSeq: _*), depth + 1),
+          }, state, depth + 1),
             explain(a._2 match {
               case btype: Type[_] => btype
               case bvalue: Value[_] => bvalue.start()
-            }, mutable.LinkedHashMap(state.toSeq: _*), depth + 1, "->"))
+            }, state, depth + 1, "->"))
         }
         }.flatten
         case branches: Lst[_] if b._2.isInstanceOf[BranchInstruction] => branches.glist.map {
           case btype: Type[_] => btype
           case bvalue: Value[_] => bvalue.start()
-        }.flatMap(x => explain(x, mutable.LinkedHashMap(state.toSeq: _*), depth + 1))
-        case btype: Type[Obj] => explain(btype, mutable.LinkedHashMap(state.toSeq: _*), depth + 1)
+        }.flatMap(x => explain(x, state, depth + 1))
+        case btype: Type[Obj] => explain(btype, state, depth + 1)
         case _ => Nil
       }))
       temp ++ inner

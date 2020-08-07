@@ -27,10 +27,10 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
-import org.mmadt.storage.StorageFactory.{lst, rec, str}
+import org.mmadt.storage.StorageFactory.{lst, rec}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -45,24 +45,28 @@ object DefineOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
       case astrm: Strm[_] => astrm(x => inst.exec(x))
-      case _: Value[_] => inst.args.foldLeft(start)((a, b) => a.model(a.model.defining(b))).via(start, inst)
-      case _: Type[_] => inst.args.foldLeft(start)((a, b) => a.model(a.model.defining(b))).via(start, inst)
+      case _ => inst.args.foldLeft(start)((a, b) => a.model(a.model.defining(b)))
     }
   }
-
   @inline implicit def modelToRichModel(ground: Model): RichModel = new RichModel(ground)
   class RichModel(val model: Model) {
+    final def definitions: List[Obj] = {
+      val map: collection.Map[StrValue, ModelOp.ModelMap] = Option(model.g._2).getOrElse(collection.Map.empty).asInstanceOf[collection.Map[StrValue, ModelOp.ModelMap]]
+      val typesMap: collection.Map[Type[Obj], Lst[Obj]] = Option(map.getOrElse[Rec[Type[Obj], Lst[Obj]]](ModelOp.TYPE, rec[Type[Obj], Lst[Obj]]).g._2).getOrElse(collection.Map.empty)
+      typesMap.flatMap(x => x._2.glist).toList
+    }
     final def defining(definition: Obj): Model = {
-      val map: collection.Map[StrValue, ModelOp.ModelMap] = model.gmap.asInstanceOf[collection.Map[StrValue, ModelOp.ModelMap]]
-      val typesMap: collection.Map[Type[Obj], Lst[Obj]] = map.getOrElse[Rec[Type[Obj], Lst[Obj]]](str("type"), rec[Type[Obj], Lst[Obj]]).gmap
-      val typeList: Lst[Obj] = typesMap.getOrElse[Lst[Obj]](definition.domain, lst)
-      rec(g = (Tokens.`,`, map + (str("type") -> rec(g = (Tokens.`,`, typesMap + (definition.domain -> lst(g = (Tokens.`,`, typeList.glist :+ definition))))))))
+      val map: collection.Map[StrValue, ModelOp.ModelMap] = Option(model.g._2).getOrElse(collection.Map.empty).asInstanceOf[collection.Map[StrValue, ModelOp.ModelMap]]
+      val typesMap: collection.Map[Type[Obj], Lst[Obj]] = Option(map.getOrElse[Rec[Type[Obj], Lst[Obj]]](ModelOp.TYPE, rec[Type[Obj], Lst[Obj]]).g._2).getOrElse(collection.Map.empty)
+      val typeList: List[Obj] = Option(typesMap.getOrElse[Lst[Obj]](definition.range, lst).g._2).getOrElse(Nil)
+      if (typeList.contains(definition)) model
+      else rec(g = (Tokens.`,`, map + (ModelOp.TYPE -> rec(g = (Tokens.`,`, typesMap + (definition.range -> lst(g = (Tokens.`,`, typeList :+ definition))))))))
     }
-    final def merging(other:Model):Model = {
-      val x = other.gmap.getOrElse[Rec[Type[Obj], Lst[Obj]]](str("type"), rec[Type[Obj], Lst[Obj]]).gmap.flatMap(x=>x._2.glist).foldLeft(model)((a,b)=>a.defining(b))
-      rec(g=(Tokens.`,`,x.gmap + (str("path")->other.gmap.getOrElse(str("path"),rec[Type[Obj], Lst[Obj]]))))
+    final def merging(other: Model): Model = {
+     if(other.isEmpty) return model
+     else if(model.isEmpty) return other
+      val x: Model = other.g._2.getOrElse[Rec[Type[Obj], Lst[Obj]]](ModelOp.TYPE, rec[Type[Obj], Lst[Obj]]).g._2.flatMap(x => x._2.g._2).foldLeft(model)((a, b) => a.defining(b))
+      rec(g = (Tokens.`,`, x.g._2 + (ModelOp.PATH -> other.g._2.getOrElse(ModelOp.PATH, rec[Type[Obj], Lst[Obj]]))))
     }
-
-
   }
 }

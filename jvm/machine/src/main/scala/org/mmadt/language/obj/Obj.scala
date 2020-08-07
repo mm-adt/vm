@@ -155,7 +155,13 @@ object Obj {
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   val rootVia: ViaTuple = (null, null)
 
-  def copyDefinitions[A <: Obj](parent: Obj, child: A): A = ModelOp.updateModel(parent.model, parent.trace.filter(x => ModelOp.isMetaModel(x._2)).foldLeft(child)((a, b) => b._2.exec(a).asInstanceOf[A]))
+  def copyDefinitions(parent: Obj, child: Obj): child.type = ModelOp.updateModel(parent.model,
+    parent.trace
+      .filter(x => ModelOp.isMetaModel(x._2))
+      .filter(x => x._2.op != Tokens.define)
+      .filter(x => x._2.op != Tokens.rewrite)
+      .filter(x => x._2.op != Tokens.model || child.isInstanceOf[Type[_]])
+      .foldLeft(child.asInstanceOf[Obj])((a, b) => b._2.exec(a))).asInstanceOf[child.type]
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
@@ -177,12 +183,11 @@ object Obj {
     start match {
       case x if x.root => ModelOp.findType[Obj](x.model, search.name).isDefined
       case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
-      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].trace == search.trace && x.via._2.arg0[Obj].equals(search) => true // TODO: trace search because poly values (bad?)
       case x => fetchExists(x.via._1, search)
     }
   }
 
-  //   @scala.annotation.tailrec
+  @scala.annotation.tailrec
   def fetchOption[A <: Obj](source: Obj, obj: Obj, label: String): Option[A] = {
     obj match {
       case x if x.root => ModelOp.findType[A](x.model, label, source).map(y => toBaseName(y))
@@ -190,10 +195,6 @@ object Obj {
         case _: Value[Obj] => Some(x.via._1.via(source.via._1, source.via._2).asInstanceOf[A])
         case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
       }
-      case x if x.via._2.op == Tokens.define =>
-        x.via._2.args.find(y => y.name == label && source.test(y.domain.hardQ(source.q))).map(y => toBaseName(y).asInstanceOf[A]).orElse(fetchOption(source, x.via._1, label))
-      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
-        Some(Inst.resolveArg(obj, x.via._2.arg0[A]))
       case x =>
         fetchOption(source, x.via._1, label)
     }
@@ -203,10 +204,7 @@ object Obj {
   def fetchWithInstOption[A <: Obj](obj: Obj, label: String): Option[(String, A)] = {
     obj match {
       case x if x.root => ModelOp.findType[A](x.model, label).map(y => (Tokens.define, y))
-      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label =>
-        Some((Tokens.to, x.via._1.asInstanceOf[A]))
-      case x if x.via._2.op == Tokens.rewrite && x.via._2.arg0[Obj].name == label =>
-        Some((Tokens.rewrite, x.via._2.arg0[A]))
+      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some((Tokens.to, x.via._1.asInstanceOf[A]))
       case x => fetchWithInstOption(x.via._1, label)
     }
   }
