@@ -25,8 +25,8 @@ package org.mmadt.language.obj.op.trace
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -44,18 +44,11 @@ object FromOp extends Func[Obj, Obj] {
   def apply[O <: Obj](label: StrValue): Inst[Obj, Obj] = new VInst[Obj, O](g = (Tokens.from, List(label)), func = this) with TraceInstruction
   def apply[O <: Obj](label: StrValue, default: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.from, List(label, default)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
-    val history: Option[(String, Obj)] = Obj.fetchWithInstOption[Obj](start, inst.arg0[StrValue].g)
-    if (history.isEmpty && !start.isInstanceOf[Type[Obj]])
-      if (inst.args.length == 1)
-        throw LanguageException.labelNotFound(start.path(zeroObj `;` __), inst.arg0[StrValue].g)
-      else
-        Inst.resolveArg(start, inst.arg1[Obj]).via(start, inst)
-    else {
-      history match {
-        case Some((Tokens.to, aobj)) => aobj.via(start, inst)
-        case None => history.map(x => x._2).getOrElse(if (inst.args.length == 1) asType(start) else inst.arg1).via(start, inst)
-      }
-    }
+    if (start.isInstanceOf[Strm[_]]) start.via(start, inst)
+    else Obj.fetch[Obj](start, __,inst.arg0[StrValue].g).filter(x => Tokens.to == x._1).map(x => x._2).getOrElse(
+      start match {
+        case _: Type[_] => inst.args.tail.headOption.getOrElse(asType(start))
+        case _: Value[_] => inst.args.tail.headOption.map(x => Inst.resolveArg(start, x)).getOrElse(throw LanguageException.labelNotFound(start.path(PathOp.VERTICES), inst.arg0[StrValue].g))
+      }).via(start, inst)
   }
 }

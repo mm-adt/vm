@@ -27,6 +27,7 @@ object ModelOp extends Func[Obj, Obj] {
   val TYPE: StrValue = str("type")
   val PATH: StrValue = str("path")
   val NOREC: ModelMap = rec[Type[Obj], Lst[Obj]]
+  val EMPTY: Model = rec[StrValue, ModelOp.ModelMap]
 
   def apply[O <: Obj](definition: Model): Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(definition).asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {

@@ -67,10 +67,10 @@ object Inst {
 
   def resolveToken[A <: Obj](obj: Obj, arg: A): A =
     if (__.isToken(arg))
-      Obj.fetchOption[A](obj, obj, arg.name).orElse[A](obj match {
+      Obj.fetch[A](obj, obj, arg.name).map(x => x._2).orElse[A](obj match {
         case _: Type[Obj] => return arg
         case _ =>
-          if (Obj.fetchExists(obj, arg)) throw LanguageException.typingError(obj, asType(arg))
+          if (Obj.fetch(obj, __,arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
           else throw LanguageException.labelNotFound(obj, arg.name)
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
 

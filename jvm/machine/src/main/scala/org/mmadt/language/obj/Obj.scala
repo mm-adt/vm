@@ -119,7 +119,7 @@ trait Obj
       case incidentRoot => incidentRoot.foldLeft[Obj](incidentRoot.head._1.isolate)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
     }
   }
-  def model: Model = if (null == this.domainObj.via._1) rec[StrValue, ModelOp.ModelMap] else domainObj.via._1.asInstanceOf[Model]
+  def model: Model = if (null == this.domainObj.via._1) ModelOp.EMPTY else domainObj.via._1.asInstanceOf[Model]
 
   // utility methods
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
@@ -155,13 +155,8 @@ object Obj {
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   val rootVia: ViaTuple = (null, null)
 
-  def copyDefinitions(parent: Obj, child: Obj): child.type = ModelOp.updateModel(parent.model,
-    parent.trace
-      .filter(x => ModelOp.isMetaModel(x._2))
-      .filter(x => x._2.op != Tokens.define)
-      .filter(x => x._2.op != Tokens.rewrite)
-      .filter(x => x._2.op != Tokens.model || child.isInstanceOf[Type[_]])
-      .foldLeft(child.asInstanceOf[Obj])((a, b) => b._2.exec(a))).asInstanceOf[child.type]
+  def copyDefinitions(parent: Obj, child: Obj): child.type = ModelOp.updateModel(parent.model, // TODO: get rid of the model propagation instruction
+    parent.trace.filter(x => x._2.op == Tokens.model && child.isInstanceOf[Type[_]]).foldLeft(child.asInstanceOf[Obj])((a, b) => b._2.exec(a))).asInstanceOf[child.type]
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
@@ -179,33 +174,15 @@ object Obj {
   }
 
   @scala.annotation.tailrec
-  def fetchExists(start: Obj, search: Obj): Boolean = {
-    start match {
-      case x if x.root => ModelOp.findType[Obj](x.model, search.name).isDefined
-      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == search.name => true
-      case x => fetchExists(x.via._1, search)
-    }
-  }
-
-  @scala.annotation.tailrec
-  def fetchOption[A <: Obj](source: Obj, obj: Obj, label: String): Option[A] = {
-    obj match {
-      case x if x.root => ModelOp.findType[A](x.model, label, source).map(y => toBaseName(y))
-      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => obj match {
-        case _: Value[Obj] => Some(x.via._1.via(source.via._1, source.via._2).asInstanceOf[A])
-        case _: Type[Obj] => Some(x.via._1.range.from(label).asInstanceOf[A])
-      }
-      case x =>
-        fetchOption(source, x.via._1, label)
-    }
-  }
-
-  @scala.annotation.tailrec
-  def fetchWithInstOption[A <: Obj](obj: Obj, label: String): Option[(String, A)] = {
-    obj match {
-      case x if x.root => ModelOp.findType[A](x.model, label).map(y => (Tokens.define, y))
-      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label => Some((Tokens.to, x.via._1.asInstanceOf[A]))
-      case x => fetchWithInstOption(x.via._1, label)
+  def fetch[A <: Obj](source: Obj, matcher: Obj, label: String): Option[(String, A)] = {
+    source match {
+      case x if x.root => ModelOp.findType[A](x.model, label, matcher).map(y => (Tokens.model, toBaseName(y)))
+      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label =>
+        source match {
+          case _: Value[Obj] => Some((Tokens.to, x.via(source.via._1, source.via._2).asInstanceOf[A]))
+          case _: Type[Obj] => Some((Tokens.to, x.isolate.from(label).asInstanceOf[A]))
+        }
+      case x => fetch(x.via._1, matcher, label)
     }
   }
 
@@ -225,10 +202,6 @@ object Obj {
     final def `,`(next: Tuple2[A, _]): Rec[A, B] = this.recMaker(Tokens.`,`, next)
     final def `;`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`;`, next)
     final def `|`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`|`, next)
-    private final def recMaker(sep: String, tuple: Tuple2[A, _]): Rec[A, B] = {
-      this match {
-        case _ => rec(g = (sep, Map(this.tuple, tuple.asInstanceOf[Tuple2[A, B]])))
-      }
-    }
+    private final def recMaker(sep: String, tuple: Tuple2[A, _]): Rec[A, B] = rec(g = (sep, Map(this.tuple, tuple.asInstanceOf[Tuple2[A, B]])))
   }
 }
