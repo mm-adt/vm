@@ -1194,13 +1194,13 @@ On the left are some example <code>mmlang</code> expressions.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                                     <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int                                                         <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int
-mmlang&gt; int{2}                                                  <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; int{2}                                                      <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;int{2}
-mmlang&gt; int{2}[is&gt;0]                                            <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; int{2}[is&gt;0]                                                <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]]
-mmlang&gt; int{2}[is&gt;0][plus,[neg]]                                <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; int{2}[is&gt;0][plus,[neg]]                                    <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;int{0,2}&lt;=int{2}[is,bool{2}&lt;=int{2}[gt,0]][plus,int{0,2}[neg]]</code></pre>
 </div>
 </div>
@@ -2173,7 +2173,7 @@ mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'c'-&gt;3)                                      
 mmlang&gt; (+'a',+'b',+'c')                                             <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;(_[plus,'a'],_[plus,'b'],_[plus,'c'])
 mmlang&gt; (is=='a'-&gt;1, is&gt;='b'-&gt;2, is&gt;=c-&gt;3)                           <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;(_[is,_[eq,'a']]-&gt;int,_[is,_[gte,'b']]-&gt;int,_[is,_[gte,c]]-&gt;int)</code></pre>
+==&gt;(_[is,_[eq,'a']]-&gt;1,_[is,_[gte,'b']]-&gt;2,_[is,_[gte,c]]-&gt;3)</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -5741,7 +5741,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-06 10:53:12 -0600
+Last updated 2020-08-06 12:01:31 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
