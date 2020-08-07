@@ -33,8 +33,8 @@ import org.scalatest.FunSuite
  */
 class ModelTest extends FunSuite {
   val tp3_kv: Type[Obj] = functor(KV, TP3)
-  val kv: Type[Obj] = model(KV)
-  val tp3: Type[Obj] = model(TP3)
+  val kv: Type[Obj] = __.model(model(KV))
+  val tp3: Type[Obj] = __.model(model(TP3))
   val fake: Type[Obj] = __.define(__("g") <= __, __("db") <= __)
   val all: Type[Obj] = kv `=>` tp3 `=>` tp3_kv `=>` fake
 
@@ -59,7 +59,7 @@ class ModelTest extends FunSuite {
       str("label") -> str("person"),
       str("properties") -> rec(str("id") -> str("marko")).named("property")).named("vertex")
     assertThrows[LanguageException] {
-      record3 ==> tp3.as(__("vertex"))
+       record3 ==> tp3.as(__("vertex"))
     }
   }
 
@@ -79,7 +79,7 @@ class ModelTest extends FunSuite {
       str("label") -> str("vertex"),
       str("properties") -> rec(str("name") -> str("marko"))).named("vertex")
     assertResult(record1a.named("kv"))(record1a ==> kv.as(__("kv")))
-    assertResult(record1b)(record1a ==> all.as(__("kv")).as(__("vertex")))
+    assertResult(record1b)(record1a ==> all ==> __.as(__("kv")).as(__("vertex")))
     //
     val record2a = rec(
       str("k") -> (str("vertex") `,` int(1)),

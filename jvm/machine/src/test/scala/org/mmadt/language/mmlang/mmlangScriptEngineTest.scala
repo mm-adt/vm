@@ -28,6 +28,8 @@ import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
+import org.mmadt.language.obj.op.sideeffect.LoadOp
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -1178,14 +1180,15 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("person:('name'->'marko')")(engine.eval("('name'->'marko') => [as,person]").toString)
     assertResult("('type'->(person->(person)))<=_[map,('type'->(person->(person)))]")(engine.eval("[map,mm]").toString)
     engine.eval(":")
-    val mm: String = getClass.getResource("/model/mm.mm").getPath
-    engine.put(":", engine.eval(s"[load,'${mm}']"))
+    val mm: Model = LoadOp.loadObj[Model](getClass.getResource("/model/mm.mm").getPath)
+    //println(mm.named("rec"))
+    /*engine.put(":", ModelOp(mm))
     // TODO: assertResult(13.q(8))(engine.eval("10 int[plus,1]{2}[plus,2]{4}"))
     assertResult("int")(engine.eval("int[plus,0]").toString)
     // assertResult("0")(engine.eval("int[mult,0]").toString)
     assertResult("int")(engine.eval("int[mult,1]").toString)
     assertResult("int[plus,int[neg]]")(engine.eval("int[mult,1][plus,0][plus,[neg]]").toString)
-    assertResult("int[plus,1][plus,2]")(engine.eval("int[plus,1][mult,1][plus,2][mult,1][plus,0]").toString)
+    assertResult("int[plus,1][plus,2]")(engine.eval("int[plus,1][mult,1][plus,2][mult,1][plus,0]").toString)*/
     engine.eval(":")
   }
 

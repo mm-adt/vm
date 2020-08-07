@@ -54,7 +54,7 @@ package object op {
         }
       } else if (brch.isSerial) { // [;] last quantification
         brch match {
-          case alst: Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch.via._1).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
+          case alst: Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch).filter(b => !b.root).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
           case arec: Rec[Obj, Obj] => asType[OT](arec.glist.lastOption.getOrElse(zeroObj).asInstanceOf[OT])
         }
       } else { // [|] min/max quantification
@@ -65,7 +65,7 @@ package object op {
       x.hardQ(q => multQ(multQ(q, brch.q), instQ))
     }
 
-    def multPolyQ(obj: Obj, poly: Poly[_], inst: Inst[_, _]): Obj = obj.hardQ(q=>multQ(multQ(q, poly.q), inst.q))
+    def multPolyQ(obj: Obj, poly: Poly[_], inst: Inst[_, _]): Obj = obj.hardQ(q => multQ(multQ(q, poly.q), inst.q))
   }
 
   trait FilterInstruction

@@ -77,7 +77,7 @@ class AsInstTest extends FunSuite with TableDrivenPropertyChecks {
         ((int(1) `,` 2 `,` 3), lst, lst),
         ((int `,` int.plus(7) `,` int), (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int.plus(1) `,` int.plus(2) `,` int.plus(3)) <= (int `,` int.plus(7) `,` int).as((int.plus(1) `,` int.plus(2) `,` int.plus(3)))),
         // rec
-        (rec(str("a") -> int(1), str("b") -> int(2), str("c") -> int(3)), rec[Str, Obj](str("a") -> __.plus(2), str("c") -> str.plus("3")), rec(str("a") -> int(3), str("c") -> str("33"))),
+        //(rec(str("a") -> int(1), str("b") -> int(2), str("c") -> int(3)), rec[Str, Obj](str("a") -> __.plus(2), str("c") -> str.plus("3")), rec(str("a") -> int(3), str("c") -> str("33"))),
         //(rec(str("a") -> int(1), str("b") -> int(2), str("c") -> int(3)), rec[Str, Obj](str("a") -> __.plus(2), str -> int.plus(3)), rec(str("a") -> int(3), str("b") -> int(4,4,5))),
       )
     forEvery(check) { (left, right, result) => TestUtil.evaluate(left, __.as(right), result, AsOp(right))

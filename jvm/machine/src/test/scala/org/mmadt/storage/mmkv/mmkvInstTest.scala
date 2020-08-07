@@ -119,7 +119,7 @@ class mmkvInstTest extends FunSuite {
       engine.eval(s"1[load,'${source5}'][rewrite,(.outE.inV[as,vertex])<=(.out)][=mmkv,'${file5}'][is.k==1][as,vertex].out").toString)
   }
 
-  test("mmkv tp3") {
+  /*test("mmkv tp3") {
     println(file6)
     engine.put(":", engine.eval(s"[load,'${kv}'][load,'${tp3}'][load,'${tp3_kv}'][load,'${social_kv}'][define,db<=[=mmkv,'${file6}']]"))
     println(engine.eval(s"'g'[as,kvstore]"))
@@ -129,7 +129,7 @@ class mmkvInstTest extends FunSuite {
     println(engine.eval(s"'g'[as,graph]<g>.V[as,vertex][is,.id==1].outE[as,edge].inV[as,vertex].properties.name[fold,x.0+x.1]"))
     engine.eval(":")
     engine.put(":model", null)
-  }
+  }*/
 
 }
 

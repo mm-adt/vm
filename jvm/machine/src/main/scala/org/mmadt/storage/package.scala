@@ -23,6 +23,7 @@
 package org.mmadt
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 
 import scala.io.Source
@@ -37,7 +38,7 @@ package object storage {
 
   private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
 
-  def model(name: String): Type[Obj] = {
+  def model(name: String): Model = {
     val source = Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)
     try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.empty)((x, y) => x + "\n" + y))
     finally source.close();

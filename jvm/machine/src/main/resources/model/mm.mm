@@ -1,4 +1,4 @@
-[model,mm:(
+mm:(
   'type' -> (bool -> (bool),
              int  -> (int),
              real -> (real),
@@ -8,4 +8,4 @@
   'path' -> (int  -> ((int)<=(int[neg][neg]),
                      (int)<=(int[plus,0]),
                      (int)<=(int[mult,1]),
-                     ([0])<=(int[mult,0]))))]
+                     ([0])<=(int[mult,0]))))

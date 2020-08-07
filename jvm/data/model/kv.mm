@@ -1,1 +1,2 @@
-[define,store<=kv{*},kv:('k'->obj,'v'->obj)]
+('type' -> (store -> (store<=kv{*}),
+            kv    -> (kv:('k'->obj,'v'->obj))))
