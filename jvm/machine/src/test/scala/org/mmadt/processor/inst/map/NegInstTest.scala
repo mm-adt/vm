@@ -23,9 +23,11 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.storage.StorageFactory.{int, real}
+import org.mmadt.language.obj.op.map.NegOp
+import org.mmadt.storage.StorageFactory.{int, real, str}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
@@ -49,5 +51,9 @@ class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
     }
+  }
+
+  test("[neg] exceptions") {
+    assertResult(LanguageException.unsupportedInstType(str("a"), NegOp()).getMessage)(intercept[LanguageException](str("a") ==> __.neg()).getMessage)
   }
 }

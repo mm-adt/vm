@@ -22,10 +22,10 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -43,5 +43,6 @@ object NegOp extends Func[Obj, Obj] {
     case aint: Int => start.clone(g = -aint.g)
     case areal: Real => start.clone(g = -areal.g)
     case abool: Bool => start.clone(g = !abool.g)
+    case _ => throw LanguageException.unsupportedInstType(start, inst)
   }).via(start, inst)
 }

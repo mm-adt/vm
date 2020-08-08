@@ -36,7 +36,10 @@ import org.jline.utils.AttributedString;
 import org.jline.utils.AttributedStyle;
 import org.mmadt.VmException;
 import org.mmadt.language.LanguageFactory;
+import org.mmadt.language.Tokens;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
+import org.mmadt.language.obj.Rec;
+import org.mmadt.language.obj.type.__;
 import scala.collection.JavaConverters;
 
 import javax.script.ScriptContext;
@@ -65,6 +68,7 @@ public class Console {
     private static final String RESULT = "==>";
     private static final String QUIT_OP = ":q";
     private static final String LANG_OP = ":lang";
+    private static final String MM_MODEL = "data/model/mm.mm";
     private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
     private static final Highlighter HIGHLIGHTER = new DefaultHighlighter();
 
@@ -90,7 +94,7 @@ public class Console {
         terminal.writer().println(HEADER);
         terminal.flush();
         // initial model is mm
-        engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(":", engine.eval(Files.lines(Paths.get("data/model/mm.mm")).reduce("", (a, b) -> a + " " + b)));
+        engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.COLON(), __.apply(Tokens.anon()).model((Rec) engine.eval(Files.lines(Paths.get(MM_MODEL)).reduce("", (a, b) -> a + " " + b))));
         while (true) {
             try {
                 String line = reader.readLine(engineName + "> ");

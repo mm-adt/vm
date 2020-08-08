@@ -62,7 +62,7 @@ class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { (query, result) => TestUtil.evaluate(query, __, result, OneOp(), compile = false) }
   }
 
-  test("[one] failures") {
+  test("[one] exceptions") {
     assertResult(LanguageException.unsupportedInstType(str("a"), OneOp()).getMessage)(intercept[LanguageException](str("a") ==> __.one()).getMessage)
   }
 }

@@ -23,9 +23,10 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.ZeroOp
+import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -55,8 +56,9 @@ class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("b"), __.zero(), str("")),
         (str, __.zero(), str("")),
         (str("a", "b", "c"), __.zero(), str("").q(3)),
-        //////// PROD
-        //(`;`(str("a")), __.zero(), `;`()),
+        //////// POLY
+        (lst[Str](g = (Tokens.`,`, List(str("a")))), __.zero(), lst(g = (Tokens.`,`, Nil))),
+        (lst[Str](g = (Tokens.`,`, List(str("a"), str("b"), str("c")))), __.zero(), lst(g = (Tokens.`,`, Nil))),
         //(prod(prod(str("a")), prod(str("b")), prod(str("c"))).zero(), prod().q(3)),
       )
     forEvery(starts) { (input, atype, result) => TestUtil.evaluate(input, atype, result, ZeroOp().q(atype.trace.head._2.q), compile = false)
