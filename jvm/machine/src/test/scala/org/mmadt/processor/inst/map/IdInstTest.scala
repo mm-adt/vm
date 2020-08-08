@@ -24,9 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -58,14 +56,7 @@ class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str.id(), str.id(), "type"),
         (str("a", "b", "c").id(), str("a", "b", "c"), "strm"),
       )
-    forEvery(starts) { (query, result, atype) => {
-      TestUtil.evaluate(query, __, result)
-      atype match {
-        case "value" => assert(query.isInstanceOf[Value[_]])
-        case "type" => assert(query.isInstanceOf[Type[_]])
-        case "strm" => assert(query.isInstanceOf[Strm[_]])
-      }
-    }
+    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
     }
   }
 }

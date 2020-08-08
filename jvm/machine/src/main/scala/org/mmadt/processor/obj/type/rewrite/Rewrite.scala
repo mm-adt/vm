@@ -24,7 +24,6 @@ package org.mmadt.processor.obj.`type`.rewrite
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.trace.{ModelOp, RewriteOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Lst, Obj, _}

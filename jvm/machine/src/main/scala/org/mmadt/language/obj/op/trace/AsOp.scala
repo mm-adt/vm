@@ -57,7 +57,7 @@ object AsOp extends Func[Obj, Obj] {
     source match {
       case value: Strm[Obj] => value(x => AsOp.autoAsType(x, target, rangeType, domain))
       case _ =>
-        if (source.isolate.equals(target.isolate) || __.isAnon(target) || Obj.fetch(source, __, target.name).exists(x => Tokens.to == x._1)) source
+        if (source.rangeObj.equals(target.rangeObj) || __.isAnon(target) || Obj.fetch(source, __, target.name).exists(x => Tokens.to == x._1)) source
         else if (baseName(target).equals(baseName(source))) source.named(target.name)
         else {
           source match {

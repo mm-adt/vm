@@ -93,7 +93,7 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
         (1, __ -< (str | int), zeroObj | int(1)),
         // (strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result) }
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result,compile = false) }
   }
 
 

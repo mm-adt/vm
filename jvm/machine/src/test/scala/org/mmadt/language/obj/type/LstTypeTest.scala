@@ -87,7 +87,7 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         ((int(1) `,` 2), lst[Obj](g = (Tokens.|, List[Obj](lst(g = (Tokens.`,`, List(int, int))), str))), (int(1) `,` 2)),
         (int(1), str | int, int(1)),
       )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, __.split(rhs).merge, result) }
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, __.split(rhs).merge[Obj], result, compile = false) }
   }
 
   test("parallel [get] types") {
@@ -119,9 +119,9 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel [split] quantification") {
-    assertResult(int)(int.mult(8).split(__.id() | __.plus(8).mult(2) | int(56)).merge[Int].id().isolate)
-    assertResult(int.q(1, 20))(int.mult(8).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
-    assertResult(int.q(2, 40))(int.q(2).mult(8).q(1).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().isolate)
-    assertResult(zeroObj)(int.q(2).mult(8).q(0).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Obj].id().isolate)
+    assertResult(int)(int.mult(8).split(__.id() | __.plus(8).mult(2) | int(56)).merge[Int].id().rangeObj)
+    assertResult(int.q(1, 20))(int.mult(8).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().rangeObj)
+    assertResult(int.q(2, 40))(int.q(2).mult(8).q(1).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().rangeObj)
+    assertResult(zeroObj)(int.q(2).mult(8).q(0).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Obj].id().rangeObj)
   }
 }

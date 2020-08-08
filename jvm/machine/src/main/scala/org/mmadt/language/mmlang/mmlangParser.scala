@@ -66,14 +66,19 @@ class mmlangParser extends JavaTokenParsers {
 
   // specific to mmlang execution
   def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = opt(objValue) ~ opt(Tokens.:=>) ~ opt(obj) ^^ {
-    case Some(source) ~ _ ~ Some(target) => source ==> (target match {
-      case _: Type[_] => prefix.map(pre => asType(source) ==> pre).getOrElse(asType(source)) ==> target
-      case _: Value[_] => target
-    })
-    case Some(source) ~ None ~ None => source
-    case None ~ None ~ Some(target) => prefix.map(pre => target.domain ==> pre).getOrElse(target.domain) ==> target
+    case Some(source) ~ _ ~ Some(target: Type[Obj]) =>
+      compile(prefix, asType(source), target) match {
+        case avalue: Value[_] => avalue
+        case atype: Type[_] => source ==> atype
+      }
+    case Some(source) ~ _ ~ Some(target: Value[Obj]) => source ==> target
+    case None ~ None ~ Some(target) => compile(prefix, target.domain, target)
+    case Some(source) ~ None ~ None => source.asInstanceOf[Obj]
     case None ~ None ~ None => zeroObj
   }
+  def compile(prefix: Option[Type[Obj]], source: Obj, target: Obj): Obj =
+    if (target.isInstanceOf[Value[Obj]]) target
+    else prefix.map(pre => source ==> pre).getOrElse(source) ==> target
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////////////////////////////////////
 

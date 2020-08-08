@@ -24,8 +24,9 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Int, Obj}
+import org.mmadt.language.obj.{Inst, Int, Obj, multQ, plusQ}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -43,4 +44,11 @@ object QOp extends Func[Obj, Int] {
     case _: Value[_] => start.q._1.q(qOne)
     case _ => int
   }).via(start, inst).asInstanceOf[Int]
+
+  @inline implicit def qToRichQ(baseQ: IntQ): RichQ = new RichQ(baseQ)
+  class RichQ(val richQ: IntQ) {
+    def plus(otherQ: IntQ): IntQ = plusQ(richQ, otherQ)
+    def mult(otherQ: IntQ): IntQ = multQ(richQ, otherQ)
+    def isZero: Boolean = richQ.equals(qZero)
+  }
 }

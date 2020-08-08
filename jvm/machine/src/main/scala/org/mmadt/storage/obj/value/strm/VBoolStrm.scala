@@ -24,7 +24,6 @@ package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{ViaTuple, rootVia}
-import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.BoolValue
 import org.mmadt.language.obj.value.strm.BoolStrm
 

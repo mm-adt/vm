@@ -22,6 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.ZeroOp
@@ -58,17 +59,7 @@ class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
         //(`;`(str("a")), __.zero(), `;`()),
         //(prod(prod(str("a")), prod(str("b")), prod(str("c"))).zero(), prod().q(3)),
       )
-    forEvery(starts) { (input, atype, result) => {
-      // TestUtil.evaluate(input,atype,result)
-      List(
-        //new mmlangScriptEngineFactory().getScriptEngine.eval(s"${input}${atype}"),
-        ZeroOp().q(atype.trace.head._2.q).exec(input),
-        input.compute(asType(atype)),
-        input ==> atype.start(),
-      ).foreach(x => {
-        assertResult(result)(x)
-      })
-    }
+    forEvery(starts) { (input, atype, result) => TestUtil.evaluate(input, atype, result, ZeroOp().q(atype.trace.head._2.q), compile = false)
     }
   }
 }

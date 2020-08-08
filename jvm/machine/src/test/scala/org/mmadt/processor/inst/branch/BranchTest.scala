@@ -30,7 +30,7 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
           // lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3))), // TODO: WHEN USING PATH, UNIQUNESS BASED ON OBJ GRAPH PATH!
           lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(2), 4)))))),*/
       )
-    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end, compile = false)
     }
   }
 
@@ -48,7 +48,7 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
           lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2, PlusOp(2), 4))),
           lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3, PlusOp(2), 5)))))),
       )
-    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end, compile = false)
     }
   }
 
@@ -70,7 +70,7 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
           lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
           lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3)))))),
       )
-    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end, compile = false)
     }
   }
 
@@ -95,7 +95,7 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
           lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
           lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3)))))),
       )
-    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end, compile = false)
     }
   }
 

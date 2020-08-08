@@ -84,20 +84,34 @@ trait Obj
     LanguageException.checkAnonymousTypeName(this, name)
     this.clone(name = name)
   }
-  def test(other: Obj): Boolean
   def <=[D <: Obj](domainType: D): this.type = {
     if (domainType.range.equals(this)) domainType.asInstanceOf[this.type]
     else if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert, domainType.via._2))
   }
-  lazy val range: Type[Obj] = asType(this.isolate)
-  lazy val domain: Type[Obj] = if (this.root) asType(this).asInstanceOf[Type[Obj]] else asType(this.via._1).domain
+  // obj path methods
+  def model: Model = Option(this.domainObj.via._1).getOrElse(ModelOp.EMPTY).asInstanceOf[Model]
+  lazy val rangeObj: this.type = this.clone(q = this.q, via = this.domainObj.via)
+  lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj
+  lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
+  def root: Boolean = null == this.via || null == this.via._2
+  def range: Type[Obj] = asType(this.rangeObj)
+  def domain: Type[Obj] = asType(this.domainObj)
+  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst))
+  def rinvert[R <: Obj]: R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
+  def linvert: this.type = {
+    if (this.root) throw LanguageException.zeroLengthPath(this)
+    this.trace.tail match {
+      case Nil => this.rangeObj
+      case incidentRoot => incidentRoot.foldLeft[Obj](incidentRoot.head._1.rangeObj)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
+    }
+  }
 
   // quantifier methods
   def q(f: IntQ => IntQ): this.type = this.q(f.apply(this.q))
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
-  def q(q: IntQ): this.type = if (q.equals(qZero)) this.isolate.clone(q = qZero) else this.clone(
-    q = if (this.root) q else multQ(this.q, q),
+  def q(q: IntQ): this.type = if (q.equals(qZero)) this.rangeObj.clone(q = qZero) else this.clone(
+    q = if (this.root) q else this.q.mult(q),
     via = if (this.root) this.via else (this.via._1, this.via._2.q(q)))
   def hardQ(f: IntQ => IntQ): this.type = this.hardQ(f.apply(this.q))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
@@ -105,23 +119,8 @@ trait Obj
   lazy val alive: Boolean = this.q != qZero
 
 
-  // via methods
-  def root: Boolean = null == this.via || null == this.via._2
-  lazy val isolate: this.type = this.clone(q = this.q, via = this.domainObj.via) // TODO: rename to like start/end (the non-typed versions of domain/range)
-  lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj // TODO: rename to like start/end (the non-typed versions of domain/range)
-  lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
-  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) multQ(obj.q, inst.q) else qZero, via = (obj, inst))
-  def rinvert[R <: Obj]: R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
-  def linvert: this.type = {
-    if (this.root) throw LanguageException.zeroLengthPath(this)
-    this.trace.tail match {
-      case Nil => this.isolate
-      case incidentRoot => incidentRoot.foldLeft[Obj](incidentRoot.head._1.isolate)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
-    }
-  }
-  def model: Model = if (null == this.domainObj.via._1) ModelOp.EMPTY else domainObj.via._1.asInstanceOf[Model]
-
   // utility methods
+  def test(other: Obj): Boolean
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
@@ -156,7 +155,7 @@ object Obj {
   val rootVia: ViaTuple = (null, null)
 
   def copyDefinitions(parent: Obj, child: Obj): child.type = ModelOp.updateModel(parent.model, // TODO: get rid of the model propagation instruction
-    parent.trace.filter(x => x._2.op == Tokens.model && child.isInstanceOf[Type[_]]).foldLeft(child.asInstanceOf[Obj])((a, b) => b._2.exec(a))).asInstanceOf[child.type]
+    parent.trace.filter(avia => avia.isOp(Tokens.model) && child.isInstanceOf[Type[_]]).foldLeft(child.asInstanceOf[Obj])((a, b) => b._2.exec(a))).asInstanceOf[child.type]
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
@@ -177,10 +176,10 @@ object Obj {
   def fetch[A <: Obj](source: Obj, matcher: Obj, label: String): Option[(String, A)] = {
     source match {
       case x if x.root => ModelOp.findType[A](x.model, label, matcher).map(y => (Tokens.model, toBaseName(y)))
-      case x if x.via._2.op == Tokens.to && x.via._2.arg0[StrValue].g == label =>
+      case x if x.via.isOp(Tokens.to) && x.via._2.arg0[StrValue].g == label =>
         source match {
           case _: Value[Obj] => Some((Tokens.to, x.via(source.via._1, source.via._2).asInstanceOf[A]))
-          case _: Type[Obj] => Some((Tokens.to, x.isolate.from(label).asInstanceOf[A]))
+          case _: Type[Obj] => Some((Tokens.to, x.rangeObj.from(label).asInstanceOf[A]))
         }
       case x => fetch(x.via._1, matcher, label)
     }

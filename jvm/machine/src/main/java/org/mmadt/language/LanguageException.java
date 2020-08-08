@@ -23,6 +23,7 @@
 package org.mmadt.language;
 
 import org.mmadt.VmException;
+import org.mmadt.language.obj.Inst;
 import org.mmadt.language.obj.Lst;
 import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.Rec;
@@ -68,6 +69,10 @@ public class LanguageException extends VmException {
 
     public static LanguageException unknownInstruction(final String op, final List<Obj> args) {
         return new LanguageException("[" + op + args.stream().map(Obj::toString).reduce("", (a, b) -> a + "," + b) + "] is an unknown instruction");
+    }
+
+    public static LanguageException unsupportedInstType(final Obj start, final Inst<?, ?> inst) {
+        return new LanguageException(start + " is not supported by " + inst);
     }
 
     public static LanguageException typeError(final Obj source, final String message) {

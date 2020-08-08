@@ -153,7 +153,7 @@ class AInstTest extends FunSuite with TableDrivenPropertyChecks {
         //
         (alst, str("a"), bfalse)
       )
-    forEvery(check) { (left, right, result) => TestUtil.evaluate(left, __.a(right), result, AOp(right))
+    forEvery(check) { (left, right, result) => TestUtil.evaluate(left, __.a(right), result, AOp(right),compile = false)
     }
   }
 

@@ -70,7 +70,7 @@ object Inst {
       Obj.fetch[A](obj, obj, arg.name).map(x => x._2).orElse[A](obj match {
         case _: Type[Obj] => return arg
         case _ =>
-          if (Obj.fetch(obj, __,arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
+          if (Obj.fetch(obj, __, arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
           else throw LanguageException.labelNotFound(obj, arg.name)
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
 

@@ -24,9 +24,8 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -72,14 +71,7 @@ class MultInstTest extends FunSuite with TableDrivenPropertyChecks {
         //  (("a" | "b" | "c").mult("1" `;` "2"), lst[Obj]("|", values = List(("a" `;` "1" `;` "2"), ("b" `;` "1" `;` "2"), ("c" `;` "1" `;` "2")): _*), "value"),
         //(("a" | "b" | "c").mult("1" |[Obj] "2"), lst[Obj]("|", values = ("a" | "1") | ("a" | "2") | ("b" | "1") | ("b" | "2") | ("c" | "1") | ("c" | "2")), "value")
       )
-    forEvery(starts) { (query, result, atype) => {
-      TestUtil.evaluate(query, __, result)
-      atype match {
-        case "value" => assert(query.isInstanceOf[Value[_]])
-        case "type" => assert(query.isInstanceOf[Type[_]])
-        case "strm" => assert(query.isInstanceOf[Strm[_]])
-      }
-    }
+    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
     }
   }
 }

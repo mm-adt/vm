@@ -24,9 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -63,14 +61,7 @@ class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).gte(real), bool(true, true, true), "strm"), // strm * type = strm
         (real(1.0, 2.0, 3.0).gte(__.mult(real)), bool(true, false, false), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (query, result, atype) => {
-      TestUtil.evaluate(query, __, result)
-      atype match {
-        case "value" => assert(query.isInstanceOf[Value[_]])
-        case "type" => assert(query.isInstanceOf[Type[_]])
-        case "strm" => assert(query.isInstanceOf[Strm[_]])
-      }
-    }
+    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
     }
   }
 }

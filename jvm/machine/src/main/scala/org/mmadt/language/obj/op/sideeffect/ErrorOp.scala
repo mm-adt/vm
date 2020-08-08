@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Obj, Poly}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 

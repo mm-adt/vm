@@ -24,10 +24,9 @@ package org.mmadt.processor.inst.filter
 
 import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -70,14 +69,7 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).is(__.lte(__.mult(real))), real(1.0, 2.0, 3.0), "strm"), // strm * anon = strm
 
       )
-    forEvery(starts) { (expr, result, atype) => {
-      TestUtil.evaluate(expr, __, result)
-      atype match {
-        case "value" => assert(expr.isInstanceOf[Value[_]])
-        case "type" => assert(expr.isInstanceOf[Type[_]])
-        case "strm" => assert(expr.isInstanceOf[Strm[_]])
-      }
-    }
+    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
     }
   }
 

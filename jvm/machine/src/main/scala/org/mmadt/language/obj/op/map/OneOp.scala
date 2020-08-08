@@ -22,9 +22,10 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Bool, Inst, Int, Obj, Real}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,6 +42,7 @@ object OneOp extends Func[Obj, Obj] {
     case _: Bool => btrue
     case _: Int => int(1)
     case _: Real => real(1.0)
+    case _: Value[_] => throw LanguageException.unsupportedInstType(start, inst)
     case _ => start
   }).via(start, inst)
 }

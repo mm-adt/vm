@@ -22,10 +22,10 @@
 
 package org.mmadt.processor.obj.`type`.rewrite
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
+import org.mmadt.language.obj.{Inst, Lst, Obj}
 
 object LeftRightRewrite extends Rewrite {
   def apply[O <: Obj](obj: O, writer: Writer): O = {

@@ -24,7 +24,6 @@ package org.mmadt.storage.obj.value
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
-import org.mmadt.language.obj._
 import org.mmadt.language.obj.value.IntValue
 import org.mmadt.storage.StorageFactory._
 

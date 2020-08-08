@@ -23,9 +23,9 @@
 package org.mmadt.processor.inst.trace
 
 import org.mmadt.TestUtil
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.AsOp
-import org.mmadt.language.obj.{Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}

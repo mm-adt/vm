@@ -38,7 +38,7 @@ object ModelOp extends Func[Obj, Obj] {
   def updateModel(amodel: Model, aobj: Obj): aobj.type = {
     if (amodel.isEmpty) aobj
     else if (aobj.root) aobj.clone(via = (aobj.model.merging(amodel), null))
-    else aobj.isolate.clone(via = (aobj.trace.dropRight(1).foldLeft(aobj.domainObj.clone(via = (amodel, null)).asInstanceOf[Obj])((a, b) => b._1.via(a, b._2)), aobj.via._2))
+    else aobj.rangeObj.clone(via = (aobj.trace.dropRight(1).foldLeft(aobj.domainObj.clone(via = (amodel, null)).asInstanceOf[Obj])((a, b) => b._1.via(a, b._2)), aobj.via._2))
   }
   def findType[A <: Obj](model: Model, label: String, source: Obj): Option[A] =
     (if (model.name.equals(label)) List(model).asInstanceOf[List[A]]

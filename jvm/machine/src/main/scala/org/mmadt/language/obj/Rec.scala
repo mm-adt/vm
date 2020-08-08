@@ -40,7 +40,10 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   with ZeroOp[Rec[A, Obj]] {
   def g: RecTuple[A, B]
   def gsep: String = g._1
-  lazy val gmap: collection.Map[A, B] = if(null == this.g._2) Map.empty[A,B] else if (this.isInstanceOf[Type[_]]) g._2 else g._2.map(x => Obj.copyDefinitions(this, x._1) -> Obj.copyDefinitions(this, x._2)).toMap
+  lazy val gmap: collection.Map[A, B] =
+    if (null == this.g._2) Map.empty[A, B]
+    else if (this.isInstanceOf[Type[_]]) g._2
+    else g._2.map(x => x._1.model(this.model).asInstanceOf[A] -> x._2.model(this.model).asInstanceOf[B]).toMap
   def glist: Seq[B] = gmap.values.toSeq
   def ctype: Boolean = null == g._2 // type token
 

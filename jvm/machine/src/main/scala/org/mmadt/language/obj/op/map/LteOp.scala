@@ -27,7 +27,6 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory.{bfalse, bool}
 import org.mmadt.storage.obj.value.VInst
 

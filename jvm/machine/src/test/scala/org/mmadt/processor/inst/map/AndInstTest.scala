@@ -22,11 +22,10 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.TestUtil
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.AndOp
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Bool, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
@@ -60,21 +59,7 @@ class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
         (bool(true, true, false), __.and(__.and(bool)), bool(true, true, false), "strm"), // strm * anon = strm
         (bool(true, true, false), __.and(__.and(bool.q(10))), bool(true, true, false), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (input, atype, result, kind) => {
-      // TestUtil.evaluate(input,atype,result)
-      List(
-        AndOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input.asInstanceOf[Bool]),
-        input.compute(asType(atype)),
-        input ==> atype,
-        input ==> asType(atype)).foreach(x => {
-        assertResult(result)(x)
-        kind match {
-          case "value" => assert(x.isInstanceOf[Value[_]])
-          case "type" => assert(x.isInstanceOf[Type[_]])
-          case "strm" => assert(x.isInstanceOf[Strm[_]])
-        }
-      })
-    }
+    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, AndOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q), compile = false)
     }
   }
 

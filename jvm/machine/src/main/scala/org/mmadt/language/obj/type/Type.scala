@@ -37,7 +37,7 @@ import scala.collection.mutable.ListBuffer
 trait Type[+T <: Obj] extends Obj with ExplainOp {
   // type signature properties and functions
   //def value: Any = throw LanguageException.typesNoValue(this)
-  override lazy val range: this.type = this.isolate
+  override lazy val range: this.type = this.rangeObj
 
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
@@ -95,6 +95,6 @@ object Type {
     !obj.trace.filter(x => !ModelOp.isMetaModel(x._2)).exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
   }
 
-  def tryCtype[A <: Obj](obj: A): A = if (obj.isInstanceOf[Type[_]] && isIdentity(obj) && obj.domain.q == qOne && pureQ(obj) == qOne) obj.isolate else obj
+  def tryCtype[A <: Obj](obj: A): A = if (obj.isInstanceOf[Type[_]] && isIdentity(obj) && obj.domain.q == qOne && pureQ(obj) == qOne) obj.rangeObj else obj
 
 }

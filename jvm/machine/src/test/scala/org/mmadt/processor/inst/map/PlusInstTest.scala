@@ -62,7 +62,7 @@ class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0), __.plus(real), real(2.0, 4.0, 6.0), "strm"), // strm * type = strm
         (real(1.0, 2.0, 3.0), __.plus(__.plus(real)), real(3.0, 6.0, 9.0), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, PlusOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q)) }
+    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, PlusOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q), compile = false) }
   }
   ///////////////////////////////////////////////////////////////////////
 

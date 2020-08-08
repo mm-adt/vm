@@ -23,8 +23,7 @@
 package org.mmadt.language.obj.op.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.{Bool, Inst, Obj}
 import org.mmadt.storage.StorageFactory._

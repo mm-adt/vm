@@ -24,10 +24,8 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map.EqsOp
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
@@ -66,21 +64,7 @@ class EqsInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0), __.eqs(real), bool(true, true, true), "strm"), // strm * type = strm
         (real(1.0, 2.0, 3.0), __.eqs(__.mult(real)), bool(true, false, false), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (input, atype, result, kind) => {
-      //TestUtil.evaluate(input,atype,result,EqsOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q))
-      List(
-        EqsOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q).exec(input),
-        input.compute(asType(atype)),
-        input ==> atype,
-        input ==> asType(atype)).foreach(x => {
-        assertResult(result)(x)
-        kind match {
-          case "value" => assert(x.isInstanceOf[Value[_]])
-          case "type" => assert(x.isInstanceOf[Type[_]])
-          case "strm" => assert(x.isInstanceOf[Strm[_]])
-        }
-      })
-    }
+    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, EqsOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q), compile = false)
     }
   }
 }

@@ -25,6 +25,7 @@ package org.mmadt.processor.inst.map
 import org.mmadt.TestUtil
 import org.mmadt.language.obj.Bool
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.map.NotOp
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -43,6 +44,6 @@ class NotInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.gt(10).q(0), bool.q(qZero)),
         (int(13).q(2).and(int.gt(10), int.lt(15)).q(10), bfalse.q(20)),
       )
-    forEvery(starts) { (left, right) => TestUtil.evaluate(left, __.not(__), right) }
+    forEvery(starts) { (left, right) => TestUtil.evaluate(left, __.not(__), right, NotOp(__), compile = false) }
   }
 }

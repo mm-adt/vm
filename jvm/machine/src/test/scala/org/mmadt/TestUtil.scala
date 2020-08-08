@@ -21,27 +21,28 @@ object TestUtil {
       obj.toStrm.values.foldLeft("{")((a, b) => a.concat(b + ",")).dropRight(1).concat("}")
   } else obj.toString
 
-  def evaluate(start: Obj, middle: Obj, end: Obj, inst: Inst[Obj, Obj] = null, engine: mmADTScriptEngine = engine): Unit = {
+  def evaluate(start: Obj, middle: Obj, end: Obj, inst: Inst[Obj, Obj] = null, engine: mmADTScriptEngine = engine, compile: Boolean = true): Unit = {
     engine.eval(":")
-    List(
-      //engine.eval(s"${stringify(start)} => ${middle}"),
-      start.compute(middle),
-      start ==> middle,
-      start `=>` middle,
-     // start `=>` (start.range ==> middle),
-     // start ==> (start.range ==> middle),
-      start `=>` (middle.domain ==> middle),
-      start ==> (middle.domain ==> middle),
-      //start `=>` (asType(start.isolate) ==> middle),
-      start ==> (asType(start.isolate) ==> middle),
-      // (asType(start.isolate) ==> middle).trace.foldLeft(start)((a, b) => b._2.exec(a))
-      // middle.trace.foldLeft(start)((a, b) => b._2.exec(a))
-      // Inst.resolveToken(start,middle),
-    ).foreach(example => {
-      assertResult(end)(example)
-    })
-    if (null != inst)
-      assertResult(end)(inst.exec(start))
+    val evaluating = List[Obj => Obj](
+      s => engine.eval(s"${stringify(s)} => ${middle}"),
+      s => s.compute(middle),
+      s => s ==> middle,
+      s => s `=>` middle,
+    )
+    val compiling = List[Obj => Obj](
+      s => (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)),
+      s => middle.trace.foldLeft(s)((a, b) => b._2.exec(a)),
+      s => s `=>` (start.range ==> middle),
+      s => s ==> (start.range ==> middle),
+      s => s `=>` (middle.domain ==> middle),
+      s => s ==> (middle.domain ==> middle),
+      s => s `=>` (asType(start.rangeObj) ==> middle),
+      s => s ==> (asType(start.rangeObj) ==> middle))
+    val instructioning = List[Obj => Obj](s => inst.exec(s))
+    (evaluating ++
+      (if (compile) compiling else Nil) ++
+      (if (null != inst) instructioning else Nil))
+      .foreach(example => assertResult(end)(example(start)))
   }
 }
 

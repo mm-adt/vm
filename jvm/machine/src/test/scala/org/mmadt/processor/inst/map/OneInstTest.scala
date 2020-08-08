@@ -23,8 +23,10 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.map.OneOp
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
@@ -57,6 +59,10 @@ class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(-1.0, -2.0, -3.0).id().q(10).one(), real(1.0).q(30)),
         (real(-1.0, -2.0, -3.0).q(3).id().q(10).one(), real(1.0).q(90)),
       )
-    forEvery(starts) { (query, result) => TestUtil.evaluate(query, __, result) }
+    forEvery(starts) { (query, result) => TestUtil.evaluate(query, __, result, OneOp(), compile = false) }
+  }
+
+  test("[one] failures") {
+    assertResult(LanguageException.unsupportedInstType(str("a"), OneOp()).getMessage)(intercept[LanguageException](str("a") ==> __.one()).getMessage)
   }
 }
