@@ -48,25 +48,4 @@ object DefineOp extends Func[Obj, Obj] {
       case _ => inst.args.foldLeft(start)((a, b) => a.model(a.model.defining(b)))
     }
   }
-  @inline implicit def modelToRichModel(ground: Model): RichModel = new RichModel(ground)
-  class RichModel(val model: Model) {
-    final def definitions: List[Obj] = {
-      val map: collection.Map[StrValue, ModelOp.ModelMap] = Option(model.g._2).getOrElse(collection.Map.empty).asInstanceOf[collection.Map[StrValue, ModelOp.ModelMap]]
-      val typesMap: collection.Map[Type[Obj], Lst[Obj]] = Option(map.getOrElse[Rec[Type[Obj], Lst[Obj]]](ModelOp.TYPE, rec[Type[Obj], Lst[Obj]]).g._2).getOrElse(collection.Map.empty)
-      typesMap.flatMap(x => x._2.glist).toList
-    }
-    final def defining(definition: Obj): Model = {
-      val map: collection.Map[StrValue, ModelOp.ModelMap] = Option(model.g._2).getOrElse(collection.Map.empty).asInstanceOf[collection.Map[StrValue, ModelOp.ModelMap]]
-      val typesMap: collection.Map[Type[Obj], Lst[Obj]] = Option(map.getOrElse[Rec[Type[Obj], Lst[Obj]]](ModelOp.TYPE, rec[Type[Obj], Lst[Obj]]).g._2).getOrElse(collection.Map.empty)
-      val typeList: List[Obj] = Option(typesMap.getOrElse[Lst[Obj]](definition.range, lst).g._2).getOrElse(Nil)
-      if (typeList.contains(definition)) model
-      else rec(g = (Tokens.`,`, map + (ModelOp.TYPE -> rec(g = (Tokens.`,`, typesMap + (definition.range -> lst(g = (Tokens.`,`, typeList :+ definition))))))))
-    }
-    final def merging(other: Model): Model = {
-     if(other.isEmpty) return model
-     else if(model.isEmpty) return other
-      val x: Model = other.g._2.getOrElse[Rec[Type[Obj], Lst[Obj]]](ModelOp.TYPE, rec[Type[Obj], Lst[Obj]]).g._2.flatMap(x => x._2.g._2).foldLeft(model)((a, b) => a.defining(b))
-      rec(g = (Tokens.`,`, x.g._2 + (ModelOp.PATH -> other.g._2.getOrElse(ModelOp.PATH, rec[Type[Obj], Lst[Obj]]))))
-    }
-  }
 }

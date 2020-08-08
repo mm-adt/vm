@@ -23,16 +23,22 @@
 package org.mmadt.processor.obj.`type`.rewrite
 
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage.StorageFactory.qZero
 
 object TraceScanRewrite extends Rewrite {
 
+  private def getPolyOrObj(obj: Obj): Obj = obj.domain match {
+    case alst: Lst[_] => alst.glist.head
+    case _ => obj
+  }
+
   override def apply[A <: Obj](obj: A, writer: Writer): A = {
-    val rewrites = getRewrites(OpInstResolver.applyRewrites(obj))
-    var a: Obj = removeRewrites(obj)
+    val rewrites = ModelOp.getRewrites(OpInstResolver.applyRewrites(obj).model).sortBy(x => -x.domainObj.trace.length)
+    var a: Obj = obj
     var b: Obj = a
     rewrites.foreach(d => {
       a = b
@@ -42,7 +48,7 @@ object TraceScanRewrite extends Rewrite {
       val domainTrace = domain.trace.map(x => x._2)
       val length = domainTrace.length
       while (!a.root) {
-        val aTrace: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(rewrites, x, writer)).take(length)
+        val aTrace: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(x, writer)).take(length)
         if (aTrace.length == length) {
           val aTraceRewrite = aTrace.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
           if (aTraceRewrite.forall(x => x.alive)) { // the entire window matches, write the range instructions to the type
@@ -58,15 +64,15 @@ object TraceScanRewrite extends Rewrite {
         }
       }
     })
-    if (!rewriteLessEquals(b, obj)) b = TraceScanRewrite(putRewrites(rewrites, b), writer)
-    removeRewrites(b).asInstanceOf[A]
+    if (!b.equals(obj)) b = TraceScanRewrite(b, writer)
+    b.asInstanceOf[A]
   }
 
-  private def rewriteInstArgs(rewrites: List[Obj], inst: Inst[Obj, Obj], rewrite: Writer): Inst[Obj, Obj] = inst match {
+  private def rewriteInstArgs(inst: Inst[Obj, Obj], rewrite: Writer): Inst[Obj, Obj] = inst match {
     case _: TraceInstruction => inst
     case _: BranchInstruction => inst
     case _ => OpInstResolver.resolve(inst.op, inst.args.map {
-      case atype: Type[_] => TraceScanRewrite(putRewrites(rewrites, atype), rewrite)
+      case atype: Type[_] => TraceScanRewrite(atype, rewrite)
       case avalue: Value[_] => avalue
     })
   }
@@ -79,7 +85,6 @@ object TraceScanRewrite extends Rewrite {
 
   // def chooseRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = query.split(range.foldLeft(query.domainObj)((x, y) => y.exec(x)) `|` trace.filter(x => x.op != Tokens.rewrite).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x))).merge
   def replaceRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = {
-    //println(range + "####" + trace)
     if (range.length == trace.length) {
       query.compute(trace
         .zip(range)

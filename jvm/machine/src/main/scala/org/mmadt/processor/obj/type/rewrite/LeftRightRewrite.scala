@@ -34,7 +34,7 @@ object LeftRightRewrite extends Rewrite {
     val defines = obj.trace.map(x => x._2).filter(x => x.op.equals(Tokens.define)).map(x => x.arg0[Obj])
     var mutating: O = obj.domain.asInstanceOf[O]
     var previous: O = obj
-    while (!rewriteLessEquals(previous, mutating)) {
+    while (!previous.equals(mutating)) {
       mutating = previous
       previous = LeftRightRewrite.rewrite(defines, mutating, obj.domain, obj.domain).asInstanceOf[O]
     }
@@ -70,7 +70,7 @@ object LeftRightRewrite extends Rewrite {
     defines.map(a => Some(a.domain match {
       case apoly: Lst[_] => apoly.glist.head
       case btype: Type[_] => btype
-    }).filter(x => rewriteLessEquals(x, atype))
+    }).filter(x => x.equals(atype))
       .map(_ => {
         bindLeftValuesToRightVariables(a.range match {
           case apoly: Lst[_] => apoly.glist.head

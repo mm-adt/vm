@@ -1230,7 +1230,7 @@ class mmlangScriptEngineTest extends FunSuite {
          |  *1*0+36+0[plus,*0][plus,int[neg][plus,0][neg][neg]]""".stripMargin)
      assertResult(int(0))(x)*/
     // assertResult(int.plus(int).mult(int).plus(1))(x)
-    assertResult(int)(engine.eval("int[rewrite,int<=(int[mult,1])][mult,1]"))
+    assertResult(int)(engine.eval("int[rewrite,(int)<=(int[mult,1])][mult,1]"))
     println(engine.eval("10[define,big<=int[plus,100]][plus,big]"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))

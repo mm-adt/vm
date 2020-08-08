@@ -53,8 +53,8 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     processor = Processor.compiler
     val rewrites = int
       .rewrite((int.plus(int) `,`) <= (int.mult(2) `,`))
-      .rewrite(int <= (int.plus(0) `,`))
-      .rewrite(int <= (int.plus(1).plus(-1) `,`))
+      .rewrite((int`,`) <= (int.plus(0) `,`))
+      .rewrite((int`,`) <= (int.plus(1).plus(-1) `,`))
     /////
     forAll(Table(
       "int reductions",
@@ -80,7 +80,7 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
     val rewrites = int
       .rewrite((int.mult(2) `;`) <= (int.plus(int) `;`))
       .rewrite((int.mult(4) `;`) <= (int.mult(2).mult(2) `;`))
-      .rewrite(int <= (int.plus(1).plus(-1) `;`))
+      .rewrite((int`,`) <= (int.plus(1).plus(-1) `;`))
     /////
     assertResult(int.mult(2))(processor.apply(int, rewrites `=>` int.plus(int)))
     assertResult(int.mult(4))(processor.apply(int, rewrites `=>` int.plus(int).mult(int(2))))
@@ -91,11 +91,11 @@ class CompilingProcessorTest extends FunSuite with TableDrivenPropertyChecks wit
 
     val definitions = int
       //.define((int.mult(2)`;`)<=(int.plus(int)`;`))
-      .rewrite(int <= (int.plus(0) `;`))
+      .rewrite((int`,`) <= (int.plus(0) `;`))
     //      .rewrite((int.zero() `;`) <= (int.plus(1).plus(-1) `;`))
     //  assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1))))
     //    assertResult(int)(processor.apply(definitions.plus(int.plus(1).plus(-1)).plus(0)))
-    assertResult(int.plus(int.plus(2).plus(3).plus(4)))(processor.apply(definitions.plus(int.plus(2).plus(3).plus(4))))
+   assertResult(int.plus(int.plus(2).plus(3).plus(4)))(processor.apply(definitions.plus(int.plus(2).plus(3).plus(4))))
     assertResult(int.plus(int))(processor.apply(definitions.plus(0).plus(int.plus(0))))
     //  assertResult(int)(processor.apply(definitions.plus(0).plus(int.plus(int(1)).plus(-1).plus(int(0)))))
   }

@@ -46,7 +46,7 @@ object PathOp extends Func[Obj, Lst[Obj]] {
     case _: Strm[_] => start
     case _ => lst(
       inst.arg0[Lst[Obj]].gsep,
-      start.trace.filter(x => !ModelOp.isMetaModel(x._2)).foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(inst.arg0[Lst[Obj]]).g._2.filter(_.alive)) :+ start: _*)
+      start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(inst.arg0[Lst[Obj]]).g._2.filter(_.alive)) :+ start: _*)
   }).via(start, inst).asInstanceOf[Lst[Obj]]
 
   @inline implicit def viaToRichVia(baseVia: ViaTuple): RichVia = new RichVia(baseVia)
