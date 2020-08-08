@@ -57,18 +57,18 @@ object ExplainOp extends Func[Obj, Str] {
           List(explain(a._1 match {
             case btype: Type[_] => btype
             case bvalue: Value[_] => bvalue.start()
-          }, state, depth + 1),
+          }, mutable.LinkedHashMap(state.toSeq: _*), depth + 1),
             explain(a._2 match {
               case btype: Type[_] => btype
               case bvalue: Value[_] => bvalue.start()
-            }, state, depth + 1, "->"))
+            }, mutable.LinkedHashMap(state.toSeq: _*), depth + 1, "->"))
         }
         }.flatten
         case branches: Lst[_] if b._2.isInstanceOf[BranchInstruction] => branches.glist.map {
           case btype: Type[_] => btype
           case bvalue: Value[_] => bvalue.start()
         }.flatMap(x => explain(x, state, depth + 1))
-        case btype: Type[Obj] => explain(btype, state, depth + 1)
+        case btype: Type[Obj] => explain(btype, mutable.LinkedHashMap(state.toSeq: _*), depth + 1)
         case _ => Nil
       }))
       temp ++ inner
