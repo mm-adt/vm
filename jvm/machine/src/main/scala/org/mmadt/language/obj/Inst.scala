@@ -65,7 +65,7 @@ trait Inst[S <: Obj, +E <: Obj] extends LstType[S] {
 object Inst {
   def oldInst[S <: Obj, E <: Obj](newInst: Inst[S, E]): Inst[S, E] = newInst.clone(g = (newInst.g._1, newInst.via._1.asInstanceOf[Inst[Obj, Obj]].g._2)).asInstanceOf[Inst[S, E]]
 
-  def resolveToken[A <: Obj](obj: Obj, arg: A): A =
+  def resolveToken[A <: Obj](obj: Obj, arg: A): A = {
     if (__.isToken(arg))
       obj.model.search[A](arg.name, obj.asInstanceOf[A]).orElse[A](obj match {
         case _: Type[Obj] => return arg
@@ -73,6 +73,7 @@ object Inst {
           if (obj.model.search[A](arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
           else throw LanguageException.labelNotFound(obj, arg.name)
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
+  }
 
   def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     if (!obj.alive || !arg.alive) return arg.hardQ(qZero)

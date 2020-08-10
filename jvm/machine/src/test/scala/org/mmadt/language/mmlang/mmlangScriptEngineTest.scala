@@ -321,18 +321,18 @@ class mmlangScriptEngineTest extends FunSuite {
     assert(engine.eval("int{3}[+1,+2,+3][explain]").toString.contains("[int{3}[plus,1],int{3}[plus,2],int{3}[pl..."))
     assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("instruction"))
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("z->bool"))
-    /* assertResult(str("\n" +
-       "int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,int<.z>]][plus,int<.y>]][plus,int<.x>]\n\n" +
+     assertResult(str("\n" +
+       "int<x>[plus,int<y>[plus,int<z>[plus,int<.x>][plus,int<.y>][plus,int<.z>]][plus,int<.y>]][plus,int<.x>]\n\n" +
        "instruction                                    domain      range state\n" +
        "-----------------------------------------------------------------------\n" +
-       "[plus,int<y>[plus,int<z>[plus,x][plus,y]...    int    =>   int    x->int \n" +
-       " [plus,int<z>[plus,x][plus,y][plus,int<.z...    int   =>    int   x->int y->int \n" +
-       "  [plus,x]                                       int  =>     int  x->int y->int z->int \n" +
-       "  [plus,y]                                       int  =>     int  x->int y->int z->int \n" +
+       "[plus,int<y>[plus,int<z>[plus,int<.x>][p...    int    =>   int    x->int \n" +
+       " [plus,int<z>[plus,int<.x>][plus,int<.y>]...    int   =>    int   x->int y->int \n" +
+       "  [plus,int<.x>]                                 int  =>     int  x->int y->int z->int \n" +
+       "  [plus,int<.y>]                                 int  =>     int  x->int y->int z->int \n" +
        "  [plus,int<.z>]                                 int  =>     int  x->int y->int z->int \n" +
        " [plus,int<.y>]                                 int   =>    int   x->int y->int \n" +
        "[plus,int<.x>]                                 int    =>   int    x->int \n"))(
-       engine.eval("int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]"))*/
+       engine.eval("int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]"))
   }
 
   test("[path] access parsing") {
@@ -1233,7 +1233,7 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("10[define,big<=int[plus,100]][plus,big]"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))
-    //  println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
+      println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
     //println(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
     //println(engine.eval("(1,(2,3))=(_,=(<y>,[id]))>-"))
     println(engine.eval("(1,2,(3,(4,5)))=(_,_,=(int,=(+20,+10)))"))

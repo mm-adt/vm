@@ -54,7 +54,7 @@ object ModelOp extends Func[Obj, Obj] {
         .find(y => if (source.equals(__)) true else source.test(y.domain.hardQ(source.q)))
 
     final def search[A <: Obj](name: StrValue, matcher: A = __.asInstanceOf[A]): Option[A] =
-      model.vars[A](name).map(x => x.update(model)).orElse(findType[A](model, name.g, matcher).map(y => toBaseName(y)))
+      model.vars[A](name).map(x => if (x.isInstanceOf[Type[_]]) x.from(name) else x).orElse(findType[A](model, name.g, matcher).map(y => toBaseName(y))).map(x => x.update(model))
     final def rewrites: List[Obj] = model.gmap.getOrElse[ModelMap](PATH, NOREC).gmap.values
       .flatMap(y => y.g._2)
       .filter(y => y.isInstanceOf[Lst[Obj]] && y.domain.isInstanceOf[Lst[Obj]] && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty).toList
@@ -72,10 +72,10 @@ object ModelOp extends Func[Obj, Obj] {
     }
 
     final def varing(key: StrValue, value: Obj): Model = {
-      if (value.isInstanceOf[Type[_]]) return model
+      if (model.vars(key).isDefined && value.isInstanceOf[Type[_]]) return model
       val map = Option(model.g._2).getOrElse(NOROOT)
       val typesMap = Option(map.getOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
-      rec(g = (Tokens.`,`, map + (ModelOp.VAR -> rec(g = (Tokens.`,`, typesMap + (key -> lst(g = (Tokens.`,`, List(value)))))))))
+      rec(g = (Tokens.`,`, map + (ModelOp.VAR -> rec(g = (Tokens.`,`, typesMap + (key -> lst(g = (Tokens.`,`, List(value.rangeObj)))))))))
     }
 
     final def rewriting(rewrite: Lst[Obj]): Model = {

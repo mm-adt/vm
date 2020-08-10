@@ -41,7 +41,7 @@ object ToOp extends Func[Obj, Obj] {
   def apply[O <: Obj](label: StrValue): Inst[O, O] = new VInst[O, O](g = (Tokens.to, List(label.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
-    start.via(start, inst).update(start.model.varing(inst.arg0[StrValue], start.rangeObj))
+    start.via(start.update(start.model.varing(inst.arg0[StrValue], start)), inst)
   }
 }
 
