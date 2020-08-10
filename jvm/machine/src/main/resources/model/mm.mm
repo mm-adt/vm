@@ -5,6 +5,6 @@ mm:('type' -> (bool -> (bool),
                lst  -> (lst),
                rec  -> (rec)),
     'path' -> (int  -> ((int)<=(int[neg][neg]),
-                       (int)<=(int[plus,0]),
-                       (int)<=(int[mult,1]),
-                       ([0])<=(int[mult,0]))))
+                        (int)<=(int[plus,0]),
+                        (int)<=(int[mult,1]),
+                        ([0])<=(int[mult,0]))))

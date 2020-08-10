@@ -37,7 +37,7 @@ object TraceScanRewrite extends Rewrite {
   }
 
   override def apply[A <: Obj](obj: A, writer: Writer): A = {
-    val rewrites = ModelOp.getRewrites(OpInstResolver.applyRewrites(obj).model).sortBy(x => -x.domainObj.trace.length)
+    val rewrites = OpInstResolver.applyRewrites(obj).model.rewrites.sortBy(x => -x.domainObj.trace.length)
     var a: Obj = obj
     var b: Obj = a
     rewrites.foreach(d => {

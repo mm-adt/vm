@@ -129,9 +129,9 @@ trait Obj
   def ==>[E <: Obj](target: E): E = {
     if (!target.alive) return zeroObj.asInstanceOf[E]
     target match {
-      case _: Value[_] => target.hardQ(q => multQ(this.q, q)).asInstanceOf[E]
+      case _: Value[_] => target.hardQ(q => multQ(this.q, q))
       case rangeType: Type[E] =>
-        LanguageException.testTypeCheck(this.range, target.domain)
+        LanguageException.testTypeCheck(this.range, rangeType.domain)
         this match {
           case _: Value[_] => AsOp.autoAsType(this, x => Processor.iterator(x, rangeType), rangeType)
           case _: Type[_] => AsOp.autoAsType(this, x => Processor.compiler(x, rangeType), rangeType)

@@ -1197,7 +1197,7 @@ class mmlangScriptEngineTest extends FunSuite {
     engine.eval(":")
     val mm: Model = LoadOp.loadObj[Model](getClass.getResource("/model/mm.mm").getPath)
     assert(toBaseName(mm).toString.nonEmpty)
-    assert(ModelOp.getRewrites(mm).nonEmpty)
+    assert(mm.rewrites.nonEmpty)
     //println(mm.named("rec"))
     engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(":", __.model(mm))
     // assertResult(13.q(8))(engine.eval("10 int[plus,1]{2}[plus,2]{4}"))
