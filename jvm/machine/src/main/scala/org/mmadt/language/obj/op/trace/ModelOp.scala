@@ -55,6 +55,7 @@ object ModelOp extends Func[Obj, Obj] {
 
     final def search[A <: Obj](name: StrValue, matcher: A = __.asInstanceOf[A]): Option[A] =
       model.vars[A](name).map(x => if (x.isInstanceOf[Type[_]]) x.from(name) else x).orElse(findType[A](model, name.g, matcher).map(y => toBaseName(y))).map(x => x.update(model))
+
     final def rewrites: List[Obj] = model.gmap.getOrElse[ModelMap](PATH, NOREC).gmap.values
       .flatMap(y => y.g._2)
       .filter(y => y.isInstanceOf[Lst[Obj]] && y.domain.isInstanceOf[Lst[Obj]] && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty).toList
@@ -102,5 +103,4 @@ object ModelOp extends Func[Obj, Obj] {
       rec(g = (Tokens.`,`, x.g._2 + (ModelOp.PATH -> other.g._2.getOrElse(ModelOp.PATH, NOREC))))
     }
   }
-
 }

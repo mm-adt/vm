@@ -33,6 +33,13 @@ import org.scalatest.prop.TableDrivenPropertyChecks
  */
 class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
 
+  test("[to][from] model") {
+    val model = int.to("y").plus(2).to("x").plus(int.to("z").from("y")).model
+    assert(model.vars("x").isDefined)
+    assert(model.vars("y").isDefined)
+    assert(model.vars("z").isEmpty)
+  }
+
   test("[to][from] w/ values") {
     assertResult("int<x>[plus,1]<.x>")(int.to("x").plus(1).from("x").toString)
     assertResult("int<x>[plus,1]<.x>")(int.to("x").plus(1).from("x").toString)
