@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
@@ -38,7 +39,10 @@ trait ToOp {
 }
 object ToOp extends Func[Obj, Obj] {
   def apply[O <: Obj](label: StrValue): Inst[O, O] = new VInst[O, O](g = (Tokens.to, List(label.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.via(start, inst)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
+    start.via(start, inst).update(start.model.varing(inst.arg0[StrValue], start.rangeObj))
+  }
 }
 
 

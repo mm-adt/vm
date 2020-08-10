@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
@@ -45,7 +45,7 @@ object FromOp extends Func[Obj, Obj] {
   def apply[O <: Obj](label: StrValue, default: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.from, List(label, default)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     if (start.isInstanceOf[Strm[_]]) start.via(start, inst)
-    else Obj.fetch[Obj](start, __,inst.arg0[StrValue].g).filter(x => Tokens.to == x._1).map(x => x._2).getOrElse(
+    else start.model.vars(inst.arg0[StrValue]).getOrElse(
       start match {
         case _: Type[_] => inst.args.tail.headOption.getOrElse(asType(start))
         case _: Value[_] => inst.args.tail.headOption.map(x => Inst.resolveArg(start, x)).getOrElse(throw LanguageException.labelNotFound(start.path(PathOp.VERTICES), inst.arg0[StrValue].g))

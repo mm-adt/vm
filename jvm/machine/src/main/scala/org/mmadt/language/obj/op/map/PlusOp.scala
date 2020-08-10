@@ -62,6 +62,7 @@ object PlusOp extends Func[Obj, Obj] {
       case plusB: Lst[Obj] if plusB.isPlus => plusA.clone(g = (plusA.gsep, plusA.glist ++ plusB.glist))
     }
   }) match {
+    case x: Failure[_] if x.exception.isInstanceOf[LanguageException] => throw x.exception
     case _: Failure[_] => throw LanguageException.typingError(start, asType(inst.arg0[Obj]))
     case x: Success[Obj] => x.value.via(start, inst)
   }

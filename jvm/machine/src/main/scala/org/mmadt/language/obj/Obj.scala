@@ -133,8 +133,8 @@ trait Obj
       case rangeType: Type[E] =>
         LanguageException.testTypeCheck(this.range, rangeType.domain)
         this match {
-          case _: Value[_] => AsOp.autoAsType(this, x => Processor.iterator(x, rangeType), rangeType)
-          case _: Type[_] => AsOp.autoAsType(this, x => Processor.compiler(x, rangeType), rangeType)
+          case _: Value[_] => AsOp.autoAsType(this.update(target.model), x => Processor.iterator(x, rangeType), rangeType)
+          case _: Type[_] => AsOp.autoAsType(this.update(target.model), x => Processor.compiler(x, rangeType), rangeType)
         }
     }
   }
@@ -150,13 +150,9 @@ trait Obj
 }
 
 object Obj {
-
   type IntQ = (IntValue, IntValue)
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   val rootVia: ViaTuple = (null, null)
-
-  def copyDefinitions(parent: Obj, child: Obj): child.type = ModelOp.updateModel(parent.model, // TODO: get rid of the model propagation instruction
-    parent.trace.filter(avia => avia.isOp(Tokens.model) && child.isInstanceOf[Type[_]]).foldLeft(child.asInstanceOf[Obj])((a, b) => b._2.exec(a))).asInstanceOf[child.type]
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
@@ -170,19 +166,6 @@ object Obj {
           .map(x => Obj.internal(x, rangeType.linvert))
           .getOrElse(domainObj.asInstanceOf[E])
       case _ => rangeType.q(multQ(domainObj.q, rangeType.q))
-    }
-  }
-
-  @scala.annotation.tailrec
-  def fetch[A <: Obj](source: Obj, matcher: Obj, label: String): Option[(String, A)] = {
-    source match {
-      case x if x.root => ModelOp.findType[A](x.model, label, matcher).map(y => (Tokens.model, toBaseName(y)))
-      case x if x.via.isOp(Tokens.to) && x.via._2.arg0[StrValue].g == label =>
-        source match {
-          case _: Value[Obj] => Some((Tokens.to, x.via(source.via._1, source.via._2).asInstanceOf[A]))
-          case _: Type[Obj] => Some((Tokens.to, x.rangeObj.from(label).asInstanceOf[A]))
-        }
-      case x => fetch(x.via._1, matcher, label)
     }
   }
 

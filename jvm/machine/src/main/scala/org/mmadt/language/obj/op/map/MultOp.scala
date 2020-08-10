@@ -59,6 +59,7 @@ object MultOp extends Func[Obj, Obj] {
       case plusB: Lst[Obj] if plusB.isPlus => multA.clone(g = (multA.gsep, multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b)))))
     }
   }) match {
+    case x: Failure[_] if x.exception.isInstanceOf[LanguageException] => throw x.exception
     case _: Failure[_] => throw LanguageException.typingError(start, asType(inst.arg0[Obj]))
     case x: Success[Obj] => x.value.via(start, inst)
   }

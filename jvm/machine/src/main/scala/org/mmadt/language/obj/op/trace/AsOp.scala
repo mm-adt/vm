@@ -57,14 +57,14 @@ object AsOp extends Func[Obj, Obj] {
     source match {
       case value: Strm[Obj] => value(x => AsOp.autoAsType(x, target, rangeType, domain))
       case _ =>
-        if (source.rangeObj.equals(target.rangeObj) || __.isAnon(target) || Obj.fetch(source, __, target.name).exists(x => Tokens.to == x._1)) source
+        if (source.rangeObj.equals(target.rangeObj) || __.isAnon(target) || source.model.vars(target.name).isDefined) source
         else if (baseName(target).equals(baseName(source))) source.named(target.name)
         else {
           source match {
             case _: Value[_] =>
               if (!__.isToken(target) || source.name.equals(target.name)) source
-              else internalConvertAs(source.model(rangeType.model), target).hardQ(source.q)
-            case _: Type[_] if domain => if (!__.isToken(target)) source else Obj.copyDefinitions(source, target) // TODO: def/model equality issues
+              else internalConvertAs(source.update(rangeType.model), target).hardQ(source.q)
+            case _: Type[_] if domain => if (!__.isToken(target)) source else target.update(source.model) // TODO: def/model equality issues
             case _: Type[_] => target <= source
           }
         }
@@ -72,7 +72,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def internalConvertAs(source: Obj, target: Obj): Obj = {
-    val asObj: Obj = if (source.isInstanceOf[Type[_]]) target.model(source.model) else Inst.resolveToken(source, target)
+    val asObj: Obj = if (source.isInstanceOf[Type[_]]) target.update(source.model) else Inst.resolveToken(source, target)
     val dObj: Obj = pickMapping(source, asObj)
     val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, asObj.range) else dObj
     val result = (if (Tokens.named(target.name)) rObj.named(target.name) else rObj)
@@ -83,7 +83,7 @@ object AsOp extends Func[Obj, Obj] {
   private def pickMapping(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {
-      val defined = Obj.fetch[Obj](start, start, asObj.name).map(x => x._2)
+      val defined = start.model.search(asObj.name, start)
       start match {
         case _: Type[Obj] => asObj
         case _ if defined.isDefined => Inst.resolveArg(start, defined.get)

@@ -67,10 +67,10 @@ object Inst {
 
   def resolveToken[A <: Obj](obj: Obj, arg: A): A =
     if (__.isToken(arg))
-      Obj.fetch[A](obj, obj, arg.name).map(x => x._2).orElse[A](obj match {
+      obj.model.search[A](arg.name, obj.asInstanceOf[A]).orElse[A](obj match {
         case _: Type[Obj] => return arg
         case _ =>
-          if (Obj.fetch(obj, __, arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
+          if (obj.model.search[A](arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
           else throw LanguageException.labelNotFound(obj, arg.name)
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
 
@@ -82,7 +82,7 @@ object Inst {
       case typeArg: OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>
         obj match {
           case _: Value[_] => obj.compute(typeArg)
-          case _: Type[_] => obj.range.compute(typeArg)
+          case _: Type[_] => obj.range.update(obj.model).compute(typeArg)
         }
       case _ => arg.hardQ(qZero)
     }
