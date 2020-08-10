@@ -23,8 +23,10 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.map.GteOp
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -63,5 +65,9 @@ class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
       )
     forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
     }
+  }
+
+  test("[gte] exceptions") {
+    assertResult(LanguageException.unsupportedInstType(bfalse, GteOp(btrue)).getMessage)(intercept[LanguageException](bfalse ==> __.gte(btrue)).getMessage)
   }
 }

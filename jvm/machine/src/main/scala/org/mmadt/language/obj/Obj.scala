@@ -125,6 +125,7 @@ trait Obj
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   def compute[E <: Obj](rangeType: E): E = AsOp.autoAsType(this, x => Obj.internal(x, rangeType), rangeType)
+
   def ==>[E <: Obj](target: E): E = {
     if (!target.alive) return zeroObj.asInstanceOf[E]
     target match {

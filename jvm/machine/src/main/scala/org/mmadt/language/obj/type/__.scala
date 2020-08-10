@@ -24,11 +24,11 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.MergeOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.{Inst, Obj, _}
 import org.mmadt.storage.StorageFactory._
 
 /**

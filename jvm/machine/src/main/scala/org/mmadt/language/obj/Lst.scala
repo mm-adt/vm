@@ -101,4 +101,12 @@ object Lst {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
     apoly.clone(g = (apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
   }
+
+  def cmult[A <: Obj](apoly: Lst[A], bpoly: Lst[A]): Lst[A] = {
+    var clist: List[A] = Nil
+    apoly.glist.foreach(a => bpoly.glist.foreach(b => {
+      clist = clist :+ (a `=>` b)
+    }))
+    lst(g = (Tokens.`,`, clist))
+  }
 }

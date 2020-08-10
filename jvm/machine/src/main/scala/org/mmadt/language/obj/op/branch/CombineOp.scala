@@ -43,7 +43,7 @@ object CombineOp extends Func[Obj, Lst[Obj]] {
       case astrm: LstStrm[Obj] => astrm.via(start, inst)
       case alst: Lst[Obj] =>
         val arg = inst.arg0[Lst[Obj]]
-        val combinedPoly: Lst[Obj] = alst.clone(g = (arg.gsep, alst.glist.zip(arg.glist).map(a => Inst.resolveArg(a._1, a._2))))
+        val combinedPoly: Lst[Obj] = alst.clone(g = (arg.gsep, alst.glist.zip(arg.glist).map(a => a._1.compute(a._2))))
         (combinedPoly.gsep match {
           case Tokens.| => Lst.keepFirst(combinedPoly)
           case _ => combinedPoly

@@ -23,8 +23,10 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.map.GtOp
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -85,4 +87,9 @@ class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
     }
   }
+
+  test("[gt] exceptions") {
+    assertResult(LanguageException.unsupportedInstType(bfalse, GtOp(btrue)).getMessage)(intercept[LanguageException](bfalse ==> __.gt(btrue)).getMessage)
+  }
+
 }
