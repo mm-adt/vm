@@ -61,7 +61,7 @@ object AsOp extends Func[Obj, Obj] {
         else {
           source match {
             case _: Value[_] if baseName(target).equals(baseName(source)) =>
-              LanguageException.testTypeCheck(source,asType(target))
+              LanguageException.testTypeCheck(source, asType(target))
               source.named(target.name)
             case _: Value[_] => internalConvertAs(source, target).hardQ(source.q)
             case _: Type[_] if domain => if (!__.isToken(target)) source else target.update(source.model) // TODO: def/model equality issues
@@ -73,7 +73,7 @@ object AsOp extends Func[Obj, Obj] {
 
   private def internalConvertAs(source: Obj, target: Obj): Obj = {
     val asObj: Obj = Inst.resolveToken(source, target)
-    val dObj: Obj = pickMapping(source, asObj)
+    val dObj: Obj = pickMapping(source, asObj).update(source.model)
     val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, asObj.range) else dObj
     val result = if (Tokens.named(target.name)) rObj.named(target.name) else rObj
     if (!result.alive) throw LanguageException.typingError(source, asType(asObj.named(target.name)))
@@ -84,7 +84,7 @@ object AsOp extends Func[Obj, Obj] {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {
       val defined = start.model.search(asObj.name, start)
-      start match {
+      (start match {
         case _: Type[Obj] => asObj
         case _ if defined.isDefined => Inst.resolveArg(start, defined.get)
         case abool: Bool => boolConverter(abool, asObj)
@@ -93,7 +93,7 @@ object AsOp extends Func[Obj, Obj] {
         case astr: Str => strConverter(astr, asObj)
         case alst: Lst[Obj] => lstConverter(alst, asObj)
         case arec: Rec[Obj, Obj] => recConverter(arec, asObj)
-      }
+      }).update(start.model)
     }
   }
   private def boolConverter(x: Bool, y: Obj): Obj = {

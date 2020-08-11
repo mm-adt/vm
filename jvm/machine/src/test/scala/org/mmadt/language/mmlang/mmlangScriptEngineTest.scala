@@ -1191,6 +1191,21 @@ class mmlangScriptEngineTest extends FunSuite {
 
   }
 
+  test("model example") {
+    engine.eval(":")
+    val mm: Model = LoadOp.loadObj[Model](getClass.getResource("/model/ex.mm").getPath)
+    assert(toBaseName(mm).toString.nonEmpty)
+    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(":", __.model(mm))
+    assertResult((str("name") -> str("marko") `_,` str("age") -> int(1).named("nat")).named("person"))(engine.eval("'marko' => person"))
+    assertResult((str("name") -> str("marko") `_,` str("age") -> int(1).named("nat")).named("person"))(engine.eval("('name'->'marko') => person"))
+    assertResult((str("name") -> str("marko") `_,` str("age") -> int(29).named("nat")).named("person"))(engine.eval("('name'->'marko','age'->29) => person"))
+    assertResult((str("name") -> str("marko") `_,` str("age") -> int(29).named("nat")).named("person"))(engine.eval("('name'->'marko') => person<=[put,'age',29][is,person.age>20][is,user.id[a,nat]]"))
+    assertResult((str("id") -> int(29) `_,` str("login") -> str("marko")).named("user"))(engine.eval("('name'->'marko') => user<=[put,'age',29][is,person.age>20][is,user.id[a,nat]]"))
+    assertResult((str("name") -> str("marko") `_,` str("age") -> int(29).named("nat")).named("person"))(engine.eval("('name'->'marko') => person<=[put,'age',29][is,person.age>20][is,user.id[a,nat]]"))
+    assertResult(zeroObj)(engine.eval("('name'->'marko') => [put,'age',29][is,person.age>20][as,user].id[is,[a,large]]"))
+    assertResult(zeroObj)(engine.eval("('name'->'marko','age'->29) => person[is,person.age>20][as,user].id[is,[a,large]]"))
+    // assertResult(zeroObj) (engine.eval("('name'->'marko','age'->29) => person[is,person.age>20][is,user.id[a,large]]"))
+  }
   test("model parsing") {
     engine.eval(":[model,mm:('type' -> (person -> (person:('name'->str))))]")
     assertResult("person:('name'->'marko')")(engine.eval("('name'->'marko') => [as,person]").toString)
