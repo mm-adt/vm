@@ -76,6 +76,16 @@ class BranchTest extends FunSuite with TableDrivenPropertyChecks {
 
   //////////////////
 
+  test("[branch] ,-rec") {
+    val starts: TableFor3[Int, Obj, Obj] =
+      new TableFor3[Int, Obj, Obj](("start", "middle", "end"),
+        (int(0), __.plus(1).branch((__.is(__.gt(1)) -> __.plus(10)) `_,` (__.is(__.gt(2)) -> __.plus(20)) `_,` (__ -> int.plus(30))), int(31)),
+        (int(1, 2, 3), __.plus(0).branch((__.is(__.gt(1)) -> __.plus(10)) `_,` (__.is(__.gt(2)) -> __.plus(20)) `_,` (__ -> int.plus(30))), int(31, 12, 13, 32, 23, 33)),
+      )
+    forEvery(starts) { (start, middle, end) => TestUtil.evaluate(start, middle, end)
+    }
+  }
+
   test("[branch] |-rec") {
     val starts: TableFor3[Int, Obj, Obj] =
       new TableFor3[Int, Obj, Obj](("start", "middle", "end"),

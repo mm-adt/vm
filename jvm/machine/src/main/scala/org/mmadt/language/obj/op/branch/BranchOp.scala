@@ -76,14 +76,13 @@ object BranchOp extends Func[Obj, Obj] {
         /////////////////////////////////////////////////////////////////////////////////
         case arec: Rec[Obj, Obj] => arec.gsep match {
           case Tokens.`,` =>
-            val result = arec.g._2.map(b => {
-              val key = Inst.resolveArg(start, b._1)
-              key -> (if (key.alive) Inst.resolveArg(start, b._2) else zeroObj)
-            }).filter(b => b._1.alive).toMap
-            val apoly = arec.clone(g = (arec.gsep, result))
-            apoly match {
-              case _: Value[_] => strm(result.map(x => x._2.hardQ(q => multQ(q, inst.q))).toList.asInstanceOf[List[Obj]])
-              case _: Type[_] => if (1 == result.size) result.head._2.hardQ(q => multQ(q, inst.q)) else BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
+            val result:List[List[Obj]] = arec.gmap
+              .map(kv => List(Inst.resolveArg(start, kv._1), kv._2))
+              .filter(kv => kv.head.alive)
+              .map(kv => List(kv.head,Inst.resolveArg(start, kv.tail.head))).toList
+              arec.clone(g = (arec.gsep, result.map(x => x.head -> x.tail.head).toMap)) match {
+              case _: Value[_] => strm(result.map(x => x.tail.head).map(x => x.hardQ(q => multQ(q, inst.q))))
+              case apoly: Type[_] => if (1 == result.size) result.head.tail.head.hardQ(q => multQ(q, inst.q)) else BranchInstruction.brchType[Obj](apoly, inst.q).via(start, inst.clone(g = (Tokens.branch, List(apoly))))
             }
           case Tokens.`;` =>
             var running = start
