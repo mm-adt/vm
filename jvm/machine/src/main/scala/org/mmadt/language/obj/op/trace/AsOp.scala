@@ -60,11 +60,8 @@ object AsOp extends Func[Obj, Obj] {
         if (source.name.equals(target.name) || __.isAnonObj(target) || source.model.vars(target.name).isDefined) source
         else {
           source match {
-            case _: Value[_] if baseName(target).equals(baseName(source)) =>
-              LanguageException.testTypeCheck(source, asType(target))
-              source.named(target.name)
             case _: Value[_] => internalConvertAs(source, target).hardQ(source.q)
-            case _: Type[_] if domain => if (!__.isToken(target)) source else target.update(source.model) // TODO: def/model equality issues
+            case _: Type[_] if domain => target.update(source.model)
             case _: Type[_] => target <= source
           }
         }
@@ -72,21 +69,21 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def internalConvertAs(source: Obj, target: Obj): Obj = {
-    val asObj: Obj = Inst.resolveToken(source, target)
+    val asObj: Obj = if (__.isTokenRoot(target)) Inst.resolveToken(source, target) else target
     val dObj: Obj = pickMapping(source, asObj).update(source.model)
-    val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, asObj.range) else dObj
-    val result = if (Tokens.named(target.name)) rObj.named(target.name) else rObj
+    val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, Tokens.tryName(target, asObj.range)) else dObj
+    val result = Tokens.tryName(target, rObj)
     if (!result.alive) throw LanguageException.typingError(source, asType(asObj.named(target.name)))
-    result
+    result.update(source.model)
   }
 
   private def pickMapping(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) Inst.resolveArg(start, asObj)
     else {
-      val defined = start.model.search(asObj.name, start)
+      val defined = if (__.isTokenRoot(asObj)) start.model.search(asObj.name, start) else None
       (start match {
         case _: Type[Obj] => asObj
-        case _ if defined.isDefined => Inst.resolveArg(start, defined.get)
+        case _ if defined.isDefined => pickMapping(start, defined.get)
         case abool: Bool => boolConverter(abool, asObj)
         case aint: Int => intConverter(aint, asObj)
         case areal: Real => realConverter(areal, asObj)

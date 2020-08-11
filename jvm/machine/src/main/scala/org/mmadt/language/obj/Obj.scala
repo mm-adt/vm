@@ -158,8 +158,6 @@ object Obj {
     rangeType match {
       case _: Type[E] if __.isAnonRoot(domainObj) && rangeType.root => rangeType.hardQ(q => multQ(domainObj.q, q))
       case _: Type[E] =>
-        if (domainObj.root && rangeType.root && domainObj.isInstanceOf[Type[_]])
-          LanguageException.testTypeCheck(domainObj, asType(rangeType).hardQ(domainObj.q))
         rangeType.trace
           .headOption
           .map(x => x._2.exec(domainObj))

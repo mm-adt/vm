@@ -38,7 +38,7 @@ class LoadInstTest extends FunSuite {
     assertResult(bfalse)(rec(str("name") -> str("marko"), str("age") -> int(0)).load(file1).get("age").a(__("nat")))
   }
   test("[load] w/ [as] mapping") {
-    assertResult(rec(str("id") -> int(5)).named("vertex"))(int(5).load(file1).as(__("vertex")))
+    assertResult(rec(str("id") -> int(5).named("nat")).named("vertex"))(int(5).load(file1).as(__("vertex")))
     assertThrows[LanguageException] {
       int(5).load(file1).as(__("person"))
     }

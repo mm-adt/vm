@@ -5,3 +5,5 @@
                         'label' -> <x>.name[plus,<.x>.age[as,str]],
                         'outE'  -> _{0})]
 [define,vertex<=int-<('id'->_)]
+[define,vertex:('id'->nat)]
+[define,vertex:('id'->nat,'label'->str)]

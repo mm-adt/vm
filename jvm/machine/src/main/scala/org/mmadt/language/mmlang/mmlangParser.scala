@@ -65,16 +65,16 @@ class mmlangParser extends JavaTokenParsers {
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
 
   // specific to mmlang execution
-  def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = opt(objValue) ~ opt(Tokens.:=>) ~ opt(obj) ^^ {
-    case Some(source) ~ _ ~ Some(target: Type[Obj]) =>
-      compile(prefix, asType(source), target) match {
+  def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = opt(objValue) ~ opt(Tokens.:=>) ~ opt(obj) ~ (opt(Tokens.:=>) ~> repsep(obj, Tokens.:=>)) ^^ {
+    case Some(source) ~ _ ~ Some(target: Type[Obj]) ~ aobjs =>
+      aobjs.foldLeft((compile(prefix, asType(source), target) match {
         case avalue: Value[_] => avalue
         case atype: Type[_] => source ==> atype
-      }
-    case Some(source) ~ _ ~ Some(target: Value[Obj]) => source ==> target
-    case None ~ None ~ Some(target) => compile(prefix, target.domain, target)
-    case Some(source) ~ None ~ None => source.asInstanceOf[Obj]
-    case None ~ None ~ None => zeroObj
+      }).asInstanceOf[Obj])((a, b) => a `=>` b)
+    case Some(source) ~ _ ~ Some(target: Value[Obj]) ~ aobjs => aobjs.foldLeft((source ==> target).asInstanceOf[Obj])((a, b) => a `=>` b)
+    case None ~ None ~ Some(target) ~ aobjs => aobjs.foldLeft(compile(prefix, target.domain, target))((a, b) => a `=>` b)
+    case Some(source) ~ None ~ None ~ aobjs => source.asInstanceOf[Obj]
+    case None ~ None ~ None ~ aobjs => zeroObj
   }
   def compile(prefix: Option[Type[Obj]], source: Obj, target: Obj): Obj =
     if (target.isInstanceOf[Value[Obj]]) target
@@ -148,7 +148,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val inst: Parser[Inst[Obj, Obj]] = (sugarlessInst | fromSugar | toSugar | splitSugar | combineSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar | branchSugar) ~ opt(quantifier) ^^
     (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
   lazy val infixSugar: Parser[Inst[Obj, Obj]] = not(Tokens.:<=) ~> (
-    Tokens.as_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.juxt_op | Tokens.lte_op | Tokens.gt_op |
+    Tokens.as_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.lte_op | Tokens.gt_op |
       Tokens.lt_op | Tokens.eqs_op | Tokens.and_op | Tokens.or_op | Tokens.given_op | Tokens.product_op | Tokens.sum_op |
       Tokens.is_a_op | Tokens.is | Tokens.not_op) ~ opt(quantifier) ~ obj ^^ (x => x._1._2.map(q => OpInstResolver.resolve[Obj, Obj](x._1._1, List(x._2)).hardQ(q)).getOrElse(OpInstResolver.resolve(x._1._1, List(x._2))))
   lazy val combineSugar: Parser[Inst[Obj, Obj]] = Tokens.combine_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => CombineOp(x._1.q(q))).getOrElse(CombineOp(x._1)))

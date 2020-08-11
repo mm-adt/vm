@@ -73,7 +73,7 @@ object Lst {
         if (blst.isChoice) alst.g._2.exists(x => x.alive)
         else alst.g._2.size == blst.g._2.size
       }) &&
-      alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && !pair._1.alive) true else pair._1.test(pair._2))
+      alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && pair._1.alive && pair._2.alive && pair._1 == pair._2) true else pair._1.test(pair._2))
 
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A], branch: Boolean = false): Lst[A] = {
     if (apoly.isSerial) {
