@@ -2086,12 +2086,14 @@ instruction    domain       range     state
 <div class="paragraph">
 <p>The <code>[plus]</code> instruction is <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a>, but <code>[gt]</code> isn&#8217;t. The anonymous type&#8217;s range can be deduced. However, without a domain ctype, the internal dtype is also unknown. When <code>int{2}</code> is provided, it triggers a cascade of deductions that determines the incoming and outgoing types of each instruction as well as their respective quantifiers (and incident types in the <code>obj</code> graph). The quantifier ring, when moving "horizontally" across the multiplicative <code>inst</code> monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, <code>bool{6}&lt;=int{2}[plus,1]{3}[gt,0]</code></p>
 </div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/obj/anon-example.svg" alt="anon example" width="550">
-</div>
-</div>
-<div class="listingblock">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 47.0588%;">
+<col style="width: 52.9412%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; _{2}[plus,1]{3}[gt,0]
 ==&gt;bool{6}&lt;=_{2}[plus,1]{3}[gt,0]
@@ -2109,6 +2111,45 @@ instruction    domain         range     state
 [gt,0]         int{6}    =&gt;   bool{6}
 '</code></pre>
 </div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><span class="image"><img src="./images/obj/anon-example.svg" alt="anon example"></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Anonymous types are useful in other situations besides <a href="https://en.wikipedia.org/wiki/Type_inference">lazy typing</a> expressions.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5-&lt;(_,_)                               <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;(5,5)
+mmlang&gt; -5[is&gt;0 -&gt; +2 | _ -&gt; +10]              <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;5
+mmlang&gt; 5-&lt;([a,int],[a,_],[a,str])             <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;(true,true,false)</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>When no processing is needed on a split, <code>_</code> should be provided.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>When used in a <code>|-rec</code> <code>poly</code>, <code>_</code> is used to denote the <a href="https://en.wikipedia.org/wiki/Switch_statement">default case</a>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><code>5</code> is both an <code>int</code> and a <code>_</code>, but not a <code>str</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>In general, anonymous types are <a href="https://en.wikipedia.org/wiki/Pattern_matching#Primitive_patterns">wildcards</a> because they <a href="https://en.wikipedia.org/wiki/Matching_wildcards">pattern match</a> to every <code>obj</code>. As will be demonstrated soon, when a <strong>variable</strong> is specified (e.g. <code>[plus,x]</code>) or a new type is specified (e.g. <code>x:42</code>), The <code>x</code> is a <strong>named anonymous type</strong>. The entailment of this is that types and variables are in the same <a href="https://en.wikipedia.org/wiki/Namespace">namespace</a>.</p>
 </div>
 </div>
 <div class="sect4">
@@ -5829,7 +5870,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-11 16:07:18 -0600
+Last updated 2020-08-11 16:10:15 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
