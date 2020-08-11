@@ -49,6 +49,14 @@ package object obj {
     case _ if equals(qZero) => qA
     case _: IntQ => (qA._1.g + qB._1.g, qA._2.g + qB._2.g)
   }
+  def minusQ(qA: IntQ, qB: IntQ): IntQ = qB match {
+    case _ if equals(qZero) => qA
+    case _: IntQ => (qA._1.g - qB._1.g, qA._2.g - qB._2.g)
+  }
+  def divQ(qA: IntQ, qB: IntQ): IntQ = qB match {
+    case _ if equals(qZero) => qA
+    case _: IntQ => (qA._1.g / qB._1.g, qA._2.g / qB._2.g)
+  }
   def withinQ(objA: Obj, objB: Obj): Boolean = {
     objA.q._1.g >= objB.q._1.g &&
       objA.q._2.g <= objB.q._2.g

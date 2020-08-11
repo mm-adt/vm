@@ -1227,7 +1227,15 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int)(engine.eval("int[mult,1]"))
     assertResult(int.plus(int.neg()))(engine.eval("int[mult,1][plus,0][plus,[neg]]"))
     assertResult(int.plus(1).plus(2))(engine.eval("int[plus,1][mult,1][plus,2][mult,1][plus,0]"))
+    assertResult(int(5).q(24))(engine.eval("1[plus,4]{24}"))
+    assertResult(int(10).q(48))(engine.eval("1[plus,4]{24}[plus,5]{2}"))
+    assertResult(int.q(2) <= int.id().q(2))(engine.eval("int[plus,0]{2}"))
+    assertResult(int.q(4) <= int.q(2).id().q(2))(engine.eval("int{4}<=int{2}[plus,0]{2}"))
+    assertResult(int(10).q(192))(engine.eval("1{2}[plus,4]{24}[plus,2]{2}[plus,3]{2}"))
+    assertResult(int(5).q(72))(engine.eval("1{3}[plus,4]{24}"))
     engine.eval(":")
+    assertResult(int(10).q(192))(engine.eval("1{2}[plus,4]{24}[plus,2]{2}[plus,3]{2}"))
+    assertResult(int(5).q(72))(engine.eval("1{3}[plus,4]{24}"))
   }
 
   test("model rec parsing") {
