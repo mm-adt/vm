@@ -123,9 +123,13 @@ Thus, \$a \to_i b\$ captures the group operation \$a \cdot i = b\$.
 //A &= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\ I &= \{ \nearrow \} \\ e &= 0^\circ \\ \cdot &: A \times A \rightarrow A \end{split}
 //\]
 
-When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible \$I\$-transitions between elements. When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming \$I\$-edge from the previous element. A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group. The non-free aspect is realized by any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\ast)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
+When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible \$I\$-transitions between elements.
+When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming \$I\$-edge from the previous element.
+A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group.
+The non-free aspect is realized by any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\ast)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
 
-A _generalized_ Cayley graph does not require that every \$i \in I\$ have a corresponding \$i^{-1} \in I\$ such that \$i \cdot i^{-1} = \mathbf{1}\$ (i.e., multiplicative inverses). By lifting this constraint, the Cayley graphical structure can be used to encode other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
+A _generalized_ Cayley graph does not require that every \$i \in I\$ have a corresponding \$i^{-1} \in I\$ such that \$i \cdot i^{-1} = \mathbf{1}\$ (i.e., multiplicative inverses).
+By lifting this constraint, the Cayley graphical structure can be used to encode other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
 ****
 
 An `obj` is either a type or a value:
@@ -152,7 +156,9 @@ There are five ctypes:
 
 image::type-product.svg[float=right,width=295]
 
-The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`. Formally, the type coproduct is defined as
+The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types.
+In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`.
+Formally, the type coproduct is defined as
 
 \[
 \begin{split}
@@ -160,7 +166,9 @@ The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural t
 \]
 
 
-NOTE: Every `obj` has an associated quantifier. When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity]. For instance, the `real` `1.35{1}` is written more economically as `1.35`.
+NOTE: Every `obj` has an associated quantifier.
+When the typographical representation of an `obj` lacks an associated quantifier, the quantifier is https://en.wikipedia.org/wiki/Unit_(ring_theory)[unity].
+For instance, the `real` `1.35{1}` is written more economically as `1.35`.
 
 A dtype has two product projections.
 The *type projection* denotes the https://en.wikipedia.org/wiki/Domain_of_a_function[domain] and the *instruction projection* denotes the https://en.wikipedia.org/wiki/Function_(mathematics)[function], where the type product as a whole, relative to the aforementioned component projections, is the https://en.wikipedia.org/wiki/Range_of_a_function[range].
@@ -182,7 +190,12 @@ In terms of the "__range = domain and function__" reading, when an `int` (*domai
 image::int-isgt0.svg[align=center,width=230]
 
 The diagram above is generally known as the *obj graph*.
-The `obj` graph is a fundamental structure in mm-ADT that is used in https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. This structure is called the *obj graph*. The subgraph concerned with type definitions is called the *type graph*. The subgraph considered with mutation history (https://en.wikipedia.org/wiki/State_(computer_science)[state]) is called the *value graph*. The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]. This graph will be the subject of study throughout the documentation.
+The `obj` graph is a fundamental structure in mm-ADT that is used in https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more.
+This structure is called the *obj graph*.
+The subgraph concerned with type definitions is called the *type graph*.
+The subgraph considered with mutation history (https://en.wikipedia.org/wiki/State_(computer_science)[state]) is called the *value graph*.
+The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph].
+This graph will be the subject of study throughout the documentation.
 
 The full `obj` structure thus far is diagrammed on the right.
 On the left are some example `mmlang` expressions.
@@ -212,7 +225,9 @@ image::type-signature-definition.svg[align=center,width=650]
 
 ===== Type Signature
 
-Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type. In `mmlang` a type signature has the following general pattern where `{q}` is the ctype's associated quantifier.
+Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type.
+A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type.
+In `mmlang` a type signature has the following general pattern where `{q}` is the ctype's associated quantifier.
 
 [.center]
 [width=30]
@@ -342,8 +357,12 @@ In theory, the complete history of an mm-ADT program (from compilation to execut
 However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
 This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
-NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information.
-The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols[_hook-tailed_] arrows will replace `[type]`-labeled arrows as they denote a https://en.wikipedia.org/wiki/Monomorphism[monomorphic] https://en.wikipedia.org/wiki/Embedding[embedding]. All subsequent diagrams will follow this convention.
+NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid.
+However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type.
+With this convention, there is no loss of information.
+The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction).
+Furthermore, https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols[_hook-tailed_] arrows will replace `[type]`-labeled arrows as they denote a https://en.wikipedia.org/wiki/Monomorphism[monomorphic] https://en.wikipedia.org/wiki/Embedding[embedding].
+All subsequent diagrams will follow this convention.
 
 .The Obj Graph as a Cayley Graph and a Commutative Diagram
 ================================================================
@@ -353,11 +372,15 @@ From compilation to evaluation, depending on the particular context, either inte
 
 * *Commutative diagram*: vertices denote type/value-objects of the `obj` category with `inst` morphisms.
 
-The `obj` graph's commuting property eases compile-time and runtime https://en.wikipedia.org/wiki/Graph_rewriting[type rewriting]. If two paths have the same source vertex (domain) and target vertex (range), then both paths yield the same result (the target vertex). In practice, evaluating the instructions along the https://en.wikipedia.org/wiki/Computational_complexity_theory[computationally cheaper] path is prudent.
+The `obj` graph's commuting property eases compile-time and runtime https://en.wikipedia.org/wiki/Graph_rewriting[type rewriting].
+If two paths have the same source vertex (domain) and target vertex (range), then both paths yield the same result (the target vertex).
+In practice, evaluating the instructions along the https://en.wikipedia.org/wiki/Computational_complexity_theory[computationally cheaper] path is prudent.
 
 * *Cayley graph*: vertices denote type/value-elements of the `inst` monoid with generating edges in `inst`.
 
-As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations is theoretically predetermined given the https://en.wikipedia.org/wiki/Presentation_of_a_monoid[monoid presentation] containing the root `objs` (e.g. the ctypes), its generators (`inst`), and relations (https://en.wikipedia.org/wiki/Equivalence_relation[path equations]). This static immutable structure serves as a https://en.wikipedia.org/wiki/Memoization[memoization] of computational results. This is especially useful when considering *streams* (definition forthcoming) and their role in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.
+As a generalized, multi-rooted monoidal Cayley graph, the set of all possible mm-ADT computations is theoretically predetermined given the https://en.wikipedia.org/wiki/Presentation_of_a_monoid[monoid presentation] containing the root `objs` (e.g. the ctypes), its generators (`inst`), and relations (https://en.wikipedia.org/wiki/Equivalence_relation[path equations]).
+This static immutable structure serves as a https://en.wikipedia.org/wiki/Memoization[memoization] of computational results.
+This is especially useful when considering *streams* (definition forthcoming) and their role in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.
 ================================================================
 
 ===== Type Quantification
@@ -369,18 +392,24 @@ A category may have an https://en.wikipedia.org/wiki/Initial_and_terminal_object
 '''
 image::initial.svg[width=125,float=left]
 
-An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$. Initial objects, via their morphisms, generate all the objects of the category. If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity. Thus, besides labels, two initials are isomorphic.
+An *initial object* \$S\$ is the domain of a set of morphism \$S \rightarrow E_n\$.
+Initial objects, via their morphisms, generate all the objects of the category.
+If there is an initial object, then it is unique in that if there is another initial object, it has the same diagrammatic topology -- all outgoing morphisms and no incoming morphisms save the identity.
+Thus, besides labels, two initials are isomorphic.
 
 '''
 
 image::terminal.svg[width=125,float=right]
 
-A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$. Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object. Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
+A *terminal object* \$E\$ is the range of a set of morphisms \$S_n \rightarrow E\$.
+Terminal objects subsume all other objects in the category in that all other objects \$S_n\$ can be morphed into the terminal object, but the terminal object can not be morphed into any other object.
+Similar to initials, should another terminal exist, the two terminal are isomorphic in that they both have the same number of incoming morphisms and no outgoing morphisms (save the identity).
 
 &nbsp;
 ****
 
-In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated *quantifier* \$q \in Q\$ denoted `{q}` in `mmlang`, where \$Q\$ is the carrier of an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.). Typically, integer quantifiers signify "amount." However, other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as quantifiers can be negative such that `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
+In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated *quantifier* \$q \in Q\$ denoted `{q}` in `mmlang`, where \$Q\$ is the carrier of an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.).
+Typically, integer quantifiers signify "amount." However, other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as quantifiers can be negative such that `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference].
 
 The default *quantifier ring* of the mm-ADT VM is \[
 (\mathbb{Z} \times \mathbb{Z}, +, \ast), \]
@@ -404,9 +433,11 @@ _{0}
 obj{0}
 ----
 
-NOTE: Types such as `int{0}` and `int{0}\<=int[is,false]` are equivalent due to their quantifiers both being `{0}`. Throughout the documentation, all zero quantified `objs` will be referred to as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
+NOTE: Types such as `int{0}` and `int{0}\<=int[is,false]` are equivalent due to their quantifiers both being `{0}`.
+Throughout the documentation, all zero quantified `objs` will be referred to as `obj{0}`, `_{0}`, or \$\underline{\mathbf{0}}\$ (the *zero object*).
 
-Quantifiers serve an important role in https://en.wikipedia.org/wiki/Type_inference[type inference] and determining, at compile time, the expected cost of a particular type definition (i.e., an instruction sequence). The table below itemizes common quantifier patterns along with names the are typically used in programming languages.
+Quantifiers serve an important role in https://en.wikipedia.org/wiki/Type_inference[type inference] and determining, at compile time, the expected cost of a particular type definition (i.e., an instruction sequence).
+The table below itemizes common quantifier patterns along with names the are typically used in programming languages.
 
 [.center]
 [cols="^1h,1,1,3,9",width=80]
@@ -456,7 +487,9 @@ Types use quantifiers in two separate contexts: *type signatures* and *type defi
 [discrete]
 ====== Type Signature Quantification
 
-A type signature's _domain_ specifies the type and quantity of the `obj` required for evaluation. The _range_ denotes what can be expected in return. `int{6}\<=int{3}` states that given `3` `ints`, the type will return `6` `ints`. Quantifiers in a type signature are descriptive, used in https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking].
+A type signature's _domain_ specifies the type and quantity of the `obj` required for evaluation.
+The _range_ denotes what can be expected in return. `int{6}\<=int{3}` states that given `3` `ints`, the type will return `6` `ints`.
+Quantifiers in a type signature are descriptive, used in https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking].
 
 [exec,exception=LanguageException]
 ----
@@ -467,23 +500,30 @@ A type signature's _domain_ specifies the type and quantity of the `obj` require
 {4{2},5{-1},6{2}} => int{6}<=int{3}[[plus,1],[plus,1]]
 ----
 
-Much will be said about negative quantifiers. For now, note that negative quantifiers enable https://en.wikipedia.org/wiki/Lazy_evaluation[lazy], stream-based https://en.wikipedia.org/wiki/Set_theory[set theoretic] operations such as intersection, union, difference, etc. Extending beyond integer quantification \$(\mathbb{Z})\$, negative quantifiers enable constructive and destructive interference in https://en.wikipedia.org/wiki/Quantum_computing[quantum computating] \$(\mathbb{C})\$ and excitatory and inhibitory activations in https://en.wikipedia.org/wiki/Artificial_neural_network[neural computing] \$(\mathbb{R})\$.
+Much will be said about negative quantifiers.
+For now, note that negative quantifiers enable https://en.wikipedia.org/wiki/Lazy_evaluation[lazy], stream-based https://en.wikipedia.org/wiki/Set_theory[set theoretic] operations such as intersection, union, difference, etc.
+Extending beyond integer quantification \$(\mathbb{Z})\$, negative quantifiers enable constructive and destructive interference in https://en.wikipedia.org/wiki/Quantum_computing[quantum computating] \$(\mathbb{C})\$ and excitatory and inhibitory activations in https://en.wikipedia.org/wiki/Artificial_neural_network[neural computing] \$(\mathbb{R})\$.
 
 [discrete]
 ====== Type Definition Quantification
 
-A type definition's _instructions_ can be quantified. More specifically, a type's intermediate dtypes can be quantified. During https://en.wikipedia.org/wiki/Type_inference[type inference], the quantifier ring's \$(+\$/\$\ast)\$-operators propagate the quantifiers through the types that compose the program.
+A type definition's _instructions_ can be quantified.
+More specifically, a type's intermediate dtypes can be quantified.
+During https://en.wikipedia.org/wiki/Type_inference[type inference], the quantifier ring's \$(+\$/\$\ast)\$-operators propagate the quantifiers through the types that compose the program.
 
 [exec]
 ----
 int{3}[[plus,1],[plus,1]]              //<1>
 int{3}[plus,1]{2}                      //<2>
 ----
-<1> Given `3` `ints`, `[plus,1]` will be evaluated (in parallel) `2` twice. The result is `6` `ints`.
+<1> Given `3` `ints`, `[plus,1]` will be evaluated (in parallel) `2` twice.
+The result is `6` `ints`.
 <2> The instruction `[plus,1]{2}` is the merging of two `[plus,1]` _branches_.
 
-
-At https://en.wikipedia.org/wiki/Compiler#Middle_end[type compilation], the https://en.wikipedia.org/wiki/Branch_(computer_science)[branch] optimizer "collapses" _type object_ equivalent branches with no effect to the results. The branches' _type quantifiers_ are added using the quantifier ring's \$+\$-operator (the quantifier group). Once collapsed, quantifiers can be moved left-or-right using the quantifier ring's multiplicative \$\ast\$-operator due to the _commutativity of quantifiers theorem_ (the quantifier monoid). It is more efficient (especially as branches grow in complexity) to compute \$2b\$ than \$b + b\$.
+At https://en.wikipedia.org/wiki/Compiler#Middle_end[type compilation], the https://en.wikipedia.org/wiki/Branch_(computer_science)[branch] optimizer "collapses" _type object_ equivalent branches with no effect to the results.
+The branches' _type quantifiers_ are added using the quantifier ring's \$+\$-operator (the quantifier group).
+Once collapsed, quantifiers can be moved left-or-right using the quantifier ring's multiplicative \$\ast\$-operator due to the _commutativity of quantifiers theorem_ (the quantifier monoid).
+It is more efficient (especially as branches grow in complexity) to compute \$2b\$ than \$b + b\$.
 
 [.center]
 [cols=".^1,5",width=65,frame=none,grid=none]
@@ -505,7 +545,8 @@ The following two examples highlight the fact that type signature quantifiers ar
 [.center]
 [cols="4,2",width=80]
 |===
-a|[exec,exception=LanguageException]
+a|
+[exec,exception=LanguageException]
 ----
 4{3} => [[plus,1],[plus,1]]
 4{3} => int{6}<=int{3}[[plus,1],[plus,1]]
@@ -516,14 +557,15 @@ a|[exec,exception=LanguageException]
 \[
 \begin{split}
 \texttt{int\{q\}}
-  &= 3 \ast (1 + 1) \\
-  &= (3 \ast 1) + (3 \ast 1) \\
-  &= 3 + 3 \\
-  &= 6
+&= 3 \ast (1 + 1) \\
+&= (3 \ast 1) + (3 \ast 1) \\
+&= 3 + 3 \\
+&= 6
 \end{split}
 \]
 
-a|[exec,exception=LanguageException]
+a|
+[exec,exception=LanguageException]
 ----
 4{3} => [plus,1]{2}
 4{3} => int{6}<=int{3}[plus,1]{2}
@@ -534,8 +576,8 @@ a|[exec,exception=LanguageException]
 \[
 \begin{split}
 \texttt{int\{q\}}
-  &= 3 \ast 2 \\
-  &= 6
+&= 3 \ast 2 \\
+&= 6
 \end{split}
 \]
 |===
@@ -621,9 +663,11 @@ a|
 ===== Anonymous Types
 
 The type `bool\<=int[gt,10]` has a range of `bool` and a domain of `int`.
-When the type is written `int[gt,10]`, the range is deduced by a compiling automata that applies `int` to `[gt,10]` to yield `bool`.
-In fact, the range of `int[gt,10]` is an *anonymous type* (called an *anon* for brevity) and is denoted `_` (or with no character in most situations).
-An anon is a type that has not been grounded to a base type.
+When the type is written `int[gt,10]`, the range is deduced.
+The domain `int` is applied to `[gt]` to yield `bool`.
+The range of `int[gt,10]` is an *anonymous type* (called an *anon* for brevity) and is denoted `_` in `mmlang` (or with no character in most situations).
+An anon is a type that has no base ctype -- a wildcard.
+A few anonymous *range* examples are provided below.
 
 [exec]
 ----
@@ -635,7 +679,7 @@ int[gt,10]          //<3>
 <2> A type with a specified domain of `int` and a specified range of `_`.
 <3> An `mmlang` sugar where if no range is specified, and it differs from the domain, then `_` is assumed.
 
-Anons can also be used to specify types without a domain.
+Anons can also be used to specify types without a *domain*.
 
 [exec]
 ----
@@ -648,6 +692,30 @@ int[is,[gt,10]]                      //<4>
 <2> The nested type has a specified domain of `int`.
 <3> The nested type has an unspecified domain of `_`.
 <4> An `mmlang` sugar where if no domain is specified, `_` is assumed.
+
+Assume the following *anonymous type*.
+
+[exec]
+----
+_{2}[plus,1]{3}[gt,0]
+_{2}[plus,1]{3}[gt,0][explain]
+----
+
+`[plus]` is polymorphic, but `[gt]` isn't.
+Thus, the range can be deduced, but without a domain ctype, the internal dtype is unknown.
+However, when `int{2}` is provided, it triggers a cascade of deductions that determines all the incoming and outgoing types of each instruction as well as the quantification of those types.
+The quantifier ring, when moving "horizontally" across the multiplicative `inst` monoid alters quantifiers using it's multiplication operator, where \$2 \ast 3 \ast 1 = 6\$.
+Thus, `bool{6}\<=int{2}[plus,1]{3}[gt,0]`
+
+image::anon-example.svg[width=550,align=center]
+
+[exec]
+----
+_{2}[plus,1]{3}[gt,0]
+int{2}[plus,1]{3}[gt,0]
+1{2} => int{2}[plus,1]{3}[gt,0]
+int{2}[plus,1]{3}[gt,0][explain]
+----
 
 ===== Mono Types
 
