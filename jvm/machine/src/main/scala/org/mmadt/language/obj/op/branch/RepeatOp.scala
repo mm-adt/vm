@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.op.branch
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.Type
@@ -59,9 +60,10 @@ object RepeatOp extends Func[Obj, Obj] {
         while (repeatStart.alive && i < times) {
           i = i + 1
           repeatStart = repeatStart ==> oldInst.arg0[Obj]
+
         }
         repeatStart
-      case _: Type[_] => start.via(start, oldInst)
+      case _: Type[_] => Inst.resolveArg(start, inst.arg0[Obj]).via(start, oldInst)
     }
   }
 }

@@ -23,7 +23,6 @@
 package org.mmadt.processor.obj.`type`.rewrite
 
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Lst, Obj}
@@ -88,7 +87,7 @@ object TraceScanRewrite extends Rewrite {
     if (range.length == trace.length) {
       query.compute(trace
         .zip(range)
-        .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._1.args.zip(x._2.args).map(y => y._1.compute(y._2))))
+        .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._1.args.zip(x._2.args).map(y => Inst.resolveArg(y._1, y._2))))
         .foldLeft(query.domainObj)((x, y) => y.exec(x)))
     } else {
       range.foldLeft(query)((x, y) => y.exec(x))

@@ -229,7 +229,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(17).q(16))(engine.eval("5{2}[plus,10]{2}[id]{4}[plus,2]"))
     assertResult(int.q(0, 24))(engine.eval("int[plus,10]{2}[id]{4}[is,[gt,2]]{3}").asInstanceOf[IntType].range)
     assertResult(int(15).q(16))(engine.eval("5{2}[plus,10]{2}[id]{4}"))
-    assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
+    assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.q(16).gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
