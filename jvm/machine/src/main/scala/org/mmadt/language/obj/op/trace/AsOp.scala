@@ -57,13 +57,13 @@ object AsOp extends Func[Obj, Obj] {
     source match {
       case value: Strm[Obj] => value(x => AsOp.autoAsType(x, target, rangeType, domain))
       case _ =>
-        if (source.rangeObj.equals(target.rangeObj) || __.isAnonObj(target) || source.model.vars(target.name).isDefined) source
-        else if (baseName(target).equals(baseName(source))) source.named(target.name) // TODO: should not be necessary
+        if (source.name.equals(target.name) || __.isAnonObj(target) || source.model.vars(target.name).isDefined) source
         else {
           source match {
-            case _: Value[_] =>
-              if (source.name.equals(target.name)) source // TODO:  should not be necessary (but it is an optimization)
-              else internalConvertAs(source, target).hardQ(source.q)
+            case _: Value[_] if baseName(target).equals(baseName(source)) =>
+              LanguageException.testTypeCheck(source,asType(target))
+              source.named(target.name)
+            case _: Value[_] => internalConvertAs(source, target).hardQ(source.q)
             case _: Type[_] if domain => if (!__.isToken(target)) source else target.update(source.model) // TODO: def/model equality issues
             case _: Type[_] => target <= source
           }
