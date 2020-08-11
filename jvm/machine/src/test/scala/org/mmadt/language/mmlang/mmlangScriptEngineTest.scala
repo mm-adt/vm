@@ -883,6 +883,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("poly split/merge/get") {
+    assertResult(int(7))(engine.eval("1[plus,1][plus,2][plus,3][path]>-"))
+    //
     assertResult("(1|)")(engine.eval("1-<(int|str)").toString)
     assertResult("(|1)")(engine.eval("1-<(str|int)").toString)
     assertResult("(1|)")(engine.eval("1-<(int|int)").toString)

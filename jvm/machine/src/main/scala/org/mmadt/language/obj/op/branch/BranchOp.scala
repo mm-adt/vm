@@ -76,13 +76,15 @@ object BranchOp extends Func[Obj, Obj] {
         /////////////////////////////////////////////////////////////////////////////////
         case arec: Rec[Obj, Obj] => arec.gsep match {
           case Tokens.`,` =>
-            val result:List[List[Obj]] = arec.gmap
+            val result: Seq[List[Obj]] = arec.gmap
               .map(kv => List(Inst.resolveArg(start, kv._1), kv._2))
               .filter(kv => kv.head.alive)
-              .map(kv => List(kv.head,Inst.resolveArg(start, kv.tail.head))).toList
-              arec.clone(g = (arec.gsep, result.map(x => x.head -> x.tail.head).toMap)) match {
+              .map(kv => List(kv.head, Inst.resolveArg(start, kv.tail.head))).toSeq
+            arec.clone(g = (arec.gsep, result.map(x => x.head -> x.tail.head).toMap)) match {
               case _: Value[_] => strm(result.map(x => x.tail.head).map(x => x.hardQ(q => multQ(q, inst.q))))
-              case apoly: Type[_] => if (1 == result.size) result.head.tail.head.hardQ(q => multQ(q, inst.q)) else BranchInstruction.brchType[Obj](apoly, inst.q).via(start, inst.clone(g = (Tokens.branch, List(apoly))))
+              case apoly: Type[_] =>
+                if (1 == result.size) result.head.tail.head.hardQ(q => multQ(q, inst.q))
+                else BranchInstruction.brchType[Obj](apoly, inst.q).via(start, inst.clone(g = (Tokens.branch, List(apoly))))
             }
           case Tokens.`;` =>
             var running = start
