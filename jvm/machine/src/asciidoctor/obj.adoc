@@ -703,8 +703,12 @@ _{2}[plus,1]{3}[gt,0][explain]
 
 The `[plus]` instruction is https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphic], but `[gt]` isn't. The anonymous type's range can be deduced. However, without a domain ctype, the internal dtype is also unknown. When `int{2}` is provided, it triggers a cascade of deductions that determines the incoming and outgoing types of each instruction as well as their respective quantifiers (and incident types in the `obj` graph). The quantifier ring, when moving "horizontally" across the multiplicative `inst` monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, `bool{6}\<=int{2}[plus,1]{3}[gt,0]`
 
-image::anon-example.svg[width=550,align=center]
 
+
+[cols="8,.^9"]
+|===
+
+a|
 [exec]
 ----
 _{2}[plus,1]{3}[gt,0]
@@ -712,6 +716,24 @@ int{2}[plus,1]{3}[gt,0]
 1{2} => int{2}[plus,1]{3}[gt,0]
 int{2}[plus,1]{3}[gt,0][explain]
 ----
+{blank}
+|
+image:anon-example.svg[]
+|===
+
+Anonymous types are useful in other situations besides https://en.wikipedia.org/wiki/Type_inference[lazy typing] expressions.
+
+[exec]
+----
+5-<(_,_)                               //<1>
+-5[is>0 -> +2 | _ -> +10]              //<2>
+5-<([a,int],[a,_],[a,str])             //<3>
+----
+<1> When no processing is needed on a split, `_` should be provided.
+<2> When used in a `|-rec` `poly`, `_` is used to denote the https://en.wikipedia.org/wiki/Switch_statement[default case].
+<3> `5` is both an `int` and a `_`, but not a `str`.
+
+In general, anonymous types are https://en.wikipedia.org/wiki/Pattern_matching#Primitive_patterns[wildcards] because they https://en.wikipedia.org/wiki/Matching_wildcards[pattern match] to every `obj`. As will be demonstrated soon, when a *variable* is specified (e.g. `[plus,x]`) or a new type is specified (e.g. `x:42`), The `x` is a *named anonymous type*. The entailment of this is that types and variables are in the same https://en.wikipedia.org/wiki/Namespace[namespace].
 
 ===== Mono Types
 
