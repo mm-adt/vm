@@ -1353,7 +1353,7 @@ The type <code>int{0,5}</code> denotes either 0, 1, 2, 3, 4, or 5 integers. In g
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int&lt;=bool
-language error: bool is not an int</code></pre>
+==&gt;int&lt;=bool</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2454,14 +2454,14 @@ mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]   
 ==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)
 mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]  <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;'
-int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,int&lt;.z&gt;]][plus,int&lt;.y&gt;]][plus,int&lt;.x&gt;]
+int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,int&lt;.x&gt;][plus,int&lt;.y&gt;][plus,int&lt;.z&gt;]][plus,int&lt;.y&gt;]][plus,int&lt;.x&gt;]
 
 instruction                                    domain      range state
 -----------------------------------------------------------------------
-[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y]...    int    =&gt;   int    x-&gt;int
- [plus,int&lt;z&gt;[plus,x][plus,y][plus,int&lt;.z...    int   =&gt;    int   x-&gt;int y-&gt;int
-  [plus,x]                                       int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
-  [plus,y]                                       int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
+[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,int&lt;.x&gt;][p...    int    =&gt;   int    x-&gt;int
+ [plus,int&lt;z&gt;[plus,int&lt;.x&gt;][plus,int&lt;.y&gt;]...    int   =&gt;    int   x-&gt;int y-&gt;int
+  [plus,int&lt;.x&gt;]                                 int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
+  [plus,int&lt;.y&gt;]                                 int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
   [plus,int&lt;.z&gt;]                                 int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
  [plus,int&lt;.y&gt;]                                 int   =&gt;    int   x-&gt;int y-&gt;int
 [plus,int&lt;.x&gt;]                                 int    =&gt;   int    x-&gt;int
@@ -2733,7 +2733,7 @@ Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; str[plus,'a']{2} =&gt; 'b'{6}
-==&gt;'b'{144}</code></pre>
+==&gt;'b'{12}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2747,7 +2747,7 @@ Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; str[plus,'a']{2} =&gt; str{2}[plus,'b']{6}
-==&gt;str{12}&lt;=str[plus,'a']{2}[plus,'b']{6}</code></pre>
+==&gt;str{24}&lt;=str[plus,'a']{2}[plus,'b']{6}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5401,13 +5401,13 @@ y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int[plus,1][plus,2][plus,3]
 mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(int;[plus,1];int;[plus,2];int;[plus,3];int[plus,1][plus,2][plus,3])
+==&gt;(int;[plus,1];int[plus,1];[plus,2];int[plus,1][plus,2];[plus,3];int[plus,1][plus,2][plus,3])
 mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;7
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;(1;[plus,1];2;[plus,2];4;[plus,3];7)
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
-==&gt;int[plus,1][plus,2][plus,3][path,(_;_)]&gt;-</code></pre>
+==&gt;7</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -5741,7 +5741,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-06 12:01:31 -0600
+Last updated 2020-08-06 23:36:39 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
