@@ -73,7 +73,10 @@ object OpInstResolver {
       case Tokens.given | Tokens.given_op => GivenOp(args.head)
       case Tokens.path => args.headOption.map(x => PathOp(x.asInstanceOf[Lst[Obj]])).getOrElse(PathOp())
       //
-      case Tokens.model => ModelOp(args.head.asInstanceOf[Model])
+      case Tokens.model => args.head match {
+        case model: Model => ModelOp(model)
+        case file: StrValue => ModelOp(file)
+      }
       case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()
       case Tokens.a => AOp(args.head)

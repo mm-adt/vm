@@ -144,8 +144,8 @@ object AsOp extends Func[Obj, Obj] {
     val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString, via = x.via)
+      case alst: LstType[Obj] if alst.ctype => x.named(alst.name)
       case alst: LstType[Obj] if (x.glist.size == alst.glist.size) => lst(g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))), via = x.via)
-      case alst: LstType[Obj] if x.test(alst) => x
       case _: ObjType => x
       case _ => throw LanguageException.typingError(x, asType(y))
     }
@@ -156,6 +156,7 @@ object AsOp extends Func[Obj, Obj] {
     val w: Obj = Inst.resolveToken(x, y).domain match {
       case _: __ => x
       case astr: StrType => vstr(name = astr.name, g = x.toString, via = x.via)
+      case arec: RecType[Obj, Obj] if arec.ctype => x.named(arec.name)
       case arec: RecType[Obj, Obj] => val z = rec(name = arec.name, g = (arec.gsep,
         x.gmap.flatMap(a => arec.gmap
           .filter(b => a._1.test(b._1))

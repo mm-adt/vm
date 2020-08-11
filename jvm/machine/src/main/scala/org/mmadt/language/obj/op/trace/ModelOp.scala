@@ -19,7 +19,7 @@ trait ModelOp {
   this: Obj =>
   def update(model: Model): this.type = ModelOp.updateModel(model, this)
   def model(model: Model): this.type = ModelOp(model).exec(this)
-  def model(file: StrValue): this.type = ModelOp(LoadOp.loadObj[Model](file.g)).exec(this)
+  def model(file: StrValue): this.type = ModelOp(file).exec(this)
 }
 
 object ModelOp extends Func[Obj, Obj] {
@@ -33,7 +33,8 @@ object ModelOp extends Func[Obj, Obj] {
   val NOREC: ModelMap = rec[Obj, Lst[Obj]]
   val EMPTY: Model = rec[StrValue, ModelOp.ModelMap]
 
-  def apply[O <: Obj](definition: Model): Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(definition).asInstanceOf[List[O]]), func = this) with TraceInstruction
+  def apply[O <: Obj](file: StrValue): Inst[O, O] = this.apply(LoadOp.loadObj[Model](file.g))
+  def apply[O <: Obj](model: Model): Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(model).asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
     case astrm: Strm[_] => astrm(x => inst.exec(x))
     case _: Value[Obj] => start.update(inst.arg0[Model])
@@ -51,7 +52,9 @@ object ModelOp extends Func[Obj, Obj] {
     private final def findType[A <: Obj](model: Model, label: String, source: Obj): Option[A] =
       (if (model.name.equals(label)) List(model).asInstanceOf[List[A]]
       else model.gmap.getOrElse[ModelMap](TYPE, NOREC).gmap.filter(x => x._1.name == label).flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
-        .find(y => if (source.equals(__)) true else source.test(y.domain.hardQ(source.q)))
+        .find(y => if (__.isTokenRoot(y.domainObj))
+          model.search(y.domainObj.name, source).exists(x => source.update(model).test(x)) else
+          source.update(model).test(y.domainObj.hardQ(source.q)))
 
     final def search[A <: Obj](name: StrValue, matcher: A = __.asInstanceOf[A]): Option[A] =
       model.vars[A](name).map(x => if (x.isInstanceOf[Type[_]]) x.from(name) else x).orElse(findType[A](model, name.g, matcher).map(y => toBaseName(y))).map(x => x.update(model))
