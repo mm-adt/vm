@@ -674,7 +674,6 @@ a|
 bool<=int[gt,10]      //<1>
 _<=int[gt,10]         //<2>
 int[gt,10]            //<3>
-_
 ----
 <1> The domain and range of the type are fully specified.
 <2> A type with a specified domain of `int` and a specified range of `_`.
@@ -694,11 +693,11 @@ int[is,[gt,10]]                      //<4>
 <4> An `mmlang` sugar where if no domain is specified, `_` is assumed.
 |===
 
-'''
 
-[width=50,float=right]
+[cols="8,.^7",grid=none,frame=none]
 |===
 
+| In the *anonymous type* `\_{2}[plus,1]{3}[gt,0]`, the `[plus]` instruction is https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphic], but `[gt]` isn't. Thus, the anonymous type's range can be deduced, but without a domain ctype, the internal dtype is also unknown. When `int{2}` is provided, it triggers a cascade of deductions that determines incident types of the instructions in the `obj` graph. The quantifier ring, when moving "horizontally" across the multiplicative `inst` monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, `bool{6}\<=int{2}[plus,1]{3}[gt,0]`
 a|
 [exec]
 ----
@@ -706,13 +705,6 @@ _{2}[plus,1]{3}[gt,0]
 _{2}[plus,1]{3}[gt,0][explain]
 ----
 {blank}
-|===
-
-Assume the following *anonymous type*. The `[plus]` instruction is https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphic], but `[gt]` isn't. The anonymous type's range can be deduced. However, without a domain ctype, the internal dtype is also unknown. When `int{2}` is provided, it triggers a cascade of deductions that determines the incoming and outgoing types of each instruction as well as their respective quantifiers (and incident types in the `obj` graph). The quantifier ring, when moving "horizontally" across the multiplicative `inst` monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, `bool{6}\<=int{2}[plus,1]{3}[gt,0]`
-
-[cols="8,.^7"]
-|===
-
 a|
 [exec]
 ----
@@ -725,6 +717,7 @@ int{2}[plus,1]{3}[gt,0][explain]
 |
 image:anon-example.svg[]
 |===
+
 
 [discrete]
 ====== Anonymous Type Uses
@@ -801,13 +794,11 @@ image:poly-kinds.svg[width=250,float=left]
 
 '''
 
-[discrete]
-====== Poly Containers
+// [discrete]
+// ====== Poly Containers
 
-
-
-[discrete]
-====== Poly Controls
+// [discrete]
+// ====== Poly Controls
 
 === The Obj Graph
 
