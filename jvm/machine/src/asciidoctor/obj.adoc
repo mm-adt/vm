@@ -744,7 +744,7 @@ In general, anonymous types are https://en.wikipedia.org/wiki/Pattern_matching#P
 | `str`  | `+` `>` `<` `>=` `=<`          | `''`    |
 |===
 
-The mm-ADT type system can be partitioned into *mono types* (https://en.wikipedia.org/wiki/Monomial[monomials]) and *poly types* (https://en.wikipedia.org/wiki/Polynomial[polynomials]). There are 4 mono types, each denoting a classical https://en.wikipedia.org/wiki/Primitive_data_type[primtive] data type: `bool`, `int`, `real`, and `str`. The associated table presents the typical operators (https://en.wikipedia.org/wiki/Syntactic_sugar[sugared] instructions) that can be applied to each mono type. The table also includes the additive (\$\mathbf{0}\$) (additive) and multiplicative (\$\mathbf{1}\$) https://en.wikipedia.org/wiki/Identity_element[identities] of each mono.
+The mm-ADT type system can be partitioned into *mono types* (https://en.wikipedia.org/wiki/Monomial[monomials]) and *poly types* (https://en.wikipedia.org/wiki/Polynomial[polynomials]). There are 4 mono types, each denoting a classical https://en.wikipedia.org/wiki/Primitive_data_type[primtive] data type: `bool`, `int`, `real`, and `str`. The associated table presents the typical operators (https://en.wikipedia.org/wiki/Syntactic_sugar[sugared] instructions) that can be applied to each mono type. The table also includes their respective additive \$(\mathbf{0})\$ and multiplicative \$(\mathbf{1})\$ https://en.wikipedia.org/wiki/Identity_element[identities].
 
 A few of the more interesting aspects of the mono types are detailed in the following subsections.
 
@@ -762,8 +762,7 @@ The instructions `[zero]` and `[one]` are https://en.wikipedia.org/wiki/Constant
 'ryan'[one]
 ----
 
-Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `[mult]` instruction identities, respectively. Furthermore, for those types that form a ring with unity, the `[zero]` is their respective multiplicative annihilator.
-]
+Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `[mult]` instruction identities, respectively. Furthermore, for those types that form a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity], the `[zero]` is their respective multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator].
 
 [exec]
 ----
@@ -774,7 +773,24 @@ Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `
 
 ===== Poly Types
 
-mm-ADT's type system understands types (and their values) as being either https://en.wikipedia.org/wiki/Monomial[monomials] or https://en.wikipedia.org/wiki/Polynomial[polynomials]. Every `obj` is composed of an _object_ (term) and a _quantifier_ (coefficient) -- e.g., `int{3}` or `6{9}`. These _terms_ can then be organized into a composite polynomial structure. The significance of this approach is that mm-ADT itself can be https://en.wikipedia.org/wiki/Embedding[embedded] in an mm-ADT `poly`, thus enabling https://en.wikipedia.org/wiki/Metaprogramming[meta-programming], the unification of products and coproducts as polynomial https://en.wikipedia.org/wiki/Biproduct[biproducts], and the simultaneous realization of both https://en.wikipedia.org/wiki/Data_structure[data] and https://en.wikipedia.org/wiki/Control_flow[control] structures. This section will present the practical aspects of `poly` with a forthcoming section detailing the https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and https://en.wikipedia.org/wiki/Module_(mathematics)[ring module] theory of `poly`.
+mm-ADT types are either https://en.wikipedia.org/wiki/Monomial[monomials] or https://en.wikipedia.org/wiki/Polynomial[polynomials]. The components of a polynomial are called *terms*. A term is the product of a *variable* and a *coefficient*. If \$X\$ is a set of variables and \$Q\$ a set of coefficients, then a polynomial is the https://en.wikipedia.org/wiki/Linear_combination[linear combinations]  of \$Q \times X\$ terms typically written
+\[
+q_1x_1 + q_2x_2 + \ldots + q_nx_n.
+\]
+An mm-ADT type is the product of an *object* (variable) and a *quantifier* (coefficient) -- e.g., `int{3}`. When types are linearly combined, they form a `poly`. The mm-ADT `poly` respects the ring-theoretic polynomial axioms and in doing so, realizes all entailed polynomial theorems.
+
+[.text-center]
+[exec,eval=false,exception=LanguageException]
+----
+(x1{q1},x2{q2},...,xn{qn})
+----
+
+A first glance, the `poly` structure denoted above appears to be a simple https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]. It is true that when the terms of a `poly` are values, the `poly` is a list. However, when the terms are types, the entire corpus of polynomial theory is immediately applicable to `poly`. The fundamental insight that confers numerous benefits is that mm-ADT, as an algebraic ring structure itself, can be https://en.wikipedia.org/wiki/Embedding[embedded] in `poly`. This enables https://en.wikipedia.org/wiki/Metaprogramming[meta-programming], the unification of products and coproducts as https://en.wikipedia.org/wiki/Biproduct[biproducts], the use of `poly` for both structuring https://en.wikipedia.org/wiki/Data_structure[data] and controlling https://en.wikipedia.org/wiki/Control_flow[processes], and the development of compilers and execution engines based on centuries old https://en.wikipedia.org/wiki/Factorization_of_polynomials[polynomial factorization] techniques.
+
+This section will present the practical aspects of `poly` with a forthcoming section detailing the `poly` algebra founded on https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and https://en.wikipedia.org/wiki/Module_(mathematics)[module] theory.
+
+[discrete]
+====== Poly Structures
 
 There are *value*-`polys` and there are *type*-`polys`. A value-`poly` is composed of only value `objs` and is best understood as a classic https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is composed of at least one type `obj` and can be understood as denoting a https://en.wikipedia.org/wiki/Stream_processing[streaming] data process. mm-ADT provides two kinds of `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
 Each has a `,`, `|`, and `;` form such that
