@@ -773,21 +773,21 @@ Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `
 
 ===== Poly Types
 
-mm-ADT types are either https://en.wikipedia.org/wiki/Monomial[monomials] or https://en.wikipedia.org/wiki/Polynomial[polynomials]. The components of a polynomial are called *terms*. A term is the product of a *variable* and a *coefficient*. If \$X\$ is a set of variables and \$Q\$ a set of coefficients, then a polynomial is the https://en.wikipedia.org/wiki/Linear_combination[linear combinations]  of \$Q \times X\$ terms typically written
+mm-ADT types are either https://en.wikipedia.org/wiki/Monomial[monomials] or https://en.wikipedia.org/wiki/Polynomial[polynomials]. The components of a polynomial are called *terms*. A term is the product of a *variable* and a *coefficient*. If \$X\$ is a set of variables and \$Q\$ a set of coefficients, then a polynomial is the https://en.wikipedia.org/wiki/Linear_combination[linear combinations]  of \$Q \times X\$ elements typically written
 \[
 q_1x_1 + q_2x_2 + \ldots + q_nx_n.
 \]
 An mm-ADT type is the product of an *object* (variable) and a *quantifier* (coefficient) -- e.g., `int{3}`. When types are linearly combined, they form a `poly`. The mm-ADT `poly` respects the ring-theoretic polynomial axioms and in doing so, realizes all entailed polynomial theorems.
 
-[.text-center]
+[.center]
 [exec,eval=false,exception=LanguageException]
 ----
 (x1{q1},x2{q2},...,xn{qn})
 ----
 
-A first glance, the `poly` structure denoted above appears to be a simple https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]. It is true that when the terms of a `poly` are values, the `poly` is a list. However, when the terms are types, the entire corpus of polynomial theory is immediately applicable to `poly`. The fundamental insight that confers numerous benefits is that mm-ADT, as an algebraic ring structure itself, can be https://en.wikipedia.org/wiki/Embedding[embedded] in `poly`. This enables https://en.wikipedia.org/wiki/Metaprogramming[meta-programming], the unification of products and coproducts as https://en.wikipedia.org/wiki/Biproduct[biproducts], the use of `poly` for both structuring https://en.wikipedia.org/wiki/Data_structure[data] and controlling https://en.wikipedia.org/wiki/Control_flow[processes], and the development of compilers and execution engines based on centuries old https://en.wikipedia.org/wiki/Factorization_of_polynomials[polynomial factorization] techniques.
+At first glance, the `poly` structure denoted above appears to be some sort of https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. When the terms of a `poly` are values, the `poly` is a https://en.wikipedia.org/wiki/Multiset[multiset] (or bag). However, when the terms are types, the entire corpus of polynomial theory is immediately applicable to `poly`. The fundamental insight that confers numerous benefits is that mm-ADT, as an algebraic ring structure itself, can be faithfully https://en.wikipedia.org/wiki/Embedding[embedded] in mm-ADT `poly`. This enables collection-oriented https://en.wikipedia.org/wiki/Metaprogramming[meta-programming], a unification of products and coproducts as https://en.wikipedia.org/wiki/Biproduct[biproducts], the integration of data https://en.wikipedia.org/wiki/Data_structure[structures] and https://en.wikipedia.org/wiki/Control_flow[flow control] processes, and the development of compilers and execution engines based on centuries old https://en.wikipedia.org/wiki/Factorization_of_polynomials[polynomial factorization] techniques.
 
-This section will present the practical aspects of `poly` with a forthcoming section detailing the `poly` algebra founded on https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and https://en.wikipedia.org/wiki/Module_(mathematics)[module] theory.
+This section will present the practical aspects of `poly` with a forthcoming section detailing the `poly` algebra which is founded on https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and https://en.wikipedia.org/wiki/Module_(mathematics)[module] theory.
 
 [discrete]
 ====== Poly Structures
