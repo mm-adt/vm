@@ -779,11 +779,8 @@ q_1x_1 + q_2x_2 + \ldots + q_nx_n.
 \]
 An mm-ADT type is the product of an *object* (variable) and a *quantifier* (coefficient) -- e.g., `int{3}`. When types are linearly combined, they form a `poly`. The mm-ADT `poly` respects the ring-theoretic polynomial axioms and in doing so, realizes all entailed polynomial theorems.
 
-[.center]
-[exec,eval=false,exception=LanguageException]
-----
-(x1{q1},x2{q2},...,xn{qn})
-----
+[.text-center]
+`(x1{q1},x2{q2},...,xn{qn})`
 
 At first glance, the `poly` structure denoted above appears to be some sort of https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. When the terms of a `poly` are values, the `poly` is a https://en.wikipedia.org/wiki/Multiset[multiset] (or bag). However, when the terms are types, the entire corpus of polynomial theory is immediately applicable to `poly`. The fundamental insight that confers numerous benefits is that mm-ADT, as an algebraic ring structure itself, can be faithfully https://en.wikipedia.org/wiki/Embedding[embedded] in mm-ADT `poly`. This enables collection-oriented https://en.wikipedia.org/wiki/Metaprogramming[meta-programming], a unification of products and coproducts as https://en.wikipedia.org/wiki/Biproduct[biproducts], the integration of data https://en.wikipedia.org/wiki/Data_structure[structures] and https://en.wikipedia.org/wiki/Control_flow[flow control] processes, and the development of compilers and execution engines based on centuries old https://en.wikipedia.org/wiki/Factorization_of_polynomials[polynomial factorization] techniques.
 
@@ -792,10 +789,9 @@ This section will present the practical aspects of `poly` with a forthcoming sec
 [discrete]
 ====== Poly Structures
 
-There are *value*-`polys` and there are *type*-`polys`. A value-`poly` is composed of only value `objs` and is best understood as a classic https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is composed of at least one type `obj` and can be understood as denoting a https://en.wikipedia.org/wiki/Stream_processing[streaming] data process. mm-ADT provides two kinds of `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
-Each has a `,`, `|`, and `;` form such that
+There are *value* `polys` and there are *type* `polys`. A value `poly` is composed of only value `objs` and is best understood as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type `poly` must contain at least one non-\$\mathbf{0}\$ `obj` (i.e. `obj{0}`) and is intuitively understood as https://en.wikipedia.org/wiki/Stream_processing[streaming] process.
 
-image:poly-kinds.svg[width=250,float=left]
+As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]), where theoretically, `rec` is simply a `lst` with some added conveniences that reduce the semantic and syntactic complexity of various common use cases. Finally, every `poly` has one of three forms: `,`, `;`, or `|`. The mm-ADT `poly` data type is captured by the following equation and diagram.
 
 \[
 \begin{split}
@@ -803,29 +799,33 @@ image:poly-kinds.svg[width=250,float=left]
 \end{split}
 \]
 
-[.small]
-[cols="1,1,2,3,2",width=70,float=right]
-|===
-| poly     | sep  | access (value)     | collection (values) | branch (type)
+'''
 
-.3+| `lst` | `,`  | all
+image:poly-kinds.svg[width=350,float=left]
+
+[.small]
+[cols="1,1,3,3,3",width=60,float=right]
+|===
+| poly     ^| sep  | access (value)     | collection (values) | branch (type)
+
+.3+| `lst` ^| `,`  | all
 | https://en.wikipedia.org/wiki/Multiset[multiset]
 | https://en.wikipedia.org/wiki/Union_(set_theory)[union]
-| `\|` | head
+^|  `;` | last
+| https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]
+| https://en.wikipedia.org/wiki/Method_chaining[chain]
+^| `\|` | head
 | https://en.wikipedia.org/wiki/Set_(abstract_data_type)[set]
 | https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
-|  `;` | last
-| list
-| https://en.wikipedia.org/wiki/Method_chaining[chain]
-.3+| `rec` | `,`  | all match key
+.3+| `rec` ^| `,`  | all match key
 | https://en.wikipedia.org/wiki/Multimap[multimap]
 | https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
-| `\|` | first match key
-| https://en.wikipedia.org/wiki/Associative_array[map]
-| https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
-| `;`  | last match key
+^| `;`  | last match key
 | record
 | https://en.wikipedia.org/wiki/Method_cascading[cascade]
+^| `\|` | first match key
+| https://en.wikipedia.org/wiki/Associative_array[map]
+| https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
 |===
 
 '''
