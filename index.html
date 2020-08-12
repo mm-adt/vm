@@ -2200,7 +2200,7 @@ mmlang&gt; 5-&lt;([a,int],[a,_],[a,str])             <i class="conum" data-value
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT type system can be partitioned into <strong>mono types</strong> (<a href="https://en.wikipedia.org/wiki/Monomial">monomials</a>) and <strong>poly types</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>). There are 4 mono types, each denoting a classical <a href="https://en.wikipedia.org/wiki/Primitive_data_type">primtive</a> data type: <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>. The associated table presents the typical operators (<a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugared</a> instructions) that can be applied to each mono type. The table also includes the additive (\$\mathbf{0}\$) (additive) and multiplicative (\$\mathbf{1}\$) <a href="https://en.wikipedia.org/wiki/Identity_element">identities</a> of each mono.</p>
+<p>The mm-ADT type system can be partitioned into <strong>mono types</strong> (<a href="https://en.wikipedia.org/wiki/Monomial">monomials</a>) and <strong>poly types</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>). There are 4 mono types, each denoting a classical <a href="https://en.wikipedia.org/wiki/Primitive_data_type">primtive</a> data type: <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>. The associated table presents the typical operators (<a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugared</a> instructions) that can be applied to each mono type. The table also includes their respective additive \$(\mathbf{0})\$ and multiplicative \$(\mathbf{1})\$ <a href="https://en.wikipedia.org/wiki/Identity_element">identities</a>.</p>
 </div>
 <div class="paragraph">
 <p>A few of the more interesting aspects of the mono types are detailed in the following subsections.</p>
@@ -2224,8 +2224,7 @@ language error: 'ryan' is not supported by [one]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Each type&#8217;s \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the <code>[plus]</code> and <code>[mult]</code> instruction identities, respectively. Furthermore, for those types that form a ring with unity, the <code>[zero]</code> is their respective multiplicative annihilator.
-]</p>
+<p>Each type&#8217;s \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the <code>[plus]</code> and <code>[mult]</code> instruction identities, respectively. Furthermore, for those types that form a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a>, the <code>[zero]</code> is their respective multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -2248,8 +2247,24 @@ mmlang&gt; [true,6,5.5][mult,[zero]]
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>mm-ADT&#8217;s type system understands types (and their values) as being either <a href="https://en.wikipedia.org/wiki/Monomial">monomials</a> or <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>. Every <code>obj</code> is composed of an <em>object</em> (term) and a <em>quantifier</em> (coefficient)&#8201;&#8212;&#8201;e.g., <code>int{3}</code> or <code>6{9}</code>. These <em>terms</em> can then be organized into a composite polynomial structure. The significance of this approach is that mm-ADT itself can be <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in an mm-ADT <code>poly</code>, thus enabling <a href="https://en.wikipedia.org/wiki/Metaprogramming">meta-programming</a>, the unification of products and coproducts as polynomial <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>, and the simultaneous realization of both <a href="https://en.wikipedia.org/wiki/Data_structure">data</a> and <a href="https://en.wikipedia.org/wiki/Control_flow">control</a> structures. This section will present the practical aspects of <code>poly</code> with a forthcoming section detailing the <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring module</a> theory of <code>poly</code>.</p>
+<p>mm-ADT types are either <a href="https://en.wikipedia.org/wiki/Monomial">monomials</a> or <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>. The components of a polynomial are called <strong>terms</strong>. A term is the product of a <strong>variable</strong> and a <strong>coefficient</strong>. If \$X\$ is a set of variables and \$Q\$ a set of coefficients, then a polynomial is the <a href="https://en.wikipedia.org/wiki/Linear_combination">linear combinations</a>  of \$Q \times X\$ terms typically written
+\[
+q_1x_1 + q_2x_2 + \ldots + q_nx_n.
+\]
+An mm-ADT type is the product of an <strong>object</strong> (variable) and a <strong>quantifier</strong> (coefficient)&#8201;&#8212;&#8201;e.g., <code>int{3}</code>. When types are linearly combined, they form a <code>poly</code>. The mm-ADT <code>poly</code> respects the ring-theoretic polynomial axioms and in doing so, realizes all entailed polynomial theorems.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">(x1{q1},x2{q2},...,xn{qn})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>A first glance, the <code>poly</code> structure denoted above appears to be a simple <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>. It is true that when the terms of a <code>poly</code> are values, the <code>poly</code> is a list. However, when the terms are types, the entire corpus of polynomial theory is immediately applicable to <code>poly</code>. The fundamental insight that confers numerous benefits is that mm-ADT, as an algebraic ring structure itself, can be <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in <code>poly</code>. This enables <a href="https://en.wikipedia.org/wiki/Metaprogramming">meta-programming</a>, the unification of products and coproducts as <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>, the use of <code>poly</code> for both structuring <a href="https://en.wikipedia.org/wiki/Data_structure">data</a> and controlling <a href="https://en.wikipedia.org/wiki/Control_flow">processes</a>, and the development of compilers and execution engines based on centuries old <a href="https://en.wikipedia.org/wiki/Factorization_of_polynomials">polynomial factorization</a> techniques.</p>
+</div>
+<div class="paragraph">
+<p>This section will present the practical aspects of <code>poly</code> with a forthcoming section detailing the <code>poly</code> algebra founded on <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> theory.</p>
+</div>
+<h6 id="_poly_structures" class="discrete">Poly Structures</h6>
 <div class="paragraph">
 <p>There are <strong>value</strong>-<code>polys</code> and there are <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is composed of only value <code>objs</code> and is best understood as a classic <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type-<code>poly</code> is composed of at least one type <code>obj</code> and can be understood as denoting a <a href="https://en.wikipedia.org/wiki/Stream_processing">streaming</a> data process. mm-ADT provides two kinds of <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>).
 Each has a <code>,</code>, <code>|</code>, and <code>;</code> form such that</p>
@@ -5868,7 +5883,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-12 11:49:28 -0600
+Last updated 2020-08-12 13:00:16 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
