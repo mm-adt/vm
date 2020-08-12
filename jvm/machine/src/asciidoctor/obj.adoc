@@ -662,25 +662,24 @@ a|
 
 ===== Anonymous Types
 
-The type `bool\<=int[gt,10]` has a range of `bool` and a domain of `int`.
-When the type is written `int[gt,10]`, the range is deduced.
-The domain `int` is applied to `[gt]` to yield `bool`.
-The range of `int[gt,10]` is an *anonymous type* (called an *anon* for brevity) and is denoted `_` in `mmlang` (or with no character in most situations).
-An anon is a type that has no base ctype -- a wildcard.
-A few anonymous *range* examples are provided below.
+The type `bool\<=int[gt,10]` has a *range* of `bool` and a *domain* of `int`. When the type is written without it's range as `int[gt,10]`, the range is deduced. The `int` domain ctype is applied to `[gt,10]` to yield a `bool`. A type with an unspecified range is called an an *anonymous type* and is denoted `_` in `mmlang` (or with no character in many situations). An anonymous range is the result of an anonymous domain.
 
+[cols="5,5"]
+|===
+^| `_` range ^| `_` domain
+
+a|
 [exec]
 ----
-bool<=int[gt,10]    //<1>
-_<=int[gt,10]       //<2>
-int[gt,10]          //<3>
+bool<=int[gt,10]      //<1>
+_<=int[gt,10]         //<2>
+int[gt,10]            //<3>
 ----
 <1> The domain and range of the type are fully specified.
 <2> A type with a specified domain of `int` and a specified range of `_`.
 <3> An `mmlang` sugar where if no range is specified, and it differs from the domain, then `_` is assumed.
 
-Anons can also be used to specify types without a *domain*.
-
+a|
 [exec]
 ----
 int{?}<=int[is,bool<=int[gt,10]]     //<1>
@@ -692,6 +691,7 @@ int[is,[gt,10]]                      //<4>
 <2> The nested type has a specified domain of `int`.
 <3> The nested type has an unspecified domain of `_`.
 <4> An `mmlang` sugar where if no domain is specified, `_` is assumed.
+|===
 
 Assume the following *anonymous type*.
 
@@ -702,8 +702,6 @@ _{2}[plus,1]{3}[gt,0][explain]
 ----
 
 The `[plus]` instruction is https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphic], but `[gt]` isn't. The anonymous type's range can be deduced. However, without a domain ctype, the internal dtype is also unknown. When `int{2}` is provided, it triggers a cascade of deductions that determines the incoming and outgoing types of each instruction as well as their respective quantifiers (and incident types in the `obj` graph). The quantifier ring, when moving "horizontally" across the multiplicative `inst` monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, `bool{6}\<=int{2}[plus,1]{3}[gt,0]`
-
-
 
 [cols="8,.^9"]
 |===
@@ -720,6 +718,9 @@ int{2}[plus,1]{3}[gt,0][explain]
 |
 image:anon-example.svg[]
 |===
+
+[discrete]
+====== Anonymous Type Uses
 
 Anonymous types are useful in other situations besides https://en.wikipedia.org/wiki/Type_inference[lazy typing] expressions.
 
@@ -747,28 +748,15 @@ In general, anonymous types are https://en.wikipedia.org/wiki/Pattern_matching#P
 | `str`  | `+` `>` `<` `>=` `=<`          | `''`    |
 |===
 
-The mm-ADT type system can be partitioned into *mono types* (https://en.wikipedia.org/wiki/Monomial[monomials]) and *poly types* (https://en.wikipedia.org/wiki/Polynomial[polynomials]).
-The `mono` types are https://en.wikipedia.org/wiki/Primitive_data_type[atomic] and there are 4 of them: `bool`, `int`, `real`, and `str`.
-The associated table presents the typical operators (https://en.wikipedia.org/wiki/Syntactic_sugar[sugared] instructions) that can be applied to each `mono`.
-The table also includes the additive (*0*) (additive) and multiplicative (*1*) https://en.wikipedia.org/wiki/Identity_element[identity] values of each `mono`.
-The remaining subsections will present examples of each `mono` type that also highlight important mm-ADT concepts.
+The mm-ADT type system can be partitioned into *mono types* (https://en.wikipedia.org/wiki/Monomial[monomials]) and *poly types* (https://en.wikipedia.org/wiki/Polynomial[polynomials]). The `mono` types are https://en.wikipedia.org/wiki/Primitive_data_type[atomic] and there are 4 of them: `bool`, `int`, `real`, and `str`. The associated table presents the typical operators (https://en.wikipedia.org/wiki/Syntactic_sugar[sugared] instructions) that can be applied to each `mono`. The table also includes the additive (*0*) (additive) and multiplicative (*1*) https://en.wikipedia.org/wiki/Identity_element[identity] values of each `mono`.
+
 '''
 
 ===== Poly Types
 
-A `poly` is an `obj` defined by the following `mmlang` grammar fragment.
+mm-ADT's type system understands types (and their values) as being either https://en.wikipedia.org/wiki/Monomial[monomials] or https://en.wikipedia.org/wiki/Polynomial[polynomials]. Every `obj` is composed of an _object_ (term) and a _quantifier_ (coefficient) -- e.g., `int{3}` or `6{9}`. These _terms_ can then be organized into a composite polynomial structure. The significance of this approach is that mm-ADT itself can be https://en.wikipedia.org/wiki/Embedding[embedded] in an mm-ADT `poly`, thus enabling https://en.wikipedia.org/wiki/Metaprogramming[meta-programming], the unification of products and coproducts as polynomial https://en.wikipedia.org/wiki/Biproduct[biproducts], and the simultaneous realization of both https://en.wikipedia.org/wiki/Data_structure[data] and https://en.wikipedia.org/wiki/Control_flow[control] structures. This section will present the practical aspects of `poly` with a forthcoming section detailing the https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ring] and https://en.wikipedia.org/wiki/Module_(mathematics)[ring module] theory of `poly`.
 
-[source]
-----
-sep   ::= ';' | ',' | '|'
-lst   ::= '(' obj? (sep obj)* ')' q?
-rec   ::= '(' (obj '->' obj)? (sep obj '->' obj)* ')' q?
-poly  ::= lst | rec
-----
-
-Like every `obj`, there are *value*-`polys` and there are *type*-`polys`.
-A value-`poly` is composed of only value `objs` and realizes a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure.
-A type-`poly` is composed of at least one type `obj` and realizes a https://en.wikipedia.org/wiki/Stream_processing[streaming] data process. mm-ADT provides two kinds of `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
+There are *value*-`polys` and there are *type*-`polys`. A value-`poly` is composed of only value `objs` and is best understood as a classic https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type-`poly` is composed of at least one type `obj` and can be understood as denoting a https://en.wikipedia.org/wiki/Stream_processing[streaming] data process. mm-ADT provides two kinds of `poly`: a `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and a `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]).
 Each has a `,`, `|`, and `;` form such that
 
 image:poly-kinds.svg[width=250,float=left]
@@ -806,17 +794,13 @@ image:poly-kinds.svg[width=250,float=left]
 
 '''
 
-[exec]
-----
-('a','b','c')                                                //<1>
-('a'->1,'b'->2,'c'->3)                                       //<2>
-(+'a',+'b',+'c')                                             //<3>
-(is=='a'->1, is>='b'->2, is>=c->3)                           //<4>
-----
-<1> A three term *value* `,-lst`.
-<2> A three term *value* `,-rec`.
-<3> A three term *type* `,-lst` (w/ sugar).
-<4> A three term *type* `,-rec` (w/ sugar).
+[discrete]
+====== Poly Containers
+
+
+
+[discrete]
+====== Poly Controls
 
 === The Obj Graph
 

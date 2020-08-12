@@ -1231,8 +1231,8 @@ image::pipe-rec-string-example.png[width=650,align=center]
 
 [exec]
 ----
-{1,10,100}-<([is,[gt,50]] -> [plus,10] | [is,[lt,5]] -> [plus,20] | _ -> [plus,30])>-   //<1>
-{1,10,100}[is>50 -> +10 | is<5 -> +20 | _ -> +30]                                       //<2>
+[1,10,100]-<([is,[gt,50]] -> [plus,10] | [is,[lt,5]] -> [plus,20] | _ -> [plus,30])>-   //<1>
+[1,10,100][is>50 -> +10 | is<5 -> +20 | _ -> +30]                                       //<2>
 ----
 <1> Three branches with the final branch serving as _default_.
 <2> The same expression, but leveraging `mmlang` syntax sugar.
