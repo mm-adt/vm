@@ -2021,9 +2021,7 @@ mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
 mmlang&gt; _&lt;=int[gt,10]         <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;bool&lt;=int[gt,10]
 mmlang&gt; int[gt,10]            <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;bool&lt;=int[gt,10]
-mmlang&gt; _
-mmlang&gt;</code></pre>
+==&gt;bool&lt;=int[gt,10]</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2077,14 +2075,15 @@ mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4">
 </tr>
 </tbody>
 </table>
-<hr>
-<table class="tableblock frame-all grid-all right" style="width: 50%;">
+<table class="tableblock frame-none grid-none stretch">
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 53.3333%;">
+<col style="width: 46.6667%;">
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-left valign-top"><p class="tableblock">In the <strong>anonymous type</strong> <code>_{2}[plus,1]{3}[gt,0]</code>, the <code>[plus]</code> instruction is <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a>, but <code>[gt]</code> isn&#8217;t. Thus, the anonymous type&#8217;s range can be deduced, but without a domain ctype, the internal dtype is also unknown. When <code>int{2}</code> is provided, it triggers a cascade of deductions that determines incident types of the instructions in the <code>obj</code> graph. The quantifier ring, when moving "horizontally" across the multiplicative <code>inst</code> monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, <code>bool{6}&lt;=int{2}[plus,1]{3}[gt,0]</code></p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; _{2}[plus,1]{3}[gt,0]
 ==&gt;bool{6}&lt;=_{2}[plus,1]{3}[gt,0]
@@ -2103,17 +2102,6 @@ instruction    domain       range     state
 <p></p>
 </div></div></td>
 </tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>Assume the following <strong>anonymous type</strong>. The <code>[plus]</code> instruction is <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a>, but <code>[gt]</code> isn&#8217;t. The anonymous type&#8217;s range can be deduced. However, without a domain ctype, the internal dtype is also unknown. When <code>int{2}</code> is provided, it triggers a cascade of deductions that determines the incoming and outgoing types of each instruction as well as their respective quantifiers (and incident types in the <code>obj</code> graph). The quantifier ring, when moving "horizontally" across the multiplicative <code>inst</code> monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, <code>bool{6}&lt;=int{2}[plus,1]{3}[gt,0]</code></p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 53.3333%;">
-<col style="width: 46.6667%;">
-</colgroup>
-<tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
@@ -2302,8 +2290,6 @@ Each has a <code>,</code>, <code>|</code>, and <code>;</code> form such that</p>
 </tbody>
 </table>
 <hr>
-<h6 id="_poly_containers" class="discrete">Poly Containers</h6>
-<h6 id="_poly_controls" class="discrete">Poly Controls</h6>
 </div>
 </div>
 </div>
@@ -5021,7 +5007,7 @@ instruction                                    domain         range      state
 <h5 id="_poly_factoring">Poly Factoring</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">int[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">int[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></pre>
 </div>
 </div>
 <div class="imageblock text-center">
@@ -5051,7 +5037,7 @@ abcg + abdg + abefg &amp;= a \ast (bcg + bdg + befg) \\ &amp;= a \ast b \ast (cg
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">int+2[is&gt;0][*5,*-6,*10+7]&lt;44</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">int+2[is&gt;0][*5,*-6,*10+7]&lt;44</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5071,7 +5057,7 @@ abcg + abdg + abefg &amp;= a \ast (bcg + bdg + befg) \\ &amp;= a \ast b \ast (cg
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]
 ==&gt;true{2}
 ==&gt;false
 mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
@@ -5084,7 +5070,7 @@ mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">mmlang&gt; 5 =&gt; -&lt;(int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44)
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; -&lt;(int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44)
 ==&gt;(true,true,false)
 mmlang&gt; 5 =&gt; -&lt;(int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44)&gt;-
 ==&gt;true{2}
@@ -5231,12 +5217,12 @@ The unfactored type from the previous section is presented, followed by its two-
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5251,7 +5237,7 @@ The unfactored type from the previous section is presented, followed by its two-
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5266,7 +5252,7 @@ The unfactored type from the previous section is presented, followed by its two-
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5293,7 +5279,7 @@ The unfactored type from the previous section is presented, followed by its two-
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
 ==&gt;true{2}
 ==&gt;false
 
@@ -5309,7 +5295,7 @@ mmlang&gt; 5-&lt;(int;+2;[is&gt;0];-&lt;(*5,*-6,-&lt;(*10;+7)&gt;-)&gt;-;&lt;44)
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]]
 ==&gt;true{2}
 ==&gt;false
 mmlang&gt; [5;[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]]
@@ -5506,7 +5492,7 @@ y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int[plus,1][plus,2][plus,3]
 mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;(int;[plus,1];int[plus,1];[plus,2];int[plus,1][plus,2];[plus,3];int[plus,1][plus,2][plus,3])
@@ -5587,7 +5573,7 @@ The mm-ADT algebras are particular constraints on the most general algebraic spe
 <h3 id="_mmlang_grammar">mmlang Grammar</h3>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="python">obj   ::= (<span style="color:#369;font-weight:bold">type</span> | value)q
+<pre class="CodeRay highlight"><code data-lang="python">obj   ::= (<span style="color:#369;font-weight:bold">type</span> | value)q
 value ::= vbool | vint | vreal | vstr
 vbool ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">true</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">false</span><span style="color:#710">'</span></span>
 vint  ::= [<span style="color:#00D">1</span>-<span style="color:#00D">9</span>][<span style="color:#00D">0</span>-<span style="color:#00D">9</span>]*
@@ -5649,7 +5635,7 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 </table>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="python"><span style="color:#369;font-weight:bold">id</span>(t1)                    := t1&lt;=t1[<span style="color:#369;font-weight:bold">id</span>]
+<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">id</span>(t1)                    := t1&lt;=t1[<span style="color:#369;font-weight:bold">id</span>]
 domain(t1)                := t1
 <span style="color:#369;font-weight:bold">range</span>(t1)                 := t1
 domain(t2&lt;=t1[a])         := t1
@@ -5668,7 +5654,7 @@ domain(t2&lt;=t1[a])         := t1
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="python">v1{q1}                v2{q2}               := v2{q1*q2}
+<pre class="CodeRay highlight"><code data-lang="python">v1{q1}                v2{q2}               := v2{q1*q2}
 v1{q1}                t2{q2}&lt;=t1[a][b]     := b(a(v1)){q1*q2}
 t2{q1}&lt;=t1[a][b]      t3{q2}&lt;=t2[c][d]     := t3{q1*q2}&lt;=t1[a][b][c][d]
 t2{q1}&lt;=t1[a][b]      v1{q2}               := v1{q1*q2}</code></pre>
@@ -5683,7 +5669,7 @@ t2{q1}&lt;=t1[a][b]      v1{q2}               := v1{q1*q2}</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="python">v1{q1}[compose,t2{q2}&lt;=t1[a][b],t3{q3}&lt;=t2[c][d]]]     := t3{q1*q2*q3}&lt;=t1[a][b][c][d](v1)
+<pre class="CodeRay highlight"><code data-lang="python">v1{q1}[compose,t2{q2}&lt;=t1[a][b],t3{q3}&lt;=t2[c][d]]]     := t3{q1*q2*q3}&lt;=t1[a][b][c][d](v1)
 v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1),t2{q1*q2}&lt;=t1[c][d](v1)
 v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[a][b]]       := t2{q1*(q2+q3)}&lt;=t1[a][b][c][d](v1)
 v1{q1}[choose,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1) | t2{q1*q2}&lt;=t1[c][d](v1)
@@ -5699,7 +5685,7 @@ v1{q1}[repeat,[obj{<span style="color:#F00;background-color:#FAA">?</span>}-&gt;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="python">(t2{q1}&lt;=t1[a][b];t3{q2}&lt;=t2[c][d])  := t3{q1*q2}[a][b][c][d]
+<pre class="CodeRay highlight"><code data-lang="python">(t2{q1}&lt;=t1[a][b];t3{q2}&lt;=t2[c][d])  := t3{q1*q2}[a][b][c][d]
 (t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d])  := t2{q1+q2}&lt;=t1[branch,t2{q1}&lt;=t1[a][b],t2{q1}&lt;=t1[c][d]]
 (t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[a][b])  := t2{q1+q2}&lt;=t1[a][b]
 (t2{q1}&lt;=t1[a][b]|t2{q2}&lt;=t1[c][d])  := t2{<span style="color:#369;font-weight:bold">min</span>(q1,q2),<span style="color:#369;font-weight:bold">max</span>(q1,q2)}&lt;=t1[choose,t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d]]</code></pre>
@@ -5714,7 +5700,7 @@ v1{q1}[repeat,[obj{<span style="color:#F00;background-color:#FAA">?</span>}-&gt;
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="python">obj    <span style="color:#369;font-weight:bold">type</span>                     := operation <span style="color:#080;font-weight:bold">or</span> equivalence
+<pre class="CodeRay highlight"><code data-lang="python">obj    <span style="color:#369;font-weight:bold">type</span>                     := operation <span style="color:#080;font-weight:bold">or</span> equivalence
 --------------------------------------------------------
 o1     <span style="color:#369;font-weight:bold">bool</span>&lt;=obj[a,o2]          := o1.test(o2)
 bool1  <span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>[<span style="color:#080;font-weight:bold">and</span>,bool2]    := bool1 &amp; bool2
@@ -5733,7 +5719,7 @@ t1     <span style="color:#369;font-weight:bold">str</span>&lt;=obj[explain]    
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight nowrap"><code data-lang="python">t1    _                     := t1
+<pre class="CodeRay highlight"><code data-lang="python">t1    _                     := t1
 t1    _[a][b]               := b(a(t1))&lt;=t1[a][b]
 o1    [a,_]                 := true
 o1    [a,o1]                := true
@@ -5849,7 +5835,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-12 04:13:32 -0600
+Last updated 2020-08-12 11:44:27 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
