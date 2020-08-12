@@ -1727,15 +1727,17 @@ language error: int is not an int{3}
 mmlang&gt; 4{3} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
 ==&gt;5{6}
 mmlang&gt; {4,5,6} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
-==&gt;5{2}
-==&gt;6{2}
-==&gt;7{2}
+language error: end of input expected at 1:1
+{4,5,6} =&gt;
+^ near here
 mmlang&gt; {4{2},5{1},6{2}} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
-language error: int{5} is not an int{3}
+language error: end of input expected at 1:1
+{4{2},5{1},
+^ near here
 mmlang&gt; {4{2},5{-1},6{2}} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
-==&gt;5{4}
-==&gt;6{-2}
-==&gt;7{4}</code></pre>
+language error: end of input expected at 1:1
+{4{2},5{-1}
+^ near here</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1997,20 +1999,28 @@ mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
 <div class="sect4">
 <h5 id="_anonymous_types">Anonymous Types</h5>
 <div class="paragraph">
-<p>The type <code>bool&lt;=int[gt,10]</code> has a range of <code>bool</code> and a domain of <code>int</code>.
-When the type is written <code>int[gt,10]</code>, the range is deduced.
-The domain <code>int</code> is applied to <code>[gt]</code> to yield <code>bool</code>.
-The range of <code>int[gt,10]</code> is an <strong>anonymous type</strong> (called an <strong>anon</strong> for brevity) and is denoted <code>_</code> in <code>mmlang</code> (or with no character in most situations).
-An anon is a type that has no base ctype&#8201;&#8212;&#8201;a wildcard.
-A few anonymous <strong>range</strong> examples are provided below.</p>
+<p>The type <code>bool&lt;=int[gt,10]</code> has a <strong>range</strong> of <code>bool</code> and a <strong>domain</strong> of <code>int</code>. When the type is written without it&#8217;s range as <code>int[gt,10]</code>, the range is deduced. The <code>int</code> domain ctype is applied to <code>[gt,10]</code> to yield a <code>bool</code>. A type with an unspecified range is called an an <strong>anonymous type</strong> and is denoted <code>_</code> in <code>mmlang</code> (or with no character in many situations). An anonymous range is the result of an anonymous domain.</p>
 </div>
-<div class="listingblock">
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"><code>_</code> range</th>
+<th class="tableblock halign-center valign-top"><code>_</code> domain</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; bool&lt;=int[gt,10]    <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; bool&lt;=int[gt,10]      <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;bool&lt;=int[gt,10]
-mmlang&gt; _&lt;=int[gt,10]       <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; _&lt;=int[gt,10]         <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;bool&lt;=int[gt,10]
-mmlang&gt; int[gt,10]          <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; int[gt,10]            <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;bool&lt;=int[gt,10]</code></pre>
 </div>
 </div>
@@ -2029,11 +2039,8 @@ mmlang&gt; int[gt,10]          <i class="conum" data-value="3"></i><b>(3)</b>
 <td>An <code>mmlang</code> sugar where if no range is specified, and it differs from the domain, then <code>_</code> is assumed.</td>
 </tr>
 </table>
-</div>
-<div class="paragraph">
-<p>Anons can also be used to specify types without a <strong>domain</strong>.</p>
-</div>
-<div class="listingblock">
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{?}&lt;=int[is,bool&lt;=int[gt,10]]     <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int{?}&lt;=int[is,bool&lt;=int[gt,10]]
@@ -2064,7 +2071,10 @@ mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4">
 <td>An <code>mmlang</code> sugar where if no domain is specified, <code>_</code> is assumed.</td>
 </tr>
 </table>
-</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="paragraph">
 <p>Assume the following <strong>anonymous type</strong>.</p>
 </div>
@@ -2119,6 +2129,7 @@ instruction    domain         range     state
 </tr>
 </tbody>
 </table>
+<h6 id="_anonymous_type_uses" class="discrete">Anonymous Type Uses</h6>
 <div class="paragraph">
 <p>Anonymous types are useful in other situations besides <a href="https://en.wikipedia.org/wiki/Type_inference">lazy typing</a> expressions.</p>
 </div>
@@ -2197,31 +2208,17 @@ mmlang&gt; 5-&lt;([a,int],[a,_],[a,str])             <i class="conum" data-value
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT type system can be partitioned into <strong>mono types</strong> (<a href="https://en.wikipedia.org/wiki/Monomial">monomials</a>) and <strong>poly types</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>).
-The <code>mono</code> types are <a href="https://en.wikipedia.org/wiki/Primitive_data_type">atomic</a> and there are 4 of them: <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>.
-The associated table presents the typical operators (<a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugared</a> instructions) that can be applied to each <code>mono</code>.
-The table also includes the additive (<strong>0</strong>) (additive) and multiplicative (<strong>1</strong>) <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> values of each <code>mono</code>.
-The remaining subsections will present examples of each <code>mono</code> type that also highlight important mm-ADT concepts.
-'''</p>
+<p>The mm-ADT type system can be partitioned into <strong>mono types</strong> (<a href="https://en.wikipedia.org/wiki/Monomial">monomials</a>) and <strong>poly types</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>). The <code>mono</code> types are <a href="https://en.wikipedia.org/wiki/Primitive_data_type">atomic</a> and there are 4 of them: <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>. The associated table presents the typical operators (<a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugared</a> instructions) that can be applied to each <code>mono</code>. The table also includes the additive (<strong>0</strong>) (additive) and multiplicative (<strong>1</strong>) <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> values of each <code>mono</code>.</p>
 </div>
+<hr>
 </div>
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>A <code>poly</code> is an <code>obj</code> defined by the following <code>mmlang</code> grammar fragment.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">sep   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">;</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">,</span><span style="color:#710">'</span></span> | <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">|</span><span style="color:#710">'</span></span>
-lst   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> obj<span style="color:#F00;background-color:#FAA">?</span> (sep obj)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
-rec   ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">(</span><span style="color:#710">'</span></span> (obj <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> obj)<span style="color:#F00;background-color:#FAA">?</span> (sep obj <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">-&gt;</span><span style="color:#710">'</span></span> obj)* <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">)</span><span style="color:#710">'</span></span> q<span style="color:#F00;background-color:#FAA">?</span>
-poly  ::= lst | rec</code></pre>
-</div>
+<p>mm-ADT&#8217;s type system understands types (and their values) as being either <a href="https://en.wikipedia.org/wiki/Monomial">monomials</a> or <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>. Every <code>obj</code> is composed of an <em>object</em> (term) and a <em>quantifier</em> (coefficient)&#8201;&#8212;&#8201;e.g., <code>int{3}</code> or <code>6{9}</code>. These <em>terms</em> can then be organized into a composite polynomial structure. The significance of this approach is that mm-ADT itself can be <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in an mm-ADT <code>poly</code>, thus enabling <a href="https://en.wikipedia.org/wiki/Metaprogramming">meta-programming</a>, the unification of products and coproducts as polynomial <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>, and the simultaneous realization of both <a href="https://en.wikipedia.org/wiki/Data_structure">data</a> and <a href="https://en.wikipedia.org/wiki/Control_flow">control</a> structures. This section will present the practical aspects of <code>poly</code> with a forthcoming section detailing the <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">ring module</a> theory of <code>poly</code>.</p>
 </div>
 <div class="paragraph">
-<p>Like every <code>obj</code>, there are <strong>value</strong>-<code>polys</code> and there are <strong>type</strong>-<code>polys</code>.
-A value-<code>poly</code> is composed of only value <code>objs</code> and realizes a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure.
-A type-<code>poly</code> is composed of at least one type <code>obj</code> and realizes a <a href="https://en.wikipedia.org/wiki/Stream_processing">streaming</a> data process. mm-ADT provides two kinds of <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>).
+<p>There are <strong>value</strong>-<code>polys</code> and there are <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is composed of only value <code>objs</code> and is best understood as a classic <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type-<code>poly</code> is composed of at least one type <code>obj</code> and can be understood as denoting a <a href="https://en.wikipedia.org/wiki/Stream_processing">streaming</a> data process. mm-ADT provides two kinds of <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>).
 Each has a <code>,</code>, <code>|</code>, and <code>;</code> form such that</p>
 </div>
 <div class="paragraph">
@@ -2293,38 +2290,8 @@ Each has a <code>,</code>, <code>|</code>, and <code>;</code> form such that</p>
 </tbody>
 </table>
 <hr>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','b','c')                                                <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;('a','b','c')
-mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'c'-&gt;3)                                       <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;('a'-&gt;1,'b'-&gt;2,'c'-&gt;3)
-mmlang&gt; (+'a',+'b',+'c')                                             <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(_[plus,'a'],_[plus,'b'],_[plus,'c'])
-mmlang&gt; (is=='a'-&gt;1, is&gt;='b'-&gt;2, is&gt;=c-&gt;3)                           <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;(_[is,_[eq,'a']]-&gt;1,_[is,_[gte,'b']]-&gt;2,_[is,_[gte,c]]-&gt;3)</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A three term <strong>value</strong> <code>,-lst</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>A three term <strong>value</strong> <code>,-rec</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A three term <strong>type</strong> <code>,-lst</code> (w/ sugar).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>A three term <strong>type</strong> <code>,-rec</code> (w/ sugar).</td>
-</tr>
-</table>
-</div>
+<h6 id="_poly_containers" class="discrete">Poly Containers</h6>
+<h6 id="_poly_controls" class="discrete">Poly Controls</h6>
 </div>
 </div>
 </div>
@@ -2876,7 +2843,7 @@ Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; str[plus,'a']{2} =&gt; str{2}[plus,'b']{6}
-==&gt;str{24}&lt;=str[plus,'a']{2}[plus,'b']{6}</code></pre>
+==&gt;str{12}&lt;=str[plus,'a']{2}[plus,'b']{6}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4983,11 +4950,11 @@ In practice, they keys of <code>|-rec</code> will typically leverage <code>[is,b
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; {1,10,100}-&lt;([is,[gt,50]] -&gt; [plus,10] | [is,[lt,5]] -&gt; [plus,20] | _ -&gt; [plus,30])&gt;-   <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [1,10,100]-&lt;([is,[gt,50]] -&gt; [plus,10] | [is,[lt,5]] -&gt; [plus,20] | _ -&gt; [plus,30])&gt;-   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;21
 ==&gt;40
 ==&gt;110
-mmlang&gt; {1,10,100}[is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30]                                       <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; [1,10,100][is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30]                                       <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;21
 ==&gt;40
 ==&gt;110</code></pre>
@@ -5870,7 +5837,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-11 16:10:15 -0600
+Last updated 2020-08-11 16:39:15 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
