@@ -23,45 +23,63 @@ import Data.Rewriting.Term hiding (map, parse)
 import Data.Rewriting.Rules hiding (map)
 import Data.Rewriting.Rule hiding (map)
 -----------------------------------------------
--- EMM-lang examples
+-- MM-lang examples
 
-{-- examples:
-mmlang> int[plus,1][plus,2][plus,3]                                   
-==>int[plus,1][plus,2][plus,3]
-
-mmlang> int[plus,1][plus,2][plus,3][path]                             
-==>(int;int[plus,1];int[plus,1][plus,2];int[plus,1][plus,2][plus,3])
-
-mmlang> 1=>int=>[plus,1]=>[plus,2]=>[plus,3]=>int                     
-==>7
-
-mmlang> 1=>int[plus,1][plus,2][plus,3][path]                          
-==>(1;2;4;7)
-
-mmlang> 1=>int[plus,1][plus,2][plus,3][path]>-                        
-==>7
---}
+-- todo: needs to error when left over parse 
+-- todo: spaces not being discared in parser
+-- todo: add sugar
+-- todo: add meta vars to surface syntax to make writing rules easier
+-- todo: deal with axiom schemes
 
 ex1 = "int[plus,1]" --ok
 ex2 = "int[plus,1][plus,2][plus,3][path]" --ok
-ex3 = "1=>int=>[plus,1]=>[plus,2]=>[plus,3]=>int" -- => not in cfg
+ex3 = "1=>int=>[plus,1]=>[plus,2]=>[plus,3]=>int" -- => needs sugar
 ex4 = "1=>int[plus,1][plus,2][plus,3][path]" -- ibid
 ex5 = "1=>int[plus,1][plus,2][plus,3][path]>-" -- ibid
+ex6 = "(int<=int[plus][mult];int<=int[plus][mult])"
 
-test = case parse objParser "" ex2 of
+test ex = case parse objParser "" ex of
   Right y -> eval mmAxioms (convObj y)
-
+  Left z -> show z
+  
 ------------------------------------------------
 -- Read-eval-print loop
 
-mmAxioms = [] --todo
+o1 = ObjVar "o1"
+o2 = ObjVar "o2"
+c1 = CTypeVar "t1"
+c2 = CTypeVar "t2"
+c3 = CTypeVar "c3"
+t1 = TypeVar "t1"
+t2 = TypeVar "t2"
+v1 = ValueVar "v1"
+v2 = ValueVar "v2"
+i1 = InstVar "i1"
+i2 = InstVar "i2"
+i3 = InstVar "i3"
+i4 = InstVar "i4"
+
+-- (t2<=t1[a][b];t3<=t2[c][d])  := t3[a][b][c][d]
+axiom1 = Rule (convObj $ ValueObj $ PolyValue    $ LstPoly 
+                                  $ Lst (TypeObj $ DTypeType $ DType c2 (Just c1) [i1, i2]) 
+                              [(SepSemi, TypeObj $ DTypeType $ DType c3 (Just c2) [i3, i4])])
+              (convObj $ TypeObj  $                DTypeType $ DType c3 (Just c3) [i1, i2, i3, i4])
+
+mmAxioms = [axiom1] 
+--note: will probably need (t2<=t1[a][b][p];t3<=t2[c][d][q])  := t3[a][b][c][d][p][q] etc too
+
+--next up:
+--(t2<=t1[a][b],t2<=t1[c][d])  := t2<=t1[branch,t2<=t1[a][b],t2<=t1[c][d]]
+--(t2<=t1[a][b],t2<=t1[a][b])  := t2<=t1[a][b]
+--(t2<=t1[a][b]|t2<=t1[c][d])  := t2<=t1[choose,t2<=t1[a][b],t2<=t1[c][d]] 
 
 main = repl mmAxioms
 
 repl rules = do { putStr "mmlang> ";
-  x <- readLn;
-  ep x;
-  repl rules }
+  x <- getLine;
+  if x == "quit" 
+  then return () 
+  else do { ep x; repl rules } }
  where ep x = case (parse objParser "" x) of
                        Left err -> putStrLn $ show err 
                        Right xs -> putStrLn $ "==>" ++ (eval rules $ convObj xs) 
@@ -69,15 +87,17 @@ repl rules = do { putStr "mmlang> ";
 type MMRule = Rule Sym String
 
 eval :: [MMRule] -> MMTerm -> String 
-eval rs t = pre ++ (g 8 $ map (f 8) ts) 
+eval rs t = pre ++ (g 8 $ map {-- (f 8) --} (show . convObj' . head) $ nub $ ts) 
  where (b, ts) = eval0 rs [[t]] 8
        pre = if b then "" else "WARNING: NO CONVERGENCE AFTER 8 ROUNDS\n"
        f _ [] = ""
        f 0 _ = "..."
+       f _ [a]   = show (convObj' a)       
        f n (a:b) = show (convObj' a) ++ " <~~ " ++ f (n-1) b  
        g _ [] = ""
+       g _ [a] = a
        g 0 _ = "..."
-       g n (a:b) = a ++ "\n" ++ g (n-1) b
+       g n (a:b) = a ++ "\n==>" ++ g (n-1) b
        
 eval0 :: [MMRule] -> [[MMTerm]] -> Integer -> (Bool, [[MMTerm]])
 eval0 rs ts 0 = (False, ts)
@@ -100,7 +120,7 @@ eval'' rs (h:t) | length next > 0 = [ (result x) : (h:t) | x <- next ]
 -- (suitable for e.g., embedding in the simply lambda calculus and CQL)
 
 data Sym = TYPEOBJ | VALUEOBJ | BOOLVALUE Bool | INTVALUE Integer | STRVALUE String 
- | CTYPETYPE | DTYPETYPE | BOOLTYPE | POLYTYPE | ANONTYPE
+ | CTYPETYPE | DTYPETYPE | BOOLTYPE | POLYTYPE | ANONTYPE | POLYVALUE
  | INTTYPE | STRTYPE | DTYPE0 | DTYPE1 | SEPSEMI | SEPCOMMA | SEPBAR
  | LST' | REC' | INST' | LSTPOLY | RECPOLY | INSTPOLY | OP' Op {-- share for expediency --} 
  | INSTLISTNIL  | INSTLISTCONS  | SEPOBJLISTNIL | SEPOBJLISTCONS
@@ -136,6 +156,7 @@ mmSig x = case x of
  LST' -> ([OBJ, SEPOBJLIST], LST)
  REC' -> ([OBJ, OBJ, SEPOBJOBJLIST], REC)
  INST' -> ([OP, OBJLIST], INST)
+ POLYVALUE -> ([POLY], VALUE)
  LSTPOLY -> ([LST], POLY)
  RECPOLY -> ([REC], POLY)
  INSTPOLY -> ([INST], POLY)
@@ -159,10 +180,11 @@ convObj' (Fun f [a]) = case f of
  
 convValue' :: MMTerm -> Value 
 convValue' (Var x) = ValueVar x
-convValue' (Fun f []) = case f of
+convValue' (Fun f z) = case f of
   BOOLVALUE y -> BoolValue y  
   INTVALUE y -> IntValue y 
   STRVALUE y -> StrValue y 
+  POLYVALUE -> PolyValue $ convPoly' $ head z
 
 convType' :: MMTerm -> Type
 convType' (Var x) = TypeVar x 
@@ -179,16 +201,13 @@ convCType' (Fun f []) = case f of
  INTTYPE -> IntType
  STRTYPE -> StrType
 
--- CType (Maybe CType) [Inst]
 convDType' :: MMTerm -> DType 
 convDType' (Var x) = DTypeVar x 
 convDType' (Fun f ts) = case f of  
  DTYPE0 -> case ts of
    [c1,i] -> DType (convCType' c1) Nothing (convInstList' i) 
-  -- x -> error $ "foo" ++ (show $ length x)
  DTYPE1 -> case ts of
    [c1,c2,i] -> DType (convCType' c1) (Just $ convCType' c2) (convInstList' i) 
-  -- x -> error $ sep (map show x) "\n"
 
 convSep' :: MMTerm -> Sep 
 convSep' (Var x) = SepVar x
@@ -263,6 +282,7 @@ convValue x = case x of
   BoolValue y -> Fun (BOOLVALUE y) [] 
   IntValue y -> Fun (INTVALUE y) []
   StrValue y -> Fun (STRVALUE y) []
+  PolyValue y -> Fun POLYVALUE [convPoly y]
       
 convType :: Type -> MMTerm 
 convType x = case x of
@@ -334,7 +354,7 @@ convOp x = case x of
 data Obj = TypeObj Type | ValueObj Value | ObjVar String
  deriving (Eq, Ord)
  
-data Value = BoolValue Bool | IntValue Integer | StrValue String  | ValueVar String
+data Value = BoolValue Bool | IntValue Integer | StrValue String | PolyValue Poly | ValueVar String
  deriving (Eq, Ord)
 
 data Type = CTypeType CType | DTypeType DType  | TypeVar String 
@@ -433,6 +453,7 @@ instance Show Value where
     BoolValue b -> show b 
     IntValue  i -> show i 
     StrValue  s -> show s 
+    PolyValue v -> show v
     ValueVar  v -> v 
   
 instance Show CType where
@@ -475,10 +496,10 @@ instance Show Inst where
     where f o' = ", " ++ show o'  
      
 instance Show DType where
-  show (DType c cs is) = show c ++ " " ++ oc ++ " " ++ sep (map show is) " <= " 
+  show (DType c cs is) = show c ++ " " ++ oc ++ sep (map show is) " "
     where oc = case cs of 
-                Just y -> show y 
-                Nothing -> ""   
+                Just y -> "<= " ++ show y ++ " "
+                Nothing -> "" 
 
 instance Show Rec where
   show (Rec o1 o2 soos) = "(" ++ show o1 ++ " -> " ++ show o2 ++ sep (map f soos) " " 
@@ -520,7 +541,8 @@ boolParser = do { x <- string "true"; return $ True }
  <|> do { x <- string "false"; return $ False }
 
 valueParser :: Parser Value
-valueParser = do { x <- boolParser; return $ BoolValue x }
+valueParser = do { x <- polyParser;return $ PolyValue x } 
+ <|> do { x <- boolParser; return $ BoolValue x }
  <|> do { x <- intParser; return $ IntValue x } 
  <|> do { x <- strParser; return $ StrValue x } 
 
