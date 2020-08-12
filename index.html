@@ -2077,17 +2077,15 @@ mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4">
 </table>
 <table class="tableblock frame-none grid-none stretch">
 <colgroup>
-<col style="width: 53.3333%;">
-<col style="width: 46.6667%;">
+<col style="width: 50%;">
+<col style="width: 50%;">
 </colgroup>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">In the <strong>anonymous type</strong> <code>_{2}[plus,1]{3}[gt,0]</code>, the <code>[plus]</code> instruction is <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a>, but <code>[gt]</code> isn&#8217;t. Thus, the anonymous type&#8217;s range can be deduced, but without a domain ctype, the internal dtype is also unknown. When <code>int{2}</code> is provided, it triggers a cascade of deductions that determines incident types of the instructions in the <code>obj</code> graph. The quantifier ring, when moving "horizontally" across the multiplicative <code>inst</code> monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, <code>bool{6}&lt;=int{2}[plus,1]{3}[gt,0]</code></p></td>
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; _{2}[plus,1]{3}[gt,0]
-==&gt;bool{6}&lt;=_{2}[plus,1]{3}[gt,0]
-mmlang&gt; _{2}[plus,1]{3}[gt,0][explain]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; _{2}[plus,1]{3}[gt,0][explain]
 ==&gt;'
 bool{6}&lt;=_{2}[plus,1]{3}[gt,0]
 
@@ -2105,13 +2103,7 @@ instruction    domain       range     state
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; _{2}[plus,1]{3}[gt,0]
-==&gt;bool{6}&lt;=_{2}[plus,1]{3}[gt,0]
-mmlang&gt; int{2}[plus,1]{3}[gt,0]
-==&gt;bool{6}&lt;=int{2}[plus,1]{3}[gt,0]
-mmlang&gt; 1{2} =&gt; int{2}[plus,1]{3}[gt,0]
-==&gt;true{6}
-mmlang&gt; int{2}[plus,1]{3}[gt,0][explain]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{2}[plus,1]{3}[gt,0][explain]
 ==&gt;'
 bool{6}&lt;=int{2}[plus,1]{3}[gt,0]
 
@@ -2208,9 +2200,50 @@ mmlang&gt; 5-&lt;([a,int],[a,_],[a,str])             <i class="conum" data-value
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT type system can be partitioned into <strong>mono types</strong> (<a href="https://en.wikipedia.org/wiki/Monomial">monomials</a>) and <strong>poly types</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>). The <code>mono</code> types are <a href="https://en.wikipedia.org/wiki/Primitive_data_type">atomic</a> and there are 4 of them: <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>. The associated table presents the typical operators (<a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugared</a> instructions) that can be applied to each <code>mono</code>. The table also includes the additive (<strong>0</strong>) (additive) and multiplicative (<strong>1</strong>) <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> values of each <code>mono</code>.</p>
+<p>The mm-ADT type system can be partitioned into <strong>mono types</strong> (<a href="https://en.wikipedia.org/wiki/Monomial">monomials</a>) and <strong>poly types</strong> (<a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>). There are 4 mono types, each denoting a classical <a href="https://en.wikipedia.org/wiki/Primitive_data_type">primtive</a> data type: <code>bool</code>, <code>int</code>, <code>real</code>, and <code>str</code>. The associated table presents the typical operators (<a href="https://en.wikipedia.org/wiki/Syntactic_sugar">sugared</a> instructions) that can be applied to each mono type. The table also includes the additive (\$\mathbf{0}\$) (additive) and multiplicative (\$\mathbf{1}\$) <a href="https://en.wikipedia.org/wiki/Identity_element">identities</a> of each mono.</p>
 </div>
-<hr>
+<div class="paragraph">
+<p>A few of the more interesting aspects of the mono types are detailed in the following subsections.</p>
+</div>
+<h6 id="_zero_and_one" class="discrete">Zero and One</h6>
+<div class="paragraph">
+<p>The instructions <code>[zero]</code> and <code>[one]</code> are <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> polymorphic instructions. Each provides a unique singleton value associated with the type of the respective incoming <code>obj</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (bool[zero],int[zero],real[zero],str[zero])
+==&gt;(false,0,0.0,'')
+mmlang&gt; (true,6,5.5,'ryan')=([zero],[zero],[zero],[zero])
+==&gt;(false,0,0.0,'')
+mmlang&gt; (bool[one],int[one],real[one])
+==&gt;(true,1,1.0)
+mmlang&gt; (true,6,5.5)=([one],[one],[one])
+==&gt;(true,1,1.0)
+mmlang&gt; 'ryan'[one]
+language error: 'ryan' is not supported by [one]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Each type&#8217;s \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the <code>[plus]</code> and <code>[mult]</code> instruction identities, respectively. Furthermore, for those types that form a ring with unity, the <code>[zero]</code> is their respective multiplicative annihilator.
+]</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [true,6,5.5,'ryan'][plus,[zero]]
+==&gt;true
+==&gt;6
+==&gt;5.5
+==&gt;'ryan'
+mmlang&gt; [true,6,5.5][mult,[one]]
+==&gt;true
+==&gt;6
+==&gt;5.5
+mmlang&gt; [true,6,5.5][mult,[zero]]
+==&gt;false
+==&gt;0
+==&gt;0.0</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
@@ -5835,7 +5868,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-12 11:44:27 -0600
+Last updated 2020-08-12 11:49:28 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
