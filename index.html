@@ -2253,10 +2253,8 @@ q_1x_1 + q_2x_2 + \ldots + q_nx_n.
 \]
 An mm-ADT type is the product of an <strong>object</strong> (variable) and a <strong>quantifier</strong> (coefficient)&#8201;&#8212;&#8201;e.g., <code>int{3}</code>. When types are linearly combined, they form a <code>poly</code>. The mm-ADT <code>poly</code> respects the ring-theoretic polynomial axioms and in doing so, realizes all entailed polynomial theorems.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">(x1{q1},x2{q2},...,xn{qn})</code></pre>
-</div>
+<div class="paragraph text-center">
+<p><code>(x1{q1},x2{q2},&#8230;&#8203;,xn{qn})</code></p>
 </div>
 <div class="paragraph">
 <p>At first glance, the <code>poly</code> structure denoted above appears to be some sort of <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. When the terms of a <code>poly</code> are values, the <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a> (or bag). However, when the terms are types, the entire corpus of polynomial theory is immediately applicable to <code>poly</code>. The fundamental insight that confers numerous benefits is that mm-ADT, as an algebraic ring structure itself, can be faithfully <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in mm-ADT <code>poly</code>. This enables collection-oriented <a href="https://en.wikipedia.org/wiki/Metaprogramming">meta-programming</a>, a unification of products and coproducts as <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>, the integration of data <a href="https://en.wikipedia.org/wiki/Data_structure">structures</a> and <a href="https://en.wikipedia.org/wiki/Control_flow">flow control</a> processes, and the development of compilers and execution engines based on centuries old <a href="https://en.wikipedia.org/wiki/Factorization_of_polynomials">polynomial factorization</a> techniques.</p>
@@ -2266,11 +2264,10 @@ An mm-ADT type is the product of an <strong>object</strong> (variable) and a <st
 </div>
 <h6 id="_poly_structures" class="discrete">Poly Structures</h6>
 <div class="paragraph">
-<p>There are <strong>value</strong>-<code>polys</code> and there are <strong>type</strong>-<code>polys</code>. A value-<code>poly</code> is composed of only value <code>objs</code> and is best understood as a classic <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type-<code>poly</code> is composed of at least one type <code>obj</code> and can be understood as denoting a <a href="https://en.wikipedia.org/wiki/Stream_processing">streaming</a> data process. mm-ADT provides two kinds of <code>poly</code>: a <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and a <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>).
-Each has a <code>,</code>, <code>|</code>, and <code>;</code> form such that</p>
+<p>There are <strong>value</strong> <code>polys</code> and there are <strong>type</strong> <code>polys</code>. A value <code>poly</code> is composed of only value <code>objs</code> and is best understood as a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type <code>poly</code> must contain at least one non-\$\mathbf{0}\$ <code>obj</code> (i.e. <code>obj{0}</code>) and is intuitively understood as <a href="https://en.wikipedia.org/wiki/Stream_processing">streaming</a> process.</p>
 </div>
 <div class="paragraph">
-<p><span class="image left"><img src="./images/obj/poly-kinds.svg" alt="poly kinds" width="250"></span></p>
+<p>As a practical consideration, mm-ADT offers two kinds of <code>poly</code>: <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>), where theoretically, <code>rec</code> is simply a <code>lst</code> with some added conveniences that reduce the semantic and syntactic complexity of various common use cases. Finally, every <code>poly</code> has one of three forms: <code>,</code>, <code>;</code>, or <code>|</code>. The mm-ADT <code>poly</code> data type is captured by the following equation and diagram.</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2279,18 +2276,22 @@ Each has a <code>,</code>, <code>|</code>, and <code>;</code> form such that</p>
 \end{split}
 \]</p>
 </div>
-<table class="tableblock frame-all grid-all right small" style="width: 70%;">
+<hr>
+<div class="paragraph">
+<p><span class="image left"><img src="./images/obj/poly-kinds.svg" alt="poly kinds" width="350"></span></p>
+</div>
+<table class="tableblock frame-all grid-all right small" style="width: 60%;">
 <colgroup>
-<col style="width: 11.1111%;">
-<col style="width: 11.1111%;">
-<col style="width: 22.2222%;">
-<col style="width: 33.3333%;">
-<col style="width: 22.2223%;">
+<col style="width: 9.0909%;">
+<col style="width: 9.0909%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2728%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">poly</th>
-<th class="tableblock halign-left valign-top">sep</th>
+<th class="tableblock halign-center valign-top">sep</th>
 <th class="tableblock halign-left valign-top">access (value)</th>
 <th class="tableblock halign-left valign-top">collection (values)</th>
 <th class="tableblock halign-left valign-top">branch (type)</th>
@@ -2299,41 +2300,41 @@ Each has a <code>,</code>, <code>|</code>, and <code>;</code> form such that</p>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock"><code>lst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">all</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Multiset">multiset</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">last</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Method_chaining">chain</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">head</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Set_(abstract_data_type)">set</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">coalesce</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">last</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">list</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Method_chaining">chain</a></p></td>
-</tr>
-<tr>
 <td class="tableblock halign-left valign-top" rowspan="3"><p class="tableblock"><code>rec</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">all match key</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Multimap">multimap</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">condition</a></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">first match key</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Associative_array">map</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">case</a></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">last match key</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">record</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Method_cascading">cascade</a></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">first match key</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Associative_array">map</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">case</a></p></td>
 </tr>
 </tbody>
 </table>
@@ -5883,7 +5884,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-12 15:52:47 -0600
+Last updated 2020-08-12 16:10:18 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
