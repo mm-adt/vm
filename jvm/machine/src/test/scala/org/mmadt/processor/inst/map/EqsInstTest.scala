@@ -64,7 +64,7 @@ class EqsInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0), __.eqs(real), bool(true, true, true), "strm"), // strm * type = strm
         (real(1.0, 2.0, 3.0), __.eqs(__.mult(real)), bool(true, false, false), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, EqsOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q), compile = false)
+    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, EqsOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q))
     }
   }
 }

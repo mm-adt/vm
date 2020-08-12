@@ -23,7 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple}
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
@@ -116,6 +116,7 @@ trait Obj
   def hardQ(f: IntQ => IntQ): this.type = this.hardQ(f.apply(this.q))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
+  def pureQ: IntQ = divQ(this.q, this.domainObj.q)
   lazy val alive: Boolean = this.q != qZero
 
 
@@ -156,14 +157,13 @@ object Obj {
 
   private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
-      case _: Type[E] if __.isAnonRoot(domainObj) && rangeType.root => rangeType.hardQ(q => multQ(domainObj.q, q))
+      case _: Value[E] => rangeType.q(multQ(domainObj.q, rangeType.q))
       case _: Type[E] =>
         rangeType.trace
           .headOption
           .map(x => x._2.exec(domainObj))
           .map(x => Obj.internal(x, rangeType.linvert))
           .getOrElse(domainObj.asInstanceOf[E])
-      case _ => rangeType.q(multQ(domainObj.q, rangeType.q))
     }
   }
 

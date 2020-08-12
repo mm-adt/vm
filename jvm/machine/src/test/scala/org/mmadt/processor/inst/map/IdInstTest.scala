@@ -34,29 +34,29 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
  */
 class IdInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[id] value, type, strm") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+    val starts: TableFor3[Obj, Obj, Obj] =
+      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
         //////// INT
-        (int(2).id(), int(2), "value"),
-        (int(-2).id(), int(-2), "value"),
-        (int.id(), int.id(), "type"),
-        (int(1, 2, 3).id(), int(1, 2, 3), "strm"),
+        (int(2), int.id(), int(2)),
+        (int(-2), int.id(), int(-2)),
+        (int, int.id(), int.id()),
+        (int(1, 2, 3), int.q(3).id(), int(1, 2, 3)),
         //////// REAL
-        (real(2.0).id(), real(2.0), "value"),
-        (real(2.0).id().q(10), real(2.0).q(10), "value"),
-        (real(2.0).q(5).id().q(10), real(2.0).q(50), "value"),
-        (real(-2.0).one(), real(1.0), "value"),
-        (real.id(), real.id(), "type"),
-        (real(1.0, 2.0, 3.0).id(), real(1.0, 2.0, 3.0), "strm"),
-        (real(1.0, 2.0, 3.0).id().q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10)), "strm"),
-        (real(1.0, 2.0, 3.0).id().q(10).id(), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10)), "strm"),
-        (real(1.0, 2.0, 3.0).id().q(10).id().q(5), real(real(1.0).q(50), real(2.0).q(50), real(3.0).q(50)), "strm"),
+        (real(2.0), __.id(), real(2.0)),
+        (real(2.0), real.id().q(10), real(2.0).q(10)),
+        (real(2.0).q(5), real.q(5).id().q(10), real(2.0).q(50)),
+        (real(-2.0), real.one(), real(1.0)),
+        (real, __.id(), real.id()),
+        (real(1.0, 2.0, 3.0), real.q(3).id(), real(1.0, 2.0, 3.0)),
+        (real(1.0, 2.0, 3.0), __.id().q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10))),
+        (real(1.0, 2.0, 3.0), real.q(3).id().q(10).id(), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10))),
+        (real(1.0, 2.0, 3.0), __.id().q(10).id().q(5), real(real(1.0).q(50), real(2.0).q(50), real(3.0).q(50))),
         //////// STR
-        (str("a").id(), str("a"), "value"),
-        (str.id(), str.id(), "type"),
-        (str("a", "b", "c").id(), str("a", "b", "c"), "strm"),
+        (str("a"), str.id(), str("a")),
+        (str.id(), str.id(), str.id().id()),
+        (str("a", "b", "c"), str.q(3).id(), str("a", "b", "c")),
       )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result)
     }
   }
 }

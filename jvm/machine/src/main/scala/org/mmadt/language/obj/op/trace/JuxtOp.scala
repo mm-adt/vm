@@ -24,8 +24,11 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj, _}
+import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
 trait JuxtOp {
@@ -36,5 +39,9 @@ trait JuxtOp {
 
 object JuxtOp extends Func[Obj, Obj] {
   def apply[A <: Obj](right: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.juxt, List(right)), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.compute(inst.arg0[Obj]).hardQ(multQ(start.q, inst.arg0[Obj].q))
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.arg0[Obj] match {
+    case dead: Obj if !dead.alive => zeroObj
+    case avalue: Value[_] => start.compute(avalue).hardQ(multQ(start.q, avalue.q))
+    case atype: Type[_] => start.compute(atype).hardQ(multQ(start.q, atype.pureQ))
+  }
 }

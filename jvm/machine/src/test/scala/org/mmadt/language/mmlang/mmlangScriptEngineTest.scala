@@ -117,7 +117,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec.q(int(5), int(10)))(engine.eval("rec{5,10}"))
     assertResult(lst.q(int(5), int(10)))(engine.eval("lst{5,10}"))
     assertResult(str.q(+))(engine.eval("str{+}"))
-    // assertResult(__.q(+))(engine.eval("_{+}"))
+    assertResult(__.q(2))(engine.eval("_{2}"))
+    assertResult(__.q(+))(engine.eval("_{+}"))
+    assertResult(__.q(2).id())(engine.eval("_{2}[id]"))
   }
 
   test("atomic value parsing") {
@@ -394,8 +396,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int.id().q(8))(engine.eval("int[branch,(_,_)]{4}"))
     //
     assertResult(int.q(-1))(engine.eval("[int{-1};int]").range)
-    assertResult(int.id().q(-1))(engine.eval("[int;int{-1}]"))
-    // assertResult(int.q(5))(engine.eval("[int{-5};int{-1};int{1}]"))
+    assertResult(int.id().q(-1))(engine.eval("[int;int[id]{-1}]"))
+    assertResult(int.id().q(5))(engine.eval("[int[id]{-5};int[id]{-1};int{1}]"))
     assertResult(int(5).q(-1))(engine.eval("[1{-1};5]"))
     assertResult(int(5))(engine.eval("[1{-1};5{-1}]"))
   }
@@ -630,8 +632,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("obj{0}")(engine.eval("['a','a'{-1}]").toString)
     assertResult(zeroObj)(engine.eval("['a','a'{-1}]"))
     assertResult(str.q(2).plus(str.q(2)).q(5))(engine.eval("str{2}[str[plus,str]{5}]"))
-    assertResult(str.id().q(-1))(engine.eval("[str{-1};str]"))
-    assertResult(str.id().q(-1))(engine.eval("[str;str{-1}]"))
+    assertResult(str.id().q(-1))(engine.eval("[str[id]{-1};str]"))
+    assertResult(str.id().q(-1))(engine.eval("[str;str[id]{-1}]"))
     assertResult(str.id().q(-1))(engine.eval("[str;str]{-1}"))
     // TODO: assertResult(__.q(2).id().q(7))(engine.eval("_{2}[str[id]{3},str[id]{4}]"))
     assertResult(__)(engine.eval("[[_;_];_]"))

@@ -33,23 +33,23 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[neg] value, type, strm") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
+    val starts: TableFor3[Obj, Obj, Obj] =
+      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
         //////// INT
-        (int(2).neg(), int(-2), "value"),
-        (int(2).q(2).neg(), int(-2).q(2), "value"),
-        (int(-2).neg(), int(2), "value"),
-        (int(-2).neg().q(4).neg().q(2), int(-2).q(8), "value"),
-        (int.neg(), int.neg(), "type"),
-        (int(-1, -2, -3).neg(), int(1, 2, 3), "strm"),
+        (int(2), int.neg(), int(-2)),
+        (int(2).q(2), int.q(2).neg(), int(-2).q(2)),
+        (int(-2), __.neg(), int(2)),
+        (int(-2), __.neg().q(4).neg().q(2), int(-2).q(8)),
+        (int.neg(), int.neg(), int.neg().neg()),
+        (int(-1, -2, -3), int.q(3).neg(), int(1, 2, 3)),
         //////// REAL
-        (real(2.0).neg(), real(-2.0), "value"),
-        (real(-2.0).neg(), real(2.0), "value"),
-        (real.neg(), real.neg(), "type"),
-        (real(-1.0, -2.0, -3.0).neg(), real(1.0, 2.0, 3.0), "strm"),
-        (real(-1.0, -2.0, -3.0).neg().q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10)), "strm"),
+        (real(2.0), real.neg(), real(-2.0)),
+        (real(-2.0), __.neg(), real(2.0)),
+        (real, real.neg(), real.neg()),
+        (real(-1.0, -2.0, -3.0), real.q(3).neg(), real(1.0, 2.0, 3.0)),
+        (real(-1.0, -2.0, -3.0), real.q(3).neg().q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10))),
       )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result) // NegOp().q(divQ(rhs.q,rhs.domain.q))
     }
   }
 

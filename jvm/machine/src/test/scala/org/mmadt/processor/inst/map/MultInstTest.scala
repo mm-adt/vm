@@ -71,7 +71,7 @@ class MultInstTest extends FunSuite with TableDrivenPropertyChecks {
         //  (("a" | "b" | "c").mult("1" `;` "2"), lst[Obj]("|", values = List(("a" `;` "1" `;` "2"), ("b" `;` "1" `;` "2"), ("c" `;` "1" `;` "2")): _*), "value"),
         //(("a" | "b" | "c").mult("1" |[Obj] "2"), lst[Obj]("|", values = ("a" | "1") | ("a" | "2") | ("b" | "1") | ("b" | "2") | ("c" | "1") | ("c" | "2")), "value")
       )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
+    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result)
     }
   }
 }

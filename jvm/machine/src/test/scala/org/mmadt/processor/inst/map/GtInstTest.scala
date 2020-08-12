@@ -84,7 +84,7 @@ class GtInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("a", "b", "c") ==> __.gt("b").q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10)), "strm"), // strm * value = strm
         (str("a", "b", "c").gt(str), bool(false, false, false), "strm"), // strm * type = strm
       )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
+    forEvery(starts) { (query, result, _) => TestUtil.evaluate(query, __, result, compile = false)
     }
   }
 
