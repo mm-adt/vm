@@ -1250,8 +1250,6 @@ int{3}[is>50 -> +10 \| is<5 -> +20 \| _ -> +30][explain]
 {blank}
 |===
 
-:prewrap:
-
 ===== Poly Factoring
 
 [.text-center]
