@@ -30,39 +30,39 @@ import org.mmadt.language.obj.value.{IntValue, RealValue}
 import org.mmadt.language.obj.{Int, Obj, Real}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class PlusInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[plus] value, type, strm, anon combinations") {
-    val starts: TableFor4[Obj, Obj, Obj, String] =
-      new TableFor4[Obj, Obj, Obj, String](("input", "type", "result", "kind"),
+    val starts: TableFor3[Obj, Obj, Obj] =
+      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
         //////// INT
-        (int(2), __.plus(2), int(4), "value"), // value * value = value
-        (int(2).q(10), __.plus(2), int(4).q(10), "value"), // value * value = value
-        (int(2).q(10), __.plus(2).q(20), int(4).q(200), "value"), // value * value = value
-        (int(2), __.plus(int(2).q(10)), int(4), "value"), // value * value = value
-        (int(2), __.plus(int), int(4), "value"), // value * type = value
-        (int(2), __.plus(__.plus(int)), int(6), "value"), // value * anon = value
-        (int, __.plus(int(2)), int.plus(int(2)), "type"), // type * value = type
-        (int.q(10), __.plus(int(2)), int.q(10).plus(int(2)), "type"), // type * value = type
-        (int, __.plus(int), int.plus(int), "type"), // type * type = type
-        (int(1, 2, 3), __.plus(2), int(3, 4, 5), "strm"), // strm * value = strm
-        (int(1, 2, 3), __.plus(int(2).q(10)), int(3, 4, 5), "strm"), // strm * value = strm
-        (int(1, 2, 3), int.q(3).plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3), __.plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3), __.plus(int), int(2, 4, 6), "strm"), // strm * type = strm
-        (int(1, 2, 3), __.plus(__.plus(int)), int(3, 6, 9), "strm"), // strm * anon = strm
+        (int(2), __.plus(2), int(4)), // value * value = value
+        (int(2).q(10), __.plus(2), int(4).q(10)), // value * value = value
+        (int(2).q(10), __.plus(2).q(20), int(4).q(200)), // value * value = value
+        (int(2), __.plus(int(2).q(10)), int(4)), // value * value = value
+        (int(2), __.plus(int), int(4)), // value * type = value
+        (int(2), __.plus(__.plus(int)), int(6)), // value * anon = value
+        (int, __.plus(int(2)), int.plus(int(2))), // type * value = type
+        (int.q(10), __.plus(int(2)), int.q(10).plus(int(2))), // type * value = type
+        (int, __.plus(int), int.plus(int)), // type * type = type
+        (int(1, 2, 3), __.plus(2), int(3, 4, 5)), // strm * value = strm
+        (int(1, 2, 3), __.plus(int(2).q(10)), int(3, 4, 5)), // strm * value = strm
+        (int(1, 2, 3), int.q(3).plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10))), // strm * value = strm
+        (int(1, 2, 3), __.plus(int(2)).q(10), int(int(3).q(10), int(4).q(10), int(5).q(10))), // strm * value = strm
+        (int(1, 2, 3), __.plus(int), int(2, 4, 6)), // strm * type = strm
+        (int(1, 2, 3), __.plus(__.plus(int)), int(3, 6, 9)), // strm * anon = strm
         //////// REAL
-        (real(2.0), __.plus(2.0), real(4), "value"), // value * value = value
-        (real(2.0), __.plus(real), real(4.0), "value"), // value * type = value
-        (real(2.0), __.plus(__.plus(real)), real(6.0), "value"), // value * anon = value
-        (real, __.plus(real(2.0)), real.plus(real(2.0)), "type"), // type * value = type
-        (real, __.plus(real), real.plus(real), "type"), // type * type = type
-        (real(1.0, 2.0, 3.0), __.plus(2.0), real(3.0, 4.0, 5.0), "strm"), // strm * value = strm
-        (real(1.0, 2.0, 3.0), __.plus(real), real(2.0, 4.0, 6.0), "strm"), // strm * type = strm
-        (real(1.0, 2.0, 3.0), __.plus(__.plus(real)), real(3.0, 6.0, 9.0), "strm"), // strm * anon = strm
+        (real(2.0), __.plus(2.0), real(4)), // value * value = value
+        (real(2.0), __.plus(real), real(4.0)), // value * type = value
+        (real(2.0), __.plus(__.plus(real)), real(6.0)), // value * anon = value
+        (real, __.plus(real(2.0)), real.plus(real(2.0))), // type * value = type
+        (real, __.plus(real), real.plus(real)), // type * type = type
+        (real(1.0, 2.0, 3.0), __.plus(2.0), real(3.0, 4.0, 5.0)), // strm * value = strm
+        (real(1.0, 2.0, 3.0), __.plus(real), real(2.0, 4.0, 6.0)), // strm * type = strm
+        (real(1.0, 2.0, 3.0), __.plus(__.plus(real)), real(3.0, 6.0, 9.0)), // strm * anon = strm
       )
-    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, PlusOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q)) }
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result, PlusOp(rhs.trace.head._2.arg0).q(rhs.trace.head._2.q)) }
   }
   ///////////////////////////////////////////////////////////////////////
 

@@ -44,6 +44,6 @@ class NotInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int.gt(10).q(0), bool.q(qZero)),
         (int(13).q(2).and(int.gt(10), int.lt(15)).q(10), bfalse.q(20)),
       )
-    forEvery(starts) { (left, right) => TestUtil.evaluate(left, __.not(__), right, NotOp(__), compile = false) }
+    forEvery(starts) { (left, right) => TestUtil.evaluate(left, __.not(__), right, NotOp(__)) }
   }
 }

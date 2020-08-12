@@ -61,7 +61,7 @@ class LteInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).lte(real), bool(true, true, true), "strm"), // strm * type = strm
         (real(1.0, 2.0, 3.0).lte(__.mult(real)), bool(true, true, true), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
+    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result)
     }
   }
 

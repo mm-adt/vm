@@ -21,6 +21,8 @@
  */
 
 package org.mmadt.processor.inst.trace
+
+import org.mmadt.TestUtil
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.{Bool, Obj}
@@ -39,20 +41,16 @@ class DefineInstTest extends FunSuite with TableDrivenPropertyChecks {
 
         (int(2).define(__("abc") <= int.is(int.gt(0))).a(__("abc")), btrue),
         (int(-2).define(__("abc") <= int.is(int.gt(0))).a(__("abc")), bfalse),
-      /*  ((int(1) `,` (int(1) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), btrue),
+        ((int(1) `,` (int(1) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), btrue),
         ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), bfalse),
         ((int(1) `,` (int(2) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), bfalse),
         ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.-<(__.is(__.a(int)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), btrue),
-        ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.`[`(__.is(__.a(int)) | (int `,` __("abc"))) `]`)).a(__("abc")), btrue),
-        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.`[`(__.is(__.a(int)) | (int `,` __("abc"))) `]`)).a(__("abc")), btrue),
-        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.`[`(__.is(__.lt(2)) | (int `,` __("abc"))) `]`)).a(__("abc")), bfalse),
-        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.`[`(__.is(__.lt(5)) | (int `,` __("abc"))) `]`)).a(__("abc")), btrue)*/
+        ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
+        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
+        ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
+        // ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(5)) | (int `,` __("abc"))))).a(__("abc")), btrue)
       )
-    forEvery(starts) { (query, result) => {
-      assertResult(result)(new mmlangScriptEngineFactory().getScriptEngine.eval(s"${query}"))
-      assertResult(result)(query)
-    }
-    }
+    forEvery(starts) { (query, result) => TestUtil.evaluate(query, __, result) }
   }
 
   test("[define] play tests") {

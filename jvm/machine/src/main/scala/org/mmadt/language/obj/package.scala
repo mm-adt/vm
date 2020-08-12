@@ -55,6 +55,7 @@ package object obj {
   }
   def divQ(qA: IntQ, qB: IntQ): IntQ = qB match {
     case _ if equals(qZero) => qA
+    case _: IntQ if (qB._1.g == 0) => (0, qA._2.g / qB._2.g)
     case _: IntQ => (qA._1.g / qB._1.g, qA._2.g / qB._2.g)
   }
   def withinQ(objA: Obj, objB: Obj): Boolean = {

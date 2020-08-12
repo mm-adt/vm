@@ -18,7 +18,7 @@ object TestUtil {
     if (!obj.alive)
       zeroObj.toString
     else
-      obj.toStrm.values.foldLeft("{")((a, b) => a.concat(b + ",")).dropRight(1).concat("}")
+      obj.toStrm.values.foldLeft("[")((a, b) => a.concat(b + ",")).dropRight(1).concat("]")
   } else obj.toString
 
   def evaluate(start: Obj, middle: Obj, end: Obj, inst: Inst[Obj, Obj] = null, engine: mmADTScriptEngine = engine, compile: Boolean = true): Unit = {

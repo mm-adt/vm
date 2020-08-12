@@ -69,7 +69,7 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
         (real(1.0, 2.0, 3.0).is(__.lte(__.mult(real))), real(1.0, 2.0, 3.0), "strm"), // strm * anon = strm
 
       )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
+    forEvery(starts) { (query, result, _) => TestUtil.evaluate(query, __, result)
     }
   }
 
