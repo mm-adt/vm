@@ -2247,7 +2247,7 @@ mmlang&gt; [true,6,5.5][mult,[zero]]
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>mm-ADT types are either <a href="https://en.wikipedia.org/wiki/Monomial">monomials</a> or <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>. The components of a polynomial are called <strong>terms</strong>. A term is the product of a <strong>variable</strong> and a <strong>coefficient</strong>. If \$X\$ is a set of variables and \$Q\$ a set of coefficients, then a polynomial is the <a href="https://en.wikipedia.org/wiki/Linear_combination">linear combinations</a>  of \$Q \times X\$ terms typically written
+<p>mm-ADT types are either <a href="https://en.wikipedia.org/wiki/Monomial">monomials</a> or <a href="https://en.wikipedia.org/wiki/Polynomial">polynomials</a>. The components of a polynomial are called <strong>terms</strong>. A term is the product of a <strong>variable</strong> and a <strong>coefficient</strong>. If \$X\$ is a set of variables and \$Q\$ a set of coefficients, then a polynomial is the <a href="https://en.wikipedia.org/wiki/Linear_combination">linear combinations</a>  of \$Q \times X\$ elements typically written
 \[
 q_1x_1 + q_2x_2 + \ldots + q_nx_n.
 \]
@@ -2259,10 +2259,10 @@ An mm-ADT type is the product of an <strong>object</strong> (variable) and a <st
 </div>
 </div>
 <div class="paragraph">
-<p>A first glance, the <code>poly</code> structure denoted above appears to be a simple <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>. It is true that when the terms of a <code>poly</code> are values, the <code>poly</code> is a list. However, when the terms are types, the entire corpus of polynomial theory is immediately applicable to <code>poly</code>. The fundamental insight that confers numerous benefits is that mm-ADT, as an algebraic ring structure itself, can be <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in <code>poly</code>. This enables <a href="https://en.wikipedia.org/wiki/Metaprogramming">meta-programming</a>, the unification of products and coproducts as <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>, the use of <code>poly</code> for both structuring <a href="https://en.wikipedia.org/wiki/Data_structure">data</a> and controlling <a href="https://en.wikipedia.org/wiki/Control_flow">processes</a>, and the development of compilers and execution engines based on centuries old <a href="https://en.wikipedia.org/wiki/Factorization_of_polynomials">polynomial factorization</a> techniques.</p>
+<p>At first glance, the <code>poly</code> structure denoted above appears to be some sort of <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. When the terms of a <code>poly</code> are values, the <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a> (or bag). However, when the terms are types, the entire corpus of polynomial theory is immediately applicable to <code>poly</code>. The fundamental insight that confers numerous benefits is that mm-ADT, as an algebraic ring structure itself, can be faithfully <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in mm-ADT <code>poly</code>. This enables collection-oriented <a href="https://en.wikipedia.org/wiki/Metaprogramming">meta-programming</a>, a unification of products and coproducts as <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>, the integration of data <a href="https://en.wikipedia.org/wiki/Data_structure">structures</a> and <a href="https://en.wikipedia.org/wiki/Control_flow">flow control</a> processes, and the development of compilers and execution engines based on centuries old <a href="https://en.wikipedia.org/wiki/Factorization_of_polynomials">polynomial factorization</a> techniques.</p>
 </div>
 <div class="paragraph">
-<p>This section will present the practical aspects of <code>poly</code> with a forthcoming section detailing the <code>poly</code> algebra founded on <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> theory.</p>
+<p>This section will present the practical aspects of <code>poly</code> with a forthcoming section detailing the <code>poly</code> algebra which is founded on <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> and <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> theory.</p>
 </div>
 <h6 id="_poly_structures" class="discrete">Poly Structures</h6>
 <div class="paragraph">
@@ -5883,7 +5883,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-12 13:00:16 -0600
+Last updated 2020-08-12 15:52:47 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
