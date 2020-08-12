@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.{Inst, Int, Lst, Obj, Real}
+import org.mmadt.language.obj.{Bool, Inst, Int, Lst, Obj, Real}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -47,6 +47,7 @@ object MultOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.mult, List(obj.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Try[Obj](start match {
     case _: Type[_] => start
+    case abool: Bool => abool.clone(g=abool.g && inst.arg0[Bool].g)
     case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
     case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)
     // poly mult

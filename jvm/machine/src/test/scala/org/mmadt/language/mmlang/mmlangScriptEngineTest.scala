@@ -97,6 +97,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assert(!engine.eval("    ").alive)
     assert(!engine.eval("  \n  ").alive)
     assert(!engine.eval("\t  \n  ").alive)
+
+    println(engine.eval("[true,6,5.5][mult,[one]]").toStrm.values)
+  //  engine.eval("[true,6,7.8,'ryan']-<([type][zero],[zero])")
   }
 
   test("canonical type parsing") {

@@ -117,13 +117,11 @@ class mmlangParser extends JavaTokenParsers {
   lazy val intType: Parser[IntType] = Tokens.int ^^ (_ => int)
   lazy val realType: Parser[RealType] = Tokens.real ^^ (_ => real)
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
-  lazy val lstType: Parser[LstType[Obj]] = (opt(objName) ~ (LROUND ~> lstStruct(obj)) <~ RROUND ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = x._2)) |
-    Tokens.lst ^^ (_ => lst)).asInstanceOf[Parser[LstType[Obj]]]
-  lazy val recType: Parser[RecType[Obj, Obj]] = (opt(objName) ~ (LROUND ~> recStruct(obj)) <~ RROUND ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = x._2)) |
-    Tokens.rec ^^ (_ => rec)).asInstanceOf[Parser[RecType[Obj, Obj]]]
+  lazy val lstType: Parser[Lst[Obj]] = (opt(objName) ~ (LROUND ~> lstStruct(obj)) <~ RROUND ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = x._2)) | Tokens.lst ^^ (_ => lst))
+  lazy val recType: Parser[Rec[Obj, Obj]] = (opt(objName) ~ (LROUND ~> recStruct(obj)) <~ RROUND ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = x._2)) | Tokens.rec ^^ (_ => rec))
   lazy val tokenType: Parser[__] = varName ^^ (x => __(x))
 
-  lazy val cType: Parser[Type[Obj]] = (anonType | tobjType | boolType | realType | intType | strType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val cType: Parser[Obj] = (anonType | tobjType | boolType | realType | intType | strType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dtype: Parser[Obj] = cType ~ rep[Inst[Obj, Obj]](inst) ^^ (x => x._2.foldLeft(x._1.asInstanceOf[Obj])((x, y) => y.exec(x))) | anonTypeSugar
   lazy val aType: Parser[Obj] = opt(cType <~ Tokens.:<=) ~ dtype ^^ {
     case Some(range) ~ domain => range <= domain
@@ -133,15 +131,13 @@ class mmlangParser extends JavaTokenParsers {
   lazy val anonTypeSugar: Parser[__] = rep1[Inst[Obj, Obj]](inst) ^^ (x => x.foldLeft(new __())((a, b) => a.clone(via = (a, b))))
 
   // value parsing
-  lazy val objValue: Parser[Value[Obj]] = (boolValue | realValue | intValue | strValue | lstValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val objValue: Parser[Obj] = (boolValue | realValue | intValue | strValue | lstValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val boolValue: Parser[BoolValue] = opt(objName) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => vbool(x._1.getOrElse(Tokens.bool), x._2.toBoolean, qOne))
   lazy val intValue: Parser[IntValue] = opt(objName) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
   lazy val realValue: Parser[RealValue] = opt(objName) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
   lazy val strValue: Parser[StrValue] = opt(objName) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
-  lazy val lstValue: Parser[LstValue[Obj]] = (opt(objName) ~ (LROUND ~> lstStruct(objValue) <~ RROUND) ^^
-    (x => lst(name = x._1.getOrElse(Tokens.lst), g = (x._2._1, x._2._2)))).asInstanceOf[Parser[LstValue[Obj]]]
-  lazy val recValue: Parser[RecValue[Obj, Obj]] = (opt(objName) ~ (LROUND ~> recStruct(objValue) <~ RROUND) ^^
-    (x => rec(name = x._1.getOrElse(Tokens.rec), g = (x._2._1, x._2._2)))).asInstanceOf[Parser[RecValue[Obj, Obj]]]
+  lazy val lstValue: Parser[Lst[Obj]] = (opt(objName) ~ (LROUND ~> lstStruct(objValue) <~ RROUND) ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = (x._2._1, x._2._2))))
+  lazy val recValue: Parser[Rec[Obj, Obj]] = (opt(objName) ~ (LROUND ~> recStruct(objValue) <~ RROUND) ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = (x._2._1, x._2._2))))
 
   // instruction parsing
   lazy val inst: Parser[Inst[Obj, Obj]] = (sugarlessInst | fromSugar | toSugar | splitSugar | combineSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar | branchSugar) ~ opt(quantifier) ^^

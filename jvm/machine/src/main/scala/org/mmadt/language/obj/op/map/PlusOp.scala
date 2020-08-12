@@ -48,6 +48,7 @@ object PlusOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Try[Obj](start match {
     case _: Type[_] => start
+    case abool: Bool => abool.clone(g=abool.g || inst.arg0[Bool].g)
     case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
     case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)
     case astr: Str => astr.clone(g = astr.g + inst.arg0[Str].g)
