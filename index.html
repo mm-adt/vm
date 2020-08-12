@@ -1726,18 +1726,18 @@ Quantifiers in a type signature are descriptive, used in <a href="https://en.wik
 language error: int is not an int{3}
 mmlang&gt; 4{3} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
 ==&gt;5{6}
-mmlang&gt; {4,5,6} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
-language error: end of input expected at 1:1
-{4,5,6} =&gt;
-^ near here
-mmlang&gt; {4{2},5{1},6{2}} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
-language error: end of input expected at 1:1
-{4{2},5{1},
-^ near here
-mmlang&gt; {4{2},5{-1},6{2}} =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
-language error: end of input expected at 1:1
-{4{2},5{-1}
-^ near here</code></pre>
+mmlang&gt; [4,5,6] =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
+==&gt;5{2}
+==&gt;6{2}
+==&gt;7{2}
+mmlang&gt; [4{2},5{1},6{2}] =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
+==&gt;5{4}
+==&gt;6{2}
+==&gt;7{4}
+mmlang&gt; [4{2},5{-1},6{2}] =&gt; int{6}&lt;=int{3}[[plus,1],[plus,1]]
+==&gt;5{4}
+==&gt;6{-2}
+==&gt;7{4}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2021,7 +2021,9 @@ mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
 mmlang&gt; _&lt;=int[gt,10]         <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;bool&lt;=int[gt,10]
 mmlang&gt; int[gt,10]            <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;bool&lt;=int[gt,10]</code></pre>
+==&gt;bool&lt;=int[gt,10]
+mmlang&gt; _
+mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2075,10 +2077,14 @@ mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4">
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Assume the following <strong>anonymous type</strong>.</p>
-</div>
-<div class="listingblock">
+<hr>
+<table class="tableblock frame-all grid-all right" style="width: 50%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; _{2}[plus,1]{3}[gt,0]
 ==&gt;bool{6}&lt;=_{2}[plus,1]{3}[gt,0]
@@ -2094,12 +2100,18 @@ instruction    domain       range     state
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>[plus]</code> instruction is <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a>, but <code>[gt]</code> isn&#8217;t. The anonymous type&#8217;s range can be deduced. However, without a domain ctype, the internal dtype is also unknown. When <code>int{2}</code> is provided, it triggers a cascade of deductions that determines the incoming and outgoing types of each instruction as well as their respective quantifiers (and incident types in the <code>obj</code> graph). The quantifier ring, when moving "horizontally" across the multiplicative <code>inst</code> monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, <code>bool{6}&lt;=int{2}[plus,1]{3}[gt,0]</code></p>
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Assume the following <strong>anonymous type</strong>. The <code>[plus]</code> instruction is <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a>, but <code>[gt]</code> isn&#8217;t. The anonymous type&#8217;s range can be deduced. However, without a domain ctype, the internal dtype is also unknown. When <code>int{2}</code> is provided, it triggers a cascade of deductions that determines the incoming and outgoing types of each instruction as well as their respective quantifiers (and incident types in the <code>obj</code> graph). The quantifier ring, when moving "horizontally" across the multiplicative <code>inst</code> monoid alters quantifiers using its multiplication operator, where \$2 \ast 3 \ast 1 = 6\$. Thus, <code>bool{6}&lt;=int{2}[plus,1]{3}[gt,0]</code></p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 47.0588%;">
-<col style="width: 52.9412%;">
+<col style="width: 53.3333%;">
+<col style="width: 46.6667%;">
 </colgroup>
 <tbody>
 <tr>
@@ -5837,7 +5849,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-12 03:20:49 -0600
+Last updated 2020-08-12 03:34:07 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
