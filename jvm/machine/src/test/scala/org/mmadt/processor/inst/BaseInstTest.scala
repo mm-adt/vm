@@ -24,11 +24,9 @@ package org.mmadt.processor.inst
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.StorageFactory.{asType, zeroObj}
+import org.mmadt.storage.StorageFactory.{asType, zeroObj, _}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
@@ -39,22 +37,16 @@ abstract class BaseInstTest extends FunSuite with TableDrivenPropertyChecks {
   def starts: TableFor3[Obj, Obj, Obj]
 
   test(name) {
-    var lastComment:String = ""
-
-    forEvery(starts) { (lhs, rhs, result) =>
+    var lastComment: String = ""
+    forEvery(starts) {
       // ignore comment lines - with comments as "data" it's easier to track which line in the table
       // has failing data
-      if (lhs != null && rhs != null && !result.isInstanceOf[StrValue]) {
-        evaluate(lhs, rhs, result, lastComment)
-      } else {
-        lastComment = result.toString
-      }
+      case (null, null, comment) => lastComment = comment.toString
+      case (lhs, rhs, result) => evaluate(lhs, rhs, result, lastComment)
     }
   }
 
-  def comment(comment: String): (Obj, Obj, Obj) = {
-    Tuple3(null, null, str(comment))
-  }
+  def comment(comment: String): (Obj, Obj, Obj) = (null, null, str(comment))
 
   def stringify(obj: Obj): String = if (obj.isInstanceOf[Strm[_]]) {
     if (!obj.alive)
@@ -63,7 +55,7 @@ abstract class BaseInstTest extends FunSuite with TableDrivenPropertyChecks {
       obj.toStrm.values.foldLeft("[")((a, b) => a.concat(b + ",")).dropRight(1).concat("]")
   } else obj.toString
 
-  def evaluate(start: Obj, middle: Obj, end: Obj, lastComment:String = "", inst: Inst[Obj, Obj] = null,
+  def evaluate(start: Obj, middle: Obj, end: Obj, lastComment: String = "", inst: Inst[Obj, Obj] = null,
                engine: mmADTScriptEngine = engine, compile: Boolean = true): Unit = {
     engine.eval(":")
     val evaluating = List[Obj => Obj](
