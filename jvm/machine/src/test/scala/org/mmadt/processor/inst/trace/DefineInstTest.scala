@@ -38,17 +38,15 @@ class DefineInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(2).define(__("nat") <= int.is(int.gt(0))).a(__("nat")), btrue),
         (int(-2).define(__("nat") <= int.is(int.gt(0))).a(__("nat")), bfalse),
         (int(-2).define(__("nat") <= int.is(int.gt(0))).a(__("nat").plus(100)), bfalse),
-
         (int(2).define(__("abc") <= int.is(int.gt(0))).a(__("abc")), btrue),
         (int(-2).define(__("abc") <= int.is(int.gt(0))).a(__("abc")), bfalse),
-        ((int(1) `,` (int(1) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), btrue),
+        ((int(1) `;` (int(1) `;` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `;` __("abc"))) >-)).a(__("abc")), btrue),
         ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), bfalse),
         ((int(1) `,` (int(2) `,` 1)).define(__("abc") <= (__.-<(__.is(__.eqs(1)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), bfalse),
         ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.-<(__.is(__.a(int)) | (int(1) `,` __("abc"))) >-)).a(__("abc")), btrue),
         ((int(1) `,` (int(1) `,` 2)).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
         ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
         ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
-        // ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(5)) | (int `,` __("abc"))))).a(__("abc")), btrue)
       )
     forEvery(starts) { (query, result) => TestUtil.evaluate(query, __, result) }
   }

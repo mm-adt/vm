@@ -43,9 +43,9 @@ class IteratorProcessorTest extends FunSuite with TableDrivenPropertyChecks with
     assertResult(int(102, 104, 106))(Processor.iterator(int(1, 2, 3), int.q(*).mult(int(2)).plus(int(100))))
     assertResult(int(102, 104, 106))((int(1, 2, 3) ==> int.q(1, 10).mult(int(2)).plus(int(100))))
     assertResult(int(11, 22, 33))(int(10, 20, 30) ==> int.q(*).split(
-      int.is(int.gt(int(20))) --> int.plus(int(3)) |
-        int.is(int.gt(int(10))) --> int.plus(int(2)) |
-        int --> int.plus(int(1))).>-.plus(int(0)))
+      int.is(int.gt(int(20))) -> int.plus(int(3)) |
+        int.is(int.gt(int(10))) -> int.plus(int(2)) |
+        int -> int.plus(int(1))).>-.plus(int(0)))
     assertResult(int(50))(int(10).q(50) ==> int.q(50).plus(2).count())
     assertResult(int(50))(int(10).q(50).plus(2).count())
     assertResult(int(3))(int(10, 20, 30) ==> int.q(+).plus(2).count())

@@ -153,7 +153,7 @@ object StorageFactory {
     case atype: Type[_] => atype
     case arec: RecStrm[Obj, Obj] => asType[O](arec.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
     case alst: LstStrm[Obj] => asType[O](alst.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
-    case alst: LstValue[Obj] => lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
+    case alst: LstValue[Obj] => if(alst.isEmpty) lst else lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
     case arec: RecValue[Obj, Obj] => rec(name = obj.name, g = (arec.gsep, if (arec.ctype) null else arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
     //
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)

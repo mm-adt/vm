@@ -36,7 +36,8 @@ import scala.collection.immutable.ListSet
  */
 class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq[A] {
   def get(a: A): Option[A] = baseSet.find(b => a match {
-    case _: Value[_] => a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g)
+    case _: Value[_] if b.isInstanceOf[Value[_]] => a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g)
+    case _: Value[_] => false
     case _: Type[_] => a.equals(b)
   })
   def put(a: A): MultiSet[A] = {

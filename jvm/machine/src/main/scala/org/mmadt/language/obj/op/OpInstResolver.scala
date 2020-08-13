@@ -70,7 +70,6 @@ object OpInstResolver {
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head)
       case Tokens.merge | Tokens.merge_op => MergeOp()
       case Tokens.repeat => RepeatOp(args.head, args.tail.head)
-      case Tokens.given | Tokens.given_op => GivenOp(args.head)
       case Tokens.path => args.headOption.map(x => PathOp(x.asInstanceOf[Lst[Obj]])).getOrElse(PathOp())
       //
       case Tokens.model => args.head match {

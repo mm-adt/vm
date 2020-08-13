@@ -30,6 +30,7 @@ import org.mmadt.language.obj.`type`.{LstType, Type}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`.TLst
 import org.mmadt.storage.obj.value.VLst
+import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -43,8 +44,15 @@ abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] 
 }
 object OLst {
   def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = {
-    if (null != g._2 && (g._2.isEmpty || !g._2.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]]))) new VLst[A](name, g, q, via)
-    else new TLst[A](name, g, q, via)
+    val list: List[A] = g._1 match {
+      case _ if g._2 == null => null
+      case Tokens.`,` => MultiSet(g._2).map(x => if (x.isInstanceOf[Type[_]] && x.root && x.q != qOne) x.hardQ(qOne).id().q(x.q) else x).toList
+      case Tokens.`;` => g._2
+      case Tokens.`|` => g._2.filter(x => x.alive)
+    }
+    if (null != list && (list.isEmpty || !list.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]]))) new VLst[A](name, g = (g._1, list), q, via)
+    else new TLst[A](name, g = (g._1, list), q, via)
   }
   def emptyType[A <: Obj]: LstType[A] = new TLst[A](g = (Tokens.`,`, null))
 }
+

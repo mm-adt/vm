@@ -32,15 +32,12 @@ import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
   this: Obj =>
-  def split[A <: Obj](branches: Poly[A]): Poly[A] = SplitOp(branches).exec(this.asInstanceOf[A])
-
-  final def -<[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
-
-  final def `[`[A <: Obj](branches: Poly[A]): Poly[A] = this.split(branches)
+  def split(branches: Obj): branches.type = SplitOp(branches).exec(this)
+  final def -<(branches: Obj): branches.type = this.split(branches)
 }
 
 object SplitOp extends Func[Obj, Obj] {
-  def apply[A <: Obj](branches: Obj): Inst[A, Poly[A]] = new VInst[A, Poly[A]](g = (Tokens.split, List(branches.asInstanceOf[A])), func = this) with BranchInstruction
+  def apply(branches: Obj): Inst[Obj, branches.type] = new VInst[Obj, branches.type](g = (Tokens.split, List(branches)), func = this) with BranchInstruction
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val startUnit = start.hardQ(qOne)

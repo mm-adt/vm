@@ -68,15 +68,15 @@ class AsInstTest extends FunSuite with TableDrivenPropertyChecks {
         ("true", bool, true),
         ("false", bool, false),
         // lst
-        ((int(1) `,` 2 `,` 3), __, (int(1) `,` 2 `,` 3)),
-        ((int(1) `,` 2 `,` 3), str, "(1,2,3)"),
-        ((int(1) `,` 2 `,` 3), (int `,` int `,` int), (int(1) `,` 2 `,` 3)),
-        ((int(1) `,` 2 `,` 3), (int `,` __.branch(int `|` real) `,` int), (int(1) `,` 2 `,` 3)),
+        ((int(1) `;` 2 `;` 3), __, (int(1) `;` 2 `;` 3)),
+        ((int(1) `;` 2 `;` 3), str, "(1;2;3)"),
+        /*((int(1) `,` 2 `,` 3), (int `,` int `,` int), (int(1) `,` 2 `,` 3)),
+        ((int(1) `,` 2 `,` 3), (int `,` __.branch(int `|` real) `,` int), (int(1) `,` 2 `,` 3)),*/
         // ((int(1) `,` 2 `,` 3), (int `,` __.branch(str`|`real) `,` int), (int(1) `,` 2 `,` 3)),
         ((int(1) `,` 2 `,` 3), (str `,` real `,` int), (str("1") `,` 2.0 `,` 3)),
         ((int(1) `,` 2 `,` 3), (__.plus(1) `,` __.plus(2) `,` __.plus(3)), (int(2) `,` 4 `,` 6)),
         ((int(1) `,` 2 `,` 3), (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int(2) `,` 4 `,` 6)),
-        ((int(1) `,` 2 `,` 3), (int(8) `,` 9 `,` 10), (int(8) `,` 9 `,` 10)),
+         ((int(1) `,` 2 `,` 3), (int(8) `,` 9 `,` 10), (int(8) `,` 9 `,` 10)),
         ((int(1) `,` 2 `,` 3), lst, (int(1) `,` 2 `,` 3)),
         ((int `,` int.plus(7) `,` int), (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int.plus(1) `,` int.plus(2) `,` int.plus(3)) <= (int `,` int.plus(7) `,` int).as((int.plus(1) `,` int.plus(2) `,` int.plus(3)))),
         // rec

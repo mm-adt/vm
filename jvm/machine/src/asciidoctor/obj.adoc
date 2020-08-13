@@ -830,11 +830,21 @@ image:poly-kinds.svg[width=350,float=left]
 
 '''
 
-// [discrete]
-// ====== Poly Containers
+[discrete]
+====== Poly Containers
 
-// [discrete]
-// ====== Poly Controls
+A `poly` composed of `obj` values is a collection data structure. Given that there are two kinds of `poly` (`lst` and `rec`) and each having 3 forms (`,`,`;`,`|`), mm-ADT offers 6 different sorts of collections.
+
+[exec]
+----
+('a','a','b','a','b','c','a')
+('a';'a';'b';'a';'b';'c';'a')
+('a'|'a'|'b'|'a'|'b'|'c'|'a')
+----
+
+[discrete]
+====== Poly Controls
+
 
 === The Obj Graph
 

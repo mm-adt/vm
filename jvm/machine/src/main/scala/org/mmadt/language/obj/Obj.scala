@@ -57,7 +57,6 @@ trait Obj
     with MapOp
     with ModelOp
     with NotOp
-    with GivenOp
     with JuxtOp
     with FromOp
     with LoadOp
@@ -132,7 +131,7 @@ trait Obj
     target match {
       case _: Value[_] => target.hardQ(q => multQ(this.q, q))
       case rangeType: Type[E] =>
-        LanguageException.testTypeCheck(this.range, rangeType.domain)
+        LanguageException.testTypeCheck(this, target.domain)
         this match {
           case _: Value[_] => AsOp.autoAsType(this.update(target.model), x => Processor.iterator(x, rangeType), rangeType)
           case _: Type[_] => AsOp.autoAsType(this.update(target.model), x => Processor.compiler(x, rangeType), rangeType)
@@ -173,7 +172,7 @@ object Obj {
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
-  @inline implicit def tupleToRichTuple[A <: Obj, B <: Obj](ground: Tuple2[A, B]): RichTuple2[A, B] = new RichTuple2[A, B](ground)
+  @inline implicit def tupleToRichTuple[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, Map(ground))) //new RichTuple2[A, B](ground)
   @inline implicit def richTupleToRec[A <: Obj, B <: Obj](ground: RichTuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, Map(ground.tuple)))
   class RichTuple2[A <: Obj, B <: Obj](val tuple: Tuple2[A, B]) {
     final def `_,`(next: Tuple2[A, _]): Rec[A, B] = this.`,`(next)

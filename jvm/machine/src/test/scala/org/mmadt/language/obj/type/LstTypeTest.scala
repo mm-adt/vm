@@ -42,7 +42,6 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
     assert(lst.test(lst))
     assert(!lst.test(rec))
     assert(!lst.test(int))
-    assert(lst("a").test(lst))
     assert((str("a") `,` "b").test(lst))
     assert((str("a") `|` "b").test(lst))
     assert((str("a") `;` "b").test(lst))
@@ -51,7 +50,8 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("lst type basics") {
-    assert((int(1) `,` 2).test(int `,` int))
+    assert((int(1) `;` 2).test(int `;` int))
+    //assert((int(1) `,` 2).test(int.q(2)))
   }
 
   test("lst type [split]/[merge]") {
@@ -84,7 +84,7 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2), (int | int) | int, int(1, 2)), // TODO: this is not computing the lst as a type
         (int(1, 2), (int | int) | obj, int(1, 2)),
         (int(1, 2), (str | str) | str, zeroObj),
-        ((int(1) `,` 2), lst[Obj](g = (Tokens.|, List[Obj](lst(g = (Tokens.`,`, List(int, int))), str))), (int(1) `,` 2)),
+        ((int(1) `;` 2), lst[Obj](g = (Tokens.|, List[Obj](lst(g = (Tokens.`;`, List(int, int))), str))), (int(1) `;` 2)),
         (int(1), str | int, int(1)),
       )
     forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, __.split(rhs).merge[Obj], result, compile = false) }

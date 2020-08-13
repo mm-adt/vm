@@ -38,7 +38,7 @@ class RecTypeTest extends FunSuite {
 
   test("rec type token") {
     assertResult("rec")(rec.toString)
-    assert(rec.isInstanceOf[RecType[_,_]])
+    assert(rec.isInstanceOf[RecType[_, _]])
     assert(rec.test(rec))
     assert(!rec.test(lst))
     assert(!rec.test(str))
@@ -70,10 +70,10 @@ class RecTypeTest extends FunSuite {
 
   test("rec values") {
     assertResult("(1->true)")(rec(int(1) -> btrue).toString)
-    assertResult("(1->true,2->false)")(rec(int(1) -> btrue, int(2) -> bfalse).toString)
-    assertResult("(1->true,2->false)")(rec(int(1) -> btrue).plus(int(2) -> bfalse `,`).toString)
-    assertResult(bfalse)(rec(int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)).get(int(2)))
-    assertResult(int(1) -> btrue `_,` int(2) -> bfalse)((int(1) -> btrue `,`) ==> rec[IntValue, BoolValue].plus(int(2) -> bfalse `,`))
+    assertResult("(1->true,2->false)")(((int(1) -> btrue) `,` (int(2) -> bfalse)).toString)
+    assertResult("(1->true,2->false)")((int(1) -> btrue).plus(int(2) -> bfalse).toString)
+    assertResult(bfalse)((int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)).get(int(2)))
+    assertResult(int(1) -> btrue `_,` int(2) -> bfalse)((int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(int(2) -> bfalse))
     assertResult(btrue)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(2)))
     //intercept[LanguageException] {
@@ -153,7 +153,7 @@ class RecTypeTest extends FunSuite {
     val personName = rec(str("name") -> str, str("age") -> int).named("person")
     val personNameBackwards = rec(str("age") -> int, str("name") -> str).named("person")
     val personBackwards = rec(str("age") -> int, str("name") -> str)
-    val personMaybeAge = (str("name") -> str) `,` (str("age") -> int.q(*))
+    val personMaybeAge = (str("name") -> str) `_,` (str("age") -> int.q(*))
     assert(marko.test(marko))
     assert(markoMore.test(markoMore))
     assert(markoLess.test(markoLess))
