@@ -833,14 +833,36 @@ image:poly-kinds.svg[width=350,float=left]
 [discrete]
 ====== Poly Containers
 
-A `poly` composed of `obj` values is a collection data structure. Given that there are two kinds of `poly` (`lst` and `rec`) and each having 3 forms (`,`,`;`,`|`), mm-ADT offers 6 different sorts of collections.
+image::poly-lift.svg[float=left,width=200]
+A `poly` composed of `obj` values is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 forms (`,`,`;`,`|`). The forms determine the *ambient algebra* associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with unity maintaining a left https://en.wikipedia.org/wiki/Module_(mathematics)[R-module]. In this way, `poly` is a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself.
 
+[cols="2,4,4,9"]
+|===
+| poly | algebra | use | example
+
+| `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] | weighted multi-set
+a|
 [exec]
 ----
-('a','a','b','a','b','c','a')
-('a';'a';'b';'a';'b';'c';'a')
-('a'|'a'|'b'|'a'|'b'|'c'|'a')
+('a','a','b','a','c','b')
 ----
+{blank}
+| `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] | standard list
+a|
+[exec]
+----
+('a';'a';'b';'a';'c';'b')
+----
+{blank}
+| `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] | scalar
+a|
+[exec]
+----
+('a'\|'a'\|'b'\|'a'\|'c'\|'b')
+----
+{blank}
+|===
+
 
 [discrete]
 ====== Poly Controls
