@@ -836,7 +836,7 @@ image:poly-kinds.svg[width=350,float=left]
 image::poly-lift.svg[float=left,width=200]
 A `poly` composed of `obj` values is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 forms (`,`,`;`,`|`). The forms determine the *ambient algebra* associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with unity maintaining a left https://en.wikipedia.org/wiki/Module_(mathematics)[R-module]. In this way, `poly` is a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself.
 
-[cols="2,4,4,9"]
+[cols="2,3,3,9"]
 |===
 | poly | algebra | use | example
 
@@ -845,6 +845,7 @@ a|
 [exec]
 ----
 ('a','a','b','a','c','b')
+('a','a','b','a','c','b')>-
 ----
 {blank}
 | `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] | standard list
@@ -852,6 +853,10 @@ a|
 [exec]
 ----
 ('a';'a';'b';'a';'c';'b')
+('a';'a';'b';'a';'c';'b')>-
+('a';'a';'b';'a';'c';'b').0
+('a';'a';'b';'a';'c';'b')=(_;_;_)
+('a';'a';'b';'a';'c';'b')=(+str;+str;+str)
 ----
 {blank}
 | `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] | scalar
