@@ -2350,10 +2350,10 @@ An mm-ADT type is the product of an <strong>object</strong> (variable) and a <st
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 10.5263%;">
-<col style="width: 21.0526%;">
-<col style="width: 21.0526%;">
-<col style="width: 47.3685%;">
+<col style="width: 11.7647%;">
+<col style="width: 17.647%;">
+<col style="width: 17.647%;">
+<col style="width: 52.9413%;">
 </colgroup>
 <thead>
 <tr>
@@ -2371,7 +2371,11 @@ An mm-ADT type is the product of an <strong>object</strong> (variable) and a <st
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a','a','b','a','c','b')
-==&gt;('a'{3},'c','b'{2})</code></pre>
+==&gt;('a'{3},'c','b'{2})
+mmlang&gt; ('a','a','b','a','c','b')&gt;-
+==&gt;'a'{3}
+==&gt;'c'
+==&gt;'b'{2}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2385,7 +2389,15 @@ An mm-ADT type is the product of an <strong>object</strong> (variable) and a <st
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a';'a';'b';'a';'c';'b')
-==&gt;('a';'a';'b';'a';'c';'b')</code></pre>
+==&gt;('a';'a';'b';'a';'c';'b')
+mmlang&gt; ('a';'a';'b';'a';'c';'b')&gt;-
+==&gt;'b'
+mmlang&gt; ('a';'a';'b';'a';'c';'b').0
+==&gt;'a'
+mmlang&gt; ('a';'a';'b';'a';'c';'b')=(_;_;_)
+==&gt;('a';'a';'b')
+mmlang&gt; ('a';'a';'b';'a';'c';'b')=(+str;+str;+str)
+==&gt;('aa';'aa';'bb')</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5954,7 +5966,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-12 16:38:28 -0600
+Last updated 2020-08-14 16:31:32 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
