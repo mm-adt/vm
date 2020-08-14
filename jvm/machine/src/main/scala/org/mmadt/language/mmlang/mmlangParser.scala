@@ -66,14 +66,14 @@ class mmlangParser extends JavaTokenParsers {
   // specific to mmlang execution
   def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = opt(objValue) ~ opt(Tokens.:=>) ~ opt(obj) ~ (opt(Tokens.:=>) ~> repsep(obj, Tokens.:=>)) ^^ {
     case Some(source) ~ _ ~ Some(target: Type[Obj]) ~ aobjs =>
-      aobjs.foldLeft((compile(prefix, asType(source), target) match {
-        case avalue: Value[_] => avalue
-        case atype: Type[_] => source ==> atype
-      }).asInstanceOf[Obj])((a, b) => a `=>` b)
+      aobjs.foldLeft(compile(prefix, asType(source), target) match {
+        case avalue: Value[Obj] => avalue
+        case atype: Type[Obj] => source ==>[Obj] atype
+      })((a, b) => a `=>` b)
     case Some(source) ~ _ ~ Some(target: Value[Obj]) ~ aobjs => aobjs.foldLeft((source ==> target).asInstanceOf[Obj])((a, b) => a `=>` b)
     case None ~ None ~ Some(target) ~ aobjs => aobjs.foldLeft(compile(prefix, target.domain, target))((a, b) => a `=>` b)
-    case Some(source) ~ None ~ None ~ aobjs => source.asInstanceOf[Obj]
-    case None ~ None ~ None ~ aobjs => zeroObj
+    case Some(source) ~ None ~ None ~ _ => source.asInstanceOf[Obj]
+    case None ~ None ~ None ~ _ => zeroObj
   }
   def compile(prefix: Option[Type[Obj]], source: Obj, target: Obj): Obj =
     if (target.isInstanceOf[Value[Obj]]) target
@@ -147,14 +147,14 @@ class mmlangParser extends JavaTokenParsers {
       Tokens.lt_op | Tokens.eqs_op | Tokens.and_op | Tokens.or_op | Tokens.product_op | Tokens.sum_op |
       Tokens.is_a_op | Tokens.is | Tokens.not_op) ~ opt(quantifier) ~ obj ^^ (x => x._1._2.map(q => OpInstResolver.resolve[Obj, Obj](x._1._1, List(x._2)).hardQ(q)).getOrElse(OpInstResolver.resolve(x._1._1, List(x._2))))
   lazy val combineSugar: Parser[Inst[Obj, Obj]] = Tokens.combine_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => CombineOp(x._1.q(q))).getOrElse(CombineOp(x._1)))
-  lazy val splitSugar: Parser[Inst[Obj, Obj]] = Tokens.split_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => SplitOp(x._1.q(q))).getOrElse(SplitOp(x._1)).asInstanceOf[Inst[Obj,Obj]])
+  lazy val splitSugar: Parser[Inst[Obj, Obj]] = Tokens.split_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => SplitOp(x._1.q(q))).getOrElse(SplitOp(x._1)).asInstanceOf[Inst[Obj, Obj]])
   lazy val mergeSugar: Parser[Inst[Obj, Obj]] = Tokens.merge_op ^^ (_ => MergeOp().asInstanceOf[Inst[Obj, Obj]])
   lazy val getStrSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
   lazy val getIntSugar: Parser[Inst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
   lazy val toSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> symbolName <~ RANGLE ^^ (x => ToOp(x))
   lazy val fromSugar: Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
   lazy val repeatSugar: Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.pow_op ~> LROUND ~> obj <~ RROUND) ^^ (x => RepeatOp(x._1, x._2))
-  lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> (("(" + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + ")|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
+  lazy val sugarlessInst: Parser[Inst[Obj, Obj]] = LBRACKET ~> ((LROUND + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + RROUND + "|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
   lazy val branchSugar: Parser[Inst[Obj, Obj]] = ((LBRACKET ~> lstStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(lst(g = (x._1, x._2)))) | ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(rec(g = (x._1, x._2))))
   // quantifier parsing
   lazy val quantifier: Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1, x._2.getOrElse(x._1)))
