@@ -4,11 +4,6 @@
 -- mmlang grammar and type system; the goal of this file is to bootstrap such
 -- a process by establishing a human-written -- and understandable -- ground truth.
 
--- Right now, the REPL is parameterized by a list of re-write rules (representing
--- the mm-lang semantics), and it simply re-writes by the rules into all possible
--- results, the idea being to create a testbed to analyze the rules themselves.
--- For example, we can now test for confluence, etc. (some of which is done by
--- the Data.Rewriting package itself.)
 
 module Main where
 import System.IO
@@ -22,82 +17,49 @@ import Data.List
 import Data.Rewriting.Term hiding (map, parse)
 import Data.Rewriting.Rules hiding (map)
 import Data.Rewriting.Rule hiding (map)
------------------------------------------------
--- MM-lang examples
+import Data.Rewriting.CriticalPair
+import System.Exit
 
--- todo: needs to error when left over parse 
--- todo: spaces not being discared in parser
 -- todo: add sugar
--- todo: add meta vars to surface syntax to make writing rules easier
 -- todo: deal with axiom schemes
-
-ex1 = "int[plus,1]" --ok
-ex2 = "int[plus,1][plus,2][plus,3][path]" --ok
-ex3 = "1=>int=>[plus,1]=>[plus,2]=>[plus,3]=>int" -- => needs sugar
-ex4 = "1=>int[plus,1][plus,2][plus,3][path]" -- ibid
-ex5 = "1=>int[plus,1][plus,2][plus,3][path]>-" -- ibid
-ex6 = "(int<=int[plus][mult];int<=int[plus][mult])"
-
-test ex = case parse objParser "" ex of
-  Right y -> eval mmAxioms (convObj y)
-  Left z -> show z
   
 ------------------------------------------------
 -- Read-eval-print loop
 
-o1 = ObjVar "o1"
-o2 = ObjVar "o2"
-c1 = CTypeVar "t1"
-c2 = CTypeVar "t2"
-c3 = CTypeVar "c3"
-t1 = TypeVar "t1"
-t2 = TypeVar "t2"
-v1 = ValueVar "v1"
-v2 = ValueVar "v2"
-i1 = InstVar "i1"
-i2 = InstVar "i2"
-i3 = InstVar "i3"
-i4 = InstVar "i4"
-
--- (t2<=t1[a][b];t3<=t2[c][d])  := t3[a][b][c][d]
-axiom1 = Rule (convObj $ ValueObj $ PolyValue    $ LstPoly 
-                                  $ Lst (TypeObj $ DTypeType $ DType c2 (Just c1) [i1, i2]) 
-                              [(SepSemi, TypeObj $ DTypeType $ DType c3 (Just c2) [i3, i4])])
-              (convObj $ TypeObj  $                DTypeType $ DType c3 (Just c3) [i1, i2, i3, i4])
-
-mmAxioms = [axiom1] 
---note: will probably need (t2<=t1[a][b][p];t3<=t2[c][d][q])  := t3[a][b][c][d][p][q] etc too
-
---next up:
---(t2<=t1[a][b],t2<=t1[c][d])  := t2<=t1[branch,t2<=t1[a][b],t2<=t1[c][d]]
---(t2<=t1[a][b],t2<=t1[a][b])  := t2<=t1[a][b]
---(t2<=t1[a][b]|t2<=t1[c][d])  := t2<=t1[choose,t2<=t1[a][b],t2<=t1[c][d]] 
-
-main = repl mmAxioms
+main = repl []
 
 repl rules = do { putStr "mmlang> ";
   x <- getLine;
-  if x == "quit" 
-  then return () 
-  else do { ep x; repl rules } }
- where ep x = case (parse objParser "" x) of
-                       Left err -> putStrLn $ show err 
-                       Right xs -> putStrLn $ "==>" ++ (eval rules $ convObj xs) 
-
-type MMRule = Rule Sym String
+  when (x == "quit") $ exitWith ExitSuccess; 
+  if length x > 8 && take 8 x == "add rule" 
+  then ap (drop 8 x) >>= repl 
+  else ep x >> repl rules }
+ where ep x = case parse' x of
+                Left err -> putStrLn $ show err 
+                Right xs -> putStrLn $ "==>" ++ (eval rules $ convObj xs) 
+       parse' x = parse (do { whiteSpace; x <- objParser ; eof; return x }) "" x 
+       qarse' x = parse (do { whiteSpace; x <- ruleParser; eof; return x }) "" x 
+       ap x = case qarse' x of
+                Left err ->  putStrLn (show err) >> return rules 
+                Right (a, b) -> let r = Rule (convObj a) (convObj b) : rules 
+                                in  do { putStrLn $ "Rules: " ++ sep (map printNicely r) "\n"
+                                       ; when (length (cps' r) > 0) $ putStrLn $ "Critical pairs: " ++ (trunc 16 (map show $ cps' r))
+                                       ; return r }
+       
 
 eval :: [MMRule] -> MMTerm -> String 
-eval rs t = pre ++ (g 8 $ map {-- (f 8) --} (show . convObj' . head) $ nub $ ts) 
+eval rs t = pre ++ (trunc 8 $ map {-- (f 8) --} (show . convObj' . head) $ nub $ ts) 
  where (b, ts) = eval0 rs [[t]] 8
        pre = if b then "" else "WARNING: NO CONVERGENCE AFTER 8 ROUNDS\n"
-       f _ [] = ""
-       f 0 _ = "..."
-       f _ [a]   = show (convObj' a)       
-       f n (a:b) = show (convObj' a) ++ " <~~ " ++ f (n-1) b  
-       g _ [] = ""
-       g _ [a] = a
-       g 0 _ = "..."
-       g n (a:b) = a ++ "\n==>" ++ g (n-1) b
+       --  f _ [] = ""
+       --  f 0 _ = "..."
+       --  f _ [a]   = show (convObj' a)       
+       --  f n (a:b) = show (convObj' a) ++ " <~~ " ++ f (n-1) b  
+       
+trunc _ [] = ""
+trunc _ [a] = a
+trunc 0 _ = "..."
+trunc n (a:b) = a ++ "\nAnd also: " ++ trunc (n-1) b
        
 eval0 :: [MMRule] -> [[MMTerm]] -> Integer -> (Bool, [[MMTerm]])
 eval0 rs ts 0 = (False, ts)
@@ -349,7 +311,7 @@ convOp x = case x of
    
 -------------------------------------------------------------------------------
 -- Abstract Syntax (suitable as the target of e.g., PEG parsing)
--- Includes variables (todo: discuss with Marko about their use in general)
+-- Includes variables 
                                         
 data Obj = TypeObj Type | ValueObj Value | ObjVar String
  deriving (Eq, Ord)
@@ -385,7 +347,7 @@ data Op = AOp | AddOp | AndOp | AsOp | CombineOp | CountOp | EqOp | ErrorOp | Ex
   FoldOp | FromOp | GetOp | GivenOp | GrpCountOp | GtOp | GteOp | HeadOp | IdOp | IsOp | 
   LastOp | Lt | Lte | MapOp | MergeOp | MultOp | NegOp | NoOpOp | OneOp | OrOp | PathOp | 
   PlusOp | PowOp | PutOp | QOp | RepeatOp | SplitOp | StartOp | TailOp | ToOp | TraceOp | 
-  TypeOp | ZeroOp | OpVar String 
+  TypeOp | ZeroOp | OpVar String | BranchOp
  deriving (Eq, Ord)
 
 -----------------------------------------------
@@ -397,6 +359,7 @@ names = [(AOp, "a")
  ,(AndOp, "and")
  ,(AsOp, "as")
  ,(CombineOp, "combine")
+ ,(BranchOp, "branch")
  ,(CountOp, "count")
  ,(EqOp, "=")
  ,(ErrorOp, "error")
@@ -516,7 +479,7 @@ reserved   = Token.reserved   lexer
 parens     = Token.parens     lexer 
 intParser  = Token.integer    lexer 
 semi       = Token.semi       lexer 
-comma      = Token.comma     lexer 
+comma      = Token.comma      lexer 
 whiteSpace = Token.whiteSpace lexer 
 strParser  = Token.stringLiteral lexer
 
@@ -526,37 +489,46 @@ languageDef =
             , Token.commentLine     = "//"
             , Token.identStart      = letter
             , Token.identLetter     = alphaNum
-            , Token.reservedNames   = map snd names ++ ["|","true","false","->"]
+            , Token.reservedNames   = map snd names ++ ["|","true","false","->", ",", ";", "~>", "$"]
             }
 
+ruleParser :: Parser (Obj,Obj)
+ruleParser = do { whiteSpace; x <- objParser; whiteSpace; string "~>"; whiteSpace; y <- objParser; whiteSpace; return (x,y) }
+
 opParser :: Parser Op
-opParser = choice $ map (\x->do { reserved x; return $ fromJust $ lookup x namesRev}) $ map snd names  
+opParser = do { string "$"; x <- strParser; return $ OpVar x }
+ <|> (choice $ map (\x->do { reserved x; return $ fromJust $ lookup x namesRev}) $ map snd names)  
 
 objParser :: Parser Obj
-objParser = do { x <- typeParser; return $ TypeObj x }
+objParser = do { string "$"; x <- identifier; return $ ObjVar x }
+ <|> do { x <- typeParser;  return $ TypeObj  x }
  <|> do { x <- valueParser; return $ ValueObj x }
 
 boolParser :: Parser Bool
-boolParser = do { x <- string "true"; return $ True } 
- <|> do { x <- string "false"; return $ False }
+boolParser = do { string "true"; return $ True } 
+ <|> do { string "false"; return $ False }
 
 valueParser :: Parser Value
-valueParser = do { x <- polyParser;return $ PolyValue x } 
+valueParser = do { string "$"; x <- identifier; return $ ValueVar x }
+ <|> do { x <- polyParser; return $ PolyValue x } 
  <|> do { x <- boolParser; return $ BoolValue x }
- <|> do { x <- intParser; return $ IntValue x } 
- <|> do { x <- strParser; return $ StrValue x } 
+ <|> do { x <- intParser;  return $ IntValue  x } 
+ <|> do { x <- strParser;  return $ StrValue  x } 
 
 typeParser :: Parser Type
-typeParser = do { x <- dtypeParser; return $ DTypeType x }
+typeParser = do { string "$"; x <- identifier; return $ TypeVar x }
+ <|> do { x <- dtypeParser; return $ DTypeType x }
  <|> do { x <- ctypeParser; return $ CTypeType x }
  
 sepParser :: Parser Sep
-sepParser = do { x <- semi; return $ SepSemi }
- <|>  do { x <- comma; return $ SepComma }
- <|>  do { x <- string "|"; return $ SepBar }
+sepParser = do { string "$"; x <- identifier; return $ SepVar x }
+ <|> do { x <- semi; return $ SepSemi }
+ <|> do { x <- comma; return $ SepComma }
+ <|> do { x <- string "|"; return $ SepBar }
 
 recParser :: Parser Rec
-recParser = do { _ <- string "(";
+recParser = do { string "$"; x <- identifier; return $ RecVar x }
+ <|> do { _ <- string "(";
   o1 <- objParser;
   _ <- string "->";
   o2 <- objParser;
@@ -566,26 +538,30 @@ recParser = do { _ <- string "(";
  where p = do { s <- sepParser; o <- objParser; _ <- string "->"; o' <- objParser; return (s,o,o') }
 
 polyParser :: Parser Poly 
-polyParser = do { x <- lstParser; return $ LstPoly x }
- <|>  do { x <- recParser;  return $ RecPoly  x }
- <|>  do { x <- instParser; return $ InstPoly x }
+polyParser = do { string "$"; x <- identifier; return $ PolyVar x }
+ <|> do { x <- lstParser; return $ LstPoly x }
+ <|> do { x <- recParser;  return $ RecPoly  x }
+ <|> do { x <- instParser; return $ InstPoly x }
 
 ctypeParser :: Parser CType
-ctypeParser = do { x <- string "bool"; return BoolType }
- <|>  do { x <- string "poly"; return PolyType }
- <|>  do { x <- string "_"; return AnonType }
- <|>  do { x <- string "int"; return IntType }
- <|>  do { x <- string "str"; return StrType }
+ctypeParser = do { string "$"; x <- identifier; return $ CTypeVar x }
+ <|> do { x <- string "bool"; return BoolType }
+ <|> do { x <- string "poly"; return PolyType }
+ <|> do { x <- string "_";    return AnonType }
+ <|> do { x <- string "int";  return IntType }
+ <|> do { x <- string "str";  return StrType }
  
 dtypeParser :: Parser DType
-dtypeParser = do { c <- ctypeParser;
+dtypeParser = do { string "$"; x <- identifier; return $ DTypeVar x }
+ <|>do { c <- ctypeParser;
   oc <- optionMaybe p; 
   is <- many instParser;
   return $ DType c oc is }
  where p = do { _ <- string "<="; ctypeParser }
  
 lstParser :: Parser Lst
-lstParser = do { _ <- string "(";
+lstParser = do { string "$"; x <- identifier; return $ LstVar x }
+ <|> do { _ <- string "(";
   o <- objParser;
   sos <- many p;
   _ <- string ")";
@@ -593,7 +569,8 @@ lstParser = do { _ <- string "(";
  where p = do { s <- sepParser; o <- objParser; return (s,o) }
 
 instParser :: Parser Inst
-instParser = do { _ <- string "[";
+instParser = do { string "$"; x <- identifier; return $ InstVar x }
+ <|> do { _ <- string "[";
   o <- opParser;
   sos <- many p;
   _ <- string "]";
@@ -609,15 +586,13 @@ typeOf sig g (Var v) = case lookup v g of
 typeOf sig g (Fun f as) = do { ts <- mapM (typeOf sig g) as
                              ; if fst (sig f) == ts 
                                then Right $ snd (sig f) 
-                               else Left $ "No match on " ++ show f ++ " args " ++ show as ++ ": " ++ show ts }
+                               else Left  $ "No match on " ++ show f ++ " args " ++ show as ++ ": " ++ show ts }
                                
+instance (Show f, Show v, Show v') => Show (CP f v v') where
+  show cp = show (leftRule  cp) ++ " and " ++ 
+            show (rightRule cp) ++ " at lhs pos " ++ show (leftPos cp)
+  
+type MMRule = Rule Sym String
 
-
-
-
-
-
-
-
-
+printNicely (Rule lhs rhs) = (show $ convObj' lhs) ++ " ~> " ++ (show $ convObj' rhs)
 

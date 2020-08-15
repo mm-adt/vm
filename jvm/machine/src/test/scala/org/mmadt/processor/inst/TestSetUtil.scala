@@ -19,22 +19,19 @@
  * You can be released from the requirements of the license by purchasing a
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
-package org.mmadt.language.model
 
-import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
+package org.mmadt.processor.inst
 
-/**
- * @author Marko A. Rodriguez (http://markorodriguez.com)
- */
-class mmTest extends FunSuite {
-  val file1: String = str(getClass.getResource("/model/mm.mm").getPath).g
+import org.mmadt.language.obj.Obj
+import org.mmadt.storage.StorageFactory.str
+import org.scalatest.prop.TableFor4
 
-  test("mm-ADT int") {
-    assertResult(int.plus(1))(int ==> int.model(file1).plus(1))
-    assertResult(int)(int ==> int.model(file1).plus(0))
-    assertResult(int)(int ==> int.model(file1).mult(1))
-    assertResult(int(0))(int ==> int.model(file1).mult(0))
-    assertResult(int.plus(7))(int ==> int.model(file1).plus(7).neg().neg().plus(0))
-  }
+object TestSetUtil {
+
+  def testSet(testName: String, data:(Obj, Obj, Obj, Boolean)*): (String, TableFor4[Obj, Obj, Obj, Boolean]) =
+    (testName, new TableFor4[Obj, Obj, Obj, Boolean](("lhs", "rhs", "result", "compile"), data: _*))
+
+  def test(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, Boolean) = (lhs, rhs, result, compile)
+
+  def comment(comment: String): (Obj, Obj, Obj, Boolean) = (null, null, str(comment), false)
 }
