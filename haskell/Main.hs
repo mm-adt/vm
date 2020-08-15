@@ -37,8 +37,8 @@ repl rules = do { putStr "mmlang> ";
  where ep x = case parse' x of
                 Left err -> putStrLn $ show err 
                 Right xs -> putStrLn $ "==>" ++ (eval rules $ convObj xs) 
-       parse' x = parse (do { x <- objParser ; eof; return x }) "" x 
-       qarse' x = parse (do { x <- ruleParser; eof; return x }) "" x 
+       parse' x = parse (do { whiteSpace; x <- objParser ; eof; return x }) "" x 
+       qarse' x = parse (do { whiteSpace; x <- ruleParser; eof; return x }) "" x 
        ap x = case qarse' x of
                 Left err ->  putStrLn (show err) >> return rules 
                 Right (a, b) -> let r = Rule (convObj a) (convObj b) : rules 
@@ -493,14 +493,14 @@ languageDef =
             }
 
 ruleParser :: Parser (Obj,Obj)
-ruleParser = do { x <- objParser; string "~>"; y <- objParser; return (x,y) }
+ruleParser = do { whiteSpace; x <- objParser; whiteSpace; string "~>"; whiteSpace; y <- objParser; whiteSpace; return (x,y) }
 
 opParser :: Parser Op
 opParser = do { string "$"; x <- strParser; return $ OpVar x }
  <|> (choice $ map (\x->do { reserved x; return $ fromJust $ lookup x namesRev}) $ map snd names)  
 
 objParser :: Parser Obj
-objParser = do { string "$"; x <- strParser; return $ ObjVar x }
+objParser = do { string "$"; x <- identifier; return $ ObjVar x }
  <|> do { x <- typeParser;  return $ TypeObj  x }
  <|> do { x <- valueParser; return $ ValueObj x }
 
@@ -509,25 +509,25 @@ boolParser = do { string "true"; return $ True }
  <|> do { string "false"; return $ False }
 
 valueParser :: Parser Value
-valueParser = do { string "$"; x <- strParser; return $ ValueVar x }
+valueParser = do { string "$"; x <- identifier; return $ ValueVar x }
  <|> do { x <- polyParser; return $ PolyValue x } 
  <|> do { x <- boolParser; return $ BoolValue x }
  <|> do { x <- intParser;  return $ IntValue  x } 
  <|> do { x <- strParser;  return $ StrValue  x } 
 
 typeParser :: Parser Type
-typeParser = do { string "$"; x <- strParser; return $ TypeVar x }
+typeParser = do { string "$"; x <- identifier; return $ TypeVar x }
  <|> do { x <- dtypeParser; return $ DTypeType x }
  <|> do { x <- ctypeParser; return $ CTypeType x }
  
 sepParser :: Parser Sep
-sepParser = do { string "$"; x <- strParser; return $ SepVar x }
+sepParser = do { string "$"; x <- identifier; return $ SepVar x }
  <|> do { x <- semi; return $ SepSemi }
  <|> do { x <- comma; return $ SepComma }
  <|> do { x <- string "|"; return $ SepBar }
 
 recParser :: Parser Rec
-recParser = do { string "$"; x <- strParser; return $ RecVar x }
+recParser = do { string "$"; x <- identifier; return $ RecVar x }
  <|> do { _ <- string "(";
   o1 <- objParser;
   _ <- string "->";
@@ -538,13 +538,13 @@ recParser = do { string "$"; x <- strParser; return $ RecVar x }
  where p = do { s <- sepParser; o <- objParser; _ <- string "->"; o' <- objParser; return (s,o,o') }
 
 polyParser :: Parser Poly 
-polyParser = do { string "$"; x <- strParser; return $ PolyVar x }
+polyParser = do { string "$"; x <- identifier; return $ PolyVar x }
  <|> do { x <- lstParser; return $ LstPoly x }
  <|> do { x <- recParser;  return $ RecPoly  x }
  <|> do { x <- instParser; return $ InstPoly x }
 
 ctypeParser :: Parser CType
-ctypeParser = do { string "$"; x <- strParser; return $ CTypeVar x }
+ctypeParser = do { string "$"; x <- identifier; return $ CTypeVar x }
  <|> do { x <- string "bool"; return BoolType }
  <|> do { x <- string "poly"; return PolyType }
  <|> do { x <- string "_";    return AnonType }
@@ -552,7 +552,7 @@ ctypeParser = do { string "$"; x <- strParser; return $ CTypeVar x }
  <|> do { x <- string "str";  return StrType }
  
 dtypeParser :: Parser DType
-dtypeParser = do { string "$"; x <- strParser; return $ DTypeVar x }
+dtypeParser = do { string "$"; x <- identifier; return $ DTypeVar x }
  <|>do { c <- ctypeParser;
   oc <- optionMaybe p; 
   is <- many instParser;
@@ -560,7 +560,7 @@ dtypeParser = do { string "$"; x <- strParser; return $ DTypeVar x }
  where p = do { _ <- string "<="; ctypeParser }
  
 lstParser :: Parser Lst
-lstParser = do { string "$"; x <- strParser; return $ LstVar x }
+lstParser = do { string "$"; x <- identifier; return $ LstVar x }
  <|> do { _ <- string "(";
   o <- objParser;
   sos <- many p;
@@ -569,7 +569,7 @@ lstParser = do { string "$"; x <- strParser; return $ LstVar x }
  where p = do { s <- sepParser; o <- objParser; return (s,o) }
 
 instParser :: Parser Inst
-instParser = do { string "$"; x <- strParser; return $ InstVar x }
+instParser = do { string "$"; x <- identifier; return $ InstVar x }
  <|> do { _ <- string "[";
   o <- opParser;
   sos <- many p;
