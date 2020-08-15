@@ -22,7 +22,6 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.{Lst, Obj, Str}
@@ -51,12 +50,6 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(check) { (left, right) => {
       assertResult(right)(left.tail())
     }
-    }
-  }
-
-  test("[tail] exception") {
-    assertThrows[LanguageException] {
-      lst.tail()
     }
   }
 

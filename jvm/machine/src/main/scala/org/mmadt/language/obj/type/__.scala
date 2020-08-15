@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.branch.MergeOp
+import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.storage.StorageFactory._
@@ -37,6 +37,7 @@ import org.mmadt.storage.StorageFactory._
 class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends Type[__] {
   override def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type = new __(name, q, via).asInstanceOf[this.type]
   override def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(via = (obj, inst), q = multQ(this.q, inst.q))
+  def combine(other: Obj): this.type = this.via(this, CombineOp(other))
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
   def neg(): this.type = this.via(this, NegOp())

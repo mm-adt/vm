@@ -27,6 +27,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Obj.ViaTuple
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -44,9 +45,10 @@ object PathOp extends Func[Obj, Lst[Obj]] {
   def apply(pattern: Lst[_ <: Obj]): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, List(pattern)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = (start match {
     case _: Strm[_] => start
-    case _ => lst(
-      inst.arg0[Lst[Obj]].gsep,
-      start.trace.foldLeft(List.empty[Obj])((a, b) => a ++ (b._1 `;` b._2).combine(inst.arg0[Lst[Obj]]).glist.filter(_.alive)) :+ start: _*)
+    case _ => lst(g = (inst.arg0[Lst[Obj]].gsep,
+      CombineOp.combineAlgorithm(lst(g = (
+        inst.arg0[Lst[Obj]].gsep,
+        start.trace.foldLeft(List.empty[Obj])((a, b) => a :+ b._1 :+ b._2) :+ start)), inst.arg0[Lst[Obj]]).glist.filter(_.alive)))
   }).via(start, inst).asInstanceOf[Lst[Obj]]
 
   @inline implicit def viaToRichVia(baseVia: ViaTuple): RichVia = new RichVia(baseVia)

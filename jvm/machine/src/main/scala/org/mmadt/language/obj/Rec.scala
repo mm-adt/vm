@@ -44,7 +44,7 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
     if (null == this.g._2) Map.empty[A, B]
     else g._2.map(x => x._1.update(this.model).asInstanceOf[A] -> x._2.update(this.model).asInstanceOf[B]).toMap
   def glist: Seq[B] = gmap.values.toSeq
-  def ctype: Boolean = null == g._2 // type token
+  override def ctype: Boolean = null == g._2 // type token
 
   override def equals(other: Any): Boolean = other match {
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&

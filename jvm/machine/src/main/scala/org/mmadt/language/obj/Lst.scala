@@ -42,7 +42,7 @@ trait Lst[+A <: Obj] extends Poly[A]
   def g: LstTuple[A]
   def gsep: String = g._1
   lazy val glist: List[A] = if (null == g._2) List.empty[A] else g._2.map(x => x.update(this.model))
-  def ctype: Boolean = null == g._2 // type token
+  override def ctype: Boolean = null == g._2 // type token
 
   override def equals(other: Any): Boolean = other match {
     case alst: Lst[_] => Poly.sameSep(this, alst) &&

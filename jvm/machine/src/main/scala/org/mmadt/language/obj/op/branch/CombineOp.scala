@@ -39,17 +39,27 @@ trait CombineOp[A <: Obj] {
 object CombineOp extends Func[Obj, Lst[Obj]] {
   def apply[A <: Obj, B <: Obj](other: Obj): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.combine, List(other)), func = this) with BranchInstruction with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = {
-    start match {
-      case astrm: LstStrm[Obj] => astrm.via(start, inst)
-      case alst: Lst[Obj] =>
-        val arg = inst.arg0[Lst[Obj]]
-        val combinedPoly: Lst[Obj] = alst.clone(g = (arg.gsep, alst.glist.zip(arg.glist).map(a => a._1.compute(a._2))))
-        (combinedPoly.gsep match {
-          case Tokens.| => Lst.keepFirst(combinedPoly)
-          case _ => combinedPoly
-        }).via(start, inst)
-      case _ => lst[Obj].via(start, inst)
+    (start match {
+      case astrm: LstStrm[Obj] => astrm
+      case alst: Lst[Obj] if !alst.ctype => combineAlgorithm(alst, inst.arg0[Lst[Obj]]).via(start, inst)
+      case alst: Lst[Obj] => alst
+      case _ => lst[Obj]
+    }).via(start, inst)
+  }
+
+  def combineAlgorithm(alst: Lst[Obj], blst: Lst[Obj]): Lst[Obj] = {
+    val argList: List[Obj] = blst.glist
+    val argSize = argList.size
+    var i = 0
+    var newList: List[Obj] = List.empty[Obj]
+    val newSep: String = if (argSize < 2) alst.gsep else blst.gsep
+    if (argSize > 0) {
+      for (x <- alst.glist) {
+        newList = newList :+ Inst.resolveArg(x, argList(i))
+        i = (i + 1) % argSize
+      }
     }
+    alst.clone(g = (newSep, newList))
   }
 }
 

@@ -38,6 +38,7 @@ trait Poly[+A <: Obj] extends Obj
   def isChoice: Boolean = this.gsep == Tokens.|
   def isPlus: Boolean = this.isParallel | this.isChoice
   def isEmpty: Boolean = this.glist.isEmpty
+  def ctype: Boolean
 }
 
 object Poly {

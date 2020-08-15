@@ -125,6 +125,7 @@ object StorageFactory {
   def vint(name: String = Tokens.int, g: Long, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): IntValue = f.vint(name, g, q, via)
   def vreal(name: String = Tokens.real, g: Double, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): RealValue = f.vreal(name, g, q, via)
   def vstr(name: String = Tokens.str, g: String, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): StrValue = f.vstr(name, g, q, via)
+  def strm[O<:Obj](objs:O*): O = strm[O](objs.toList)
   def strm[O <: Obj](seq: Seq[O])(implicit f: StorageFactory): O = f.strm[O](seq)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
   /////////CONSTANTS//////
