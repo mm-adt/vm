@@ -46,11 +46,11 @@ object OLst {
   def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = {
     val list: List[A] = g._1 match {
       case _ if g._2 == null => null
-      case Tokens.`,` => MultiSet(g._2).map(x => if (x.isInstanceOf[Type[_]] && x.root && x.q != qOne) x.hardQ(qOne).id().q(x.q) else x).toList
+      case Tokens.`,` => MultiSet(g._2).filter(_.alive).map(x => if (x.isInstanceOf[Type[_]] && x.root && x.q != qOne) x.hardQ(qOne).id().q(x.q) else x).toList
       case Tokens.`;` => g._2
-      case Tokens.`|` => g._2.filter(x => x.alive)
+      case Tokens.`|` => g._2.filter(_.alive)
     }
-    if (null != list && (list.isEmpty || !list.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]]))) new VLst[A](name, g = (g._1, list), q, via)
+    if (null != list && (list.isEmpty || !list.filter(_.alive).exists(x => x.isInstanceOf[Type[_]]))) new VLst[A](name, g = (g._1, list), q, via)
     else new TLst[A](name, g = (g._1, list), q, via)
   }
   def emptyType[A <: Obj]: LstType[A] = new TLst[A](g = (Tokens.`,`, null))

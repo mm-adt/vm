@@ -803,28 +803,28 @@ As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://
 
 image:poly-kinds.svg[width=350,float=left]
 
-[.small]
-[cols="1,1,3,3,3",width=60,float=right]
-|===
-| poly     ^| sep  | access (value)     | collection (values) | branch (type)
 
-.3+| `lst` ^| `,`  | all
+[cols="1,1,2,3,3",width=60,float=right]
+|===
+| poly     ^| sep  | access     | collection (values) | branch (type)
+
+.3+.^| `lst` ^| `,`  | all
 | https://en.wikipedia.org/wiki/Multiset[multiset]
 | https://en.wikipedia.org/wiki/Union_(set_theory)[union]
 ^|  `;` | last
 | https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]
 | https://en.wikipedia.org/wiki/Method_chaining[chain]
 ^| `\|` | head
-| https://en.wikipedia.org/wiki/Set_(abstract_data_type)[set]
+| https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar]
 | https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
-.3+| `rec` ^| `,`  | all match key
+.3+.^| `rec` ^| `,`  | all match
 | https://en.wikipedia.org/wiki/Multimap[multimap]
 | https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
-^| `;`  | last match key
-| record
+^| `;`  | last match
+| https://en.wikipedia.org/wiki/Associative_array[record]
 | https://en.wikipedia.org/wiki/Method_cascading[cascade]
-^| `\|` | first match key
-| https://en.wikipedia.org/wiki/Associative_array[map]
+^| `\|` | first match
+| https://en.wikipedia.org/wiki/Tuple[pair]
 | https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
 |===
 
@@ -836,11 +836,11 @@ image:poly-kinds.svg[width=350,float=left]
 image::poly-lift.svg[float=left,width=200]
 A `poly` composed of `obj` values is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 forms (`,`,`;`,`|`). The forms determine the *ambient algebra* associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with unity maintaining a left https://en.wikipedia.org/wiki/Module_(mathematics)[R-module]. In this way, `poly` is a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself.
 
-[cols="2,3,3,9"]
+[cols="1,2,2,9"]
 |===
-| poly | algebra | use | example
+| poly | algebra | use | mmlang example
 
-| `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] | weighted multi-set
+| `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] | multi-set
 a|
 [exec]
 ----
@@ -848,15 +848,12 @@ a|
 ('a','a','b','a','c','b')>-
 ----
 {blank}
-| `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] | standard list
+| `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] | list
 a|
 [exec]
 ----
 ('a';'a';'b';'a';'c';'b')
 ('a';'a';'b';'a';'c';'b')>-
-('a';'a';'b';'a';'c';'b').0
-('a';'a';'b';'a';'c';'b')=(_;_;_)
-('a';'a';'b';'a';'c';'b')=(+str;+str;+str)
 ----
 {blank}
 | `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] | scalar
@@ -869,6 +866,40 @@ a|
 {blank}
 |===
 
+// ('a';'a';'b';'a';'c';'b').0
+//('a';'a';'b';'a';'c';'b')=(_;{0})
+//('a';'a';'b';'a';'c';'b')=(+str)
+
+
+[cols="1,2,2,9"]
+|===
+| poly | algebra | use | mmlang example
+
+| `,-rec` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] | multi-map
+a|
+[exec]
+----
+('a'->1,'b'->2,'c'->3)
+('a'->1,'b'->2,'c'->3)>-
+----
+{blank}
+| `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] | record
+a|
+[exec]
+----
+('a'->1;'b'->2;'c'->3)
+('a'->1;'b'->2;'c'->3)>-
+----
+{blank}
+| `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] | pair
+a|
+[exec]
+----
+('a'->1\|'b'->2\|'c'->3)
+('a'->1\|'b'->2\|'c'->3)>-
+----
+{blank}
+|===
 
 [discrete]
 ====== Poly Controls

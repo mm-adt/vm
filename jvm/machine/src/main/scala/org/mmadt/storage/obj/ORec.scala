@@ -42,9 +42,16 @@ abstract class ORec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: Re
 }
 object ORec {
   def makeRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty[A, B]), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = {
-    if (null != g._2 && (g._2.isEmpty || !g._2.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])))
-      new VRec[A, B](name, g = (g._1, g._2.filter(x => x._1.alive && x._2.alive)), q, via)
-    else new TRec[A, B](name, g, q, via)
+    val map: collection.Map[A, B] = g._1 match {
+      case _ if g._2 == null => null
+      case Tokens.`,` => g._2.filter(x => x._1.alive && x._2.alive)
+      case Tokens.`;` => g._2
+      case Tokens.`|` => g._2.filter(x => x._1.alive)
+    }
+    if (null != map && (map.isEmpty || !map.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])))
+      new VRec[A, B](name, g = (g._1, map), q, via)
+    else
+      new TRec[A, B](name, g = (g._1, map), q, via)
   }
   def emptyType[A <: Obj, B <: Obj]: RecType[A, B] = new TRec[A, B](g = (Tokens.`,`, null))
 

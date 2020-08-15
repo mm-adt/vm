@@ -195,7 +195,7 @@ object StorageFactory {
         case _: Rec[Obj, Obj] => new VRecStrm[Obj, Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[RecValue[Obj, Obj]]]))
         case _: LstValue[Obj] => new VLstStrm[Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[LstValue[Obj]]]))
         // TODO: temporary below
-        case y: TLst[_] => new VLstStrm[Obj](name = headName, values = MultiSet(values.map(x => new VLst(g = (y.gsep, x.asInstanceOf[TLst[Obj]].glist))).asInstanceOf[Seq[LstValue[Obj]]]))
+        case y: TLst[_] => new VLstStrm[Obj](name = headName, values = MultiSet(values.map(x => new VLst(g = (y.gsep, if(!x.alive || !x.isInstanceOf[Lst[Obj]]) Nil else x.asInstanceOf[Lst[Obj]].glist))).asInstanceOf[Seq[LstValue[Obj]]]))
         case _ => new VObjStrm(values = List.empty)
       }
     }).getOrElse(new VObjStrm(values = List.empty)).asInstanceOf[O]

@@ -27,6 +27,7 @@ import org.mmadt.language.obj.Rec.RecTuple
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 

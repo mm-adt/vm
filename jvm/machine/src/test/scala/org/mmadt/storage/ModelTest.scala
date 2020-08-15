@@ -23,8 +23,9 @@
 package org.mmadt.storage
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -32,12 +33,10 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest extends FunSuite {
-  // val tp3_kv: Type[Obj] = functor(KV, TP3)
+  val tp3_kv: Type[Obj] = functor(KV, TP3)
   val kv: Type[Obj] = __.model(model(KV))
   val tp3: Type[Obj] = __.model(model(TP3))
-  val fake: Type[Obj] = __.define(__("g") <= __, __("db") <= __)
-  val all: Type[Obj] = kv `=>` tp3 `=>` fake
-  // val all: Type[Obj] = kv `=>` tp3 `=>` tp3_kv `=>` fake
+  val all: Type[Obj] = kv `=>` tp3 `=>` tp3_kv
 
   test("[tp3] model") {
     val record1a = rec(
@@ -71,14 +70,15 @@ class ModelTest extends FunSuite {
     assertResult(record1.named("kv"))(record1 ==> kv.as(__("kv")))
   }
 
-  /*test("[tp3<=kv] functor") {
+
+  test("[tp3<=kv] functor") {
     val record1a: Rec[StrValue, Obj] = rec(
       str("k") -> (str("vertex") `,` int(1)),
       str("v") -> rec(str("name") -> str("marko")))
     val record1b = rec(
       str("id") -> int(1),
       str("label") -> str("vertex"),
-      str("properties") -> rec(str("name") -> str("marko"))).named("vertex")
+      str("properties") -> rec(str("name") -> str("marko")).named("property")).named("vertex")
     assertResult(record1a.named("kv"))(record1a ==> kv.as(__("kv")))
     assertResult(record1b)(record1a ==> all ==> __.as(__("kv")).as(__("vertex")))
     //
@@ -88,16 +88,15 @@ class ModelTest extends FunSuite {
     val record2b = rec(
       str("id") -> int(1),
       str("label") -> str("person"),
-      str("properties") -> rec(str("label") -> str("person"), str("name") -> str("marko"))).named("vertex")
+      str("properties") -> rec(str("label") -> str("person"), str("name") -> str("marko")).named("property")).named("vertex")
     assertResult(record2a.named("kv"))(record2a ==> kv.as(__("kv")))
     assertResult(record2b)(record2a ==> all.as(__("kv")).as(__("vertex")))
     assertResult(record2b)(record2a ==> all.as(__("vertex")))
     //
-
-    val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))
-    val store: Lst[Rec[StrValue, Obj]] = lst(",", strm(List(record1a, edge1)))
-    val g: Type[Obj] = all.as(__("graph"))
-    println(g)
-    println(store ==> g)
-  }*/
+    //val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))
+    //val store: Lst[Rec[StrValue, Obj]] = lst(",", strm(List(record1a, edge1)))
+    //val g: Type[Obj] = all.as(__("graph"))
+    //println(g)
+    //println(store ==> g)
+  }
 }
