@@ -27,26 +27,23 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory.{asType, zeroObj, _}
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
+import org.scalatest.{FunSuite, Tag}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3, TableFor4}
 
-abstract class BaseInstTest extends FunSuite with TableDrivenPropertyChecks {
+abstract class BaseInstTest(testSets: (String, TableFor4[Obj, Obj, Obj, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
   private val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
 
-  def name: String
-  def starts: TableFor3[Obj, Obj, Obj]
-
-  test(name) {
-    var lastComment: String = ""
-    forEvery(starts) {
-      // ignore comment lines - with comments as "data" it's easier to track which line in the table
-      // has failing data
-      case (null, null, comment) => lastComment = comment.toString
-      case (lhs, rhs, result) => evaluate(lhs, rhs, result, lastComment)
+  testSets.foreach(testSet => {
+    test(testSet._1) {
+      var lastComment: String = ""
+      forEvery(testSet._2) {
+        // ignore comment lines - with comments as "data" it's easier to track which line in the table
+        // has failing data
+        case (null, null, comment, false) => lastComment = comment.toString
+        case (lhs, rhs, result, c) => evaluate(lhs, rhs, result, lastComment, compile=c)
+      }
     }
-  }
-
-  def comment(comment: String): (Obj, Obj, Obj) = (null, null, str(comment))
+  })
 
   def stringify(obj: Obj): String = if (obj.isInstanceOf[Strm[_]]) {
     if (!obj.alive)
@@ -54,6 +51,7 @@ abstract class BaseInstTest extends FunSuite with TableDrivenPropertyChecks {
     else
       obj.toStrm.values.foldLeft("[")((a, b) => a.concat(b + ",")).dropRight(1).concat("]")
   } else obj.toString
+
 
   def evaluate(start: Obj, middle: Obj, end: Obj, lastComment: String = "", inst: Inst[Obj, Obj] = null,
                engine: mmADTScriptEngine = engine, compile: Boolean = true): Unit = {
