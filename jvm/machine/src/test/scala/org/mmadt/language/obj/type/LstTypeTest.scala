@@ -27,6 +27,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.{Int, Lst, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -95,7 +96,7 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel structure") {
-    val poly: Poly[Int] = int.mult(8).split(__.id() | __.plus(2) | 3)
+    val poly: Poly[Int] = int.mult(8).split(id() | plus(2) | 3)
     assertResult("(int[id]|int[plus,2]|3)<=int[mult,8]-<(int[id]|int[plus,2]|3)")(poly.toString)
     assertResult(int.id())(poly.glist.head)
     assertResult(int.plus(2))(poly.glist(1))
@@ -107,7 +108,7 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel quantifier") {
-    val poly: Poly[Int] = int.q(2).mult(8).split(__.id() | __.plus(2) | 3)
+    val poly: Poly[Int] = int.q(2).mult(8).split(id() | plus(2) | 3)
     assertResult("(int[id]|int[plus,2]|3){2}<=int{2}[mult,8]-<(int[id]|int[plus,2]|3)")(poly.toString)
     /*    assertResult(int.q(2).id())(poly.glist.head)
         assertResult(int.q(2).plus(2))(poly.glist(1))
@@ -119,10 +120,10 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel [split] quantification") {
-    assertResult(int)(int.mult(8).split(__.id() | __.plus(8).mult(2) | int(56)).merge[Int].id().rangeObj)
-    assertResult(int.q(1, 20))(int.mult(8).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().rangeObj)
-    assertResult(int.q(2, 40))(int.q(2).mult(8).q(1).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Int].id().rangeObj)
-    assertResult(zeroObj)(int.q(2).mult(8).q(0).split(__.id().q(10, 20) | __.plus(8).mult(2).q(2) | int(56)).merge[Obj].id().rangeObj)
+    assertResult(int)(int.mult(8).split(id() | plus(8).mult(2) | int(56)).merge[Int].id().rangeObj)
+    assertResult(int.q(1, 20))(int.mult(8).split(id().q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge[Int].id().rangeObj)
+    assertResult(int.q(2, 40))(int.q(2).mult(8).q(1).split(id().q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge[Int].id().rangeObj)
+    assertResult(zeroObj)(int.q(2).mult(8).q(0).split(id().q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge[Obj].id().rangeObj)
   }
 
   test("[mult] w/ lst types") {

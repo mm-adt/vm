@@ -46,7 +46,7 @@ object GetOp extends Func[Obj, Obj] {
     val newInst: Inst[Obj, Obj] = inst.clone(g = (Tokens.get, List(key, Inst.oldInst(inst).arg1[Obj])))
     val typeHint: Obj = Inst.oldInst(inst).arg1[Obj].hardQ(start.q)
     val value: Obj = start match {
-      case arec: Rec[Obj, Obj] => strm(arec.gmap.filter(a => key.test(a._1)).map(a=>a._2))
+      case arec: Rec[Obj, Obj] => strm(arec.gmap.filter(a => key.test(a._1)).map(a => a._2))
       case alst: Lst[_] if key.isInstanceOf[Int] => key match {
         case aint: IntValue => alst match {
           case _: LstValue[_] => LanguageException.PolyException.testIndex(alst, aint.g.toInt); alst.glist(aint.g.toInt)

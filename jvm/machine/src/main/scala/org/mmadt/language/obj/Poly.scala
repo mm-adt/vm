@@ -38,14 +38,15 @@ trait Poly[+A <: Obj] extends Obj
   def isChoice: Boolean = this.gsep == Tokens.|
   def isPlus: Boolean = this.isParallel | this.isChoice
   def isEmpty: Boolean = this.glist.isEmpty
+  def size: scala.Int = this.glist.size
   def ctype: Boolean
 }
 
 object Poly {
-  def resolveSlots[A <: Obj](start: A, apoly: Poly[A], branch: Boolean = false): Poly[A] = {
+  def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = {
     apoly match {
-      case arec: Rec[Obj, A] => Rec.resolveSlots(start, arec, branch)
-      case alst: Lst[A] => Lst.resolveSlots(start, alst, branch)
+      case arec: Rec[Obj, A] => Rec.resolveSlots(start, arec)
+      case alst: Lst[A] => Lst.resolveSlots(start, alst)
     }
   }
   def keepFirst[A <: Obj](start: Obj, apoly: Poly[A]): Poly[A] = {
@@ -54,6 +55,6 @@ object Poly {
       case alst: Lst[A] => Lst.keepFirst(alst)
     }
   }
-  def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = (apoly.glist.isEmpty || bpoly.glist.isEmpty) ||
+  def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = (apoly.size < 2 || bpoly.size < 2) ||
     (apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial)
 }

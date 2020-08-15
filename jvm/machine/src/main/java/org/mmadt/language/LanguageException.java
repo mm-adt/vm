@@ -102,7 +102,7 @@ public class LanguageException extends VmException {
     }
 
     public static boolean testIndex(final Lst<?> lst, final int index) {
-        return !(index < 0) && lst.glist().length() >= (index + 1);
+        return !(index < 0) && lst.size() >= (index + 1);
     }
 
     public static class PolyException {
@@ -121,7 +121,7 @@ public class LanguageException extends VmException {
         public static void testIndex(final Lst<?> lst, final int index) {
             if (index < 0)
                 throw new LanguageException("poly index must be 0 or greater: " + index);
-            if (lst.glist().length() < (index + 1))
+            if (lst.size() < (index + 1))
                 throw new LanguageException("poly index is out of bounds: " + index);
         }
 

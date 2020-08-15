@@ -42,8 +42,8 @@ object ZeroOp extends Func[Obj, Obj] {
     case _: Int => int(0)
     case _: Real => real(0.0)
     case _: Str => str(Tokens.empty)
-    case arec: Rec[Obj, Obj] => arec.clone(g = (arec.gsep, Map.empty[Obj, Obj]))
-    case alst: Lst[Obj] => alst.clone(g = (alst.gsep, List.empty[Obj]))
+    case arec: Rec[Obj, Obj] => arec.clone(_ => List.empty)
+    case alst: Lst[Obj] => alst.clone(_ => List.empty)
     case _ => start
   }).via(start, inst)
 }

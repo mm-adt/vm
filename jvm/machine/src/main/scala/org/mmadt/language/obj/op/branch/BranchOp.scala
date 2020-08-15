@@ -102,7 +102,7 @@ object BranchOp extends Func[Obj, Obj] {
               .map(kv => Inst.resolveArg(start, kv._1) -> kv._2)
               .filter(kv => kv._1.alive)
               .map(kv => kv._1 -> Inst.resolveArg(start, kv._2))
-            arec.clone(g = (arec.gsep, result.foldLeft(Rec.empty[Obj, Obj])((a, b) => a.replace(b)))) match {
+            arec.clone(g = (arec.gsep, result.foldLeft(List.empty[ObjPair[Obj, Obj]])((a, b) => a.replace(b)))) match {
               case _: Value[_] => strm(result.map(kv => kv._2).map(x => x.hardQ(q => multQ(q, inst.q))))
               case apoly: Type[_] =>
                 if (1 == result.size) result.head._2.hardQ(q => multQ(q, inst.q))

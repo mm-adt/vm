@@ -48,10 +48,11 @@ trait Lst[+A <: Obj] extends Poly[A]
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
       eqQ(this, alst) &&
+      // this.glist.size == alst.glist.size &&
       this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))
     case _ => true // MAIN EQUALS IS IN TYPE
   }
-
+  def clone(f: List[A] => List[_]): this.type = this.clone(g = (this.gsep, f(this.glist)))
   override final def `,`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`,`, next)
   override final def `;`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`;`, next)
   override final def `|`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`|`, next)
@@ -71,35 +72,35 @@ object Lst {
       withinQ(alst, blst) &&
       (blst.ctype || {
         if (blst.isChoice) alst.g._2.exists(x => x.alive)
-        else alst.g._2.size == blst.g._2.size
+        else alst.size == blst.size
       }) &&
       alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && pair._1.alive && pair._2.alive && pair._1 == pair._2) true else pair._1.test(pair._2))
 
   def resolveSlots[A <: Obj](start: A, apoly: Lst[A], branch: Boolean = false): Lst[A] = {
     if (apoly.isSerial) {
       var local = start
-      val z = apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => {
+      val z = apoly.clone(_.map(slot => {
         local = local match {
           case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
           case x if slot.isInstanceOf[Value[_]] => slot.hardQ(q => multQ(x.q, q)) // TODO: hardcoded hack -- should really be part of Inst.resolveArg() and Obj.compute()
           case _ => Inst.resolveArg(local, slot)
         }
         local
-      })))
+      }))
       if (branch && z.g._2.exists(x => !x.alive)) z.q(qZero)
       else if (branch && z.g._2.forall(x => x.root)) z.clone(g = (z.gsep, List(z.g._2.last)))
       else z
     } else {
       if (branch && __.isAnonRoot(start) && apoly.g._2.map(x => x.hardQ(qOne)).toSet.size == 1 && apoly.g._2.forall(x => x.root))
-        apoly.clone(g = (apoly.gsep, List(apoly.g._2.head.hardQ(apoly.g._2.foldLeft(qZero)((a, b) => plusQ(a, b.q)))))) // TODO: total hack
+        apoly.clone(_ => List(apoly.g._2.head.hardQ(apoly.g._2.foldLeft(qZero)((a, b) => plusQ(a, b.q))))) // TODO: total hack
       else
-        apoly.clone(g = (apoly.gsep, apoly.glist.map(slot => Inst.resolveArg(start, slot)).filter(x => !branch || x.alive)))
+        apoly.clone(_.map(slot => Inst.resolveArg(start, slot)).filter(x => !branch || x.alive))
     }
   }
 
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
-    apoly.clone(g = (apoly.gsep, apoly.glist.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A])))
+    apoly.clone(_.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
   }
 
   def cmult[A <: Obj](apoly: Lst[A], bpoly: Lst[A]): Lst[A] = {

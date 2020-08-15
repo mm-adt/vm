@@ -73,7 +73,7 @@ object ModelOp extends Func[Obj, Obj] {
   class RichModel(val model: Model) {
     private final def findType[A <: Obj](model: Model, label: String, source: Obj): Option[A] =
       (if (model.name.equals(label)) List(model).asInstanceOf[List[A]]
-      else model.gmap.getOrElse(TYPE, NOREC).gmap.filter(x => x._1.name == label).flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
+      else model.gmap.fetchOrElse(TYPE, NOREC).gmap.filter(x => x._1.name == label).flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
         .find(y => if (__.isTokenRoot(y.domainObj))
           model.search(y.domainObj.name, source).exists(x => source.update(model).test(x)) else
           source.update(model).test(y.domainObj.hardQ(source.q)))
@@ -81,41 +81,41 @@ object ModelOp extends Func[Obj, Obj] {
     final def search[A <: Obj](name: StrValue, matcher: A = __.asInstanceOf[A]): Option[A] =
       model.vars[A](name).map(x => if (x.isInstanceOf[Type[_]]) x.from(name) else x).orElse(findType[A](model, name.g, matcher).map(y => toBaseName(y))).map(x => x.update(model))
 
-    final def rewrites: List[Obj] = model.gmap.getOrElse(PATH, NOREC).gmap.values
+    final def rewrites: List[Obj] = model.gmap.fetchOrElse(PATH, NOREC).gmap.values
       .flatMap(y => y.g._2)
-      .filter(y => y.isInstanceOf[Lst[Obj]] && y.domain.isInstanceOf[Lst[Obj]] && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty).toList
+      .filter(y => y.isInstanceOf[Lst[Obj]] && y.domain.isInstanceOf[Lst[Obj]] && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty)
 
     final def definitions: List[Obj] = {
       val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.getOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
+      val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
       typesMap.flatMap(x => x._2.glist)
     }
 
     final def vars[A <: Obj](key: StrValue): Option[A] = {
       val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.getOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
+      val typesMap = Option(map.fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
       typesMap.fetchOption(key).map(x => x.glist.head).asInstanceOf[Option[A]]
     }
 
     final def varing(key: StrValue, value: Obj): Model = {
       if (model.vars(key).isDefined && value.isInstanceOf[Type[_]]) return model
       val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.getOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
+      val typesMap = Option(map.fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
       rec(g = (Tokens.`,`, map.replace(ModelOp.VAR -> rec(g = (Tokens.`,`, typesMap.replace(key -> lst(g = (Tokens.`,`, List(value.rangeObj)))))))))
     }
 
     final def rewriting(rewrite: Lst[Obj]): Model = {
       val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.getOrElse(ModelOp.PATH, NOREC).g._2).getOrElse(NOMAP)
-      val typeList = Option(typesMap.getOrElse(rewrite.domain.asInstanceOf[Lst[Obj]].g._2.head.domain, lst).g._2).getOrElse(Nil)
+      val typesMap = Option(map.fetchOrElse(ModelOp.PATH, NOREC).g._2).getOrElse(NOMAP)
+      val typeList = Option(typesMap.fetchOrElse(rewrite.domain.asInstanceOf[Lst[Obj]].g._2.head.domain, lst).g._2).getOrElse(Nil)
       if (typeList.contains(rewrite)) model
       else rec(g = (Tokens.`,`, map.replace(ModelOp.PATH -> rec(g = (Tokens.`,`, typesMap.replace(rewrite.domain.asInstanceOf[Lst[Obj]].g._2.head.domain -> lst(g = (Tokens.`,`, typeList :+ rewrite))))))))
     }
 
     final def defining(definition: Obj): Model = {
       val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.getOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
-      val typeList = Option(typesMap.getOrElse(definition.range, lst).g._2).getOrElse(Nil)
+      val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
+      val typeList = Option(typesMap.fetchOrElse(definition.range, lst).g._2).getOrElse(Nil)
       if (typeList.contains(definition)) model
       else rec(g = (Tokens.`,`, map.replace(ModelOp.TYPE -> rec(g = (Tokens.`,`, typesMap.replace(definition.range -> lst(g = (Tokens.`,`, typeList :+ definition))))))))
     }
@@ -123,9 +123,9 @@ object ModelOp extends Func[Obj, Obj] {
     final def merging(other: Model): Model = {
       if (other.isEmpty) return model
       else if (model.isEmpty) return other
-      var x: Model = other.g._2.getOrElse(ModelOp.TYPE, rec(g = (Tokens.`,`, NOMAP))).g._2.flatMap(x => x._2.g._2).foldLeft(model)((a, b) => a.defining(b))
-      x = other.g._2.getOrElse(ModelOp.VAR, rec(g = (Tokens.`,`, NOMAP))).gmap.foldLeft(x)((a, b) => a.varing(b._1.asInstanceOf[StrValue], b._2.asInstanceOf[Lst[Obj]].glist.head))
-      rec(g = (Tokens.`,`, x.g._2.replace(ModelOp.PATH -> other.g._2.getOrElse(ModelOp.PATH, NOREC))))
+      var x: Model = other.g._2.fetchOrElse(ModelOp.TYPE, rec(g = (Tokens.`,`, NOMAP))).g._2.flatMap(x => x._2.g._2).foldLeft(model)((a, b) => a.defining(b))
+      x = other.g._2.fetchOrElse(ModelOp.VAR, rec(g = (Tokens.`,`, NOMAP))).gmap.foldLeft(x)((a, b) => a.varing(b._1.asInstanceOf[StrValue], b._2.asInstanceOf[Lst[Obj]].glist.head))
+      rec(g = (Tokens.`,`, x.g._2.replace(ModelOp.PATH -> other.g._2.fetchOrElse(ModelOp.PATH, NOREC))))
     }
   }
 }
