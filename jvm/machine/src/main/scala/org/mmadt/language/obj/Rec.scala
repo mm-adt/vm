@@ -23,11 +23,10 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Rec.RecTuple
+import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 
@@ -41,14 +40,14 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   with ZeroOp[Rec[A, Obj]] {
   def g: RecTuple[A, B]
   def gsep: String = g._1
-  lazy val gmap: collection.Map[A, B] =
-    if (null == this.g._2) Map.empty[A, B]
-    else g._2.map(x => x._1.update(this.model).asInstanceOf[A] -> x._2.update(this.model).asInstanceOf[B]).toMap
-  def glist: Seq[B] = gmap.values.toSeq
+  lazy val gmap: PairList[A, B] =
+    if (null == this.g._2) Nil
+    else g._2.map(x => x._1.update(this.model).asInstanceOf[A] -> x._2.update(this.model).asInstanceOf[B])
+  def glist: Seq[B] = gmap.values
   override def ctype: Boolean = null == g._2 // type token
 
   override def equals(other: Any): Boolean = other match {
-    case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
+    case arec: Rec[_, _] => (Poly.sameSep(this, arec) || this.gmap.size < 2) &&
       this.name.equals(arec.name) &&
       eqQ(this, arec) &&
       this.gmap.size == arec.gmap.size &&
@@ -58,17 +57,33 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
 
   final def `_,`(next: Tuple2[A, _]): this.type = this.`,`(next)
   final def `_;`(next: Tuple2[A, _]): this.type = this.`;`(next)
-  final def `_|`(next: Tuple2[A, _]): this.type = this.`|`(next)
-  final def `,`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`,`, this.gmap + (next._1 -> next._2)))
-  final def `;`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`;`, this.gmap + (next._1 -> next._2)))
-  final def `|`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`|`, this.gmap + (next._1 -> next._2)))
+  final def `_|`(next: Tuple2[_, _]): this.type = this.`|`(next)
+  final def `,`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`,`, this.g._2.replace(next.asInstanceOf[Tuple2[A, B]])))
+  final def `;`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`;`, this.g._2.replace(next.asInstanceOf[Tuple2[A, B]])))
+  final def `|`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`|`, this.g._2.replace(next.asInstanceOf[Tuple2[A, B]])))
 }
 
 object Rec {
-  type RecTuple[A <: Obj, +B <: Obj] = (String, collection.Map[A, B])
+  type RecTuple[A <: Obj, +B <: Obj] = (String, PairList[A, B])
+  type PairList[A <: Obj, +B <: Obj] = List[Tuple2[A, B]]
+  def empty[A <: Obj, B <: Obj]: PairList[A, B] = List.empty[Tuple2[A, B]]
+  @inline implicit def listToRichList[A <: Obj, B <: Obj](ground: PairList[A, B]): RichList[A, B] = new RichList[A, B](ground)
+  protected class RichList[A <: Obj, B <: Obj](val list: PairList[A, B]) {
+    def fetch(key: A): B = list.filter(x => key == x._1).map(x => x._2).head
+    def fetchOption(key: A): Option[B] = list.filter(x => key == x._1).map(x => x._2).headOption
+    def getOrElse(key: A, other: B): B = fetchOption(key).getOrElse(other)
+    def values: List[B] = list.map(x => x._2)
+    def replace(other: PairList[A, B]): PairList[A, B] = other.foldLeft(list)((a, b) => a.replace(b))
+    def replace(other: Tuple2[A, B]): PairList[A, B] =
+      if (list.fetchOption(other._1).isDefined) {
+        list.map(x => if (other._1 == x._1) other._1 -> other._2 else x) // TODO: equality order matters!
+      } else {
+        list :+ other
+      }
+  }
 
   def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
-    (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.find(y => y._1.test(x._1) && y._2.test(x._2)).map(_ => true).getOrElse(return false)))
+    (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
   def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B], branch: Boolean = false): Rec[A, B] = {
     if (arec.isSerial) {
@@ -83,11 +98,11 @@ object Rec {
         local
       })), q = start.q)
     } else {
-      arec.clone(g = (arec.gsep, arec.gmap.toSeq.map(slot => {
+      arec.clone(g = (arec.gsep, arec.gmap.map(slot => {
         val key = Inst.resolveArg(start, slot._1)
         (key, if (key.alive) Inst.resolveArg(start, slot._2) else zeroObj.asInstanceOf[B])
-      }).filter(x => !branch || (x._1.alive && x._2.alive)).foldLeft(Map.empty[A, B])((a, b) => a + (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else {
-        val alst: List[B] = List(b._2) ++ a.get(b._1).map(x => List(x)).getOrElse(List.empty)
+      }).filter(x => !branch || (x._1.alive && x._2.alive)).foldLeft(empty[A, B])((a, b) => a replace (b._1 -> (if (b._2.isInstanceOf[Type[Obj]]) b._2 else {
+        val alst: List[B] = List(b._2) ++ a.fetchOption(b._1).map(x => List(x)).getOrElse(List.empty)
         if (alst.size == 1) alst.head else strm(alst)
       })))))
     }

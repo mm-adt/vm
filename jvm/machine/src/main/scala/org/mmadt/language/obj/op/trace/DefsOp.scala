@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.op.trace
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.TraceInstruction
@@ -41,18 +42,18 @@ object DefsOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val defs: Rec[Obj, Obj] = rec(g = (Tokens.`,`, start.trace.map(x => x._2).
       filter(x => x.op.equals(Tokens.define)).flatMap(x => x.args).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.range.name) -> y))))
+      foldLeft(List.empty[Tuple2[Obj, Obj]])((x, y) => x :+ (str(y.range.name) -> y))))
     val vars: Rec[Obj, Obj] = rec(g = (Tokens.`,`, start.trace.
       filter(x => x._2.op.equals(Tokens.to)).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (y._2.arg0[StrValue] -> y._1))))
+      foldLeft(List.empty[Tuple2[Obj, Obj]])((x, y) => x :+ (y._2.arg0[StrValue] -> y._1))))
     val rewrites: Rec[Obj, Obj] = rec(g = (Tokens.`,`, start.trace.map(x => x._2).
       filter(x => x.op.equals(Tokens.rewrite)).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + (str(y.arg0[Obj].range.name) -> y.arg0[Obj]))))
+      foldLeft(List.empty[Tuple2[Obj, Obj]])((x, y) => x :+ (str(y.arg0[Obj].range.name) -> y.arg0[Obj]))))
     rec(g = (Tokens.`,`, List(
       str("defs") -> defs,
       str("vars") -> vars,
       str("rewrites") -> rewrites).
       filter(x => x._2.gmap.nonEmpty).
-      foldLeft(Map.empty[Obj, Obj])((x, y) => x + y)))
+      foldLeft(List.empty[Tuple2[Obj, Obj]])((x, y) => x :+ y)))
   }
 }

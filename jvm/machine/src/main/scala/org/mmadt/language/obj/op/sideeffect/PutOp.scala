@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.sideeffect
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, __}
 import org.mmadt.language.obj.value.{IntValue, LstValue, RecValue}
@@ -48,12 +49,12 @@ object PutOp extends Func[Obj, Obj] {
     start match {
       case _: __ => start.via(start, inst)
       // REC
-      case arec: RecValue[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap + (key -> value))).via(start, inst)
+      case arec: RecValue[Obj, Obj] => arec.clone(g = (arec.gsep, arec.gmap.replace(key -> value))).via(start, inst)
       case arec: RecType[Obj, Obj] => (oldKey.alive, key.alive, oldValue.alive, value.alive) match {
         //case (true, false, true, true) => arec.clone(g = (arec.gsep, arec.gmap + (oldKey -> value))).via(start, Inst.oldInst(inst))
         //case (true, false, true, false) => arec.clone(g = (arec.gsep, arec.gmap + (oldKey -> oldValue))).via(start, Inst.oldInst(inst))
-        case (true, true, true, false) => arec.clone(g = (arec.gsep, arec.gmap + (key -> oldValue))).via(start, Inst.oldInst(inst))
-        case _ => arec.clone(g = (arec.gsep, arec.gmap + (key -> value))).via(start, inst)
+        case (true, true, true, false) => arec.clone(g = (arec.gsep, arec.gmap.replace(key -> oldValue))).via(start, Inst.oldInst(inst))
+        case _ => arec.clone(g = (arec.gsep, arec.gmap.replace(key -> value))).via(start, inst)
       }
       // LST
       case alst: LstValue[Obj] =>

@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -48,11 +49,11 @@ object PlusOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Try[Obj](start match {
     case _: Type[_] => start
-    case abool: Bool => abool.clone(g=abool.g || inst.arg0[Bool].g)
+    case abool: Bool => abool.clone(g = abool.g || inst.arg0[Bool].g)
     case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
     case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)
     case astr: Str => astr.clone(g = astr.g + inst.arg0[Str].g)
-    case arec: Rec[Obj, Obj] => arec.clone(g = (arec.g._1, arec.g._2 ++ inst.arg0[Rec[Obj, Obj]].g._2))
+    case arec: Rec[Obj, Obj] => arec.clone(g = (arec.g._1, arec.gmap.replace(inst.arg0[Rec[Obj, Obj]].gmap)))
     // poly plus
     case multA: Lst[Obj] if multA.isSerial => inst.arg0[Lst[Obj]] match {
       case multB: Lst[Obj] if multB.isSerial => multA `,` multB

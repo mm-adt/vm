@@ -28,8 +28,6 @@ import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
-import scala.collection.immutable.ListMap
-
 class RecTypeTest extends FunSuite {
 
   val X: (IntValue, StrValue) = int(1) -> str("a")
@@ -51,7 +49,7 @@ class RecTypeTest extends FunSuite {
   }
 
   test("rich tuple") {
-    assertResult(rec(g = (Tokens.`,`, Map(int(1) -> int(2), int(2) -> int(3)))))(int(1) -> int(2) `_,` int(2) -> int(3))
+    assertResult(rec(g = (Tokens.`,`, List(int(1) -> int(2), int(2) -> int(3)))))(int(1) -> int(2) `_,` int(2) -> int(3))
   }
 
   test("rec type [split]/[merge]") {
@@ -86,43 +84,43 @@ class RecTypeTest extends FunSuite {
     assertThrows[LanguageException] {
       rec(str("nae") -> str("marko")) ==> rec(str("name") -> str)
     }
-    assertResult(int(11))((int(10) ==> int.split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
-    assertResult(int(11, 12, 13))((int(10, 11, 12) ==> int.q(3).split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj]))
-    assertResult(int(11, 12, 13))((int(10) `,` 11 `,` 12) ==> (int `,` int `,` int).merge.split(rec(g = (Tokens.`|`, Map[Obj, Obj](int -> int.plus(1), bool -> btrue)))).merge[Obj])
+    assertResult(int(11))(int(10) ==> int.split(int -> int.plus(1) | bool -> btrue).merge[Obj])
+    assertResult(int(11, 12, 13))(int(10, 11, 12) ==> int.q(3).split(int -> int.plus(1) | bool -> btrue).merge[Obj])
+    assertResult(int(11, 12, 13))((int(10) `,` 11 `,` 12) ==> (int `,` int `,` int).merge.split(int -> int.plus(1) | bool -> btrue).merge[Obj])
   }
 
   test("rec value via varargs construction") {
     // forwards keys
-    assertResult(ListMap(X, Y))(rec(X, Y).gmap)
-    assertResult(ListMap(X, Y))(rec(X).plus(rec(Y)).gmap)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y, Z).gmap)
-    assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
+    assertResult(List(X, Y))(rec(X, Y).gmap)
+    assertResult(List(X, Y))(rec(X).plus(rec(Y)).gmap)
+    assertResult(List(X, Y, Z))(rec(X, Y, Z).gmap)
+    assertResult(List(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
+    assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
     // backwards keys
-    assertResult(ListMap(Y, X))((Y `,` X).gmap)
-    assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).gmap)
-    assertResult(ListMap(Z, Y, X))((Z `,` Y `,` X).gmap)
-    assertResult(ListMap(Z, Y, X))(rec(Z).plus(Y `,` X).gmap)
-    assertResult(ListMap(Z, Y, X))((Z `,` Y).plus(rec(X)).gmap)
+    assertResult(List(Y, X))((Y `,` X).gmap)
+    assertResult(List(Y, X))(rec(Y).plus(rec(X)).gmap)
+    assertResult(List(Z, Y, X))((Z `,` Y `,` X).gmap)
+    assertResult(List(Z, Y, X))(rec(Z).plus(Y `,` X).gmap)
+    assertResult(List(Z, Y, X))((Z `,` Y).plus(rec(X)).gmap)
     // overwrite orderings
-    assertResult(ListMap(X, Y, Z))((X `,` Y).plus((X `,` Z)).gmap) // TODO: determine overwrite order
+    //  assertResult(List(X, Y, Z))((X `,` Y).plus((X `,` Z)).gmap) // TODO: determine overwrite order
   }
 
   test("rec value via map construction") {
     // forwards keys
-    assertResult(ListMap(X, Y))(rec(X, Y).gmap)
-    assertResult(ListMap(X, Y))(rec(X).plus(rec(Y)).gmap)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y, Z).gmap)
-    assertResult(ListMap(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
+    assertResult(List(X, Y))(rec(X, Y).gmap)
+    assertResult(List(X, Y))(rec(X).plus(rec(Y)).gmap)
+    assertResult(List(X, Y, Z))(rec(X, Y, Z).gmap)
+    assertResult(List(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
+    assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
     // backwards keys
-    assertResult(ListMap(Y, X))(rec(Y, X).gmap)
-    assertResult(ListMap(Y, X))(rec(Y).plus(rec(X)).gmap)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y, X).gmap)
-    assertResult(ListMap(Z, Y, X))(rec(Z).plus(rec(Y, X)).gmap)
-    assertResult(ListMap(Z, Y, X))(rec(Z, Y).plus(rec(X)).gmap)
+    assertResult(List(Y, X))(rec(Y, X).gmap)
+    assertResult(List(Y, X))(rec(Y).plus(rec(X)).gmap)
+    assertResult(List(Z, Y, X))(rec(Z, Y, X).gmap)
+    assertResult(List(Z, Y, X))(rec(Z).plus(rec(Y, X)).gmap)
+    assertResult(List(Z, Y, X))(rec(Z, Y).plus(rec(X)).gmap)
     // overwrite orderings
-    assertResult(ListMap(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).gmap) // TODO: determine overwrite order
+    //    assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).gmap) // TODO: determine overwrite order
   }
 
   test("rec value quantifiers") {
@@ -134,8 +132,8 @@ class RecTypeTest extends FunSuite {
 
   test("rec choose branching") {
     //assertResult(str("name", "my", "is"))(int(1, 2, 3).split(rec(g=(Tokens.`|`, Map(int.is(int.eqs(2)) -> str("name"), int.is(int.gt(2)) -> str("is"), int -> str("my"))))))
-    assertResult(false)(rec(g = (Tokens.`|`, Map(str("a") -> int(1), str("b") -> int(2)))).equals(rec(g = (Tokens.`|`, Map(str("b") -> int(2), str("a") -> int(1))))))
-    assertResult(bfalse)(rec(g = (Tokens.`|`, Map(str("a") -> int(1), str("b") -> int(2)))).eqs(rec(g = (Tokens.`|`, Map(str("b") -> int(2), str("a") -> int(1))))))
+    assertResult(false)(rec(g = (Tokens.`|`, List(str("a") -> int(1), str("b") -> int(2)))).equals(rec(g = (Tokens.`|`, List(str("b") -> int(2), str("a") -> int(1))))))
+    assertResult(bfalse)(rec(g = (Tokens.`|`, List(str("a") -> int(1), str("b") -> int(2)))).eqs(rec(g = (Tokens.`|`, List(str("b") -> int(2), str("a") -> int(1))))))
   }
 
   test("record value/type checking") {

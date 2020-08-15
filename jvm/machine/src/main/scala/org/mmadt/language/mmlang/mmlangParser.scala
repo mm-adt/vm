@@ -103,9 +103,9 @@ class mmlangParser extends JavaTokenParsers {
 
   def recStruct(parser: Parser[Obj]): Parser[RecTuple[Obj, Obj]] =
     ((opt((parser <~ Tokens.->) ~ parser) ~ polySep) ~ rep1sep(opt((parser <~ Tokens.->) ~ parser), polySep)) ^^
-      (x => rec(g = (x._1._2, x._1._1.map(a => Map(a._1 -> a._2)).getOrElse(Map.empty[Obj, Obj]) ++ x._2.map(y => y.map(z => z._1 -> z._2).getOrElse(zeroObj -> zeroObj)).toMap[Obj, Obj])).g) |
-      Tokens.-> ^^ (_ => (Tokens.`,`, Map.empty[Obj, Obj])) |
-      (parser <~ Tokens.->) ~ parser ^^ (x => (Tokens.`,`, Map(x._1 -> x._2)))
+      (x => rec(g = (x._1._2, x._1._1.map(a => List(a._1 -> a._2)).getOrElse(List.empty) ++ x._2.map(y => y.map(z => z._1 -> z._2).getOrElse(zeroObj -> zeroObj)).toMap[Obj, Obj])).g) |
+      Tokens.-> ^^ (_ => (Tokens.`,`, List.empty)) |
+      (parser <~ Tokens.->) ~ parser ^^ (x => (Tokens.`,`, List(x._1 -> x._2)))
 
   // type parsing
   lazy val objType: Parser[Obj] = aType | anonTypeSugar | objZero | objOne

@@ -23,6 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple}
+import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
@@ -172,15 +173,15 @@ object Obj {
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
-  @inline implicit def tupleToRichTuple[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, Map(ground)))
+  @inline implicit def tupleToRichTuple[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
   private class RichTuple2[A <: Obj, B <: Obj](val tuple: Tuple2[A, B]) {
     final def `_,`(next: Tuple2[A, B]): Rec[A, B] = this.`,`(next)
     final def `_;`(next: Tuple2[A, B]): Rec[A, B] = this.`;`(next)
     final def `_|`(next: Tuple2[A, B]): Rec[A, B] = this.`|`(next)
-    final def `,`: Rec[A, B] = rec(g = (Tokens.`,`, Map(this.tuple._1 -> this.tuple._2)))
+    final def `,`: Rec[A, B] = rec(g = (Tokens.`,`, List(this.tuple._1 -> this.tuple._2)))
     final def `,`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`,`, next)
     final def `;`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`;`, next)
     final def `|`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`|`, next)
-    private final def recMaker(sep: String, tuple: Tuple2[A, _]): Rec[A, B] = rec(g = (sep, Map(this.tuple, tuple.asInstanceOf[Tuple2[A, B]])))
+    private final def recMaker(sep: String, tuple: Tuple2[A, _]): Rec[A, B] = rec(g = (sep, List(this.tuple).replace(tuple.asInstanceOf[Tuple2[A, B]])))
   }
 }

@@ -185,7 +185,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("rec get/put") {
     assertResult(bfalse)(engine.eval("(1->'a',2->'b')==(2->'b',1->'a')"))
-    val person: Rec[Obj, Obj] = rec(g = (Tokens.`|`, Map(str("name") -> str, str("age") -> int).asInstanceOf[Map[Obj, Obj]]))
+    val person: Rec[Obj, Obj] = rec(g = (Tokens.`|`, List(str("name") -> str, str("age") -> int)))
     assertResult(str <= person.get("name"))(engine.eval("('name'->str|'age'->int)[get,'name']"))
     assertResult(int <= person.get("age"))(engine.eval("('name'->str|'age'->int)[get,'age']"))
     assertResult(str <= person.get("name"))(engine.eval("str<=('name'->str|'age'->int)[get,'name']"))
@@ -583,8 +583,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str.plus("a"))(engine.eval("str[[plus,'a'],[plus,'b']{0},[plus,'c']{0}]"))
     assertResult(str.branch(str.plus("a") `,` str.plus("c")))(engine.eval("str[[plus,'a'],[plus,'b']{0},[plus,'c']]"))
     assertResult(str.plus("a"))(engine.eval("str[str -> [plus,'a'],int -> [plus,'b'], int -> [plus,'c']]"))
-    assertResult(str.branch(rec(g = (",", Map(str.is(str.gt("b")) -> str.plus("a"))))))(engine.eval("str[str[is>'b'] -> [plus,'a'],int -> [plus,'b'], int -> [plus,'c']]"))
-    assertResult(str.branch(rec(g = (",", Map(str -> str.plus("a"), str -> str.plus("c"))))))(engine.eval("str[str -> [plus,'a'],int -> [plus,'b'], str -> [plus,'c']]"))
+    assertResult(str.branch(rec(str.is(str.gt("b")) -> str.plus("a"))))(engine.eval("str[str[is>'b'] -> [plus,'a'],int -> [plus,'b'], int -> [plus,'c']]"))
+    assertResult(str.branch(str -> str.plus("a") `_,` str -> str.plus("c")))(engine.eval("str[str -> [plus,'a'],int -> [plus,'b'], str -> [plus,'c']]"))
 
     assertResult(str)(engine.eval("str[[id]{-1};[id]{-1}]"))
     //  TODO  assertResult(str.id().q(2))(engine.eval("str[[[id];[id]],[[id];[id]]]"))

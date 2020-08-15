@@ -23,6 +23,7 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.Rec.{PairList, _}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
@@ -97,14 +98,14 @@ object BranchOp extends Func[Obj, Obj] {
         /////////////////////////////////////////////////////////////////////////////////
         case arec: Rec[Obj, Obj] => arec.gsep match {
           case Tokens.`,` =>
-            val result: Seq[List[Obj]] = arec.gmap
-              .map(kv => List(Inst.resolveArg(start, kv._1), kv._2))
-              .filter(kv => kv.head.alive)
-              .map(kv => List(kv.head, Inst.resolveArg(start, kv.tail.head))).toSeq
-            arec.clone(g = (arec.gsep, result.map(x => x.head -> x.tail.head).toMap)) match {
-              case _: Value[_] => strm(result.map(x => x.tail.head).map(x => x.hardQ(q => multQ(q, inst.q))))
+            val result: PairList[Obj, Obj] = arec.gmap
+              .map(kv => Inst.resolveArg(start, kv._1) -> kv._2)
+              .filter(kv => kv._1.alive)
+              .map(kv => kv._1 -> Inst.resolveArg(start, kv._2))
+            arec.clone(g = (arec.gsep, result.foldLeft(Rec.empty[Obj, Obj])((a, b) => a.replace(b)))) match {
+              case _: Value[_] => strm(result.map(kv => kv._2).map(x => x.hardQ(q => multQ(q, inst.q))))
               case apoly: Type[_] =>
-                if (1 == result.size) result.head.tail.head.hardQ(q => multQ(q, inst.q))
+                if (1 == result.size) result.head._2.hardQ(q => multQ(q, inst.q))
                 else BranchInstruction.brchType[Obj](apoly, inst.q).via(start, inst.clone(g = (Tokens.branch, List(apoly))))
             }
           case Tokens.`;` =>
@@ -117,7 +118,7 @@ object BranchOp extends Func[Obj, Obj] {
                 case _ => if (Inst.resolveArg(running, b._1).alive) Inst.resolveArg(running, b._2) else zeroObj
               }
               Inst.resolveArg(running, b._1) -> running
-            }).filter(b => b._1.alive && b._2.alive).toMap
+            }).filter(b => b._1.alive && b._2.alive)
             if (result.isEmpty) zeroObj
             val apoly = arec.clone(g = (arec.gsep, result))
             apoly match {
@@ -129,7 +130,7 @@ object BranchOp extends Func[Obj, Obj] {
               val key = Inst.resolveArg(start, b._1)
               List(key, (if (key.alive) Inst.resolveArg(start, b._2) else zeroObj))
             }).foldLeft(List.empty[List[Obj]])((a, b) => a :+ b)
-            val apoly = arec.clone(g = (arec.gsep, result.map(x => x.head -> x.tail.head).toMap))
+            val apoly = arec.clone(g = (arec.gsep, result.map(x => x.head -> x.tail.head)))
             apoly match {
               case _: Value[_] => result.find(b => b.head.alive).map(b => b.tail.head).getOrElse(zeroObj)
               case _: Type[_] =>

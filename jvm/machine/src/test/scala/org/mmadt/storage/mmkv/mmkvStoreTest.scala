@@ -25,6 +25,7 @@ package org.mmadt.storage.mmkv
 import javax.script.ScriptContext
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.language.obj.{Obj, Rec}
@@ -59,7 +60,7 @@ class mmkvStoreTest extends FunSuite {
   test("mmkv store [count]") {
     val store: mmkvStore[IntType, Rec[StrValue, Obj]] = mmkvStore.open[IntType, Rec[StrValue, Obj]](file2)
     try {
-      assertResult(rec[StrValue, Obj](g=(",", Map(str("k") -> int, str("v") -> rec[StrValue, Obj](g=(",", Map(str("name") -> str, str("age") -> int))).named("person")))).named("mmkv"))(store.schema)
+      assertResult(rec[StrValue, Obj](g=(",", List(str("k") -> int, str("v") -> rec[StrValue, Obj](g=(",", List(str("name") -> str, str("age") -> int))).named("person")))).named("mmkv"))(store.schema)
       assertResult(4)(store.count())
     } finally store.close()
   }
@@ -67,16 +68,16 @@ class mmkvStoreTest extends FunSuite {
   test("mmkv store [put]") {
     val store = mmkvStore.open[IntValue, BoolValue](file3)
     try {
-      assertResult(rec(g=(",", Map(str("k") -> int, str("v") -> bool))).named("mmkv"))(store.schema)
+      assertResult(rec(g=(",", List(str("k") -> int, str("v") -> bool))).named("mmkv"))(store.schema)
       store.clear()
       assertResult(0)(store.stream().values.count(_ => true))
       assertResult(bfalse)(store.put(bfalse))
       assertResult(1)(store.stream().values.count(_ => true))
-      assert(store.stream().values.map(x => x.gmap(str("k"))).exists(x => x.g == 0))
+      assert(store.stream().values.map(x => x.gmap.fetch(str("k"))).exists(x => x.g == 0))
       assertResult(btrue)(store.put(45, btrue))
       assertResult(2)(store.stream().values.count(_ => true))
-      assert(store.stream().values.map(x => x.gmap(str("k"))).exists(x => x.g == 0))
-      assert(store.stream().values.map(x => x.gmap(str("k"))).exists(x => x.g == 45))
+      assert(store.stream().values.map(x => x.gmap.fetch(str("k"))).exists(x => x.g == 0))
+      assert(store.stream().values.map(x => x.gmap.fetch(str("k"))).exists(x => x.g == 45))
       assertResult(btrue)(store.get(45))
       assertResult(bfalse)(store.get(0))
     } finally store.close()

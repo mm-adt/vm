@@ -51,8 +51,8 @@ trait StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: Rec[A, B] = ORec.emptyType
-  def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): Rec[A, B] = ORec.makeRec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
-  def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = ORec.makeRec(name, g, q, via)
+  def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*): Rec[A, B] = ORec.makeRec(g = (Tokens.`,`, List(value) ++ values.toMap[A, B]))
+  def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = ORec.makeRec(name, g, q, via)
   def lst[A <: Obj]: Lst[A] = OLst.emptyType
   def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = OLst.makeLst(name, g, q, via)
 
@@ -96,8 +96,8 @@ object StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj](implicit f: StorageFactory): RecType[A, B] = f.rec[A, B].asInstanceOf[RecType[A, B]]
-  def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): Rec[A, B] = f.rec(g = (Tokens.`,`, Map(value) ++ values.toMap[A, B]))
-  def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Map.empty), q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): Rec[A, B] = ORec.makeRec(name, g, q, via)
+  def rec[A <: Obj, B <: Obj](value: (A, B), values: (A, B)*)(implicit f: StorageFactory): Rec[A, B] = f.rec(g = (Tokens.`,`, List(value) ++ values.toList))
+  def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): Rec[A, B] = ORec.makeRec(name, g, q, via)
   def lst[A <: Obj](implicit f: StorageFactory): LstType[A] = f.lst[A].asInstanceOf[LstType[A]]
   def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Lst[A] = f.lst[A](sep, values: _*)
   def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): Lst[A] = OLst.makeLst(name, g, q, via)
