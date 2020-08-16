@@ -36,49 +36,49 @@ class GtInstTest extends BaseInstTest(
   /////////////////////////////////////////
   testSet("[gt] value, type, strm, anon combinations",
     comment("===INT"),
-    test(int(2), __.gt(1), btrue), // value * value = value
-    test(int(2).q(10), __.gt(1), btrue.q(10)), // value * value = value
-    test(int(2).q(10), __.gt(1).q(20), btrue.q(200)), // value * value = value
-    test(int(2), __.gt(int(1).q(10)), btrue), // value * value = value
-    test(int(2), __.gt(int), bfalse), // value * type = value
-    test(int(2), __.gt(__.mult(int)), bfalse), // value * anon = value
-    test(int, __.gt(int(2)), int.gt(int(2))), // type * value = type
-    test(int.q(10), __.gt(int(2)), int.q(10).gt(int(2))), // type * value = type
-    test(int, __.gt(int), int.gt(int)), // type * type = type
-    test(int(1, 2, 3), __.gt(2), bool(false, false, true)), // strm * value = strm
-    test(int(1, 2, 3), __.gt(int(2).q(10)), bool(false, false, true)), // strm * value = strm
-    test(int(1, 2, 3), __.gt(int(2)).q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
-    test(int(1, 2, 3), __.gt(int(2)).q(10), bool(bfalse.q(20), btrue.q(10))), // strm * value = strm
-    test(int(1, 2, 3), __.gt(int(2)).q(10).id(), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
-    test(int(1, 2, 3), __.gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
-    test(int(1, 2, 3), __.id().gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
-    test(int(1, 2, 3), __.gt(int(2)).id().q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
-    test(int(1, 2, 3), __.gt(int), bool(false, false, false)), // strm * type = strm
-    test(int(1, 2, 3), __.gt(__.mult(int)), bool(false, false, false)), // strm * anon = strm
+    testing(int(2), __.gt(1), btrue), // value * value = value
+    testing(int(2).q(10), __.gt(1), btrue.q(10)), // value * value = value
+    testing(int(2).q(10), __.gt(1).q(20), btrue.q(200)), // value * value = value
+    testing(int(2), __.gt(int(1).q(10)), btrue), // value * value = value
+    testing(int(2), __.gt(int), bfalse), // value * type = value
+    testing(int(2), __.gt(__.mult(int)), bfalse), // value * anon = value
+    testing(int, __.gt(int(2)), int.gt(int(2))), // type * value = type
+    testing(int.q(10), __.gt(int(2)), int.q(10).gt(int(2))), // type * value = type
+    testing(int, __.gt(int), int.gt(int)), // type * type = type
+    testing(int(1, 2, 3), __.gt(2), bool(false, false, true)), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2).q(10)), bool(false, false, true)), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2)).q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2)).q(10), bool(bfalse.q(20), btrue.q(10))), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2)).q(10).id(), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
+    testing(int(1, 2, 3), __.id().gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2)).id().q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int), bool(false, false, false)), // strm * type = strm
+    testing(int(1, 2, 3), __.gt(__.mult(int)), bool(false, false, false)), // strm * anon = strm
     comment("===REAL"),
-    test(real(2.0), __.gt(1.0), btrue), // value * value = value
-    test(real(2.0), __.gt(real), bfalse), // value * type = value
-    test(real(2.0), __.gt(__.mult(real)), false), // value * anon = value
-    test(real, __.gt(real(2.0)), real.gt(2.0)), // type * value = type
-    test(real, __.gt(real), real.gt(real)), // type * type = type
-    test(real(1.0, 2.0, 3.0), __.gt(2.0).q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
-    test(real(1.0, 2.0, 3.0), __.gt(2.0).id().q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
-    test(real(1.0, 2.0, 3.0), __.gt(2.0), bool(false, false, true)), // strm * value = strm
-    test(real(1.0, 2.0, 3.0), __.gt(real), bool(false, false, false)), // strm * type = strm
-    test(real(1.0, 2.0, 3.0), __.gt(__.mult(real)), bool(false, false, false)), // strm * anon = strm
+    testing(real(2.0), __.gt(1.0), btrue), // value * value = value
+    testing(real(2.0), __.gt(real), bfalse), // value * type = value
+    testing(real(2.0), __.gt(__.mult(real)), false), // value * anon = value
+    testing(real, __.gt(real(2.0)), real.gt(2.0)), // type * value = type
+    testing(real, __.gt(real), real.gt(real)), // type * type = type
+    testing(real(1.0, 2.0, 3.0), __.gt(2.0).q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
+    testing(real(1.0, 2.0, 3.0), __.gt(2.0).id().q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
+    testing(real(1.0, 2.0, 3.0), __.gt(2.0), bool(false, false, true)), // strm * value = strm
+    testing(real(1.0, 2.0, 3.0), __.gt(real), bool(false, false, false)), // strm * type = strm
+    testing(real(1.0, 2.0, 3.0), __.gt(__.mult(real)), bool(false, false, false)), // strm * anon = strm
     comment("===STR"),
-    test(str("b"), __.gt("a"), btrue), // value * value = value
-    test(str("b").q(10), __.gt("a"), btrue.q(10)), // value * value = value
-    test(str("b").q(10), __.gt("a").q(20), btrue.q(200)), // value * value = value
-    test(str("b"), __.gt(str("a").q(10)), btrue), // value * value = value
-    test(str("b"), __.gt(str), bfalse), // value * type = value
-    test(str, __.gt("b"), str.gt("b")), // type * value = type
-    test(str.q(10), __.gt("b"), str.q(10).gt("b")), // type * value = type
-    test(str, __.gt(str), str.gt(str)), // type * type = type
-    test(str("a", "b", "c"), __.gt("b"), bool(false, false, true)), // strm * value = strm
-    test(str("a", "b", "c"), __.gt(str("b").q(10)), bool(false, false, true)), // strm * value = strm
-    test(str("a", "b", "c"), __.gt("b").q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
-    test(str("a", "b", "c"), __.gt(str), bool(false, false, false)) // strm * type = strm
+    testing(str("b"), __.gt("a"), btrue), // value * value = value
+    testing(str("b").q(10), __.gt("a"), btrue.q(10)), // value * value = value
+    testing(str("b").q(10), __.gt("a").q(20), btrue.q(200)), // value * value = value
+    testing(str("b"), __.gt(str("a").q(10)), btrue), // value * value = value
+    testing(str("b"), __.gt(str), bfalse), // value * type = value
+    testing(str, __.gt("b"), str.gt("b")), // type * value = type
+    testing(str.q(10), __.gt("b"), str.q(10).gt("b")), // type * value = type
+    testing(str, __.gt(str), str.gt(str)), // type * type = type
+    testing(str("a", "b", "c"), __.gt("b"), bool(false, false, true)), // strm * value = strm
+    testing(str("a", "b", "c"), __.gt(str("b").q(10)), bool(false, false, true)), // strm * value = strm
+    testing(str("a", "b", "c"), __.gt("b").q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
+    testing(str("a", "b", "c"), __.gt(str), bool(false, false, false)) // strm * type = strm
   )) {
 
   test("[gt] exceptions") {

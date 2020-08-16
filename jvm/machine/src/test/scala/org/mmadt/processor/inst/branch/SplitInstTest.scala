@@ -22,37 +22,23 @@
 
 package org.mmadt.processor.inst.branch
 
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
-import org.mmadt.language.obj.{Int, Obj, Poly}
+import org.mmadt.language.obj.Int
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
-class SplitInstTest extends FunSuite with TableDrivenPropertyChecks {
+class SplitInstTest extends BaseInstTest(
+  testSet("[split] value, type, strm",
+    testing(int(1), int.-<(int `;` int), int(1) `;` int(1)),
+    testing(int(1, 2, 3), int.q(3).-<(int.q(3) `;` int.q(3)), strm(List(int(1) `;` 1, int(2) `;` 2, int(3) `;` 3))),
+    testing(int(2), __.-<(int | str), int(2) | obj.q(qZero)),
+    testing(int(4).q(2), int.q(2).-<(int | int.is(__.gt(10))), (int(4) | obj.q(qZero)).q(2)),
+    testing(int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), (int(2) `;` obj.q(qZero)).q(2)),
+    testing(int(2), int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)))) {
 
-
-  test("[split] value, type, strm") {
-    val check: TableFor3[Obj, Poly[_ <: Obj], Obj] =
-      new TableFor3[Obj, Poly[_ <: Obj], Obj](("input", "type", "result"),
-        (int(1), int.-<(int `;` int), int(1) `;` int(1)),
-        (int(1, 2, 3), int.q(3).-<(int.q(3) `;` int.q(3)), strm(List(int(1) `;` 1, int(2) `;` 2, int(3) `;` 3))),
-        (int(2), __.-<(int | str), int(2) | obj.q(qZero)),
-        (int(4).q(2), int.q(2).-<(int | int.is(__.gt(10))), (int(4) | obj.q(qZero)).q(2)),
-        (int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), (int(2) `;` obj.q(qZero)).q(2)),
-        (int(2), int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)),
-        (int(2), int.-<(int.-<(int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero)),
-      )
-    forEvery(check) { (input, atype, result) => {
-      // TestUtil.evaluate(input,atype,result)
-      assertResult(result)(input.compute(atype.asInstanceOf[Type[Obj]]))
-      assertResult(result)(input ==> atype.asInstanceOf[Type[Obj]])
-      assertResult(result)(input ==> atype)
-      assertResult(result)(input ==> (input.range ==> atype.asInstanceOf[Type[Obj]]))
-      assertResult(result)(input ==> (input.range ==> atype))
-    }
-    }
-  }
+    // testing(int(2), int.-<(int.-<(int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero)) TODO: won't evaluate()
 
   test("lineage preservation (products)") {
     assertResult(int(321))(int(1) ==> int.plus(100).plus(200).split(int `,` bool).merge[Int].plus(20))

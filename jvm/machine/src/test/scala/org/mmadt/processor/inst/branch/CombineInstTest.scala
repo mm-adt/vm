@@ -22,30 +22,22 @@
 
 package org.mmadt.processor.inst.branch
 
-import org.mmadt.TestUtil
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.branch.CombineOp
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.testSet
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
+import org.mmadt.processor.inst.TestSetUtil._
 
-class CombineInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[combine] value, type, strm") {
-    val starts: TableFor3[Obj, Obj, Obj] =
-      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        (int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2) `;` int.plus(3)), int(2) `;` 4 `;` 6),
-        (int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2)), int(2) `;` 4 `;` 4),
-        (int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;`), int(2) `;` 3 `;` 4),
-        (int(1) `;` 2 `;` 3, lst.combine(lst), zeroObj `;`),
-        (int(1) `;` (int(2) `,` 3) `;` 4, lst.combine(int.plus(1) `;` lst[Int].>-.count() `;` int.plus(10)), int(2) `;` 2 `;` 14),
-        ///
-        (int(2) | 4, lst.combine(int.plus(2) `;` int.mult(10)), int(4) `;` 40),
-        (int(2) `;` 4, lst.combine(int.plus(2) `;` int.mult(10)), int(4) `;` 40),
-        (int(2) `;` 4, lst.combine(int.plus(2) | int.mult(10)), int(4) | zeroObj),
-        (int(4) | zeroObj, __.combine(int.plus(2) | int.mult(10)), int(6) | zeroObj)
-      )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result, CombineOp(rhs.via._2.arg0[Lst[Obj]]))
-    }
-  }
+class CombineInstTest extends BaseInstTest(
+  testSet("[combine] value, type, strm",
+    testing(int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2) `;` int.plus(3)), int(2) `;` 4 `;` 6),
+    testing(int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2)), int(2) `;` 4 `;` 4),
+    testing(int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;`), int(2) `;` 3 `;` 4),
+    testing(int(1) `;` 2 `;` 3, lst.combine(lst), zeroObj `;`),
+    testing(int(1) `;` (int(2) `,` 3) `;` 4, lst.combine(int.plus(1) `;` lst[Int].>-.count() `;` int.plus(10)), int(2) `;` 2 `;` 14),
+    testing(int(2) | 4, lst.combine(int.plus(2) `;` int.mult(10)), int(4) `;` 40),
+    testing(int(2) `;` 4, lst.combine(int.plus(2) `;` int.mult(10)), int(4) `;` 40),
+    testing(int(2) `;` 4, lst.combine(int.plus(2) | int.mult(10)), int(4) | zeroObj),
+    testing(int(4) | zeroObj, __.combine(int.plus(2) | int.mult(10)), int(6) | zeroObj))) {
 }
