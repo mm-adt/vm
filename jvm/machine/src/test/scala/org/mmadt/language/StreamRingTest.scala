@@ -13,42 +13,41 @@ import org.mmadt.storage.StorageFactory.{str, zeroObj}
 class StreamRingTest extends BaseInstTest(
   testSet("stream ring axioms and theorems on lst",
     //comment("==abelian group axioms"),
-    testing(str, branch(branch(str.id() `,` str.id()) `,` str.id()), str.q(3) <= str.id().q(3)),
-    testing(str, branch(str.id().q(2) `,` str.id().q(3)), str.q(5) <= str.id().q(5)),
+    testing(str, branch(branch(branch(branch(str.id() `,`) `,`) `,`) `,`), str, "str[[[[[id]]]]]"),
+    testing(str, branch(branch(str.id() `,` str.id()) `,` str.id()), str.q(3) <= str.id().q(3), "str[[[id],[id]],[id]]"),
+    testing(str, branch(str.id().q(2) `,` str.id().q(3)), str.q(5) <= str.id().q(5), "str[[id]{2},[id]{3}]"),
     testing(str, branch(str.id() `,` zeroObj), str, "str[[id],{0}]"),
     testing(str, branch(str.id() `,` str.id().q(-1)), zeroObj, "str[[id],[id]{-1}]"),
     //comment("===monoid axioms"),
     testing(str, branch(branch(str.id() `;` str.id()) `;` str.id()), str, "str[[id];[id];[id]]"),
-    testing(str, branch(str.id() `;` branch(str.id() `;` str.id())), str),
+    testing(str, branch(str.id() `;` branch(str.id() `;` str.id())), str, "str[[id];[[id];[id]]]"),
     //comment("===ring axioms"),
-    testing(str, branch(branch(str.id() `,` str.id()) `;` str.id()), str.q(2) <= str.id().q(2)),
-    testing(str, branch(branch(str.id() `;` str.id()) `,` branch(str.id() `;` str.id())), str.q(2) <= str.id().q(2)),
+    testing(str, branch(branch(str.id() `,` str.id()) `;` str.id()), str.q(2) <= str.id().q(2), "str[[[id],[id]];[id]]"),
+    testing(str, branch(branch(str.id() `;` str.id()) `,` branch(str.id() `;` str.id())), str.q(2) <= str.id().q(2)), // TODO: "str[[[id];[id]],[[id];[id]]]"
     //comment("===ring theorems"),
-    testing(str, branch(str.id().q(-1) `,` str.id().q(-1)), str.q(-2) <= str.id().q(-2)),
-    testing(str, branch(str.id() `,` str.id()).q(-1), str.q(-2) <= str.id().q(-2)),
-    testing(str, branch(str.id().q(-1) `,`).q(-1), str.id()),
-    testing(str, branch(str.id() `;` str.q(0)), zeroObj),
-    testing(str, branch(str.q(0) `;` str.id()), zeroObj),
-    testing(str, branch(str.id() `;` str.id().q(-1)), str.q(-1) <= str.id().q(-1)),
-    testing(str, branch(str.id().q(-1) `;` str.id()), str.q(-1) <= str.id().q(-1)),
-    testing(str, branch(str.id().q(-1) `;` str.id().q(-1)), str),
-    testing(str, branch(str.id() `;` str.id()), str),
-    // testing(str, branch(str.id() `;` str.id()).q(-1), str.q(-1) <= str.id().q(-1)),
+    testing(str, branch(str.id().q(-1) `,` str.id().q(-1)), str.q(-2) <= str.id().q(-2), "str[[id]{-1},[id]{-1}]"),
+    testing(str, branch(str.id() `,` str.id()).q(-1), str.q(-2) <= str.id().q(-2), "str[[id],[id]]{-1}"),
+    testing(str, branch(str.id().q(-1) `,`).q(-1), str.id()), // TODO: "str[[id]{-1}]{-1}"
+    testing(str, branch(str.id() `;` str.q(0)), zeroObj, "str[[id];{0}]"),
+    testing(str, branch(str.q(0) `;` str.id()), zeroObj, "str[{0};[id]]"),
+    testing(str, branch(str.id() `;` str.id().q(-1)), str.q(-1) <= str.id().q(-1), "str[[id];[id]{-1}]"),
+    testing(str, branch(str.id().q(-1) `;` str.id()), str.q(-1) <= str.id().q(-1), "str[[id]{-1};[id]]"),
+    testing(str, branch(str.id().q(-1) `;` str.id().q(-1)), str, "str[[id]{-1};[id]{-1}]"),
+    testing(str, branch(str.id() `;` str.id()), str, "str[[id];[id]]"),
+    // TODO: testing(str, branch(str.id() `;` str.id()).q(-1), str.q(-1) <= str.id().q(-1),"str[[id];[id]]{-1}"),
     //comment("===stream ring axioms"),
-    testing(str, branch(str.id().q(2) `,` str.id().q(3)), str.id().q(5)), // bulking
-    testing(str.q(2), str.q(2).branch(str.id().q(3) `,`), str.q(6) <= str.q(2).id().q(3)), // applying
-    testing(str.q(2), str.q(2).branch(str.id().q(3) `,` str.id().q(4)), str.q(14) <= str.q(2).id().q(7)), // splitting
-    testing(str, branch(str.id().q(6) `,` str.id().q(8)), str.q(14) <= str.id().q(14)), // splitting
-    testing(str, branch(branch(str.id().q(2) `,`) `,` branch(str.id().q(3) `,`)), str.q(5) <= str.id().q(5)), // merging
-    testing(str, branch(str.id().q(2) `,` str.id().q(3)), str.q(5) <= str.id().q(5)), // merging
-    testing(str, branch(zeroObj `,` str.id()), str), // removing
-    testing(str, branch(str.id().q(0) `,` str.id()), str), // removing
+    testing(str, branch(str.id().q(2) `,` str.id().q(3)), str.id().q(5), "str[[id]{2},[id]{3}]"), // bulking
+    testing(str.q(2), str.q(2).branch(str.id().q(3) `,`), str.q(6) <= str.q(2).id().q(3), "str{6}<=str{2}[[id]{3}]"), // applying
+    testing(str.q(2), str.q(2).branch(str.id().q(3) `,` str.id().q(4)), str.q(14) <= str.q(2).id().q(7), "str{14}<=str{2}[[id]{3},[id]{4}]"), // splitting
+    testing(str, branch(str.id().q(6) `,` str.id().q(8)), str.q(14) <= str.id().q(14), "str[[id]{6},[id]{8}]"), // splitting
+    testing(str, branch(branch(str.id().q(2) `,`) `,` branch(str.id().q(3) `,`)), str.q(5) <= str.id().q(5), "str[[[id]{2}],[[id]{3}]]"), // merging
+    testing(str, branch(str.id().q(2) `,` str.id().q(3)), str.q(5) <= str.id().q(5), "str[[id]{2},[id]{3}]"), // merging
+    testing(str, branch(zeroObj `,` str.id()), str, "str[{0},[id]]"), // removing
+    testing(str, branch(str.id().q(0) `,` str.id()), str, "str[[id]{0},[id]]"), // removing
   ),
   testSet("stream ring axioms and theorems on rec")) {
 
   assertResult(str)(engine.eval("str[[id]{-1};[id]{-1}]"))
-  //  TODO  assertResult(str.id().q(2))(engine.eval("str[[[id];[id]],[[id];[id]]]"))
-  //  TODO assertResult(str.id().q(2))(engine.eval("str[[[id];[id]],[[id];[id]]]"))
   assertResult("a".q(2))(engine.eval("'a'[_,_]"))
   assertResult(str("a".q(2), "b".q(2)))(engine.eval("('a','b')>-[_,_]"))
   assertResult(str("a".q(10), "b".q(10)))(engine.eval("'z'{10}-<('a','b')>-"))
@@ -104,9 +103,4 @@ class StreamRingTest extends BaseInstTest(
   assertResult(str.id().q(2))(engine.eval("str[_[str;str],_[str;str]]"))
   assertResult(__.id().q(2))(engine.eval("[_,_]"))
   assertResult(str.id().q(2))(engine.eval("[str;[str,str]]"))
-  // assertResult(str.branch(str.plus("a") `,` str.plus("b") `,` str.plus("c")))(engine.eval("str[+'a',[+'b',+'c']]"))
-  // assertResult(int.plus(0).q(4))(int.branch(rec(g=(",",Map(int -> int.plus(0).q(2) , int -> int.plus(0).q(2))))))
-  // assertResult(int.plus(0).q(4))(int.branch(int.plus(0).q(2) `,` int.plus(0).q(2)))
-  // assertResult(int.plus(0).q(3))(int.branch(int.plus(0) `,` int.plus(0).q(2)))
-  // assertResult(int.branch(int.plus(0).q(6)`,` int.plus(1).q(10)))(int.branch(int.plus(0).q(4) `,` int.plus(0).q(2) `,` int.plus(1).q(10)))
 }

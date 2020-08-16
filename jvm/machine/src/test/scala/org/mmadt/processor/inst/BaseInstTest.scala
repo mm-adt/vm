@@ -43,7 +43,7 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, 
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
         case (null, null, comment, null, false) => lastComment = comment.toString
-        case (lhs, rhs, result, query, c) => evaluate(lhs, rhs, result, lastComment, compile = c)
+        case (lhs, rhs, result, query, c) => evaluate(lhs, rhs, result, lastComment, query = query, compile = c)
       }
     }
   })
