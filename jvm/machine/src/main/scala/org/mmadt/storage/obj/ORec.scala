@@ -42,7 +42,7 @@ abstract class ORec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: Re
 }
 object ORec {
   def makeRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Nil), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = {
-    val map: PairList[A,B] = g._1 match {
+    val map: PairList[A, B] = g._1 match {
       case _ if g._2 == null => null
       case Tokens.`,` => g._2.filter(x => x._1.alive && x._2.alive)
       case Tokens.`;` => g._2

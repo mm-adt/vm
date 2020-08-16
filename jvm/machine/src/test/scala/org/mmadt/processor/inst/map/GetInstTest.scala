@@ -22,11 +22,12 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj._
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.GetOp
-import org.mmadt.language.obj.value.{IntValue, StrValue}
-import org.mmadt.language.obj.{Lst, Obj}
+import org.mmadt.language.obj.{Int, Obj, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
@@ -36,21 +37,29 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
  */
 class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("[get] w/ lst values") {
-    val check: TableFor3[Lst[StrValue], IntValue, StrValue] =
-      new TableFor3[Lst[StrValue], IntValue, StrValue](("list", "key", "value"),
-        ("a" |, 0, str("a")),
-        ("a" | "b", 0, "a"),
-        ("a" | "b" | "c", 1, "b"),
-        ("d" | "b" | "c", 2, "c"),
+  test("[get] value, type, strm") {
+    val starts: TableFor3[Obj, Obj, Obj] =
+      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
+        //////// ,-rec
+        (str("a") -> int(1) `_,` str("b") -> int(2), rec[Str, Int].get(str("a")), int(1)),
+        (str("a") -> int(1) `_,` str("a") -> int(2), rec[Str, Int].get(str("a")), int(1, 2)),
+        (str("a") -> int(1) `_,` str("a") -> int(1), rec[Str, Int].get(str("a")), int(1).q(2)),
+        (int(1) -> int(1) `_,` int(100) -> int(2) `_,` int(200) -> int(3), rec[Obj, Obj].get(int.is(gt(50))), int(2, 3)),
+        //////// |-rec
+        (str("name") -> str("marko") `_,` str("age") -> int(29), get("name", str).plus(" rodriguez"), "marko rodriguez"),
+        // (str("name") -> str("marko") `_,` str("age") -> int(29), get("name", str).plus(" rodriguez").path(id()`;`id()).merge.count(), 4),
+        // (str("name") -> str("marko") `_,` str("age") -> int(29), get("bad-key"), zeroObj),
+        //////// |-lst
+        ("a" |, lst.get(0), "a"),
+        ("a" | "b", get(0), "a"),
+        ("a" | "b" | "c", get(1), "b"),
+        ("d" | "b" | "c", get(2), "c"),
       )
-    forEvery(check) { (alst, akey, avalue) => {
-      assertResult(avalue)(alst.get(akey))
-      assertResult(avalue)(GetOp(akey).exec(alst.asInstanceOf[Obj with GetOp[IntValue, StrValue]]))
-    }
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result, if (rhs.trace.size == 1) GetOp(rhs.trace.head._2.arg0[Obj]) else null)
     }
   }
 
+  // TODO: get exceptions into the table harness
   test("[get] w/ lst value exception") {
     assertThrows[LanguageException] {
       (str("a") | "b" | "c").get(-1)
@@ -58,23 +67,8 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertThrows[LanguageException] {
       (str("a") | "b" | "c").get(3)
     }
-    //assertThrows[LanguageException] {
-    //  assertResult(obj)(lst[Obj]("|").get(0))
-    //}
-  }
-
-  test("[get] lineage") {
-    val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
-    assertResult(2)(marko.get(str("name"), str).plus(" rodriguez").trace.length)
-  }
-
-
-  test("[get] w/ rec value") {
-    val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
-    assertResult(str("marko"))(marko.get(str("name")))
-    assertResult(int(29))(marko.get(str("age")))
-    //assertThrows[LanguageException] {
-    assertResult(zeroObj)(marko.get(str("bad-key")))
-    //}
+    assertThrows[LanguageException] {
+      assertResult(obj)(lst[Obj]("|").get(0))
+    }
   }
 }

@@ -803,10 +803,9 @@ As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://
 
 image:poly-kinds.svg[width=350,float=left]
 
-
-[cols="1,1,2,3,3",width=60,float=right]
+[cols="1,1,3,3,3",width=50,float=right]
 |===
-| poly     ^| sep  | access     | collection (values) | branch (type)
+| poly     ^| sep  | access     | value | type
 
 .3+.^| `lst` ^| `,`  | all
 | https://en.wikipedia.org/wiki/Multiset[multiset]

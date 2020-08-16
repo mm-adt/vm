@@ -26,7 +26,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, Type, __}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{IntValue, LstValue, Value}
+import org.mmadt.language.obj.value.{IntValue, LstValue, RecValue, Value}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -42,10 +42,15 @@ trait GetOp[A <: Obj, +B <: Obj] {
 object GetOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B = __.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key, typeHint)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val key: Obj = inst.arg0[Obj]
+    val key: Obj = inst.arg0[Obj].hardQ(qOne) // TODO: explore start() as the lifted form of a type argument
     val newInst: Inst[Obj, Obj] = inst.clone(g = (Tokens.get, List(key, Inst.oldInst(inst).arg1[Obj])))
     val typeHint: Obj = Inst.oldInst(inst).arg1[Obj].hardQ(start.q)
     val value: Obj = start match {
+      case arec: RecValue[Obj, Obj] =>
+        val values = arec.gmap.filter(a => a._1.test(key)).map(a => a._2.via(start, newInst))
+        if(values.isEmpty) strm
+        else if (values.size > 1 && !values.exists(y => y.isInstanceOf[Type[_]])) return strm(values)
+        else strm(values)
       case arec: Rec[Obj, Obj] => strm(arec.gmap.filter(a => key.test(a._1)).map(a => a._2))
       case alst: Lst[_] if key.isInstanceOf[Int] => key match {
         case aint: IntValue => alst match {
@@ -63,7 +68,7 @@ object GetOp extends Func[Obj, Obj] {
       case astrm: Strm[_] =>
         if (astrm.values.isEmpty) if (start.isInstanceOf[Type[_]]) typeHint else zeroObj
         else if (1 == astrm.values.size) astrm.values.head
-        else return strm(astrm.values.map(x => x.clone(via = (start, newInst))))
+        else return astrm
       case _ => value
     }).via(start, newInst)
   }
