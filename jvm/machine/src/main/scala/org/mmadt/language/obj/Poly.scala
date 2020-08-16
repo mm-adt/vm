@@ -46,7 +46,7 @@ object Poly {
   def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = {
     apoly match {
       case arec: Rec[Obj, A] => Rec.moduleMult(start, arec)
-      case alst: Lst[A] => Lst.resolveSlots(start, alst)
+      case alst: Lst[A] => Lst.moduleMult(start, alst)
     }
   }
   def keepFirst[A <: Obj](start: Obj, apoly: Poly[A]): Poly[A] = {

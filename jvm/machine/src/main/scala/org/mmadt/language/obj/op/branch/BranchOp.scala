@@ -47,53 +47,38 @@ object BranchOp extends Func[Obj, Obj] {
       case _: Strm[_] => start.via(start, inst)
       case _ => Inst.oldInst(inst).arg0[Poly[Obj]] match {
         /////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////   LST  /////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////
         case alst: Lst[Obj] => alst.gsep match {
-          case Tokens.`,` =>
-            val result: List[Obj] = Type.mergeObjs(alst.g._2.map(b => Inst.resolveArg(start, b)).filter(_.alive))
-            val apoly: Lst[Obj] = alst.clone(g = (alst.gsep, result))
-            apoly match {
-              case _: Value[_] => strm(result.map(x => x.hardQ(q => multQ(q, inst.q))).filter(_.alive))
-              case _: Type[_] =>
-                if (result.isEmpty) zeroObj
-                else if (1 == result.size) if (result.head.alive) Type.tryCtype(start `=>` result.head.q(inst.q)) else zeroObj
-                else BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
-            }
-          case Tokens.`;` =>
-            var running = start
-            val result = alst.g._2.map(b => {
-              running = running match {
-                case astrm: Strm[_] => strm(astrm.values.map(r => Inst.resolveArg(r, b)))
-                case r if b.isInstanceOf[Value[_]] => r `=>` b
-                case r: Type[_] if r.root && b.root && r.name == b.name => r `=>` b
-                case _ => Inst.resolveArg(running, b)
-              }
-              running
-            })
-            val apoly = alst.clone(g = (alst.gsep, result))
-            if (result.exists(b => !b.alive)) zeroObj
-            else if (result.forall(x => Type.isIdentity(x))) {
-              val finalQ = multQ(result.last.q, inst.q)
-              if (result.last.isInstanceOf[Value[_]]) return result.last.hardQ(finalQ)
-              var finalO = if (!result.last.root) result.last.hardQ(finalQ) else Type.unity(result.last).q(finalQ)
-              finalO = if (Type.isIdentity(finalO) && finalO.domain.q == qOne && finalO.range.q == qOne) finalO.range else Type.unity(finalO).q(finalQ) // TODO: ghetto repeat.
-              if (Type.isIdentity(finalO) && finalO.domain.q == qOne && finalO.range.q == qOne) finalO.range else Type.unity(finalO).q(finalQ)
-            }
-            else apoly match {
-              case _: Value[_] => result.last.hardQ(q => multQ(q, inst.q))
-              case _: Type[_] => BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
-            }
-          case Tokens.`|` =>
-            val result: List[Obj] = alst.g._2.map(b => Inst.resolveArg(start, b)).filter(_.alive)
-            val apoly: Lst[Obj] = alst.clone(g = (alst.gsep, result))
-            apoly match {
-              case _: Value[_] => result.find(b => b.alive).map(x => x.hardQ(q => multQ(q, inst.q))).getOrElse(zeroObj)
-              case _: Type[_] => BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
-            }
+          case Tokens.`,` => Lst.moduleMult(start, alst) match {
+            case blst if blst.isEmpty => zeroObj
+            case blst: Value[_] => strm(blst.glist.map(x => x.hardQ(q => multQ(q, inst.q))))
+            case blst: Type[_] =>
+              if (1 == blst.size) Type.tryCtype(start `=>` blst.glist.head.q(inst.q))
+              else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
+          }
+          case Tokens.`;` => Lst.moduleMult(start, alst) match {
+            case blst if blst.isEmpty => zeroObj
+            case blst: Value[_] => blst.glist.last.hardQ(q => multQ(q, inst.q))
+            case blst: Type[_] =>
+              val result = blst.glist
+              if (result.forall(x => Type.isIdentity(x))) {
+                val finalQ = multQ(result.last.q, inst.q)
+                if (result.last.isInstanceOf[Value[_]]) return result.last.hardQ(finalQ)
+                var finalO = if (!result.last.root) result.last.hardQ(finalQ) else Type.unity(result.last).q(finalQ)
+                finalO = if (Type.isIdentity(finalO) && finalO.domain.q == qOne && finalO.range.q == qOne) finalO.range else Type.unity(finalO).q(finalQ) // TODO: ghetto repeat.
+                if (Type.isIdentity(finalO) && finalO.domain.q == qOne && finalO.range.q == qOne) finalO.range else Type.unity(finalO).q(finalQ)
+              } else
+                BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
+          }
+          case Tokens.`|` => Lst.moduleMult(start, alst) match {
+            case blst if blst.isEmpty => zeroObj
+            case blst: Value[_] => blst.glist.head.hardQ(q => multQ(q, inst.q))
+            case blst: Type[_] => BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
+          }
         }
         /////////////////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////
+        ////////////////////////////   REC  /////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////
         case arec: Rec[Obj, Obj] => arec.gsep match {
           case Tokens.`,` => Rec.moduleMult(start, arec) match {

@@ -24,7 +24,6 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -76,25 +75,32 @@ object Lst {
       }) &&
       alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && pair._1.alive && pair._2.alive && pair._1 == pair._2) true else pair._1.test(pair._2))
 
-  def resolveSlots[A <: Obj](start: A, apoly: Lst[A], branch: Boolean = false): Lst[A] = {
-    if (apoly.isSerial) {
-      var local = start
-      val z = apoly.clone(_.map(slot => {
-        local = local match {
-          case astrm: Strm[_] => strm(astrm.values.map(x => Inst.resolveArg(x, slot)))
-          case x if slot.isInstanceOf[Value[_]] => slot.hardQ(q => multQ(x.q, q)) // TODO: hardcoded hack -- should really be part of Inst.resolveArg() and Obj.compute()
-          case _ => Inst.resolveArg(local, slot)
-        }
-        local
-      }))
-      if (branch && z.g._2.exists(x => !x.alive)) z.q(qZero)
-      else if (branch && z.g._2.forall(x => x.root)) z.clone(g = (z.gsep, List(z.g._2.last)))
-      else z
-    } else {
-      if (branch && __.isAnonRoot(start) && apoly.g._2.map(x => x.hardQ(qOne)).toSet.size == 1 && apoly.g._2.forall(x => x.root))
-        apoly.clone(_ => List(apoly.g._2.head.hardQ(apoly.g._2.foldLeft(qZero)((a, b) => plusQ(a, b.q))))) // TODO: total hack
-      else
-        apoly.clone(_.map(slot => Inst.resolveArg(start, slot)).filter(x => !branch || x.alive))
+  def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = {
+    alst.gsep match {
+      /////////// ,-lst
+      case Tokens.`,` => alst.clone(_.map(v => Inst.resolveArg(start, v)).filter(_.alive))
+      /////////// ;-lst
+      case Tokens.`;` =>
+        var running = start
+        alst.clone(_.map(v => {
+          running = if (running.isInstanceOf[Strm[_]]) strm(running.toStrm.values.map(r => Inst.resolveArg(r, v)))
+          else Inst.resolveArg(running, v) match {
+            case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
+            case x => x
+          }
+          running
+        }))
+      /////////// |-lst
+      case Tokens.`|` =>
+        //var taken: Boolean = false
+        alst.clone(_.map(v => Inst.resolveArg(start, v)).filter(_.alive))
+      /*.filter(v =>
+        if (taken) false
+        else if (zeroable(v.q)) true
+        else {
+          taken = true;
+          true
+        }))*/
     }
   }
 
