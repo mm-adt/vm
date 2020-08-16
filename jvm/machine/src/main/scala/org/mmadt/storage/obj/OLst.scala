@@ -30,7 +30,6 @@ import org.mmadt.language.obj.`type`.{LstType, Type}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`.TLst
 import org.mmadt.storage.obj.value.VLst
-import org.mmadt.storage.obj.value.strm.util.MultiSet
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,7 +45,7 @@ object OLst {
   def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = {
     val list: List[A] = g._1 match {
       case _ if g._2 == null => null
-      case Tokens.`,` => MultiSet(g._2).filter(_.alive).map(x => if (x.isInstanceOf[Type[_]] && x.root && x.q != qOne) x.hardQ(qOne).id().q(x.q) else x).toList
+      case Tokens.`,` => Type.mergeObjs(g._2).asInstanceOf[List[A]]
       case Tokens.`;` => g._2
       case Tokens.`|` => g._2.filter(_.alive)
     }

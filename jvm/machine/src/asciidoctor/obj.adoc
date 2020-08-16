@@ -766,9 +766,9 @@ Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `
 
 [exec]
 ----
-[true,6,5.5,'ryan'][plus,[zero]]
-[true,6,5.5][mult,[one]]
-[true,6,5.5][mult,[zero]]
+(true,6,5.5,'ryan')>-[plus,[zero]]
+(true,6,5.5)>-[mult,[one]]
+(true,6,5.5)>-[mult,[zero]]
 ----
 
 ===== Poly Types

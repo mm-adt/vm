@@ -71,7 +71,7 @@ object Type {
         newList = newList -= y
         merge(x, y)
       }).getOrElse(x))
-    newList.toList
+    newList.filter(_.alive).toList
   }
   def merge[A <: Obj](objA: A, objB: A): A = {
     if (qZero == plusQ(objA.q, objB.q))
@@ -81,11 +81,15 @@ object Type {
   }
 
   def pureQ(obj: Obj): IntQ = {
-    obj.trace.foldLeft(qOne)((a, b) => multQ(a, b._2.q))
+    if (obj.root || obj.isInstanceOf[Value[_]])
+      obj.q
+    else
+      obj.trace.foldLeft(qOne)((a, b) => multQ(a, b._2.q))
   }
 
   def unity[A <: Obj](obj: A): A = {
-    if (obj.trace.isEmpty) obj.domainObj.hardQ(qOne).id().asInstanceOf[A]
+    if (obj.isInstanceOf[Value[_]]) obj.hardQ(qOne)
+    else if (obj.trace.isEmpty && obj.isInstanceOf[Type[_]]) obj.domainObj.hardQ(qOne).id().asInstanceOf[A]
     else obj.trace.foldLeft(obj.domainObj.hardQ(qOne).asInstanceOf[A])((a, b) => b._2.hardQ(qOne).asInstanceOf[Inst[A, A]].exec(a))
   }
 

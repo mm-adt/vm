@@ -44,6 +44,8 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("range<=domain") {
+    assertResult(LanguageException.typingError(int.q(5), int.q(3)))(intercept[LanguageException](engine.eval("[4{2},5{1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]")))
+    assertResult(int(5.q(4), 6.q(-2), 7.q(4)))(engine.eval("[4{2},5{-1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]"))
     assertResult(13.q(8))(engine.eval("10 int[plus,1]{2}[plus,2]{4}"))
     assertResult(int.plus(2).plus(3))(engine.eval("1 => [plus,2][plus,3][type]"))
     assertResult(int(10).q(30))(engine.eval("5{2} => 10{15}"))
@@ -626,8 +628,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str.id().q(5))(engine.eval("str[[[str[id]{2}]],[[str[id]{3}]]]"))
     assertResult(str.id().q(5))(engine.eval("str[str[id]{2},str[id]{3}]"))
     assertResult(str)(engine.eval("[str;_{1}]"))
-    // TODO   assertResult(str.id().q(3))(engine.eval("str[[id],[[id],[id]]]"))
-    // TODO   assertResult(str.id().q(3))(engine.eval("str[[[id],[id]],[id]]"))
+    assertResult(str.id().q(3))(engine.eval("str[[id],[[id],[id]]]"))
+    assertResult(str.id().q(3))(engine.eval("str[[[id],[id]],[id]]"))
     assertResult(str.id().q(9))(engine.eval("str[[id]{2},[[id]{3},[id]{4}]]"))
     assertResult(str.id().q(9))(engine.eval("str[[[id]{2},[id]{3}],[id]{4}]"))
     assertResult(zeroObj)(engine.eval("str[[[id]{2},[id]{-3}],[id]{1}]"))
