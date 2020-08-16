@@ -23,7 +23,7 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.Rec.{PairList, _}
+import org.mmadt.language.obj.Rec.PairList
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
@@ -102,7 +102,9 @@ object BranchOp extends Func[Obj, Obj] {
               .map(kv => Inst.resolveArg(start, kv._1) -> kv._2)
               .filter(kv => kv._1.alive)
               .map(kv => kv._1 -> Inst.resolveArg(start, kv._2))
-            arec.clone(g = (arec.gsep, result.foldLeft(List.empty[ObjPair[Obj, Obj]])((a, b) => a.replace(b)))) match {
+              .groupBy(kv => kv._1)
+              .map(kv => kv._1 -> (if (kv._2.size == 1) kv._2.head._2 else __.branch(lst(g = (Tokens.`,`, kv._2.map(x => x._2)))))).toList
+            arec.clone(g = (arec.gsep, result)) match {
               case _: Value[_] => strm(result.map(kv => kv._2).map(x => x.hardQ(q => multQ(q, inst.q))))
               case apoly: Type[_] =>
                 if (1 == result.size) result.head._2.hardQ(q => multQ(q, inst.q))
