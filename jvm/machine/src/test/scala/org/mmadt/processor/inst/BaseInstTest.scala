@@ -28,13 +28,13 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory.{asType, zeroObj, _}
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
  */
-abstract class BaseInstTest(testSets: (String, TableFor4[Obj, Obj, Obj, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
-  private val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
+  protected val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
 
   testSets.foreach(testSet => {
     test(testSet._1) {
@@ -42,8 +42,8 @@ abstract class BaseInstTest(testSets: (String, TableFor4[Obj, Obj, Obj, Boolean]
       forEvery(testSet._2) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
-        case (null, null, comment, false) => lastComment = comment.toString
-        case (lhs, rhs, result, c) => evaluate(lhs, rhs, result, lastComment, compile = c)
+        case (null, null, comment, null, false) => lastComment = comment.toString
+        case (lhs, rhs, result, query, c) => evaluate(lhs, rhs, result, lastComment, compile = c)
       }
     }
   })
@@ -57,8 +57,11 @@ abstract class BaseInstTest(testSets: (String, TableFor4[Obj, Obj, Obj, Boolean]
 
 
   def evaluate(start: Obj, middle: Obj, end: Obj, lastComment: String = "", inst: Inst[Obj, Obj] = null,
-               engine: mmADTScriptEngine = engine, compile: Boolean = true): Unit = {
+               engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true): Unit = {
     engine.eval(":")
+    val querying = List[Obj => Obj](
+      _ => engine.eval(query)
+    )
     val evaluating = List[Obj => Obj](
       s => engine.eval(s"${stringify(s)} => ${middle}"),
       s => s.compute(middle),
@@ -77,6 +80,7 @@ abstract class BaseInstTest(testSets: (String, TableFor4[Obj, Obj, Obj, Boolean]
     val instructioning = List[Obj => Obj](s => inst.exec(s))
     (evaluating ++
       (if (compile) compiling else Nil) ++
+      (if (null != query) querying else Nil) ++
       (if (null != inst) instructioning else Nil))
       .foreach(example => assertResult(end, lastComment)(example(start)))
   }

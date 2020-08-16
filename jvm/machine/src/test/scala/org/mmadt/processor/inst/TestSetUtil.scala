@@ -24,17 +24,21 @@ package org.mmadt.processor.inst
 
 import org.mmadt.language.obj.Obj
 import org.mmadt.storage.StorageFactory.str
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.TableFor5
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
  */
 object TestSetUtil {
 
-  def testSet(testName: String, data:(Obj, Obj, Obj, Boolean)*): (String, TableFor4[Obj, Obj, Obj, Boolean]) =
-    (testName, new TableFor4[Obj, Obj, Obj, Boolean](("lhs", "rhs", "result", "compile"), data: _*))
+  def testSet(testName: String, data: (Obj, Obj, Obj, String, Boolean)*): (String, TableFor5[Obj, Obj, Obj, String, Boolean]) =
+    (testName, new TableFor5[Obj, Obj, Obj, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
 
-  def testing(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, Boolean) = (lhs, rhs, result, compile)
 
-  def comment(comment: String): (Obj, Obj, Obj, Boolean) = (null, null, str(comment), false)
+  def testing(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, null, compile)
+  def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, query, false)
+
+  def comment(comment: String): (Obj, Obj, Obj, String, Boolean) = (null, null, str(comment), null, false)
 }
+
+
