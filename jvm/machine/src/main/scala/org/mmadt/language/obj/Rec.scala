@@ -27,7 +27,6 @@ import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -85,24 +84,36 @@ object Rec {
   def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
-  def resolveSlots[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = {
-    if (arec.isSerial) {
-      if (__.isAnonRoot(start)) return arec
-      var local = start -> start
-      arec.clone(_.map(slot => {
-        val key = Inst.resolveArg(local._1, slot._1)
-        local = if (!key.alive) key -> zeroObj.asInstanceOf[A] else local._2 match {
-          case astrm: Strm[_] => key -> strm(astrm.values.map(x => Inst.resolveArg(x, slot._2))).asInstanceOf[A]
-          case _ => (key -> Inst.resolveArg(local._2, slot._2)).asInstanceOf[(A, A)]
-        }
-        local
-      })).q(start.q)
-    } else {
-      arec.clone(_.map(kv => {
-        val key = Inst.resolveArg(start, kv._1)
-        val value = if (key.alive) Inst.resolveArg(start, kv._2) else zeroObj
-        key -> value
-      }))
+  def moduleMult[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = {
+    arec.gsep match {
+      /////////// ,-rec
+      case Tokens.`,` =>
+        arec.clone(_.map(kv => Inst.resolveArg[A, A](start, kv._1) -> kv._2)
+          .filter(kv => kv._1.alive)
+          .map(kv => kv._1 -> Inst.resolveArg[A, B](start, kv._2))
+          .groupBy(kv => kv._1)
+          .map(kv => kv._1 -> (if (kv._2.size == 1) kv._2.head._2 else __.branch(lst(g = (Tokens.`,`, kv._2.map(x => x._2)))))).toList)
+      /////////// ;-rec
+      case Tokens.`;` =>
+        var running = start -> start
+        arec.clone(_.map(kv => {
+          val key = Inst.resolveArg(running._1, kv._1)
+          running = (if (!key.alive) key -> zeroObj else key -> Inst.resolveArg(running._2, kv._2)).asInstanceOf[(A, A)]
+          running
+        }))
+      /////////// |-rec
+      case Tokens.`|` =>
+        // var taken: Boolean = false
+        arec.clone(_.map(kv => Inst.resolveArg(start, kv._1) -> kv._2)
+          .filter(kv => kv._1.alive)
+          /*.filter(kv =>
+            if(taken) false
+            else if (zeroable(kv._1.q)) true
+            else {
+              taken = true;
+              true
+            })*/
+          .map(kv => kv._1 -> Inst.resolveArg(start, kv._2)))
     }
   }
   def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {

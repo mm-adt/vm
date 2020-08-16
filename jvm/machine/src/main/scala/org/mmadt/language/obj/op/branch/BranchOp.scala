@@ -23,13 +23,12 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.Rec.PairList
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.StorageFactory.{zeroObj, _}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -97,50 +96,24 @@ object BranchOp extends Func[Obj, Obj] {
         /////////////////////////////////////////////////////////////////////////////////
         /////////////////////////////////////////////////////////////////////////////////
         case arec: Rec[Obj, Obj] => arec.gsep match {
-          case Tokens.`,` =>
-            val result: PairList[Obj, Obj] = arec.gmap
-              .map(kv => Inst.resolveArg(start, kv._1) -> kv._2)
-              .filter(kv => kv._1.alive)
-              .map(kv => kv._1 -> Inst.resolveArg(start, kv._2))
-              .groupBy(kv => kv._1)
-              .map(kv => kv._1 -> (if (kv._2.size == 1) kv._2.head._2 else __.branch(lst(g = (Tokens.`,`, kv._2.map(x => x._2)))))).toList
-            arec.clone(g = (arec.gsep, result)) match {
-              case _: Value[_] => strm(result.map(kv => kv._2).map(x => x.hardQ(q => multQ(q, inst.q))))
-              case apoly: Type[_] =>
-                if (1 == result.size) result.head._2.hardQ(q => multQ(q, inst.q))
-                else BranchInstruction.brchType[Obj](apoly, inst.q).via(start, inst.clone(g = (Tokens.branch, List(apoly))))
-            }
-          case Tokens.`;` =>
-            var running = start
-            val result = arec.g._2.map(b => {
-              running = running match {
-                case astrm: Strm[_] => strm(astrm.values.map(r => if (Inst.resolveArg(r, b._1).alive) Inst.resolveArg(r, b._2) else zeroObj))
-                case r if b._2.isInstanceOf[Value[_]] => if (Inst.resolveArg(r, b._1).alive) r `=>` b._2 else zeroObj
-                case r: Type[_] if r.root && b._2.root && r.name == b._2.name => if (Inst.resolveArg(r, b._1).alive) r `=>` b._2 else zeroObj
-                case _ => if (Inst.resolveArg(running, b._1).alive) Inst.resolveArg(running, b._2) else zeroObj
-              }
-              Inst.resolveArg(running, b._1) -> running
-            }).filter(b => b._1.alive && b._2.alive)
-            if (result.isEmpty) zeroObj
-            val apoly = arec.clone(g = (arec.gsep, result))
-            apoly match {
-              case _: Value[_] => apoly.g._2.last._2
-              case _: Type[_] => BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
-            }
-          case Tokens.`|` =>
-            val result: List[List[Obj]] = arec.g._2.map(b => {
-              val key = Inst.resolveArg(start, b._1)
-              List(key, (if (key.alive) Inst.resolveArg(start, b._2) else zeroObj))
-            }).foldLeft(List.empty[List[Obj]])((a, b) => a :+ b)
-            val apoly = arec.clone(g = (arec.gsep, result.map(x => x.head -> x.tail.head)))
-            apoly match {
-              case _: Value[_] => result.find(b => b.head.alive).map(b => b.tail.head).getOrElse(zeroObj)
-              case _: Type[_] =>
-                if (result.size == 1)
-                  result.head.tail.head.hardQ(q => multQ(q, inst.q))
-                else
-                  BranchInstruction.brchType[Obj](apoly, inst.q).clone(via = (start, inst.clone(g = (Tokens.branch, List(apoly)))))
-            }
+          case Tokens.`,` => Rec.moduleMult(start, arec) match {
+            case brec: Value[_] => strm(brec.gmap.map(kv => kv._2))
+            case brec: Type[_] =>
+              if (1 == brec.size) brec.gmap.head._2.hardQ(q => multQ(q, inst.q))
+              else BranchInstruction.brchType[Obj](brec, inst.q).via(start, inst.clone(_ => List(brec)))
+          }
+          case Tokens.`;` => Rec.moduleMult(start, arec) match {
+            case brec if brec.isEmpty => zeroObj
+            case brec: Value[_] => brec.gmap.last._2
+            case brec: Type[_] => BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
+          }
+          case Tokens.`|` => Rec.moduleMult(start, arec) match {
+            case brec if brec.isEmpty => zeroObj
+            case brec: Value[_] => brec.gmap.head._2
+            case brec: Type[_] =>
+              /*if (brec.size == 1) brec.gmap.head._2.hardQ(q => multQ(q, inst.q))
+              else*/ BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
+          }
         }
       }
     }

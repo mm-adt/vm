@@ -45,7 +45,7 @@ trait Poly[+A <: Obj] extends Obj
 object Poly {
   def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = {
     apoly match {
-      case arec: Rec[Obj, A] => Rec.resolveSlots(start, arec)
+      case arec: Rec[Obj, A] => Rec.moduleMult(start, arec)
       case alst: Lst[A] => Lst.resolveSlots(start, alst)
     }
   }
