@@ -54,7 +54,7 @@ object BranchOp extends Func[Obj, Obj] {
             case blst if blst.isEmpty => zeroObj
             case blst: Value[_] => strm(blst.glist.map(x => x.hardQ(q => multQ(q, inst.q))))
             case blst: Type[_] =>
-              if (1 == blst.size) Type.tryCtype(start `=>` blst.glist.head.q(inst.q))
+              if (1 == blst.size) Type.tryCtype((start `=>` blst.glist.head).q(inst.q))
               else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
           }
           case Tokens.`;` => Lst.moduleMult(start, alst) match {
