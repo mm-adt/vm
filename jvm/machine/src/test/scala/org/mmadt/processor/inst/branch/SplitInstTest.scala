@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.inst.branch
 
+import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
-import org.mmadt.language.obj.Int
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
@@ -36,9 +36,9 @@ class SplitInstTest extends BaseInstTest(
     testing(int(2), __.-<(int | str), int(2) | obj.q(qZero)),
     testing(int(4).q(2), int.q(2).-<(int | int.is(__.gt(10))), (int(4) | obj.q(qZero)).q(2)),
     testing(int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), (int(2) `;` obj.q(qZero)).q(2)),
-    testing(int(2), int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)))) {
-
-    // testing(int(2), int.-<(int.-<(int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero)) TODO: won't evaluate()
+    testing(int(2), int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)),
+    testing(int(2), int.-<((int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero))
+  )) {
 
   test("lineage preservation (products)") {
     assertResult(int(321))(int(1) ==> int.plus(100).plus(200).split(int `,` bool).merge[Int].plus(20))
