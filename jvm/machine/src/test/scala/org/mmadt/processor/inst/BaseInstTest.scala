@@ -27,8 +27,8 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory.{asType, zeroObj, _}
-import org.scalatest.{FunSuite, Tag}
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3, TableFor4}
+import org.scalatest.FunSuite
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
@@ -43,7 +43,7 @@ abstract class BaseInstTest(testSets: (String, TableFor4[Obj, Obj, Obj, Boolean]
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
         case (null, null, comment, false) => lastComment = comment.toString
-        case (lhs, rhs, result, c) => evaluate(lhs, rhs, result, lastComment, compile=c)
+        case (lhs, rhs, result, c) => evaluate(lhs, rhs, result, lastComment, compile = c)
       }
     }
   })
@@ -66,8 +66,8 @@ abstract class BaseInstTest(testSets: (String, TableFor4[Obj, Obj, Obj, Boolean]
       s => s `=>` middle,
     )
     val compiling = List[Obj => Obj](
-      s => (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)),
-      s => middle.trace.foldLeft(s)((a, b) => b._2.exec(a)),
+      s => if (!middle.alive) s.q(qZero) else (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)),
+      s => if (!middle.alive) s.q(qZero) else middle.trace.foldLeft(s)((a, b) => b._2.exec(a)),
       s => s `=>` (start.range ==> middle),
       s => s ==> (start.range ==> middle),
       s => s `=>` (middle.domain ==> middle),

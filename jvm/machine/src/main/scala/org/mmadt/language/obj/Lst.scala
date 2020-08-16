@@ -24,6 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -78,7 +79,7 @@ object Lst {
   def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = {
     alst.gsep match {
       /////////// ,-lst
-      case Tokens.`,` => alst.clone(_.map(v => Inst.resolveArg(start, v)).filter(_.alive))
+      case Tokens.`,` => alst.clone(x => Type.mergeObjs(Type.mergeObjs(x).map(v => Inst.resolveArg(start, v))))
       /////////// ;-lst
       case Tokens.`;` =>
         var running = start
