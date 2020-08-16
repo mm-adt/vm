@@ -30,6 +30,9 @@ import org.mmadt.storage.StorageFactory.{asType, zeroObj, _}
 import org.scalatest.{FunSuite, Tag}
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3, TableFor4}
 
+/**
+ * @author Stephen Mallette (http://stephen.genoprime.com)
+ */
 abstract class BaseInstTest(testSets: (String, TableFor4[Obj, Obj, Obj, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
   private val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
 

@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{test, testSet}
+import org.mmadt.processor.inst.TestSetUtil.{testing, testSet}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -35,50 +35,50 @@ import org.mmadt.storage.StorageFactory._
  */
 class BranchTest extends BaseInstTest(
   testSet("[branch] ,-lst",
-    test(int.q(10), plus(0).branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).plus(0).branch(plus(1) `,` plus(2)).is(gt(10))),
-    test(int(1), int.plus(0).branch(plus(1) `,` plus(2)), int(2, 3)),
-    test(int(1), int.plus(0).branch(plus(1) `,` plus(2) `,` int.plus(3)), int(2, 3, 4)),
-    test(int(1), int.plus(0).branch(plus(1).q(2) `,` plus(2).q(3) `,` int.plus(3).q(4)), int(int(2).q(2), int(3).q(3), int(4).q(4))),
-    test(int(1), int.plus(0).branch(plus(1).plus(1) `,` plus(2)), int(3).q(2)),
-    test(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) `,` plus(2)), int(int(3).q(2), int(4).q(2))),
-    test(int(1), int.plus(0).branch(plus(1) `,` plus(2)).path(), strm(lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))), lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(2), 3)))))),
+    testing(int.q(10), plus(0).branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).plus(0).branch(plus(1) `,` plus(2)).is(gt(10))),
+    testing(int(1), int.plus(0).branch(plus(1) `,` plus(2)), int(2, 3)),
+    testing(int(1), int.plus(0).branch(plus(1) `,` plus(2) `,` int.plus(3)), int(2, 3, 4)),
+    testing(int(1), int.plus(0).branch(plus(1).q(2) `,` plus(2).q(3) `,` int.plus(3).q(4)), int(int(2).q(2), int(3).q(3), int(4).q(4))),
+    testing(int(1), int.plus(0).branch(plus(1).plus(1) `,` plus(2)), int(3).q(2)),
+    testing(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) `,` plus(2)), int(int(3).q(2), int(4).q(2))),
+    testing(int(1), int.plus(0).branch(plus(1) `,` plus(2)).path(), strm(lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))), lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(2), 3)))))),
   testSet("[branch] ;-lst",
-    test(int.q(10), plus(0).branch(plus(1) `;` plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) `;` plus(2)).is(gt(10))),
-    test(int(1), int.plus(0).branch(plus(1) `;` plus(2)), int(4)),
-    test(int(1), int.plus(0).branch(plus(1) `;` plus(2) `;` int.plus(3)), int(7)),
-    test(int(1), int.plus(0).branch(plus(1).q(2) `;` plus(2).q(3) `;` int.plus(3).q(4)), int(7).q(24)),
-    test(int(1), int.plus(0).branch(plus(1).plus(1) `;` plus(2)), int(5)),
-    test(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) `;` plus(2)), int(5, 6)),
-    test(int(1, 2), int.q(2).plus(0).branch(plus(1) `;` plus(2)).path(), strm(
+    testing(int.q(10), plus(0).branch(plus(1) `;` plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) `;` plus(2)).is(gt(10))),
+    testing(int(1), int.plus(0).branch(plus(1) `;` plus(2)), int(4)),
+    testing(int(1), int.plus(0).branch(plus(1) `;` plus(2) `;` int.plus(3)), int(7)),
+    testing(int(1), int.plus(0).branch(plus(1).q(2) `;` plus(2).q(3) `;` int.plus(3).q(4)), int(7).q(24)),
+    testing(int(1), int.plus(0).branch(plus(1).plus(1) `;` plus(2)), int(5)),
+    testing(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) `;` plus(2)), int(5, 6)),
+    testing(int(1, 2), int.q(2).plus(0).branch(plus(1) `;` plus(2)).path(), strm(
       lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2, PlusOp(2), 4))),
       lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3, PlusOp(2), 5)))))),
   testSet("[branch] |-lst",
-    test(int.q(10), plus(0).branch(plus(1) | plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) | plus(2)).is(gt(10))),
-    test(int(1), int.plus(0).branch(plus(1) | plus(2)), int(2)),
-    test(int(1), int.plus(0).branch(plus(1).q(0) | plus(2) | int.plus(3)), int(3)),
-    test(int(1), int.plus(0).branch(plus(1).q(0) | plus(2).q(0) | int.plus(3)), int(4)),
-    test(int(1), int.plus(0).branch(plus(1).plus(1) | plus(3)), int(3)),
-    test(int(1), int.plus(0).branch(plus(1).q(0).plus(1) | plus(3)), int(4)),
-    test(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3)), int(4)),
-    test(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj, compile = false),
-    test(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) | plus(2)), int(3, 4)),
-    test(int(1, 2), int.q(2).plus(0).branch(plus(1) | plus(2)).path(), strm(
+    testing(int.q(10), plus(0).branch(plus(1) | plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) | plus(2)).is(gt(10))),
+    testing(int(1), int.plus(0).branch(plus(1) | plus(2)), int(2)),
+    testing(int(1), int.plus(0).branch(plus(1).q(0) | plus(2) | int.plus(3)), int(3)),
+    testing(int(1), int.plus(0).branch(plus(1).q(0) | plus(2).q(0) | int.plus(3)), int(4)),
+    testing(int(1), int.plus(0).branch(plus(1).plus(1) | plus(3)), int(3)),
+    testing(int(1), int.plus(0).branch(plus(1).q(0).plus(1) | plus(3)), int(4)),
+    testing(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3)), int(4)),
+    testing(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj, compile = false),
+    testing(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) | plus(2)), int(3, 4)),
+    testing(int(1, 2), int.q(2).plus(0).branch(plus(1) | plus(2)).path(), strm(
       lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
       lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3)))))),
   testSet("[branch] ,-rec",
-    test(int(0), plus(1).branch((is(gt(1)) -> plus(10)) `_,` (is(gt(2)) -> plus(20)) `_,` (__ -> int.plus(30))), int(31)),
-    test(int(1, 2, 3), plus(0).branch((is(gt(1)) -> plus(10)) `_,` (is(gt(2)) -> plus(20)) `_,` (__ -> int.plus(30))), int(31, 12, 13, 32, 23, 33)),
-    test(int(5), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(6, 7)),
-    test(int(11), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(12, 13,17))),
+    testing(int(0), plus(1).branch((is(gt(1)) -> plus(10)) `_,` (is(gt(2)) -> plus(20)) `_,` (__ -> int.plus(30))), int(31)),
+    testing(int(1, 2, 3), plus(0).branch((is(gt(1)) -> plus(10)) `_,` (is(gt(2)) -> plus(20)) `_,` (__ -> int.plus(30))), int(31, 12, 13, 32, 23, 33)),
+    testing(int(5), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(6, 7)),
+    testing(int(11), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(12, 13,17))),
   testSet("[branch] |-rec",
-    test(int.q(10), plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).is(gt(10))),
-    test(int(1), int.plus(0).branch((int + 0 -> int.plus(1)) `_|` (int -> int.plus(2))), int(2)),
-    test(int(1), int.plus(0).branch(int.q(0) -> plus(1) `_|` int.q(0) -> plus(2) `_|` int + 0 -> int.plus(3)), int(4)),
-    test(int(1), int.plus(0).branch(int + 0 -> plus(1).plus(1) `_|` int -> plus(3)), int(3)),
-    test(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int -> plus(3).q(0)), zeroObj, compile = false),
-    test(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int.plus(1).q(0) -> plus(3)), zeroObj, compile = false),
-    test(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1).plus(1) `_|` int -> plus(2)), int(3, 4)),
-    test(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).path(), strm(
+    testing(int.q(10), plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).is(gt(10))),
+    testing(int(1), int.plus(0).branch((int + 0 -> int.plus(1)) `_|` (int -> int.plus(2))), int(2)),
+    testing(int(1), int.plus(0).branch(int.q(0) -> plus(1) `_|` int.q(0) -> plus(2) `_|` int + 0 -> int.plus(3)), int(4)),
+    testing(int(1), int.plus(0).branch(int + 0 -> plus(1).plus(1) `_|` int -> plus(3)), int(3)),
+    testing(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int -> plus(3).q(0)), zeroObj, compile = false),
+    testing(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int.plus(1).q(0) -> plus(3)), zeroObj, compile = false),
+    testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1).plus(1) `_|` int -> plus(2)), int(3, 4)),
+    testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).path(), strm(
       lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
       lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3))))))) {
 

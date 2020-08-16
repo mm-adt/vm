@@ -26,12 +26,15 @@ import org.mmadt.language.obj.Obj
 import org.mmadt.storage.StorageFactory.str
 import org.scalatest.prop.TableFor4
 
+/**
+ * @author Stephen Mallette (http://stephen.genoprime.com)
+ */
 object TestSetUtil {
 
   def testSet(testName: String, data:(Obj, Obj, Obj, Boolean)*): (String, TableFor4[Obj, Obj, Obj, Boolean]) =
     (testName, new TableFor4[Obj, Obj, Obj, Boolean](("lhs", "rhs", "result", "compile"), data: _*))
 
-  def test(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, Boolean) = (lhs, rhs, result, compile)
+  def testing(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, Boolean) = (lhs, rhs, result, compile)
 
   def comment(comment: String): (Obj, Obj, Obj, Boolean) = (null, null, str(comment), false)
 }
