@@ -89,8 +89,12 @@ object BranchOp extends Func[Obj, Obj] {
           }
           case Tokens.`;` => Rec.moduleMult(start, arec) match {
             case brec if brec.isEmpty => zeroObj
-            case brec: Value[_] => brec.gmap.last._2
-            case brec: Type[_] => BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
+            case brec: Value[_] => brec.gmap.last._2.hardQ(q => multQ(q, inst.q))
+            case brec: Type[_] =>
+              if (brec.gmap.forall(kv => Type.isIdentity(kv._1) && Type.isIdentity(kv._2))) {
+                Type.tryCtype(Rec.moduleMult(start,brec).gmap.last._2.q(inst.q)) // TODO: not generalized enough
+              } else
+                BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
           }
           case Tokens.`|` => Rec.moduleMult(start, arec) match {
             case brec if brec.isEmpty => zeroObj

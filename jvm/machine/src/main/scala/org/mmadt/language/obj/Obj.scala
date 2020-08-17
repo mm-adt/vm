@@ -167,7 +167,6 @@ object Obj {
     final def `_,`(next: Tuple2[A, B]): Rec[A, B] = this.`,`(next)
     final def `_;`(next: Tuple2[A, B]): Rec[A, B] = this.`;`(next)
     final def `_|`(next: Tuple2[A, B]): Rec[A, B] = this.`|`(next)
-    final def `,`: Rec[A, B] = rec(g = (Tokens.`,`, List(this.tuple._1 -> this.tuple._2)))
     final def `,`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`,`, next)
     final def `;`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`;`, next)
     final def `|`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`|`, next)

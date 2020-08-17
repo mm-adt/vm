@@ -104,7 +104,7 @@ object Rec {
       /////////// |-rec
       case Tokens.`|` =>
         // var taken: Boolean = false
-        arec.clone(_.map(kv => Obj.resolveArg(start, kv._1) -> kv._2)
+        arec.clone(_.map(kv => (start ~~> kv._1) -> kv._2)
           .filter(kv => kv._1.alive)
           /*.filter(kv =>
             if(taken) false
