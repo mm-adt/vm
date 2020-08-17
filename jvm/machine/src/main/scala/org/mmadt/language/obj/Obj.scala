@@ -162,6 +162,7 @@ object Obj {
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
   @inline implicit def tupleToRec[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
+  // @inline implicit def tupleToLst[A <: Obj](ground: Tuple1[A]): Lst[A] = lst(g = (Tokens.`,`, List(ground._1)))
 
   def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]

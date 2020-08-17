@@ -26,6 +26,7 @@ import org.mmadt.TestUtil
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.language.obj.Obj.intToInt
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.{Int, Lst, Obj, Poly}
@@ -76,17 +77,17 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1), int `,` int.plus(2), int(1, 3)),
         (int(1), int `,` int.plus(2).q(10), int(1, int(3).q(10))),
         (int(1).q(5), int `,` int.plus(2).q(10), int(int(1).q(5), int(3).q(50))),
-        (int(int(1), int(100)), int | int, int(int(1), int(100))),
+        (int(1, 100), int | int, int(int(1), int(100))),
         (int(int(1), int(100)), int `,` int, int(1, 1, 100, 100)),
         (int(int(1), int(100)), int `,` int, int(int(1).q(2), int(100).q(2))),
         (int(int(1).q(5), int(100)), int `,` int.plus(2).q(10), int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
         (int(int(1).q(5), int(100)), int | int.plus(2).q(10), int(int(1).q(5), int(100))),
-        (int(1, 2), int | (int | int), int(1, 2)), // TODO: this is not computing the lst as a type
-        (int(1, 2), (int | int) | int, int(1, 2)), // TODO: this is not computing the lst as a type
+        (int(1, 2), int | (int | int), int(1, 2)),
+        (int(1, 2), (int | int) | int, int(1, 2)),
         (int(1, 2), (int | int) | obj, int(1, 2)),
         (int(1, 2), (str | str) | str, zeroObj),
-        ((int(1) `;` 2), lst[Obj](g = (Tokens.|, List[Obj](lst(g = (Tokens.`;`, List(int, int))), str))), (int(1) `;` 2)),
-        (int(1), str | int, int(1)),
+        ((1 `;` 2), ((int `;` int) | str), (1 `;` 2)),
+        (1, str | int, 1),
       )
     forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, __.split(rhs).merge[Obj], result, compile = false) }
   }
@@ -120,10 +121,10 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("parallel [split] quantification") {
-    assertResult(int)(int.mult(8).split(id | plus(8).mult(2) | int(56)).merge[Int].id.rangeObj)
-    assertResult(int.q(1, 20))(int.mult(8).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge[Int].id.rangeObj)
-    assertResult(int.q(2, 40))(int.q(2).mult(8).q(1).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge[Int].id.rangeObj)
-    assertResult(zeroObj)(int.q(2).mult(8).q(0).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge[Obj].id.rangeObj)
+    assertResult(int)(int.mult(8).split(id | plus(8).mult(2) | int(56)).merge.id.rangeObj)
+    assertResult(int.q(1, 20))(int.mult(8).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
+    assertResult(int.q(2, 40))(int.q(2).mult(8).q(1).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
+    assertResult(zeroObj)(int.q(2).mult(8).q(0).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
   }
 
   test("[mult] w/ lst types") {
