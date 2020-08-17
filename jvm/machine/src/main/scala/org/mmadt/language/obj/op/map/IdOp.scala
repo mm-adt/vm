@@ -32,9 +32,9 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait IdOp {
   this: Obj =>
-  def id(): this.type = IdOp[this.type]().exec(this)
+  def id: this.type = IdOp[this.type]().exec(this)
 }
 object IdOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[A, A] = new VInst[A, A](g = (Tokens.id, Nil), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.via(start, inst)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): start.type = start.via(start, inst)
 }

@@ -39,7 +39,7 @@ import org.mmadt.storage.obj.value.VInst
 trait FoldOp {
   this: Obj =>
   def fold[O <: Obj](seed: O)(foldType: Type[_]): O = FoldOp(seed, foldType).exec(this).asInstanceOf[O]
-  def fold[O <: Obj with ZeroOp[O]](foldType: Type[_]): O = FoldOp(this.asInstanceOf[ZeroOp[O]].zero().asInstanceOf[O], foldType).exec(this).asInstanceOf[O]
+  def fold[O <: Obj with ZeroOp[O]](foldType: Type[_]): O = FoldOp(this.asInstanceOf[ZeroOp[O]].zero.asInstanceOf[O], foldType).exec(this).asInstanceOf[O]
 
 }
 

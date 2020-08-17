@@ -33,7 +33,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait ZeroOp[O <: Obj] {
   this: O =>
-  def zero(): this.type = ZeroOp().exec(this)
+  def zero: this.type = ZeroOp().exec(this)
 }
 object ZeroOp extends Func[Obj, Obj] {
   def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.zero, Nil), func = this)

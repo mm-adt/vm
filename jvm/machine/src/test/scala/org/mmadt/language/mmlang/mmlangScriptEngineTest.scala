@@ -124,7 +124,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(str.q(+))(engine.eval("str{+}"))
     assertResult(__.q(2))(engine.eval("_{2}"))
     assertResult(__.q(+))(engine.eval("_{+}"))
-    assertResult(__.q(2).id())(engine.eval("_{2}[id]"))
+    assertResult(__.q(2).id)(engine.eval("_{2}[id]"))
     assertResult(zeroObj)(engine.eval("{0}"))
     assertResult(tobj())(engine.eval("{1}"))
     assertResult(zeroObj)(engine.eval("1=>{0}"))
@@ -231,7 +231,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("quantifier inst parsing") {
-    assertResult(int.id().q(2).id().q(4))(engine.eval("int[id]{2}[id]{4}"))
+    assertResult(int.id.q(2).id.q(4))(engine.eval("int[id]{2}[id]{4}"))
     assertResult("int{8}<=int[id]{2}[id]{4}")(engine.eval("int[id]{2}[id]{4}").toString)
     assertResult(int(10).q(8))(engine.eval("10 int[id]{2}[id]{4}"))
     assertResult(int(10).q(8))(engine.eval("10[id]{2}[id]{4}"))
@@ -241,11 +241,11 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(17).q(16))(engine.eval("5{2}[plus,10]{2}[id]{4}[plus,2]"))
     assertResult(int.q(0, 24))(engine.eval("int[plus,10]{2}[id]{4}[is,[gt,2]]{3}").asInstanceOf[IntType].range)
     assertResult(int(15).q(16))(engine.eval("5{2}[plus,10]{2}[id]{4}"))
-    assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
-    assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.q(16).gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
-    assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
-    assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
-    assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
+    assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id.q(4).is(bool.q(16) <= int.gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
+    assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id.q(4).is(int.q(16).gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
+    assertResult(int.q(2) ==> (int.q(0, 48) <= int.q(2).plus(10).q(2).id.q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3)))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
+    assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id.q(4).is(int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
+    assertResult(int.q(0, 48) <= int.q(2).plus(10).q(2).id.q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))(engine.eval("int{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(int(15).q(48))(engine.eval("5{2}[plus,10]{2}[id]{4}[is,[gt,2]]{3}"))
     assertResult(__.q(64) <= __.plus(2).q(2).mult(3).q(32).plus(4))(engine.eval("[plus,2]{2}[mult,3]{32}[plus,4]"))
   }
@@ -375,12 +375,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(5).q(80))(engine.eval("5=>[split,(int,int)]{10}[merge]{4}"))
     assertResult(int.q(8))(engine.eval("int[int,int]{4}").range)
     assertResult(int(5).q(8))(engine.eval("5[int,int]{4}"))
-    assertResult(int.id().q(8))(engine.eval("int[branch,(int,int)]{4}"))
-    assertResult(int.id().q(8))(engine.eval("int[branch,(_,_)]{4}"))
+    assertResult(int.id.q(8))(engine.eval("int[branch,(int,int)]{4}"))
+    assertResult(int.id.q(8))(engine.eval("int[branch,(_,_)]{4}"))
     //
     assertResult(int.q(-1))(engine.eval("[int{-1};int]").range)
-    assertResult(int.id().q(-1))(engine.eval("[int;int[id]{-1}]"))
-    assertResult(int.id().q(5))(engine.eval("[int[id]{-5};int[id]{-1};int{1}]"))
+    assertResult(int.id.q(-1))(engine.eval("[int;int[id]{-1}]"))
+    assertResult(int.id.q(5))(engine.eval("[int[id]{-5};int[id]{-1};int{1}]"))
     assertResult(int(5).q(-1))(engine.eval("[1{-1};5]"))
     assertResult(int(5))(engine.eval("[1{-1};5{-1}]"))
   }
@@ -632,8 +632,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("anonymous expression parsing") {
-    assertResult(int.is(int.gt(int.id())))(engine.eval("int[is,[gt,[id]]]"))
-    assertResult(real.is(real.gt(real.id())))(engine.eval("real[is,[gt,[id]]]"))
+    assertResult(int.is(int.gt(int.id)))(engine.eval("int[is,[gt,[id]]]"))
+    assertResult(real.is(real.gt(real.id)))(engine.eval("real[is,[gt,[id]]]"))
     assertResult(int.plus(int(1)).plus(int.plus(int(5))))(engine.eval("int[plus,1][plus,[plus,5]]"))
     assertResult(int.plus(int(1)).is(int.gt(int(5))))(engine.eval("int[plus,1][is,[gt,5]]"))
     assertResult(int.q(?) <= int.is(int.gt(int(5))))(engine.eval("int[is,[gt,5]]"))
@@ -1135,12 +1135,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int)(engine.eval("int[plus,0]"))
     assertResult(int(0))(engine.eval("int[mult,0]"))
     assertResult(int)(engine.eval("int[mult,1]"))
-    assertResult(int.plus(int.neg()))(engine.eval("int[mult,1][plus,0][plus,[neg]]"))
+    assertResult(int.plus(int.neg))(engine.eval("int[mult,1][plus,0][plus,[neg]]"))
     assertResult(int.plus(1).plus(2))(engine.eval("int[plus,1][mult,1][plus,2][mult,1][plus,0]"))
     assertResult(int(5).q(24))(engine.eval("1[plus,4]{24}"))
     assertResult(int(10).q(48))(engine.eval("1[plus,4]{24}[plus,5]{2}"))
-    assertResult(int.q(2) <= int.id().q(2))(engine.eval("int[plus,0]{2}"))
-    assertResult(int.q(4) <= int.q(2).id().q(2))(engine.eval("int{4}<=int{2}[plus,0]{2}"))
+    assertResult(int.q(2) <= int.id.q(2))(engine.eval("int[plus,0]{2}"))
+    assertResult(int.q(4) <= int.q(2).id.q(2))(engine.eval("int{4}<=int{2}[plus,0]{2}"))
     assertResult(int(10).q(192))(engine.eval("1{2}[plus,4]{24}[plus,2]{2}[plus,3]{2}"))
     assertResult(int(5).q(72))(engine.eval("1{3}[plus,4]{24}"))
     engine.eval(":")

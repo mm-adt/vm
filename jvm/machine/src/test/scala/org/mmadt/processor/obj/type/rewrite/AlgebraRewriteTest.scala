@@ -34,8 +34,8 @@ class AlgebraRewriteTest extends FunSuite {
     val intAlgebra = int
       .rewrite((int`,`) <= (int.mult(1) `,`))
       .rewrite((int`,`) <= (int.plus(0) `,`))
-      .rewrite((int.zero() `,`) <= (int.mult(0) `,`))
-      .rewrite((int`,`) <= (int.neg().neg() `,`))
+      .rewrite((int.zero `,`) <= (int.mult(0) `,`))
+      .rewrite((int`,`) <= (int.neg.neg `,`))
     //.rewrite((int.zero() `,`) <= (int.plus(int.neg()) `,`))
     println(intAlgebra.model)
     assertResult(int)(int ==> intAlgebra)

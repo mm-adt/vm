@@ -89,7 +89,7 @@ object Type {
 
   def unity[A <: Obj](obj: A): A = {
     if (obj.isInstanceOf[Value[_]]) obj.hardQ(qOne)
-    else if (obj.trace.isEmpty && obj.isInstanceOf[Type[_]]) obj.domainObj.hardQ(qOne).id().asInstanceOf[A]
+    else if (obj.trace.isEmpty && obj.isInstanceOf[Type[_]]) obj.domainObj.hardQ(qOne).id.asInstanceOf[A]
     else obj.trace.foldLeft(obj.domainObj.hardQ(qOne).asInstanceOf[A])((a, b) => b._2.hardQ(qOne).asInstanceOf[Inst[A, A]].exec(a))
   }
 

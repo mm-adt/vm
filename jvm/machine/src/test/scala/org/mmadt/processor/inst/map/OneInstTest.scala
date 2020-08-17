@@ -39,30 +39,30 @@ class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
     val starts: TableFor2[Obj, Obj] =
       new TableFor2[Obj, Obj](("query", "result"),
         //////// INT
-        (int(2).one(), int(1)),
-        (int(2).one().q(10), int(1).q(10)),
-        (int(2).q(10).one(), int(1).q(10)),
-        (int(2).q(10).one().q(20), int(1).q(200)),
-        (int(-2).one(), int(1)),
-        (int.one(), int(1)),
-        (int.one().q(10), int(1).q(10)),
-        (int.q(10).one(), int(1).q(10)),
-        (int.q(10).one().q(20), int(1).q(200)),
-        (int(1, 2, 3).one(), int(1).q(3)),
+        (int(2).one, int(1)),
+        (int(2).one.q(10), int(1).q(10)),
+        (int(2).q(10).one, int(1).q(10)),
+        (int(2).q(10).one.q(20), int(1).q(200)),
+        (int(-2).one, int(1)),
+        (int.one, int(1)),
+        (int.one.q(10), int(1).q(10)),
+        (int.q(10).one, int(1).q(10)),
+        (int.q(10).one.q(20), int(1).q(200)),
+        (int(1, 2, 3).one, int(1).q(3)),
         //////// REAL
-        (real(2.0).one(), real(1.0)),
-        (real(-2.0).one(), real(1.0)),
-        (real.one(), real(1.0)),
-        (real(-1.0, -2.0, -3.0).one(), real(1.0).q(3)),
-        (real(-1.0, -2.0, -3.0).id().q(10).one(), real(1.0).q(30)),
-        (real(-1.0, -2.0, -3.0) ==> __.q(3).id().q(10).one(), real(1.0).q(30)),
-        (real(-1.0, -2.0, -3.0).id().q(10).one(), real(1.0).q(30)),
-        (real(-1.0, -2.0, -3.0).q(3).id().q(10).one(), real(1.0).q(90)),
+        (real(2.0).one, real(1.0)),
+        (real(-2.0).one, real(1.0)),
+        (real.one, real(1.0)),
+        (real(-1.0, -2.0, -3.0).one, real(1.0).q(3)),
+        (real(-1.0, -2.0, -3.0).id.q(10).one, real(1.0).q(30)),
+        (real(-1.0, -2.0, -3.0) ==> __.q(3).id.q(10).one, real(1.0).q(30)),
+        (real(-1.0, -2.0, -3.0).id.q(10).one, real(1.0).q(30)),
+        (real(-1.0, -2.0, -3.0).q(3).id.q(10).one, real(1.0).q(90)),
       )
     forEvery(starts) { (query, result) => TestUtil.evaluate(query, __, result, OneOp()) }
   }
 
   test("[one] exceptions") {
-    assertResult(LanguageException.unsupportedInstType(str("a"), OneOp()).getMessage)(intercept[LanguageException](str("a") ==> __.one()).getMessage)
+    assertResult(LanguageException.unsupportedInstType(str("a"), OneOp()).getMessage)(intercept[LanguageException](str("a") ==> __.one).getMessage)
   }
 }

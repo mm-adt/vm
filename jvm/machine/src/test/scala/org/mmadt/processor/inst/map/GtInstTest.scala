@@ -49,10 +49,10 @@ class GtInstTest extends BaseInstTest(
     testing(int(1, 2, 3), __.gt(int(2).q(10)), bool(false, false, true)), // strm * value = strm
     testing(int(1, 2, 3), __.gt(int(2)).q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
     testing(int(1, 2, 3), __.gt(int(2)).q(10), bool(bfalse.q(20), btrue.q(10))), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2)).q(10).id(), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
-    testing(int(1, 2, 3), __.id().gt(int(2)).q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2)).id().q(10).id().q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2)).q(10).id, bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2)).q(10).id.q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
+    testing(int(1, 2, 3), __.id.gt(int(2)).q(10).id.q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
+    testing(int(1, 2, 3), __.gt(int(2)).id.q(10).id.q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
     testing(int(1, 2, 3), __.gt(int), bool(false, false, false)), // strm * type = strm
     testing(int(1, 2, 3), __.gt(__.mult(int)), bool(false, false, false)), // strm * anon = strm
     comment("===REAL"),
@@ -62,7 +62,7 @@ class GtInstTest extends BaseInstTest(
     testing(real, __.gt(real(2.0)), real.gt(2.0)), // type * value = type
     testing(real, __.gt(real), real.gt(real)), // type * type = type
     testing(real(1.0, 2.0, 3.0), __.gt(2.0).q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
-    testing(real(1.0, 2.0, 3.0), __.gt(2.0).id().q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
+    testing(real(1.0, 2.0, 3.0), __.gt(2.0).id.q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
     testing(real(1.0, 2.0, 3.0), __.gt(2.0), bool(false, false, true)), // strm * value = strm
     testing(real(1.0, 2.0, 3.0), __.gt(real), bool(false, false, false)), // strm * type = strm
     testing(real(1.0, 2.0, 3.0), __.gt(__.mult(real)), bool(false, false, false)), // strm * anon = strm

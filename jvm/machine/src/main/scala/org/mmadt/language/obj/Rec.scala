@@ -84,38 +84,39 @@ object Rec {
   def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
-  def moduleMult[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = {
-    arec.gsep match {
-      /////////// ,-rec
-      case Tokens.`,` =>
-        arec.clone(_.map(kv => (start ~~> kv._1) -> kv._2)
-          .filter(kv => kv._1.alive)
-          .map(kv => kv._1 -> (start ~~> kv._2))
-          .groupBy(kv => kv._1)
-          .map(kv => kv._1 -> (if (kv._2.size == 1) kv._2.head._2 else __.branch(lst(g = (Tokens.`,`, kv._2.map(x => x._2)))))).toList)
-      /////////// ;-rec
-      case Tokens.`;` =>
-        var running = start -> start
-        arec.clone(_.map(kv => {
-          val key = running._1 ~~> kv._1
-          running = (if (!key.alive) key -> zeroObj else key -> (running._2 ~~> kv._2)).asInstanceOf[(A, A)]
-          running
-        }))
-      /////////// |-rec
-      case Tokens.`|` =>
-        // var taken: Boolean = false
-        arec.clone(_.map(kv => (start ~~> kv._1) -> kv._2)
-          .filter(kv => kv._1.alive)
-          /*.filter(kv =>
-            if(taken) false
-            else if (zeroable(kv._1.q)) true
-            else {
-              taken = true;
-              true
-            })*/
-          .map(kv => kv._1 -> (start ~~> kv._2)))
-    }
+  def moduleStruct[A <: Obj, B <: Obj](start: A, gsep: String, pairs: PairList[A, B]): PairList[A, B] = gsep match {
+    /////////// ,-rec
+    case Tokens.`,` =>
+      pairs.map(kv => (start ~~> kv._1) -> kv._2)
+        .filter(kv => kv._1.alive)
+        .map(kv => kv._1 -> (start ~~> kv._2))
+        .groupBy(kv => kv._1)
+        .map(kv => kv._1 -> (if (kv._2.size == 1) kv._2.head._2 else __.branch(lst(g = (Tokens.`,`, kv._2.map(x => x._2)))))).toList
+    /////////// ;-rec
+    case Tokens.`;` =>
+      var running = start -> start
+      pairs.map(kv => {
+        val key = running._1 ~~> kv._1
+        running = (if (!key.alive) key -> zeroObj else key -> (running._2 ~~> kv._2)).asInstanceOf[(A, A)]
+        running
+      }).asInstanceOf[PairList[A, B]]
+    /////////// |-rec
+    case Tokens.`|` =>
+      // var taken: Boolean = false
+      pairs.map(kv => (start ~~> kv._1) -> kv._2)
+        .filter(kv => kv._1.alive)
+        /*.filter(kv =>
+          if(taken) false
+          else if (zeroable(kv._1.q)) true
+          else {
+            taken = true;
+            true
+          })*/
+        .map(kv => kv._1 -> (start ~~> kv._2))
   }
+
+  def moduleMult[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = arec.clone(pairs => moduleStruct(start, arec.gsep, pairs))
+
   def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {
     var found: Boolean = false;
     arec.clone(_.map(x => {

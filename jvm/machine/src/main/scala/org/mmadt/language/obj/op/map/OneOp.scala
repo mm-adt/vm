@@ -34,7 +34,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait OneOp[O <: Obj] {
   this: O =>
-  def one(): this.type = OneOp().exec(this)
+  def one: this.type = OneOp().exec(this)
 }
 object OneOp extends Func[Obj, Obj] {
   def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.one, Nil), func = this)

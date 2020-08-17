@@ -36,24 +36,24 @@ class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
     val starts: TableFor3[Obj, Obj, Obj] =
       new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
         //////// INT
-        (int(2), int.neg(), int(-2)),
-        (int(2).q(2), int.q(2).neg(), int(-2).q(2)),
-        (int(-2), __.neg(), int(2)),
-        (int(-2), __.neg().q(4).neg().q(2), int(-2).q(8)),
-        (int.neg(), int.neg(), int.neg().neg()),
-        (int(-1, -2, -3), int.q(3).neg(), int(1, 2, 3)),
+        (int(2), int.neg, int(-2)),
+        (int(2).q(2), int.q(2).neg, int(-2).q(2)),
+        (int(-2), __.neg, int(2)),
+        (int(-2), __.neg.q(4).neg.q(2), int(-2).q(8)),
+        (int.neg, int.neg, int.neg.neg),
+        (int(-1, -2, -3), int.q(3).neg, int(1, 2, 3)),
         //////// REAL
-        (real(2.0), real.neg(), real(-2.0)),
-        (real(-2.0), __.neg(), real(2.0)),
-        (real, real.neg(), real.neg()),
-        (real(-1.0, -2.0, -3.0), real.q(3).neg(), real(1.0, 2.0, 3.0)),
-        (real(-1.0, -2.0, -3.0), real.q(3).neg().q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10))),
+        (real(2.0), real.neg, real(-2.0)),
+        (real(-2.0), __.neg, real(2.0)),
+        (real, real.neg, real.neg),
+        (real(-1.0, -2.0, -3.0), real.q(3).neg, real(1.0, 2.0, 3.0)),
+        (real(-1.0, -2.0, -3.0), real.q(3).neg.q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10))),
       )
     forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result) // NegOp().q(divQ(rhs.q,rhs.domain.q))
     }
   }
 
   test("[neg] exceptions") {
-    assertResult(LanguageException.unsupportedInstType(str("a"), NegOp()).getMessage)(intercept[LanguageException](str("a") ==> __.neg()).getMessage)
+    assertResult(LanguageException.unsupportedInstType(str("a"), NegOp()).getMessage)(intercept[LanguageException](str("a") ==> __.neg).getMessage)
   }
 }

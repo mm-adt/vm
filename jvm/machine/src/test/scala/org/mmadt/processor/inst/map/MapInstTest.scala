@@ -43,10 +43,10 @@ class MapInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(2).q(10).map(int(1)).q(20), int(1).q(200), "value"), // value * value = value
         (int(2).map(int(1).q(10)), int(1).q(10), "value"), // value * value = value
         (int(2).map(int), int(2), "value"), // value * type = value
-        (int(2).q(3).map(int.id().q(5)), int(2).q(15), "value"), // value * type = value
+        (int(2).q(3).map(int.id.q(5)), int(2).q(15), "value"), // value * type = value
         (int(2).q(3).map(int.q(5)), int(2).q(15), "value"), // value * type = value
         (int(2).q(3).map(__.-<(__ `,` __)) >-, int(2).q(6), "value"), // value * type = value
-        (int(2).q(3).map(__.id().q(10).-<(__ `,` __)) >-, int(2).q(60), "value"), // value * type = value
+        (int(2).q(3).map(__.id.q(10).-<(__ `,` __)) >-, int(2).q(60), "value"), // value * type = value
         (int(2).map(__.mult(int)), int(4), "value"), // value * anon = value
         (int.map(int(2)), int.map(int(2)), "type"), // type * value = type
         (int.q(10).map(int(2)), int.q(10).map(int(2)), "type"), // type * value = type
@@ -57,8 +57,8 @@ class MapInstTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2, 3).map(int), int(1, 2, 3), "strm"), // strm * type = strm
         (int(1, 2, 3).map(int.mult(int)), int(1, 4, 9), "strm"), // strm * type = strm
         (int(1, 2, 3).map(__.mult(int)), int(1, 4, 9), "strm"), // strm * anon = strm
-        (int(1, 2, 3).q(3).map(__.id().q(10).-<(int(7) `,` int(7))) >-, int(7).q(180), "value"), // strm * type = strm
-        (int(1, 2, 3).q(3).map(__.id().q(10).-<(int(7) `,` int(7)).q(10)) >-, int(7).q(1800), "value"), // strm * type = strm
+        (int(1, 2, 3).q(3).map(__.id.q(10).-<(int(7) `,` int(7))) >-, int(7).q(180), "value"), // strm * type = strm
+        (int(1, 2, 3).q(3).map(__.id.q(10).-<(int(7) `,` int(7)).q(10)) >-, int(7).q(1800), "value"), // strm * type = strm
         //////// REAL
         (real(2.0).map(real(1.0)), real(1.0), "value"), // value * value = value
         (real(2.0).map(real), real(2.0), "value"), // value * type = value

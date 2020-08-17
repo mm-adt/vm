@@ -107,13 +107,13 @@ class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[is] w/ int") {
-    assertResult(int(15).q(48))(int(5).q(2).plus(10).q(2).id().q(4).is(int.gt(2)).q(3))
-    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(0, 48) <= int.q(2).plus(10).q(2).id().q(4).is(int.gt(2)).q(3))
-    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id().q(4).is(int.gt(2)).q(3))
-    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id().q(4).is(int.q(16).gt(2)).q(3))
-    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))
+    assertResult(int(15).q(48))(int(5).q(2).plus(10).q(2).id.q(4).is(int.gt(2)).q(3))
+    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(0, 48) <= int.q(2).plus(10).q(2).id.q(4).is(int.gt(2)).q(3))
+    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id.q(4).is(int.gt(2)).q(3))
+    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id.q(4).is(int.q(16).gt(2)).q(3))
+    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id.q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))
     assertThrows[LanguageException] {
-      assertResult(int(15).q(48))(int(5).q(2) ==> int.plus(10).q(2).id().q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))
+      assertResult(int(15).q(48))(int(5).q(2) ==> int.plus(10).q(2).id.q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))
     }
   }
 }

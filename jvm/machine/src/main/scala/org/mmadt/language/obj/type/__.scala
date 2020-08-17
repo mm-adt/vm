@@ -40,7 +40,7 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   def combine(other: Obj): this.type = this.via(this, CombineOp(other))
   def plus(other: Obj): this.type = this.via(this, PlusOp(other))
   def mult(other: Obj): this.type = this.via(this, MultOp(other))
-  def neg(): this.type = this.via(this, NegOp())
+  def neg: this.type = this.via(this, NegOp())
   def or(other: Obj): this.type = this.via(this, OrOp(other))
   def and(other: Obj): this.type = this.via(this, AndOp(other))
   def one(): this.type = this.via(this, OneOp())

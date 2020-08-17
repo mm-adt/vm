@@ -67,7 +67,7 @@ object TraceScanRewrite extends Rewrite {
     if (!b.equals(obj)) b = TraceScanRewrite(b, writer)
     // normalize the quantifiers after rewrite
     if (b.equals(obj)) obj
-    else if (!b.q.equals(obj.q) && b.trace.forall(x => ModelOp.isMetaModel(x._2))) b.id().q(divQ(obj.q, b.domainObj.q)).asInstanceOf[A]
+    else if (!b.q.equals(obj.q) && b.trace.forall(x => ModelOp.isMetaModel(x._2))) b.id.q(divQ(obj.q, b.domainObj.q)).asInstanceOf[A]
     else b.asInstanceOf[A].q(divQ(obj.q, b.domainObj.q))
   }
 

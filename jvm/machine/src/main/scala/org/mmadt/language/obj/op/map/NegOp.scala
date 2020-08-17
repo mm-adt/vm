@@ -33,8 +33,8 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait NegOp[O <: Obj] {
   this: O =>
-  def neg(): this.type = NegOp().exec(this)
-  final def unary_-(): this.type = this.neg()
+  def neg: this.type = NegOp().exec(this)
+  final def unary_-(): this.type = this.neg
 }
 object NegOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[A, A] = new VInst[A, A](g = (Tokens.neg, Nil), func = this)

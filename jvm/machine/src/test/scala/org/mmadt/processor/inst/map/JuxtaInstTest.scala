@@ -51,7 +51,7 @@ class JuxtaInstTest extends FunSuite with TableDrivenPropertyChecks {
         (List[Real](real.plus(1.0).q(10), real(13.0).q(2)), real(13.0).q(20)),
         // type/type
         (List(str), str),
-        (List(str, str.id()), str.id()),
+        (List(str, str.id), str.id),
         (List(int, int.plus(1), int.plus(2)), int.plus(1).plus(2)),
       )
     forEvery(starts) { (left, right) => {

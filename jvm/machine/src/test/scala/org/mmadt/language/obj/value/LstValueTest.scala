@@ -61,8 +61,8 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
     assert(("a" | ("b" |)).test("a" | ("b" | "c")))
     assert(!("z" | ("b" |)).test("a" | ("b" | "c")))
     //
-    assertResult(btrue)(lst.zero().eqs(lst))
-    assertResult(lst)(lst ==> lst.is(lst.eqs(lst.zero())))
+    assertResult(btrue)(lst.zero.eqs(lst))
+    assertResult(lst)(lst ==> lst.is(lst.eqs(lst.zero)))
   }
 
   test("basic poly") {
@@ -75,9 +75,9 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
   test("parallel expressions") {
     val starts: TableFor3[Obj, Obj, Obj] =
       new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        (lst, __.is(lst.eqs(lst.zero())), lst),
-        (lst, __.eqs(lst.zero()), btrue),
-        (1, __.map(lst).eqs(lst.zero()), btrue),
+        (lst, __.is(lst.eqs(lst.zero)), lst),
+        (lst, __.eqs(lst.zero), btrue),
+        (1, __.map(lst).eqs(lst.zero), btrue),
         (1, __ -< (int `,` int), int(1) `,` int(1)),
         (1, __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
         (1, __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),

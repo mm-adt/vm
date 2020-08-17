@@ -35,6 +35,6 @@ class mmTest extends FunSuite {
     assertResult(int)(int ==> int.model(file1).plus(0))
     assertResult(int)(int ==> int.model(file1).mult(1))
     assertResult(int(0))(int ==> int.model(file1).mult(0))
-    assertResult(int.plus(7))(int ==> int.model(file1).plus(7).neg().neg().plus(0))
+    assertResult(int.plus(7))(int ==> int.model(file1).plus(7).neg.neg.plus(0))
   }
 }
