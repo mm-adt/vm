@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Obj.IntQ
+import org.mmadt.language.obj.op.RewriteInstruction
 import org.mmadt.language.obj.op.trace.{ExplainOp, ModelOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
@@ -61,6 +62,8 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
       this.trace.filter(x => !ModelOp.isMetaModel(x._2)) == atype.trace.filter(x => !ModelOp.isMetaModel(x._2))
     case _ => false
   }
+
+  def rule(rewrite: Inst[Obj, Obj]): this.type = this.via(this, rewrite)
 }
 object Type {
 
