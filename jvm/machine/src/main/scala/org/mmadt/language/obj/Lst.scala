@@ -53,9 +53,9 @@ trait Lst[+A <: Obj] extends Poly[A]
     case _ => true // MAIN EQUALS IS IN TYPE
   }
   def clone(f: List[A] => List[_]): this.type = this.clone(g = (this.gsep, f(this.glist)))
-  override final def `,`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`,`, next)
-  override final def `;`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`;`, next)
-  override final def `|`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`|`, next)
+  final override def `,`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`,`, next)
+  final override def `;`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`;`, next)
+  final override def `|`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`|`, next)
 
   private final def lstMaker(sep: String, obj: Obj): Lst[obj.type] = {
     obj match {
@@ -67,6 +67,7 @@ trait Lst[+A <: Obj] extends Poly[A]
 
 object Lst {
   type LstTuple[+A <: Obj] = (String, List[A])
+
   def test[A <: Obj](alst: Lst[A], blst: Lst[A]): Boolean =
     Poly.sameSep(alst, blst) &&
       withinQ(alst, blst) &&
@@ -79,13 +80,13 @@ object Lst {
   def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = {
     alst.gsep match {
       /////////// ,-lst
-      case Tokens.`,` => alst.clone(x => Type.mergeObjs(Type.mergeObjs(x).map(v => Inst.resolveArg(start, v))))
+      case Tokens.`,` => alst.clone(x => Type.mergeObjs(Type.mergeObjs(x).map(v => start ~~> v)))
       /////////// ;-lst
       case Tokens.`;` =>
         var running = start
         alst.clone(_.map(v => {
-          running = if (running.isInstanceOf[Strm[_]]) strm(running.toStrm.values.map(r => Inst.resolveArg(r, v)))
-          else Inst.resolveArg(running, v) match {
+          running = if (running.isInstanceOf[Strm[_]]) strm(running.toStrm.values.map(r => r ~~> v))
+          else Obj.resolveArg(running, v) match {
             case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
             case x => x
           }
@@ -94,7 +95,7 @@ object Lst {
       /////////// |-lst
       case Tokens.`|` =>
         //var taken: Boolean = false
-        alst.clone(_.map(v => Inst.resolveArg(start, v)).filter(_.alive))
+        alst.clone(_.map(v => start ~~> v).filter(_.alive))
       /*.filter(v =>
         if (taken) false
         else if (zeroable(v.q)) true

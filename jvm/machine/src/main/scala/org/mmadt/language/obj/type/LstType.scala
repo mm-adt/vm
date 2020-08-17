@@ -29,7 +29,7 @@ trait LstType[A <: Obj] extends PolyType[A, Lst[A]] with Lst[A] {
     case _: Obj if !other.alive => !this.alive
     case _: __ if __.isAnon(other) => true
     case _: __ if __.isTokenRoot(other) =>
-      val temp = Inst.resolveToken(this, other)
+      val temp = Obj.resolveToken(this, other)
       if (temp == other) true else this.test(temp)
     case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
       case alst: Lst[A] => Lst.test(this, alst)

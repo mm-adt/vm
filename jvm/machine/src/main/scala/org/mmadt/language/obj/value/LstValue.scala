@@ -34,7 +34,7 @@ trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
     case _: __ if __.isToken(other) => Try[Boolean] {
-      this.test(Inst.resolveToken(this, other))
+      this.test(Obj.resolveToken(this, other))
     }.getOrElse(false)
     case alst: LstValue[A] => Lst.test(this, alst)
     case _: Type[_] => withinQ(this, other.domain) && (other.domain match {

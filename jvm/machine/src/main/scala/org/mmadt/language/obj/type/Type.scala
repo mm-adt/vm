@@ -44,7 +44,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
     case _: Obj if !other.alive => !this.alive
     case _: __ if __.isAnon(other) => true
     case _: __ if __.isTokenRoot(other) =>
-      val temp = Inst.resolveToken(this, other)
+      val temp = Obj.resolveToken(this, other)
       if (temp == other) true else this.test(temp)
     case _: Type[_] => (sameBase(this, other.domain) || __.isAnonTokenObj(this) || __.isAnonObj(other.domain)) && withinQ(this, other)
     case _ => false

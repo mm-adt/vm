@@ -55,7 +55,7 @@ object CombineOp extends Func[Obj, Lst[Obj]] {
     val newSep: String = if (argSize < 2) alst.gsep else blst.gsep
     if (argSize > 0) {
       for (x <- alst.glist) {
-        newList = newList :+ Inst.resolveArg(x, argList(i))
+        newList = newList :+ Obj.resolveArg(x, argList(i))
         i = (i + 1) % argSize
       }
     }

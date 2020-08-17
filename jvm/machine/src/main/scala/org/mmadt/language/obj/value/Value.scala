@@ -40,7 +40,7 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
     case _: __ if __.isToken(other) => Try[Boolean] {
-      this.test(Inst.resolveToken(this, other))
+      this.test(Obj.resolveToken(this, other))
     }.getOrElse(false)
     case _: Type[_] => (sameBase(this, other.domain) || __.isAnonObj(other.domain)) && withinQ(this, other.domain) && this.compute(other).alive
     case avalue: Value[_] => this.g.equals(avalue.g) && withinQ(this, avalue)

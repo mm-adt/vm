@@ -84,7 +84,7 @@ object BranchOp extends Func[Obj, Obj] {
           case Tokens.`,` => Rec.moduleMult(start, arec) match {
             case brec: Value[_] => strm(brec.gmap.map(kv => kv._2))
             case brec: Type[_] =>
-              if (1 == brec.size) brec.gmap.head._2.hardQ(q => multQ(q, inst.q))
+              if (1 == brec.size) Type.tryCtype((start ~~> brec.gmap.head._2).q(inst.q))
               else BranchInstruction.brchType[Obj](brec, inst.q).via(start, inst.clone(_ => List(brec)))
           }
           case Tokens.`;` => Rec.moduleMult(start, arec) match {

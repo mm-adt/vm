@@ -88,23 +88,23 @@ object Rec {
     arec.gsep match {
       /////////// ,-rec
       case Tokens.`,` =>
-        arec.clone(_.map(kv => Inst.resolveArg[A, A](start, kv._1) -> kv._2)
+        arec.clone(_.map(kv => (start ~~> kv._1) -> kv._2)
           .filter(kv => kv._1.alive)
-          .map(kv => kv._1 -> Inst.resolveArg[A, B](start, kv._2))
+          .map(kv => kv._1 -> (start ~~> kv._2))
           .groupBy(kv => kv._1)
           .map(kv => kv._1 -> (if (kv._2.size == 1) kv._2.head._2 else __.branch(lst(g = (Tokens.`,`, kv._2.map(x => x._2)))))).toList)
       /////////// ;-rec
       case Tokens.`;` =>
         var running = start -> start
         arec.clone(_.map(kv => {
-          val key = Inst.resolveArg(running._1, kv._1)
-          running = (if (!key.alive) key -> zeroObj else key -> Inst.resolveArg(running._2, kv._2)).asInstanceOf[(A, A)]
+          val key = running._1 ~~> kv._1
+          running = (if (!key.alive) key -> zeroObj else key -> (running._2 ~~> kv._2)).asInstanceOf[(A, A)]
           running
         }))
       /////////// |-rec
       case Tokens.`|` =>
         // var taken: Boolean = false
-        arec.clone(_.map(kv => Inst.resolveArg(start, kv._1) -> kv._2)
+        arec.clone(_.map(kv => Obj.resolveArg(start, kv._1) -> kv._2)
           .filter(kv => kv._1.alive)
           /*.filter(kv =>
             if(taken) false
@@ -113,17 +113,17 @@ object Rec {
               taken = true;
               true
             })*/
-          .map(kv => kv._1 -> Inst.resolveArg(start, kv._2)))
+          .map(kv => kv._1 -> (start ~~> kv._2)))
     }
   }
   def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {
     var found: Boolean = false;
     arec.clone(_.map(x => {
       if (!found) {
-        val keyResolve = Inst.resolveArg(start, x._1)
+        val keyResolve = start ~~> x._1
         if (keyResolve.alive) {
           found = true
-          (keyResolve, Inst.resolveArg(start, x._2))
+          (keyResolve, start ~~> x._2)
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)

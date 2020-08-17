@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.gremlin
+
 import org.mmadt.VmException
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj._
@@ -38,7 +39,7 @@ class GremlinParser extends JavaTokenParsers {
   // all mm-ADT languages must be able to accept a string representation of an expression in the language and return an Obj
   private def parse[O <: Obj](input: String): O = {
     this.parseAll(expr, input.trim) match {
-      case Success(result, _) => (result `,`).asInstanceOf[O]
+      case Success(result:Obj, _) => (result `,`).asInstanceOf[O]
       case NoSuccess(y) => throw LanguageException.parseError(
         y._1,
         y._2.source.toString,

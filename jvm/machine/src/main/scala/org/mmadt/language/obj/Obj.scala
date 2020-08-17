@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple}
 import org.mmadt.language.obj.Rec._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
@@ -125,20 +125,9 @@ trait Obj
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
-  def compute[E <: Obj](rangeType: E): E = AsOp.autoAsType(this, x => Obj.internal(x, rangeType), rangeType)
-
-  def ==>[E <: Obj](target: E): E = {
-    if (!target.alive) return zeroObj.asInstanceOf[E]
-    target match {
-      case _: Value[_] => target.hardQ(q => multQ(this.q, q))
-      case rangeType: Type[E] =>
-        LanguageException.testTypeCheck(this, target.domain)
-        this match {
-          case _: Value[_] => AsOp.autoAsType(this.update(target.model), x => Processor.iterator(x, rangeType), rangeType)
-          case _: Type[_] => AsOp.autoAsType(this.update(target.model), x => Processor.compiler(x, rangeType), rangeType)
-        }
-    }
-  }
+  final def compute[E <: Obj](rangeType: E): E = AsOp.autoAsType(this, x => Obj.internal(x, rangeType), rangeType)
+  final def ~~>[E <: Obj](target: E): E = Obj.resolveArg[this.type,E](this, target)
+  final def ==>[E <: Obj](target: E): E = Obj.resolveObj(this, target)
 
   // lst fluent methods
   final def `|`: Lst[this.type] = lst(Tokens.|, this).asInstanceOf[Lst[this.type]]
@@ -183,5 +172,41 @@ object Obj {
     final def `;`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`;`, next)
     final def `|`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`|`, next)
     private final def recMaker(sep: String, tuple: Tuple2[A, _]): Rec[A, B] = rec(g = (sep, List(this.tuple).replace(tuple.asInstanceOf[Tuple2[A, B]])))
+  }
+  def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
+    if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]
+    else objB match {
+      case _: Value[_] => objB.hardQ(q => multQ(objA.q, q))
+      case rangeType: Type[E] =>
+        LanguageException.testTypeCheck(objA, objB.domain)
+        objA match {
+          case _: Value[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.iterator(x, rangeType), rangeType)
+          case _: Type[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.compiler(x, rangeType), rangeType)
+        }
+    }
+  }
+
+  def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
+    if (!obj.alive || !arg.alive) return arg.hardQ(qZero)
+    resolveToken(obj, arg) match {
+      case anon: __ if __.isTokenRoot(anon) => anon.asInstanceOf[E]
+      case valueArg: OValue[E] => valueArg
+      case typeArg: OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>
+        obj match {
+          case _: Value[_] => obj.compute(typeArg)
+          case _: Type[_] => obj.range.update(obj.model).compute(typeArg)
+        }
+      case _ => arg.hardQ(qZero)
+    }
+  }
+
+  def resolveToken[A <: Obj](obj: Obj, arg: A): A = {
+    if (__.isToken(arg))
+      obj.model.search[A](arg.name, obj.asInstanceOf[A]).orElse[A](obj match {
+        case _: Type[Obj] => return arg
+        case _ =>
+          if (obj.model.search[A](arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
+          else throw LanguageException.labelNotFound(obj, arg.name)
+      }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
   }
 }

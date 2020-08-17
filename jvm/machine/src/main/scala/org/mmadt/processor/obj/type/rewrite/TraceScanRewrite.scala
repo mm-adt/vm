@@ -91,7 +91,7 @@ object TraceScanRewrite extends Rewrite {
     if (range.length == trace.length) {
       query.compute(trace
         .zip(range)
-        .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._1.args.zip(x._2.args).map(y => Inst.resolveArg(y._1, y._2))))
+        .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._1.args.zip(x._2.args).map(y => Obj.resolveArg(y._1, y._2))))
         .foldLeft(query.domainObj)((x, y) => y.exec(x)))
     } else {
       range.foldLeft(query)((x, y) => y.exec(x))

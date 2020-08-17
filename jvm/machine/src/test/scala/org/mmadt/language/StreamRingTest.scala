@@ -16,7 +16,7 @@ class StreamRingTest extends BaseInstTest(
     testing(str, branch(branch(branch(branch(str.id() `,`) `,`) `,`) `,`), str, "str[[[[[id]]]]]"),
     testing(str, branch(branch(str.id() `,` str.id()) `,` str.id()), str.q(3) <= str.id().q(3), "str[[[id],[id]],[id]]"),
     testing(str, branch(str.id().q(2) `,` str.id().q(3)), str.q(5) <= str.id().q(5), "str[[id]{2},[id]{3}]"),
-    testing(str, branch(str.id() `,` zeroObj), str, "str[[id],{0}]"),
+    testing(str, branch(str.id() `,` str.q(0)), str, "str[[id],{0}]"),
     testing(str, branch(str.id() `,` str.id().q(-1)), zeroObj, "str[[id],[id]{-1}]"),
     //comment("===monoid axioms"),
     testing(str, branch(branch(str.id() `;` str.id()) `;` str.id()), str, "str[[id];[id];[id]]"),
@@ -42,10 +42,21 @@ class StreamRingTest extends BaseInstTest(
     testing(str, branch(str.id().q(6) `,` str.id().q(8)), str.q(14) <= str.id().q(14), "str[[id]{6},[id]{8}]"), // splitting
     testing(str, branch(branch(str.id().q(2) `,`) `,` branch(str.id().q(3) `,`)), str.q(5) <= str.id().q(5), "str[[[id]{2}],[[id]{3}]]"), // merging
     testing(str, branch(str.id().q(2) `,` str.id().q(3)), str.q(5) <= str.id().q(5), "str[[id]{2},[id]{3}]"), // merging
-    testing(str, branch(zeroObj `,` str.id()), str, "str[{0},[id]]"), // removing
+    testing(str, branch(str.q(0) `,` str.id()), str, "str[{0},[id]]"), // removing
     testing(str, branch(str.id().q(0) `,` str.id()), str, "str[[id]{0},[id]]"), // removing
   ),
-  testSet("stream ring axioms and theorems on rec")) {
+  testSet("stream ring axioms and theorems on rec",
+    //comment("==abelian group axioms"),
+    testing(str, branch(branch(branch(branch(id() -> id()) `,`) `,`) `,`), str, "str[[[[[id]->[id]]]]]"),
+    // TODO testing(str, branch(branch(id() -> str.id() `_,` id() -> str.id()) `,` id() -> str.id()), str.q(3) <= str.id().q(3), "str[[[id]->[id],[id]->[id]],[id]->[id]]"),
+    // TODO testing(str, branch(str.id().q(2) -> str.id().q(2) `_,` str.id().q(3) -> str.id().q(3)), str.q(5) <= str.id().q(5), "str[[id]{2}->[id]{2},[id]{3}->[id]{3}]"),
+   testing(str, branch(str.id() -> str.id() `_,` str.q(0) -> str.q(0)), str, "str[[id]->[id],{0}->{0}]"),
+    testing(str, branch(str.id() -> str.id() `_,` str.id().q(-1) -> str.id().q(-1)), zeroObj, "str[str[id]->str[id],str[id]{-1}->str[id]{-1}]"),
+    testing(str, branch(id() -> id() `_,` id().q(-1) -> id().q(-1)), zeroObj, "str[[id]->[id],[id]{-1}->[id]{-1}]"),
+    //comment("===monoid axioms"),
+    // testing(str, branch(branch(str.id() -> str.id() `_;` str.id() -> str.id()) `;` str.id() -> str.id()), str, "str[[id]->[id];[id]->[id];[id]->[id]]"),
+    // TODO testing(str, branch(str.id()->str.id() `_;` str -> branch(str.id() -> str.id() `_;` str.id() -> str.id())), str, "str[[id]->[id];[id]->[[id]->[id];[id]->[id]]]"),
+  )) {
 
   assertResult(str)(engine.eval("str[[id]{-1};[id]{-1}]"))
   assertResult("a".q(2))(engine.eval("'a'[_,_]"))

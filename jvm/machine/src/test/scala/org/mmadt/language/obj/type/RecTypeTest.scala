@@ -97,11 +97,11 @@ class RecTypeTest extends FunSuite {
     assertResult(List(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
     assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
     // backwards keys
-    assertResult(List(Y, X))((Y `,` X).gmap)
+    assertResult(List(Y, X))((Y `_,` X).gmap)
     assertResult(List(Y, X))(rec(Y).plus(rec(X)).gmap)
-    assertResult(List(Z, Y, X))((Z `,` Y `,` X).gmap)
-    assertResult(List(Z, Y, X))(rec(Z).plus(Y `,` X).gmap)
-    assertResult(List(Z, Y, X))((Z `,` Y).plus(rec(X)).gmap)
+    assertResult(List(Z, Y, X))((Z `_,` Y `_,` X).gmap)
+    assertResult(List(Z, Y, X))(rec(Z).plus(Y `_,` X).gmap)
+    assertResult(List(Z, Y, X))((Z `_,` Y).plus(rec(X)).gmap)
     // overwrite orderings
     //  assertResult(List(X, Y, Z))((X `,` Y).plus((X `,` Z)).gmap) // TODO: determine overwrite order
   }

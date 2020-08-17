@@ -34,6 +34,7 @@ import org.mmadt.storage.StorageFactory.{str, _}
 import org.mmadt.storage.obj.value.VInst
 
 import scala.collection.mutable
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -83,9 +84,9 @@ object ExplainOp extends Func[Obj, Str] {
   }
   def printableTable(atype: Type[Obj]): String = {
     val report = explain(atype, mutable.LinkedHashMap.empty[String, Obj])
-    val c1 = report.map(x => objStringClip(x._2).length).max + 4
-    val c2 = report.map(x => objStringClip(x._3).length).max + 4
-    val c3 = report.map(x => objStringClip(x._4).length).max + 4
+    val c1 = Try(report.map(x => objStringClip(x._2).length).max).getOrElse(0) + 4
+    val c2 = Try(report.map(x => objStringClip(x._3).length).max).getOrElse(0) + 4
+    val c3 = Try(report.map(x => objStringClip(x._4).length).max).getOrElse(0) + 4
     val builder: StringBuilder = new StringBuilder()
 
     builder
