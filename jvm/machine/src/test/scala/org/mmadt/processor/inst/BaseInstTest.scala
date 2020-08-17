@@ -39,6 +39,7 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, 
   testSets.foreach(testSet => {
     test(testSet._1) {
       var lastComment: String = ""
+      // TODO: engine.eval(s":[model,'${getClass.getResource("/model/mm.mm").getPath}']")
       forEvery(testSet._2) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
@@ -47,6 +48,7 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, 
       }
     }
   })
+  engine.eval(":")
 
   def stringify(obj: Obj): String = if (obj.isInstanceOf[Strm[_]]) {
     if (!obj.alive)
@@ -58,7 +60,6 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, 
 
   def evaluate(start: Obj, middle: Obj, end: Obj, lastComment: String = "", inst: Inst[Obj, Obj] = null,
                engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true): Unit = {
-    engine.eval(":")
     val querying = List[Obj => Obj](
       _ => engine.eval(query)
     )
