@@ -13,52 +13,52 @@ import org.mmadt.storage.StorageFactory.{str, zeroObj}
 class StreamRingTest extends BaseInstTest(
   testSet("stream ring axioms and theorems on lst",
     //comment("==abelian group axioms"),
-    testing(str, branch(branch(branch(branch(str.id `,`) `,`) `,`) `,`), str, "str[[[[[id]]]]]"),
-    testing(str, branch(branch(str.id `,` str.id) `,` str.id), str.q(3) <= str.id.q(3), "str[[[id],[id]],[id]]"),
-    testing(str, branch(str.id.q(2) `,` str.id.q(3)), str.q(5) <= str.id.q(5), "str[[id]{2},[id]{3}]"),
-    testing(str, branch(str.id `,` str.q(0)), str, "str[[id],{0}]"),
-    testing(str, branch(str.id `,` str.id.q(-1)), zeroObj, "str[[id],[id]{-1}]"),
+    testing(str, branch(branch(branch(branch(id `,`) `,`) `,`) `,`), str, "str[[[[[id]]]]]"),
+    testing(str, branch(branch(id `,` id) `,` id), str.q(3) <= str.id.q(3), "str[[[id],[id]],[id]]"),
+    testing(str, branch(id.q(2) `,` id.q(3)), str.q(5) <= str.id.q(5), "str[[id]{2},[id]{3}]"),
+    testing(str, branch(id `,` q(0)), str, "str[[id],{0}]"),
+    testing(str, branch(id `,` id.q(-1)), zeroObj, "str[[id],[id]{-1}]"),
     //comment("===monoid axioms"),
-    testing(str, branch(branch(str.id `;` str.id) `;` str.id), str, "str[[id];[id];[id]]"),
-    testing(str, branch(str.id `;` branch(str.id `;` str.id)), str, "str[[id];[[id];[id]]]"),
+    testing(str, branch(branch(id `;` id) `;` str.id), str, "str[[id];[id];[id]]"),
+    testing(str, branch(id `;` branch(id `;` id)), str, "str[[id];[[id];[id]]]"),
     //comment("===ring axioms"),
-    testing(str, branch(branch(str.id `,` str.id) `;` str.id), str.q(2) <= str.id.q(2), "str[[[id],[id]];[id]]"),
-    testing(str, branch(branch(str.id `;` str.id) `,` branch(str.id `;` str.id)), str.q(2) <= str.id.q(2)), // TODO: "str[[[id];[id]],[[id];[id]]]"
+    testing(str, branch(branch(id `,` id) `;` id), str.q(2) <= str.id.q(2), "str[[[id],[id]];[id]]"),
+    testing(str, branch(branch(id `;` id) `,` branch(id `;` id)), str.q(2) <= str.id.q(2)), // TODO: "str[[[id];[id]],[[id];[id]]]"
     //comment("===ring theorems"),
-    testing(str, branch(str.id.q(-1) `,` str.id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1},[id]{-1}]"),
-    testing(str, branch(str.id `,` str.id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id],[id]]{-1}"),
-    testing(str, branch(str.id.q(-1) `,`).q(-1), str.id), // TODO: "str[[id]{-1}]{-1}"
-    testing(str, branch(str.id `;` str.q(0)), zeroObj, "str[[id];{0}]"),
-    testing(str, branch(str.q(0) `;` str.id), zeroObj, "str[{0};[id]]"),
-    testing(str, branch(str.id `;` str.id.q(-1)), str.q(-1) <= str.id.q(-1), "str[[id];[id]{-1}]"),
-    testing(str, branch(str.id.q(-1) `;` str.id), str.q(-1) <= str.id.q(-1), "str[[id]{-1};[id]]"),
-    testing(str, branch(str.id.q(-1) `;` str.id.q(-1)), str, "str[[id]{-1};[id]{-1}]"),
-    testing(str, branch(str.id `;` str.id), str, "str[[id];[id]]"),
+    testing(str, branch(id.q(-1) `,` id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1},[id]{-1}]"),
+    testing(str, branch(id `,` id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id],[id]]{-1}"),
+    testing(str, branch(id.q(-1) `,`).q(-1), str.id), // TODO: "str[[id]{-1}]{-1}"
+    testing(str, branch(id `;` __.q(0)), zeroObj, "str[[id];{0}]"),
+    testing(str, branch(__.q(0) `;` id), zeroObj, "str[{0};[id]]"),
+    testing(str, branch(id `;` id.q(-1)), str.q(-1) <= str.id.q(-1), "str[[id];[id]{-1}]"),
+    testing(str, branch(id.q(-1) `;` id), str.q(-1) <= str.id.q(-1), "str[[id]{-1};[id]]"),
+    testing(str, branch(id.q(-1) `;` id.q(-1)), str, "str[[id]{-1};[id]{-1}]"),
+    testing(str, branch(id `;` id), str, "str[[id];[id]]"),
     // TODO: testing(str, branch(str.id `;` str.id).q(-1), str.q(-1) <= str.id.q(-1),"str[[id];[id]]{-1}"),
     //comment("===stream ring axioms"),
-    testing(str, branch(str.id.q(2) `,` str.id.q(3)), str.id.q(5), "str[[id]{2},[id]{3}]"), // bulking
-    testing(str.q(2), str.q(2).branch(str.id.q(3) `,`), str.q(6) <= str.q(2).id.q(3), "str{6}<=str{2}[[id]{3}]"), // applying
-    testing(str.q(2), str.q(2).branch(str.id.q(3) `,` str.id.q(4)), str.q(14) <= str.q(2).id.q(7), "str{14}<=str{2}[[id]{3},[id]{4}]"), // splitting
-    testing(str, branch(str.id.q(6) `,` str.id.q(8)), str.q(14) <= str.id.q(14), "str[[id]{6},[id]{8}]"), // splitting
-    testing(str, branch(branch(str.id.q(2) `,`) `,` branch(str.id.q(3) `,`)), str.q(5) <= str.id.q(5), "str[[[id]{2}],[[id]{3}]]"), // merging
-    testing(str, branch(str.id.q(2) `,` str.id.q(3)), str.q(5) <= str.id.q(5), "str[[id]{2},[id]{3}]"), // merging
-    testing(str, branch(str.q(0) `,` str.id), str, "str[{0},[id]]"), // removing
-    testing(str, branch(str.id.q(0) `,` str.id), str, "str[[id]{0},[id]]"), // removing
+    testing(str, branch(id.q(2) `,` id.q(3)), str.id.q(5), "str[[id]{2},[id]{3}]"), // bulking
+    testing(str.q(2), str.q(2).branch(id.q(3) `,`), str.q(6) <= str.q(2).id.q(3), "str{6}<=str{2}[[id]{3}]"), // applying
+    testing(str.q(2), str.q(2).branch(id.q(3) `,` id.q(4)), str.q(14) <= str.q(2).id.q(7), "str{14}<=str{2}[[id]{3},[id]{4}]"), // splitting
+    testing(str, branch(id.q(6) `,` id.q(8)), str.q(14) <= str.id.q(14), "str[[id]{6},[id]{8}]"), // splitting
+    testing(str, branch(branch(Tuple1(id.q(2))) `,` branch(Tuple1(id.q(3)))), str.q(5) <= str.id.q(5), "str[[[id]{2}],[[id]{3}]]"), // merging
+    testing(str, branch(id.q(2) `,` id.q(3)), str.q(5) <= str.id.q(5), "str[[id]{2},[id]{3}]"), // merging
+    testing(str, branch(__.q(0) `,` id), str, "str[{0},[id]]"), // removing
+    testing(str, branch(id.q(0) `,` id), str, "str[[id]{0},[id]]"), // removing
   ),
   testSet("stream ring axioms and theorems on rec",
     //comment("==abelian group axioms"),
     testing(str, branch(branch(branch(branch(id -> id) `,`) `,`) `,`), str, "str[[[[[id]->[id]]]]]"),
     // TODO testing(str, branch(branch(id -> str.id `_,` id -> str.id) `,` id -> str.id), str.q(3) <= str.id.q(3), "str[[[id]->[id],[id]->[id]],[id]->[id]]"),
     // TODO testing(str, branch(str.id.q(2) -> str.id.q(2) `_,` str.id.q(3) -> str.id.q(3)), str.q(5) <= str.id.q(5), "str[[id]{2}->[id]{2},[id]{3}->[id]{3}]"),
-    testing(str, branch(str.id -> str.id `_,` str.q(0) -> str.q(0)), str, "str[[id]->[id],{0}->{0}]"),
-    testing(str, branch(str.id -> str.id `_,` str.id.q(-1) -> str.id.q(-1)), zeroObj, "str[str[id]->str[id],str[id]{-1}->str[id]{-1}]"),
+    testing(str, branch(id -> id `_,` __.q(0) -> __.q(0)), str, "str[[id]->[id],{0}->{0}]"),
+    testing(str, branch(id -> id `_,` id.q(-1) -> id.q(-1)), zeroObj, "str[str[id]->str[id],str[id]{-1}->str[id]{-1}]"),
     testing(str, branch(id -> id `_,` id.q(-1) -> id.q(-1)), zeroObj, "str[[id]->[id],[id]{-1}->[id]{-1}]"),
     //comment("===monoid axioms"),
-    testing(str, branch(branch(str.id -> str.id `_;` str.id -> str.id) `;` str.id -> str.id), str, "str[[id]->[id];[id]->[id];[id]->[id]]"),
-    testing(str, branch(str.id -> str.id `_;` str -> branch(str.id -> str.id `_;` str.id -> str.id)), str, "str[[id]->[id];[id]->[[id]->[id];[id]->[id]]]"),
+    testing(str, branch(branch(id -> id `_;` id -> id) `;` id -> id), str, "str[[id]->[id];[id]->[id];[id]->[id]]"),
+    testing(str, branch(id -> id `_;` __ -> branch(id -> id `_;` id -> id)), str, "str[[id]->[id];[id]->[[id]->[id];[id]->[id]]]"),
     //comment("===ring axioms"),
     // TODO testing(str, branch(branch(str.id -> str.id `_,` str.id -> str.id) `;` str.id -> str.id), str.q(2) <= str.id.q(2), "str[[[id]->[id],[id]->[id]];[id]->[id]]"),
-    testing(str, branch(str.id -> branch(str.id -> str.id `_;` str.id -> str.id) `_,` str.id -> branch(str.id -> str.id `_;` str.id -> str.id)), str.q(2) <= str.id.q(2), "str[[id]->[[id]->[id];[id]->[id]],[id]->[[id]->[id];[id]->[id]]]"),
+    testing(str, branch(id -> branch(id -> id `_;` id -> id) `_,` id -> branch(id -> id `_;` id -> id)), str.q(2) <= str.id.q(2), "str[[id]->[[id]->[id];[id]->[id]],[id]->[[id]->[id];[id]->[id]]]"),
     //comment("===ring theorems"),
     testing(str, branch(id.q(1) -> id.q(-1) `_,` id.q(1) -> id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1}->[id]{-1},[id]{-1}->[id]{-1}]"),
     testing(str, branch(id -> id `_,` id -> id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id]->[id],[id]->[id]]{-1}"),
@@ -72,13 +72,13 @@ class StreamRingTest extends BaseInstTest(
     // TODO: testing(str, branch(str.id -> str.id `_;` str.id -> str.id).q(-1), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]->[id]]{-1}"),
     //comment("===stream ring axioms"),
     // TODO: testing(str, branch(str.id.q(2) -> str.id.q(2) `_,` str.id.q(3)->str.id.q(3)), str.id.q(5), "str[[id]{2}->[id]{2},[id]{3}->[id]{3}]"), // bulking
-    testing(str.q(2), str.q(2).branch(str.id.q(3) -> str.id.q(3)), str.q(6) <= str.q(2).id.q(3), "str{6}<=str{2}[[id]{3}->[id]{3}]"), // applying
+    testing(str.q(2), str.q(2).branch(id.q(3) -> id.q(3)), str.q(6) <= str.q(2).id.q(3), "str{6}<=str{2}[[id]{3}->[id]{3}]"), // applying
     // TODO: testing(str.q(2), str.q(2).branch(str.id.q(3) ->str.id.q(3) `_,` str.id.q(4) -> str.id.q(4)), str.q(14) <= str.q(2).id.q(7), "str{14}<=str{2}[[id]{3}->[id]{3},[id]{4}->[id]{4}]"), // splitting
     // TODO: testing(str, branch(str.id.q(6)->str.id.q(6) `_,`str.id.q(8)-> str.id.q(8)), str.q(14) <= str.id.q(14), "str[[id]{6}->[id]{6},[id]{8}->[id]{8}]"), // splitting
-    testing(str, branch(str -> branch(str.id.q(2) -> str.id.q(2)) `_,` str -> branch(str.id.q(3) -> str.id.q(3))), str.q(5) <= str.id.q(5), "str[[id]->[[id]{2}->[id]{2}],[id]->[[id]{3}->[id]{3}]]"), // merging
+    testing(str, branch(str -> branch(id.q(2) -> id.q(2)) `_,` str -> branch(id.q(3) -> id.q(3))), str.q(5) <= str.id.q(5), "str[[id]->[[id]{2}->[id]{2}],[id]->[[id]{3}->[id]{3}]]"), // merging
     // TODO: testing(str, branch(str.id.q(2) ->str.id.q(2) `_,` str.id.q(3) ->str.id.q(3)), str.q(5) <= str.id.q(5), "str[[id]{2}->[id]{2},[id]{3}->[id]{3}]"), // merging
-    testing(str, branch(str.q(0) -> str.q(0) `_,` str.id -> str.id), str, "str[{0}->{0},[id]->[id]]"), // removing
-    testing(str, branch(str.id.q(0) -> str.id.q(0) `_,` str.id -> str.id), str, "str[[id]{0}->[id]{0},[id]->[id]]"), // removing
+    testing(str, branch(__.q(0) -> __.q(0) `_,` id -> id), str, "str[{0}->{0},[id]->[id]]"), // removing
+    testing(str, branch(id.q(0) -> id.q(0) `_,` id -> id), str, "str[[id]{0}->[id]{0},[id]->[id]]"), // removing
   )) {
 
   assertResult(str)(engine.eval("str[[id]{-1};[id]{-1}]"))
