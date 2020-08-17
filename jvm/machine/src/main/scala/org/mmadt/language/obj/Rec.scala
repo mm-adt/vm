@@ -56,12 +56,12 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
     case _ => true
   }
 
-  final def `_,`(next: Tuple2[A, _]): this.type = this.`,`(next)
-  final def `_;`(next: Tuple2[A, _]): this.type = this.`;`(next)
+  final def `_,`(next: Tuple2[_, _]): this.type = this.`,`(next)
+  final def `_;`(next: Tuple2[_, _]): this.type = this.`;`(next)
   final def `_|`(next: Tuple2[_, _]): this.type = this.`|`(next)
-  final def `,`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`,`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
-  final def `;`(next: Tuple2[A, _]): this.type = this.clone(g = (Tokens.`;`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
-  final def `|`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`|`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `,`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`,`, this.g._2 :+ next))
+  final def `;`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`;`, this.g._2 :+ next))
+  final def `|`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`|`, this.g._2 :+ next))
 }
 
 object Rec {

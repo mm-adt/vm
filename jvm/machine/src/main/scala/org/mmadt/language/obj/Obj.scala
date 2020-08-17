@@ -23,7 +23,6 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple}
-import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
@@ -126,7 +125,7 @@ trait Obj
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   final def compute[E <: Obj](rangeType: E): E = AsOp.autoAsType(this, x => Obj.internal(x, rangeType), rangeType)
-  final def ~~>[E <: Obj](target: E): E = Obj.resolveArg[this.type,E](this, target)
+  final def ~~>[E <: Obj](target: E): E = Obj.resolveArg[this.type, E](this, target)
   final def ==>[E <: Obj](target: E): E = Obj.resolveObj(this, target)
 
   // lst fluent methods
@@ -162,16 +161,8 @@ object Obj {
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
-  @inline implicit def tupleToRichTuple[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
-  private class RichTuple2[A <: Obj, B <: Obj](val tuple: Tuple2[A, B]) {
-    final def `_,`(next: Tuple2[A, B]): Rec[A, B] = this.`,`(next)
-    final def `_;`(next: Tuple2[A, B]): Rec[A, B] = this.`;`(next)
-    final def `_|`(next: Tuple2[A, B]): Rec[A, B] = this.`|`(next)
-    final def `,`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`,`, next)
-    final def `;`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`;`, next)
-    final def `|`(next: Tuple2[A, B]): Rec[A, B] = this.recMaker(Tokens.`|`, next)
-    private final def recMaker(sep: String, tuple: Tuple2[A, _]): Rec[A, B] = rec(g = (sep, List(this.tuple).replace(tuple.asInstanceOf[Tuple2[A, B]])))
-  }
+  @inline implicit def tupleToRec[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
+
   def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]
     else objB match {

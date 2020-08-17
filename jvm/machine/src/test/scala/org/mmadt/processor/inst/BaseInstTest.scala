@@ -44,7 +44,7 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, 
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
         case (null, null, comment, null, false) => lastComment = comment.toString
-        case (lhs, rhs, result, query, c) => evaluate(lhs, rhs, result, lastComment, query = query, compile = c)
+        case (lhs, rhs, result, query, compile) => evaluate(lhs, rhs, result, lastComment, query = query, compile = compile)
       }
     }
   })
@@ -56,7 +56,6 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, 
     else
       obj.toStrm.values.foldLeft("[")((a, b) => a.concat(b + ",")).dropRight(1).concat("]")
   } else obj.toString
-
 
   def evaluate(start: Obj, middle: Obj, end: Obj, lastComment: String = "", inst: Inst[Obj, Obj] = null,
                engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true): Unit = {
