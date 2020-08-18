@@ -48,7 +48,6 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, 
       }
     }
   })
-  engine.eval(":")
 
   def stringify(obj: Obj): String = if (obj.isInstanceOf[Strm[_]]) {
     if (!obj.alive)
@@ -59,29 +58,31 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Obj, String, 
 
   def evaluate(start: Obj, middle: Obj, end: Obj, lastComment: String = "", inst: Inst[Obj, Obj] = null,
                engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true): Unit = {
-    val querying = List[Obj => Obj](
-      _ => engine.eval(query)
+    engine.eval(":")
+    val querying = List[(String,Obj => Obj)](
+      ("querying-1", _ => engine.eval(query))
     )
-    val evaluating = List[Obj => Obj](
-      s => engine.eval(s"${stringify(s)} => ${middle}"),
-      s => s.compute(middle),
-      s => s ==> middle,
-      s => s `=>` middle,
+    val evaluating = List[(String, Obj => Obj)](
+      ("evaluating-1", s => engine.eval(s"${stringify(s)} => ${middle}")),
+      ("evaluating-2", s => s.compute(middle)),
+      ("evaluating-3", s => s ==> middle),
+      ("evaluating-4", s => s `=>` middle)
     )
-    val compiling = List[Obj => Obj](
-      s => if (!middle.alive) s.q(qZero) else (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)),
-      s => if (!middle.alive) s.q(qZero) else middle.trace.foldLeft(s)((a, b) => b._2.exec(a)),
-      s => s `=>` (start.range ==> middle),
-      s => s ==> (start.range ==> middle),
-      s => s `=>` (middle.domain ==> middle),
-      s => s ==> (middle.domain ==> middle),
-      s => s `=>` (asType(start.rangeObj) ==> middle),
-      s => s ==> (asType(start.rangeObj) ==> middle))
-    val instructioning = List[Obj => Obj](s => inst.exec(s))
+    val compiling = List[(String,Obj => Obj)](
+      ("compiling-1", s => if (!middle.alive) s.q(qZero) else (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a))),
+      ("compiling-2", s => if (!middle.alive) s.q(qZero) else middle.trace.foldLeft(s)((a, b) => b._2.exec(a))),
+      ("compiling-3", s => s `=>` (start.range ==> middle)),
+      ("compiling-4", s => s ==> (start.range ==> middle)),
+      ("compiling-5", s => s `=>` (middle.domain ==> middle)),
+      ("compiling-6", s => s ==> (middle.domain ==> middle)),
+      ("compiling-7", s => s `=>` (asType(start.rangeObj) ==> middle)),
+      ("compiling-8", s => s ==> (asType(start.rangeObj) ==> middle)))
+    val instructioning = List[(String,Obj => Obj)](("instructioning-1", s => inst.exec(s)))
+
     (evaluating ++
       (if (compile) compiling else Nil) ++
       (if (null != query) querying else Nil) ++
       (if (null != inst) instructioning else Nil))
-      .foreach(example => assertResult(end, lastComment)(example(start)))
+      .foreach(example => assertResult(end, s"[${example._1}] $lastComment")(example._2(start)))
   }
 }
