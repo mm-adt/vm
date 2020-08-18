@@ -22,7 +22,8 @@
 
 package org.mmadt.processor.inst.rewrite
 
-import org.mmadt.language.obj.`type`.__.id
+
+import org.mmadt.language.obj.`type`.__.{id, plus}
 import org.mmadt.language.obj.op.RewriteInstruction._
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
@@ -34,5 +35,12 @@ import org.mmadt.storage.StorageFactory.int
 class IdRewriteTest extends BaseInstTest(
   testSet("[rule:id] rewrite",
     testing(int, id.id.rule(rule_id), int),
+    testing(int, id.q(2).id.q(3).rule(rule_id), int.id.q(6)),
+    testing(int, id.q(3).id.q(-3).rule(rule_id), int.id.q(-9)),
     testing(int, id.plus(1).id.id.rule(rule_id), int.plus(1)),
-    testing(int, id.id.plus(1).id.rule(rule_id), int.plus(1))))
+    testing(int, id.id.plus(1).id.rule(rule_id), int.plus(1)),
+    testing(int, id.id.q(5).plus(1).q(2).id.rule(rule_id), int.plus(1).q(10)),
+    testing(int, plus(1).id.plus(id.plus(2)).rule(rule_id), int.plus(1).plus(int.plus(2))),
+    testing(int, plus(id.mult(id.id.plus(id).id).id).id.rule(rule_id), int.plus(int.mult(int.plus(int)))),
+    testing(int, id.q(2).plus(id.mult(id.q(5).id.plus(id).id).id).q(6).id.rule(rule_id), int.plus(int.mult(int.plus(int).q(5))).q(12)),
+  ))

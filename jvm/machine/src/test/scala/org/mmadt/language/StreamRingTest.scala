@@ -62,7 +62,7 @@ class StreamRingTest extends BaseInstTest(
     //comment("===ring theorems"),
     testing(str, branch(id.q(1) -> id.q(-1) `_,` id.q(1) -> id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1}->[id]{-1},[id]{-1}->[id]{-1}]"),
     testing(str, branch(id -> id `_,` id -> id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id]->[id],[id]->[id]]{-1}"),
-    // TODO: testing(str, branch(id.q(-1) -> id.q(-1)).q(-1), str.id,"str[[id]{-1}->[id]{-1}]{-1}"),
+    // testing(str, branch(id.q(-1) -> id.q(-1)).q(-1), str.id,"str[[id]{-1}->[id]{-1}]{-1}"),
     // TODO: testing(str, branch(id -> id `_;` id.q(0) -> id.q(0)), zeroObj, "str[[id]->[id];{0}->{0}]"),
     // TODO: testing(str, branch(str.q(0) -> str.q(0) `_;` str.id -> str.id), zeroObj, "str[{0};[id]]"),
     // TODO: testing(str, branch(str.id -> str.id `_;` str.id.q(-1) -> str.id.q(-1)), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]{-1}->[id]{-1}]"),
@@ -91,7 +91,7 @@ class StreamRingTest extends BaseInstTest(
     assertResult(str.q(10).id.q(2))(engine.eval("str{10}[str,str]"))
     assertResult(str.q(10).id.q(2))(engine.eval("str{10}[_,_]"))
     assertResult(zeroObj)(engine.eval("str[[id]{-1},[id]]"))
-    assertResult(str.q(10).id.q(2).id.q(2))(engine.eval("str{10}[str,str][_,_]"))
+    assertResult(str.q(10).id.q(4))(engine.eval("str{10}[str,str][_,_]"))
     assertResult(__.id.q(2))(engine.eval("[_,_]"))
     //     assertResult(__)(engine.eval("[_[id]{2},_[id]{-1}]"))
     assertResult(str.id.q(-1))(engine.eval("str[[id];[id]]{-1}"))
@@ -115,7 +115,7 @@ class StreamRingTest extends BaseInstTest(
     //    assertResult(__.id.q(3))(engine.eval("[_,[_,_]]"))
     assertResult(str.id.q(7))(engine.eval("str[str[id]{3},str[id]{4}]"))
     assertResult(str.q(5).id.q(7))(engine.eval("str{5}[str[id]{3},str[id]{4}]"))
-    assertResult(str.id.q(2).id.q(7))(engine.eval("str[id]{2}[str[id]{3},str[id]{4}]"))
+    assertResult(str.id.q(14))(engine.eval("str[id]{2}[str[id]{3},str[id]{4}]"))
     assertResult(str.id.q(5))(engine.eval("str[[str[id]{2}],[str[id]{3}]]"))
     assertResult(str.id.q(5))(engine.eval("str[[[str[id]{2}]],[[str[id]{3}]]]"))
     assertResult(str.id.q(5))(engine.eval("str[str[id]{2},str[id]{3}]"))

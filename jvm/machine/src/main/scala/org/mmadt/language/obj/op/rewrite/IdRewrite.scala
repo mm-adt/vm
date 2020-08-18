@@ -27,8 +27,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.RewriteInstruction
-import org.mmadt.language.obj.op.map.IdOp
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, multQ}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.value.VInst
 
@@ -44,20 +43,19 @@ object IdRewrite extends Func[Obj, Obj] {
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case _: __ => if (!start.root && start.via._2.op == Tokens.rule_id) start else start.via(start, inst)
+      case _: __ => start.via(start, inst) // if (!start.root && start.via._2.op == Tokens.rule_id) start else start.via(start, inst)
       case atype: Type[_] =>
         backPropagateQ({
-          if (!exists(atype, IdOp())) atype
+          if (!exists(atype, Tokens.id)) atype
           else {
-            val newAtype = atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => {
-              if (b.op == Tokens.id || b.op == Tokens.rule_id)
-                backPropagateQ(a, b.q)
-              else
-                b.exec(a)
-            }).asInstanceOf[atype.type]
-            if (newAtype.pureQ != atype.pureQ)
-              if (newAtype.root) newAtype.id.q(atype.pureQ) else newAtype.q(atype.pureQ)
-            else newAtype
+            var rollingQ: IntQ = qOne
+            backPropagateQ(atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => {
+              if (b.op == Tokens.id || b.op == Tokens.rule_id) {
+                rollingQ = multQ(rollingQ, b.q)
+                a
+              } else
+                downPropagateRule(b, inst).exec(a)
+            }), rollingQ).asInstanceOf[atype.type]
           }
         }, inst.q)
       case _ => start
@@ -70,10 +68,17 @@ object IdRewrite extends Func[Obj, Obj] {
     else aobj.q(q)
   }
 
+  def downPropagateRule(inst: Inst[Obj, Obj], rule: Inst[Obj, Obj]): Inst[Obj, Obj] = {
+    inst.clone(args => args.map {
+      case arg: Type[_] => rule.exec(arg)
+      case arg => arg
+    })
+  }
+
   @tailrec
-  def exists(aobj: Obj, inst: Inst[Obj, Obj]): Boolean = {
+  def exists(aobj: Obj, op: String): Boolean = {
     if (aobj.root) false
-    else if (aobj.via._2.q(qOne) == inst) true
-    else exists(aobj.via._1, inst)
+    else if (aobj.via._2.op == op) true
+    else exists(aobj.via._1, op)
   }
 }
