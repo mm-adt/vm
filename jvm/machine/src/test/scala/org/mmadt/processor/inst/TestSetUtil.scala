@@ -22,8 +22,10 @@
 
 package org.mmadt.processor.inst
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.storage.StorageFactory.str
+import org.mmadt.language.obj.{Lst, Obj, Rec}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.StrValue
+import org.mmadt.storage.StorageFactory.{int, str}
 import org.scalatest.prop.TableFor5
 
 /**
@@ -31,9 +33,16 @@ import org.scalatest.prop.TableFor5
  */
 object TestSetUtil {
 
+  val marko: Rec[StrValue, Obj] = (str("name") -> str("marko")) `,` (str("age") -> int(29))
+  val vadas: Rec[StrValue, Obj] = (str("name") -> str("vadas")) `,` (str("age") -> int(27))
+  val person: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("age") -> int)
+  val oldPerson: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("age") -> int.is(int.gt(28)))
+  val youngPerson: Rec[StrValue, Obj] = str("name") -> str `_,` str("age") -> __.is(__.lt(28))
+  val car: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("year") -> int)
+  val alst: Lst[StrValue] = str("a") `,` "b"
+
   def testSet(testName: String, data: (Obj, Obj, Obj, String, Boolean)*): (String, TableFor5[Obj, Obj, Obj, String, Boolean]) =
     (testName, new TableFor5[Obj, Obj, Obj, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
-
 
   def testing(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, null, compile)
   def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, query, false)
