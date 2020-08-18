@@ -35,10 +35,10 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[head] value, type, strm") {
     val starts: TableFor3[Obj, Obj, Obj] =
       new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        (int(1) `;` 2 `;` 3, lst.head(), int(1)),
-        (int(1) `;`, lst.head(), int(1)),
-        (strm(int(1) `;` 2 `;` 3, int(4) `;` 5), __.head(), strm(1, 4)),
-        (strm(int(1) `;` 2 `;` 3, int(1) `;` 5), __.head(), 1.q(2)),
+        (int(1) `;` 2 `;` 3, lst.head, int(1)),
+        (int(1) `;`, lst.head, int(1)),
+        (strm(int(1) `;` 2 `;` 3, int(4) `;` 5), __.head, strm(1, 4)),
+        (strm(int(1) `;` 2 `;` 3, int(1) `;` 5), __.head, 1.q(2)),
       )
     forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result)
     }
@@ -46,13 +46,13 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
 
 
   test("[head] anonymous type") {
-    assertResult(str("a"))(("a" |) ==> __.head())
-    assertResult(str("a"))(("a" | "b") ==> __.head())
-    assertResult(str("a"))(("a" | "b" | "c") ==> __.head())
+    assertResult(str("a"))(("a" |) ==> __.head)
+    assertResult(str("a"))(("a" | "b") ==> __.head)
+    assertResult(str("a"))(("a" | "b" | "c") ==> __.head)
     //
-    assertResult(str("a"))(("a" `;`) ==> __.head())
-    assertResult(str("a"))(("a" `;` "b") ==> __.head())
-    assertResult(str("a"))(("a" `;` "b" `;` "c") ==> __.head())
+    assertResult(str("a"))(("a" `;`) ==> __.head)
+    assertResult(str("a"))(("a" `;` "b") ==> __.head)
+    assertResult(str("a"))(("a" `;` "b" `;` "c") ==> __.head)
   }
 
   test("[head] w/ parallel poly") {
@@ -64,7 +64,7 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("d") | "b" | "c", "d"),
       )
     forEvery(check) { (left, right) => {
-      assertResult(right)(left.head())
+      assertResult(right)(left.head)
     }
     }
   }
@@ -78,7 +78,7 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("d") `;` "b" `;` "c", "d"),
       )
     forEvery(check) { (left, right) => {
-      assertResult(right)(left.head())
+      assertResult(right)(left.head)
     }
     }
   }

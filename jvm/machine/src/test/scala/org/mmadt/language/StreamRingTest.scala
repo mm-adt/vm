@@ -129,6 +129,7 @@ class StreamRingTest extends BaseInstTest(
     assertResult(str.id.q(3))(engine.eval("str[[str,str],str]"))
     assertResult(str.id.q(2))(engine.eval("str[str,str]"))
     assertResult(str.id.q(2))(engine.eval("str[str,str]"))
+    assertResult(str.id.q(2))(engine.eval("str[[id],[id]]"))
     assertResult(str.id.q(3))(engine.eval("str[str,str[id]{2}]"))
     assertResult(str.id.q(3))(engine.eval("str[str[id]{2},str]"))
     assertResult(str.branch(str `;` str.id.q(2)))(engine.eval("str[str;[str,str]]"))

@@ -29,7 +29,7 @@ import org.mmadt.storage.obj.value.VInst
 
 trait LastOp[A <: Obj] {
   this: Poly[A] =>
-  def last(): A = LastOp().exec(this)
+  def last: A = LastOp().exec(this)
 }
 object LastOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.last, Nil), func = this)

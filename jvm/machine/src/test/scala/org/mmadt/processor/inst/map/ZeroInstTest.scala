@@ -39,26 +39,26 @@ class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
     val starts: TableFor3[Obj, Obj, Obj] =
       new TableFor3[Obj, Obj, Obj](("input", "type", "result"),
         //////// INT
-        (int(2), __.zero(), int(0)),
-        (int(-2), __.zero(), int(0)),
-        (int, __.zero(), int(0)),
-        (int(1, 2, 3), __.plus(0).zero(), int(0).q(3)),
-        (int(1, 2), __.plus(1).q(10).zero(), int(0).q(20)),
+        (int(2), __.zero, int(0)),
+        (int(-2), __.zero, int(0)),
+        (int, __.zero, int(0)),
+        (int(1, 2, 3), __.plus(0).zero, int(0).q(3)),
+        (int(1, 2), __.plus(1).q(10).zero, int(0).q(20)),
         //////// REAL
-        (real(2.0), __.zero(), real(0.0)),
-        (real(-2.0), __.zero(), real(0.0)),
-        (real, __.zero(), real(0.0)),
-        (real(-1.0, -2.0, -3.0), __.zero(), real(0.0).q(3)),
-        (real(-1.0, -2.0, -3.0), __.plus(1.0).q(10).zero(), real(0.0).q(30)),
-        (real(-1.0, -2.0, -3.0), __.plus(1.0).q(20).zero(), real(0.0).q(60)),
+        (real(2.0), __.zero, real(0.0)),
+        (real(-2.0), __.zero, real(0.0)),
+        (real, __.zero, real(0.0)),
+        (real(-1.0, -2.0, -3.0), __.zero, real(0.0).q(3)),
+        (real(-1.0, -2.0, -3.0), __.plus(1.0).q(10).zero, real(0.0).q(30)),
+        (real(-1.0, -2.0, -3.0), __.plus(1.0).q(20).zero, real(0.0).q(60)),
         //////// STR
-        (str("a"), __.zero(), str("")),
-        (str("b"), __.zero(), str("")),
-        (str, __.zero(), str("")),
-        (str("a", "b", "c"), __.zero(), str("").q(3)),
+        (str("a"), __.zero, str("")),
+        (str("b"), __.zero, str("")),
+        (str, __.zero, str("")),
+        (str("a", "b", "c"), __.zero, str("").q(3)),
         //////// POLY
-        (lst[Str](g = (Tokens.`,`, List(str("a")))), __.zero(), lst(g = (Tokens.`,`, Nil))),
-        (lst[Str](g = (Tokens.`,`, List(str("a"), str("b"), str("c")))), __.zero(), lst(g = (Tokens.`,`, Nil))),
+        (lst[Str](g = (Tokens.`,`, List(str("a")))), __.zero, lst(g = (Tokens.`,`, Nil))),
+        (lst[Str](g = (Tokens.`,`, List(str("a"), str("b"), str("c")))), __.zero, lst(g = (Tokens.`,`, Nil))),
         //(prod(prod(str("a")), prod(str("b")), prod(str("c"))).zero(), prod().q(3)),
       )
     forEvery(starts) { (input, atype, result) => TestUtil.evaluate(input, atype, result, ZeroOp().q(atype.trace.head._2.q), compile = false)

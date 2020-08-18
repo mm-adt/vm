@@ -66,10 +66,10 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("basic poly") {
-    assertResult(str("a"))(("a" | "b" | "c").head())
-    assertResult("b" | "c")(("a" | "b" | "c").tail())
-    assertResult(str("a"))(("a" `;` "b" `;` "c").head())
-    assertResult("b" `;` "c")(("a" `;` "b" `;` "c").tail())
+    assertResult(str("a"))(("a" | "b" | "c").head)
+    assertResult("b" | "c")(("a" | "b" | "c").tail)
+    assertResult(str("a"))(("a" `;` "b" `;` "c").head)
+    assertResult("b" `;` "c")(("a" `;` "b" `;` "c").tail)
   }
 
   test("parallel expressions") {
@@ -109,11 +109,11 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
     forEvery(starts) { (alst, blist) => {
       assertResult(alst.glist)(blist)
       if (blist.nonEmpty) {
-        assertResult(alst.last())(blist.last)
-        assertResult(alst.head())(blist.head)
+        assertResult(alst.last)(blist.last)
+        assertResult(alst.head)(blist.head)
         assertResult(alst.g._2.head)(blist.head)
         assertResult(alst.g._2.last)(blist.last)
-        assertResult(alst.tail().g._2)(blist.tail)
+        assertResult(alst.tail.g._2)(blist.tail)
         assertResult(alst.g._2.tail)(blist.tail)
       }
     }

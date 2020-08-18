@@ -29,7 +29,7 @@ import org.mmadt.storage.obj.value.VInst
 
 trait TailOp {
   this: Obj =>
-  def tail(): this.type = TailOp[Obj]().exec(this).asInstanceOf[this.type]
+  def tail: this.type = TailOp[Obj]().exec(this).asInstanceOf[this.type]
 }
 object TailOp extends Func[Obj, Poly[Obj]] {
   def apply[A <: Obj](): Inst[Obj, Poly[A]] = new VInst[Obj, Poly[A]](g = (Tokens.tail, Nil), func = this)

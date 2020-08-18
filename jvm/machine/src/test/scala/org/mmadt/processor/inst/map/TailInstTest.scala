@@ -32,23 +32,23 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[tail] anonymous type") {
-    assertResult("b" |)(("a" | "b") ==> __.tail())
-    assertResult("b" | "c")(("a" | "b" | "c") ==> __.tail())
+    assertResult("b" |)(("a" | "b") ==> __.tail)
+    assertResult("b" | "c")(("a" | "b" | "c") ==> __.tail)
     //
-    assertResult("b" `;`)(("a" `;` "b") ==> __.tail())
-    assertResult("b" `;` "c")(("a" `;` "b" `;` "c") ==> __.tail())
+    assertResult("b" `;`)(("a" `;` "b") ==> __.tail)
+    assertResult("b" `;` "c")(("a" `;` "b" `;` "c") ==> __.tail)
   }
 
   test("[tail] w/ parallel poly]") {
     val check: TableFor2[Lst[Str], Obj] =
       new TableFor2(("parallel", "tail"),
-        (str("a") |, (str("a") |).tail()),
+        (str("a") |, (str("a") |).tail),
         (str("a") | "b", str("b") |),
         (str("a") | "b" | "c", str("b") | str("c")),
         (str("d") | "b" | "c", str("b") | str("c")),
       )
     forEvery(check) { (left, right) => {
-      assertResult(right)(left.tail())
+      assertResult(right)(left.tail)
     }
     }
   }
@@ -62,7 +62,7 @@ class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
         (str("d") `;` "b" `;` "c", str("b") `;` "c"),
       )
     forEvery(check) { (left, right) => {
-      assertResult(right)(left.tail())
+      assertResult(right)(left.tail)
     }
     }
   }
