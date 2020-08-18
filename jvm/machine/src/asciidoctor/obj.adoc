@@ -628,7 +628,7 @@ a|
 a|
 [exec,exception=LanguageException,none=""]
 ----
-:[define,list<=[(_)\|(_,list)]]
+:[define,list<=[(_){?}\|(_,list)]]
 (1)             => list
 (1,(1))         => list
 (1,(1,(1)))     => list

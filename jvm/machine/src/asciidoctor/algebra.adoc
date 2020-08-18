@@ -220,8 +220,8 @@ Regardless of any other behaviors the system may express, if the system always r
 a|
 [exec,prompt="mm> "]
 ----
-[['a','b'],'c']
-['a',['b','c']]
+str[['a','b'],'c']
+str['a',['b','c']]
 ----
 {blank}
 a|
@@ -239,8 +239,8 @@ str[[id],[[id],[id]]]
 a|
 [exec,prompt="mm> "]
 ----
-['a','b']
-['b','a']
+str['a','b']
+str['b','a']
 ----
 {blank}
 a|
@@ -255,13 +255,13 @@ str[[id]{3},[id]{2}]
 a|
 [exec,prompt="mm> "]
 ----
-['a',_{0}]
+str['a',{0}]
 ----
 {blank}
 a|
 [exec,prompt="mm> "]
 ----
-str[[id],_{0}]
+str[[id],{0}]
 ----
 {blank}
 | Additive inverse
@@ -269,7 +269,7 @@ str[[id],_{0}]
 a|
 [exec,prompt="mm> "]
 ----
-['a','a'{-1}]
+str['a','a'{-1}]
 ----
 {blank}
 a|
@@ -288,8 +288,8 @@ str[[id],[id]{-1}]
 a|
 [exec,prompt="mm> "]
 ----
-[['a';'b'];'c']
-['a';['b';'c']]
+str[['a';'b'];'c']
+str['a';['b';'c']]
 ----
 {blank}
 a|
@@ -304,13 +304,13 @@ str[[id];[[id];[id]]]
 a|
 [exec,prompt="mm> "]
 ----
-['a';_{1}]
+str['a';{1}]
 ----
 {blank}
 a|
 [exec,prompt="mm> "]
 ----
-str[[id];_{1}]
+str[[id];{1}]
 ----
 {blank}
 
@@ -324,8 +324,8 @@ str[[id];_{1}]
 a|
 [exec,prompt="mm> "]
 ----
-['a';['b','c']]
-[['a';'b'],['a';'c']]
+str['a';['b','c']]
+str[['a';'b'],['a';'c']]
 ----
 {blank}
 a|
@@ -343,8 +343,8 @@ str[[[id];[id]],[[id];[id]]]
 a|
 [exec,prompt="mm> "]
 ----
-[['a','b'];'c']
-[['a';'c'],['b';'c']]
+str[['a','b'];'c']
+str[['a';'c'],['b';'c']]
 ----
 {blank}
 a|
@@ -395,8 +395,8 @@ a|
 a|
 [exec,prompt="mm> "]
 ----
-['a','b']{-1}
-['a'{-1},'b'{-1}]
+str['a','b']{-1}
+str['a'{-1},'b'{-1}]
 ----
 {blank}
 a|
@@ -411,7 +411,7 @@ str[[id]{-1},[id]{-1}]
 a|
 [exec,prompt="mm> "]
 ----
-['a'{-1}]{-1}
+str['a'{-1}]{-1}
 ----
 {blank}
 a|
@@ -429,15 +429,15 @@ str[[id]{-1}]{-1}
 a|
 [exec,prompt="mm> "]
 ----
-['a';_{0}]
-[_{0};'a']
+str['a';{0}]
+str[{0};'a']
 ----
 {blank}
 a|
 [exec,prompt="mm> "]
 ----
-str[[id];_{0}]
-str[_{0};[id]]
+str[[id];{0}]
+str[{0};[id]]
 ----
 {blank}
 | Factoring
@@ -449,9 +449,9 @@ str[_{0};[id]]
 a|
 [exec,prompt="mm> "]
 ----
-['a';'b'{-1}]
-['a'{-1};'b']
-['a';'b']{-1}
+str['a';'b'{-1}]
+str['a'{-1};'b']
+str['a';'b']{-1}
 ----
 {blank}
 a|
@@ -470,8 +470,8 @@ str[[id];[id]]{-1}
 a|
 [exec,prompt="mm> "]
 ----
-['a'{-1};'b'{-1}]
-['a';'b']
+str['a'{-1};'b'{-1}]
+str['a';'b']
 ----
 {blank}
 a|
@@ -517,7 +517,7 @@ Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoi
 a|
 [exec,prompt="mm> "]
 ----
-['a'{2},'a'{3}]
+str['a'{2},'a'{3}]
 ----
 {blank}
 a|
@@ -547,7 +547,7 @@ a|
 [exec,prompt="mm> "]
 ----
 'a'{2}['b'{3},'c'{4}]
-['b'{6},'c'{8}]
+str['b'{6},'c'{8}]
 ----
 {blank}
 a|
@@ -564,8 +564,8 @@ str[[id]{6},[id]{8}]
 a|
 [exec,prompt="mm> "]
 ----
-[['a'{2}],['b'{3}]]
-['a'{2},'b'{3}]
+str[['a'{2}],['b'{3}]]
+str['a'{2},'b'{3}]
 ----
 {blank}
 a|
@@ -579,13 +579,13 @@ str[[id]{2},[id]{3}]
 a|
 [exec,prompt="mm> "]
 ----
-['a'{0},'b']
+str['a'{0},'b']
 ----
 {blank}
 a|
 [exec,prompt="mm> "]
 ----
-str[_{0},[id]]
+str[{0},[id]]
 ----
 {blank}
 |===
