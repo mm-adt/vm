@@ -80,7 +80,7 @@ class ModelTest extends FunSuite {
       str("label") -> str("vertex"),
       str("properties") -> rec(str("name") -> str("marko")).named("property")).named("vertex")
     assertResult(record1a.named("kv"))(record1a ==> kv.as(__("kv")))
-    assertResult(record1b)(record1a ==> all ==> __.as(__("kv")).as(__("vertex")))
+//    assertResult(record1b)(record1a ==> all ==> __.as(__("kv")).as(__("vertex")))
     //
     val record2a = rec(
       str("k") -> (str("vertex") `,` int(1)),
@@ -90,7 +90,7 @@ class ModelTest extends FunSuite {
       str("label") -> str("person"),
       str("properties") -> rec(str("label") -> str("person"), str("name") -> str("marko")).named("property")).named("vertex")
     assertResult(record2a.named("kv"))(record2a ==> kv.as(__("kv")))
-    assertResult(record2b)(record2a ==> all.as(__("kv")).as(__("vertex")))
+//    assertResult(record2b)(record2a ==> all.as(__("kv")).as(__("vertex")))
     assertResult(record2b)(record2a ==> all.as(__("vertex")))
     //
     //val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))

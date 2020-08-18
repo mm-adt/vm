@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -78,34 +78,39 @@ object Lst {
       }) &&
       alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && pair._1.alive && pair._2.alive && pair._1 == pair._2) true else pair._1.test(pair._2))
 
-  def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = {
-    alst.gsep match {
-      /////////// ,-lst
-      case Tokens.`,` => alst.clone(x => Type.mergeObjs(Type.mergeObjs(x).map(v => start ~~> v)))
-      /////////// ;-lst
-      case Tokens.`;` =>
-        var running = start
-        alst.clone(_.map(v => {
-          running = if (running.isInstanceOf[Strm[_]]) strm(running.toStrm.values.map(r => r ~~> v))
-          else Obj.resolveArg(running, v) match {
-            case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
-            case x => x
+  def moduleStruct[A <: Obj](start: A, gsep: String, values: List[A]): List[A] = gsep match {
+    /////////// ,-lst
+    case Tokens.`,` =>
+      if (__.isAnon(start)) return Type.mergeObjs(values)
+      Type.mergeObjs(Type.mergeObjs(values).map(v => start ~~> v))
+    /////////// ;-lst
+    case Tokens.`;` =>
+      if (__.isAnon(start)) return values
+      var running = start
+      values.map(v => {
+        running = if (running.isInstanceOf[Strm[_]]) strm(running.toStrm.values.map(r => r ~~> v))
+        else Obj.resolveArg(running, v) match {
+          case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
+          case x => x
+        }
+        running
+      })
+    /////////// |-lst
+    case Tokens.`|` =>
+      var taken: Boolean = false
+      values.map(v => start ~~> v)
+        .filter(_.alive)
+        .filter(v => {
+          if (taken) false
+          else if (zeroable(v.q)) true
+          else {
+            taken = true;
+            true
           }
-          running
-        }))
-      /////////// |-lst
-      case Tokens.`|` =>
-        //var taken: Boolean = false
-        alst.clone(_.map(v => start ~~> v).filter(_.alive))
-      /*.filter(v =>
-        if (taken) false
-        else if (zeroable(v.q)) true
-        else {
-          taken = true;
-          true
-        }))*/
-    }
+        })
   }
+
+  def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = alst.clone(list => moduleStruct(start, alst.gsep, list))
 
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)

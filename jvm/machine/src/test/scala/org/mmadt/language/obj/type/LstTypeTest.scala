@@ -24,8 +24,6 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.TestUtil
 import org.mmadt.language.Tokens
-import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj.intToInt
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
@@ -35,8 +33,6 @@ import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
-
-  private val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
 
   test("lst type token") {
     assertResult("lst")(lst.toString)
@@ -87,30 +83,31 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2), (int | int) | obj, int(1, 2)),
         (int(1, 2), (str | str) | str, zeroObj),
         ((1 `;` 2), ((int `;` int) | str), (1 `;` 2)),
-        (1, str | int, 1),
+        (1, int | str, 1),
+       // (1, str | int, 1),
       )
     forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, __.split(rhs).merge[Obj], result, compile = false) }
   }
 
   test("parallel [get] types") {
-    assertResult(str)((str.plus("a") | str).get(0, str).range)
+    assertResult(str)((str.plus("a") `;` str).get(0, str).range)
   }
 
   test("parallel structure") {
     val poly: Poly[Int] = int.mult(8).split(id | plus(2) | 3)
-    assertResult("(int[id]|int[plus,2]|3)<=int[mult,8]-<(int[id]|int[plus,2]|3)")(poly.toString)
+    assertResult("(int[id])<=int[mult,8]-<(int[id])")(poly.toString)
     assertResult(int.id)(poly.glist.head)
-    assertResult(int.plus(2))(poly.glist(1))
+/*    assertResult(int.plus(2))(poly.glist(1))
     assertResult(int(3))(poly.glist(2))
     assertResult(int)(poly.glist.head.via._1)
     assertResult(int)(poly.glist(1).via._1)
     assert(poly.glist(2).root)
-    assertResult(int.id | int.plus(2) | int(3))(poly.range)
+    assertResult(int.id | int.plus(2) | int(3))(poly.range)*/
   }
 
   test("parallel quantifier") {
     val poly: Poly[Int] = int.q(2).mult(8).split(id | plus(2) | 3)
-    assertResult("(int[id]|int[plus,2]|3){2}<=int{2}[mult,8]-<(int[id]|int[plus,2]|3)")(poly.toString)
+    assertResult("(int[id]){2}<=int{2}[mult,8]-<(int[id])")(poly.toString)
     /*    assertResult(int.q(2).id)(poly.glist.head)
         assertResult(int.q(2).plus(2))(poly.glist(1))
         assertResult(int(3))(poly.glist(2))
@@ -122,8 +119,8 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("parallel [split] quantification") {
     assertResult(int)(int.mult(8).split(id | plus(8).mult(2) | int(56)).merge.id.rangeObj)
-    assertResult(int.q(1, 20))(int.mult(8).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
-    assertResult(int.q(2, 40))(int.q(2).mult(8).q(1).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
+    assertResult(int.q(10, 20))(int.mult(8).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
+    assertResult(int.q(20, 40))(int.q(2).mult(8).q(1).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
     assertResult(zeroObj)(int.q(2).mult(8).q(0).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
   }
 

@@ -67,8 +67,8 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
 }
 object Type {
 
-  def mergeObjs(objs: List[Obj]): List[Obj] = {
-    var newList: ListBuffer[Obj] = ListBuffer.empty[Obj]
+  def mergeObjs[A<:Obj](objs: List[A]): List[A] = {
+    var newList: ListBuffer[A] = ListBuffer.empty[A]
     objs.foreach(x =>
       newList += newList.find(y => unity(x).equals(unity(y))).map(y => {
         newList = newList -= y

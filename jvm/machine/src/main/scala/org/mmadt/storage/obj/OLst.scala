@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{LstType, Type}
+import org.mmadt.language.obj.`type`.{LstType, Type, __}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`.TLst
 import org.mmadt.storage.obj.value.VLst
@@ -43,12 +43,7 @@ abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] 
 }
 object OLst {
   def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = {
-    val list: List[A] = g._1 match {
-      case _ if g._2 == null => null
-      case Tokens.`,` => Type.mergeObjs(g._2).asInstanceOf[List[A]]
-      case Tokens.`;` => g._2
-      case Tokens.`|` => g._2.filter(_.alive)
-    }
+    val list: List[A] = Option(g._2).map(x => Lst.moduleStruct(__.asInstanceOf[A], g._1, x)).orNull
     if (null != list && (list.isEmpty || !list.filter(_.alive).exists(x => x.isInstanceOf[Type[_]]))) new VLst[A](name, g = (g._1, list), q, via)
     else new TLst[A](name, g = (g._1, list), q, via)
   }

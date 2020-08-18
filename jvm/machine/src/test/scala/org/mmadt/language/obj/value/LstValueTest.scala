@@ -102,9 +102,9 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
       new TableFor2[Lst[Str], List[Obj]](("parallel", "projections"),
         (lst, List.empty),
         ("a" |, List(str("a"))),
-        ("a" | "b", List(str("a"), str("b"))),
-        ("a" | "b" | "c", List(str("a"), str("b"), str("c"))),
-        ("a" | ("b" | "d") | "c", List(str("a"), "b" | "d", str("c"))),
+        ("a" `;` "b", List(str("a"), str("b"))),
+        ("a" `;` "b" `;` "c", List(str("a"), str("b"), str("c"))),
+        ("a" `;` ("b" `;` "d") `;` "c", List("a", "b" `;` "d", "c")),
       )
     forEvery(starts) { (alst, blist) => {
       assertResult(alst.glist)(blist)
@@ -121,14 +121,14 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("scala type constructor") {
-    assertResult("('a'|'b')")(("a" | "b").toString)
+    assertResult("('a';'b')")(("a" `;` "b").toString)
   }
 
   test("parallel [get] values") {
     assertResult(str("a"))((str("a") |).get(0))
-    assertResult(str("b"))((str("a") | "b").get(1))
-    assertResult(str("b"))((str("a") | "b" | "c").get(1))
-    assertResult("b" | "d")(("a" | ("b" | "d") | "c").get(1))
+    assertResult(str("b"))((str("a") `;` "b").get(1))
+    assertResult(str("b"))((str("a") `;` "b" `;` "c").get(1))
+    assertResult("b" `;` "d")(("a" `;` ("b" `;` "d") `;` "c").get(1))
   }
 
   test("serial value/type checking") {

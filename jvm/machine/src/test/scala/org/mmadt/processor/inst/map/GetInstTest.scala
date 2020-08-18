@@ -52,8 +52,8 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
         //////// |-lst
         ("a" |, lst.get(0), "a"),
         ("a" | "b", get(0), "a"),
-        ("a" | "b" | "c", get(1), "b"),
-        ("d" | "b" | "c", get(2), "c"),
+        //("a" | "b" | "c", get(1), "b"),
+        //("d" | "b" | "c", get(2), "c"),
       )
     forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result, if (rhs.trace.size == 1) GetOp(rhs.trace.head._2.arg0[Obj]) else null)
     }
