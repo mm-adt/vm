@@ -85,6 +85,7 @@ object BranchOp extends Func[Obj, Obj] {
         /////////////////////////////////////////////////////////////////////////////////
         case arec: Rec[Obj, Obj] => arec.gsep match {
           case Tokens.`,` => Rec.moduleMult(start, arec) match {
+            // case brec if brec.isEmpty => zeroObj
             case brec: Value[_] => strm(brec.gmap.map(kv => kv._2.hardQ(q => multQ(q, inst.q))))
             case brec: Type[_] =>
               if (1 == brec.size) IdRewrite().exec((start `=>` brec.gmap.head._2).q(inst.q))

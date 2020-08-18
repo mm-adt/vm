@@ -82,7 +82,9 @@ object Lst {
     /////////// ,-lst
     case Tokens.`,` =>
       if (null == start) return Type.mergeObjs(values)
-      Type.mergeObjs(Type.mergeObjs(values).map(v => start ~~> v))
+      Type.mergeObjs(Type.mergeObjs(values).map(v =>
+        if (!__.isAnon(start) && v.isInstanceOf[Value[_]]) start `=>` v
+        else start ~~> v)).filter(_.alive)
     /////////// ;-lst
     case Tokens.`;` =>
       if (null == start) return values

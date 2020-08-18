@@ -434,6 +434,8 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("choice with rec") {
+    assertResult(str("b"))(engine.eval("['a'{0},'b']"))
+    assertResult(str("b".q(6),"c".q(8)))(engine.eval("'a'{2}['b'{3},'c'{4}]"))
     assertResult("15")(engine.eval("5 int[int+1[is>0] -> +10 | str -> +'a']").toString)
     assertResult("'aa'")(engine.eval("'a'[int{?} -> +10 | str -> +'a']").toString)
     assertResult("'aa'")(engine.eval("'a'[int+1[is>0] -> +10 | str -> +'a']").toString)
