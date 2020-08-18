@@ -67,7 +67,7 @@ object ModelOp extends Func[Obj, Obj] {
     else if (aobj.root) aobj.clone(via = (aobj.model.merging(amodel), null))
     else aobj.rangeObj.clone(via = (aobj.trace.dropRight(1).foldLeft(aobj.domainObj.clone(via = (amodel, null)).asInstanceOf[Obj])((a, b) => b._1.via(a, b._2)), aobj.via._2))
   }
-  def isMetaModel(inst: Inst[_, _]): Boolean = inst.op.equals(Tokens.model)
+  def isMetaModel(inst: Inst[_, _]): Boolean = inst.op.equals(Tokens.model) || inst.op.startsWith("rule:")
 
   @inline implicit def modelToRichModel(ground: Model): RichModel = new RichModel(ground)
   class RichModel(val model: Model) {

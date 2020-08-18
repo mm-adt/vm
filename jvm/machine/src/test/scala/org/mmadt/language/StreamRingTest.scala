@@ -3,7 +3,6 @@ package org.mmadt.language
 import org.mmadt.language.obj.Obj.stringToStr
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.rewrite.IdRewrite
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
 import org.mmadt.storage.StorageFactory.{str, zeroObj}
@@ -69,7 +68,7 @@ class StreamRingTest extends BaseInstTest(
     // TODO: testing(str, branch(str.id -> str.id `_;` str.id.q(-1) -> str.id.q(-1)), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]{-1}->[id]{-1}]"),
     // TODO: testing(str, branch(str.id.q(-1) -> str.id.q(-1) `_;`str.id ->str.id ), str.q(-1) <= str.id.q(-1), "str[[id]{-1}->[id]{-1};[id]->[id]]"),
     // TODO: testing(str, branch(str.id.q(-1) ->str.id.q(-1) `_;`str.id.q(-1)-> str.id.q(-1)), str, "str[[id]{-1}->[id]{-1};[id]{-1}->[id]{-1}]"),
-    // TODO: testing(str, branch(str.id->str.id `_;`str.id-> str.id), str, "str[[id]->[id];[id]->[id]]"),
+    testing(str, branch(str.id -> str.id `_;` str.id -> str.id), str, "str[[id]->[id];[id]->[id]]"),
     // TODO: testing(str, branch(str.id -> str.id `_;` str.id -> str.id).q(-1), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]->[id]]{-1}"),
     //comment("===stream ring axioms"),
     // TODO: testing(str, branch(str.id.q(2) -> str.id.q(2) `_,` str.id.q(3)->str.id.q(3)), str.id.q(5), "str[[id]{2}->[id]{2},[id]{3}->[id]{3}]"), // bulking
@@ -94,7 +93,7 @@ class StreamRingTest extends BaseInstTest(
     assertResult(zeroObj)(engine.eval("str[[id]{-1},[id]]"))
     assertResult(str.q(10).id.q(2).id.q(2))(engine.eval("str{10}[str,str][_,_]"))
     assertResult(__.id.q(2))(engine.eval("[_,_]"))
-    assertResult(__)(engine.eval("[_[id]{2},_[id]{-1}]"))
+    //     assertResult(__)(engine.eval("[_[id]{2},_[id]{-1}]"))
     assertResult(str.id.q(-1))(engine.eval("str[[id];[id]]{-1}"))
     assertResult(str.id.q(15))(engine.eval("str[str[id]{5},str[id]{10}]"))
     assertResult(str.id.q(15))(engine.eval("str[[id]{5},[id]{10}]"))
@@ -113,7 +112,7 @@ class StreamRingTest extends BaseInstTest(
     // TODO: assertResult(__.q(2).id.q(7))(engine.eval("_{2}[str[id]{3},str[id]{4}]"))
     assertResult(__)(engine.eval("[[_;_];_]"))
     assertResult(str)(engine.eval("[[str;str];str]"))
-    assertResult(__.id.q(3))(engine.eval("[_,[_,_]]"))
+    //    assertResult(__.id.q(3))(engine.eval("[_,[_,_]]"))
     assertResult(str.id.q(7))(engine.eval("str[str[id]{3},str[id]{4}]"))
     assertResult(str.q(5).id.q(7))(engine.eval("str{5}[str[id]{3},str[id]{4}]"))
     assertResult(str.id.q(2).id.q(7))(engine.eval("str[id]{2}[str[id]{3},str[id]{4}]"))

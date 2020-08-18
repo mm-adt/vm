@@ -26,6 +26,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
+import org.mmadt.language.obj.op.rewrite.IdRewrite
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory.{zeroObj, _}
@@ -54,7 +55,7 @@ object BranchOp extends Func[Obj, Obj] {
             case blst if blst.isEmpty => zeroObj
             case blst: Value[_] => strm(blst.glist.map(x => x.hardQ(q => multQ(q, inst.q))))
             case blst: Type[_] =>
-              if (1 == blst.size) Type.tryCtype((start `=>` blst.glist.head).q(inst.q))
+              if (1 == blst.size) IdRewrite().exec((start `=>` blst.glist.head).q(inst.q))
               else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
           }
           case Tokens.`;` => Lst.moduleMult(start, alst) match {
@@ -74,7 +75,9 @@ object BranchOp extends Func[Obj, Obj] {
           case Tokens.`|` => Lst.moduleMult(start, alst) match {
             case blst if blst.isEmpty => zeroObj
             case blst: Value[_] => blst.glist.head.hardQ(q => multQ(q, inst.q))
-            case blst: Type[_] => BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
+            case blst: Type[_] =>
+              if (blst.size == 1) IdRewrite().exec((start `=>` blst.glist.head).q(inst.q))
+              else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
           }
         }
         /////////////////////////////////////////////////////////////////////////////////
@@ -82,26 +85,22 @@ object BranchOp extends Func[Obj, Obj] {
         /////////////////////////////////////////////////////////////////////////////////
         case arec: Rec[Obj, Obj] => arec.gsep match {
           case Tokens.`,` => Rec.moduleMult(start, arec) match {
-            case brec: Value[_] => strm(brec.gmap.map(kv => kv._2))
+            case brec: Value[_] => strm(brec.gmap.map(kv => kv._2.hardQ(q => multQ(q, inst.q))))
             case brec: Type[_] =>
-              if (1 == brec.size) Type.tryCtype((start ~~> brec.gmap.head._2).q(inst.q))
+              if (1 == brec.size) IdRewrite().exec((start `=>` brec.gmap.head._2).q(inst.q))
               else BranchInstruction.brchType[Obj](brec, inst.q).via(start, inst.clone(_ => List(brec)))
           }
           case Tokens.`;` => Rec.moduleMult(start, arec) match {
             case brec if brec.isEmpty => zeroObj
             case brec: Value[_] => brec.gmap.last._2.hardQ(q => multQ(q, inst.q))
-            case brec: Type[_] =>
-              if (brec.gmap.forall(kv => Type.isIdentity(kv._1) && Type.isIdentity(kv._2))) {
-                Type.tryCtype(Rec.moduleMult(start,brec).gmap.last._2.q(inst.q)) // TODO: not generalized enough
-              } else
-                BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
+            case brec: Type[_] => IdRewrite().exec(brec.gmap.last._2.q(inst.q)) // TODO: not generalized enough
           }
           case Tokens.`|` => Rec.moduleMult(start, arec) match {
             case brec if brec.isEmpty => zeroObj
             case brec: Value[_] => brec.gmap.head._2
             case brec: Type[_] =>
-              /*if (brec.size == 1) brec.gmap.head._2.hardQ(q => multQ(q, inst.q))
-              else*/ BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
+              if (brec.size == 1) IdRewrite().exec((start `=>` brec.gmap.head._2).q(inst.q))
+              else BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
           }
         }
       }

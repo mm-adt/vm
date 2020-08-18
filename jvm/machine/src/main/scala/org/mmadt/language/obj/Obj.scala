@@ -117,6 +117,7 @@ trait Obj
   def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
   def pureQ: IntQ = divQ(this.q, this.domainObj.q)
   lazy val alive: Boolean = this.q != qZero
+  lazy val unity: Boolean = this.q == qOne
 
 
   // utility methods

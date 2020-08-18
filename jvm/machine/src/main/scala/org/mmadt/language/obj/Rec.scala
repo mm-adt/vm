@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Rec._
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.storage.StorageFactory._
@@ -91,7 +91,10 @@ object Rec {
         .filter(kv => kv._1.alive)
         .map(kv => kv._1 -> (start ~~> kv._2))
         .groupBy(kv => kv._1)
-        .map(kv => kv._1 -> (if (kv._2.size == 1) kv._2.head._2 else __.branch(lst(g = (Tokens.`,`, kv._2.map(x => x._2)))))).toList
+        .map(kv => kv._1 -> {
+          val mergedBranches: List[B] = Type.mergeObjs(kv._2.map(x => x._2)).asInstanceOf[List[B]]
+          if (mergedBranches.size == 1) mergedBranches.head else __.branch(lst(g = (Tokens.`,`, mergedBranches)))
+        }).toList
     /////////// ;-rec
     case Tokens.`;` =>
       var running = start -> start
