@@ -1939,7 +1939,7 @@ language error: 0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A type with components of the same type.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,list&lt;=[(_)|(_,list)]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,list&lt;=[(_){?}|(_,list)]]
 mmlang&gt; (1)             =&gt; list
 ==&gt;list:(1)
 mmlang&gt; (1,(1))         =&gt; list
@@ -1949,9 +1949,9 @@ mmlang&gt; (1,(1,(1)))     =&gt; list
 mmlang&gt; (1,(1,(1,(1)))) =&gt; list
 ==&gt;list:(1,(1,(1,(1))))
 mmlang&gt; 1               =&gt; list
-language error: 1 is not a list&lt;=_[(_)|(_,list)]
+language error: 1 is not a list&lt;=_[(_){?}|(_,list)]
 mmlang&gt; (1,1)           =&gt; list
-language error: (1{2}) is not a list&lt;=_[(_)|(_,list)]</code></pre>
+language error: (1{2}) is not a list&lt;=_[(_){?}|(_,list)]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2403,7 +2403,7 @@ mmlang&gt; ('a';'a';'b';'a';'c';'b')&gt;-
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'|'a'|'b'|'a'|'c'|'b')
-==&gt;('a'|'a'|'b'|'a'|'c'|'b')
+==&gt;('a')
 mmlang&gt; ('a'|'a'|'b'|'a'|'c'|'b')&gt;-
 ==&gt;'a'</code></pre>
 </div>
@@ -2471,7 +2471,7 @@ mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1|'b'-&gt;2|'c'-&gt;3)
-==&gt;('a'-&gt;1|'b'-&gt;2|'c'-&gt;3)
+==&gt;('a'-&gt;1)
 mmlang&gt; ('a'-&gt;1|'b'-&gt;2|'c'-&gt;3)&gt;-
 ==&gt;1</code></pre>
 </div>
@@ -3339,11 +3339,11 @@ Regardless of any other behaviors the system may express, if the system always r
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a','b'],'c']
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[['a','b'],'c']
 ==&gt;'a'
 ==&gt;'b'
 ==&gt;'c'
-mm&gt; ['a',['b','c']]
+mm&gt; str['a',['b','c']]
 ==&gt;'a'
 ==&gt;'b'
 ==&gt;'c'</code></pre>
@@ -3372,10 +3372,10 @@ mm&gt; str[[id],[[id],[id]]]
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','b']
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a','b']
 ==&gt;'a'
 ==&gt;'b'
-mm&gt; ['b','a']
+mm&gt; str['b','a']
 ==&gt;'b'
 ==&gt;'a'</code></pre>
 </div>
@@ -3400,7 +3400,7 @@ mm&gt; str[[id]{3},[id]{2}]
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[a+\mathbf{0} = a\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a',_{0}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a',{0}]
 ==&gt;'a'</code></pre>
 </div>
 </div>
@@ -3409,7 +3409,7 @@ mm&gt; str[[id]{3},[id]{2}]
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],_{0}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],{0}]
 ==&gt;str</code></pre>
 </div>
 </div>
@@ -3422,7 +3422,7 @@ mm&gt; str[[id]{3},[id]{2}]
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[a + ({-a}) = \mathbf{0}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','a'{-1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a','a'{-1}]
 mm&gt;</code></pre>
 </div>
 </div>
@@ -3450,9 +3450,9 @@ mm&gt;</code></pre>
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a';'b'];'c']
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[['a';'b'];'c']
 ==&gt;'c'
-mm&gt; ['a';['b';'c']]
+mm&gt; str['a';['b';'c']]
 ==&gt;'c'</code></pre>
 </div>
 </div>
@@ -3476,7 +3476,7 @@ mm&gt; str[[id];[[id];[id]]]
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[a \cdot \mathbf{1} = a\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';_{1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a';{1}]
 ==&gt;'a'</code></pre>
 </div>
 </div>
@@ -3485,7 +3485,7 @@ mm&gt; str[[id];[[id];[id]]]
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];_{1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];{1}]
 ==&gt;str</code></pre>
 </div>
 </div>
@@ -3504,10 +3504,10 @@ mm&gt; str[[id];[[id];[id]]]
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';['b','c']]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a';['b','c']]
 ==&gt;'b'
 ==&gt;'c'
-mm&gt; [['a';'b'],['a';'c']]
+mm&gt; str[['a';'b'],['a';'c']]
 ==&gt;'b'
 ==&gt;'c'</code></pre>
 </div>
@@ -3535,9 +3535,9 @@ mm&gt; str[[[id];[id]],[[id];[id]]]
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a','b'];'c']
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[['a','b'];'c']
 ==&gt;'c'{2}
-mm&gt; [['a';'c'],['b';'c']]
+mm&gt; str[['a';'c'],['b';'c']]
 ==&gt;'c'{2}</code></pre>
 </div>
 </div>
@@ -3619,10 +3619,10 @@ Once a system is determined to be a ring, then all the theorems that have been p
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','b']{-1}
-==&gt;'a'
-==&gt;'b'
-mm&gt; ['a'{-1},'b'{-1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a','b']{-1}
+==&gt;'a'{-1}
+==&gt;'b'{-1}
+mm&gt; str['a'{-1},'b'{-1}]
 ==&gt;'a'{-1}
 ==&gt;'b'{-1}</code></pre>
 </div>
@@ -3647,8 +3647,8 @@ mm&gt; str[[id]{-1},[id]{-1}]
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[-(-a) = a\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{-1}]{-1}
-==&gt;'a'{-1}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a'{-1}]{-1}
+==&gt;'a'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3673,9 +3673,9 @@ mm&gt; str[[id]{-1},[id]{-1}]
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';_{0}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a';{0}]
 mm&gt;
-mm&gt; [_{0};'a']
+mm&gt; str[{0};'a']
 mm&gt;</code></pre>
 </div>
 </div>
@@ -3684,9 +3684,9 @@ mm&gt;</code></pre>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];_{0}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];{0}]
 mm&gt;
-mm&gt; str[_{0};[id]]
+mm&gt; str[{0};[id]]
 mm&gt;</code></pre>
 </div>
 </div>
@@ -3703,11 +3703,11 @@ mm&gt;</code></pre>
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';'b'{-1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a';'b'{-1}]
 ==&gt;'b'{-1}
-mm&gt; ['a'{-1};'b']
+mm&gt; str['a'{-1};'b']
 ==&gt;'b'{-1}
-mm&gt; ['a';'b']{-1}
+mm&gt; str['a';'b']{-1}
 ==&gt;'b'{-1}</code></pre>
 </div>
 </div>
@@ -3736,9 +3736,9 @@ mm&gt; str[[id];[id]]{-1}
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{-1};'b'{-1}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a'{-1};'b'{-1}]
 ==&gt;'b'
-mm&gt; ['a';'b']
+mm&gt; str['a';'b']
 ==&gt;'b'</code></pre>
 </div>
 </div>
@@ -3823,7 +3823,7 @@ Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoi
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{2},'a'{3}]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a'{2},'a'{3}]
 ==&gt;'a'{5}</code></pre>
 </div>
 </div>
@@ -3873,7 +3873,7 @@ Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoi
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'a'{2}['b'{3},'c'{4}]
 ==&gt;'b'{3}
 ==&gt;'c'{4}
-mm&gt; ['b'{6},'c'{8}]
+mm&gt; str['b'{6},'c'{8}]
 ==&gt;'b'{6}
 ==&gt;'c'{8}</code></pre>
 </div>
@@ -3901,10 +3901,10 @@ mm&gt; str[[id]{6},[id]{8}]
 \end{split}\]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a'{2}],['b'{3}]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[['a'{2}],['b'{3}]]
 ==&gt;'a'{2}
 ==&gt;'b'{3}
-mm&gt; ['a'{2},'b'{3}]
+mm&gt; str['a'{2},'b'{3}]
 ==&gt;'a'{2}
 ==&gt;'b'{3}</code></pre>
 </div>
@@ -3929,8 +3929,7 @@ mm&gt; str[[id]{2},[id]{3}]
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[ (\mathbf{0}a + b) = b \]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{0},'b']
-==&gt;'a'{0}
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str['a'{0},'b']
 ==&gt;'b'</code></pre>
 </div>
 </div>
@@ -3939,7 +3938,7 @@ mm&gt; str[[id]{2},[id]{3}]
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[_{0},[id]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[{0},[id]]
 ==&gt;str</code></pre>
 </div>
 </div>
@@ -4512,7 +4511,7 @@ mmlang&gt; 4 =&gt; [int[id]{2},int*{3}int,int*{6}*int][sum]
 ==&gt;440
 
 mmlang&gt; [4;[int[id]{2},int*{3}int,int*{6}*int][sum]]
-==&gt;440</code></pre>
+==&gt;int&lt;=_[4;_[int{2}&lt;=int[id]{2},int{3}&lt;=int[mult,int]{3},int{6}&lt;=int[mult,int[mult,int]]{6}][sum]]</code></pre>
 </div>
 </div>
 <div class="imageblock left">
@@ -5474,8 +5473,7 @@ The unfactored type from the previous section is presented, followed by its two-
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
-==&gt;true{2}
-==&gt;false
+==&gt;bool{3}&lt;=_[5;_[_[int;_[plus,2];_[is,_[gt,0]]];_[_[mult,5],_[mult,-6],_[_[mult,10];_[plus,7]]];_[lt,44]]]
 
 mmlang&gt; 5-&lt;(int;+2;[is&gt;0];-&lt;(*5,*-6,-&lt;(*10;+7)))
 ==&gt;(5;7;7;(35,-42,(70;77)))
@@ -5490,14 +5488,11 @@ mmlang&gt; 5-&lt;(int;+2;[is&gt;0];-&lt;(*5,*-6,-&lt;(*10;+7)&gt;-)&gt;-;&lt;44)
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]]
-==&gt;true{2}
-==&gt;false
+==&gt;bool{3}&lt;=_[5;_[_[int;_[plus,2];_[is,_[gt,0]];_[mult,5];_;_[lt,44]],_[int;_[plus,2];_[is,_[gt,0]];_[mult,-6];_;_[lt,44]],_[int;_[plus,2];_[is,_[gt,0]];_[mult,10];_[plus,7];_[lt,44]]]]
 mmlang&gt; [5;[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]]
-==&gt;true{2}
-==&gt;false
+==&gt;bool{3}&lt;=_[5;_[_[int;_[plus,2];_[is,_[gt,0]]];_[_[_[mult,5];_[lt,44]],_[_[mult,-6];_[lt,44]],_[_[mult,10];_[plus,7];_[lt,44]]]]]
 mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
-==&gt;true{2}
-==&gt;false</code></pre>
+==&gt;bool{3}&lt;=_[5;_[_[int;_[plus,2];_[is,_[gt,0]]];_[_[mult,5],_[mult,-6],_[_[mult,10];_[plus,7]]];_[lt,44]]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6029,7 +6024,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-16 03:43:52 -0600
+Last updated 2020-08-16 13:58:57 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
