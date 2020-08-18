@@ -43,7 +43,7 @@ abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] 
 }
 object OLst {
   def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty[A]), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = {
-    val list: List[A] = Option(g._2).map(x => Lst.moduleStruct(__.asInstanceOf[A], g._1, x)).orNull
+    val list: List[A] = Option(g._2).map(x => Lst.moduleStruct[A](g._1, x)).orNull
     if (null != list && (list.isEmpty || !list.filter(_.alive).exists(x => x.isInstanceOf[Type[_]]))) new VLst[A](name, g = (g._1, list), q, via)
     else new TLst[A](name, g = (g._1, list), q, via)
   }

@@ -85,24 +85,25 @@ object Rec {
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
   private def isType(pairs: PairList[_ <: Obj, _ <: Obj]): Boolean = pairs.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])
-  def moduleStruct[A <: Obj, B <: Obj](start: A, gsep: String, pairs: PairList[A, B]): PairList[A, B] = gsep match {
+  def moduleStruct[A <: Obj, B <: Obj](gsep: String, pairs: PairList[A, B], start: Obj = null): PairList[A, B] = gsep match {
     /////////// ,-rec
     case Tokens.`,` =>
-      (if (__.isAnon(start)) pairs
-        .filter(kv => kv._1.alive && kv._2.alive)
-      else pairs
-        .map(kv => (start ~~> kv._1) -> kv._2)
+      val nostart: Boolean = null == start
+      if (nostart) return pairs.filter(kv => kv._1.alive && kv._2.alive)
+      pairs.map(kv => ((if (nostart) __ else start) ~~> kv._1) -> kv._2)
         .filter(kv => kv._1.alive)
-        .map(kv => kv._1 -> (start ~~> kv._2)))
-        .groupBy(kv => kv._1).map(kv => kv._1 -> {
-        val mergedBranches: List[B] = Type.mergeObjs(kv._2.map(x => x._2))
-        if (mergedBranches.size == 1) mergedBranches.head
-        else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
-        else lst(g = (Tokens.`,`, mergedBranches))
-      }).toList.asInstanceOf[PairList[A, B]]
+        .map(kv => kv._1 -> (if (nostart) __ else start) ~~> kv._2)
+        .filter(kv => kv._2.alive)
+        .groupBy(kv => kv._1)
+        .map(kv => kv._1 -> {
+          val mergedBranches: List[B] = Type.mergeObjs(kv._2.map(x => x._2))
+          if (mergedBranches.size == 1) mergedBranches.head
+          else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
+          else lst(g = (Tokens.`,`, mergedBranches))
+        }).toList.asInstanceOf[PairList[A, B]]
     /////////// ;-rec
     case Tokens.`;` =>
-      if (__.isAnon(start)) return pairs
+      if (null == start) return pairs
       var running = start -> start
       pairs.map(kv => {
         val key = running._1 ~~> kv._1
@@ -111,9 +112,9 @@ object Rec {
       }).asInstanceOf[PairList[A, B]]
     /////////// |-rec
     case Tokens.`|` =>
-      val anon: Boolean = __.isAnon(start)
+      val nostart: Boolean = null == start
       var taken: Boolean = false
-      pairs.map(kv => (start ~~> kv._1) -> kv._2)
+      pairs.map(kv => ((if (nostart) __ else start) ~~> kv._1) -> kv._2)
         .filter(kv => kv._1.alive)
         .filter(kv =>
           if (taken) false
@@ -122,10 +123,10 @@ object Rec {
             taken = true;
             true
           })
-        .map(kv => if (anon) kv else kv._1 -> (start ~~> kv._2))
+        .map(kv => if (nostart) kv else kv._1 -> (start ~~> kv._2))
   }
 
-  def moduleMult[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = arec.clone(pairs => moduleStruct(start, arec.gsep, pairs))
+  def moduleMult[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = arec.clone(pairs => moduleStruct(arec.gsep, pairs, start))
 
   def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {
     var found: Boolean = false;

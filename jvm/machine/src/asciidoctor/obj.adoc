@@ -843,24 +843,24 @@ A `poly` composed of `obj` values is a https://en.wikipedia.org/wiki/Collection_
 a|
 [exec]
 ----
-('a','a','b','a','c','b')
-('a','a','b','a','c','b')>-
+('a'{?},'b','a','c','b')
+('a'{?},'b','a','c','b')>-
 ----
 {blank}
 | `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] | list
 a|
 [exec]
 ----
-('a';'a';'b';'a';'c';'b')
-('a';'a';'b';'a';'c';'b')>-
+('a'{?};'b';'a';'c';'b')
+('a'{?};'b';'a';'c';'b')>-
 ----
 {blank}
 | `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] | scalar
 a|
 [exec]
 ----
-('a'\|'a'\|'b'\|'a'\|'c'\|'b')
-('a'\|'a'\|'b'\|'a'\|'c'\|'b')>-
+('a'{?}\|'b'\|'a'\|'c'\|'b')
+('a'{?}\|'b'\|'a'\|'c'\|'b')>-
 ----
 {blank}
 |===
@@ -878,24 +878,24 @@ a|
 a|
 [exec]
 ----
-('a'->1,'b'->2,'c'->3)
-('a'->1,'b'->2,'c'->3)>-
+('a'->1,'b'->2,'a'->3)
+('a'->1,'b'->2,'a'->3)>-
 ----
 {blank}
 | `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] | record
 a|
 [exec]
 ----
-('a'->1;'b'->2;'c'->3)
-('a'->1;'b'->2;'c'->3)>-
+('a'->1;'b'->2;'a'->3)
+('a'->1;'b'->2;'a'->3)>-
 ----
 {blank}
 | `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] | pair
 a|
 [exec]
 ----
-('a'->1\|'b'->2\|'c'->3)
-('a'->1\|'b'->2\|'c'->3)>-
+('a'->1\|'b'->2\|'a'->3)
+('a'->1\|'b'->2\|'a'->3)>-
 ----
 {blank}
 |===

@@ -22,17 +22,17 @@ class StreamRingTest extends BaseInstTest(
     testing(str, branch(branch(id `;` id) `;` str.id), str, "str[[id];[id];[id]]"),
     testing(str, branch(id `;` branch(id `;` id)), str, "str[[id];[[id];[id]]]"),
     comment("===ring axioms"),
-    testing(str, str.branch(branch(id `,` id) `;` id), str.q(2) <= str.id.q(2),"str[[[id],[id]];[id]]"),
+    testing(str, branch(branch(id `,` id) `;` id), str.q(2) <= str.id.q(2), "str[[[id],[id]];[id]]"),
     testing(str, branch(branch(id `;` id) `,` branch(id `;` id)), str.q(2) <= str.id.q(2)), // TODO: "str[[[id];[id]],[[id];[id]]]"
     comment("===ring theorems"),
     testing(str, branch(id.q(-1) `,` id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1},[id]{-1}]"),
     testing(str, branch(id `,` id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id],[id]]{-1}"),
     testing(str, branch(id.q(-1) `,`).q(-1), str.id), // TODO: "str[[id]{-1}]{-1}"
     testing(str, branch(id `;` __.q(0)), zeroObj, "str[[id];{0}]"),
-    testing(str, str.branch(__.q(0) `;` id), zeroObj, "str[{0};[id]]"),
+    testing(str, branch(__.q(0) `;` id), zeroObj, "str[{0};[id]]"),
     testing(str, branch(id `;` id.q(-1)), str.q(-1) <= str.id.q(-1), "str[[id];[id]{-1}]"),
-    testing(str, str.branch(id.q(-1) `;` id), str.q(-1) <= str.id.q(-1), "str[[id]{-1};[id]]"),
-    testing(str, str.branch(id.q(-1) `;` id.q(-1)), str, "str[[id]{-1};[id]{-1}]"),
+    testing(str, branch(id.q(-1) `;` id), str.q(-1) <= str.id.q(-1), "str[[id]{-1};[id]]"),
+    testing(str, branch(id.q(-1) `;` id.q(-1)), str, "str[[id]{-1};[id]{-1}]"),
     testing(str, branch(id `;` id), str, "str[[id];[id]]"),
     // TODO: testing(str, branch(str.id `;` str.id).q(-1), str.q(-1) <= str.id.q(-1),"str[[id];[id]]{-1}"),
     comment("===stream ring axioms"),
@@ -99,19 +99,19 @@ class StreamRingTest extends BaseInstTest(
     assertResult(str.id.q(15))(engine.eval("str[[id]{5},[id]{10}]"))
     assertResult(zeroObj)(engine.eval("[str,str{-1}]"))
     assertResult(str)(engine.eval("str[str[id]{-1}]{-1}"))
-//    assertResult(zeroObj)(engine.eval("[_{0};str]"))
+    assertResult(zeroObj)(engine.eval("[_{0};str]"))
     assertResult(zeroObj)(engine.eval("[str;_{0}]"))
     assertResult("obj{0}")(engine.eval("[str;_{0}]").toString)
     assertResult("obj{0}")(engine.eval("[str,str{-1}]").toString)
     assertResult("obj{0}")(engine.eval("['a','a'{-1}]").toString)
     assertResult(zeroObj)(engine.eval("['a','a'{-1}]"))
     assertResult(str.q(2).plus(str.q(2)).q(5))(engine.eval("str{2}[str[plus,str]{5}]"))
-//    assertResult(str.id.q(-1))(engine.eval("[str[id]{-1};str]"))
+    assertResult(str.id.q(-1))(engine.eval("[str[id]{-1};str]"))
     assertResult(str.id.q(-1))(engine.eval("[str;str[id]{-1}]"))
     assertResult(str.id.q(-1))(engine.eval("[str;str]{-1}"))
     // TODO: assertResult(__.q(2).id.q(7))(engine.eval("_{2}[str[id]{3},str[id]{4}]"))
-//    assertResult(__)(engine.eval("[[_;_];_]"))
-//    assertResult(str)(engine.eval("[[str;str];str]"))
+    assertResult(__)(engine.eval("[[_;_];_]"))
+    assertResult(str)(engine.eval("[[str;str];str]"))
     //    assertResult(__.id.q(3))(engine.eval("[_,[_,_]]"))
     assertResult(str.id.q(7))(engine.eval("str[str[id]{3},str[id]{4}]"))
     assertResult(str.q(5).id.q(7))(engine.eval("str{5}[str[id]{3},str[id]{4}]"))
@@ -119,7 +119,7 @@ class StreamRingTest extends BaseInstTest(
     assertResult(str.id.q(5))(engine.eval("str[[str[id]{2}],[str[id]{3}]]"))
     assertResult(str.id.q(5))(engine.eval("str[[[str[id]{2}]],[[str[id]{3}]]]"))
     assertResult(str.id.q(5))(engine.eval("str[str[id]{2},str[id]{3}]"))
-//    assertResult(str)(engine.eval("[str;{1}]"))
+    assertResult(str)(engine.eval("[str;{1}]"))
     assertResult(str.id.q(3))(engine.eval("str[[id],[[id],[id]]]"))
     assertResult(str.id.q(3))(engine.eval("str[[[id],[id]],[id]]"))
     assertResult(str.id.q(9))(engine.eval("str[[id]{2},[[id]{3},[id]{4}]]"))
@@ -138,6 +138,6 @@ class StreamRingTest extends BaseInstTest(
     assertResult(__.id.q(2))(engine.eval("[_[_;_],_[_;_]]"))
     assertResult(str.id.q(2))(engine.eval("str[_[str;str],_[str;str]]"))
     assertResult(__.id.q(2))(engine.eval("[_,_]"))
-//    assertResult(str.id.q(2))(engine.eval("[str;[str,str]]"))
+    assertResult(str.id.q(2))(engine.eval("[str;[str,str]]"))
   }
 }

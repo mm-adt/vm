@@ -45,8 +45,8 @@ trait Poly[+A <: Obj] extends Obj
 object Poly {
   def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = {
     apoly match {
-      case arec: Rec[Obj, A] => arec.clone(x => Rec.moduleStruct(start, arec.gsep, x))
-      case alst: Lst[A] => alst.clone(x => Lst.moduleStruct(start, alst.gsep, x))
+      case arec: Rec[Obj, A] => arec.clone(x => Rec.moduleStruct(arec.gsep, x, start))
+      case alst: Lst[A] => alst.clone(x => Lst.moduleStruct(alst.gsep, x, start))
     }
   }
   def keepFirst[A <: Obj](start: Obj, apoly: Poly[A]): Poly[A] = {

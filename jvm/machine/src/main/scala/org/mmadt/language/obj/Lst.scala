@@ -78,14 +78,14 @@ object Lst {
       }) &&
       alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && pair._1.alive && pair._2.alive && pair._1 == pair._2) true else pair._1.test(pair._2))
 
-  def moduleStruct[A <: Obj](start: A, gsep: String, values: List[A]): List[A] = gsep match {
+  def moduleStruct[A <: Obj](gsep: String, values: List[A], start: Obj = null): List[A] = gsep match {
     /////////// ,-lst
     case Tokens.`,` =>
-      if (__.isAnon(start)) return Type.mergeObjs(values)
+      if (null == start) return Type.mergeObjs(values)
       Type.mergeObjs(Type.mergeObjs(values).map(v => start ~~> v))
     /////////// ;-lst
     case Tokens.`;` =>
-      if (__.isAnon(start)) return values
+      if (null == start) return values
       var running = start
       values.map(v => {
         running = if (running.isInstanceOf[Strm[_]]) strm(running.toStrm.values.map(r => r ~~> v))
@@ -94,11 +94,12 @@ object Lst {
           case x => x
         }
         running
-      })
+      }).asInstanceOf[List[A]]
     /////////// |-lst
     case Tokens.`|` =>
+      val nostart: Boolean = null == start
       var taken: Boolean = false
-      values.map(v => start ~~> v)
+      values.map(v => (if (nostart) __ else start) ~~> v)
         .filter(_.alive)
         .filter(v => {
           if (taken) false
@@ -110,7 +111,7 @@ object Lst {
         })
   }
 
-  def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = alst.clone(list => moduleStruct(start, alst.gsep, list))
+  def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = alst.clone(list => moduleStruct(alst.gsep, list, start))
 
   def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
     val first: scala.Int = apoly.glist.indexWhere(x => x.alive)

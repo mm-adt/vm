@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.Rec.{PairList, RecTuple}
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{RecType, Type, __}
+import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`.TRec
 import org.mmadt.storage.obj.value.VRec
@@ -42,13 +42,7 @@ abstract class ORec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: Re
 }
 object ORec {
   def makeRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Nil), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = {
-    // val map:PairList[A,B] = Option(g._2).map(x => Rec.moduleStruct(__.asInstanceOf[A],g._1,x)).orNull
-    val map: PairList[A, B] = g._1 match {
-      case _ if g._2 == null => null
-      case Tokens.`,` => g._2.filter(x => x._1.alive && x._2.alive)
-      case Tokens.`;` => Rec.moduleStruct(__.asInstanceOf[A], g._1, g._2)
-      case Tokens.`|` => Rec.moduleStruct(__.asInstanceOf[A], g._1, g._2)
-    }
+    val map: PairList[A, B] = Option(g._2).map(x => Rec.moduleStruct(g._1, x)).orNull
     if (null != map && (map.isEmpty || !map.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])))
       new VRec[A, B](name, g = (g._1, map), q, via)
     else
