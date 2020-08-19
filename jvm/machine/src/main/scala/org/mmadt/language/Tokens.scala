@@ -35,11 +35,12 @@ object Tokens {
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last,
     Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.juxt, Tokens.fold, Tokens.error, Tokens.rewrite,
-    Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id)
+    Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id, Tokens.rule_unity)
 
   lazy val reservedTypes: List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
 
   val rule_id = "rule:id"
+  val rule_unity = "rule:unity"
 
   val anon = "_"
   val obj = "obj"

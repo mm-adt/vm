@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.rewrite.IdRewrite
+import org.mmadt.language.obj.op.rewrite.{IdRewrite, UnityRewrite}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, _}
 import org.mmadt.storage.obj.`type`.TObj
@@ -94,6 +94,7 @@ package object op {
 
   object RewriteInstruction {
     val rule_id: Inst[Obj, Obj] = IdRewrite()
+    val rule_unity: Inst[Obj, Obj] = UnityRewrite()
   }
 
 }

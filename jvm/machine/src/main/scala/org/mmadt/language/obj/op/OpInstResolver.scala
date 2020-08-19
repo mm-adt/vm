@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
-import org.mmadt.language.obj.op.rewrite.IdRewrite
+import org.mmadt.language.obj.op.rewrite.{IdRewrite, UnityRewrite}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp, PutOp}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.trace._
@@ -65,6 +65,7 @@ object OpInstResolver {
   def resolve[S <: Obj, E <: Obj](op: String, args: List[Obj]): Inst[S, E] = {
     (op match {
       case Tokens.rule_id => IdRewrite()
+      case Tokens.rule_unity => UnityRewrite()
 
       case Tokens.head => HeadOp()
       case Tokens.last => LastOp()
