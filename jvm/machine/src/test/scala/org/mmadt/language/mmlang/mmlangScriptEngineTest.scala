@@ -43,6 +43,10 @@ class mmlangScriptEngineTest extends FunSuite {
 
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
+  test("play2") {
+    println((int(1)->str("a")`_,`int(1)->str("a")`_,`int(2)->str("c")).get(int(1)).toStrm.values)
+  }
+
   test("range<=domain") {
     assertResult(LanguageException.typingError(int.q(5), int.q(3)))(intercept[LanguageException](engine.eval("[4{2},5{1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]")))
     assertResult(int(5.q(4), 6.q(-2), 7.q(4)))(engine.eval("[4{2},5{-1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]"))
@@ -167,7 +171,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(engine.eval("('name'->  'marko' , 'age' ->29)"))
     assertResult(str("marko"))(engine.eval("('name'->'marko','age'->29)[head]"))
     assertResult(rec(str("age") -> int(29)))(engine.eval("('name'->'marko','age'->29)[tail]"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(engine.eval("('a'->23,'name'->'marko','age'->29)[tail]"))
+    assertResult(str("name") -> str("marko")`_;` str("age") -> int(29))(engine.eval("('a'->23;'name'->'marko';'age'->29)[tail]"))
   }
 
   test("rec type parsing") {
@@ -434,6 +438,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("choice with rec") {
+    assertResult(str("a"))(engine.eval("['a'{-1}]{-1}"))
     assertResult(str("b"))(engine.eval("['a'{0},'b']"))
     assertResult(str("b".q(6),"c".q(8)))(engine.eval("'a'{2}['b'{3},'c'{4}]"))
     assertResult("15")(engine.eval("5 int[int+1[is>0] -> +10 | str -> +'a']").toString)

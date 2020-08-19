@@ -47,10 +47,12 @@ object GetOp extends Func[Obj, Obj] {
     val typeHint: Obj = Inst.oldInst(inst).arg1[Obj].hardQ(start.q)
     val value: Obj = start match {
       case arec: RecValue[Obj, Obj] =>
-        val values = arec.gmap.filter(a => a._1.test(key)).map(a => a._2.via(start, newInst))
-        if(values.isEmpty) strm
-        else if (values.size > 1 && !values.exists(y => y.isInstanceOf[Type[_]])) return strm(values)
-        else strm(values)
+        val values = strm(arec.gmap.filter(a => a._1.test(key)).flatMap(a => a._2 match {
+          case astrm: Strm[_] => astrm.values
+          case _ => List(a._2)
+        }).filter(_.alive).map(x => x.via(start, newInst)))
+        if (values.toStrm.values.nonEmpty && values.toStrm.values.exists(x => x.q != qOne)) return values
+        else values
       case arec: Rec[Obj, Obj] => strm(arec.gmap.filter(a => key.test(a._1)).map(a => a._2))
       case alst: Lst[_] if key.isInstanceOf[Int] => key match {
         case aint: IntValue => alst match {
@@ -67,7 +69,7 @@ object GetOp extends Func[Obj, Obj] {
     (value match {
       case astrm: Strm[_] =>
         if (astrm.values.isEmpty) if (start.isInstanceOf[Type[_]]) typeHint else zeroObj
-        else if (1 == astrm.values.size) astrm.values.head
+        else if (1 == astrm.values.size) astrm.values(0)
         else return astrm
       case _ => value
     }).via(start, newInst)

@@ -103,7 +103,7 @@ class RecTypeTest extends FunSuite {
     assertResult(List(Z, Y, X))(rec(Z).plus(Y `_,` X).gmap)
     assertResult(List(Z, Y, X))((Z `_,` Y).plus(rec(X)).gmap)
     // overwrite orderings
-    //  assertResult(List(X, Y, Z))((X `,` Y).plus((X `,` Z)).gmap) // TODO: determine overwrite order
+    assertResult(List(X, Y, Z))((X `,` Y).plus((X `,` Z)).gmap)
   }
 
   test("rec value via map construction") {
@@ -120,14 +120,14 @@ class RecTypeTest extends FunSuite {
     assertResult(List(Z, Y, X))(rec(Z).plus(rec(Y, X)).gmap)
     assertResult(List(Z, Y, X))(rec(Z, Y).plus(rec(X)).gmap)
     // overwrite orderings
-    //    assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).gmap) // TODO: determine overwrite order
+    assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).gmap)
   }
 
   test("rec value quantifiers") {
     assertResult(rec(X, Y).q(int(2)))(rec(X, Y).q(int(2)) ==> rec.q(int(2)))
-    assertResult(rec(X, Y, Z).q(2))(rec(X, Y).q(int(2)) ==> rec.q(int(2)).plus(rec(Z)))
-    assertResult(rec(X, Y, Z).q(2))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)))
-    assertResult(rec(X, Y, Z).q(4))(rec(X).q(int(2)) ==> rec.q(int(2)).plus(rec(Y)).plus(rec(Z).q(34)).q(2))
+    assertResult(rec(X, Y, Z).q(2))(rec(X, Y).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Z))
+    assertResult(rec(X, Y, Z).q(2))(rec(X).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)))
+    assertResult(rec(X, Y, Z).q(4))(rec(X).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)).q(2))
   }
 
   test("rec choose branching") {

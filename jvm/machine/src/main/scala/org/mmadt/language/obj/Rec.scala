@@ -90,16 +90,16 @@ object Rec {
     case Tokens.`,` =>
       val nostart: Boolean = null == start
       if (nostart) return pairs.filter(kv => kv._1.alive && kv._2.alive)
-      pairs.map(kv => ((if (nostart) __ else start) ~~> kv._1) -> kv._2)
+      pairs.map(kv => (if (nostart) kv._1 else (start ~~> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
-        .map(kv => kv._1 -> (if (nostart) __ else start) ~~> kv._2)
+        .map(kv => kv._1 -> (if (nostart) kv._2 else (start ~~> kv._2)))
         .filter(kv => kv._2.alive)
         .groupBy(kv => kv._1)
         .map(kv => kv._1 -> {
           val mergedBranches: List[B] = Type.mergeObjs(kv._2.map(x => x._2))
           if (mergedBranches.size == 1) mergedBranches.head
           else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
-          else lst(g = (Tokens.`,`, mergedBranches))
+          else strm(mergedBranches)
         }).toList.asInstanceOf[PairList[A, B]]
     /////////// ;-rec
     case Tokens.`;` =>
