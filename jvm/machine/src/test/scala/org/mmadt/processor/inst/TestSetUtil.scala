@@ -22,9 +22,10 @@
 
 package org.mmadt.processor.inst
 
-import org.mmadt.language.obj.{Lst, Obj, Rec}
+import org.mmadt.VmException
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.StrValue
+import org.mmadt.language.obj.{Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory.{int, str}
 import org.scalatest.prop.TableFor5
 
@@ -41,11 +42,12 @@ object TestSetUtil {
   val car: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("year") -> int)
   val alst: Lst[StrValue] = str("a") `,` "b"
 
-  def testSet(testName: String, data: (Obj, Obj, Obj, String, Boolean)*): (String, TableFor5[Obj, Obj, Obj, String, Boolean]) =
-    (testName, new TableFor5[Obj, Obj, Obj, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
+  def testSet(testName: String, data: (Obj, Obj, Any, String, Boolean)*): (String, TableFor5[Obj, Obj, Any, String, Boolean]) =
+    (testName, new TableFor5[Obj, Obj, Any, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
 
   def testing(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, null, compile)
   def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, query, false)
+  def testing(lhs: Obj, rhs: Obj, result: VmException, query: String): (Obj, Obj, VmException, String, Boolean) = (lhs, rhs, result, query, false)
 
   def comment(comment: String): (Obj, Obj, Obj, String, Boolean) = (null, null, str(comment), null, false)
 }

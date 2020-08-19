@@ -22,53 +22,45 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.LtOp
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class LtInstTest extends FunSuite with TableDrivenPropertyChecks {
+class LtInstTest extends BaseInstTest(
 
-  test("[lt] value, type, strm, anon combinations") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
-        //////// INT
-        (int(2).lt(1), bfalse, "value"), // value * value = value
-        (int(2).q(10).lt(1), bfalse.q(10), "value"), // value * value = value
-        (int(2).q(10).lt(1).q(20), bfalse.q(200), "value"), // value * value = value
-        (int(2).lt(int(1).q(10)), bfalse, "value"), // value * value = value
-        (int(2).lt(int), bfalse, "value"), // value * type = value
-        (int(2).lt(__.mult(int)), btrue, "value"), // value * anon = value
-        (int.lt(int(2)), int.lt(int(2)), "type"), // type * value = type
-        (int.q(10).lt(int(2)), int.q(10).lt(int(2)), "type"), // type * value = type
-        (int.lt(int), int.lt(int), "type"), // type * type = type
-        (int(1, 2, 3).lt(2), bool(true, false, false), "strm"), // strm * value = strm
-        (int(1, 2, 3).lt(int(2).q(10)), bool(true, false, false), "strm"), // strm * value = strm
-        (int(1, 2, 3) ==> __.lt(int(2)).q(10), bool(btrue.q(10), bfalse.q(10), bfalse.q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3).lt(int), bool(false, false, false), "strm"), // strm * type = strm
-        (int(1, 2, 3).lt(__.mult(int)), bool(false, true, true), "strm"), // strm * anon = strm
-        //////// REAL
-        (real(2.0).lt(1.0), bfalse, "value"), // value * value = value
-        (real(2.0).lt(real), bfalse, "value"), // value * type = value
-        (real(2.0).lt(__.mult(real)), true, "value"), // value * anon = value
-        (real.lt(real(2.0)), real.lt(2.0), "type"), // type * value = type
-        (real.lt(real), real.lt(real), "type"), // type * type = type
-        (real(1.0, 2.0, 3.0).lt(2.0), bool(true, false, false), "strm"), // strm * value = strm
-        (real(1.0, 2.0, 3.0).lt(real), bool(false, false, false), "strm"), // strm * type = strm
-        (real(1.0, 2.0, 3.0).lt(__.mult(real)), bool(false, true, true), "strm"), // strm * anon = strm
-      )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result)
-    }
-  }
-
-  test("[lt] exceptions") {
-    assertResult(LanguageException.unsupportedInstType(bfalse, LtOp(btrue)).getMessage)(intercept[LanguageException](bfalse ==> __.lt(btrue)).getMessage)
-  }
+  testSet("[lt] table testing",
+    comment("int"),
+    testing(int(2), lt(1), bfalse, "2 < 1"),
+    testing(int(2).q(10), lt(1), bfalse.q(10), "2{10} < 1"),
+    testing(int(2), lt(int(1).q(10)), bfalse, "2 < 1{10}"),
+    testing(int(2), lt(int), bfalse, "2 < int"),
+    testing(int(2), lt(mult(int)), btrue, "2 < *int"),
+    testing(int, lt(int(2)), int.lt(int(2)), "int < 2"),
+    testing(int.q(10), lt(int(2)), int.q(10).lt(int(2)), "int{10} < 2"),
+    testing(int, lt(int), int.lt(int), "int < int"),
+    comment("int strm"),
+    testing(int(1, 2, 3), lt(2), bool(true, false, false), "[1,2,3] => [lt,2]"),
+    testing(int(1, 2, 3), lt(int(2).q(10)), bool(true, false, false), "[1,2,3] => [lt,2{10}]"),
+    testing(int(1, 2, 3), lt(int(2)).q(10), bool(btrue.q(10), bfalse.q(10), bfalse.q(10)), "[1,2,3][lt,2]{10}"),
+    testing(int(1, 2, 3), lt(int), bool(false, false, false), "[1,2,3][lt,int]"),
+    testing(int(1, 2, 3), lt(mult(int)), bool(false, true, true), "[1,2,3][lt,[mult,int]]"),
+    comment("real"),
+    testing(real(2.0), lt(1.0), bfalse, "2.0[lt,1.0]"),
+    testing(real(2.0), lt(real), bfalse, "2.0 => [lt,real]"),
+    testing(real(2.0), lt(mult(real)), true, "2.0 => <*real"),
+    testing(real, lt(real(2.0)), real.lt(2.0), "real[lt,2.0]"),
+    testing(real, lt(real), real.lt(real), "real[lt,real]"),
+    comment("real strm"),
+    testing(real(1.0, 2.0, 3.0), lt(2.0), bool(true, false, false), "[1.0,2.0,3.0][lt,2.0]"),
+    testing(real(1.0, 2.0, 3.0), lt(real), bool(false, false, false), "[1.0,2.0,3.0] < real"),
+    testing(real(1.0, 2.0, 3.0), lt(mult(real)), bool(false, true, true), "[1.0,2.0,3.0][lt,[mult,real]]"),
+    comment("exception"),
+    testing(bfalse, lt(btrue), LanguageException.unsupportedInstType(bfalse, LtOp(btrue)), "false < true")
+  )) {
 }
