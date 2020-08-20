@@ -24,11 +24,13 @@ package org.mmadt.language.obj.op.rewrite
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.RewriteInstruction
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.branch.BranchOp
 import org.mmadt.language.obj.op.trace.ModelOp
+import org.mmadt.language.obj.op.{BranchInstruction, RewriteInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Lst, Obj}
+import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -39,11 +41,12 @@ object UnityRewrite extends Func[Obj, Obj] {
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
+      // case _: __ => start.via(start, inst)
       case atype: Type[_] => atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => {
         if (b.op == Tokens.branch) {
           b.arg0[Obj] match {
             case alst: Lst[Obj] if alst.gsep == Tokens.`;` =>
-              val temp = alst.glist.map(x => IdRewrite().exec(x)).map(x => removeRules(x)).filter(x => !x.trace.forall(x => ModelOp.isMetaModel(x._2)))
+              val temp = alst.glist.map(x => IdRewrite.stripId(x)) .map(x => removeRules(x)).filter(x => !x.trace.forall(x => ModelOp.isMetaModel(x._2)))
               if (temp.isEmpty) a
               else if (temp.size == 1) temp.head.trace.map(x => x._2).foldLeft(a)((r, t) => t.exec(r))
               else return a
@@ -55,7 +58,18 @@ object UnityRewrite extends Func[Obj, Obj] {
       case _ => start
     }
   }
-
+  def processList(a: Obj, b: Lst[Obj], inst: Inst[Obj, Obj]): Obj = {
+    if (b.glist.exists(x => !x.alive)) return zeroObj
+    val start = if (__.isAnonRoot(a)) b.glist.head.domainObj else a
+    val branches: List[Obj] = b.glist.map(x => IdRewrite.stripId(x)).map(x => removeRules(x)).filter(x => !x.trace.forall(x => ModelOp.isMetaModel(x._2)))
+    val end: Obj = {
+      if (branches.isEmpty) start
+      else if (branches.size == 1) branches.head.trace.map(x => x._2).foldLeft(start)((x, y) => y.exec(x))
+      else if (b.glist.forall(z => Type.isIdentity(z))) BranchInstruction.brchType[Obj](b)
+      else BranchInstruction.brchType[Obj](b).clone(via = (start, BranchOp(b.clone(_ => branches))))
+    }
+    IdRewrite.backPropagateQ(IdRewrite.stripId(end), inst.q)
+  }
   def removeRules(atype: Obj): Obj = {
     if (atype.isInstanceOf[Value[_]]) return atype
     atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => if (b.op.startsWith("rule:")) a else b.exec(a))

@@ -24,10 +24,10 @@ package org.mmadt.processor.inst.rewrite
 
 
 import org.mmadt.language.obj.Obj.intToInt
-import org.mmadt.language.obj.`type`.__.{id, one, plus, zero}
+import org.mmadt.language.obj.`type`.__.{id, one, plus, q, zero}
 import org.mmadt.language.obj.op.RewriteInstruction._
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory.int
 
 /**
@@ -50,4 +50,7 @@ class IdRewriteTest extends BaseInstTest(
     testing(int, plus(id.mult(id.id.plus(id).id).id).id.rule(rule_id), int.plus(int.mult(int.plus(int)))),
     testing(int, id.q(2).plus(id.mult(id.q(5).id.plus(id).id).id).q(6).id.rule(rule_id), int.plus(int.mult(int.plus(int).q(5))).q(12)),
     testing(int, id.branch(id `,` plus(1) `,` id.q(5)).id.rule(rule_id), int.branch(int.plus(1) `,` int.id.q(6))),
+    comment("non-unity quantifier"),
+    testing(int.q(2), int.q(2).id.q(2).id.rule(rule_id), int.q(4) <= int.q(2).id.q(2)),
+    testing(int.q(2), id.q(2).id.rule(rule_id), int.q(4) <= int.q(2).id.q(2)),
   ))
