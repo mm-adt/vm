@@ -3462,9 +3462,9 @@ mm&gt; ['a';['b';'c']]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id];[id]];[id]]
-==&gt;str
+==&gt;str[str[str[id];str[id]];str[id]]
 mm&gt; str[[id];[[id];[id]]]
-==&gt;str</code></pre>
+==&gt;str[str[id];str[str[id];str[id]]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3486,7 +3486,7 @@ mm&gt; str[[id];[[id];[id]]]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];{1}]
-==&gt;str</code></pre>
+==&gt;str[str[id];str]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3518,9 +3518,9 @@ mm&gt; [['a';'b'],['a';'c']]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];[[id],[id]]]
-==&gt;str{2}&lt;=str[id]{2}
+==&gt;str{2}&lt;=str[str[id];str{2}&lt;=str[id]{2}]
 mm&gt; str[[[id];[id]],[[id];[id]]]
-==&gt;str{2}&lt;=str[id]{2}</code></pre>
+==&gt;str{2}&lt;=str[str[id];str[id]]{2}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3547,9 +3547,9 @@ mm&gt; [['a';'c'],['b';'c']]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id],[id]];[id]]
-==&gt;str{2}&lt;=str[id]{2}
+==&gt;str{2}&lt;=str[str{2}&lt;=str[id]{2};str{2}[id]]
 mm&gt; str[[[id];[id]],[[id];[id]]]
-==&gt;str{2}&lt;=str[id]{2}</code></pre>
+==&gt;str{2}&lt;=str[str[id];str[id]]{2}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3717,11 +3717,11 @@ mm&gt; ['a';'b']{-1}
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];[id]{-1}]
-==&gt;str{-1}&lt;=str[id]{-1}
+==&gt;str{-1}&lt;=str[str[id];str{-1}&lt;=str[id]{-1}]
 mm&gt; str[[id]{-1};[id]]
-==&gt;str{-1}&lt;=str[id]{-1}
+==&gt;str{-1}&lt;=str[str{-1}&lt;=str[id]{-1};str{-1}[id]]
 mm&gt; str[[id];[id]]{-1}
-==&gt;str{-1}&lt;=str[id]{-1}</code></pre>
+==&gt;str{-1}&lt;=str[str[id];str[id]]{-1}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3748,9 +3748,9 @@ mm&gt; ['a';'b']
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{-1};[id]{-1}]
-==&gt;str
+==&gt;str[str{-1}&lt;=str[id]{-1};str&lt;=str{-1}[id]{-1}]
 mm&gt; str[[id];[id]]
-==&gt;str</code></pre>
+==&gt;str[str[id];str[id]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6028,7 +6028,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-18 16:31:37 -0600
+Last updated 2020-08-20 12:17:15 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
