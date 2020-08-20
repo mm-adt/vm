@@ -23,6 +23,7 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.processor.inst.BaseInstTest

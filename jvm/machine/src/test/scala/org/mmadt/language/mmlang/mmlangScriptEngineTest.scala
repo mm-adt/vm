@@ -25,7 +25,7 @@ package org.mmadt.language.mmlang
 import javax.script.ScriptContext
 import org.mmadt.language.LanguageException.{labelNotFound, typingError}
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.obj.Obj._
+import org.mmadt.language.obj.Obj.{booleanToBool, intToInt, stringToStr, tupleToRecYES}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
@@ -36,6 +36,7 @@ import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
 
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -44,7 +45,7 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("play2") {
-    println((int(1)->str("a")`_,`int(1)->str("a")`_,`int(2)->str("c")).get(int(1)).toStrm.values)
+    println((int(1)->str("a") `_,` int(1)->str("a") `_,` int(2)->str("c")).get(int(1)).toStrm.values)
   }
 
   test("range<=domain") {

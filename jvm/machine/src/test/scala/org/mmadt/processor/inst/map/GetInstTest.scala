@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj._
+import org.mmadt.language.obj.Obj.{stringToStr, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.{Int, Obj, Str}

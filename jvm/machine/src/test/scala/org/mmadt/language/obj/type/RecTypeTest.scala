@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
+import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -56,11 +57,9 @@ class RecTypeTest extends FunSuite {
     val crec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_,` str("b") -> int.plus(2) `_,` str("c") -> int.plus(3)
     val prec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_|` str("b") -> int.plus(2) `_|` str("c") -> int.plus(3)
     val srec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_;` str("b") -> int.plus(2) `_;` str("c") -> int.plus(3)
-
     assertResult(int.q(3))(crec.merge.range)
     assertResult(int.q(1))(prec.merge.range)
     assertResult(int.q(1))(srec.merge.range)
-
     assertResult(int(11, 12, 13))(int(10).split(crec).merge)
     assertResult(int(11))(int(10).split(prec).merge)
     assertResult(int(16))(int(10).split(srec).merge)

@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{LstType, PolyType}
+import org.mmadt.language.obj.`type`.{LstType, PolyType, RecType}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.{PolyValue, Value}
 import org.mmadt.language.obj.{Obj, _}

@@ -23,6 +23,7 @@
 package org.mmadt.processor.inst
 
 import org.mmadt.VmException
+import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj, Rec}

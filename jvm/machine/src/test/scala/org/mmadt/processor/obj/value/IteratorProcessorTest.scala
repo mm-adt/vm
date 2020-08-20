@@ -23,6 +23,7 @@
 package org.mmadt.processor.obj.value
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableDrivenPropertyChecks

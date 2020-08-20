@@ -23,6 +23,7 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple}
+import org.mmadt.language.obj.Rec.RichTuple
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
@@ -109,7 +110,7 @@ trait Obj
   // quantifier methods
   def q(f: IntQ => IntQ): this.type = this.q(f.apply(this.q))
   def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
-  def q(q: IntQ): this.type = if (q.equals(qZero)) this.rangeObj.clone(q = qZero) else this.clone(
+  def q(q: IntQ): this.type = if (q.equals(qZero) || !this.alive) this.rangeObj.clone(q = qZero) else this.clone(
     q = if (this.root) q else this.q.mult(q),
     via = if (this.root) this.via else (this.via._1, this.via._2.q(q)))
   def hardQ(f: IntQ => IntQ): this.type = this.hardQ(f.apply(this.q))
@@ -160,8 +161,8 @@ object Obj {
   @inline implicit def doubleToReal(ground: scala.Double): RealValue = real(ground)
   @inline implicit def floatToReal(ground: scala.Float): RealValue = real(ground)
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
-  @inline implicit def tupleToRec[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
-  @inline implicit def tupleToLst[A <: Obj](ground: Tuple1[A]): Lst[A] = lst(g = (Tokens.`,`, List(ground._1)))
+  @inline implicit def tupleToRecYES[A <: Obj, B <: Obj](ground: Tuple2[A, B]): RichTuple[A, B] = new RichTuple[A, B](ground)
+  @inline implicit def tupleToRecNO[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
 
   def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]

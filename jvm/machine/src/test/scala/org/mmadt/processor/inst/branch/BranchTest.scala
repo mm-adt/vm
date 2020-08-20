@@ -23,11 +23,12 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{testing, testSet}
+import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -69,7 +70,7 @@ class BranchTest extends BaseInstTest(
     testing(int(0), plus(1).branch((is(gt(1)) -> plus(10)) `_,` (is(gt(2)) -> plus(20)) `_,` (__ -> int.plus(30))), int(31)),
     testing(int(1, 2, 3), plus(0).branch((is(gt(1)) -> plus(10)) `_,` (is(gt(2)) -> plus(20)) `_,` (__ -> int.plus(30))), int(31, 12, 13, 32, 23, 33)),
     testing(int(5), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(6, 7)),
-    testing(int(11), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(12, 13,17))),
+    testing(int(11), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(12, 13, 17))),
   testSet("[branch] |-rec",
     testing(int.q(10), plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).is(gt(10))),
     testing(int(1), int.plus(0).branch((int + 0 -> int.plus(1)) `_|` (int -> int.plus(2))), int(2)),

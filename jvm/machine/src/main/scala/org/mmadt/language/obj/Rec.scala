@@ -29,6 +29,8 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.storage.StorageFactory._
 
+import scala.util.Try
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -59,15 +61,27 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   final def `_,`(next: Tuple2[_, _]): this.type = this.`,`(next)
   final def `_;`(next: Tuple2[_, _]): this.type = this.`;`(next)
   final def `_|`(next: Tuple2[_, _]): this.type = this.`|`(next)
-  final def `,`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`,`, this.g._2 :+ next))
-  final def `;`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`;`, this.g._2 :+ next))
-  final def `|`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`|`, this.g._2 :+ next))
+  final def `,`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`,`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `;`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`;`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `|`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`|`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
 }
 
 object Rec {
   type RecTuple[A <: Obj, +B <: Obj] = (String, PairList[A, B])
   type PairList[A <: Obj, +B <: Obj] = List[ObjPair[A, B]]
   type ObjPair[A <: Obj, +B <: Obj] = Tuple2[A, B]
+
+  class RichTuple[A <: Obj, +B <: Obj](val ground: Tuple2[A, B]) {
+    def `_;`(next: Tuple2[_, _]): Rec[A, B] = this.`;`(next)
+    def `_,`(next: Tuple2[_, _]): Rec[A, B] = this.`,`(next)
+    def `_|`(next: Tuple2[_, _]): Rec[A, B] = this.`|`(next)
+    def `;`(next: Tuple2[_, _]): Rec[A, B] = rec(g = (Tokens.`;`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    def `,`(next: Tuple2[_, _]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    def `|`(next: Tuple2[_, _]): Rec[A, B] = rec(g = (Tokens.`|`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    def `;`: Rec[A, B] = rec(g = (Tokens.`;`, List(ground)))
+    def `,`: Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
+    def `|`: Rec[A, B] = rec(g = (Tokens.`|`, List(ground)))
+  }
 
   @inline implicit def listToRichList[A <: Obj, B <: Obj](ground: PairList[A, B]): RichList[A, B] = new RichList[A, B](ground)
   protected class RichList[A <: Obj, B <: Obj](val list: PairList[A, B]) {
@@ -104,11 +118,12 @@ object Rec {
     /////////// ;-rec
     case Tokens.`;` =>
       if (null == start) return pairs
-      var running = start -> start
+      var running = start
       pairs.map(kv => {
-        val key = running._1 ~~> kv._1
-        running = (if (!key.alive) key -> zeroObj else key -> (running._2 ~~> kv._2)).asInstanceOf[(A, A)]
-        running
+        val key = running `~~>` kv._1
+        val keyValue = (if (!key.alive) (key -> zeroObj) else (key -> (running `~~>` kv._2))).asInstanceOf[Tuple2[A, A]]
+        running = keyValue._2
+        keyValue
       }).asInstanceOf[PairList[A, B]]
     /////////// |-rec
     case Tokens.`|` =>
