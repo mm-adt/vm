@@ -26,7 +26,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.op.rewrite.{IdRewrite, UnityRewrite}
+import org.mmadt.language.obj.op.rewrite.{IdRewrite, BranchRewrite}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory.{zeroObj, _}
@@ -61,7 +61,7 @@ object BranchOp extends Func[Obj, Obj] {
           case Tokens.`;` => Lst.moduleMult(start, alst) match {
             case blst if blst.isEmpty => zeroObj
             case blst: Value[_] => blst.glist.last.hardQ(q => multQ(q, inst.q))
-            case blst: Type[_] => UnityRewrite.processList(start, blst, inst)
+            case blst: Type[_] =>  BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))//BranchRewrite.processList(start, blst, inst)
           }
           case Tokens.`|` => Lst.moduleMult(start, alst) match {
             case blst if blst.isEmpty => zeroObj
@@ -85,7 +85,7 @@ object BranchOp extends Func[Obj, Obj] {
           case Tokens.`;` => Rec.moduleMult(start, arec) match {
             case brec if brec.isEmpty => zeroObj
             case brec: Value[_] => brec.gmap.last._2.hardQ(q => multQ(q, inst.q))
-            case brec: Type[_] => IdRewrite.stripId(brec.gmap.last._2.q(inst.q))
+            case brec: Type[_] =>  IdRewrite.stripId(brec.gmap.last._2.q(inst.q))
           }
           case Tokens.`|` => Rec.moduleMult(start, arec) match {
             case brec if brec.isEmpty => zeroObj

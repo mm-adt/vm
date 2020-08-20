@@ -66,9 +66,9 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Any, String, 
     )
     val evaluating = List[(String, Obj => Obj)](
       ("evaluating-1", s => engine.eval(s"${stringify(s)} => ${middle}")),
-      ("evaluating-2", s => s.compute(middle)),
+      //  ("evaluating-2", s => s.compute(middle)), // you have to go through compiler now
       ("evaluating-3", s => s ==> middle),
-      ("evaluating-4", s => s `=>` middle)
+      // ("evaluating-4", s => s `=>` middle) // you have to go through compiler now
     )
     val compiling = List[(String, Obj => Obj)](
       ("compiling-1", s => if (!middle.alive) s.q(qZero) else (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a))),

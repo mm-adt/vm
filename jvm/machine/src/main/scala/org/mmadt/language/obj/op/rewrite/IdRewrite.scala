@@ -43,14 +43,14 @@ object IdRewrite extends Func[Obj, Obj] {
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case _: __ => start.via(start, inst) // if (!start.root && start.via._2.op == Tokens.rule_id) start else start.via(start, inst)
+      case _: __ if !__.isToken(start) => start.via(start, inst) // if (!start.root && start.via._2.op == Tokens.rule_id) start else start.via(start, inst)
       case atype: Type[_] => backPropagateQ(stripId(atype), inst.q)
       case _ => start
     }
   }
 
   def stripId[A <: Obj](atype: A): A = {
-    if (!exists(atype, Tokens.id)) atype
+    if (__.isToken(atype) || !exists(atype, Tokens.id)) atype
     else {
       var rollingQ: IntQ = qOne
       backPropagateQ(atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => {
@@ -65,11 +65,12 @@ object IdRewrite extends Func[Obj, Obj] {
 
   def backPropagateQ[A <: Obj](aobj: A, q: IntQ): A = {
     if (q == qOne) aobj
-    else if (aobj.root) aobj.id.q(q)
+    else if (aobj.root || aobj.via._2.op == Tokens.model) aobj.id.q(q)
     else aobj.q(q)
   }
 
   def downPropagateRule(inst: Inst[Obj, Obj]): Inst[Obj, Obj] = {
+    if (inst.op.equals(Tokens.model)) return inst
     inst.clone(args => args.map {
       case arg: Type[_] => IdRewrite.stripId(arg)
       case arg => arg

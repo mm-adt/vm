@@ -30,6 +30,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
+import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.trace._
@@ -171,8 +172,8 @@ object Obj {
       case rangeType: Type[E] =>
         LanguageException.testTypeCheck(objA, objB.domain)
         objA match {
-          case _: Value[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.iterator(x, rangeType), rangeType)
-          case _: Type[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.compiler(x, rangeType), rangeType)
+          case _: Value[_] => AsOp.autoAsType(objA.update(objB.model), x =>   Processor.iterator(x, rangeType), rangeType)
+          case _: Type[_] => AsOp.autoAsType(objA.update(objB.model), x => BranchRewrite.processType(Processor.compiler(x, BranchRewrite().exec(rangeType.rule(IdRewrite())).asInstanceOf[Type[E]])), rangeType)
         }
     }
   }

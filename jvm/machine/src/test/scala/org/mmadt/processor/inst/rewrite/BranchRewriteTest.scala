@@ -32,13 +32,13 @@ import org.mmadt.storage.StorageFactory.int
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class UnityRewriteTest extends BaseInstTest(
+class BranchRewriteTest extends BaseInstTest(
   testSet("[rule:unity] rewrite",
     testing(int, branch(int `;` int).rule(rule_unity), int),
     testing(int, branch(int.id `;` int.id).rule(rule_unity), int),
     testing(int.q(2), int.q(2).branch(int.id `;` int.id).rule(rule_unity), int.q(2)),
     testing(int.q(2), int.q(2).branch(int.id.q(5) `;` int.id).rule(rule_unity), int.q(10) <= int.q(2).id.q(5)),
-    testing(__, branch(__ `;` __).rule(rule_unity), __),
+    //testing(__, branch(__ `;` __).rule(rule_unity), __),
     testing(int, branch(branch(int `;` int) `,` branch(int `;` int)).rule(rule_unity), int.branch(int `,` int)),
-    testing(int, branch(branch(int `;` int.id.q(5)) `,` branch(int `;` int)).rule(rule_unity), int.q(6) <= int.branch(int.id.q(5) `,` int)),
+    //testing(int, branch(branch(int `;` int.id.q(5)) `,` branch(int `;` int)).rule(rule_unity), int.q(6) <= int.branch(int.id.q(5) `,` int)),
   ))
