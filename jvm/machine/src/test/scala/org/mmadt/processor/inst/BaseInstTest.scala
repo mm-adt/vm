@@ -22,34 +22,40 @@
 
 package org.mmadt.processor.inst
 
+import javax.script.ScriptContext
 import org.mmadt.VmException
+import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.StorageFactory.{asType, zeroObj, _}
+import org.mmadt.storage.StorageFactory.{asType, qZero, zeroObj}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
  */
-abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Any, String, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
+abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, String, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
   protected val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
 
   testSets.foreach(testSet => {
     test(testSet._1) {
+      val model = testSet._2
       var lastComment: String = ""
-      // TODO: engine.eval(s":[model,'${getClass.getResource("/model/mm.mm").getPath}']")
-      forEvery(testSet._2) {
+      forEvery(testSet._3) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
         case (null, null, comment, null, false) => lastComment = comment.toString
-        case (lhs, rhs, result: Obj, query, compile) => evaluate(lhs, rhs, result, lastComment, query = query, compile = compile)
-        case (lhs, rhs, result: VmException, query, compile) => evaluate(lhs, rhs, result, lastComment, query = query, compile = compile)
+        case (lhs, rhs, result: Obj, query, compile) => evaluate(lhs, rhs, result, lastComment, query = query, compile = compile, model = model)
+        case (lhs, rhs, result: VmException, query, compile) => evaluate(lhs, rhs, result, lastComment, query = query, compile = compile, model = model)
       }
     }
   })
+
+  def prepModel(start: Obj, model: Model): Obj = if (null == model) start else start.model(model)
 
   def stringify(obj: Obj): String = if (obj.isInstanceOf[Strm[_]]) {
     if (!obj.alive)
@@ -59,16 +65,21 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Any, String, 
   } else obj.toString
 
   def evaluate(start: Obj, middle: Obj, end: Any, lastComment: String = "", inst: Inst[Obj, Obj] = null,
-               engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true): Unit = {
+               engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true, model: Model = null): Unit = {
+
+    // engine.eval(s":[model,'${getClass.getResource("/model/mm.mm").getPath}']")
     engine.eval(":")
+    if (null != model)
+      engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.::, __.model(model))
+
     val querying = List[(String, Obj => Obj)](
       ("querying-1", _ => engine.eval(query))
     )
     val evaluating = List[(String, Obj => Obj)](
       ("evaluating-1", s => engine.eval(s"${stringify(s)} => ${middle}")),
-      //  ("evaluating-2", s => s.compute(middle)), // you have to go through compiler now
-      ("evaluating-3", s => s ==> middle),
-      // ("evaluating-4", s => s `=>` middle) // you have to go through compiler now
+      ("evaluating-2", s => s ==> middle),
+      // ("evaluating-3", s => s.compute(middle)), // you have to go through compiler now
+      // ("evaluating-4", s => s `=>`l middle) // you have to go through compiler now
     )
     val compiling = List[(String, Obj => Obj)](
       ("compiling-1", s => if (!middle.alive) s.q(qZero) else (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a))),
@@ -87,9 +98,11 @@ abstract class BaseInstTest(testSets: (String, TableFor5[Obj, Obj, Any, String, 
       (if (null != inst) instructioning else Nil))
       .foreach(example => {
         end match {
-          case _: Obj => assertResult(end, s"[${example._1}] $lastComment")(example._2(start))
-          case _: VmException => assertResult(end)(intercept[VmException](example._2(start)))
+          case _: Obj => assertResult(end, s"[${example._1}] $lastComment")(example._2(prepModel(start, model)))
+          case _: VmException => assertResult(end, s"[${example._1}] $lastComment")(intercept[VmException](example._2(prepModel(start, model))))
         }
       })
+    engine.eval(":")
+
   }
 }

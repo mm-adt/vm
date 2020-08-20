@@ -36,12 +36,12 @@ import scala.annotation.tailrec
  */
 package object rewrite {
 
-  def removeRules(atype: Obj): Obj = {
+  def removeRules[A<:Obj](atype: A): A = {
     if (atype.isInstanceOf[Value[_]]) return atype
     atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) =>
       if (b.op.startsWith("rule:")) a
       else if (b.op == Tokens.model) b.exec(a)
-      else b.clone(args => args.map(arg => removeRules(arg))).exec(a))
+      else b.clone(args => args.map(arg => removeRules(arg))).exec(a)).asInstanceOf[A]
   }
 
   @tailrec

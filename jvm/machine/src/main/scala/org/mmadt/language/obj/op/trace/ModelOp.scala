@@ -21,7 +21,6 @@
  */
 package org.mmadt.language.obj.op.trace
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.{Type, __}
@@ -31,8 +30,11 @@ import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
+import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 import org.mmadt.storage.StorageFactory.{lst, rec, str, toBaseName}
 import org.mmadt.storage.obj.value.VInst
+
+import scala.io.Source
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -45,6 +47,17 @@ trait ModelOp {
 }
 
 object ModelOp extends Func[Obj, Obj] {
+
+  /////
+  lazy val MM: Model = model("mm")
+  private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
+  private def model(name: String): Model = {
+    val source = Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)
+    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.empty)((x, y) => x + "\n" + y))
+    finally source.close();
+  }
+  /////
+
   type Model = Rec[StrValue, ModelMap]
   type ModelMap = Rec[Obj, Lst[Obj]]
   val TYPE: StrValue = str("type")

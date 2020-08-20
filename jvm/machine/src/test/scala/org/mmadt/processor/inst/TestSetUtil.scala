@@ -25,6 +25,7 @@ package org.mmadt.processor.inst
 import org.mmadt.VmException
 import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory.{int, str}
@@ -43,8 +44,10 @@ object TestSetUtil {
   val car: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("year") -> int)
   val alst: Lst[StrValue] = str("a") `,` "b"
 
-  def testSet(testName: String, data: (Obj, Obj, Any, String, Boolean)*): (String, TableFor5[Obj, Obj, Any, String, Boolean]) =
-    (testName, new TableFor5[Obj, Obj, Any, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
+  def testSet(testName: String, model: Model, data: (Obj, Obj, Any, String, Boolean)*): (String, Model, TableFor5[Obj, Obj, Any, String, Boolean]) =
+    (testName, model, new TableFor5[Obj, Obj, Any, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
+  def testSet(testName: String, data: (Obj, Obj, Any, String, Boolean)*): (String, Model, TableFor5[Obj, Obj, Any, String, Boolean]) =
+    (testName, null, new TableFor5[Obj, Obj, Any, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
 
   def testing(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, null, compile)
   def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, query, false)

@@ -94,7 +94,7 @@ package object op {
 
   object RewriteInstruction {
     val rule_id: Inst[Obj, Obj] = IdRewrite()
-    val rule_unity: Inst[Obj, Obj] = BranchRewrite()
+    val rule_branch: Inst[Obj, Obj] = BranchRewrite()
   }
 
 }

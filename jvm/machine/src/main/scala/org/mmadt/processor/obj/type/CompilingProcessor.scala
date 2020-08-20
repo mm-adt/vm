@@ -25,6 +25,7 @@ package org.mmadt.processor.obj.`type`
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.rewrite._
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.rewrite.TraceScanRewrite
 

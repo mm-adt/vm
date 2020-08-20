@@ -22,7 +22,9 @@
 
 package org.mmadt.processor.obj.`type`.rewrite
 
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.__.id
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite, removeRules}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
@@ -40,27 +42,31 @@ object TraceScanRewrite extends Rewrite {
     val rewrites = OpInstResolver.applyRewrites(obj).model.rewrites.sortBy(x => -x.domainObj.trace.length)
     var a: Obj = obj
     var b: Obj = a
-    rewrites.foreach(d => {
-      a = b
-      b = b.domainObj
-      val range = getPolyOrObj(d.range)
-      val domain = getPolyOrObj(d)
-      val domainTrace = domain.trace.map(x => x._2)
-      val length = domainTrace.length
-      while (!a.root) {
-        val aTrace: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(x, writer)).take(length)
-        if (aTrace.length == length) {
-          val aTraceRewrite = aTrace.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
-          if (aTraceRewrite.forall(x => x.alive)) { // the entire window matches, write the range instructions to the type
-            b = writer(range.trace.map(x => x._2), aTraceRewrite, b)
-            for (_ <- 1 to length) a = a.linvert
-          } else { // the window doesn't match, write only the next instruction to the type and try the window shifted over one
-            b = aTrace.headOption.map(x => x.exec(b)).get
-            a = a.linvert
+    rewrites.foreach(rewrite => {
+      if (rewrite.equals((__ `,`) <= (id `,`))) {
+        b = removeRules(BranchRewrite.processType(BranchRewrite().exec(b.asInstanceOf[Type[A]].rule(IdRewrite())).asInstanceOf[A]))
+      } else {
+        a = b
+        b = b.domainObj
+        val range = getPolyOrObj(rewrite.range)
+        val domain = getPolyOrObj(rewrite)
+        val domainTrace = domain.trace.map(x => x._2)
+        val length = domainTrace.length
+        while (!a.root) {
+          val aTrace: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(x, writer)).take(length)
+          if (aTrace.length == length) {
+            val aTraceRewrite = aTrace.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
+            if (aTraceRewrite.forall(x => x.alive)) { // the entire window matches, write the range instructions to the type
+              b = writer(range.trace.map(x => x._2), aTraceRewrite, b)
+              for (_ <- 1 to length) a = a.linvert
+            } else { // the window doesn't match, write only the next instruction to the type and try the window shifted over one
+              b = aTrace.headOption.map(x => x.exec(b)).get
+              a = a.linvert
+            }
+          } else {
+            b = aTrace.foldLeft(b)((x, y) => y.exec(x)) // the window has gone over the instruction length, write unmatched instructions to type
+            a = a.domain
           }
-        } else {
-          b = aTrace.foldLeft(b)((x, y) => y.exec(x)) // the window has gone over the instruction length, write unmatched instructions to type
-          a = a.domain
         }
       }
     })
@@ -91,7 +97,7 @@ object TraceScanRewrite extends Rewrite {
     if (range.length == trace.length) {
       query.compute(trace
         .zip(range)
-        .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._2.args))// x._1.args.zip(x._2.args).map(y => Obj.resolveArg(y._1, y._2))))
+        .map(x => OpInstResolver.resolve[Obj, Obj](x._2.op, x._2.args)) // x._1.args.zip(x._2.args).map(y => Obj.resolveArg(y._1, y._2))))
         .foldLeft(query.domainObj)((x, y) => y.exec(x)))
     } else {
       range.foldLeft(query)((x, y) => y.exec(x))
