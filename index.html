@@ -2437,11 +2437,11 @@ mmlang&gt; ('a'{?}|'b'|'a'|'c'|'b')&gt;-
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'a'-&gt;3)
-==&gt;('a'-&gt;1,'b'-&gt;2,'a'-&gt;3)
+==&gt;('a'-&gt;int{2},'b'-&gt;2)
 mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'a'-&gt;3)&gt;-
 ==&gt;1
-==&gt;2
-==&gt;3</code></pre>
+==&gt;3
+==&gt;2</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4695,10 +4695,10 @@ mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')&gt;-
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')
-==&gt;('xr'-&gt;'xb','xs'-&gt;'xa','xt'-&gt;'xc')
+==&gt;('xs'-&gt;'xa','xr'-&gt;'xb','xt'-&gt;'xc')
 mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')&gt;-
-==&gt;'xb'
 ==&gt;'xa'
+==&gt;'xb'
 ==&gt;'xc'</code></pre>
 </div>
 </div>
@@ -6028,7 +6028,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-20 15:57:55 -0600
+Last updated 2020-08-20 16:07:59 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
