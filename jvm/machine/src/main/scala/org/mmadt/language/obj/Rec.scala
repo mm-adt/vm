@@ -29,8 +29,6 @@ import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.storage.StorageFactory._
 
-import scala.util.Try
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -108,20 +106,22 @@ object Rec {
         .filter(kv => kv._1.alive)
         .map(kv => kv._1 -> (if (nostart) kv._2 else (start ~~> kv._2)))
         .filter(kv => kv._2.alive)
-        .groupBy(kv => kv._1)
-        .map(kv => kv._1 -> {
-          val mergedBranches: List[B] = Type.mergeObjs(kv._2.map(x => x._2))
-          if (mergedBranches.size == 1) mergedBranches.head
-          else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
-          else strm(mergedBranches)
-        }).toList.asInstanceOf[PairList[A, B]]
+        //.foldLeft(Map.empty[A,List[B]])((a,b) => a + (b._1 -> (a.get(b._1).map(c => c :+ b._2).getOrElse(List(b._2)))))
+        .groupBy(kv => kv._1).map(kv => kv._1 -> {
+        val mergedBranches: List[B] = Type.mergeObjs(kv._2.map(x => x._2))
+        if (mergedBranches.size == 1) mergedBranches.head
+        else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
+        else strm(mergedBranches)
+      }).toList
     /////////// ;-rec
     case Tokens.`;` =>
       if (null == start) return pairs
       var running = start
       pairs.map(kv => {
         val key = running `~~>` kv._1
-        val keyValue = (if (!key.alive) (key -> zeroObj) else (key -> (running `~~>` kv._2))).asInstanceOf[Tuple2[A, A]]
+        val keyValue = (
+          if (!key.alive) (key -> zeroObj)
+          else (key -> (running `~~>` kv._2))).asInstanceOf[Tuple2[A, A]]
         running = keyValue._2
         keyValue
       }).asInstanceOf[PairList[A, B]]
