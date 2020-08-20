@@ -27,7 +27,7 @@ import org.mmadt.language.obj.{Inst, Obj, Poly}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
-trait LastOp[A <: Obj] {
+trait LastOp[+A <: Obj] {
   this: Poly[A] =>
   def last: A = LastOp().exec(this)
 }

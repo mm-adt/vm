@@ -27,8 +27,8 @@ import org.mmadt.language.obj._
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
-trait TailOp {
-  this: Obj =>
+trait TailOp[+A<:Obj] {
+  this: Poly[A] =>
   def tail: this.type = TailOp[Obj]().exec(this).asInstanceOf[this.type]
 }
 object TailOp extends Func[Obj, Poly[Obj]] {

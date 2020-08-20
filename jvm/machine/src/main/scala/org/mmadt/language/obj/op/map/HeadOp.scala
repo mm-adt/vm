@@ -28,7 +28,7 @@ import org.mmadt.language.obj.{Inst, Obj, Poly}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
-trait HeadOp[A <: Obj] {
+trait HeadOp[+A <: Obj] {
   this: Poly[A] =>
   def head: A = HeadOp().exec(this)
 }
