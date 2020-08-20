@@ -101,18 +101,18 @@ object Rec {
     /////////// ,-rec
     case Tokens.`,` =>
       val nostart: Boolean = null == start
-      if (nostart) return pairs.filter(kv => kv._1.alive && kv._2.alive)
+      // if (nostart) return pairs.filter(kv => kv._1.alive && kv._2.alive)
       pairs.map(kv => (if (nostart) kv._1 else (start ~~> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
         .map(kv => kv._1 -> (if (nostart) kv._2 else (start ~~> kv._2)))
         .filter(kv => kv._2.alive)
-        //.foldLeft(Map.empty[A,List[B]])((a,b) => a + (b._1 -> (a.get(b._1).map(c => c :+ b._2).getOrElse(List(b._2)))))
-        .groupBy(kv => kv._1).map(kv => kv._1 -> {
-        val mergedBranches: List[B] = Type.mergeObjs(kv._2.map(x => x._2))
-        if (mergedBranches.size == 1) mergedBranches.head
-        else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
-        else strm(mergedBranches)
-      }).toList
+        .foldLeft(Map.empty[A, List[B]])((a, b) => a + (b._1 -> (a.get(b._1).map(c => c :+ b._2).getOrElse(List(b._2)))))
+        .map(kv => kv._1 -> {
+          val mergedBranches: List[B] = Type.mergeObjs(kv._2)
+          if (mergedBranches.size == 1) mergedBranches.head
+          else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
+          else strm(mergedBranches)
+        }).toList //.groupBy(kv => kv._1).map(kv => kv._1 -> {
     /////////// ;-rec
     case Tokens.`;` =>
       if (null == start) return pairs

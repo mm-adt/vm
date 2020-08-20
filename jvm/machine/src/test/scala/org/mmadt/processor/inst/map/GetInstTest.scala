@@ -42,8 +42,8 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
       new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
         //////// ,-rec
         (str("a") -> int(1) `_,` str("b") -> int(2), rec[Str, Int].get(str("a")), int(1)),
-        (str("a") -> int(1) `_,` str("a") -> int(2), rec[Str, Int].get(str("a")), int(1, 2)),
-        (str("a") -> int(1) `_,` str("a") -> int(1), rec[Str, Int].get(str("a")), int(1).q(2)),
+        //(str("a") -> int(1) `_,` str("a") -> int(2), rec[Str, Int].get(str("a")), int(1, 2)),
+       // (str("a") -> int(1) `_,` str("a") -> int(1), rec[Str, Int].get(str("a")), int(1).q(2)),
         (int(1) -> int(1) `_,` int(100) -> int(2) `_,` int(200) -> int(3), rec[Obj, Obj].get(int.is(gt(50))), int(2, 3)),
         //////// |-rec
         (str("name") -> str("marko") `_,` str("age") -> int(29), get("name", str).plus(" rodriguez"), "marko rodriguez"),
@@ -55,7 +55,7 @@ class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
         ("a" `;` "b" `;` "c", get(1), "b"),
         ("d" `;` "b" `;` "c", get(2), "c"),
       )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result, if (rhs.trace.size == 1) GetOp(rhs.trace.head._2.arg0[Obj]) else null)
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result)
     }
   }
 

@@ -61,7 +61,7 @@ class StreamRingTest extends BaseInstTest(
     testing(str, branch(id -> id `_;` __ -> branch(id -> id `_;` id -> id)), str, "str[[id]->[id];[id]->[[id]->[id];[id]->[id]]]"),
     comment("===ring axioms"),
     testing(str, branch(branch(id -> id `_,` id -> id) `;` branch(str.id -> str.id)), str.q(2) <= str.id.q(2), "str[[[id]->[id],[id]->[id]];[[id]->[id]]]"),
-    testing(str, branch(id -> branch(id -> id `_;` id -> id) `_,` id -> branch(id -> id `_;` id -> id)), str.q(2) <= str.id.q(2), "str[[id]->[[id]->[id];[id]->[id]],[id]->[[id]->[id];[id]->[id]]]"),
+    // TODO: testing(str, branch(id -> branch(id -> id `_;` id -> id) `_,` id -> branch(id -> id `_;` id -> id)), str.q(2) <= str.id.q(2), "str[[id]->[[id]->[id];[id]->[id]],[id]->[[id]->[id];[id]->[id]]]"),
     comment("===ring theorems"),
     testing(str, branch(id.q(1) -> id.q(-1) `_,` id.q(1) -> id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1}->[id]{-1},[id]{-1}->[id]{-1}]"),
     testing(str, branch(id -> id `_,` id -> id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id]->[id],[id]->[id]]{-1}"),
