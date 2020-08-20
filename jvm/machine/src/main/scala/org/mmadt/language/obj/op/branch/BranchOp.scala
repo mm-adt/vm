@@ -55,7 +55,7 @@ object BranchOp extends Func[Obj, Obj] {
             case blst if blst.isEmpty => zeroObj
             case blst: Value[_] => strm(blst.glist.map(x => x.hardQ(q => multQ(q, inst.q))))
             case blst: Type[_] =>
-              if (1 == blst.size) IdRewrite.stripId((start `=>` blst.glist.head).q(inst.q))
+              if (1 == blst.size) IdRewrite.processType((start `=>` blst.glist.head).q(inst.q))
               else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
           }
           case Tokens.`;` => Lst.moduleMult(start, alst) match {
@@ -67,7 +67,7 @@ object BranchOp extends Func[Obj, Obj] {
             case blst if blst.isEmpty => zeroObj
             case blst: Value[_] => blst.glist.head.hardQ(q => multQ(q, inst.q))
             case blst: Type[_] =>
-              if (blst.size == 1) IdRewrite.stripId((start `=>` blst.glist.head).q(inst.q))
+              if (blst.size == 1) IdRewrite.processType((start `=>` blst.glist.head).q(inst.q))
               else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
           }
         }
@@ -79,19 +79,19 @@ object BranchOp extends Func[Obj, Obj] {
             case brec if brec.isEmpty => zeroObj
             case brec: Value[_] => strm(brec.gmap.map(kv => kv._2.hardQ(q => multQ(q, inst.q))))
             case brec: Type[_] =>
-              if (1 == brec.size) IdRewrite.stripId((start `=>` brec.gmap.head._2).q(inst.q))
+              if (1 == brec.size) IdRewrite.processType((start `=>` brec.gmap.head._2).q(inst.q))
               else BranchInstruction.brchType[Obj](brec, inst.q).via(start, inst.clone(_ => List(brec)))
           }
           case Tokens.`;` => Rec.moduleMult(start, arec) match {
             case brec if brec.isEmpty => zeroObj
             case brec: Value[_] => brec.gmap.last._2.hardQ(q => multQ(q, inst.q))
-            case brec: Type[_] =>  IdRewrite.stripId(brec.gmap.last._2.q(inst.q))
+            case brec: Type[_] =>  IdRewrite.processType(brec.gmap.last._2.q(inst.q))
           }
           case Tokens.`|` => Rec.moduleMult(start, arec) match {
             case brec if brec.isEmpty => zeroObj
             case brec: Value[_] => brec.gmap.head._2
             case brec: Type[_] =>
-              if (brec.size == 1) IdRewrite.stripId((start `=>` brec.gmap.head._2).q(inst.q))
+              if (brec.size == 1) IdRewrite.processType((start `=>` brec.gmap.head._2).q(inst.q))
               else BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
           }
         }

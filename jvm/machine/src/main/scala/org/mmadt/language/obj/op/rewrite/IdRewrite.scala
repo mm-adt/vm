@@ -44,12 +44,12 @@ object IdRewrite extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
       case _: __ if !__.isToken(start) => start.via(start, inst) // if (!start.root && start.via._2.op == Tokens.rule_id) start else start.via(start, inst)
-      case atype: Type[_] => backPropagateQ(stripId(atype), inst.q)
+      case atype: Type[_] => backPropagateQ(processType(atype), inst.q)
       case _ => start
     }
   }
 
-  def stripId[A <: Obj](atype: A): A = {
+  def processType[A <: Obj](atype: A): A = {
     if (__.isToken(atype) || !exists(atype, Tokens.id)) atype
     else {
       var rollingQ: IntQ = qOne
@@ -58,29 +58,9 @@ object IdRewrite extends Func[Obj, Obj] {
           rollingQ = multQ(rollingQ, b.q)
           a
         } else
-          downPropagateRule(b).exec(a)
+          downPropagateRule(b,x=>IdRewrite.processType(x)).exec(a)
       }), rollingQ).asInstanceOf[atype.type]
     }
   }
 
-  def backPropagateQ[A <: Obj](aobj: A, q: IntQ): A = {
-    if (q == qOne) aobj
-    else if (aobj.root || aobj.via._2.op == Tokens.model) aobj.id.q(q)
-    else aobj.q(q)
-  }
-
-  def downPropagateRule(inst: Inst[Obj, Obj]): Inst[Obj, Obj] = {
-    if (inst.op.equals(Tokens.model)) return inst
-    inst.clone(args => args.map {
-      case arg: Type[_] => IdRewrite.stripId(arg)
-      case arg => arg
-    })
-  }
-
-  @tailrec
-  def exists(aobj: Obj, op: String): Boolean = {
-    if (aobj.root) false
-    else if (aobj.via._2.op == op) true
-    else exists(aobj.via._1, op)
-  }
 }
