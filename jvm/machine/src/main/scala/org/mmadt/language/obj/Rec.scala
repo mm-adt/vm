@@ -79,6 +79,9 @@ object Rec {
     def `;`: Rec[A, B] = rec(g = (Tokens.`;`, List(ground)))
     def `,`: Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
     def `|`: Rec[A, B] = rec(g = (Tokens.`|`, List(ground)))
+    def `_;`: Rec[A, B] = rec(g = (Tokens.`;`, List(ground)))
+    def `_,`: Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
+    def `_|`: Rec[A, B] = rec(g = (Tokens.`|`, List(ground)))
   }
 
   @inline implicit def listToRichList[A <: Obj, B <: Obj](ground: PairList[A, B]): RichList[A, B] = new RichList[A, B](ground)

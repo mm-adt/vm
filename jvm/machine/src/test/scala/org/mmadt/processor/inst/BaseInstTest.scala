@@ -38,7 +38,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
  * @author Stephen Mallette (http://stephen.genoprime.com)
  */
 abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, String, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
-  protected val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+  protected val engine: mmADTScriptEngine = BaseInstTest.engine
 
   testSets.foreach(testSet => {
     test(testSet._1) {
@@ -55,7 +55,6 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, S
   })
 
   def prepModel(start: Obj, model: Model): Obj = if (null == model) start else start.model(model)
-
   def evaluate(start: Obj, middle: Obj, end: Any, lastComment: String = "", inst: Inst[Obj, Obj] = null,
                engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true, model: Model = null): Unit = {
 
@@ -97,4 +96,8 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, S
     engine.eval(":")
 
   }
+}
+object BaseInstTest {
+  protected val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+  def model(model:String):Model = engine.eval(model).asInstanceOf[Model]
 }
