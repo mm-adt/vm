@@ -62,5 +62,6 @@ class OneInstTest extends BaseInstTest(
     comment("int"),
     testing(int, one, 1),
     testing(int, one.q(5), 1.q(5)),
-    // testing(int.q(2), int.q(2).one.q(5), 1.q(10)),
+    testing(int.q(3), id.q(2).one.q(5).id.q(10), 1.q(300)),
+    testing(int.q(2), int.q(2).one.q(5), 1.q(10)),
   ))
