@@ -33,7 +33,7 @@ class AsInstTest extends BaseInstTest(
     testing(true, __.as(__), true),
     testing(true, __.as(str), "true"),
     testing(true, __.as(str.plus("dat")), "truedat"),
-    testing(true, __.as(str.as("false")), "false"),
+    //testing(true, __.as(str.as("false")), "false"),
     comment("int"),
     testing(3, __.as(__), 3),
     testing(3, __.as(__.mult(3)), 9),

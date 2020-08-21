@@ -27,17 +27,17 @@ import org.mmadt.VmException
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.processor.inst.BaseInstTest.{bindings, prepModel}
+import org.mmadt.processor.inst.BaseInstTest.{Result, bindings, prepModel}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
  */
-abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Any, String])*) extends FunSuite with TableDrivenPropertyChecks {
+abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result, String])*) extends FunSuite with TableDrivenPropertyChecks {
   protected val engine: mmADTScriptEngine = BaseInstTest.engine // cause I'm too lazy to go update the import of all the test cases
 
   testSets.foreach(testSet => {
@@ -48,14 +48,12 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Any, S
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
         case (null, null, comment, null) => lastComment = comment.toString
-        case (lhs, rhs, result: Obj, query) => evaluate(lhs, rhs, result, lastComment, query = query, model = model)
-        case (lhs, rhs, result: VmException, query) => evaluate(lhs, rhs, result, lastComment, query = query, model = model)
+        case (lhs, rhs, result: Result, query) => evaluate(lastComment, lhs, rhs, result, query = query, model = model)
       }
     }
   })
 
-  def evaluate(start: Obj, middle: Obj, end: Any, lastComment: String = "", inst: Inst[Obj, Obj] = null,
-               engine: mmADTScriptEngine = engine, query: String = null, model: Model = null): Unit = {
+  def evaluate(lastComment: String = "", start: Obj, middle: Obj, end: Result, engine: mmADTScriptEngine = engine, query: String = null, model: Model = null): Unit = {
 
     val querying = List[(String, Obj => Obj)](
       ("querying-1", _ => engine.eval(query, bindings(model)))
@@ -72,21 +70,19 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Any, S
       //("compiling-7", s => s `=>` (asType(s.rangeObj) ==> middle)),
       //("compiling-8", s => s ==> (s.range `=>` middle)))
     )
-    val instructioning = List[(String, Obj => Obj)](("instructioning-1", s => inst.exec(s)))
-
     (compiling ++
-      (if (null != query) querying else Nil) ++
-      (if (null != inst) instructioning else Nil))
+      (if (null != query) querying else Nil))
       .foreach(example => {
         end match {
-          case _: Obj => assertResult(end, s"[${example._1}] $lastComment")(example._2(prepModel(start, model)))
-          case _: VmException => assertResult(end, s"[${example._1}] $lastComment")(intercept[VmException](example._2(prepModel(start, model))))
+          case Left(result: Obj) => assertResult(result, s"[${example._1}] $lastComment")(example._2(prepModel(start, model)))
+          case Right(exception: VmException) => assertResult(exception, s"[${example._1}] $lastComment")(intercept[VmException](example._2(prepModel(start, model))))
         }
       })
   }
 
 }
 object BaseInstTest {
+  type Result = Either[Obj, VmException]
   protected val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
   private val modelEngine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
   def model(model: String): Model = {
