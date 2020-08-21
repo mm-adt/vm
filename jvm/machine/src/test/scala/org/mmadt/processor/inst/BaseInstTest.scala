@@ -64,7 +64,8 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result
     val evaluating = List[(String, Obj => Obj)](
       ("eval-1", s => engine.eval(s"$s => $middle", bindings(model))),
       ("eval-2", s => engine.eval(s"$s $middle", bindings(model))),
-      ("eval-3", s => s ==> (middle.domain ==> middle) match {
+      ("eval-3", s => s ==> (middle.domain ==> middle)),
+      ("eval-4", s => s ==> (middle.domain ==> middle) match {
         case aobj: Obj if org.mmadt.language.obj.op.rewrite.exists(middle, Tokens.split) => aobj
         case atype: Type[_] => atype.domainObj ==> atype
         case avalue: Value[_] => avalue.domainObj ==> reconstructPath(avalue)
