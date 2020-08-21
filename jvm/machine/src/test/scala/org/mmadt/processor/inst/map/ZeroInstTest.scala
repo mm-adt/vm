@@ -22,46 +22,45 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.map.ZeroOp
-import org.mmadt.language.obj.{Obj, Str}
+import org.mmadt.language.obj.Obj.{doubleToReal, intToInt, stringToStr}
+import org.mmadt.language.obj.`type`.__._
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ZeroInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[zero] value, type, strm") {
-    val starts: TableFor3[Obj, Obj, Obj] =
-      new TableFor3[Obj, Obj, Obj](("input", "type", "result"),
-        //////// INT
-        (int(2), __.zero, int(0)),
-        (int(-2), __.zero, int(0)),
-        (int, __.zero, int(0)),
-        (int(1, 2, 3), __.plus(0).zero, int(0).q(3)),
-        (int(1, 2), __.plus(1).q(10).zero, int(0).q(20)),
-        //////// REAL
-        (real(2.0), __.zero, real(0.0)),
-        (real(-2.0), __.zero, real(0.0)),
-        (real, __.zero, real(0.0)),
-        (real(-1.0, -2.0, -3.0), __.zero, real(0.0).q(3)),
-        (real(-1.0, -2.0, -3.0), __.plus(1.0).q(10).zero, real(0.0).q(30)),
-        (real(-1.0, -2.0, -3.0), __.plus(1.0).q(20).zero, real(0.0).q(60)),
-        //////// STR
-        (str("a"), __.zero, str("")),
-        (str("b"), __.zero, str("")),
-        (str, __.zero, str("")),
-        (str("a", "b", "c"), __.zero, str("").q(3)),
-        //////// POLY
-        (lst[Str](g = (Tokens.`,`, List(str("a")))), __.zero, lst(g = (Tokens.`,`, Nil))),
-        (lst[Str](g = (Tokens.`,`, List(str("a"), str("b"), str("c")))), __.zero, lst(g = (Tokens.`,`, Nil))),
-        //(prod(prod(str("a")), prod(str("b")), prod(str("c"))).zero(), prod().q(3)),
-      )
-    forEvery(starts) { (input, atype, result) => TestUtil.evaluate(input, atype, result, ZeroOp().q(atype.trace.head._2.q), compile = false)
-    }
-  }
-}
+class ZeroInstTest extends BaseInstTest(
+  testSet("[zero] table test",
+    comment("bool"),
+    testing(true, zero, false, "true[zero]"),
+    testing(false, zero, false, "false[zero]"),
+    comment("int"),
+    testing(2, zero, 0, "2[zero]"),
+    testing(-2, zero, 0, "-2[zero]"),
+    testing(int, zero, 0, "int[zero]"),
+    testing(int, int.zero, 0, "int => int[zero]"),
+    testing(int(1, 2, 3), plus(0).zero, 0.q(3), "[1,2,3][plus,0][zero]"),
+    testing(int(1, 2), int.plus(1).q(10).zero, 0.q(20), "[1,2] => int[plus,1]{10}[zero]"),
+    comment("real"),
+    testing(2.0, zero, 0.0, "2.0[zero]"),
+    testing(-2.0, zero, 0.0, "-2.0[zero]"),
+    testing(real, zero, 0.0, "real[zero]"),
+    testing(real, zero, 0.0, "real => [zero]"),
+    testing(real(-1.0, -2.0, -3.0), zero, 0.0.q(3), "[-1.0,-2.0,-3.0][zero]"),
+    testing(real(-1.0, -2.0, -3.0), plus(1.0).q(10).zero, 0.0.q(30), "[-1.0,-2.0,-3.0][plus,1.0]{10}[zero]"),
+    // TODO: testing(real(-1.0, -2.0, -3.0), real.q(3).plus(1.0).q(20).zero, 0.0.q(60), "[-1.0,-2.0,-3.0] => real{3}[plus,1.0]{20}[zero]"),
+    comment("str"),
+    testing("a", zero, "", "'a'[zero]"),
+    testing("b", str.zero, "", "'b' => str[zero]"),
+    testing(str, zero, "", "str[zero]"),
+    testing(str("a", "b", "c"), zero, "".q(3), "['a','b','c'][zero]"),
+    comment("lst"),
+    testing("a" `,`, zero, lst(), "('a')[zero]"),
+    testing("a" `,` "b" `,` "c", zero, lst(), "('a','b','c')[zero]"),
+    testing("a" `,` "b" `,` "c", lst.zero, lst(), "('a','b','c') => lst[zero]"),
+  ))
+
+//forEvery(starts) { (input, atype, result) => TestUtil.evaluate(input, atype, result, ZeroOp().q(atype.trace.head._2.q), compile = false)
+
