@@ -2019,7 +2019,9 @@ mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
 mmlang&gt; _&lt;=int[gt,10]         <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;bool&lt;=int[gt,10]
 mmlang&gt; int[gt,10]            <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;bool&lt;=int[gt,10]</code></pre>
+==&gt;bool&lt;=int[gt,10]
+mmlang&gt; _
+mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2115,7 +2117,7 @@ instruction    domain         range     state
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><span class="image"><img src="./images/obj/anon-example.svg" alt="anon example"></span></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><span class="image"><img src="./images/obj/anon-example.svg" alt="anon example" width="400"></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -2437,7 +2439,7 @@ mmlang&gt; ('a'{?}|'b'|'a'|'c'|'b')&gt;-
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'a'-&gt;3)
-==&gt;('a'-&gt;int{2},'b'-&gt;2)
+==&gt;('a'-&gt;[1,3],'b'-&gt;2)
 mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'a'-&gt;3)&gt;-
 ==&gt;1
 ==&gt;3
@@ -3410,7 +3412,7 @@ mm&gt; str[[id]{3},[id]{2}]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],{0}]
-==&gt;str</code></pre>
+==&gt;str[id]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3657,7 +3659,7 @@ mm&gt; str[[id]{-1},[id]{-1}]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{-1}]{-1}
-==&gt;str</code></pre>
+==&gt;str[id]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3939,7 +3941,7 @@ mm&gt; str[[id]{2},[id]{3}]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[{0},[id]]
-==&gt;str</code></pre>
+==&gt;str[id]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6028,7 +6030,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-20 16:07:59 -0600
+Last updated 2020-08-20 17:46:47 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
