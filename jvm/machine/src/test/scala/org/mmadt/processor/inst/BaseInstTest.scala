@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.inst
 
-import javax.script.ScriptContext
+import javax.script.Bindings
 import org.mmadt.VmException
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
@@ -30,6 +30,7 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.processor.inst.BaseInstTest.{bindings, prepModel}
 import org.mmadt.storage.StorageFactory.{asType, qZero}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
@@ -54,20 +55,14 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, S
     }
   })
 
-  def prepModel(start: Obj, model: Model): Obj = if (null == model) start else start.model(model)
   def evaluate(start: Obj, middle: Obj, end: Any, lastComment: String = "", inst: Inst[Obj, Obj] = null,
                engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true, model: Model = null): Unit = {
 
-    // engine.eval(s":[model,'${getClass.getResource("/model/mm.mm").getPath}']")
-    engine.eval(":")
-    if (null != model)
-      engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.::, __.model(model))
-
     val querying = List[(String, Obj => Obj)](
-      ("querying-1", _ => engine.eval(query))
+      ("querying-1", _ => engine.eval(query, bindings(model)))
     )
     val evaluating = List[(String, Obj => Obj)](
-      ("evaluating-1", s => engine.eval(s"$s => $middle")),
+      ("evaluating-1", s => engine.eval(s"$s => $middle", bindings(model))),
       ("evaluating-2", s => s ==> middle),
       // ("evaluating-3", s => s.compute(middle)), // you have to go through compiler now
       // ("evaluating-4", s => s `=>`l middle) // you have to go through compiler now
@@ -93,11 +88,20 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, S
           case _: VmException => assertResult(end, s"[${example._1}] $lastComment")(intercept[VmException](example._2(prepModel(start, model))))
         }
       })
-    engine.eval(":")
-
   }
+
 }
 object BaseInstTest {
   protected val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
-  def model(model:String):Model = engine.eval(model).asInstanceOf[Model]
+  private val modelEngine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+  def model(model: String): Model = {
+    modelEngine.eval(":")
+    modelEngine.eval(model).asInstanceOf[Model]
+  }
+  def bindings(model: Model): Bindings = {
+    val bindings: Bindings = engine.createBindings()
+    bindings.put(Tokens.::, if (null == model) null else __.model(model))
+    bindings
+  }
+  def prepModel(start: Obj, model: Model): Obj = if (null == model) start else start.model(model)
 }
