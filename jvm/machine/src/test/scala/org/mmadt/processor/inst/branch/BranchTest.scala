@@ -61,7 +61,7 @@ class BranchTest extends BaseInstTest(
     testing(int(1), int.plus(0).branch(plus(1).plus(1) | plus(3)), int(3)),
     testing(int(1), int.plus(0).branch(plus(1).q(0).plus(1) | plus(3)), int(4)),
     testing(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3)), int(4)),
-    testing(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj, compile = false),
+    testing(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj),
     testing(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) | plus(2)), int(3, 4)),
     testing(int(1, 2), int.q(2).plus(0).branch(plus(1) | plus(2)).path(), strm(
       lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
@@ -76,8 +76,8 @@ class BranchTest extends BaseInstTest(
     testing(int(1), int.plus(0).branch((int + 0 -> int.plus(1)) `_|` (int -> int.plus(2))), int(2)),
     testing(int(1), int.plus(0).branch(int.q(0) -> plus(1) `_|` int.q(0) -> plus(2) `_|` int + 0 -> int.plus(3)), int(4)),
     testing(int(1), int.plus(0).branch(int + 0 -> plus(1).plus(1) `_|` int -> plus(3)), int(3)),
-    testing(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int -> plus(3).q(0)), zeroObj, compile = false),
-    testing(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int.plus(1).q(0) -> plus(3)), zeroObj, compile = false),
+    testing(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int -> plus(3).q(0)), zeroObj),
+    testing(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int.plus(1).q(0) -> plus(3)), zeroObj),
     testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1).plus(1) `_|` int -> plus(2)), int(3, 4)),
     testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).path(), strm(
       lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),

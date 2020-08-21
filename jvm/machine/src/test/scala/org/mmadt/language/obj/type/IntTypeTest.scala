@@ -23,13 +23,29 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class IntTypeTest extends FunSuite {
+class IntTypeTest extends BaseInstTest(
+  testSet("int table test",
+    comment("canonical"),
+    testing(int, __, int, "int"),
+    testing(6, __, 6, "6"),
+    testing(-2, __, -2, "-2"),
+    testing(6, int, 6, "6"),
+    testing(-2, int, -2, "-2"),
+    testing(6.q(5), int.q(5), 6.q(5), "6{5}"),
+    testing(6.q(5), int.q(2, 5), 6.q(5), "6{5}"),
+    testing(-2.q(-3), int.q(-3), -2.q(-3), "-2{-3}"),
+    comment("exceptions"),
+    // testing(6.q(5), int.q(10), LanguageException.typingError(int.q(5), int.q(10)), "6{5} => int{10}"),
+    // testing(6.q(2,4), int.q(6,10), LanguageException.typingError(int.q(2,4), int.q(6,10)), "6{2,4} => int{6,10}"),
+  )) {
 
   test("int type test") {
     // type ~ value

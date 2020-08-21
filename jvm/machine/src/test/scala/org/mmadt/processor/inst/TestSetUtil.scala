@@ -29,7 +29,7 @@ import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory.{int, str}
-import org.scalatest.prop.TableFor5
+import org.scalatest.prop.TableFor4
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
@@ -44,16 +44,16 @@ object TestSetUtil {
   val car: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("year") -> int)
   val alst: Lst[StrValue] = str("a") `,` "b"
 
-  def testSet(testName: String, model: Model, data: (Obj, Obj, Any, String, Boolean)*): (String, Model, TableFor5[Obj, Obj, Any, String, Boolean]) =
-    (testName, model, new TableFor5[Obj, Obj, Any, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
-  def testSet(testName: String, data: (Obj, Obj, Any, String, Boolean)*): (String, Model, TableFor5[Obj, Obj, Any, String, Boolean]) =
-    (testName, null, new TableFor5[Obj, Obj, Any, String, Boolean](("lhs", "rhs", "result", "query", "compile"), data: _*))
+  def testSet(testName: String, model: Model, data: (Obj, Obj, Any, String)*): (String, Model, TableFor4[Obj, Obj, Any, String]) =
+    (testName, model, new TableFor4[Obj, Obj, Any, String](("lhs", "rhs", "result", "query"), data: _*))
+  def testSet(testName: String, data: (Obj, Obj, Any, String)*): (String, Model, TableFor4[Obj, Obj, Any, String]) =
+    (testName, null, new TableFor4[Obj, Obj, Any, String](("lhs", "rhs", "result", "query"), data: _*))
 
-  def testing(lhs: Obj, rhs: Obj, result: Obj, compile: Boolean = true): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, null, compile)
-  def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Obj, String, Boolean) = (lhs, rhs, result, query, false)
-  def testing(lhs: Obj, rhs: Obj, result: VmException, query: String): (Obj, Obj, VmException, String, Boolean) = (lhs, rhs, result, query, false)
+  def testing(lhs: Obj, rhs: Obj, result: Obj): (Obj, Obj, Obj, String) = (lhs, rhs, result, null)
+  def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Obj, String) = (lhs, rhs, result, query)
+  def testing(lhs: Obj, rhs: Obj, result: VmException, query: String): (Obj, Obj, VmException, String) = (lhs, rhs, result, query)
 
-  def comment(comment: String): (Obj, Obj, Obj, String, Boolean) = (null, null, str(comment), null, false)
+  def comment(comment: String): (Obj, Obj, Obj, String) = (null, null, str(comment), null)
 }
 
 

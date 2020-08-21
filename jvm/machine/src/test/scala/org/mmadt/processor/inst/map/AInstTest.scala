@@ -49,7 +49,7 @@ class AInstTest extends BaseInstTest(
     testing(btrue, __.a(real), bfalse),
     testing(btrue, __.a(str), bfalse),
     testing(btrue, __.a(str.is(__.gt("a"))), bfalse),
-    testing(btrue, __.a(rec), bfalse, false),
+    testing(btrue, __.a(rec), bfalse),
     testing(bool, __.a(btrue), bool.a(btrue)),
     comment("int"),
     testing(int(20), __.a(int(20)), btrue),

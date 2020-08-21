@@ -31,14 +31,13 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.processor.inst.BaseInstTest.{bindings, prepModel}
-import org.mmadt.storage.StorageFactory.{asType, qZero}
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
  */
-abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, String, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
+abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Any, String])*) extends FunSuite with TableDrivenPropertyChecks {
   protected val engine: mmADTScriptEngine = BaseInstTest.engine // cause I'm too lazy to go update the import of all the test cases
 
   testSets.foreach(testSet => {
@@ -48,38 +47,34 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, S
       forEvery(testSet._3) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
-        case (null, null, comment, null, false) => lastComment = comment.toString
-        case (lhs, rhs, result: Obj, query, compile) => evaluate(lhs, rhs, result, lastComment, query = query, compile = compile, model = model)
-        case (lhs, rhs, result: VmException, query, compile) => evaluate(lhs, rhs, result, lastComment, query = query, compile = compile, model = model)
+        case (null, null, comment, null) => lastComment = comment.toString
+        case (lhs, rhs, result: Obj, query) => evaluate(lhs, rhs, result, lastComment, query = query, model = model)
+        case (lhs, rhs, result: VmException, query) => evaluate(lhs, rhs, result, lastComment, query = query, model = model)
       }
     }
   })
 
   def evaluate(start: Obj, middle: Obj, end: Any, lastComment: String = "", inst: Inst[Obj, Obj] = null,
-               engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true, model: Model = null): Unit = {
+               engine: mmADTScriptEngine = engine, query: String = null, model: Model = null): Unit = {
 
     val querying = List[(String, Obj => Obj)](
       ("querying-1", _ => engine.eval(query, bindings(model)))
     )
-    val evaluating = List[(String, Obj => Obj)](
-      ("evaluating-1", s => engine.eval(s"$s => $middle", bindings(model))),
-      ("evaluating-2", s => s ==> middle),
-      // ("evaluating-3", s => s.compute(middle)), // you have to go through compiler now
-      // ("evaluating-4", s => s `=>`l middle) // you have to go through compiler now
-    )
     val compiling = List[(String, Obj => Obj)](
-      ("compiling-1", s => if (!middle.alive) s.q(qZero) else (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a))),
-      ("compiling-2", s => if (!middle.alive) s.q(qZero) else middle.trace.foldLeft(s)((a, b) => b._2.exec(a))),
-      ("compiling-3", s => s `=>` (start.range ==> middle)),
-      ("compiling-4", s => s ==> (start.range ==> middle)),
-      ("compiling-5", s => s `=>` (middle.domain ==> middle)),
-      ("compiling-6", s => s ==> (middle.domain ==> middle)),
-      ("compiling-7", s => s `=>` (asType(start.rangeObj) ==> middle)),
-      ("compiling-8", s => s ==> (asType(start.rangeObj) ==> middle)))
+      ("compiling-0", s => engine.eval(s"$s => $middle", bindings(model))),
+      ("compiling-1", s => s ==> (middle.domain ==> middle)),
+      ////////// WITH MODELS THERE ARE TOO MANY WAYS IN WHICH TO EVALUATE A QUERY (NEED TO RESTRICT THIS)
+      //("compiling-1", s => if (!middle.alive) s.q(qZero) else (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a))),
+      //("compiling-2", s => if (!middle.alive) s.q(qZero) else middle.trace.foldLeft(s)((a, b) => b._2.exec(a))),
+      //("compiling-3", s => s `=>` (s.range ==> middle)),
+      //("compiling-4", s => s ==> (s.range ==> middle)),
+      //("compiling-5", s => s `=>` (middle.domain ==> middle)),
+      //("compiling-7", s => s `=>` (asType(s.rangeObj) ==> middle)),
+      //("compiling-8", s => s ==> (s.range `=>` middle)))
+    )
     val instructioning = List[(String, Obj => Obj)](("instructioning-1", s => inst.exec(s)))
 
-    (evaluating ++
-      (if (compile) compiling else Nil) ++
+    (compiling ++
       (if (null != query) querying else Nil) ++
       (if (null != inst) instructioning else Nil))
       .foreach(example => {

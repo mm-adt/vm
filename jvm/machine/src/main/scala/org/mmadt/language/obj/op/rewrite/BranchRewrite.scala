@@ -46,7 +46,7 @@ object BranchRewrite extends Func[Obj, Obj] {
     }
   }
   def processType[A <: Obj](atype: A): A = {
-    if (atype.isInstanceOf[Value[_]] || __.isAnon(atype) || __.isToken(atype)) return atype
+    if (atype.isInstanceOf[Value[_]] || __.isAnon(atype) || __.isToken(atype) || !exists(atype,Tokens.branch)) return atype
     atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => {
       if (b.op == Tokens.branch) {
         b.arg0[Obj] match {

@@ -39,13 +39,13 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   with ZeroOp[Rec[A, Obj]] {
   def g: RecTuple[A, B]
   def gsep: String = g._1
-  lazy val gmap: PairList[A, B] =
+  lazy val gmap: Pairs[A, B] =
     if (null == this.g._2) Nil
     else g._2.map(x => x._1.update(this.model).asInstanceOf[A] -> x._2.update(this.model).asInstanceOf[B])
   override def glist: Seq[B] = this.gmap.values
   override def ctype: Boolean = null == g._2 // type token
 
-  def clone(f: PairList[A, B] => PairList[A, Obj]): this.type = this.clone(g = (this.gsep, f(this.gmap)))
+  def clone(f: Pairs[A, B] => Pairs[A, Obj]): this.type = this.clone(g = (this.gsep, f(this.gmap)))
 
   override def equals(other: Any): Boolean = other match {
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
@@ -56,42 +56,42 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
     case _ => true
   }
 
-  final def `_,`(next: Tuple2[_, _]): this.type = this.`,`(next)
-  final def `_;`(next: Tuple2[_, _]): this.type = this.`;`(next)
-  final def `_|`(next: Tuple2[_, _]): this.type = this.`|`(next)
-  final def `,`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`,`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
-  final def `;`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`;`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
-  final def `|`(next: Tuple2[_, _]): this.type = this.clone(g = (Tokens.`|`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `,`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.clone(g = (Tokens.`,`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `;`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.clone(g = (Tokens.`;`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `|`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.clone(g = (Tokens.`|`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `_,`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.`,`(next)
+  final def `_;`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.`;`(next)
+  final def `_|`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.`|`(next)
 }
 
 object Rec {
-  type RecTuple[A <: Obj, +B <: Obj] = (String, PairList[A, B])
-  type PairList[A <: Obj, +B <: Obj] = List[ObjPair[A, B]]
+  type RecTuple[A <: Obj, +B <: Obj] = (String, Pairs[A, B])
+  type Pairs[A <: Obj, +B <: Obj] = List[ObjPair[A, B]]
   type ObjPair[A <: Obj, +B <: Obj] = Tuple2[A, B]
 
   class RichTuple[A <: Obj, +B <: Obj](val ground: Tuple2[A, B]) {
-    def `_;`(next: Tuple2[_, _]): Rec[A, B] = this.`;`(next)
-    def `_,`(next: Tuple2[_, _]): Rec[A, B] = this.`,`(next)
-    def `_|`(next: Tuple2[_, _]): Rec[A, B] = this.`|`(next)
-    def `;`(next: Tuple2[_, _]): Rec[A, B] = rec(g = (Tokens.`;`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
-    def `,`(next: Tuple2[_, _]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
-    def `|`(next: Tuple2[_, _]): Rec[A, B] = rec(g = (Tokens.`|`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
-    def `;`: Rec[A, B] = rec(g = (Tokens.`;`, List(ground)))
-    def `,`: Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
-    def `|`: Rec[A, B] = rec(g = (Tokens.`|`, List(ground)))
-    def `_;`: Rec[A, B] = rec(g = (Tokens.`;`, List(ground)))
-    def `_,`: Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
-    def `_|`: Rec[A, B] = rec(g = (Tokens.`|`, List(ground)))
+    final def `;`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = rec(g = (Tokens.`;`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    final def `,`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    final def `|`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = rec(g = (Tokens.`|`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    final def `_;`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = this.`;`(next)
+    final def `_,`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = this.`,`(next)
+    final def `_|`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = this.`|`(next)
+    final def `;`: Rec[A, B] = rec(g = (Tokens.`;`, List(ground)))
+    final def `,`: Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
+    final def `|`: Rec[A, B] = rec(g = (Tokens.`|`, List(ground)))
+    final def `_;`: Rec[A, B] = this.`;`
+    final def `_,`: Rec[A, B] = this.`,`
+    final def `_|`: Rec[A, B] = this.`|`
   }
 
-  @inline implicit def listToRichList[A <: Obj, B <: Obj](ground: PairList[A, B]): RichList[A, B] = new RichList[A, B](ground)
-  protected class RichList[A <: Obj, B <: Obj](val list: PairList[A, B]) {
+  @inline implicit def pairsToRichPairs[A <: Obj, B <: Obj](ground: Pairs[A, B]): RichPairs[A, B] = new RichPairs[A, B](ground)
+  protected class RichPairs[A <: Obj, B <: Obj](val list: Pairs[A, B]) {
     def fetchOption(key: A): Option[B] = list.filter(x => key == x._1).map(x => x._2).headOption
     def fetch(key: A): B = fetchOption(key).get
     def fetchOrElse(key: A, other: B): B = fetchOption(key).getOrElse(other)
     def values: List[B] = list.map(x => x._2)
-    def replace(other: PairList[A, B]): PairList[A, B] = other.foldLeft(list)((a, b) => a.replace(b))
-    def replace(other: Tuple2[A, B]): PairList[A, B] =
+    def replace(other: Pairs[A, B]): Pairs[A, B] = other.foldLeft(list)((a, b) => a.replace(b))
+    def replace(other: Tuple2[A, B]): Pairs[A, B] =
       if (list.fetchOption(other._1).isDefined) list.map(x => if (other._1 == x._1) other._1 -> other._2 else x) // TODO: equality order matters! (cause of lst size)
       else list :+ other
   }
@@ -99,8 +99,8 @@ object Rec {
   def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
-  private def isType(pairs: PairList[_ <: Obj, _ <: Obj]): Boolean = pairs.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])
-  def moduleStruct[A <: Obj, B <: Obj](gsep: String, pairs: PairList[A, B], start: Obj = null): PairList[A, B] = gsep match {
+  private def isType(pairs: Pairs[_ <: Obj, _ <: Obj]): Boolean = pairs.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])
+  def moduleStruct[A <: Obj, B <: Obj](gsep: String, pairs: Pairs[A, B], start: Obj = null): Pairs[A, B] = gsep match {
     /////////// ,-rec
     case Tokens.`,` =>
       val nostart: Boolean = null == start
@@ -127,7 +127,7 @@ object Rec {
           else (key -> (running `~~>` kv._2))).asInstanceOf[Tuple2[A, A]]
         running = keyValue._2
         keyValue
-      }).asInstanceOf[PairList[A, B]]
+      }).asInstanceOf[Pairs[A, B]]
     /////////// |-rec
     case Tokens.`|` =>
       val nostart: Boolean = null == start
@@ -157,6 +157,6 @@ object Rec {
         } else (zeroObj, zeroObj)
       } else
         (zeroObj, zeroObj)
-    }).asInstanceOf[PairList[A, B]])
+    }).asInstanceOf[Pairs[A, B]])
   }
 }

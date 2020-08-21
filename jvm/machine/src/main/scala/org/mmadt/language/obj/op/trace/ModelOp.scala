@@ -63,8 +63,8 @@ object ModelOp extends Func[Obj, Obj] {
   val TYPE: StrValue = str("type")
   val PATH: StrValue = str("path")
   val VAR: StrValue = str("var")
-  val NOROOT: PairList[StrValue, ModelOp.ModelMap] = List.empty
-  val NOMAP: PairList[Obj, Lst[Obj]] = List.empty
+  val NOROOT: Pairs[StrValue, ModelOp.ModelMap] = List.empty
+  val NOMAP: Pairs[Obj, Lst[Obj]] = List.empty
   val NOREC: ModelMap = rec[Obj, Lst[Obj]]
   val EMPTY: Model = rec[StrValue, ModelOp.ModelMap]
 
