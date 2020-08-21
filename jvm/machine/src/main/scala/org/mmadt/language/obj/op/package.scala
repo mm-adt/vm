@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.op.rewrite.{IdRewrite, BranchRewrite}
+import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, _}
 import org.mmadt.storage.obj.`type`.TObj
@@ -56,7 +56,7 @@ package object op {
       } else if (brch.isSerial) { // [;] last quantification
         brch match {
           case alst: Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch).filter(b => !b.root).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
-          case arec: Rec[Obj, Obj] => asType[OT](arec.glist.lastOption.getOrElse(zeroObj).asInstanceOf[OT])
+          case arec: Rec[Obj, Obj] => arec.gmap.last._2.asInstanceOf[OT]
         }
       } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduceLeftOption((a, b) => (

@@ -26,10 +26,9 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.op.rewrite.{IdRewrite, BranchRewrite}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.storage.StorageFactory.{zeroObj, _}
+import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -47,53 +46,22 @@ object BranchOp extends Func[Obj, Obj] {
     start match {
       case _: Strm[_] => start.via(start, inst)
       case _ => Inst.oldInst(inst).arg0[Poly[Obj]] match {
-        /////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////   LST  /////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////
-        case alst: Lst[Obj] => alst.gsep match {
-          case Tokens.`,` => Lst.moduleMult(start, alst) match {
-            case blst if blst.isEmpty => zeroObj
-            case blst: Value[_] => strm(blst.glist.map(x => x.hardQ(q => multQ(q, inst.q))))
-            case blst: Type[_] =>
-              if (1 == blst.size) IdRewrite.processType((start `=>` blst.glist.head).q(inst.q))
-              else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
-          }
-          case Tokens.`;` => Lst.moduleMult(start, alst) match {
-            case blst if blst.isEmpty => zeroObj
-            case blst: Value[_] => blst.glist.last.hardQ(q => multQ(q, inst.q))
-            case blst: Type[_] =>  BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))//BranchRewrite.processList(start, blst, inst)
-          }
-          case Tokens.`|` => Lst.moduleMult(start, alst) match {
-            case blst if blst.isEmpty => zeroObj
-            case blst: Value[_] => blst.glist.head.hardQ(q => multQ(q, inst.q))
-            case blst: Type[_] =>
-              if (blst.size == 1) IdRewrite.processType((start `=>` blst.glist.head).q(inst.q))
-              else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
-          }
+        ////////////////////// LST //////////////////////
+        case alst: Lst[Obj] => Lst.moduleMult(start, alst) match {
+          case blst if blst.isEmpty => zeroObj
+          case blst: Value[_] => blst.hardQ(q => multQ(q, inst.q)).merge
+          case blst: Type[_] =>
+            if (1 == blst.size) (start `=>` blst.glist.head).q(inst.q)
+            else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
         }
-        /////////////////////////////////////////////////////////////////////////////////
-        ////////////////////////////   REC  /////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////////////////
-        case arec: Rec[Obj, Obj] => arec.gsep match {
-          case Tokens.`,` => Rec.moduleMult(start, arec) match {
-            case brec if brec.isEmpty => zeroObj
-            case brec: Value[_] => strm(brec.gmap.map(kv => kv._2.hardQ(q => multQ(q, inst.q))))
-            case brec: Type[_] =>
-              if (1 == brec.size) IdRewrite.processType((start `=>` brec.gmap.head._2).q(inst.q))
-              else BranchInstruction.brchType[Obj](brec, inst.q).via(start, inst.clone(_ => List(brec)))
-          }
-          case Tokens.`;` => Rec.moduleMult(start, arec) match {
-            case brec if brec.isEmpty => zeroObj
-            case brec: Value[_] => brec.gmap.last._2.hardQ(q => multQ(q, inst.q))
-            case brec: Type[_] =>  IdRewrite.processType(brec.gmap.last._2.q(inst.q))
-          }
-          case Tokens.`|` => Rec.moduleMult(start, arec) match {
-            case brec if brec.isEmpty => zeroObj
-            case brec: Value[_] => brec.gmap.head._2
-            case brec: Type[_] =>
-              if (brec.size == 1) IdRewrite.processType((start `=>` brec.gmap.head._2).q(inst.q))
-              else BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
-          }
+        ////////////////////// REC //////////////////////
+        case arec: Rec[Obj, Obj] => Rec.moduleMult(start, arec) match {
+          case brec if brec.isEmpty => zeroObj
+          case brec: Value[_] => brec.hardQ(q => multQ(q, inst.q)).merge
+          case brec: Type[_] =>
+            if (1 == brec.size) (start `=>` brec.glist.head).q(inst.q)
+            else if (arec.gsep == Tokens.`;`) BranchInstruction.brchType[Obj](brec, inst.q)
+            else BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
         }
       }
     }
