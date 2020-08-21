@@ -62,7 +62,7 @@ object mmlangPrinter {
   }
 
   private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else Tokens.empty
-  private def mapString(rec: Rec[_, _], map: List[Tuple2[_,_]], sep: String = COMMA, empty: String = Tokens.empty): String = {
+  private def mapString(rec: Rec[_, _], map: List[Tuple2[_, _]], sep: String = COMMA, empty: String = Tokens.empty): String = {
     if (rec.isEmpty)
       empty else
       map.foldLeft(if (rec.isInstanceOf[TRec[_, _]]) LROUND else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) +
@@ -80,7 +80,7 @@ object mmlangPrinter {
         (if (lst.isInstanceOf[TLst[_]]) RROUND else RROUND)
   }
 
-  def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.name + qString(strm.q)
+  def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(LBRACKET)((a, b) => a + b.toString + ",").dropRight(1) + RBRACKET
   def typeString(atype: Type[_]): String = {
     val range = (atype match {
       case arec: Rec[_, _] => recString(arec)

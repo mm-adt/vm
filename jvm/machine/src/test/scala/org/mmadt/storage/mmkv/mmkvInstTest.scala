@@ -52,10 +52,14 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv parsing") {
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
-    assertResult("mmkv{4}")(engine.eval(s"1[=mmkv,'${file1}']").toString)
+    assertResult("[mmkv:('k'->1,'v'->'marko'),mmkv:('k'->2,'v'->'ryan'),mmkv:('k'->3,'v'->'stephen'),mmkv:('k'->4,'v'->'kuppitz')]")(engine.eval(s"1[=mmkv,'${file1}']").toString)
     //
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file2}']").range.toString)
-    assertResult("mmkv{4}")(engine.eval(s"1[=mmkv,'${file2}']").toString)
+    assertResult("[" +
+      "mmkv:('k'->1,'v'->person:('name'->'marko','age'->29))," +
+      "mmkv:('k'->2,'v'->person:('name'->'ryan','age'->25))," +
+      "mmkv:('k'->3,'v'->person:('name'->'stephen','age'->32))," +
+      "mmkv:('k'->4,'v'->person:('name'->'kuppitz','age'->23))]")(engine.eval(s"1[=mmkv,'${file2}']").toString)
     //
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file3}']").range.toString)
     assertResult(zeroObj)(engine.eval(s"1[=mmkv,'${file3}']"))
@@ -80,7 +84,7 @@ class mmkvInstTest extends FunSuite {
 
   test("[=mmkv] with mmkv-1.mm") {
     assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
-    assertResult("rec{4}")(int(1).=:(mmkv)(str(file1)).toString)
+    assertResult("[mmkv:('k'->1,'v'->'marko'),mmkv:('k'->2,'v'->'ryan'),mmkv:('k'->3,'v'->'stephen'),mmkv:('k'->4,'v'->'kuppitz')]")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(int(1, 2, 3, 4))(Processor.iterator(int(4), int.=:[Rec[Obj, Obj]](mmkv)(str(file1)).get(str("k"), int)))
     // assertResult("mmkv:('k'->1,'v'->'marko')")((int(1) ==> int.=:[RecType[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)
   }
@@ -113,7 +117,7 @@ class mmkvInstTest extends FunSuite {
 
   test("mmkv file-5 parsing") {
     assertResult(s"mmkv{*}<=_[=mmkv,'${file5}']")(engine.eval(s"[=mmkv,'${file5}']").toString)
-    assertResult("vertex:('id'->1,'name'->'marko','outE'->edge{2})")(
+    assertResult("vertex:('id'->1,'name'->'marko','outE'->[edge:('outV'->1,'label'->'knows','inV'->2),edge:('outV'->1,'label'->'knows','inV'->3)])")(
       engine.eval(s"1[load,'${source5}'][=mmkv,'${file5}'][is.k==1][as,vertex]").toString)
     //    assertResult("vertex{2}")(
     //    engine.eval(s"1[load,'${source5}'][rewrite,(.outE.inV[as,vertex])<=(.out)][=mmkv,'${file5}'][is.k==1][as,vertex].outE[as,edge].inV[as,vertex]").toString)

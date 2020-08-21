@@ -29,9 +29,8 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.StorageFactory.{asType, qZero, zeroObj}
+import org.mmadt.storage.StorageFactory.{asType, qZero}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
 
@@ -57,13 +56,6 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, S
 
   def prepModel(start: Obj, model: Model): Obj = if (null == model) start else start.model(model)
 
-  def stringify(obj: Obj): String = if (obj.isInstanceOf[Strm[_]]) {
-    if (!obj.alive)
-      zeroObj.toString
-    else
-      obj.toStrm.values.foldLeft("[")((a, b) => a.concat(b + ",")).dropRight(1).concat("]")
-  } else obj.toString
-
   def evaluate(start: Obj, middle: Obj, end: Any, lastComment: String = "", inst: Inst[Obj, Obj] = null,
                engine: mmADTScriptEngine = engine, query: String = null, compile: Boolean = true, model: Model = null): Unit = {
 
@@ -76,7 +68,7 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, S
       ("querying-1", _ => engine.eval(query))
     )
     val evaluating = List[(String, Obj => Obj)](
-      ("evaluating-1", s => engine.eval(s"${stringify(s)} => ${middle}")),
+      ("evaluating-1", s => engine.eval(s"$s => $middle")),
       ("evaluating-2", s => s ==> middle),
       // ("evaluating-3", s => s.compute(middle)), // you have to go through compiler now
       // ("evaluating-4", s => s `=>`l middle) // you have to go through compiler now

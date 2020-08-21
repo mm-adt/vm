@@ -840,7 +840,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("int[plus,100][plus,200]-<(int;int[plus,2])>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<(int;int[plus,2])>-[plus,20]").toString)
     assertResult("int[plus,100][plus,200]-<(int)>-[plus,20]")(engine.eval("int[plus,100][plus,200]-<(int|int[plus,2])>-[plus,20]").toString)
     assertResult("(10;10;11)")(engine.eval("10-<(bool,int)>-[plus,1][path,(_;)]").toString)
-    assertResult("int{2}")(engine.eval("1[plus,1]-<(int,int[plus,2])>-[plus,10]").toString)
+    assertResult("[12,14]")(engine.eval("1[plus,1]-<(int,int[plus,2])>-[plus,10]").toString)
     //
     // assertResult("bool<=int[plus,10][lt,50]")(engine.eval("(int;[plus,10];int;[lt,50];bool)>-").toString)
   }
@@ -848,7 +848,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("[type] instruction parsing") {
     assertResult("bool<=int[plus,1][mult,5][gt,int[mult,int]]")(engine.eval("5[plus,1][mult,5][gt,int[mult,int]][type]").toString)
     assertResult("int{?}<=int[is,bool<=int[lt,10]]")(engine.eval("5[is<10][type]").toString)
-    assertResult("int{0,3}")(engine.eval("(5,6,7)>-[is<10][type]").toString)
+    assertResult("[int{0,2}<=int[is,bool<=int[lt,10]],int{?}<=int[is,bool<=int[lt,10]]]")(engine.eval("(5,6,7)>-[is<10][type]").toString)
   }
 
   test("ring axioms") {
