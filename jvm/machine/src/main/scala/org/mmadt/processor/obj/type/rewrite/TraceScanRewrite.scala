@@ -44,7 +44,7 @@ object TraceScanRewrite extends Rewrite {
     var b: Obj = a
     rewrites.foreach(rewrite => {
       if (rewrite.equals((__ `,`) <= (id `,`))) {
-        b = removeRules(BranchRewrite.processType(BranchRewrite().exec(b.asInstanceOf[Type[A]].rule(IdRewrite())).asInstanceOf[A]))
+        b = removeRules(BranchRewrite.processType(BranchRewrite().exec(b.via(b,IdRewrite())).asInstanceOf[A]))
       } else {
         a = b
         b = b.domainObj

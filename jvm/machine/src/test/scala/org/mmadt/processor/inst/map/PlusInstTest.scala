@@ -66,5 +66,10 @@ class PlusInstTest extends BaseInstTest(
     testing(int, plus(plus(plus(0))), int.plus(plus(int)), "int => [plus,[plus,[plus,0]]]"),
     testing(int, mult(1), int, "int => [mult,1]"),
     testing(__, int.mult(1), int, "int[mult,1]"),
+    testing(__, int.mult(1), int, "int[mult,1][plus,[mult,0]]"),
     testing(int, plus(plus(plus(mult(0)))), int.plus(plus(int)), "int => [plus,[plus,[plus,[mult,0]]]]"),
+    testing(int, int.neg.neg, int, "int => int[neg][neg]"),
+    testing(int,int.plus(int.neg.neg),int.plus(int),"int[plus,int[neg][neg]]"),
+    //testing(int, int.plus(int.neg), 0, "int => int[plus,int[neg]]"),
+    //testing(int, int.plus(int.id.neg.id).id, 0, "int => int[plus,int[id][neg][id]][id]"),
   ))
