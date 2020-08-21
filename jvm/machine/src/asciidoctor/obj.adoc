@@ -674,6 +674,7 @@ a|
 bool<=int[gt,10]      //<1>
 _<=int[gt,10]         //<2>
 int[gt,10]            //<3>
+_
 ----
 <1> The domain and range of the type are fully specified.
 <2> A type with a specified domain of `int` and a specified range of `_`.
@@ -711,7 +712,7 @@ int{2}[plus,1]{3}[gt,0][explain]
 ----
 {blank}
 |
-image:anon-example.svg[]
+image:anon-example.svg[width=400]
 |===
 
 
