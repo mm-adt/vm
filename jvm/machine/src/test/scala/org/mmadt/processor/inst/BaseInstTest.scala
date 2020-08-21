@@ -39,7 +39,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
  * @author Stephen Mallette (http://stephen.genoprime.com)
  */
 abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Any, String, Boolean])*) extends FunSuite with TableDrivenPropertyChecks {
-  protected val engine: mmADTScriptEngine = BaseInstTest.engine
+  protected val engine: mmADTScriptEngine = BaseInstTest.engine // cause I'm too lazy to go update the import of all the test cases
 
   testSets.foreach(testSet => {
     test(testSet._1) {
