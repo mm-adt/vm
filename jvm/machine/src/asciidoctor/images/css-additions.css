@@ -7,9 +7,9 @@ table.center{margin-left:auto;margin-right:auto;}
 hr{border-width:0px 0 0; margin:1em 0 3em}
 /* Source Highlighting */
 .listingblock pre.CodeRay{font-size:0.9em;background-color:whitesmoke;border-color:#d3d3d3;border-width:1px;border-style:solid}
-/* LaTeX Equations */
-//div.MathJax_Display{font-size:medium;}
-//.MathJax {font-size:medium;}
+/* LaTeX Equations
+div.MathJax_Display{font-size:medium;}
+.MathJax {font-size:medium;} */
 /* Wikipedia Preview */
 object,embed{width:100%;min-height:1000px;}
 iframe {
