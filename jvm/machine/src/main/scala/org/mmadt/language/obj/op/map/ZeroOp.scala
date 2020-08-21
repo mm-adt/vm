@@ -24,7 +24,8 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.{Bool, Inst, Int, Lst, Obj, Real, Rec, Str}
+import org.mmadt.language.obj.value._
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -38,12 +39,12 @@ trait ZeroOp[O <: Obj] {
 object ZeroOp extends Func[Obj, Obj] {
   def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.zero, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
-    case _: Bool => bfalse
-    case _: Int => int(0)
-    case _: Real => real(0.0)
-    case _: Str => str(Tokens.empty)
-    case arec: Rec[Obj, Obj] => arec.clone(_ => Nil)
-    case alst: Lst[Obj] => alst.clone(_ => Nil)
+    case _: BoolValue => bfalse
+    case _: IntValue => int(0)
+    case _: RealValue => real(0.0)
+    case _: StrValue => str(Tokens.empty)
+    case arec: RecValue[Obj, Obj] => arec.clone(_ => Nil)
+    case alst: LstValue[Obj] => alst.clone(_ => Nil)
     case _ => start
   }).via(start, inst)
 }

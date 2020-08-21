@@ -6,6 +6,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp._
 import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.BaseInstTest.engine
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory.{str, zeroObj}
 

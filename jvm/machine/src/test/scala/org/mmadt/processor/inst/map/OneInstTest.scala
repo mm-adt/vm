@@ -22,47 +22,45 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Obj.{doubleToReal, intToInt}
+import org.mmadt.language.obj.`type`.__.{id, one}
 import org.mmadt.language.obj.op.map.OneOp
+import org.mmadt.language.obj.op.trace.ModelOp.MM
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class OneInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[one] value, type, strm") {
-    val starts: TableFor2[Obj, Obj] =
-      new TableFor2[Obj, Obj](("query", "result"),
-        //////// INT
-        (int(2).one, int(1)),
-        (int(2).one.q(10), int(1).q(10)),
-        (int(2).q(10).one, int(1).q(10)),
-        (int(2).q(10).one.q(20), int(1).q(200)),
-        (int(-2).one, int(1)),
-        (int.one, int(1)),
-        (int.one.q(10), int(1).q(10)),
-        (int.q(10).one, int(1).q(10)),
-        (int.q(10).one.q(20), int(1).q(200)),
-        (int(1, 2, 3).one, int(1).q(3)),
-        //////// REAL
-        (real(2.0).one, real(1.0)),
-        (real(-2.0).one, real(1.0)),
-        (real.one, real(1.0)),
-        (real(-1.0, -2.0, -3.0).one, real(1.0).q(3)),
-        (real(-1.0, -2.0, -3.0).id.q(10).one, real(1.0).q(30)),
-        (real(-1.0, -2.0, -3.0) ==> __.q(3).id.q(10).one, real(1.0).q(30)),
-        (real(-1.0, -2.0, -3.0).id.q(10).one, real(1.0).q(30)),
-        (real(-1.0, -2.0, -3.0).q(3).id.q(10).one, real(1.0).q(90)),
-      )
-    forEvery(starts) { (query, result) => TestUtil.evaluate(query, __, result, OneOp()) }
-  }
-
-  test("[one] exceptions") {
-    assertResult(LanguageException.unsupportedInstType(str("a"), OneOp()).getMessage)(intercept[LanguageException](str("a") ==> __.one).getMessage)
-  }
-}
+class OneInstTest extends BaseInstTest(
+  testSet("[one] table test",
+    comment("int"),
+    testing(2, one, 1),
+    testing(2, one.q(10), 1.q(10)),
+    testing(2.q(10), one, 1.q(10)),
+    testing(2.q(10), one.q(20), 1.q(200)),
+    testing(-2, one, 1),
+    testing(int, one, int.one),
+    testing(int, one.q(10), int.one.q(10)),
+    testing(int.q(10), one, int.q(10).one),
+    testing(int.q(10), one.q(20), int.q(10).one.q(20)),
+    testing(int(1, 2, 3), one, 1.q(3)),
+    comment("real"),
+    testing(2.0, one, 1.0),
+    testing(-2.0, one, 1.0),
+    testing(real, one, real.one),
+    testing(real(-1.0, -2.0, -3.0), one, 1.0.q(3)),
+    testing(real(-1.0, -2.0, -3.0), id.q(10).one, 1.0.q(30)),
+    testing(real(-1.0, -2.0, -3.0), id.q(10).one, 1.0.q(30)),
+    testing(real(-1.0, -2.0, -3.0), real.q(3).id.q(10).one.q(3), 1.0.q(90)),
+    comment("exceptions"),
+    testing("a", one, LanguageException.unsupportedInstType(str("a"), OneOp()), "'a'[one]")
+  ),
+  testSet("[one] table test w/ mm", MM,
+    comment("int"),
+    testing(int, one, 1),
+    testing(int, one.q(5), 1.q(5)),
+    // testing(int.q(2), int.q(2).one.q(5), 1.q(10)),
+  ))

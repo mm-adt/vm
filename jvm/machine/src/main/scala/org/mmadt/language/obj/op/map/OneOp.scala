@@ -23,8 +23,8 @@
 package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Bool, Inst, Int, Obj, Real}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, RealValue, Value}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -39,9 +39,9 @@ trait OneOp[O <: Obj] {
 object OneOp extends Func[Obj, Obj] {
   def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.one, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
-    case _: Bool => btrue
-    case _: Int => int(1)
-    case _: Real => real(1.0)
+    case _: BoolValue => btrue
+    case _: IntValue => int(1)
+    case _: RealValue => real(1.0)
     case _: Value[_] => throw LanguageException.unsupportedInstType(start, inst)
     case _ => start
   }).via(start, inst)

@@ -8,4 +8,6 @@ mm:('type' -> (bool -> (bool),
                int  -> ((int)<=(int[neg][neg]),
                         (int)<=(int[plus,0]),
                         (int)<=(int[mult,1]),
+                        ([1])<=(int[one]),
+                        ([0])<=(int[zero]),
                         ([0])<=(int[mult,0]))))
