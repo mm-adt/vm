@@ -59,7 +59,6 @@ trait Lst[+A <: Obj] extends Poly[A]
 
   private final def lstMaker(sep: String, obj: Obj): Lst[obj.type] = {
     obj match {
-      case blst: Lst[Obj] => lst(g = (sep, List[obj.type](this.asInstanceOf[obj.type], blst.asInstanceOf[obj.type])))
       case _ if sep != this.gsep => lst(g = (sep, List(this, obj).asInstanceOf[List[obj.type]]))
       case _ => this.clone(g = (sep, this.g._2 :+ obj)).asInstanceOf[Lst[obj.type]]
     }

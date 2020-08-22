@@ -109,13 +109,13 @@ trait Obj
 
   // quantifier methods
   def q(f: IntQ => IntQ): this.type = this.q(f.apply(this.q))
-  def q(single: IntValue): this.type = this.q(single.q(qOne), single.q(qOne))
+  def q(single: IntValue): this.type = this.q(single.g, single.g)
   def q(q: IntQ): this.type = if (q.equals(qZero) || !this.alive) this.rangeObj.clone(q = qZero) else this.clone(
     q = if (this.root) q else this.q.mult(q),
     via = if (this.root) this.via else (this.via._1, this.via._2.q(q)))
   def hardQ(f: IntQ => IntQ): this.type = this.hardQ(f.apply(this.q))
   def hardQ(q: IntQ): this.type = this.clone(q = q)
-  def hardQ(single: IntValue): this.type = this.hardQ(single.q(qOne), single.q(qOne))
+  def hardQ(single: IntValue): this.type = this.hardQ(single.g, single.g)
   def pureQ: IntQ = divQ(this.q, this.domainObj.q)
   lazy val alive: Boolean = this.q != qZero
   lazy val unity: this.type = this.clone(q = qOne)

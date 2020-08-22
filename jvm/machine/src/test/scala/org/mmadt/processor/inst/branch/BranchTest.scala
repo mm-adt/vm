@@ -23,49 +23,90 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.Obj.tupleToRecYES
+import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.PlusOp
+import org.mmadt.language.obj.op.trace.ModelOp.MM
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.StorageFactory.int.⨁
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class BranchTest extends BaseInstTest(
   testSet("[branch] ,-lst",
-    testing(int.q(10), plus(0).branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).plus(0).branch(plus(1) `,` plus(2)).is(gt(10))),
-    testing(int(1), int.plus(0).branch(plus(1) `,` plus(2)), int(2, 3)),
-    testing(int(1), int.plus(0).branch(plus(1) `,` plus(2) `,` int.plus(3)), int(2, 3, 4)),
-    testing(int(1), int.plus(0).branch(plus(1).q(2) `,` plus(2).q(3) `,` int.plus(3).q(4)), int(int(2).q(2), int(3).q(3), int(4).q(4))),
-    testing(int(1), int.plus(0).branch(plus(1).plus(1) `,` plus(2)), int(3).q(2)),
-    testing(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) `,` plus(2)), int(int(3).q(2), int(4).q(2))),
-    testing(int(1), int.plus(0).branch(plus(1) `,` plus(2)).path(), strm(lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))), lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(2), 3)))))),
+    testing(int.q(10), plus(0).branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).plus(0).branch(plus(1) `,` plus(2)).is(gt(10)),
+      "int{10}[plus,0][+1,+2][is>10]"),
+    testing(1, int.plus(0).branch(plus(1) `,` plus(2)), int(2, 3),
+      "1 => int+0[+1,+2]"),
+    testing(1, int.plus(0).branch(plus(1) `,` plus(2) `,` int.plus(3)), int(2, 3, 4),
+      "1 => int+0[+1,+2,int+3]"),
+    testing(1, int.plus(0).branch(plus(1).q(2) `,` plus(2).q(3) `,` int.plus(3).q(4)), int(2.q(2), 3.q(3), 4.q(4)),
+      "1 => int+0[+{2}1,+{3}2,+{4}3]"),
+    testing(1, int.plus(0).branch(plus(1).plus(1) `,` plus(2)), 3.q(2),
+      "1 => int+0[+1+1,+2]"),
+    testing(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) `,` plus(2)), int(3.q(2), 4.q(2)),
+      "[1,2] => int{2}[plus,0][+1+1,+2]"),
+    testing(int(1, 2), plus(0).branch(plus(1).plus(1) `,` plus(2)), int(3.q(2), 4.q(2)),
+      "[1,2][plus,0][+1+1,+2]"),
+    testing(1, int.plus(0).branch(plus(1) `,` plus(2)).path(), strm(
+      (1 `;` plus(0).inst `;` 1 `;` plus(1).inst `;` 2),
+      (1 `;` plus(0).inst `;` 1 `;` plus(2).inst `;` 3)),
+      "1 => int+0[+1,+2][path]"),
+  ),
   testSet("[branch] ;-lst",
-    testing(int.q(10), plus(0).branch(plus(1) `;` plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) `;` plus(2)).is(gt(10))),
-    testing(int(1), int.plus(0).branch(plus(1) `;` plus(2)), int(4)),
-    testing(int(1), int.plus(0).branch(plus(1) `;` plus(2) `;` int.plus(3)), int(7)),
-    testing(int(1), int.plus(0).branch(plus(1).q(2) `;` plus(2).q(3) `;` int.plus(3).q(4)), int(7).q(24)),
-    testing(int(1), int.plus(0).branch(plus(1).plus(1) `;` plus(2)), int(5)),
-    testing(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) `;` plus(2)), int(5, 6)),
-    testing(int(1, 2), int.q(2).plus(0).branch(plus(1) `;` plus(2)).path(), strm(
-      lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2, PlusOp(2), 4))),
-      lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3, PlusOp(2), 5)))))),
+    testing(int.q(10), plus(0).branch(plus(1) `;` plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) `;` plus(2)).is(gt(10)),
+      "int{10}[plus,0][+1;+2][is>10]"),
+    testing(1, int.plus(0).branch(plus(1) `;` plus(2)), 4,
+      "1 => int+0[+1;+2]"),
+    testing(1, int.plus(0).branch(plus(1) `;` plus(2) `;` int.plus(3)), 7,
+      "1 => int[plus,0][[plus,1];[plus,2];[plus,3]]"),
+    testing(1, int.plus(0).branch(plus(1).q(2) `;` plus(2).q(3) `;` int.plus(3).q(4)), 7.q(24),
+      "1 => int[plus,0][[plus,1]{2};[plus,2]{3};[plus,3]{4}]"),
+    testing(1, int.plus(0).branch(plus(1).plus(1) `;` plus(2)), 5,
+      "1 => int[plus,0][[plus,1][plus,1];[plus,2]]"),
+    testing(int(1, 2), plus(0).branch(plus(1).plus(1) `;` plus(2)), int(5, 6),
+      "[1,2]+0[branch,(+1+1;+2)]"),
+    testing(int(1, 2), plus(0).branch(plus(1) `;` plus(2)).path(), strm(
+      (1 `;` plus(0).inst `;` 1 `;` plus(1).inst `;` 2 `;` plus(2).inst `;` 4),
+      (2 `;` plus(0).inst `;` 2 `;` plus(1).inst `;` 3 `;` plus(2).inst `;` 5)),
+      "[1,2]+0[+1;+2][path]")
+  ),
   testSet("[branch] |-lst",
-    testing(int.q(10), plus(0).branch(plus(1) | plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) | plus(2)).is(gt(10))),
-    testing(int(1), int.plus(0).branch(plus(1) | plus(2)), int(2)),
-    testing(int(1), int.plus(0).branch(plus(1).q(0) | plus(2) | int.plus(3)), int(3)),
-    testing(int(1), int.plus(0).branch(plus(1).q(0) | plus(2).q(0) | int.plus(3)), int(4)),
-    testing(int(1), int.plus(0).branch(plus(1).plus(1) | plus(3)), int(3)),
-    testing(int(1), int.plus(0).branch(plus(1).q(0).plus(1) | plus(3)), int(4)),
-    testing(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3)), int(4)),
-    testing(int(1), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj),
-    testing(int(1, 2), int.q(2).plus(0).branch(plus(1).plus(1) | plus(2)), int(3, 4)),
+    testing(int.q(10), plus(0).branch(plus(1) | plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) | plus(2)).is(gt(10)),
+      "int{10}[plus,0][+1|+2][is>10]"),
+    testing(int.q(10), int.q(10).plus(0).branch(plus(1) | plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) | plus(2)).is(gt(10)),
+      "int{10} => int{10}[plus,0][+1|+2][is>10]"),
+    testing(1, int.plus(0).branch(plus(1) | plus(2)), 2,
+      "1 => int+0[+1|+2]"),
+    testing(1, int.plus(0).branch(plus(1).q(0) | plus(2) | int.plus(3)), 3,
+      "1 => int+0[+{0}1|+2|+3]"),
+    testing(1, int.plus(0).branch(plus(1).q(0) | plus(2).q(0) | int.plus(3)), 4,
+      "1 => int+0[+{0}1|+{0}2|+3]"),
+    //testing(1, int.plus(0).branch(plus(1.q(0)) | plus(2.q(0)) | int.plus(3)), 4,
+    //  "1 => int+0[+1{0}|+2{0}|+3]"), TODO: argument quantifier not considered -- should this throw an exception?
+    testing(1, plus(0).branch(plus(1).plus(1) | plus(3)), 3,
+      "1+0[+1+1|+3]"),
+    testing(1, ⨁(0).branch(⨁(1).q(-1).⨁(1).q(0) | ⨁(3)), 4,
+      "1+0[+{-1}1+{0}1|+3]"),
+    testing(1, int.plus(0).branch(plus(1).q(0).plus(1) | plus(3)), 4,
+      "1 => int+0[+{0}1+1 | +3]"),
+    testing(1, int.plus(0).branch(plus(1).plus(1).q(0) | plus(3)), 4,
+      "1 => int[plus,0][[plus,1][plus,1]{0} | [plus,3]]"),
+    testing(int, int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)),
+      "int => int[plus,0][[plus,1][plus,1]{0}|[plus,3]{0}]"),
+    testing(1, int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj,
+      "1 => int[plus,0][[plus,1][plus,1]{0}|[plus,3]{0}]"),
+    //testing(1, plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj,
+    //  "1[plus,0][[plus,1][plus,1]{0}|[plus,3]{0}]"),  TODO: anonymous type isn't picking up internal branch quantifiers
+    testing(int(1, 2), plus(0).branch(plus(1).plus(1) | plus(2)), int(3, 4),
+      "[1,2][plus,0][+1+1 | +2]"),
     testing(int(1, 2), int.q(2).plus(0).branch(plus(1) | plus(2)).path(), strm(
-      lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
-      lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3)))))),
+      (1 `;` plus(0).inst `;` 1 `;` plus(1).inst `;` 2),
+      (2 `;` plus(0).inst `;` 2 `;` plus(1).inst `;` 3)))),
   testSet("[branch] ,-rec",
     testing(int(0), plus(1).branch((is(gt(1)) -> plus(10)) `_,` (is(gt(2)) -> plus(20)) `_,` (__ -> int.plus(30))), int(31)),
     testing(int(1, 2, 3), plus(0).branch((is(gt(1)) -> plus(10)) `_,` (is(gt(2)) -> plus(20)) `_,` (__ -> int.plus(30))), int(31, 12, 13, 32, 23, 33)),
@@ -81,7 +122,77 @@ class BranchTest extends BaseInstTest(
     testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1).plus(1) `_|` int -> plus(2)), int(3, 4)),
     testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).path(), strm(
       lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
-      lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3))))))) {
+      lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3)))))),
+  testSet("[branch] lst stream ring theory", MM,
+    comment("abelian group axioms"),
+    testing(str, branch(branch(branch(branch(id `,`) `,`) `,`) `,`), str, "str[[[[[id]]]]]"),
+    testing(str, branch(branch(id `,` id) `,` id), str.q(3) <= str.id.q(3), "str[[[id],[id]],[id]]"),
+    testing(str, branch(id.q(2) `,` id.q(3)), str.q(5) <= str.id.q(5), "str[[id]{2},[id]{3}]"),
+    testing(str, branch(id `,` q(0)), str, "str[[id],{0}]"),
+    testing(str, branch(id `,` id.q(-1)), zeroObj, "str[[id],[id]{-1}]"),
+    comment("monoid axioms"),
+    testing(str, branch(id `;` id `;` id), str, "str[[id];[id];[id]]"),
+    testing(str, branch(branch(id `;` id) `;` id), str, "str[[[id];[id]];[id]]"),
+    testing(str, branch(id `;` branch(id `;` id)), str, "str[[id];[[id];[id]]]"),
+    comment("ring axioms"),
+    testing(str, branch(branch(id `,` id) `;` id), str.q(2) <= str.id.q(2), "str[[[id],[id]];[id]]"),
+    testing(str, branch(branch(id `;` id) `,` branch(id `;` id)), str.q(2) <= str.id.q(2), "str[str[[id];[id]],[[id];[id]]]"),
+    comment("ring theorems"),
+    testing(str, branch(id.q(-1) `,` id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1},[id]{-1}]"),
+    testing(str, branch(id `,` id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id],[id]]{-1}"),
+    testing(str, branch(id.q(-1) `,`).q(-1), str, "str[[id]{-1}]{-1}"),
+    testing(str, branch(id `;` __.q(0)), zeroObj, "str[[id];{0}]"),
+    testing(str, branch(__.q(0) `;` id), zeroObj, "str[{0};[id]]"),
+    testing(str, branch(id `;` id.q(-1)), str.q(-1) <= str.id.q(-1), "str[[id];[id]{-1}]"),
+    testing(str, branch(id.q(-1) `;` id), str.q(-1) <= str.id.q(-1), "str[[id]{-1};[id]]"),
+    testing(str, branch(id.q(-1) `;` id.q(-1)), str, "str[[id]{-1};[id]{-1}]"),
+    testing(str, branch(id `;` id), str, "str[[id];[id]]"),
+    testing(str, branch(str.id `;` str.id).q(-1), str.q(-1) <= str.id.q(-1), "str[[id];[id]]{-1}"),
+    comment("stream ring axioms"),
+    testing(str, branch(id.q(2) `,` id.q(3)), str.id.q(5), "str[[id]{2},[id]{3}]"), // bulking
+    testing(str.q(2), str.q(2).branch(id.q(3) `,`), str.q(6) <= str.q(2).id.q(3), "str{6}<=str{2}[[id]{3}]"), // applying
+    testing(str.q(2), str.q(2).branch(id.q(3) `,` id.q(4)), str.q(14) <= str.q(2).id.q(7), "str{14}<=str{2}[[id]{3},[id]{4}]"), // splitting
+    testing(str, branch(id.q(6) `,` id.q(8)), str.q(14) <= str.id.q(14), "str[[id]{6},[id]{8}]"), // splitting
+    testing(str, branch(branch(id.q(2) `,`) `,` branch(id.q(3) `,`)), str.q(5) <= str.id.q(5), "str[[[id]{2}],[[id]{3}]]"), // merging
+    testing(str, branch(id.q(2) `,` id.q(3)), str.q(5) <= str.id.q(5), "str[[id]{2},[id]{3}]"), // merging
+    testing(str, branch(__.q(0) `,` id), str, "str[{0},[id]]"), // removing
+    testing(str, branch(id.q(0) `,` id), str, "str[[id]{0},[id]]"), // removing
+  ),
+  testSet("[branch] rec stream ring theory", MM,
+    comment("abelian group axioms"),
+    testing(str, branch(branch(branch(branch(id -> id) `,`) `,`) `,`), str, "str[[[[[id]->[id]]]]]"),
+    testing(str, branch(branch(id -> id `_,` id -> id) `,` branch(id -> id)), str.q(3) <= str.id.q(3), "str[[[id]->[id],[id]->[id]],[[id]->[id]]]"),
+    testing(str, branch(str -> str.id.q(2) `_,` str -> str.id.q(3)), str.q(5) <= str.id.q(5), "str[str->[id]{2},str->[id]{3}]"),
+    testing(str, branch(id -> id `_,` __.q(0) -> __.q(0)), str, "str[[id]->[id],{0}->{0}]"),
+    testing(str, branch(id -> id `_,` id.q(-1) -> id.q(-1)), zeroObj, "str[str[id]->str[id],str[id]{-1}->str[id]{-1}]"),
+    testing(str, branch(id -> id `_,` id.q(-1) -> id.q(-1)), zeroObj, "str[[id]->[id],[id]{-1}->[id]{-1}]"),
+    comment("monoid axioms"),
+    testing(str, branch(branch(id -> id `_;` id -> id) `;` id -> id), str, "str[[id]->[id];[id]->[id];[id]->[id]]"),
+    testing(str, branch(id -> id `_;` __ -> branch(id -> id `_;` id -> id)), str, "str[[id]->[id];[id]->[[id]->[id];[id]->[id]]]"),
+    comment("ring axioms"),
+    testing(str, branch(branch(id -> id `_,` id -> id) `;` branch(str.id -> str.id)), str.q(2) <= str.id.q(2), "str[[[id]->[id],[id]->[id]];[[id]->[id]]]"),
+    // TODO: testing(str, branch(id -> branch(id -> id `_;` id -> id) `_,` id -> branch(id -> id `_;` id -> id)), str.q(2) <= str.id.q(2), "str[[id]->[[id]->[id];[id]->[id]],[id]->[[id]->[id];[id]->[id]]]"),
+    comment("ring theorems"),
+    testing(str, branch(id.q(1) -> id.q(-1) `_,` id.q(1) -> id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1}->[id]{-1},[id]{-1}->[id]{-1}]"),
+    testing(str, branch(id -> id `_,` id -> id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id]->[id],[id]->[id]]{-1}"),
+    testing(str, branch(__ -> id.q(-1)).q(-1), str, "str[_->[id]{-1}]{-1}"),
+    testing(str, branch(id -> id `_;` id.q(0) -> id.q(0)), zeroObj, "str[[id]->[id];{0}->{0}]"),
+    testing(str, branch((str.q(0) -> str.q(0)) `_;` (str.id -> str.id)), zeroObj, "str[{0}->{0};[id]->[id]]"),
+    testing(str, branch(str.id -> str.id `_;` str.id.q(-1) -> str.id.q(-1)), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]{-1}->[id]{-1}]"),
+    // TODO: testing(str, branch(str.id.q(-1) -> str.id.q(-1) `_;`str.id ->str.id ), str.q(-1) <= str.id.q(-1), "str[[id]{-1}->[id]{-1};[id]->[id]]"),
+    // TODO: testing(str, branch(str.id.q(-1) ->str.id.q(-1) `_;`str.id.q(-1)-> str.id.q(-1)), str, "str[[id]{-1}->[id]{-1};[id]{-1}->[id]{-1}]"),
+    testing(str, branch(id -> id `_;` id -> id), str, "str[[id]->[id];[id]->[id]]"),
+    // TODO: testing(str, branch(str.id -> str.id `_;` str.id -> str.id).q(-1), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]->[id]]{-1}"),
+    comment("stream ring axioms"),
+    testing(str, branch(__ -> str.id.q(2) `_,` __ -> str.id.q(3)), str.id.q(5), "str[_->[id]{2},_->[id]{3}]"), // bulking
+    testing(str.q(2), str.q(2).branch(id.q(3) -> id.q(3)), str.q(6) <= str.q(2).id.q(3), "str{6}<=str{2}[[id]{3}->[id]{3}]"), // applying
+    testing(str.q(2), str.q(2).branch(__ -> id.q(3) `_,` __ -> id.q(4)), str.q(14) <= str.q(2).id.q(7), "str{14}<=str{2}[_->[id]{3},_->[id]{4}]"), // splitting
+    testing(str, branch(__ -> id.q(6) `_,` __ -> id.q(8)), str.q(14) <= str.id.q(14), "str[_->[id]{6},_->[id]{8}]"), // splitting
+    testing(str, branch(str -> branch(id.q(2) -> id.q(2)) `_,` str -> branch(id.q(3) -> id.q(3))), str.q(5) <= str.id.q(5), "str[[id]->[_->[id]{2}],[id]->[_->[id]{3}]]"), // merging
+    testing(str, branch(id -> id.q(2) `_,` id -> id.q(3)), str.q(5) <= str.id.q(5), "str[[id]->[id]{2},[id]->[id]{3}]"), // merging
+    testing(str, branch(__.q(0) -> __.q(0) `_,` id -> id), str, "str[{0}->{0},[id]->[id]]"), // removing
+    testing(str, branch(id.q(0) -> id.q(0) `_,` id -> id), str, "str[[id]{0}->[id]{0},[id]->[id]]"), // removing
+  )) {
 
   test("[branch] path testing") {
     assertResult("(5;[plus,0];5;[plus,1];6;[plus,3];9)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path().toStrm.values(0).toString)
