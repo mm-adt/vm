@@ -48,7 +48,7 @@ object FromOp extends Func[Obj, Obj] {
     else start.model.vars(inst.arg0[StrValue]).getOrElse(
       start match {
         case _: Type[_] => inst.args.tail.headOption.getOrElse(asType(start))
-        case _: Value[_] => inst.args.tail.headOption.map(x => Obj.resolveArg(start, x)).getOrElse(throw LanguageException.labelNotFound(start.path(PathOp.VERTICES), inst.arg0[StrValue].g))
+        case _: Value[_] => inst.args.tail.headOption.map(x => (start ~~> x)).getOrElse(throw LanguageException.labelNotFound(start.path(PathOp.VERTICES), inst.arg0[StrValue].g))
       }).via(start, inst)
   }
 }

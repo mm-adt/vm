@@ -78,7 +78,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def pickMapping(start: Obj, asObj: Obj): Obj = {
-    if (asObj.isInstanceOf[Value[Obj]]) Obj.resolveArg(start, asObj)
+    if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
     else {
       val defined = if (__.isTokenRoot(asObj)) start.model.search(asObj.name, start) else None
       (start match {
@@ -94,12 +94,12 @@ object AsOp extends Func[Obj, Obj] {
     }
   }
   private def boolConverter(x: Bool, y: Obj): Obj = {
-    Obj.resolveArg(y.domain match {
+    (y.domain match {
       case _: __ => x
       case abool: BoolType => vbool(name = abool.name, g = x.g, via = x.via)
       case astr: StrType => vstr(name = astr.name, g = x.g.toString, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
-    }, y)
+    }) ~~> y
   }
 
   private def intConverter(x: Int, y: Obj): Obj = {
@@ -115,13 +115,13 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def realConverter(x: Real, y: Obj): Obj = {
-    Obj.resolveArg(y.domain match {
+    (y.domain match {
       case _: __ => x
       case aint: IntType => vint(name = aint.name, g = x.g.longValue(), via = x.via)
       case areal: RealType => vreal(name = areal.name, g = x.g, via = x.via)
       case astr: StrType => vstr(name = astr.name, g = x.g.toString, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
-    }, y)
+    }) ~~> y
   }
 
   private def strConverter(x: Str, y: Obj): Obj = {

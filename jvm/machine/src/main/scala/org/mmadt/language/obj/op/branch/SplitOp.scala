@@ -25,27 +25,32 @@ package org.mmadt.language.obj.op.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait SplitOp {
   this: Obj =>
-  def split(branches: Obj): branches.type = SplitOp(branches).exec(this)
-  final def -<(branches: Obj): branches.type = this.split(branches)
+  def split(branches: Poly[Obj]): branches.type = SplitOp(branches).exec(this)
+  final def -<(branches: Poly[Obj]): branches.type = this.split(branches)
+  def split(branches: __): branches.type = SplitOp(branches).exec(this)
+  final def -<(branches: __): branches.type = this.split(branches)
 }
 
 object SplitOp extends Func[Obj, Obj] {
   def apply(branches: Obj): Inst[Obj, branches.type] = new VInst[Obj, branches.type](g = (Tokens.split, List(branches)), func = this) with BranchInstruction
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val startUnit = start.hardQ(qOne)
-    val oldInst: Inst[Obj, Poly[Obj]] = Inst.oldInst(inst).asInstanceOf[Inst[Obj, Poly[Obj]]]
-    val apoly: Poly[Obj] = oldInst.arg0[Obj] match {
-      case x: Poly[Obj] => x
-      case _ => if (inst.arg0[Obj].alive) inst.arg0[Poly[Obj]] else return zeroObj
+    val apoly: Poly[Obj] = Inst.oldInst(inst).arg0[Obj] match {
+      case bpoly: Poly[_] => bpoly
+      case _ => inst.arg0[Obj] match {
+        case bpoly: Poly[_] => bpoly
+        case anon: __ => return anon.via(start, inst)
+      }
     }
-    val newPoly: Poly[Obj] = Poly.resolveSlots(startUnit.clone(via = (startUnit, oldInst)), apoly)
+    val startUnit = start.hardQ(qOne)
+    val newPoly: Poly[Obj] = Poly.resolveSlots(startUnit.clone(via = (startUnit, Inst.oldInst(inst))), apoly)
     newPoly.clone(via = (start, SplitOp(newPoly).hardQ(inst.q))).hardQ(BranchInstruction.multPolyQ(start, apoly, inst).q)
   }
 }

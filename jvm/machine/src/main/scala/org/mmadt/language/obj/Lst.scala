@@ -90,7 +90,7 @@ object Lst {
       var running = start
       values.map(v => {
         running = if (running.isInstanceOf[Strm[_]]) strm(running.toStrm.values.map(r => r ~~> v))
-        else Obj.resolveArg(running, v) match {
+        else running ~~> v match {
           case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
         }

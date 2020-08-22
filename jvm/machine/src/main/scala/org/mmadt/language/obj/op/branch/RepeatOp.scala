@@ -41,7 +41,7 @@ object RepeatOp extends Func[Obj, Obj] {
   def apply[A <: Obj](branch: A, until: Obj): Inst[A, A] = new VInst[A, A](g = (Tokens.repeat, List(branch, until.asInstanceOf[A])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val oldInst = Inst.oldInst(inst)
-    val until: Obj = Obj.resolveArg(start, oldInst.arg1)
+    val until: Obj = start ~~> oldInst.arg1
     //
     start match {
       case _: Value[_] if until.isInstanceOf[Bool] =>
@@ -63,7 +63,7 @@ object RepeatOp extends Func[Obj, Obj] {
 
         }
         repeatStart
-      case _: Type[_] => Obj.resolveArg(start, inst.arg0[Obj]).via(start, oldInst)
+      case _: Type[_] => (start ~~> inst.arg0[Obj]).via(start, oldInst)
     }
   }
 }

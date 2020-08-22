@@ -49,13 +49,13 @@ object FoldOp extends Func[Obj, Obj] {
     val seed: A = _seed
     val reducer: A = __.to("x").compute(_reducer)
   }
-  
+
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val seed: Obj = Obj.resolveArg(start.toStrm.values.headOption.getOrElse(start), inst.arg0[Obj])
+    val seed: Obj = start.toStrm.values.headOption.getOrElse(start) ~~> inst.arg0[Obj]
     val folding: Obj = __.to("x").compute(inst.arg1[Obj])
     (start match {
-      case strm: Strm[_] => strm.values.foldLeft(seed)((x, y) => Obj.resolveArg((x `;` y).to("x"), folding))
-      case avalue: Value[_] => Obj.resolveArg((avalue `;` seed), folding)
+      case strm: Strm[_] => strm.values.foldLeft(seed)((x, y) => ((x `;` y).to("x") ~~> folding))
+      case avalue: Value[_] => (avalue `;` seed) ~~> folding
       case _: Type[_] => inst.arg1[Type[Obj]].via(start, inst)
     }).hardQ(qOne)
   }

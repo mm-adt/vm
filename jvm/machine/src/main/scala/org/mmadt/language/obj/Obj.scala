@@ -126,9 +126,10 @@ trait Obj
   def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type
   def toStrm: Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
-  final def compute[E <: Obj](rangeType: E): E = AsOp.autoAsType(this, x => Obj.internal(x, rangeType), rangeType)
+  // evaluation methods
+  final def compute[E <: Obj](rangeType: E): E = AsOp.autoAsType[E](this, x => Obj.resolveInternal[E](x, rangeType), rangeType)
   final def ~~>[E <: Obj](target: E): E = Obj.resolveArg[this.type, E](this, target)
-  final def ==>[E <: Obj](target: E): E = Obj.resolveObj(this, target)
+  final def ==>[E <: Obj](target: E): E = Obj.resolveObj[this.type, E](this, target)
 
   // lst fluent methods
   final def `|`: Lst[this.type] = lst(Tokens.|, this).asInstanceOf[Lst[this.type]]
@@ -143,17 +144,6 @@ object Obj {
   type IntQ = (IntValue, IntValue)
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
   val rootVia: ViaTuple = (null, null)
-  private def internal[E <: Obj](domainObj: Obj, rangeType: E): E = {
-    rangeType match {
-      case _: Value[E] => rangeType.q(multQ(domainObj.q, rangeType.q))
-      case _: Type[E] =>
-        rangeType.trace
-          .headOption
-          .map(x => x._2.exec(domainObj))
-          .map(x => Obj.internal(x, rangeType.linvert))
-          .getOrElse(domainObj.asInstanceOf[E])
-    }
-  }
 
   @inline implicit def booleanToBool(ground: Boolean): BoolValue = bool(ground)
   @inline implicit def longToInt(ground: Long): IntValue = int(ground)
@@ -164,11 +154,11 @@ object Obj {
   @inline implicit def tupleToRecYES[A <: Obj, B <: Obj](ground: Tuple2[A, B]): RichTuple[A, B] = new RichTuple[A, B](ground)
   @inline implicit def tupleToRecNO[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
 
-  def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
+  private def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]
     else objB match {
       case _: Value[_] => objB.hardQ(q => multQ(objA.q, q))
-      case rangeType: Type[E] =>
+      case rangeType: Type[_] =>
         LanguageException.testTypeCheck(objA, objB.domain)
         objA match {
           case _: Value[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.iterator(x, rangeType), rangeType)
@@ -177,7 +167,19 @@ object Obj {
     }
   }
 
-  def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
+  private def resolveInternal[E <: Obj](domainObj: Obj, rangeType: E): E = {
+    rangeType match {
+      case _: Value[_] => rangeType.q(multQ(domainObj.q, rangeType.q))
+      case _: Type[_] =>
+        rangeType.trace
+          .headOption
+          .map(x => x._2.exec(domainObj))
+          .map(x => resolveInternal(x, rangeType.linvert))
+          .getOrElse(domainObj.asInstanceOf[E])
+    }
+  }
+
+  private def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     if (!obj.alive || !arg.alive) return arg.hardQ(qZero)
     resolveToken(obj, arg) match {
       case anon: __ if __.isTokenRoot(anon) => anon.asInstanceOf[E]
@@ -194,7 +196,7 @@ object Obj {
   def resolveToken[A <: Obj](obj: Obj, arg: A): A = {
     if (__.isToken(arg))
       obj.model.search[A](arg.name, obj.asInstanceOf[A]).orElse[A](obj match {
-        case _: Type[Obj] => return arg
+        case _: Type[_] => return arg
         case _ =>
           if (obj.model.search[A](arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
           else throw LanguageException.labelNotFound(obj, arg.name)

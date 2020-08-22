@@ -46,7 +46,7 @@ trait Inst[S <: Obj, +E <: Obj] extends LstType[S] {
       case _: TraceInstruction => this.func.asInstanceOf[Func[S, E]](start, this)
       case _ => start match {
         case _: Strm[_] => start.via(start, this).asInstanceOf[E]
-        case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => Obj.resolveArg(start, arg))), via = (this, IdOp()))) // TODO: It's not an [id] that processes the inst. hmmm...
+        case _ => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => (start ~~> arg))), via = (this, IdOp()))) // TODO: It's not an [id] that processes the inst. hmmm...
       }
     }
   }

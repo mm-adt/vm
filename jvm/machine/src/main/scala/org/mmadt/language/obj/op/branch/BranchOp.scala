@@ -26,7 +26,6 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
@@ -43,26 +42,23 @@ trait BranchOp {
 object BranchOp extends Func[Obj, Obj] {
   def apply[A <: Obj](branches: Obj): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.branch, List(branches)), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    start match {
-      case _: Strm[_] => start.via(start, inst)
-      case _ => Inst.oldInst(inst).arg0[Poly[Obj]] match {
-        ////////////////////// LST //////////////////////
-        case alst: Lst[Obj] => Lst.moduleMult(start, alst) match {
-          case blst if blst.isEmpty => zeroObj.via(start, inst)
-          case blst: Value[_] => blst.hardQ(q => multQ(q, inst.q)).merge
-          case blst: Type[_] =>
-            if (1 == blst.size) (start `=>` blst.glist.head).q(inst.q)
-            else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
-        }
-        ////////////////////// REC //////////////////////
-        case arec: Rec[Obj, Obj] => Rec.moduleMult(start, arec) match {
-          case brec if brec.isEmpty => zeroObj.via(start, inst)
-          case brec: Value[_] => brec.hardQ(q => multQ(q, inst.q)).merge
-          case brec: Type[_] =>
-            if (1 == brec.size) (start `=>` brec.glist.head).q(inst.q)
-            else if (arec.gsep == Tokens.`;`) BranchInstruction.brchType[Obj](brec, inst.q)
-            else BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
-        }
+    Inst.oldInst(inst).arg0[Poly[Obj]] match {
+      ////////////////////// LST //////////////////////
+      case alst: Lst[Obj] => Lst.moduleMult(start, alst) match {
+        case blst if blst.isEmpty => zeroObj.via(start, inst)
+        case blst: Value[_] => blst.hardQ(q => multQ(q, inst.q)).merge
+        case blst: Type[_] =>
+          if (1 == blst.size) (start `=>` blst.glist.head).q(inst.q)
+          else BranchInstruction.brchType[Obj](blst, inst.q).clone(via = (start, inst.clone(_ => List(blst))))
+      }
+      ////////////////////// REC //////////////////////
+      case arec: Rec[Obj, Obj] => Rec.moduleMult(start, arec) match {
+        case brec if brec.isEmpty => zeroObj.via(start, inst)
+        case brec: Value[_] => brec.hardQ(q => multQ(q, inst.q)).merge
+        case brec: Type[_] =>
+          if (1 == brec.size) (start `=>` brec.glist.head).q(inst.q)
+          else if (arec.gsep == Tokens.`;`) BranchInstruction.brchType[Obj](brec, inst.q) // TODO: copy the lst pattern for computing last
+          else BranchInstruction.brchType[Obj](brec, inst.q).clone(via = (start, inst.clone(_ => List(brec))))
       }
     }
   }
