@@ -22,38 +22,36 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.Obj.{doubleToReal, intToInt}
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.NegOp
-import org.mmadt.storage.StorageFactory.{int, real, str}
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
+import org.mmadt.language.obj.op.trace.ModelOp.MM
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.storage.StorageFactory.{int, real}
 
-class NegInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[neg] value, type, strm") {
-    val starts: TableFor3[Obj, Obj, Obj] =
-      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        //////// INT
-        (int(2), int.neg, int(-2)),
-        (int(2).q(2), int.q(2).neg, int(-2).q(2)),
-        (int(-2), __.neg, int(2)),
-        (int(-2), __.neg.q(4).neg.q(2), int(-2).q(8)),
-        (int.neg, int.neg, int.neg.neg),
-        (int(-1, -2, -3), int.q(3).neg, int(1, 2, 3)),
-        //////// REAL
-        (real(2.0), real.neg, real(-2.0)),
-        (real(-2.0), __.neg, real(2.0)),
-        (real, real.neg, real.neg),
-        (real(-1.0, -2.0, -3.0), real.q(3).neg, real(1.0, 2.0, 3.0)),
-        (real(-1.0, -2.0, -3.0), real.q(3).neg.q(10), real(real(1.0).q(10), real(2.0).q(10), real(3.0).q(10))),
-      )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result) // NegOp().q(divQ(rhs.q,rhs.domain.q))
-    }
-  }
-
-  test("[neg] exceptions") {
-    assertResult(LanguageException.unsupportedInstType(str("a"), NegOp()).getMessage)(intercept[LanguageException](str("a") ==> __.neg).getMessage)
-  }
-}
+class NegInstTest extends BaseInstTest(
+  testSet("[neg] table test",
+    comment("int"),
+    testing(2, int.neg, -2, "2 => int[neg]"),
+    testing(2.q(2), int.q(2).neg, -2.q(2), "2{2} => int{2}[neg]"),
+    testing(-2, neg, 2, "-2[neg]"),
+    testing(-2, neg.q(4).neg.q(2), -2.q(8), "-2[neg]{4}[neg]{2}"),
+    testing(int.neg, int.neg, int.neg.neg, "int[neg] => int[neg]"),
+    testing(int, int.neg.neg, int.neg.neg, "int => int[neg][neg]"),
+    testing(int(-1, -2, -3), int.q(3).neg, int(1, 2, 3), "[-1,-2,-3] => int{3}[neg]"),
+    comment("real"),
+    testing(2.0, real.neg, -2.0, "2.0 => real[neg]"),
+    testing(-2.0, neg, 2.0, "-2.0[neg]"),
+    testing(real, real.neg, real.neg, "real => real[neg]"),
+    testing(real(-1.0, -2.0, -3.0), real.q(3).neg, real(1.0, 2.0, 3.0), "[-1.0,-2.0,-3.0] => real{3}[neg]"),
+    testing(real(-1.0, -2.0, -3.0), neg.q(10), real(1.0.q(10), 2.0.q(10), 3.0.q(10)), "[-1.0,-2.0,-3.0][neg]{10}"),
+    comment("exceptions"),
+    testing("a", neg, LanguageException.unsupportedInstType("a", NegOp()), "'a'[neg]")
+  ),
+  testSet("[neg] table test w/ mm", MM,
+    comment("int"),
+    testing(int, neg.neg, int, "int[neg][neg]"),
+  ))

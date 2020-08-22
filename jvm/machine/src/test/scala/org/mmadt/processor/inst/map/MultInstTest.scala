@@ -22,56 +22,43 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Lst, Obj}
+import org.mmadt.language.obj.`type`.__.mult
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class MultInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[mult] value, type, strm, anon combinations") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
-        //////// INT
-        (int(2).mult(2), int(4), "value"), // value * value = value
-        (int(2).q(10).mult(2), int(4).q(10), "value"), // value * value = value
-        (int(2).q(10).mult(2).q(20), int(4).q(200), "value"), // value * value = value
-        (int(2).mult(int(2).q(10)), int(4), "value"), // value * value = value
-        (int(2).mult(int), int(4), "value"), // value * type = value
-        (int(2).mult(__.mult(int)), int(8), "value"), // value * anon = value
-        (int.mult(int(2)), int.mult(int(2)), "type"), // type * value = type
-        (int.q(10).mult(int(2)), int.q(10).mult(int(2)), "type"), // type * value = type
-        (int.mult(int), int.mult(int), "type"), // type * type = type
-        (int(1, 2, 3).mult(2), int(2, 4, 6), "strm"), // strm * value = strm
-        (int(1, 2, 3).mult(int(2).q(10)), int(2, 4, 6), "strm"), // strm * value = strm
-        (int(1, 2, 3).mult(int(2)).q(10), int(int(2).q(10), int(4).q(10), int(6).q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3).mult(int), int(1, 4, 9), "strm"), // strm * type = strm
-        (int(1, 2, 3).mult(__.mult(int)), int(1, 8, 27), "strm"), // strm * anon = strm
-        //////// REAL
-        (real(2.0).mult(2.0), real(4), "value"), // value * value = value
-        (real(2.0).mult(real), real(4.0), "value"), // value * type = value
-        (real(2.0).mult(__.mult(real)), real(8.0), "value"), // value * anon = value
-        (real.mult(real(2.0)), real.mult(real(2.0)), "type"), // type * value = type
-        (real.mult(real), real.mult(real), "type"), // type * type = type
-        (real(1.0, 2.0, 3.0).mult(2.0), real(2.0, 4.0, 6.0), "strm"), // strm * value = strm
-        (real(1.0, 2.0, 3.0).mult(real), real(1.0, 4.0, 9.0), "strm"), // strm * type = strm
-        (real(1.0, 2.0, 3.0).mult(__.mult(real)), real(1.0, 8.0, 27.0), "strm"), // strm * anon = strm
-        //////// POLY
-        //(("a" |).mult(("1" /).asInstanceOf[Poly[Obj]]), "a" / "1", "value"),
-        //(("a" `;`).mult("1" `;`), "a" `;` "1", "value"),
-        //(("a" `;`).mult("1" | "2"), ("a" `;` "1") | ("a" `;` "2"), "value"),
-        //(("a" `;` "b" `;` "c").mult("1" | "2"), ("a" `;` "b" `;` "c" `;` "1") | ("a" `;` "b" `;` "c" `;` "2"), "value"),
-        (("a" `;` "b" `;` "c").asInstanceOf[Lst[StrValue]].mult(("1" `;` "2").asInstanceOf[Lst[StrValue]]), ("a" `;` "b" `;` "c" `;` "1" `;` "2"), "value"),
-        //  (("a" | "b" | "c").mult("1" `;` "2"), lst[Obj]("|", values = List(("a" `;` "1" `;` "2"), ("b" `;` "1" `;` "2"), ("c" `;` "1" `;` "2")): _*), "value"),
-        //(("a" | "b" | "c").mult("1" |[Obj] "2"), lst[Obj]("|", values = ("a" | "1") | ("a" | "2") | ("b" | "1") | ("b" | "2") | ("c" | "1") | ("c" | "2")), "value")
-      )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result)
-    }
-  }
-}
+class MultInstTest extends BaseInstTest(
+  testSet("[mult] table test",
+    comment("int"),
+    testing(2, mult(2), 4),
+    testing(2.q(10), int.q(10).mult(2), 4.q(10)),
+    testing(2.q(10), int.q(10).mult(2).q(20), 4.q(200)),
+    testing(2, mult(2).q(10), 4.q(10)),
+    testing(2, mult(int), 4),
+    testing(2, int.mult(mult(int)), 8, "2 => int**int"),
+    testing(int, mult(2), int.mult(2)),
+    testing(int.q(10), int.q(10).mult(2), int.q(10).mult(2)),
+    testing(int, mult(int), int.mult(int), "int => [mult,int]"),
+    testing(int, mult(int), int.mult(__), "int => [mult,_]"),
+    testing(int(1, 2, 3), mult(2), int(2, 4, 6)),
+    testing(int(1, 2, 3), mult(2), int(2, 4, 6)),
+    testing(int(1, 2, 3), mult(2).q(10), int(2.q(10), 4.q(10), 6.q(10))),
+    testing(int(1, 2, 3), mult(int), int(1, 4, 9)),
+    testing(int(1, 2, 3), mult(mult(int)), int(1, 8, 27)),
+    comment("real"),
+    testing(2.0, mult(2.0), 4.0),
+    testing(2.0, real.mult(real), 4.0, "2.0 => real[mult,real]"),
+    testing(2.0, mult(mult(real)), 8.0, "2.0[mult[mult,real]]"),
+    testing(real, mult(2.0), real.mult(2.0), "real => *2.0"),
+    testing(real, real.mult(real), real.mult(real), "real => real*real"),
+    testing(real.q(5), real.q(5).mult(real.q(6)), real.q(5) <= real.q(5).mult(real.q(6)), "real{5} => real{5}*real{6}"),
+    testing(real(1.0, 2.0, 3.0), mult(2.0), real(2.0, 4.0, 6.0), "[1.0,2.0,3.0][mult,2.0]"),
+    testing(real(1.0, 2.0, 3.0), mult(real), real(1.0, 4.0, 9.0), "[1.0,2.0,3.0] => [mult,real]"),
+    testing(real(1.0, 2.0, 3.0), mult(mult(real)), real(1.0, 8.0, 27.0), "[1.0,2.0,3.0]**real"),
+  ))
+ 
