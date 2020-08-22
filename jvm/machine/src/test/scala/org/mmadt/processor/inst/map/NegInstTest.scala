@@ -24,7 +24,6 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{doubleToReal, intToInt}
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.op.trace.ModelOp.MM
@@ -53,5 +52,8 @@ class NegInstTest extends BaseInstTest(
   ),
   testSet("[neg] table test w/ mm", MM,
     comment("int"),
+    testing(int, neg, int.neg, "int[neg]"),
     testing(int, neg.neg, int, "int[neg][neg]"),
+    testing(int, neg.neg.neg, int.neg, "int[neg][neg][neg]"),
+    testing(int, neg.neg.neg.neg, int, "int[neg][neg][neg][neg]"),
   ))

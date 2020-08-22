@@ -22,22 +22,28 @@
 
 package org.mmadt.processor.inst.branch
 
-import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.testSet
+import org.mmadt.processor.inst.TestSetUtil.{testSet, _}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.processor.inst.TestSetUtil._
 
 class CombineInstTest extends BaseInstTest(
-  testSet("[combine] value, type, strm",
-    testing(int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2) `;` int.plus(3)), int(2) `;` 4 `;` 6),
-    testing(int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2)), int(2) `;` 4 `;` 4),
-    testing(int(1) `;` 2 `;` 3, lst.combine(int.plus(1) `;`), int(2) `;` 3 `;` 4),
-    testing(int(1) `;` 2 `;` 3, lst.combine(lst), zeroObj `;`),
-    testing(int(1) `;` (int(2) `,` 3) `;` 4, lst.combine(int.plus(1) `;` lst[Int].>-.count() `;` int.plus(10)), int(2) `;` 2 `;` 14),
-    testing(int(2) | 4, lst.combine(int.plus(2) `;` int.mult(10)), int(4) `;` 40),
-    testing(int(2) `;` 4, lst.combine(int.plus(2) `;` int.mult(10)), int(4) `;` 40),
-    testing(int(2) `;` 4, lst.combine(int.plus(2) | int.mult(10)), int(4) | zeroObj),
-    testing(int(4) | zeroObj, __.combine(int.plus(2) | int.mult(10)), int(6) | zeroObj))) {
-}
+  testSet("[combine] ;-lst",
+    testing(1 `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2) `;` int.plus(3)), 2 `;` 4 `;` 6, "(1;2;3)=(int+1;int+2;int+3)"),
+    testing(1 `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2)), 2 `;` 4 `;` 4, "(1;2;3)=> lst[combine,(int+1;int+2)]"),
+    testing(1 `;` 2 `;` 3, lst.combine(plus(1) `;`), 2 `;` 3 `;` 4, "(1;2;3) => lst[combine,(+1)]"),
+    testing(1 `;` 2 `;` 3, lst.combine(lst), zeroObj `;`, "(1;2;3)=lst"),
+    testing(1 `;` (2 `,` 3) `;` 4, combine(int.plus(1) `;` >-.count `;` int.plus(10)), 2 `;` 2 `;` 14, "(1;(2,3);4)=(int[plus,1];>-[count];int[plus,10])"),
+    testing(2 `;` 4, combine(plus(2) `;` mult(10)), 4 `;` 40, "(2;4)=(+2;*10)"),
+  ),
+  testSet("[combine] |-lst",
+    testing(2 `;` 4, combine(plus(2) `|` mult(10)), 4 `|` zeroObj, "(2;4)=(+2|*10)"),
+    testing(2.q(1) `|` 4, lst.combine(plus(2) `;` mult(10)), (4 `;` 40), "(2{1}|4) => lst=(+2;*10)"),
+    testing(4 | zeroObj, combine(int.plus(2) | int.mult(10)), 6 | zeroObj, "(4|{0})=(int[plus,2]|int[mult,10])"),
+  ),
+  testSet("[combine] ;-rec",
+    testing(str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3),
+      rec.combine(plus("a") -> int.plus(1) `_;` str -> int.plus(2) `_;` zero -> int.plus(3)),
+      str("aa") -> int(2) `_;` str("b") -> int(4) `_;` str("") -> int(6), "('a'->1;'b'->2;'c'->3)=(+'a'->+1;str->+2;[zero]->+3)"),
+  ))

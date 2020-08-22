@@ -37,7 +37,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait CountOp {
   this: Obj =>
-  def count(): Int = CountOp().exec(this)
+  def count: Int = CountOp().exec(this)
 }
 
 object CountOp extends Func[Obj, Obj] {

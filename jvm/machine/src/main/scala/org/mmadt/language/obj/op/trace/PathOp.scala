@@ -24,7 +24,6 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.Obj.ViaTuple
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.branch.CombineOp
@@ -48,11 +47,6 @@ object PathOp extends Func[Obj, Lst[Obj]] {
     case _ => lst(g = (inst.arg0[Lst[Obj]].gsep,
       CombineOp.combineAlgorithm(lst(g = (
         inst.arg0[Lst[Obj]].gsep,
-        start.trace.foldLeft(List.empty[Obj])((a, b) => a :+ b._1 :+ b._2) :+ start)), inst.arg0[Lst[Obj]]).glist.filter(_.alive)))
+        start.trace.foldLeft(List.empty[Obj])((a, b) => a :+ b._1 :+ b._2) :+ start)), inst.arg0[Lst[Obj]]).glist.filter(_.alive).toList))
   }).via(start, inst).asInstanceOf[Lst[Obj]]
-
-  @inline implicit def viaToRichVia(baseVia: ViaTuple): RichVia = new RichVia(baseVia)
-  class RichVia(val richVia: ViaTuple) {
-    def isOp(op: String): Boolean = richVia._2 != null && richVia._2.op.equals(op)
-  }
 }

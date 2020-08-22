@@ -10,4 +10,5 @@ mm:('type' -> (bool -> (bool),
                         (int)<=(int[mult,1]),
                         ([1])<=(int[one]),
                         ([0])<=(int[zero]),
-                        ([0])<=(int[mult,0]))))
+                        ([0])<=(int[mult,0])),
+               str  -> (([''])<=(str[zero]))))

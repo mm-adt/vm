@@ -25,6 +25,7 @@ package org.mmadt.language.obj
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.storage.StorageFactory._
@@ -33,6 +34,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
+  with CombineOp[Obj]
   with PlusOp[Rec[A, Obj]]
   with GetOp[A, B]
   with PutOp[A, Obj]
