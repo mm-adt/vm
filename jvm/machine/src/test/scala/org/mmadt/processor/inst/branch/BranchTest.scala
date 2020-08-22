@@ -87,7 +87,7 @@ class BranchTest extends BaseInstTest(
     testing(1, int.plus(0).branch(plus(1).q(0) | plus(2).q(0) | int.plus(3)), 4,
       "1 => int+0[+{0}1|+{0}2|+3]"),
     //testing(1, int.plus(0).branch(plus(1.q(0)) | plus(2.q(0)) | int.plus(3)), 4,
-    //  "1 => int+0[+1{0}|+2{0}|+3]"), TODO: argument quantifier not considered -- should this throw an exception?
+    //  "1 => int+0[+1{0}|+2{0}|+3]"), // TODO: argument quantifier not considered -- should this throw an exception?
     testing(1, plus(0).branch(plus(1).plus(1) | plus(3)), 3,
       "1+0[+1+1|+3]"),
     testing(1, ⨁(0).branch(⨁(1).q(-1).⨁(1).q(0) | ⨁(3)), 4,
@@ -100,8 +100,8 @@ class BranchTest extends BaseInstTest(
       "int => int[plus,0][[plus,1][plus,1]{0}|[plus,3]{0}]"),
     testing(1, int.plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj,
       "1 => int[plus,0][[plus,1][plus,1]{0}|[plus,3]{0}]"),
-    //testing(1, plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj,
-    //  "1[plus,0][[plus,1][plus,1]{0}|[plus,3]{0}]"),  TODO: anonymous type isn't picking up internal branch quantifiers
+    testing(1, plus(0).branch(plus(1).plus(1).q(0) | plus(3).q(0)), zeroObj,
+      "1[plus,0][[plus,1][plus,1]{0}|[plus,3]{0}]"),
     testing(int(1, 2), plus(0).branch(plus(1).plus(1) | plus(2)), int(3, 4),
       "[1,2][plus,0][+1+1 | +2]"),
     testing(int(1, 2), int.q(2).plus(0).branch(plus(1) | plus(2)).path(), strm(

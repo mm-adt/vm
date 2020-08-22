@@ -23,11 +23,11 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
@@ -48,7 +48,7 @@ object BranchOp extends Func[Obj, Obj] {
       case _ => Inst.oldInst(inst).arg0[Poly[Obj]] match {
         ////////////////////// LST //////////////////////
         case alst: Lst[Obj] => Lst.moduleMult(start, alst) match {
-          case blst if blst.isEmpty => zeroObj
+          case blst if blst.isEmpty => zeroObj.via(start, inst)
           case blst: Value[_] => blst.hardQ(q => multQ(q, inst.q)).merge
           case blst: Type[_] =>
             if (1 == blst.size) (start `=>` blst.glist.head).q(inst.q)
@@ -56,7 +56,7 @@ object BranchOp extends Func[Obj, Obj] {
         }
         ////////////////////// REC //////////////////////
         case arec: Rec[Obj, Obj] => Rec.moduleMult(start, arec) match {
-          case brec if brec.isEmpty => zeroObj
+          case brec if brec.isEmpty => zeroObj.via(start, inst)
           case brec: Value[_] => brec.hardQ(q => multQ(q, inst.q)).merge
           case brec: Type[_] =>
             if (1 == brec.size) (start `=>` brec.glist.head).q(inst.q)
