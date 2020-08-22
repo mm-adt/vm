@@ -99,14 +99,14 @@ object TraceScanRewrite extends Rewrite {
     var model: Model = query.model
     trace.foldLeft(query)((x, y) => {
       val middle = y.exec(x)
-      model = gatherVars(middle, middle.model)
+      model = mergeAllModels(middle, middle.model)
       middle
 
     })
     range.foldLeft(query)((x, y) => y.exec(x.model(model)))
   }
 
-  def gatherVars(obj: Obj, model: Model): Model = obj.trace.foldLeft(model)((m, x) => {
+  def mergeAllModels(obj: Obj, model: Model): Model = obj.trace.foldLeft(model)((m, x) => {
     x._2.args.foldLeft(m)((a, b) => b.model.update(a)) // TODO: access more paths than just inst args
   })
 }

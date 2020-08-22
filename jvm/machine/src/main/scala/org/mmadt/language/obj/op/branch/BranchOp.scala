@@ -43,8 +43,8 @@ object BranchOp extends Func[Obj, Obj] {
   def apply[A <: Obj](branches: Obj): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.branch, List(branches)), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     (Inst.oldInst(inst).arg0[Obj] match {
-      case apoly: Poly[_] => apoly.hardQ(qOne)
-      case _ => inst.arg0[Poly[_]].rangeObj.hardQ(qOne)
+      case apoly: Poly[_] => apoly
+      case _ => Obj.resolveToken(start,inst.arg0[Obj]).rangeObj
     }) match {
       ////////////////////// LST //////////////////////
       case alst: Lst[Obj] => Lst.moduleMult(start, alst) match {
