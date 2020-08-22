@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Int, Obj, divQ, multQ, plusQ}
+import org.mmadt.language.obj.{Inst, Int, Obj, divQ, minusQ, multQ, plusQ}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -49,6 +49,7 @@ object QOp extends Func[Obj, Int] {
   class RichQ(val richQ: IntQ) {
     def plus(otherQ: IntQ): IntQ = plusQ(richQ, otherQ)
     def mult(otherQ: IntQ): IntQ = multQ(richQ, otherQ)
+    def minus(otherQ: IntQ): IntQ = minusQ(richQ, otherQ)
     def div(otherQ: IntQ): IntQ = divQ(richQ, otherQ)
     def isZero: Boolean = richQ.equals(qZero)
   }

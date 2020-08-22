@@ -819,13 +819,13 @@ image:poly-kinds.svg[width=350,float=left]
 | https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
 .3+.^| `rec` ^| `,`  | all match
 | https://en.wikipedia.org/wiki/Multimap[multimap]
-| https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
+| https://en.wikipedia.org/wiki/Method_cascading[cascade]
 ^| `;`  | last match
 | https://en.wikipedia.org/wiki/Associative_array[record]
-| https://en.wikipedia.org/wiki/Method_cascading[cascade]
+| https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
 ^| `\|` | first match
 | https://en.wikipedia.org/wiki/Tuple[pair]
-| https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[case]
+| https://en.wikipedia.org/wiki/Switch_statement[switch]
 |===
 
 '''
@@ -836,11 +836,12 @@ image:poly-kinds.svg[width=350,float=left]
 image::poly-lift.svg[float=left,width=200]
 A `poly` composed of `obj` values is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 forms (`,`,`;`,`|`). The forms determine the *ambient algebra* associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with unity maintaining a left https://en.wikipedia.org/wiki/Module_(mathematics)[R-module]. In this way, `poly` is a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself.
 
-[cols="1,2,2,9"]
+[cols="1,2,11"]
 |===
-| poly | algebra | use | mmlang example
+| poly | algebra | mmlang example
 
-| `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] | multi-set
+| `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
+https://en.wikipedia.org/wiki/Multiset[multiset]
 a|
 [exec]
 ----
@@ -848,7 +849,8 @@ a|
 ('a'{?},'b','a','c','b')>-
 ----
 {blank}
-| `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] | list
+| `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] +
+https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]
 a|
 [exec]
 ----
@@ -856,7 +858,8 @@ a|
 ('a'{?};'b';'a';'c';'b')>-
 ----
 {blank}
-| `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] | scalar
+| `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar]
 a|
 [exec]
 ----
@@ -866,16 +869,12 @@ a|
 {blank}
 |===
 
-// ('a';'a';'b';'a';'c';'b').0
-//('a';'a';'b';'a';'c';'b')=(_;{0})
-//('a';'a';'b';'a';'c';'b')=(+str)
-
-
-[cols="1,2,2,9"]
+[cols="1,2,11"]
 |===
-| poly | algebra | use | mmlang example
+| poly | algebra | mmlang example
 
-| `,-rec` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] | multi-map
+| `,-rec` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
+https://en.wikipedia.org/wiki/Multimap[multimap]
 a|
 [exec]
 ----
@@ -883,7 +882,8 @@ a|
 ('a'->1,'b'->2,'a'->3)>-
 ----
 {blank}
-| `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] | record
+| `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] +
+https://en.wikipedia.org/wiki/Associative_array[record]
 a|
 [exec]
 ----
@@ -891,7 +891,8 @@ a|
 ('a'->1;'b'->2;'a'->3)>-
 ----
 {blank}
-| `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] | pair
+| `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+https://en.wikipedia.org/wiki/Tuple[pair]
 a|
 [exec]
 ----
@@ -904,6 +905,71 @@ a|
 [discrete]
 ====== Poly Controls
 
+[cols="1,2,11"]
+|===
+| poly | algebra | mmlang example
+
+| `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
+https://en.wikipedia.org/wiki/Union_(set_theory)[union]
+a|
+[exec]
+----
+int[int,[is>25],int]
+6 => int[int,[is>10],int]
+----
+{blank}
+| `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] +
+https://en.wikipedia.org/wiki/Method_chaining[chain]
+a|
+[exec]
+----
+int[+1,+2,+3]
+6 => int[+1;+2;+3]
+----
+{blank}
+| `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
+a|
+[exec]
+----
+int[[is>10]\|[is>5]\|int]
+6 => int[[is>10]+1\|[is>5]+2\|+3]
+----
+{blank}
+|===
+
+[cols="1,2,11"]
+|===
+| poly | algebra | mmlang example
+
+| `,-rec` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
+https://en.wikipedia.org/wiki/Method_cascading[cascade]
+a|
+[exec]
+----
+int[int->+1,[is>25]->+2,int->3]
+6 => int[int,[is>10],int]
+----
+{blank}
+| `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] +
+https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
+a|
+[exec]
+----
+int[int->+1;[is>5]->+2;int->+3]
+6 => int[+1;+2;+3]
+----
+{blank}
+| `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+https://en.wikipedia.org/wiki/Switch_statement[switch]
+a|
+[exec]
+----
+int[int->+1\|[is>25]->+2\|int->3]
+6 => int[int->+1\|[is>25]->+2\|int->3]
+----
+{blank}
+|===
 
 === The Obj Graph
 
