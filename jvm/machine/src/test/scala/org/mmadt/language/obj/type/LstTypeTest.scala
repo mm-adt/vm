@@ -25,7 +25,6 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.TestUtil
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.intToInt
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.{Int, Lst, Obj, Poly}
 import org.mmadt.storage.StorageFactory._
@@ -84,9 +83,9 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
         (int(1, 2), (str | str) | str, zeroObj),
         ((1 `;` 2), ((int `;` int) | str), (1 `;` 2)),
         (1, int | str, 1),
-       // (1, str | int, 1),
+        // (1, str | int, 1),
       )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, __.split(rhs).merge[Obj], result, compile = false) }
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, split(rhs).merge[Obj], result, compile = false) }
   }
 
   test("parallel [get] types") {
@@ -97,12 +96,12 @@ class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
     val poly: Poly[Int] = int.mult(8).split(id | plus(2) | 3)
     assertResult("(int[id])<=int[mult,8]-<(int[id])")(poly.toString)
     assertResult(int.id)(poly.glist.head)
-/*    assertResult(int.plus(2))(poly.glist(1))
-    assertResult(int(3))(poly.glist(2))
-    assertResult(int)(poly.glist.head.via._1)
-    assertResult(int)(poly.glist(1).via._1)
-    assert(poly.glist(2).root)
-    assertResult(int.id | int.plus(2) | int(3))(poly.range)*/
+    /*    assertResult(int.plus(2))(poly.glist(1))
+        assertResult(int(3))(poly.glist(2))
+        assertResult(int)(poly.glist.head.via._1)
+        assertResult(int)(poly.glist(1).via._1)
+        assert(poly.glist(2).root)
+        assertResult(int.id | int.plus(2) | int(3))(poly.range)*/
   }
 
   test("parallel quantifier") {

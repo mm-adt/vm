@@ -147,18 +147,4 @@ object Rec {
   }
 
   def moduleMult[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = arec.clone(pairs => moduleStruct(arec.gsep, pairs, start))
-
-  def keepFirst[A <: Obj, B <: Obj](start: Obj, arec: Rec[A, B]): Rec[A, B] = {
-    var found: Boolean = false;
-    arec.clone(_.map(x => {
-      if (!found) {
-        val keyResolve = start ~~> x._1
-        if (keyResolve.alive) {
-          found = true
-          (keyResolve, start ~~> x._2)
-        } else (zeroObj, zeroObj)
-      } else
-        (zeroObj, zeroObj)
-    }).asInstanceOf[Pairs[A, B]])
-  }
 }

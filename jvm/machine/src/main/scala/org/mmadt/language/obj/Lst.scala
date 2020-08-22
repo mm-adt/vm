@@ -114,11 +114,6 @@ object Lst {
 
   def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = alst.clone(list => moduleStruct(alst.gsep, list, start))
 
-  def keepFirst[A <: Obj](apoly: Lst[A]): Lst[A] = {
-    val first: scala.Int = apoly.glist.indexWhere(x => x.alive)
-    apoly.clone(_.zipWithIndex.map(a => if (a._2 == first) a._1 else zeroObj.asInstanceOf[A]))
-  }
-
   def cmult[A <: Obj](apoly: Lst[A], bpoly: Lst[A]): Lst[A] = {
     var clist: List[A] = Nil
     apoly.glist.foreach(a => bpoly.glist.foreach(b => {

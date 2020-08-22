@@ -49,12 +49,6 @@ object Poly {
       case alst: Lst[A] => alst.clone(x => Lst.moduleStruct(alst.gsep, x, start))
     }
   }
-  def keepFirst[A <: Obj](start: Obj, apoly: Poly[A]): Poly[A] = {
-    apoly match {
-      case arec: Rec[Obj, A] => Rec.keepFirst(start, arec)
-      case alst: Lst[A] => Lst.keepFirst(alst)
-    }
-  }
   def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = (apoly.size < 2 || bpoly.size < 2) ||
     (apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial)
 }

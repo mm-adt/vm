@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{LstType, PolyType, RecType}
+import org.mmadt.language.obj.`type`.{LstType, PolyType}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.{PolyValue, Value}
 import org.mmadt.language.obj.{Obj, _}
@@ -42,10 +42,10 @@ object MergeOp extends Func[Obj, Obj] {
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case apoly: PolyValue[_, _] if apoly.isChoice => Poly.keepFirst(apoly, apoly).glist.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).find(_.alive).getOrElse(zeroObj)
-      case apoly: PolyValue[_, _] if apoly.isParallel => strm(apoly.glist.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).filter(_.alive))
-      case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).filter(_.alive).getOrElse(zeroObj)
-      case apoly: LstType[_] if apoly.isSerial && apoly.glist.lastOption.exists(x => x.isInstanceOf[Value[_]]) => apoly.glist.last
+      case apoly: PolyValue[_, _] if apoly.isChoice => apoly.glist.headOption.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).getOrElse(zeroObj)
+      case apoly: PolyValue[_, _] if apoly.isParallel => strm(apoly.glist.map(x => BranchInstruction.multPolyQ(x, apoly, inst)))
+      case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).getOrElse(zeroObj)
+      case apoly: LstType[_] if apoly.isSerial && apoly.glist.lastOption.exists(x => x.isInstanceOf[Value[_]]) => apoly.glist.last.q(inst.q)
       case apoly: PolyType[_, _] => BranchInstruction.multPolyQ(BranchInstruction.brchType[Obj](apoly), lst, inst).clone(via = (start, inst)) // lst is acting a _{1}
       case _ => start.via(start, inst)
     }

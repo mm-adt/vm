@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.branch
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -46,15 +45,7 @@ object SplitOp extends Func[Obj, Obj] {
       case x: Poly[Obj] => x
       case _ => if (inst.arg0[Obj].alive) inst.arg0[Poly[Obj]] else return zeroObj
     }
-    val newInst: Inst[Obj, Poly[Obj]] = SplitOp(Poly.resolveSlots(startUnit.clone(via = (startUnit, oldInst)), apoly)).hardQ(inst.q)
-    (apoly match {
-      case _: Poly[_] if apoly.isChoice => processFirst(startUnit, newInst)
-      case _ => newInst.arg0[Poly[Obj]]
-    }).clone(via = (start, newInst)).hardQ(BranchInstruction.multPolyQ(start, apoly, inst).q)
-  }
-
-  private def processFirst(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = start match {
-    case _: Type[_] => inst.arg0[Poly[Obj]]
-    case _ => Poly.keepFirst(start, inst.arg0[Poly[Obj]])
+    val newPoly: Poly[Obj] = Poly.resolveSlots(startUnit.clone(via = (startUnit, oldInst)), apoly)
+    newPoly.clone(via = (start, SplitOp(newPoly).hardQ(inst.q))).hardQ(BranchInstruction.multPolyQ(start, apoly, inst).q)
   }
 }
