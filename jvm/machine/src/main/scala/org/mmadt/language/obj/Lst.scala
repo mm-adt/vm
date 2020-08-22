@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory._
 
 trait Lst[+A <: Obj] extends Poly[A]
   with CombineOp[Obj]
-  with GetOp[Int, Obj]
+  with GetOp[Int, A]
   with PutOp[Int, Obj]
   with PlusOp[Lst[Obj]]
   with MultOp[Lst[Obj]]

@@ -22,14 +22,16 @@
 
 package org.mmadt.processor.obj.`type`.rewrite
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.__.id
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite, removeRules}
 import org.mmadt.language.obj.op.trace.ModelOp
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Lst, Obj, divQ}
-import org.mmadt.storage.StorageFactory.qZero
+import org.mmadt.storage.StorageFactory.{qOne, qZero}
 
 object TraceScanRewrite extends Rewrite {
 
@@ -74,6 +76,7 @@ object TraceScanRewrite extends Rewrite {
     // normalize the quantifiers after rewrite
     if (b.equals(obj)) obj
     else if (!b.q.equals(obj.q) && b.trace.forall(x => ModelOp.isMetaModel(x._2))) b.id.q(divQ(obj.q, b.domainObj.q)).asInstanceOf[A]
+    else if (b.trace.map(x => x._2).exists(x => x.op == Tokens.branch)) b.asInstanceOf[A]
     else b.asInstanceOf[A].q(divQ(obj.q, b.domainObj.q))
   }
 
@@ -92,7 +95,18 @@ object TraceScanRewrite extends Rewrite {
     if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
   }
 
-  def replaceRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = range.foldLeft(query)((x, y) => y.exec(x))
+  def replaceRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = {
+    var model: Model = query.model
+    trace.foldLeft(query)((x, y) => {
+      val middle = y.exec(x)
+      model = gatherVars(middle, middle.model)
+      middle
 
+    })
+    range.foldLeft(query)((x, y) => y.exec(x.model(model)))
+  }
 
+  def gatherVars(obj: Obj, model: Model): Model = obj.trace.foldLeft(model)((m, x) => {
+    x._2.args.foldLeft(m)((a, b) => b.model.update(a)) // TODO: access more paths than just inst args
+  })
 }

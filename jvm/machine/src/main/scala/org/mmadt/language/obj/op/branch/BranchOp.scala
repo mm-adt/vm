@@ -27,7 +27,7 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, _}
-import org.mmadt.storage.StorageFactory.zeroObj
+import org.mmadt.storage.StorageFactory.{qOne, zeroObj}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -42,7 +42,10 @@ trait BranchOp {
 object BranchOp extends Func[Obj, Obj] {
   def apply[A <: Obj](branches: Obj): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.branch, List(branches)), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    Inst.oldInst(inst).arg0[Poly[Obj]] match {
+    (Inst.oldInst(inst).arg0[Obj] match {
+      case apoly: Poly[_] => apoly.hardQ(qOne)
+      case _ => inst.arg0[Poly[_]].rangeObj.hardQ(qOne)
+    }) match {
       ////////////////////// LST //////////////////////
       case alst: Lst[Obj] => Lst.moduleMult(start, alst) match {
         case blst if blst.isEmpty => zeroObj.via(start, inst)

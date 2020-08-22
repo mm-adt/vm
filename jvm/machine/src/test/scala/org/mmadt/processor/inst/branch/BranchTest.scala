@@ -37,6 +37,12 @@ import org.mmadt.storage.StorageFactory.int.⨁
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class BranchTest extends BaseInstTest(
+  testSet("[branch] w/ mm", MM,
+    testing(str, -<(str `;` str) >-, str.branch(__ `;` __), "str-<(str;str)>-"),
+    testing(str, id.-<(plus("a") `,` plus("b")).id.id.>-, str.branch(str.plus("a") `,` str.plus("b")), "str => [id]-<(+'a',+'b')[id][id]>-"),
+    testing("a", -<(plus("a") `,` plus("b")) >-, str("aa", "ab"), "'a' => str-<(+'a',+'b')>-"),
+    testing("a", id.-<(plus("a") `,` plus("b")).id.id.>-, str("aa", "ab"), "'a' => [id]-<(+'a',+'b')[id][id]>-"),
+  ),
   testSet("[branch] ,-lst",
     testing(int.q(10), plus(0).branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).plus(0).branch(plus(1) `,` plus(2)).is(gt(10)),
       "int{10}[plus,0][+1,+2][is>10]"),
@@ -192,7 +198,8 @@ class BranchTest extends BaseInstTest(
     testing(str, branch(id -> id.q(2) `_,` id -> id.q(3)), str.q(5) <= str.id.q(5), "str[[id]->[id]{2},[id]->[id]{3}]"), // merging
     testing(str, branch(__.q(0) -> __.q(0) `_,` id -> id), str, "str[{0}->{0},[id]->[id]]"), // removing
     testing(str, branch(id.q(0) -> id.q(0) `_,` id -> id), str, "str[[id]{0}->[id]{0},[id]->[id]]"), // removing
-  )) {
+  ),
+) {
 
   test("[branch] path testing") {
     assertResult("(5;[plus,0];5;[plus,1];6;[plus,3];9)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path().toStrm.values(0).toString)
