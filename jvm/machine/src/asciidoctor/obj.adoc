@@ -836,11 +836,11 @@ image:poly-kinds.svg[width=350,float=left]
 A `poly` can be used a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 forms (`,`,`;`,`|`). The forms determine the *ambient algebra* associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with unity maintaining a left https://en.wikipedia.org/wiki/Module_(mathematics)[R-module].
 
 [.small]
-[cols="^1,2,5",width=47,float=left]
+[cols="^1h,3,9,^1h,3,9"]
 |===
-| poly | collection | mmlang example
+| lst | collection | mmlang example | rec | collection | mmlang example
 
-| `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
+| `,` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
 https://en.wikipedia.org/wiki/Multiset[multiset]
 a|
 [exec,prompt="mm> "]
@@ -849,32 +849,7 @@ a|
 ('a'{?},'b','a','b')>-
 ----
 {blank}
-| `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] +
-https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]
-a|
-[exec,prompt="mm> "]
-----
-('a'{?};'b';'a';'b')
-('a'{?};'b';'a';'b')>-
-----
-{blank}
-| `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
-https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar]
-a|
-[exec,prompt="mm> "]
-----
-('a'{?}\|'b'\|'a'\|'b')
-('a'{?}\|'b'\|'a'\|'b')>-
-----
-{blank}
-|===
-
-[.small]
-[cols="^1,2,5",width=47,float=right]
-|===
-| poly | collection | mmlang example
-
-| `,-rec` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
+| `,` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
 https://en.wikipedia.org/wiki/Multimap[multimap]
 a|
 [exec,prompt="mm> "]
@@ -883,7 +858,16 @@ a|
 ('a'->1,'b'->2,'a'->3)>-
 ----
 {blank}
-| `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] +
+| `;` | https://en.wikipedia.org/wiki/Monoid[monoid] +
+https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]
+a|
+[exec,prompt="mm> "]
+----
+('a'{?};'b';'a';'b')
+('a'{?};'b';'a';'b')>-
+----
+{blank}
+| `;` | https://en.wikipedia.org/wiki/Monoid[monoid] +
 https://en.wikipedia.org/wiki/Associative_array[record]
 a|
 [exec,prompt="mm> "]
@@ -892,7 +876,16 @@ a|
 ('a'->1;'b'->2;'a'->3)>-
 ----
 {blank}
-| `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+| `\|` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar]
+a|
+[exec,prompt="mm> "]
+----
+('a'{?}\|'b'\|'a'\|'b')
+('a'{?}\|'b'\|'a'\|'b')>-
+----
+{blank}
+| `\|` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
 https://en.wikipedia.org/wiki/Tuple[pair]
 a|
 [exec,prompt="mm> "]
@@ -902,8 +895,6 @@ a|
 ----
 {blank}
 |===
-
-'''
 
 .,-poly Collections
 The algebra of the *,-polys* is the additive abelian group of the mm-ADT ring. This means that the `,` (i.e., \$\+\$) is commutative and thus, the terms need not maintain their lexical order. Moreover, given quantification, should two `,-poly` terms be equal at the _object_-level, they can be merged according to the \$+\$-operator's semantics of
@@ -933,11 +924,11 @@ In other words, the pairwise multiplication common of the https://en.wikipedia.o
 The mm-ADT ring's additive abelian (https://en.wikipedia.org/wiki/Commutative_property[commutative]) group operator is accessible via the `[branch]` instruction. The `[branch]` instruction argument is a `poly`, where each term of the `poly` is an operand of the ring's \$+\$-operator. In this way, a `poly` serves as a https://en.wikipedia.org/wiki/Control_flow[control structure]. Due to the prevelant use of this instruction, their is a simple syntactic sugar encoding in `mmlang`: `[ ]`.
 
 [.small]
-[cols="^1,2,5",width=47,float=left]
+[cols="^1h,3,9,^1h,3,9"]
 |===
-| poly | control | mmlang example
+| lst | control | mmlang example | rec | control | mmlang example
 
-| `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
+| `,` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
 https://en.wikipedia.org/wiki/Union_(set_theory)[union]
 a|
 [exec,prompt="mm> "]
@@ -947,32 +938,7 @@ int[+1,+3,+1]
 6 => int[+1,+3,+1]
 ----
 {blank}
-| `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] +
-https://en.wikipedia.org/wiki/Method_chaining[chain]
-a|
-[exec,prompt="mm> "]
-----
-6 => int[+1;+2;+3]
-----
-{blank}
-| `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
-https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
-a|
-[exec,prompt="mm> "]
-----
-6 => int[+1[is>10] \| %
-         +2[is>5]  \| %
-         +3        ]
-----
-{blank}
-|===
-
-[.small]
-[cols="^1,2,5",width=47,float=right]
-|===
-| poly | control | mmlang example
-
-| `,-rec` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
+| `,` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
 https://en.wikipedia.org/wiki/Method_cascading[cascade]
 a|
 [exec,prompt="mm> "]
@@ -982,7 +948,15 @@ a|
          int   -> +3]
 ----
 {blank}
-| `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] +
+| `;` | https://en.wikipedia.org/wiki/Monoid[monoid] +
+https://en.wikipedia.org/wiki/Method_chaining[chain]
+a|
+[exec,prompt="mm> "]
+----
+6 => int[+1;+2;+3]
+----
+{blank}
+| `;` | https://en.wikipedia.org/wiki/Monoid[monoid] +
 https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
 a|
 [exec,prompt="mm> "]
@@ -992,7 +966,18 @@ a|
          int  -> +3]
 ----
 {blank}
-| `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+| `\|` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
+a|
+[exec,prompt="mm> "]
+----
+6 => int[+1[is>10] \| %
+         +2[is>5]  \| %
+         +3        ]
+----
+{blank}
+
+| `\|` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
 https://en.wikipedia.org/wiki/Switch_statement[switch]
 a|
 [exec,prompt="mm> "]
@@ -1003,7 +988,6 @@ a|
 ----
 {blank}
 |===
-
 '''
 
 .,-poly Controls
