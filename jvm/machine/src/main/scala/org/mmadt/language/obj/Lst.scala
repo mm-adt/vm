@@ -25,7 +25,6 @@ package org.mmadt.language.obj
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.value.Value
@@ -33,7 +32,6 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 
 trait Lst[+A <: Obj] extends Poly[A]
-  with CombineOp[Obj]
   with GetOp[Int, A]
   with PutOp[Int, Obj]
   with PlusOp[Lst[Obj]]
@@ -112,8 +110,6 @@ object Lst {
           }
         })
   }
-
-  def moduleMult[A <: Obj, B <: Obj](start: A, alst: Lst[A]): Lst[A] = alst.clone(list => moduleStruct(alst.gsep, list, start))
 
   def cmult[A <: Obj](apoly: Lst[A], bpoly: Lst[A]): Lst[A] = {
     var clist: List[A] = Nil

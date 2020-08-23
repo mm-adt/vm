@@ -25,7 +25,6 @@ package org.mmadt.language.obj
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.storage.StorageFactory._
@@ -34,7 +33,6 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
-  with CombineOp[Obj]
   with PlusOp[Rec[A, Obj]]
   with GetOp[A, B]
   with PutOp[A, Obj]
@@ -46,7 +44,7 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
     else g._2.map(x => x._1.update(this.model).asInstanceOf[A] -> x._2.update(this.model).asInstanceOf[B])
   override def glist: Seq[B] = this.gmap.values
   override def ctype: Boolean = null == g._2 // type token
-  override def scalarMult(start: Obj): this.type= this.clone(pairs => Rec.moduleStruct(gsep, pairs, start))
+  override def scalarMult(start: Obj): this.type = this.clone(pairs => Rec.moduleStruct(gsep, pairs, start))
 
   def clone(f: Pairs[A, B] => Pairs[A, Obj]): this.type = this.clone(g = (this.gsep, f(this.gmap)))
   override def equals(other: Any): Boolean = other match {
@@ -68,8 +66,7 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
 
 object Rec {
   type RecTuple[A <: Obj, +B <: Obj] = (String, Pairs[A, B])
-  type Pairs[A <: Obj, +B <: Obj] = List[ObjPair[A, B]]
-  type ObjPair[A <: Obj, +B <: Obj] = Tuple2[A, B]
+  type Pairs[A <: Obj, +B <: Obj] = List[Tuple2[A, B]]
 
   class RichTuple[A <: Obj, +B <: Obj](val ground: Tuple2[A, B]) {
     final def `;`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = rec(g = (Tokens.`;`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
@@ -144,6 +141,4 @@ object Rec {
           })
         .map(kv => if (nostart) kv else kv._1 -> (start ~~> kv._2))
   }
-
-
 }

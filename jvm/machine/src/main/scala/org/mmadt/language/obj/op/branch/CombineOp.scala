@@ -29,7 +29,7 @@ import org.mmadt.language.obj.op.{BranchInstruction, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.obj.value.VInst
 
-trait CombineOp[A <: Obj] {
+trait CombineOp[+A <: Obj] {
   this: Poly[A] =>
   def combine[B <: Obj](other: Poly[B]): this.type = CombineOp[A, B](other).exec(this).asInstanceOf[this.type]
   final def :=[B <: Obj](other: Poly[B]): this.type = this.combine[B](other)
