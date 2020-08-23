@@ -23,7 +23,6 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Obj.IntQ
-import org.mmadt.language.obj.op.RewriteInstruction
 import org.mmadt.language.obj.op.trace.{ExplainOp, ModelOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
@@ -67,7 +66,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
 }
 object Type {
 
-  def mergeObjs[A<:Obj](objs: List[A]): List[A] = {
+  def mergeObjs[A <: Obj](objs: List[A]): List[A] = {
     var newList: ListBuffer[A] = ListBuffer.empty[A]
     objs.foreach(x =>
       newList += newList.find(y => unity(x).equals(unity(y))).map(y => {

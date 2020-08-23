@@ -36,7 +36,10 @@ import scala.annotation.tailrec
  */
 package object rewrite {
 
-  def removeRules[A<:Obj](atype: A): A = {
+  def singleOrPair[A <: Obj, C](single: A, f: A => C): C = f(single)
+  def singleOrPair[A <: Obj, B <: Obj, C](pair: Tuple2[A, B], f: Obj => C): Tuple2[C, C] = (f(pair._1), f(pair._2))
+
+  def removeRules[A <: Obj](atype: A): A = {
     if (atype.isInstanceOf[Value[_]]) return atype
     atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) =>
       if (b.op.startsWith("rule:")) a
