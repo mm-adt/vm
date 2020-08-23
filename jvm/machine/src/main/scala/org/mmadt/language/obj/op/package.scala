@@ -56,7 +56,7 @@ package object op {
       } else if (brch.isSerial) { // [;] last quantification
         brch match {
           case alst: Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch).filter(b => !b.root).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
-          case arec: Rec[Obj, Obj] => arec.gmap.last._2.asInstanceOf[OT]
+          case arec: Rec[Obj, Obj] => asType[OT](arec.gmap.map(x=>x._2).foldLeft(Option(arec).filter(b => !b.root).getOrElse(arec.gmap.head._2.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
         }
       } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduceLeftOption((a, b) => (

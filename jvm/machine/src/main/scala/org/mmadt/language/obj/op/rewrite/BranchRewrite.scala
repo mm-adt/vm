@@ -24,12 +24,13 @@ package org.mmadt.language.obj.op.rewrite
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.Rec.Pairs
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch.BranchOp
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.{BranchInstruction, RewriteInstruction}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Lst, Obj}
+import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -50,15 +51,39 @@ object BranchRewrite extends Func[Obj, Obj] {
     atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => {
       if (b.op == Tokens.branch) {
         b.arg0[Obj] match {
+          /////// ;-lst
           case alst: Lst[Obj] if alst.gsep == Tokens.`;` =>
             if (alst.glist.exists(x => !x.alive)) return zeroObj.asInstanceOf[A]
             val start = if (__.isAnonRoot(a)) alst.glist.head.domainObj else a
-            val branches: List[Obj] = alst.glist.map(x => IdRewrite.processType(x)).map(x => processObj(x)).map(x => removeRules(x)).filter(x => !x.trace.forall(x => ModelOp.isMetaModel(x._2)))
+            val branches: List[Obj] = alst.glist
+              .map(x => IdRewrite.processType(x))
+              .map(x => processObj(x))
+              .map(x => removeRules(x))
+              .filter(x => !x.trace.forall(x => ModelOp.isMetaModel(x._2)))
             val end: Obj = {
               if (branches.isEmpty) start
               else if (branches.size == 1) removeRules(branches.head).trace.map(x => x._2).foldLeft(start)((x, y) => y.exec(x))
               else if (alst.glist.forall(z => Type.isIdentity(z))) BranchInstruction.brchType[Obj](alst)
               else BranchInstruction.brchType[Obj](alst).clone(via = (start, BranchOp(alst.clone(_ => branches))))
+            }
+            backPropagateQ(IdRewrite.processType(end), b.q)
+          /////// ;-rec
+          case arec: Rec[Obj, Obj] if arec.gsep == Tokens.`;` =>
+            if (arec.gmap.exists(x => !x._1.alive || !x._2.alive)) return zeroObj.asInstanceOf[A]
+            val start = if (__.isAnonRoot(a)) arec.glist.head.domainObj else a
+            val branches: Pairs[Obj, Obj] = arec.gmap
+              .map(x => (IdRewrite.processType(x._1), IdRewrite.processType(x._2)))
+              .map(x => (processObj(x._1), processObj(x._2)))
+              .map(x => (removeRules(x._1), removeRules(x._2)))
+              .filter(x => !x._1.trace.forall(y => ModelOp.isMetaModel(y._2) || !x._2.trace.forall(y => ModelOp.isMetaModel(y._2))))
+            val end: Obj = {
+              if (branches.isEmpty) start
+              else if (branches.size == 1) Some(removeRules(branches.head._1), removeRules(branches.head._2))
+                .map(z => (
+                  z._1.trace.map(x => x._2).foldLeft(start)((x, y) => y.exec(x)),
+                  z._2.trace.map(x => x._2).foldLeft(start)((x, y) => y.exec(x)))).get
+              else if (arec.gmap.forall(z => Type.isIdentity(z._1) && Type.isIdentity(z._2))) BranchInstruction.brchType[Obj](arec)
+              else BranchInstruction.brchType[Obj](arec).clone(via = (start, BranchOp(arec.clone(_ => branches))))
             }
             backPropagateQ(IdRewrite.processType(end), b.q)
           case _ => b.exec(a)

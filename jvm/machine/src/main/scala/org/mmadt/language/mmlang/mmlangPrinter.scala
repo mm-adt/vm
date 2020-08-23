@@ -61,7 +61,7 @@ object mmlangPrinter {
       mapString(rec, map = rec.gmap, sep = rec.gsep, empty = EMPTYREC)
   }
 
-  private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else Tokens.empty
+  private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else "{0}"
   private def mapString(rec: Rec[_, _], map: List[Tuple2[_, _]], sep: String = COMMA, empty: String = Tokens.empty): String = {
     if (rec.isEmpty)
       empty else

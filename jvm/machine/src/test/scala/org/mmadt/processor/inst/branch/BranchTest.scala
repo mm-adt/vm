@@ -181,7 +181,7 @@ class BranchTest extends BaseInstTest(
     testing(str, branch(id -> id `_;` __ -> branch(id -> id `_;` id -> id)), str, "str[[id]->[id];[id]->[[id]->[id];[id]->[id]]]"),
     comment("ring axioms"),
     testing(str, branch(branch(id -> id `_,` id -> id) `;` branch(str.id -> str.id)), str.q(2) <= str.id.q(2), "str[[[id]->[id],[id]->[id]];[[id]->[id]]]"),
-    // TODO: testing(str, branch(id -> branch(id -> id `_;` id -> id) `_,` id -> branch(id -> id `_;` id -> id)), str.q(2) <= str.id.q(2), "str[[id]->[[id]->[id];[id]->[id]],[id]->[[id]->[id];[id]->[id]]]"),
+    testing(str, branch(id -> branch(id -> id `_;` id -> id) `_,` id -> branch(id -> id `_;` id -> id)), str.q(2) <= str.id.q(2), "str[[id]->[[id]->[id];[id]->[id]],[id]->[[id]->[id];[id]->[id]]]"),
     comment("ring theorems"),
     testing(str, branch(id.q(1) -> id.q(-1) `_,` id.q(1) -> id.q(-1)), str.q(-2) <= str.id.q(-2), "str[[id]{-1}->[id]{-1},[id]{-1}->[id]{-1}]"),
     testing(str, branch(id -> id `_,` id -> id).q(-1), str.q(-2) <= str.id.q(-2), "str[[id]->[id],[id]->[id]]{-1}"),
@@ -189,10 +189,10 @@ class BranchTest extends BaseInstTest(
     testing(str, branch(id -> id `_;` id.q(0) -> id.q(0)), zeroObj, "str[[id]->[id];{0}->{0}]"),
     testing(str, branch((str.q(0) -> str.q(0)) `_;` (str.id -> str.id)), zeroObj, "str[{0}->{0};[id]->[id]]"),
     testing(str, branch(str.id -> str.id `_;` str.id.q(-1) -> str.id.q(-1)), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]{-1}->[id]{-1}]"),
-    // TODO: testing(str, branch(str.id.q(-1) -> str.id.q(-1) `_;`str.id ->str.id ), str.q(-1) <= str.id.q(-1), "str[[id]{-1}->[id]{-1};[id]->[id]]"),
-    // TODO: testing(str, branch(str.id.q(-1) ->str.id.q(-1) `_;`str.id.q(-1)-> str.id.q(-1)), str, "str[[id]{-1}->[id]{-1};[id]{-1}->[id]{-1}]"),
+    testing(str, branch(str.id.q(-1) -> str.id.q(-1) `_;` str.id -> str.id), str.q(-1) <= str.id.q(-1), "str[[id]{-1}->[id]{-1};[id]->[id]]"),
+    testing(str, branch(str.id.q(-1) -> str.id.q(-1) `_;` str.id.q(-1) -> str.id.q(-1)), str, "str[[id]{-1}->[id]{-1};[id]{-1}->[id]{-1}]"),
     testing(str, branch(id -> id `_;` id -> id), str, "str[[id]->[id];[id]->[id]]"),
-    // TODO: testing(str, branch(str.id -> str.id `_;` str.id -> str.id).q(-1), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]->[id]]{-1}"),
+    testing(str, branch(str.id -> str.id `_;` str.id -> str.id).q(-1), str.q(-1) <= str.id.q(-1), "str[[id]->[id];[id]->[id]]{-1}"),
     comment("stream ring axioms"),
     testing(str, branch(__ -> str.id.q(2) `_,` __ -> str.id.q(3)), str.id.q(5), "str[_->[id]{2},_->[id]{3}]"), // bulking
     testing(str.q(2), str.q(2).branch(id.q(3) -> id.q(3)), str.q(6) <= str.q(2).id.q(3), "str{6}<=str{2}[[id]{3}->[id]{3}]"), // applying
