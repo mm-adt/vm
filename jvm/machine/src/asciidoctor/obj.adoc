@@ -971,9 +971,9 @@ https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
 a|
 [exec,prompt="mm> "]
 ----
-6 => int[+1[is>10] \| %
-         +2[is>5]  \| %
-         +3        ]
+6 => int[+1[is>10]\| %
+         +2[is>5] \| %
+         +3       ]
 ----
 {blank}
 

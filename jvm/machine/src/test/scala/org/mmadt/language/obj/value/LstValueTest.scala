@@ -25,14 +25,29 @@ package org.mmadt.language.obj.value
 import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__.merge
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Int, Lst, Obj, Str}
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3, TableFor4}
+import org.scalatest.prop.{TableFor2, TableFor3, TableFor4}
 
-class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
+class LstValueTest extends BaseInstTest(
+  testSet(",-lst table test",
+    comment("int array passing"),
+    testing(lst(), merge, zeroObj, "( )>-"),
+    testing(1 `,`, merge, 1, "(1)>-"),
+    testing(1 `,` 2, merge, int(1, 2), "(1,2)>-"),
+    testing(1 `,` 2 `,` 3, merge, int(1, 2, 3), "(1,2,3)>-"),
+    testing(1 `,` 2 `,` 3 `,` 3, merge, int(1, 2, 3.q(2)), "(1,2,3,3)>-"),
+    //testing(1 `,` "a" `,` 2 `,` "a", merge, StorageFactory.strm[Obj](List[Obj](1, "a", 2, "a")), "(1,'a',2,'a')>-"),
+  ), testSet(";-lst table test",
+    // testing(1 `;` "a" `;` 2 `;` "b" `;` "c" `;` "c", a(__("tarr_is")), bfalse, "(1;'a';2;'b';'c';'c')[a,tarr_is]"),
+  ), testSet("|-lst table test",
+    // testing(1 | 2 | 3, a(lst), btrue),
+  )) {
 
   test("lst value [split]/[merge]") {
     val clst: Lst[IntValue] = 1 `,` 2 `,` 3
@@ -93,7 +108,7 @@ class LstValueTest extends FunSuite with TableDrivenPropertyChecks {
         (1, __ -< (str | int), zeroObj | int(1)),
         // (strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result,compile = false) }
+    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result, compile = false) }
   }
 
 
