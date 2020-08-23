@@ -833,50 +833,51 @@ image:poly-kinds.svg[width=350,float=left]
 [discrete]
 ====== Poly Containers
 
-image::poly-lift.svg[float=left,width=200]
-A `poly` composed of `obj` values is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 forms (`,`,`;`,`|`). The forms determine the *ambient algebra* associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with unity maintaining a left https://en.wikipedia.org/wiki/Module_(mathematics)[R-module]. In this way, `poly` is a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself.
+A `poly` can be used a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 forms (`,`,`;`,`|`). The forms determine the *ambient algebra* associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with unity maintaining a left https://en.wikipedia.org/wiki/Module_(mathematics)[R-module].
 
-[cols="1,2,11"]
+[.small]
+[cols="^1,2,5",width=47,float=left]
 |===
-| poly | algebra | mmlang example
+| poly | collection | mmlang example
 
 | `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
 https://en.wikipedia.org/wiki/Multiset[multiset]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-('a'{?},'b','a','c','b')
-('a'{?},'b','a','c','b')>-
+('a'{?},'b','a','b')
+('a'{?},'b','a','b')>-
 ----
 {blank}
 | `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] +
 https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-('a'{?};'b';'a';'c';'b')
-('a'{?};'b';'a';'c';'b')>-
+('a'{?};'b';'a';'b')
+('a'{?};'b';'a';'b')>-
 ----
 {blank}
 | `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
 https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-('a'{?}\|'b'\|'a'\|'c'\|'b')
-('a'{?}\|'b'\|'a'\|'c'\|'b')>-
+('a'{?}\|'b'\|'a'\|'b')
+('a'{?}\|'b'\|'a'\|'b')>-
 ----
 {blank}
 |===
 
-[cols="1,2,11"]
+[.small]
+[cols="^1,2,5",width=47,float=right]
 |===
-| poly | algebra | mmlang example
+| poly | collection | mmlang example
 
 | `,-rec` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
 https://en.wikipedia.org/wiki/Multimap[multimap]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ('a'->1,'b'->2,'a'->3)
 ('a'->1,'b'->2,'a'->3)>-
@@ -885,7 +886,7 @@ a|
 | `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] +
 https://en.wikipedia.org/wiki/Associative_array[record]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ('a'->1;'b'->2;'a'->3)
 ('a'->1;'b'->2;'a'->3)>-
@@ -894,7 +895,7 @@ a|
 | `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
 https://en.wikipedia.org/wiki/Tuple[pair]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 ('a'->1\|'b'->2\|'a'->3)
 ('a'->1\|'b'->2\|'a'->3)>-
@@ -902,83 +903,123 @@ a|
 {blank}
 |===
 
+'''
+
+.,-poly Collections
+The algebra of the *,-polys* is the additive abelian group of the mm-ADT ring. This means that the `,` (i.e., \$\+\$) is commutative and thus, the terms need not maintain their lexical order. Moreover, given quantification, should two `,-poly` terms be equal at the _object_-level, they can be merged according to the \$+\$-operator's semantics of
+\[
+a_{q_0} + b_{q_1} =
+\begin{cases}
+  a_{q_0 + q_1}     & \text{if } a == b, \\
+  a_{q_0} + b_{q_1} & \text{otherwise},
+\end{cases}
+\]
+such that when two term objects are not equal, the `poly` is https://en.wikipedia.org/wiki/Irreducible_representation[irreducible]. The lack of order and the "weighting" of quantifiers allows `,-polys` to be used as https://en.wikipedia.org/wiki/Multiset[multisets] (also known as bags or weighted sets). When a `,-poly` is merged via `[merge]` (sugar'd `>-`), those terms that are no longer reducible are the result.
+
+.;-poly Collections
+The algebra of the *;-polys* is the non-commutative, multiplicative monoid of the mm-ADT ring. Due to non-commutativity, the terms may not be rearranged around `;` (i.e., \$\ast\$). The benefit of this monoidal algebra is that it enables ordered sequences which effect the semantics of a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]. Moreover, when a `;-poly` is merged, the \$\ast\$-operator's semantics are
+\[
+a_{q_0} * b_{q_1} = ab_{q_0 * q_1}.
+\]
+In other words, the pairwise multiplication common of the https://en.wikipedia.org/wiki/Direct_product[direct product] of two algebraic structures (the _object_ https://en.wikipedia.org/wiki/Semigroup[semigroup] and the _quantifier_ https://en.wikipedia.org/wiki/Ring_%28mathematics%29[ring]). As there is no case-statement in the equation above, every `;-poly` can be reduced with the result of the merge being the final reduced term.
+
+.|-poly Collections
+...
+
+
 [discrete]
 ====== Poly Controls
 
-[cols="1,2,11"]
+The mm-ADT ring's additive abelian (https://en.wikipedia.org/wiki/Commutative_property[commutative]) group operator is accessible via the `[branch]` instruction. The `[branch]` instruction argument is a `poly`, where each term of the `poly` is an operand of the ring's \$+\$-operator. In this way, a `poly` serves as a https://en.wikipedia.org/wiki/Control_flow[control structure]. Due to the prevelant use of this instruction, their is a simple syntactic sugar encoding in `mmlang`: `[ ]`.
+
+[.small]
+[cols="^1,2,5",width=47,float=left]
 |===
-| poly | algebra | mmlang example
+| poly | control | mmlang example
 
 | `,-lst` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
 https://en.wikipedia.org/wiki/Union_(set_theory)[union]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
 int[+1,+3,+1]
+
 6 => int[+1,+3,+1]
 ----
 {blank}
 | `;-lst` | https://en.wikipedia.org/wiki/Monoid[monoid] +
 https://en.wikipedia.org/wiki/Method_chaining[chain]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-int[+1,+2,+3]
 6 => int[+1;+2;+3]
 ----
 {blank}
 | `\|-lst` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
 https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-int[[is>10] \| [is>5] \| int]
-6 => int[[is>10]+1 \| [is>5]+2 \| +3]
+6 => int[+1[is>10] \| %
+         +2[is>5]  \| %
+         +3        ]
 ----
 {blank}
 |===
 
-[cols="1,2,11"]
+[.small]
+[cols="^1,2,5",width=47,float=right]
 |===
-| poly | algebra | mmlang example
+| poly | control | mmlang example
 
 | `,-rec` | https://en.wikipedia.org/wiki/Abelian_group[abelian group] +
 https://en.wikipedia.org/wiki/Method_cascading[cascade]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-int[is>10  -> +1, %
-    is>5   -> +2, %
-    int    -> +3]
-
-6 => int[is>10 -> +1, is>5 -> +2, int -> +3]
+6 => int[is>10 -> +1, %
+         is>5  -> +2, %
+         int   -> +3]
 ----
 {blank}
 | `;-rec` | https://en.wikipedia.org/wiki/Monoid[monoid] +
 https://en.wikipedia.org/wiki/Conditional_(computer_programming)[condition]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-int[is>0 -> +1; %
-    is>5 -> +2; %
-    int  -> +3]
-
-6 => int[is>0 -> +1; is>5 -> +2; int->+3]
+6 => int[is>0 -> +1; %
+         is>5 -> +2; %
+         int  -> +3]
 ----
 {blank}
 | `\|-rec` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
 https://en.wikipedia.org/wiki/Switch_statement[switch]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-int[is>10 -> +1\| %
-    is>5  -> +2\| %
-    _     -> +3]
-
-6 => int[is>10 -> +1 \| is>5 -> +2 \| _ -> +3]
+6 => int[is>10 -> +1\| %
+         is>5  -> +2\| %
+         _     -> +3]
 ----
 {blank}
 |===
+
+'''
+
+.,-poly Controls
+
+The algebra of the *,-polys* is the additive abelian group of the mm-ADT ring. This means that the order in which the terms are evaluated does not effect the result of the computation. More specifically the notion of control, it means that each irreducible term is isolated from the terms others in that they are not sequentially dependent on each other. This isolation of evaluation enables parallelism and realizes the notion of a computational branch.
+
+.;-poly Controls
+...
+
+.|-poly Controls
+...
+
+
+image:poly-lift.svg[float=left,width=200] An interesting consequence of this dual use of `poly` as both a data structure and a control structure is that `poly` supports a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself.
+
+'''
 
 === The Obj Graph
 
