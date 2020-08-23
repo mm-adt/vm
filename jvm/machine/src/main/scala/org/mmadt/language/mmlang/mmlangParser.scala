@@ -85,7 +85,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val obj: Parser[Obj] = objValue | objType | anonQuant
 
   // variable parsing
-  lazy val symbolName: Regex = "[a-zA-Z]+".r
+  lazy val symbolName: Regex = "[a-zA-Z]+[a-zA-Z_0-9]*".r
   lazy val varName: Parser[String] = ("^(?!(" + reservedTokens + s"))(${symbolName})").r <~ not(":")
   lazy val reservedTokens: String = List(Tokens.reservedTypes, Tokens.reservedOps).flatten.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1)
   lazy val objName: Parser[String] = symbolName <~ ":"

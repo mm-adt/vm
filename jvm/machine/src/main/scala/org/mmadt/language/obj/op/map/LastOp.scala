@@ -22,25 +22,28 @@
 
 package org.mmadt.language.obj.op.map
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.{Inst, Obj, Poly}
-import org.mmadt.language.{LanguageException, Tokens}
+import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
 trait LastOp[+A <: Obj] {
-  this: Poly[A] =>
+  this: Obj =>
   def last: A = LastOp().exec(this)
 }
 object LastOp extends Func[Obj, Obj] {
-  def apply[A <: Obj](): Inst[Poly[A], A] = new VInst[Poly[A], A](g = (Tokens.last, Nil), func = this)
+  def apply[A <: Obj](): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.last, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     (start match {
+      case apoly: Poly[_] if apoly.ctype => __
       case apoly: Poly[_] =>
         Some(apoly.glist)
           .map(x => (x, x.lastIndexWhere(_.alive)))
           .filter(x => x._2 != -1)
           .map(x => x._1(x._2))
-          .getOrElse(throw LanguageException.PolyException.noLast)
+          .getOrElse(zeroObj) // throw LanguageException.PolyException.noLast)
       case _ => start
     }).via(start, inst)
   }
