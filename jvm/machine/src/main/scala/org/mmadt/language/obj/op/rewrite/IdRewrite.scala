@@ -34,8 +34,6 @@ import org.mmadt.storage.obj.value.VInst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-
-
 object IdRewrite extends Func[Obj, Obj] {
   def apply(): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.rule_id, Nil), func = this) with RewriteInstruction
 
@@ -47,7 +45,6 @@ object IdRewrite extends Func[Obj, Obj] {
     }
   }
 
-  def processType[A <: Obj, B <: Obj](pair: Tuple2[A, B]): Tuple2[A, B] = (processType(pair._1), processType(pair._2))
   def processType[A <: Obj](atype: A): A = {
     if (__.isToken(atype) || !exists(atype, Tokens.id)) atype
     else {

@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.{ReduceInstruction, TraceInstruction}
-import org.mmadt.language.obj.value.IntValue
+import org.mmadt.language.obj.value.{IntValue, Value}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Int, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -47,9 +47,10 @@ object CountOp extends Func[Obj, Obj] {
   }
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
+      case _: __ => int.via(start,inst)
       case strm: Strm[_] => strm.values.map(x => x.q._1).foldLeft(int(0))((x, y) => x + y).clone(q = qOne, via = (start, inst))
-      case avalue: IntValue => int(0).plus(avalue.q._1).clone(q = qOne, via = (start, inst))
-      case _: Type[_] => int.via(start, inst).hardQ(qOne)
+      case avalue: Value[_] => int(0).plus(avalue.q._1).clone(q = qOne, via = (start, inst))
+      case _: Type[_] => int.via(start, inst)
     }
   }
 }

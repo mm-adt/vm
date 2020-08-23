@@ -24,14 +24,48 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.TestUtil
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
+import org.mmadt.language.obj.`type`.LstTypeTest.{MODEL, intArrayObj, intArrayStr}
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Int, Lst, Obj, Poly}
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
+import org.scalatest.prop.TableFor3
 
-class LstTypeTest extends FunSuite with TableDrivenPropertyChecks {
+object LstTypeTest {
+  private val intArrayObj: Type[_] = __("iarray") <= lst.branch(lst.is(merge.count.eqs(0)) `|` branch(is(head.a(int)) `;` is(tail.a(__("iarray")))))
+  private val intArrayStr: String = "iarray<=lst[[is>-[count]==0]|[[is,[head][a,int]];[is,[tail][a,iarray]]]]"
+  private val MODEL: Model = ModelOp.EMPTY.defining(intArrayObj)
+  println(intArrayObj)
+  println(BaseInstTest.engine.eval(intArrayStr))
+  println(MODEL)
+}
+class LstTypeTest extends BaseInstTest(
+  testSet(";-lst type definitions", MODEL,
+    comment("int array passing"),
+    testing(lst(), a(__("iarray")), btrue, "( )[a,iarray]"),
+    testing(1 `;`, a(__("iarray")), btrue, "(1)[a,iarray]"),
+    testing(1 `;` 2, a(__("iarray")), btrue, "(1;2)[a,iarray]"),
+    testing(1 `;` 2 `;` 3, a(__("iarray")), btrue, s"(1;2;3) => [a,iarray]"),
+    testing(1 `;` 2 `;` 3 `;` 4, a(__("iarray")), btrue, s"(1;2;3;4) => [a,iarray]"),
+    comment("int array failing"),
+    testing("a", a(__("iarray")), bfalse, "'a'[a,iarray]"),
+    testing("a" `;`, a(__("iarray")), bfalse, "('a')[a,iarray]"),
+    testing(1 `;` "a", a(__("iarray")), bfalse, "(1;'a')[a,iarray]"),
+    testing(1 `;` 2 `;` "a", a(__("iarray")), bfalse, "(1;2;'a') => [a,iarray]"),
+    testing(1 `;` 2 `;` "a" `;` 4, a(__("iarray")), bfalse, "(1;2;'a';4) => [a,iarray]"),
+  )) {
+
+  test("mmlang and mmscala strings") {
+    assertResult(intArrayObj)(BaseInstTest.engine.eval(intArrayStr))
+    assertResult(BaseInstTest.engine.eval(intArrayStr))(intArrayObj)
+    assertResult(intArrayObj.toString)(BaseInstTest.engine.eval(intArrayStr).toString)
+  }
+
+  ///////// MOVE BELOW INTO TABLE TEST RIG
 
   test("lst type token") {
     assertResult("lst")(lst.toString)
