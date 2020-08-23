@@ -44,9 +44,15 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("play2") {
-    println(str.q(2).compute(str.q(2).compute(str.id.q(5))))
-    // println(engine.eval("int[[[id]->[id],[id]->[id]];[[id]->[id]]]"))
-    //println((int(1)->str("a") `_,` int(1)->str("a") `_,` int(2)->str("c")).get(int(1)).toStrm.values)
+    println(engine.eval(":[define,list<=[[is,=(_)>-[count]==0]|[is,[and,[head][a,int],[tail][head][a,str],[tail][tail][a,list]]]]]"))
+    assertResult(btrue)(engine.eval("(1;'b')[a,list]"))
+    assertResult(bfalse)(engine.eval("(1;'b';5)[a,list]"))
+    assertResult(btrue)(engine.eval("(1;'b';5;'c')[a,list]"))
+    assertResult(bfalse)(engine.eval("(1;'b';5;6)[a,list]"))
+    assertResult(bfalse)(engine.eval("(1;'b';5;'a';'b')[a,list]"))
+    println(engine.eval(":[define,gist<=[[is,>-[count]==0]|[is,[and,[head][a,int],[tail][a,gist]]]]]"))
+    println(engine.eval("(1;2;6)[a,gist]"))
+    engine.eval(":")
   }
 
   test("range<=domain") {
@@ -894,7 +900,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(64))(engine.eval("20[plus,10]([plus,1])^(34)"))
     assertResult(int(64))(engine.eval("20+10(+1)^(34)"))
     assertResult(int(67, 64))(engine.eval("[23,20]+10(+1)^(34)"))
-    assertResult((1 `,` 1).q(2)`,`)(engine.eval("1(-<(_,_))^(2)"))
+    assertResult((1 `,` 1).q(2) `,`)(engine.eval("1(-<(_,_))^(2)"))
     //assertResult(((1 `,` 1).q(2)`,`).q(2))(engine.eval("1(-<(_,_))^(3)"))
     assertResult(int(11))(engine.eval("1(+2)^(<10)"))
     assertResult(int(11))(engine.eval("1(+1)^(10)"))

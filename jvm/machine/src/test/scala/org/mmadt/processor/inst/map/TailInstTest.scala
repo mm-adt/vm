@@ -24,12 +24,22 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__.tail
 import org.mmadt.language.obj.{Lst, Obj, Str}
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
-class TailInstTest extends FunSuite with TableDrivenPropertyChecks {
+class TailInstTest extends BaseInstTest(
+  testSet("[tail] table test",
+    comment("lst"),
+    testing(1`;`2`;`3, lst.tail, 2`;`3, "(1;2;3) => lst[tail]"),
+    testing(1`;`2`;`3, tail, 2`;`3, "(1;2;3)[tail]"),
+  ))
+{
+
 
   test("[tail] anonymous type") {
     assertResult("b" |)(("a" | "b") ==> __.tail)

@@ -22,23 +22,22 @@
 
 package org.mmadt.language.obj.op.map
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.{LanguageException, Tokens}
+import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
-trait TailOp[+A<:Obj] {
-  this: Poly[A] =>
+trait TailOp[+A <: Obj] {
+  this: Obj =>
   def tail: this.type = TailOp[Obj]().exec(this).asInstanceOf[this.type]
 }
-object TailOp extends Func[Obj, Poly[Obj]] {
-  def apply[A <: Obj](): Inst[Obj, Poly[A]] = new VInst[Obj, Poly[A]](g = (Tokens.tail, Nil), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Poly[Obj]]): Poly[Obj] = (start match {
+object TailOp extends Func[Obj, Obj] {
+  def apply[A <: Obj](): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.tail, Nil), func = this)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
     case apoly: Poly[_] if apoly.ctype => apoly
-    case alst: Lst[Obj] => if (alst.isEmpty) throw LanguageException.PolyException.noTail
-      alst.clone(_.tail)
-    case arec: Rec[Obj, Obj] => if (arec.isEmpty) throw LanguageException.PolyException.noTail
-      arec.clone(_.tail)
+    case alst: Lst[Obj] => if (alst.isEmpty) zeroObj else alst.clone(_.tail) //throw LanguageException.PolyException.noTail
+    case arec: Rec[Obj, Obj] => if (arec.isEmpty) zeroObj else arec.clone(_.tail) // throw LanguageException.PolyException.noTail
     case _ => start
-  }).via(start, inst).asInstanceOf[Poly[Obj]]
+  }).via(start, inst)
 }

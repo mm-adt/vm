@@ -45,7 +45,8 @@ object AOp extends Func[Obj, Bool] {
 
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     start match {
-      case astrm: Strm[_] => strm[Bool](astrm.values.map(x => inst.exec(x)))
+      case _ if(!start.alive) => bfalse.via(start,inst)
+      case astrm: Strm[_] => astrm(x => inst.exec(x))
       case _: Value[_] => bool(start.test(inst.arg0[Obj])).via(start, inst)
       case _: Type[_] => bool.via(start, inst)
     }

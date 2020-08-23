@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{LstType, PolyType}
+import org.mmadt.language.obj.`type`.{LstType, PolyType, __}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.{PolyValue, Value}
 import org.mmadt.language.obj.{Obj, _}
@@ -42,6 +42,7 @@ object MergeOp extends Func[Obj, Obj] {
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
+      case apoly: Poly[_] if apoly.ctype => __.via(start,inst)
       case apoly: PolyValue[_, _] if apoly.isChoice => apoly.glist.headOption.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).getOrElse(zeroObj)
       case apoly: PolyValue[_, _] if apoly.isParallel => strm(apoly.glist.map(x => BranchInstruction.multPolyQ(x, apoly, inst)))
       case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).getOrElse(zeroObj)

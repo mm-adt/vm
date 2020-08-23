@@ -25,6 +25,7 @@ package org.mmadt.processor.inst.map
 import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -35,10 +36,10 @@ class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[head] value, type, strm") {
     val starts: TableFor3[Obj, Obj, Obj] =
       new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        (int(1) `;` 2 `;` 3, lst.head, int(1)),
-        (int(1) `;`, lst.head, int(1)),
-        (strm(int(1) `;` 2 `;` 3, int(4) `;` 5), __.head, strm(1, 4)),
-        (strm(int(1) `;` 2 `;` 3, int(1) `;` 5), __.head, 1.q(2)),
+        (1 `;` 2 `;` 3, lst.head, 1),
+        (1 `;`, lst.head, 1),
+        (strm(1 `;` 2 `;` 3, (4 `;` 5)), head, int(1, 4)),
+        (strm(1 `;` 2 `;` 3, (1 `;` 5)), head, 1.q(2)),
       )
     forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result)
     }

@@ -72,7 +72,7 @@ object Lst {
     Poly.sameSep(alst, blst) &&
       withinQ(alst, blst) &&
       (blst.ctype || {
-        if (blst.isChoice) alst.g._2.exists(x => x.alive)
+        if (blst.isChoice) alst.glist.exists(x => x.alive)
         else alst.size == blst.size
       }) &&
       alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && pair._1.alive && pair._2.alive && pair._1 == pair._2) true else pair._1.test(pair._2))
