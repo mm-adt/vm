@@ -46,9 +46,9 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
     else g._2.map(x => x._1.update(this.model).asInstanceOf[A] -> x._2.update(this.model).asInstanceOf[B])
   override def glist: Seq[B] = this.gmap.values
   override def ctype: Boolean = null == g._2 // type token
+  override def scalarMult(start: Obj): this.type= this.clone(pairs => Rec.moduleStruct(gsep, pairs, start))
 
   def clone(f: Pairs[A, B] => Pairs[A, Obj]): this.type = this.clone(g = (this.gsep, f(this.gmap)))
-
   override def equals(other: Any): Boolean = other match {
     case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
       this.name.equals(arec.name) &&
@@ -106,7 +106,6 @@ object Rec {
     /////////// ,-rec
     case Tokens.`,` =>
       val nostart: Boolean = null == start
-      // if (nostart) return pairs.filter(kv => kv._1.alive && kv._2.alive)
       pairs.map(kv => (if (nostart) kv._1 else (start ~~> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
         .map(kv => kv._1 -> (if (nostart) kv._2 else (start ~~> kv._2)))
@@ -146,5 +145,5 @@ object Rec {
         .map(kv => if (nostart) kv else kv._1 -> (start ~~> kv._2))
   }
 
-  def moduleMult[A <: Obj, B <: Obj](start: A, arec: Rec[A, B]): Rec[A, B] = arec.clone(pairs => moduleStruct(arec.gsep, pairs, start))
+
 }

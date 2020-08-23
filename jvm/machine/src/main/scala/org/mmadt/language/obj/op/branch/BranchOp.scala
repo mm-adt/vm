@@ -42,13 +42,10 @@ trait BranchOp {
 object BranchOp extends Func[Obj, Obj] {
   def apply[A <: Obj](branches: Obj): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.branch, List(branches)), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    ((Inst.oldInst(inst).arg0[Obj] match {
+    (Inst.oldInst(inst).arg0[Obj] match {
       case apoly: Poly[_] => apoly
-      case _ => Obj.resolveToken(start, inst.arg0[Obj]).rangeObj
-    }) match {
-      case alst: Lst[Obj] => Lst.moduleMult(start, alst)
-      case arec: Rec[Obj, Obj] => Rec.moduleMult(start, arec)
-    }) match {
+      case _ => Obj.resolveToken(start, inst.arg0[Obj]).rangeObj.asInstanceOf[Poly[Obj]]
+    }).scalarMult(start) match {
       case bpoly if bpoly.isEmpty => zeroObj.via(start, inst)
       case bpoly: Value[_] => bpoly.hardQ(q => multQ(q, inst.q)).merge
       case bpoly: Type[_] =>

@@ -40,15 +40,10 @@ trait Poly[+A <: Obj] extends Obj
   def isEmpty: Boolean = this.glist.isEmpty
   def size: scala.Int = this.glist.size
   def ctype: Boolean
+  def scalarMult(start: Obj): this.type
 }
 
 object Poly {
-  def resolveSlots[A <: Obj](start: A, apoly: Poly[A]): Poly[A] = {
-    apoly match {
-      case arec: Rec[Obj, A] => arec.clone(x => Rec.moduleStruct(arec.gsep, x, start))
-      case alst: Lst[A] => alst.clone(x => Lst.moduleStruct(alst.gsep, x, start))
-    }
-  }
   def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = (apoly.size < 2 || bpoly.size < 2) ||
     (apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial)
 }

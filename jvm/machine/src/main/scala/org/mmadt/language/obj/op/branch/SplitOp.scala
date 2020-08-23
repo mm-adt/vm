@@ -50,7 +50,7 @@ object SplitOp extends Func[Obj, Obj] {
       }
     }
     val startUnit = start.hardQ(qOne)
-    val newPoly: Poly[Obj] = Poly.resolveSlots(startUnit.clone(via = (startUnit, Inst.oldInst(inst))), apoly)
+    val newPoly: Poly[Obj] = apoly.scalarMult(startUnit.clone(via = (startUnit, Inst.oldInst(inst))))
     newPoly.clone(via = (start, SplitOp(newPoly).hardQ(inst.q))).hardQ(BranchInstruction.multPolyQ(start, apoly, inst).q)
   }
 }
