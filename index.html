@@ -2343,22 +2343,28 @@ An mm-ADT type is the product of an <strong>object</strong> (variable) and a <st
 <div class="paragraph">
 <p>A <code>poly</code> can be used a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. There are a total of 6 sorts of collections as there are two kinds of <code>poly</code> (<code>lst</code> and <code>rec</code>) and each kind has 3 forms (<code>,</code>,<code>;</code>,<code>|</code>). The forms determine the <strong>ambient algebra</strong> associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> with unity maintaining a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">R-module</a>.</p>
 </div>
-<table class="tableblock frame-all grid-all left small" style="width: 47%;">
+<table class="tableblock frame-all grid-all stretch small">
 <colgroup>
-<col style="width: 12.5%;">
-<col style="width: 25%;">
-<col style="width: 62.5%;">
+<col style="width: 3.8461%;">
+<col style="width: 11.5384%;">
+<col style="width: 34.6153%;">
+<col style="width: 3.8461%;">
+<col style="width: 11.5384%;">
+<col style="width: 34.6157%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">poly</th>
+<th class="tableblock halign-center valign-top">lst</th>
+<th class="tableblock halign-left valign-top">collection</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
+<th class="tableblock halign-center valign-top">rec</th>
 <th class="tableblock halign-left valign-top">collection</th>
 <th class="tableblock halign-left valign-top">mmlang example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,-lst</code></p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a><br>
 <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -2373,57 +2379,7 @@ mm&gt; ('a'{?},'b','a','b')&gt;-
 <div class="paragraph">
 <p></p>
 </div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;-lst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid">monoid</a><br>
-<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a'{?};'b';'a';'b')
-==&gt;('a'{?};'b';'a';'b')
-mm&gt; ('a'{?};'b';'a';'b')&gt;-
-==&gt;'b'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|-lst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a><br>
-<a href="https://en.wikipedia.org/wiki/Scalar_(mathematics)">scalar</a></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a'{?}|'b'|'a'|'b')
-==&gt;('a'{?}|'b')
-mm&gt; ('a'{?}|'b'|'a'|'b')&gt;-
-==&gt;'a'{?}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all right small" style="width: 47%;">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 25%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">poly</th>
-<th class="tableblock halign-left valign-top">collection</th>
-<th class="tableblock halign-left valign-top">mmlang example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,-rec</code></p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a><br>
 <a href="https://en.wikipedia.org/wiki/Multimap">multimap</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -2441,7 +2397,21 @@ mm&gt; ('a'-&gt;1,'b'-&gt;2,'a'-&gt;3)&gt;-
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;-rec</code></p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid">monoid</a><br>
+<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a'{?};'b';'a';'b')
+==&gt;('a'{?};'b';'a';'b')
+mm&gt; ('a'{?};'b';'a';'b')&gt;-
+==&gt;'b'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid">monoid</a><br>
 <a href="https://en.wikipedia.org/wiki/Associative_array">record</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -2457,7 +2427,21 @@ mm&gt; ('a'-&gt;1;'b'-&gt;2;'a'-&gt;3)&gt;-
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|-rec</code></p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a><br>
+<a href="https://en.wikipedia.org/wiki/Scalar_(mathematics)">scalar</a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a'{?}|'b'|'a'|'b')
+==&gt;('a'{?}|'b')
+mm&gt; ('a'{?}|'b'|'a'|'b')&gt;-
+==&gt;'a'{?}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a><br>
 <a href="https://en.wikipedia.org/wiki/Tuple">pair</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -2474,7 +2458,6 @@ mm&gt; ('a'-&gt;1|'b'-&gt;2|'a'-&gt;3)&gt;-
 </tr>
 </tbody>
 </table>
-<hr>
 <div class="paragraph">
 <div class="title">,-poly Collections</div>
 <p>The algebra of the <strong>,-polys</strong> is the additive abelian group of the mm-ADT ring. This means that the <code>,</code> (i.e., \$+\$) is commutative and thus, the terms need not maintain their lexical order. Moreover, given quantification, should two <code>,-poly</code> terms be equal at the <em>object</em>-level, they can be merged according to the \$+\$-operator&#8217;s semantics of
@@ -2503,22 +2486,28 @@ In other words, the pairwise multiplication common of the <a href="https://en.wi
 <div class="paragraph">
 <p>The mm-ADT ring&#8217;s additive abelian (<a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>) group operator is accessible via the <code>[branch]</code> instruction. The <code>[branch]</code> instruction argument is a <code>poly</code>, where each term of the <code>poly</code> is an operand of the ring&#8217;s \$+\$-operator. In this way, a <code>poly</code> serves as a <a href="https://en.wikipedia.org/wiki/Control_flow">control structure</a>. Due to the prevelant use of this instruction, their is a simple syntactic sugar encoding in <code>mmlang</code>: <code>[ ]</code>.</p>
 </div>
-<table class="tableblock frame-all grid-all left small" style="width: 47%;">
+<table class="tableblock frame-all grid-all stretch small">
 <colgroup>
-<col style="width: 12.5%;">
-<col style="width: 25%;">
-<col style="width: 62.5%;">
+<col style="width: 3.8461%;">
+<col style="width: 11.5384%;">
+<col style="width: 34.6153%;">
+<col style="width: 3.8461%;">
+<col style="width: 11.5384%;">
+<col style="width: 34.6157%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">poly</th>
+<th class="tableblock halign-center valign-top">lst</th>
+<th class="tableblock halign-left valign-top">control</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
+<th class="tableblock halign-center valign-top">rec</th>
 <th class="tableblock halign-left valign-top">control</th>
 <th class="tableblock halign-left valign-top">mmlang example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,-lst</code></p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a><br>
 <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -2534,55 +2523,7 @@ mm&gt; 6 =&gt; int[+1,+3,+1]
 <div class="paragraph">
 <p></p>
 </div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;-lst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid">monoid</a><br>
-<a href="https://en.wikipedia.org/wiki/Method_chaining">chain</a></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 6 =&gt; int[+1;+2;+3]
-==&gt;12</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|-lst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a><br>
-<a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">coalesce</a></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 6 =&gt; int[+1[is&gt;10] |
-             +2[is&gt;5]  |
-             +3        ]
-==&gt;8</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all right small" style="width: 47%;">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 25%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">poly</th>
-<th class="tableblock halign-left valign-top">control</th>
-<th class="tableblock halign-left valign-top">mmlang example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,-rec</code></p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>,</code></p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a><br>
 <a href="https://en.wikipedia.org/wiki/Method_cascading">cascade</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -2599,7 +2540,19 @@ mm&gt; 6 =&gt; int[+1,+3,+1]
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;-rec</code></p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid">monoid</a><br>
+<a href="https://en.wikipedia.org/wiki/Method_chaining">chain</a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 6 =&gt; int[+1;+2;+3]
+==&gt;12</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>;</code></p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid">monoid</a><br>
 <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">condition</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -2615,7 +2568,21 @@ mm&gt; 6 =&gt; int[+1,+3,+1]
 </div></div></td>
 </tr>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|-rec</code></p></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></th>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a><br>
+<a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">coalesce</a></p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 6 =&gt; int[+1[is&gt;10] |
+             +2[is&gt;5]  |
+             +3        ]
+==&gt;8</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<th class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></th>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a><br>
 <a href="https://en.wikipedia.org/wiki/Switch_statement">switch</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -6194,7 +6161,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-22 15:04:18 -0600
+Last updated 2020-08-23 17:05:13 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
