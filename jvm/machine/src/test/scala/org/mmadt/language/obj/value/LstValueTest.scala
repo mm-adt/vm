@@ -22,47 +22,14 @@
 
 package org.mmadt.language.obj.value
 
-import org.mmadt.TestUtil
 import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.`type`.__.merge
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Lst, Obj, Str}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.prop.{TableFor2, TableFor3, TableFor4}
+import org.scalatest.prop.{TableFor2, TableFor4}
 
-class LstValueTest extends BaseInstTest(
-  testSet(",-lst table test",
-    comment("int array passing"),
-    testing(lst(), merge, zeroObj, "( )>-"),
-    testing(1 `,`, merge, 1, "(1)>-"),
-    testing(1 `,` 2, merge, int(1, 2), "(1,2)>-"),
-    testing(1 `,` 2 `,` 3, merge, int(1, 2, 3), "(1,2,3)>-"),
-    testing(1 `,` 2 `,` 3 `,` 3, merge, int(1, 2, 3.q(2)), "(1,2,3,3)>-"),
-    testing(1 `,` "a" `,` 2 `,` "a", merge, obj(1, "a", 2, "a"), "(1,'a',2,'a')>-"),
-  ), testSet(";-lst table test",
-    testing(1 `;` 2 `;` 3, merge, 3, "(1;2;3)>-"),
-    // testing(1.q(2) `;` 2.q(3) `;` 3, merge, 3.q(6), "(1{2};2{3};3)>-"),
-  ), testSet("|-lst table test",
-    // testing(1 | 2 | 3, a(lst), btrue),
-  )) {
-
-  test("lst value [split]/[merge]") {
-    val clst: Lst[IntValue] = 1 `,` 2 `,` 3
-    val plst: Lst[IntValue] = int(1) `|` 2 `|` 3
-    val slst: Lst[IntValue] = 1 `;` 2 `;` 3
-
-    assertResult(int(1, 2, 3))(clst.merge)
-    assertResult(int(1))(plst.merge)
-    assertResult(int(3))(slst.merge)
-
-    assertResult(int(1, 2, 3))(int(10).split(clst).merge)
-    assertResult(int(1))(int(10).split(plst).merge)
-    assertResult(int(3))(int(10).split(slst).merge)
-  }
-
+class LstValueTest extends BaseInstTest() {
 
   test("lst test") {
     assert(("a" | "b").q(0).test(str.q(0)))
@@ -79,40 +46,6 @@ class LstValueTest extends BaseInstTest(
     assertResult(btrue)(lst.zero.eqs(lst))
     assertResult(lst)(lst ==> lst.is(lst.eqs(lst.zero)))
   }
-
-  test("basic poly") {
-    assertResult(str("a"))(("a" | "b" | "c").head)
-    assertResult("b" | "c")(("a" | "b" | "c").tail)
-    assertResult(str("a"))(("a" `;` "b" `;` "c").head)
-    assertResult("b" `;` "c")(("a" `;` "b" `;` "c").tail)
-  }
-
-  test("parallel expressions") {
-    val starts: TableFor3[Obj, Obj, Obj] =
-      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        (lst, __.is(lst.eqs(lst.zero)), lst),
-        (lst, __.eqs(lst.zero), btrue),
-
-        (1, __.map(lst).eqs(lst.zero), btrue),
-        (1, __ -< (int `,` int), int(1) `,` int(1)),
-
-        (1, __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
-        (1, __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
-        (1.q(5), __ -< (int `,` int.plus(2).q(10)), (int(1) `,` int(3).q(10)).q(5)),
-        (1.q(5), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
-        (int(1, 100), __ -< (int | int) >-, int(int(1), int(100))),
-        (int(1, 100), __ -< (int `,` int) >-, int(1, 1, 100, 100)),
-        (int(1, 100), __ -< (int `,` int) >-, int(int(1).q(2), int(100).q(2))),
-        (int(1.q(5), 100), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
-        (int(1.q(5), 100), __ -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
-        (int(1, 2), __ -< (int | (int -< (int | int))), obj(int(1) `|`, int(2) `|`)),
-        (int(1, 2), __ -< (int `,` (int -< (int | int))), obj(int(1) `,` (int(1) |), int(2) `,` (int(2) |))),
-        (1, __ -< (str | int), zeroObj | int(1)),
-        // (strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
-      )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result, compile = false) }
-  }
-
 
   test("parallel [tail][head][last] values") {
     val starts: TableFor2[Lst[Str], List[Obj]] =
@@ -137,16 +70,6 @@ class LstValueTest extends BaseInstTest(
     }
   }
 
-  test("scala type constructor") {
-    assertResult("('a';'b')")(("a" `;` "b").toString)
-  }
-
-  test("parallel [get] values") {
-    assertResult(str("a"))((str("a") |).get(0))
-    assertResult(str("b"))((str("a") `;` "b").get(1))
-    assertResult(str("b"))((str("a") `;` "b" `;` "c").get(1))
-    assertResult("b" `;` "d")(("a" `;` ("b" `;` "d") `;` "c").get(1))
-  }
 
   test("serial value/type checking") {
     val starts: TableFor2[Lst[_ <: Obj], Boolean] =
@@ -180,6 +103,13 @@ class LstValueTest extends BaseInstTest(
       assertResult(newProduct)(PutOp[Obj, Obj](key, value).exec(serial))
     }
     }
+  }
+
+  test("parallel [get] values") {
+    assertResult(str("a"))((str("a") |).get(0))
+    assertResult(str("b"))((str("a") `;` "b").get(1))
+    assertResult(str("b"))((str("a") `;` "b" `;` "c").get(1))
+    assertResult("b" `;` "d")(("a" `;` ("b" `;` "d") `;` "c").get(1))
   }
 
 }

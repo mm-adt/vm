@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.Obj.tupleToRecYES
+import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.processor.inst.BaseInstTest
@@ -31,7 +31,23 @@ import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
 
 class SplitInstTest extends BaseInstTest(
-  testSet("[split] value, type, strm",
+  testSet("[split] table test",
+    testing(lst, __.is(lst.eqs(lst.zero)), lst),
+    testing(lst, __.eqs(lst.zero), btrue),
+    testing(1, __.map(lst).eqs(lst.zero), btrue),
+    testing(1, __ -< (int `,` int), int(1) `,` int(1)),
+    testing(1, __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
+    testing(1, __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
+    testing(1.q(5), __ -< (int `,` int.plus(2).q(10)), (int(1) `,` int(3).q(10)).q(5)),
+    testing(1.q(5), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
+    testing(int(1, 100), __ -< (int | int) >-, int(int(1), int(100))),
+    testing(int(1, 100), __ -< (int `,` int) >-, int(1, 1, 100, 100)),
+    testing(int(1, 100), __ -< (int `,` int) >-, int(int(1).q(2), int(100).q(2))),
+    testing(int(1.q(5), 100), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
+    testing(int(1.q(5), 100), __ -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
+    testing(int(1, 2), __ -< (int | (int -< (int | int))), obj(int(1) `|`, int(2) `|`)),
+    testing(int(1, 2), __ -< (int `,` (int -< (int | int))), obj(int(1) `,` (int(1) |), int(2) `,` (int(2) |))),
+    testing(1, __ -< (str | int), zeroObj | int(1)),
     testing(int(1), int.-<(int `;` int), int(1) `;` int(1)),
     testing(int(1, 2, 3), int.q(3).-<(int.q(3) `;` int.q(3)), strm(List(int(1) `;` 1, int(2) `;` 2, int(3) `;` 3))),
     testing(int(2), __.-<(int | str), int(2) | obj.q(qZero)),
