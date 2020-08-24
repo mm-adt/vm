@@ -33,7 +33,9 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class GetInstTest extends BaseInstTest(
-  testSet("[get] ;-lst test",
+  testSet("[get] ,-lst test",
+    comment(",-lst type index"),
+  ), testSet("[get] ;-lst test",
     comment(";-lst int index"),
     testing(lst, get(0, int), lst.get(0, int), "lst => [get,0,int]"),
     testing(1 `;` 2 `;` 3, get(0), 1, "(1;2;3)[get,0]"),
@@ -42,11 +44,25 @@ class GetInstTest extends BaseInstTest(
     testing(1 `;` 2 `;` 3.q(5), get(2), 3.q(5), "(1;2;3{5})[get,2,int]"),
     testing(1 `;` (2 `;` 3) `;` 4, get(1), (2 `;` 3), "(1;(2;3);4).1"),
     testing(1 `;` (2 `;` 3).q(10) `;` 4, get(1).q(2), (2 `;` 3).q(20), "(1;(2;3){10};4).1{2}"),
+    comment(";-lst type index"),
+    testing(1 `;` 2 `;` 3, lst.get(int.is(gt(0))), int(2, 3), "(1;2;3) => lst[get,int[is>0]]"),
+    // testing(1 `;` 2 `;` 3, lst.get(is(gt(0))), int(2, 3), "(1;2;3) => lst[get,[is>0]]"),
+    testing(1 `;` 2.q(10) `;` 3, get(int.is(gt(0))), int(2.q(10), 3), "(1;2{10};3)[get,int[is>0]]"),
+    testing(1 `;` 2.q(10) `;` 2.q(20), get(int.is(gt(0))), 2.q(30), "(1;2{10};2{20})[get,int[is>0]]"),
+    testing(1 `;` 2.q(10) `;` 2.q(20), get(int.is(gt(0))).q(100), 2.q(3000), "(1;2{10};2{20})[get,int[is>0]]{100}"),
+    testing(1 `;` 2 `;` 3, get(get(0)), 2, "(1;2;3) => [get,.0]"),
+    testing(1 `;` 2 `;` 3, lst.get(get(0, int)), 2, "(1;2;3) => lst[get,.0,int]"),
+    testing(1 `;` 2 `;` 3, (int `;` int `;` int).get(get(0).plus(1)), 3, "(1;2;3) => (int;int;int)[get,.0+1]"),
     comment(";-lst exceptions"),
     testing(lst(), get(0), LanguageException.Poly.noIndexValue(lst(), 0), "()[get,0]"),
+    testing(lst(), get(0), LanguageException.Poly.noIndexValue(lst(), 0), "().0"),
     testing(1 `;` 2 `;` 3, get(10), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, 10), "(1;2;3).10"),
     testing(1 `;` 2 `;` 3, get(-1), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, -1), "(1;2;3).-1"),
     testing(1 `;` 2 `;` 3, get(-1), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, -1), "(1;2;3)[get,-1]"),
+  ), testSet("[get] ,-rec test",
+    comment(",-rec type index"),
+    testing(int(1) -> int(1) `_,` int(100) -> int(2) `_,` int(200) -> int(3), get(int.is(gt(50))), int(2, 3), "(1->1,100->2,200->3)[get,int[is>50]]"),
+    testing(int(1) -> int(1) `_,` int(100) -> 2.q(10) `_,` int(200) -> 2.q(20), get(int.is(gt(50))).q(100), 2.q(3000), "(1->1,100->2{10},200->2{20})[get,int[is>50]]{100}"),
   ), testSet("[get] |-rec test",
     comment("|-rec value index"),
     testing(str("a") -> int(1) `_,` str("a") -> int(1) `_,` str("b") -> int(3), get("a"), 1.q(2), "('a'->1,'a'->1,'b'->3).a"),
@@ -57,6 +73,4 @@ class GetInstTest extends BaseInstTest(
     testing(str("a") -> 1.q(2, 3) `_,` str("a") -> 2.q(7) `_,` str("b") -> 3.q(2), get("a").q(10), int(1.q(20, 30), 2.q(70)), "('a'->1{2,3},'a'->2{7},'b'->3{2}).a{10}"),
     testing(str("a") -> 1.q(2, 3) `_,` str("a") -> 1.q(7) `_,` str("b") -> 3.q(2), get("a").q(10), 1.q(90, 100), "('a'->1{2,3},'a'->1{7},'b'->3{2}).a{10}"),
   )) {
-
-  // TODO: sweeps (int(1) -> int(1) `_,` int(100) -> int(2) `_,` int(200) -> int(3), rec[Obj, Obj].get(int.is(gt(50))), int(2, 3)),
 }

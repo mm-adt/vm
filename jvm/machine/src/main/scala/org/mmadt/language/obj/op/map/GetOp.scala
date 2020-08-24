@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{LstType, Type, __}
+import org.mmadt.language.obj.`type`.{IntType, LstType, Type, __}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, LstValue, Value}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -43,23 +43,26 @@ object GetOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B = __.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key, typeHint)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val key: Obj = inst.arg0[Obj].hardQ(qOne) // TODO: explore start() as the lifted form of a type argument
-    val newInst: Inst[Obj, Obj] = inst.clone(g = (Tokens.get, List(key, Inst.oldInst(inst).arg1[Obj])))
-    val typeHint: Obj = Inst.oldInst(inst).arg1[Obj].hardQ(start.q)
+    val newInst: Inst[Obj, Obj] = Inst.oldInst(inst).clone(args => List(key, args(1)))
+    val typeHint: Obj = newInst.arg1[Obj].hardQ(start.q)
     val value: Obj = start match {
-      case arec: Rec[Obj, Obj] => strm(arec.gmap.filter(a => key.test(a._1)).flatMap(a => a._2 match {
-        case astrm: Strm[_] => astrm.values
-        case atype: Type[_] => (__ `=>` atype).toStrm.values
-        case _ => List(a._2)
+      case arec: Rec[_, _] => strm(arec.gmap.filter(kv => kv._1.test(key)).map(kv => kv._2 match {
+        case _: Value[_] => kv._2
+        case _: Type[_] => __ `=>` kv._2
       }))
       case alst: Lst[_] if key.isInstanceOf[Int] => key match {
         case aint: IntValue => alst match {
           case _: LstValue[_] => LanguageException.Poly.testIndex(alst, aint.g.toInt); alst.glist(aint.g.toInt)
-          case _: LstType[_] if LanguageException.testIndex(alst, aint.g.toInt) => alst.glist(aint.g.toInt) // TODO: multi-get with int types like rec
+          case _: LstType[_] if LanguageException.testIndex(alst, aint.g.toInt) => alst.glist(aint.g.toInt)
           case _ => typeHint
         }
+        case aint: Type[_] => strm(alst.glist.view.zipWithIndex.filter(vi => int(vi._2).test(aint)).map(vi => vi._1 match {
+          case _: Value[_] => vi._1
+          case _: Type[_] => __ `=>` vi._1
+        }))
         case _ => typeHint
       }
-      case _: Value[_] => zeroObj
+      case _: Value[_] => zeroObj // throw LanguageException.typingError(start,branch(lst.q(?) `|` rec.q(?)).asInstanceOf[Type[_]])
       case anon: __ if anon.name.equals("x") => anon // TODO: so ghetto -- this is because defs and variables fighting for namespace
       case _ => typeHint
     }

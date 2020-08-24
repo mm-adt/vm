@@ -64,7 +64,7 @@ public class LanguageException extends VmException {
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
-        return new LanguageException(source + " is not " + (target.toString().matches("^[aeiouAEIOU].*") ? "an " : "a ") + target);
+        return new LanguageException(source + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + target);
     }
 
     public static LanguageException unknownInstruction(final String op, final List<Obj> args) {

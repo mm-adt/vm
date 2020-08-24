@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
+import org.mmadt.language.obj.{Lst, Obj, withinQ}
 
 trait LstType[A <: Obj] extends PolyType[A, Lst[A]] with Lst[A] {
   override def test(other: Obj): Boolean = other match {

@@ -111,9 +111,10 @@ object Rec {
         .map(kv => kv._1 -> {
           val mergedBranches: List[B] = Type.mergeObjs(kv._2)
           if (mergedBranches.size == 1) mergedBranches.head
-          else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
+          else if (mergedBranches.exists(x => x.isInstanceOf[Type[_]])) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
+          //else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
           else strm(mergedBranches)
-        }).toList //.groupBy(kv => kv._1).map(kv => kv._1 -> {
+        }).toList
     /////////// ;-rec
     case Tokens.`;` =>
       if (null == start) return pairs

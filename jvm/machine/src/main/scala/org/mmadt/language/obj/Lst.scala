@@ -32,7 +32,7 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 
 trait Lst[+A <: Obj] extends Poly[A]
-  with GetOp[Int, A]
+  with GetOp[Obj, A]
   with PutOp[Int, Obj]
   with PlusOp[Lst[Obj]]
   with MultOp[Lst[Obj]]

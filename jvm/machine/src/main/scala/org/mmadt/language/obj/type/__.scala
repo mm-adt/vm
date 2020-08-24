@@ -56,7 +56,7 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
   override def not(other: Obj): Bool = bool.via(this, NotOp(other))
   ///
   def get(key: Obj): this.type = this.via(this, GetOp(key))
-  def get[BB <: Obj](key: Obj, btype: BB): this.type = this.via(this, GetOp(key, btype))
+  def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
   def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
   def inst: Inst[_ <: Obj, _ <: Obj] = this.via._2
 }
