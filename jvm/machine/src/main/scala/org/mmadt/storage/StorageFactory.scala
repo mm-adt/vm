@@ -71,6 +71,7 @@ trait StorageFactory {
   def str(g: String): StrValue = vstr(g = g)
   def rec[A <: Obj, B <: Obj](value1: RecValue[A, B], value2: RecValue[A, B], valuesN: RecValue[A, B]*): RecStrm[A, B] = vrec((List(value1, value2) ++ valuesN).iterator)
   //
+
   def bool(value1: BoolValue, value2: BoolValue, valuesN: BoolValue*): BoolStrm
   def int(value1: IntValue, value2: IntValue, valuesN: IntValue*): IntStrm
   def real(value1: RealValue, value2: RealValue, valuesN: RealValue*): RealStrm
@@ -81,7 +82,7 @@ trait StorageFactory {
   def vreal(name: String = Tokens.real, g: Double, q: IntQ = qOne, via: ViaTuple = rootVia): RealValue
   def vstr(name: String = Tokens.str, g: String, q: IntQ = qOne, via: ViaTuple = rootVia): StrValue
   //
-  def strm[O <: Obj](itty: Seq[O]): O
+  def strm[O <: Obj](objs: Seq[O]): O
   def strm[O <: Obj]: OStrm[O]
 }
 
@@ -125,7 +126,9 @@ object StorageFactory {
   def vint(name: String = Tokens.int, g: Long, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): IntValue = f.vint(name, g, q, via)
   def vreal(name: String = Tokens.real, g: Double, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): RealValue = f.vreal(name, g, q, via)
   def vstr(name: String = Tokens.str, g: String, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): StrValue = f.vstr(name, g, q, via)
-  def strm[O<:Obj](objs:O*): O = strm[O](objs.toList)
+
+  def obj(obj: Obj, objs: Obj*): Obj = strm[Obj](obj +: objs.toList)
+  def strm[O <: Obj](objs: O*): O = strm[O](objs.toList)
   def strm[O <: Obj](seq: Seq[O])(implicit f: StorageFactory): O = f.strm[O](seq)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
   /////////CONSTANTS//////
@@ -154,8 +157,8 @@ object StorageFactory {
     case atype: Type[_] => atype
     case arec: RecStrm[Obj, Obj] => asType[O](arec.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
     case alst: LstStrm[Obj] => asType[O](alst.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
-    case alst: LstValue[Obj] => if(alst.isEmpty) lst else lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
-    case arec: RecValue[Obj, Obj] => if(arec.isEmpty) rec else rec(name = obj.name, g = (arec.gsep, if (arec.ctype) null else arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
+    case alst: LstValue[Obj] => if (alst.isEmpty) lst else lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
+    case arec: RecValue[Obj, Obj] => if (arec.isEmpty) rec else rec(name = obj.name, g = (arec.gsep, if (arec.ctype) null else arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
     //
     case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
     case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
@@ -185,19 +188,23 @@ object StorageFactory {
     override def vrec[A <: Obj, B <: Obj](values: Iterator[RecValue[A, B]]): RecStrm[A, B] = new VRecStrm(values = MultiSet(values.toSeq))
     //
     override def strm[O <: Obj]: OStrm[O] = new VObjStrm(values = List.empty).asInstanceOf[OStrm[O]]
-    override def strm[O <: Obj](values: Seq[O]): O = values.headOption.map(x => {
-      val headName: String = x.name
-      x match {
-        case _: Bool => new VBoolStrm(name = headName, values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))
-        case _: Int => new VIntStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[IntValue]]))
-        case _: Real => new VRealStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
-        case _: Str => new VStrStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
-        case _: Rec[Obj, Obj] => new VRecStrm[Obj, Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[RecValue[Obj, Obj]]]))
-        case _: LstValue[Obj] => new VLstStrm[Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[LstValue[Obj]]]))
-        // TODO: temporary below
-        case y: TLst[_] => new VLstStrm[Obj](name = headName, values = MultiSet(values.map(x => new VLst(g = (y.gsep, if(!x.alive || !x.isInstanceOf[Lst[Obj]]) Nil else x.asInstanceOf[Lst[Obj]].glist))).asInstanceOf[Seq[LstValue[Obj]]]))
-        case _ => new VObjStrm(values = List.empty)
-      }
-    }).getOrElse(new VObjStrm(values = List.empty)).asInstanceOf[O]
+    override def strm[O <: Obj](values: Seq[O]): O = {
+      if (values.map(x => baseName(x)).toSet.size > 1)
+        return new VObjStrm(values = MultiSet[ObjValue](values.asInstanceOf[Seq[ObjValue]])).asInstanceOf[O]
+      values.headOption.map(x => {
+        val headName: String = x.name
+        x match {
+          case _: Bool => new VBoolStrm(name = headName, values = MultiSet[BoolValue](values.asInstanceOf[Seq[BoolValue]]))
+          case _: Int => new VIntStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[IntValue]]))
+          case _: Real => new VRealStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[RealValue]]))
+          case _: Str => new VStrStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
+          case _: Rec[Obj, Obj] => new VRecStrm[Obj, Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[RecValue[Obj, Obj]]]))
+          case _: LstValue[Obj] => new VLstStrm[Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[LstValue[Obj]]]))
+          // TODO: temporary below
+          case y: TLst[_] => new VLstStrm[Obj](name = headName, values = MultiSet(values.map(x => new VLst(g = (y.gsep, if (!x.alive || !x.isInstanceOf[Lst[Obj]]) Nil else x.asInstanceOf[Lst[Obj]].glist))).asInstanceOf[Seq[LstValue[Obj]]]))
+          case _ => new VObjStrm(values = List.empty)
+        }
+      }).getOrElse(new VObjStrm(values = List.empty)).asInstanceOf[O]
+    }
   }
 }

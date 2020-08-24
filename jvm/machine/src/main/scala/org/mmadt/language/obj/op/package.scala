@@ -22,6 +22,7 @@
 
 package org.mmadt.language.obj
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite}
@@ -39,6 +40,14 @@ package object op {
   trait BranchInstruction
 
   object BranchInstruction {
+    def mergeBranches[O <: Obj](brch: Poly[O], inst: Inst[Obj, Obj]): O = {
+      brch.gsep match {
+        case Tokens.`,` => strm[O](brch.glist.map(x => BranchInstruction.multPolyQ(x, brch, inst)))
+        case Tokens.`;` => brch.glist.lastOption.map(x => BranchInstruction.multPolyQ(x, brch, inst)).getOrElse(zeroObj).asInstanceOf[O]
+        case Tokens.`|` => brch.glist.headOption.map(x => BranchInstruction.multPolyQ(x, brch, inst)).getOrElse(zeroObj).asInstanceOf[O]
+      }
+    }
+
     def brchType[OT <: Obj](brch: Poly[_ <: Obj], instQ: IntQ = qOne): OT = {
       val types = brch.glist.filter(_.alive).map {
         case atype: Type[OT] => atype.hardQ(1).range
@@ -56,7 +65,7 @@ package object op {
       } else if (brch.isSerial) { // [;] last quantification
         brch match {
           case alst: Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch).filter(b => !b.root).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
-          case arec: Rec[Obj, Obj] => asType[OT](arec.gmap.map(x=>x._2).foldLeft(Option(arec).filter(b => !b.root).getOrElse(arec.gmap.head._2.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
+          case arec: Rec[Obj, Obj] => asType[OT](arec.gmap.map(x => x._2).foldLeft(Option(arec).filter(b => !b.root).getOrElse(arec.gmap.head._2.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
         }
       } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduceLeftOption((a, b) => (
@@ -66,7 +75,7 @@ package object op {
       x.hardQ(q => multQ(multQ(q, brch.q), instQ))
     }
 
-    def multPolyQ(obj: Obj, poly: Poly[_], inst: Inst[_, _]): Obj = obj.hardQ(q => multQ(multQ(q, poly.q), inst.q))
+    def multPolyQ[O <: Obj](obj: O, poly: Poly[_], inst: Inst[_, _]): O = obj.hardQ(q => multQ(multQ(q, poly.q), inst.q))
   }
 
   trait FilterInstruction

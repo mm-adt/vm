@@ -46,7 +46,7 @@ object SplitOp extends Func[Obj, Obj] {
       case bpoly: Poly[_] => bpoly
       case _ => inst.arg0[Obj] match {
         case bpoly: Poly[_] => bpoly
-        case anon: __ => return anon.via(start, inst)
+        case _: __ => return start.via(start, inst)
       }
     }
     val startUnit = start.hardQ(qOne)

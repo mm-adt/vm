@@ -42,11 +42,9 @@ object MergeOp extends Func[Obj, Obj] {
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case apoly: Poly[_] if apoly.ctype => __.via(start,inst)
-      case apoly: PolyValue[_, _] if apoly.isChoice => apoly.glist.headOption.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).getOrElse(zeroObj)
-      case apoly: PolyValue[_, _] if apoly.isParallel => strm(apoly.glist.map(x => BranchInstruction.multPolyQ(x, apoly, inst)))
-      case apoly: PolyValue[_, _] if apoly.isSerial => apoly.glist.lastOption.map(x => BranchInstruction.multPolyQ(x, apoly, inst)).getOrElse(zeroObj)
-      case apoly: LstType[_] if apoly.isSerial && apoly.glist.lastOption.exists(x => x.isInstanceOf[Value[_]]) => apoly.glist.last.q(inst.q)
+      case apoly: Poly[_] if apoly.ctype => __.via(start, inst)
+      case apoly: PolyValue[_, _] => BranchInstruction.mergeBranches(apoly, inst)
+      case apoly: LstType[_] if apoly.isSerial && apoly.glist.lastOption.exists(x => x.isInstanceOf[Value[_]]) => apoly.glist.last.q(inst.q) // TODO: hack cause of [path]
       case apoly: PolyType[_, _] => BranchInstruction.multPolyQ(BranchInstruction.brchType[Obj](apoly), lst, inst).clone(via = (start, inst)) // lst is acting a _{1}
       case _ => start.via(start, inst)
     }

@@ -47,7 +47,7 @@ object BranchOp extends Func[Obj, Obj] {
       case _ => Obj.resolveToken(start, inst.arg0[Obj]).rangeObj.asInstanceOf[Poly[Obj]]
     }).scalarMult(start) match {
       case bpoly if bpoly.isEmpty => zeroObj.via(start, inst)
-      case bpoly: Value[_] => bpoly.hardQ(q => multQ(q, inst.q)).merge
+      case bpoly: Value[_] => BranchInstruction.mergeBranches(bpoly, inst)
       case bpoly: Type[_] =>
         if (1 == bpoly.size) (start `=>` bpoly.glist.head).q(inst.q)
         else BranchInstruction.brchType[Obj](bpoly, inst.q).clone(via = (start, inst.clone(_ => List(bpoly))))

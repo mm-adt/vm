@@ -27,10 +27,9 @@ import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__.merge
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.{Int, Lst, Obj, Str}
+import org.mmadt.language.obj.{Lst, Obj, Str}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.storage.StorageFactory
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.{TableFor2, TableFor3, TableFor4}
 
@@ -42,9 +41,10 @@ class LstValueTest extends BaseInstTest(
     testing(1 `,` 2, merge, int(1, 2), "(1,2)>-"),
     testing(1 `,` 2 `,` 3, merge, int(1, 2, 3), "(1,2,3)>-"),
     testing(1 `,` 2 `,` 3 `,` 3, merge, int(1, 2, 3.q(2)), "(1,2,3,3)>-"),
-    //testing(1 `,` "a" `,` 2 `,` "a", merge, StorageFactory.strm[Obj](List[Obj](1, "a", 2, "a")), "(1,'a',2,'a')>-"),
+    testing(1 `,` "a" `,` 2 `,` "a", merge, obj(1, "a", 2, "a"), "(1,'a',2,'a')>-"),
   ), testSet(";-lst table test",
-    // testing(1 `;` "a" `;` 2 `;` "b" `;` "c" `;` "c", a(__("tarr_is")), bfalse, "(1;'a';2;'b';'c';'c')[a,tarr_is]"),
+    testing(1 `;` 2 `;` 3, merge, 3, "(1;2;3)>-"),
+    // testing(1.q(2) `;` 2.q(3) `;` 3, merge, 3.q(6), "(1{2};2{3};3)>-"),
   ), testSet("|-lst table test",
     // testing(1 | 2 | 3, a(lst), btrue),
   )) {
@@ -92,8 +92,10 @@ class LstValueTest extends BaseInstTest(
       new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
         (lst, __.is(lst.eqs(lst.zero)), lst),
         (lst, __.eqs(lst.zero), btrue),
+
         (1, __.map(lst).eqs(lst.zero), btrue),
         (1, __ -< (int `,` int), int(1) `,` int(1)),
+
         (1, __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
         (1, __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
         (1.q(5), __ -< (int `,` int.plus(2).q(10)), (int(1) `,` int(3).q(10)).q(5)),
@@ -103,8 +105,8 @@ class LstValueTest extends BaseInstTest(
         (int(1, 100), __ -< (int `,` int) >-, int(int(1).q(2), int(100).q(2))),
         (int(1.q(5), 100), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
         (int(1.q(5), 100), __ -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
-        (int(1, 2), __ -< (int | (int -< (int | int))), StorageFactory.strm[Obj](List[Obj](int(1) `|`, int(2) `|`))),
-        (int(1, 2), __ -< (int `,` (int -< (int | int))), StorageFactory.strm[Obj](List(int(1) `,` (int(1) |), int(2) `,` (int(2) |)))),
+        (int(1, 2), __ -< (int | (int -< (int | int))), obj(int(1) `|`, int(2) `|`)),
+        (int(1, 2), __ -< (int `,` (int -< (int | int))), obj(int(1) `,` (int(1) |), int(2) `,` (int(2) |))),
         (1, __ -< (str | int), zeroObj | int(1)),
         // (strm(List(int(1), str("a"))).-<(str | int), strm(List(zeroObj | int(1), str("a") | zeroObj))),
       )
@@ -166,6 +168,7 @@ class LstValueTest extends BaseInstTest(
         // (lst, 0, "a", "a" `;`),
         (str("b") `;`, 0, "a", "a" `;` "b"),
         ("a" `;` "c", 1, "b", "a" `;` "b" `;` "c"),
+
         ("a" `;` "b", 2, "c", "a" `;` "b" `;` "c"),
         //(str("a")/"b", 2, str("c")/ "d", str("a")/ "b"/ (str("c")/ "d")),
         //
@@ -174,7 +177,7 @@ class LstValueTest extends BaseInstTest(
       )
     forEvery(starts) { (serial, key, value, newProduct) => {
       assertResult(newProduct)(serial.put(key, value))
-      assertResult(newProduct)(PutOp(key, value).exec(serial))
+      assertResult(newProduct)(PutOp[Obj, Obj](key, value).exec(serial))
     }
     }
   }
