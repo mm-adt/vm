@@ -23,7 +23,8 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Obj.{booleanToBool, intToInt, stringToStr}
+import org.mmadt.language.obj.`type`.__.{gt, id, mult}
 import org.mmadt.language.obj.op.map.GtOp
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
@@ -33,56 +34,52 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class GtInstTest extends BaseInstTest(
-  /////////////////////////////////////////
-  testSet("[gt] value, type, strm, anon combinations",
-    comment("===INT"),
-    testing(int(2), __.gt(1), btrue), // value * value = value
-    testing(int(2).q(10), __.gt(1), btrue.q(10)), // value * value = value
-    testing(int(2).q(10), __.gt(1).q(20), btrue.q(200)), // value * value = value
-    testing(int(2), __.gt(int(1).q(10)), btrue), // value * value = value
-    testing(int(2), __.gt(int), bfalse), // value * type = value
-    testing(int(2), __.gt(__.mult(int)), bfalse), // value * anon = value
-    testing(int, __.gt(int(2)), int.gt(int(2))), // type * value = type
-    testing(int.q(10), __.gt(int(2)), int.q(10).gt(int(2))), // type * value = type
-    testing(int, __.gt(int), int.gt(int)), // type * type = type
-    testing(int(1, 2, 3), __.gt(2), bool(false, false, true)), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2).q(10)), bool(false, false, true)), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2)).q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2)).q(10), bool(bfalse.q(20), btrue.q(10))), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2)).q(10).id, bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2)).q(10).id.q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
-    testing(int(1, 2, 3), __.id.gt(int(2)).q(10).id.q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int(2)).id.q(10).id.q(5), bool(bfalse.q(50), bfalse.q(50), btrue.q(50))), // strm * value = strm
-    testing(int(1, 2, 3), __.gt(int), bool(false, false, false)), // strm * type = strm
-    testing(int(1, 2, 3), __.gt(__.mult(int)), bool(false, false, false)), // strm * anon = strm
-    comment("===REAL"),
-    testing(real(2.0), __.gt(1.0), btrue), // value * value = value
-    testing(real(2.0), __.gt(real), bfalse), // value * type = value
-    testing(real(2.0), __.gt(__.mult(real)), false), // value * anon = value
-    testing(real, __.gt(real(2.0)), real.gt(2.0)), // type * value = type
-    testing(real, __.gt(real), real.gt(real)), // type * type = type
-    testing(real(1.0, 2.0, 3.0), __.gt(2.0).q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
-    testing(real(1.0, 2.0, 3.0), __.gt(2.0).id.q(3), bool(bfalse.q(6), btrue.q(3))), // strm * value = strm
-    testing(real(1.0, 2.0, 3.0), __.gt(2.0), bool(false, false, true)), // strm * value = strm
-    testing(real(1.0, 2.0, 3.0), __.gt(real), bool(false, false, false)), // strm * type = strm
-    testing(real(1.0, 2.0, 3.0), __.gt(__.mult(real)), bool(false, false, false)), // strm * anon = strm
-    comment("===STR"),
-    testing(str("b"), __.gt("a"), btrue), // value * value = value
-    testing(str("b").q(10), __.gt("a"), btrue.q(10)), // value * value = value
-    testing(str("b").q(10), __.gt("a").q(20), btrue.q(200)), // value * value = value
-    testing(str("b"), __.gt(str("a").q(10)), btrue), // value * value = value
-    testing(str("b"), __.gt(str), bfalse), // value * type = value
-    testing(str, __.gt("b"), str.gt("b")), // type * value = type
-    testing(str.q(10), __.gt("b"), str.q(10).gt("b")), // type * value = type
-    testing(str, __.gt(str), str.gt(str)), // type * type = type
-    testing(str("a", "b", "c"), __.gt("b"), bool(false, false, true)), // strm * value = strm
-    testing(str("a", "b", "c"), __.gt(str("b").q(10)), bool(false, false, true)), // strm * value = strm
-    testing(str("a", "b", "c"), __.gt("b").q(10), bool(bfalse.q(10), bfalse.q(10), btrue.q(10))), // strm * value = strm
-    testing(str("a", "b", "c"), __.gt(str), bool(false, false, false)) // strm * type = strm
-  )) {
+  testSet("[gt] table test",
+    comment("int"),
+    testing(2, gt(1), true),
+    testing(2.q(10), gt(1), true.q(10)),
+    testing(2.q(10), gt(1).q(20), true.q(200)),
+    testing(2, gt(1.q(10)), true),
+    testing(2, gt(int), false),
+    testing(2, gt(mult(int)), false),
+    testing(int, gt(2), int.gt(int(2))),
+    testing(int.q(10), gt(2), int.q(10).gt(int(2))),
+    testing(int, gt(int), int.gt(int)),
+    testing(int(1, 2, 3), gt(2), bool(false, false, true)),
+    testing(int(1, 2, 3), gt(2.q(10)), bool(false, false, true)),
+    testing(int(1, 2, 3), gt(2).q(10), bool(false.q(10), false.q(10), true.q(10))),
+    testing(int(1, 2, 3), gt(2).q(10), bool(false.q(20), true.q(10))),
+    testing(int(1, 2, 3), gt(2).q(10).id, bool(false.q(10), false.q(10), true.q(10))),
+    testing(int(1, 2, 3), gt(2).q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50))),
+    testing(int(1, 2, 3), id.gt(2).q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50))),
+    testing(int(1, 2, 3), gt(2).id.q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50))),
+    testing(int(1, 2, 3), gt(int), bool(false, false, false)),
+    testing(int(1, 2, 3), gt(mult(int)), bool(false, false, false)),
+    comment("real"),
+    testing(2.0, gt(1.0), true),
+    testing(2.0, gt(real), false),
+    testing(2.0, gt(mult(real)), false),
+    testing(real, gt(real(2.0)), real.gt(2.0)),
+    testing(real, gt(real), real.gt(real)),
+    testing(real(1.0, 2.0, 3.0), gt(2.0).q(3), bool(false.q(6), true.q(3))),
+    testing(real(1.0, 2.0, 3.0), gt(2.0).id.q(3), bool(false.q(6), true.q(3))),
+    testing(real(1.0, 2.0, 3.0), gt(2.0), bool(false, false, true)),
+    testing(real(1.0, 2.0, 3.0), gt(real), bool(false, false, false)),
+    testing(real(1.0, 2.0, 3.0), gt(mult(real)), bool(false, false, false)),
+    comment("str"),
+    testing("b", gt("a"), true),
+    testing("b".q(10), gt("a"), true.q(10)),
+    testing("b".q(10), gt("a").q(20), true.q(200)),
+    testing("b", gt("a".q(10)), true),
+    testing("b", gt(str), false),
+    testing(str, gt("b"), str.gt("b")),
+    testing(str.q(10), gt("b"), str.q(10).gt("b")),
+    testing(str, gt(str), str.gt(str)),
+    testing(str("a", "b", "c"), gt("b"), bool(false, false, true)),
+    testing(str("a", "b", "c"), gt("b".q(10)), bool(false, false, true)),
+    testing(str("a", "b", "c"), gt("b").q(10), bool(false.q(10), false.q(10), true.q(10))),
+    testing(str("a", "b", "c"), gt(str), bool(false, false, false)),
+    comment("exceptions"),
+    testing(false, gt(true), LanguageException.unsupportedInstType(false, GtOp(true)), "false > true"),
+  ))
 
-  test("[gt] exceptions") {
-    assertResult(LanguageException.unsupportedInstType(bfalse, GtOp(btrue)).getMessage)(intercept[LanguageException](bfalse ==> __.gt(btrue)).getMessage)
-  }
-
-}

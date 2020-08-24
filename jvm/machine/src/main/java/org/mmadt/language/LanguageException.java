@@ -105,7 +105,7 @@ public class LanguageException extends VmException {
         return !(index < 0) && lst.size() >= (index + 1);
     }
 
-    public static class PolyException {
+    public static class Poly {
         public static LanguageException noHead() {
             return new LanguageException("empty polys do not have heads");
         }
@@ -119,10 +119,15 @@ public class LanguageException extends VmException {
         }
 
         public static void testIndex(final Lst<?> lst, final int index) {
+            if (index < 0 || lst.size() < (index + 1))
+                throw noIndexValue(lst, index);
+        }
+
+        public static LanguageException noIndexValue(final Lst<?> lst, final int index) {
             if (index < 0)
-                throw new LanguageException("poly index must be 0 or greater: " + index);
-            if (lst.size() < (index + 1))
-                throw new LanguageException("poly index is out of bounds: " + index);
+                return new LanguageException("poly index must be 0 or greater: " + index);
+            else
+                return new LanguageException("poly index is out of bounds: " + index);
         }
 
         public static LanguageException noKeyValue(final Rec<?, ?> rec, final Obj key) {

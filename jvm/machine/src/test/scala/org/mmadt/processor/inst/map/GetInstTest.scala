@@ -22,53 +22,41 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj.{stringToStr, tupleToRecYES}
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.map.GetOp
-import org.mmadt.language.obj.{Int, Obj, Str}
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class GetInstTest extends FunSuite with TableDrivenPropertyChecks {
+class GetInstTest extends BaseInstTest(
+  testSet("[get] ;-lst test",
+    comment(";-lst int index"),
+    testing(lst, get(0, int), lst.get(0, int), "lst => [get,0,int]"),
+    testing(1 `;` 2 `;` 3, get(0), 1, "(1;2;3)[get,0]"),
+    testing(1 `;` 2 `;` 3, get(1), 2, "(1;2;3)[get,1]"),
+    testing(1 `;` 2 `;` 3, get(2), 3, "(1;2;3)[get,2,int]"),
+    testing(1 `;` 2 `;` 3.q(5), get(2), 3.q(5), "(1;2;3{5})[get,2,int]"),
+    testing(1 `;` (2 `;` 3) `;` 4, get(1), (2 `;` 3), "(1;(2;3);4).1"),
+    testing(1 `;` (2 `;` 3).q(10) `;` 4, get(1).q(2), (2 `;` 3).q(20), "(1;(2;3){10};4).1{2}"),
+    comment(";-lst exceptions"),
+    testing(lst(), get(0), LanguageException.Poly.noIndexValue(lst(), 0), "()[get,0]"),
+    testing(1 `;` 2 `;` 3, get(10), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, 10), "(1;2;3).10"),
+    testing(1 `;` 2 `;` 3, get(-1), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, -1), "(1;2;3).-1"),
+    testing(1 `;` 2 `;` 3, get(-1), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, -1), "(1;2;3)[get,-1]"),
+  ), testSet("[get] |-rec test",
+    comment("|-rec value index"),
+    testing(str("a") -> int(1) `_,` str("a") -> int(1) `_,` str("b") -> int(3), get("a"), 1.q(2), "('a'->1,'a'->1,'b'->3).a"),
+    testing(str("a") -> int(1) `_,` str("a") -> 1.q(5) `_,` str("b") -> int(3), get("a").q(10), 1.q(60), "('a'->1,'a'->1{5},'b'->3).a{10}"),
+    testing(str("a") -> int(1) `_,` str("a") -> 2.q(5) `_,` str("b") -> int(3), get("a"), int(1, 2.q(5)), "('a'->1,'a'->2{5},'b'->3).a"),
+    testing(str("a") -> int(1) `_,` str("a") -> 2.q(5) `_,` str("b") -> int(3), get("a").q(10), int(1.q(10), 2.q(50)), "('a'->1,'a'->2{5},'b'->3).a{10}"),
+    testing(str("a") -> int(1) `_,` str("a") -> int(2) `_,` str("b") -> int(3), get("a").q(10), int(1.q(10), 2.q(10)), "('a'->1,'a'->2,'b'->3).a{10}"),
+    testing(str("a") -> 1.q(2, 3) `_,` str("a") -> 2.q(7) `_,` str("b") -> 3.q(2), get("a").q(10), int(1.q(20, 30), 2.q(70)), "('a'->1{2,3},'a'->2{7},'b'->3{2}).a{10}"),
+    testing(str("a") -> 1.q(2, 3) `_,` str("a") -> 1.q(7) `_,` str("b") -> 3.q(2), get("a").q(10), 1.q(90, 100), "('a'->1{2,3},'a'->1{7},'b'->3{2}).a{10}"),
+  )) {
 
-  test("[get] value, type, strm") {
-    val starts: TableFor3[Obj, Obj, Obj] =
-      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        //////// ,-rec
-        (str("a") -> int(1) `_,` str("b") -> int(2), rec[Str, Int].get(str("a")), int(1)),
-        //(str("a") -> int(1) `_,` str("a") -> int(2), rec[Str, Int].get(str("a")), int(1, 2)),
-       // (str("a") -> int(1) `_,` str("a") -> int(1), rec[Str, Int].get(str("a")), int(1).q(2)),
-        (int(1) -> int(1) `_,` int(100) -> int(2) `_,` int(200) -> int(3), rec[Obj, Obj].get(int.is(gt(50))), int(2, 3)),
-        //////// |-rec
-        (str("name") -> str("marko") `_,` str("age") -> int(29), get("name", str).plus(" rodriguez"), "marko rodriguez"),
-        // (str("name") -> str("marko") `_,` str("age") -> int(29), get("name", str).plus(" rodriguez").path(id()`;`id()).merge.count(), 4),
-        // (str("name") -> str("marko") `_,` str("age") -> int(29), get("bad-key"), zeroObj),
-        //////// ;-lst
-        ("a" `;`, lst.get(0), "a"),
-        ("a" `;` "b", get(0), "a"),
-        ("a" `;` "b" `;` "c", get(1), "b"),
-        ("d" `;` "b" `;` "c", get(2), "c"),
-      )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result)
-    }
-  }
-
-  // TODO: get exceptions into the table harness
-  test("[get] w/ lst value exception") {
-    assertThrows[LanguageException] {
-      (str("a") | "b" | "c").get(-1)
-    }
-    assertThrows[LanguageException] {
-      (str("a") | "b" | "c").get(3)
-    }
-    assertThrows[LanguageException] {
-      assertResult(obj)(lst[Obj]("|").get(0))
-    }
-  }
+  // TODO: sweeps (int(1) -> int(1) `_,` int(100) -> int(2) `_,` int(200) -> int(3), rec[Obj, Obj].get(int.is(gt(50))), int(2, 3)),
 }

@@ -59,6 +59,7 @@ trait Lst[+A <: Obj] extends Poly[A]
   private final def lstMaker(sep: String, obj: Obj): Lst[obj.type] = {
     obj match {
       case _ if sep != this.gsep => lst(g = (sep, List(this, obj).asInstanceOf[List[obj.type]]))
+      // case _ if this.ctype => this.clone(g = (sep, List(obj))).asInstanceOf[Lst[obj.type]]
       case _ => this.clone(g = (sep, this.g._2 :+ obj)).asInstanceOf[Lst[obj.type]]
     }
   }
@@ -88,7 +89,7 @@ object Lst {
       if (null == start) return values
       var running = start
       values.map(v => {
-        running = if (running.isInstanceOf[Strm[_]]) strm[A](running.toStrm.values.map(r => r ~~> v):_*)
+        running = if (running.isInstanceOf[Strm[_]]) strm[A](running.toStrm.values.map(r => r ~~> v): _*)
         else running ~~> v match {
           case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
