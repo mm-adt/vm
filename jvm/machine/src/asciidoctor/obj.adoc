@@ -861,8 +861,8 @@ https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]
 a|
 [exec,prompt="mm> "]
 ----
-('a'{?};'b';'a';'b')
-('a'{?};'b';'a';'b')>-
+('a';'b';'a';'b')
+('a';'b';'a';'b')>-
 ----
 {blank}
 | `;` | https://en.wikipedia.org/wiki/Monoid[monoid] +
@@ -874,16 +874,16 @@ a|
 ('a'->1;'b'->2;'a'->3)>-
 ----
 {blank}
-| `\|` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+| `\|` | https://en.wikipedia.org/wiki/Near-ring[near-ring] +
 https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalar]
 a|
 [exec,prompt="mm> "]
 ----
-('a'{?}\|'b'\|'a'\|'b')
-('a'{?}\|'b'\|'a'\|'b')>-
+('a'\|'b'\|'a'\|'b')
+('a'\|'b'\|'a'\|'b')>-
 ----
 {blank}
-| `\|` | https://en.wikipedia.org/wiki/Module_(mathematics)[module] +
+| `\|` | https://en.wikipedia.org/wiki/Near-ring[near-ring] +
 https://en.wikipedia.org/wiki/Tuple[pair]
 a|
 [exec,prompt="mm> "]
@@ -909,14 +909,14 @@ such that when two term objects are not equal, the `poly` is https://en.wikipedi
 The *;-polys* capture the non-commutative, multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] of the mm-ADT ring. Due to non-commutativity, the `;` deliminated terms are ordered. The `lst` consequence is collection data structure with https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-semantics. For `rec`, an ordered https://en.wikipedia.org/wiki/Record_%28computer_science%29[record] is realized.
 
 .|-poly Collections
-The *|-polys* capture a non-commutative additive group. The `|-poly` collections are less useful than the `|-poly` controls.
+The *|-polys* capture the non-commutative additive group of the mm-ADT https://en.wikipedia.org/wiki/Near-ring[near-ring]. A forthcoming section detailing mm-ADT's ring algebra will discuss the *reduce near-ring*. For now, note that the `|-poly` collections yield singleton `lsts` and `recs`. As such, the `|-polys` are less useful as collections than as controls.
 
 NOTE: When each `poly` kind (`lst` or `rec`) contains 0 or 1 term, their behavior's are equivalent. It is only at 2+ terms that their respective algebras are discernible and instructions such as `[eq]` consider the `poly` term separator in their calculation.
 
 
 ====== Poly Controls
 
-The mm-ADT ring's additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] operator is accessible via the `[branch]` instruction. The `[branch]` instruction's argument is a `poly`. Each term of the `poly` argument is an operand of the ring's \$+\$-operator. In this way, each of the 6 `poly` forms represents a particular https://en.wikipedia.org/wiki/Control_flow[control structure]. Due to the prevalent use of `[branch]`, `mmlang` offers a sugar'd encoding of `[ ]`, where both the instruction opcode and the `poly` parentheses are not denoted. For example, `[branch,(+1,+2,+3)]` is equivalent to `[+1,+2,+3]`.
+The mm-ADT ring's additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] operator is accessible via the `[branch]` instruction. The `[branch]` instruction's argument is a `poly`. Each term of the `poly` argument is an operand of the ring's \$+\$-operator. In this way, each of the 6 `poly` forms represents a particular https://en.wikipedia.org/wiki/Control_flow[control structure]. Due to the prevalent use of `[branch]`, `mmlang` offers the sugar'd encoding of `[ ]`, where both the instruction opcode and the `poly` parentheses are not written. For example, `[branch,(+1,+2,+3)]` is equivalent to `[+1,+2,+3]`.
 
 [cols="^1h,3,9,^1h,3,9"]
 |===
@@ -983,7 +983,9 @@ a|
 '''
 
 .,-poly Controls
-The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring. The https://en.wikipedia.org/wiki/Associative_property[associativity] and https://en.wikipedia.org/wiki/Commutative_property[commutativity] of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a `,-poly` are not sequentially dependent on one another. This independence enables evaluation isolation and thus, enables https://en.wikipedia.org/wiki/Parallel_computing[parallelism]. This realizes https://en.wikipedia.org/wiki/Method_cascading[cascading] https://en.wikipedia.org/wiki/Union_(set_theory)[union] in `lst` and conditional cascading in `rec`. In all subsequent `[branch,poly]` equations to follow, \$x \in \tt{obj}\$ is an incoming `obj` to the `[branch]` instruction.
+The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring. The https://en.wikipedia.org/wiki/Associative_property[associativity] and https://en.wikipedia.org/wiki/Commutative_property[commutativity] of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a `,-poly` are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes https://en.wikipedia.org/wiki/Parallel_computing[parallelism]. The `,-poly` algebra realizes https://en.wikipedia.org/wiki/Method_cascading[cascading] https://en.wikipedia.org/wiki/Union_(set_theory)[union] in `lst` and https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional] cascading in `rec`.
+
+Note that in all subsequent `[branch,poly]` equations to follow, \$x \in \tt{obj}\$ is an incoming `obj` to the respective `[branch]` instruction.
 
 
 [cols="^1,^1"]
@@ -1020,7 +1022,7 @@ x => v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 |====
 
 .;-poly Controls
-The *;-polys* capture the multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] of the mm-ADT ring. The result of each term is the input to the next term in the sequence. In `lst`, method chaining is realized and in `rec` https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional] chaining.
+The *;-polys* capture the multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] of the mm-ADT ring. The result of each term is the input to the next term in the sequence. In `lst`, https://en.wikipedia.org/wiki/Method_chaining[method chaining] is realized and in `rec` https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional] chaining.
 
 [cols="^1,^1"]
 |====
@@ -1062,7 +1064,7 @@ v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 |====
 
 .|-poly Controls
-The *|-polys* capture a non-commutative group, where the first non-\$\mathbf{0}\$ ("non-link:https://en.wikipedia.org/wiki/Null_pointer[null]") element is the output of the branch. In `lst`, https://en.wikipedia.org/wiki/Null_coalescing_operator[non-null coalescing] is realized and in `rec` a https://en.wikipedia.org/wiki/Switch_statement[switch statement] is realized.
+The *|-polys* capture a non-commutative group derived from the https://en.wikipedia.org/wiki/Distributive_property[distributive property] of \$\ast\$ over \$+\$ in mm-ADT's non-commutative https://en.wikipedia.org/wiki/Near-ring[near-ring] (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-link:https://en.wikipedia.org/wiki/Null_pointer[null]") element is the output of the branch. In `lst`, https://en.wikipedia.org/wiki/Null_coalescing_operator[non-null coalescing] is realized and in `rec` a https://en.wikipedia.org/wiki/Switch_statement[switch statement] is realized.
 
 [cols="^1,^1"]
 |====
