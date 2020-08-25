@@ -488,8 +488,9 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_mono_types">Mono Types</a></li>
 <li><a href="#_poly_types">Poly Types</a>
 <ul class="sectlevel5">
-<li><a href="#_poly_containers">Poly Containers</a></li>
+<li><a href="#_poly_collections">Poly Collections</a></li>
 <li><a href="#_poly_controls">Poly Controls</a></li>
+<li><a href="#_poly_lifting">Poly Lifting</a></li>
 </ul>
 </li>
 </ul>
@@ -2345,7 +2346,7 @@ An mm-ADT type is the product of an <strong>object</strong> (variable) and a <st
 </table>
 <hr>
 <div class="sect5">
-<h6 id="_poly_containers">Poly Containers</h6>
+<h6 id="_poly_collections">Poly Collections</h6>
 <div class="paragraph">
 <p>A <code>poly</code> can be used a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. There are a total of 6 sorts of collections as there are two kinds of <code>poly</code> (<code>lst</code> and <code>rec</code>) and each kind has 3 forms (<code>,</code>,<code>;</code>,<code>|</code>). The forms determine the <strong>ambient algebra</strong> associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> with unity maintaining a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">R-module</a>.</p>
 </div>
@@ -2711,7 +2712,7 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 </table>
 <div class="paragraph">
 <div class="title">|-poly Controls</div>
-<p>The <strong>|-polys</strong> capture the non-commutative group of mm-ADT&#8217;s <em>reduce</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. As a control structure, <code>|-poly</code> is a <a href="https://en.wikipedia.org/wiki/Sequential_algorithm">sequential</a> branch that can be understood programmatically as a conditional <a href="https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29">fold</a>. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
+<p>The <strong>|-polys</strong> capture the non-commutative group of mm-ADT&#8217;s <em>reduce</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. As a control structure, <code>|-poly</code> is a <a href="https://en.wikipedia.org/wiki/Sequential_algorithm">sequential</a> branch that can be understood programmatically as a <a href="https://en.wikipedia.org/wiki/Short-circuit_evaluation">short-circuit</a> <a href="https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29">fold</a>. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2775,8 +2776,97 @@ As previously stated for collection <code>polys</code>, control <code>poly</code
 </tr>
 </table>
 </div>
+</div>
+<div class="sect5">
+<h6 id="_poly_lifting">Poly Lifting</h6>
 <div class="paragraph">
-<p><span class="image left"><img src="./images/obj/poly-lift.svg" alt="poly lift" width="200"></span> An interesting consequence of this dual use of <code>poly</code> as both a data structure and a control structure is that <code>poly</code> supports a <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifted</a> encoding of mm-ADT itself.</p>
+<p><span class="image left"><img src="./images/obj/poly-lift.svg" alt="poly lift" width="210"></span> An interesting consequence of the dual use of <code>poly</code> as both a data structure and a control structure is that <code>poly</code> supports a <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifted</a> encoding of mm-ADT itself. Each <code>poly</code> form captures a fundamental <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a> of the underlying mm-ADT stream ring algebra. As a collection, <code>poly</code> provides a programmatic way of writing mm-ADT programs (types) and as flow control, <code>poly</code> provides a programmatic way of executing <code>poly</code> encoded programs. The algebraic formulation of <code>poly</code> lifting as an <code>obj</code>-<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> of the mm-ADT ring will be presented in a latter section. For now, the following <code>mmlang</code> examples demonstrate <code>poly</code> lifting in support of mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.</p>
+</div>
+<div class="paragraph">
+<p>The mm-ADT type below contains both monoidal (serial composition) and group (parallel branching) components whose construction is captured by the bottom morphism of the diagram above. Note that <code>[explain]</code> is appended for educational purposes only&#8201;&#8212;&#8201;so as to detail the \$\Rightarrow\$ composition.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/obj/poly-embed-composition.svg" alt="poly embed composition" width="220">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{3}[mult,10][is&gt;20 -&gt; [+70,+170,+270],
+                        is&gt;10 -&gt; [*10,*20,*30]  ,
+                        _     -&gt; {0}            ][plus,100][explain]
+==&gt;'
+int{0,18}&lt;=int{3}[mult,10][int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,20]]-&gt;int{9}&lt;=int{3}[int{3}[plus,70],int{3}[plus,170],int{3}[plus,270]],int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,10]]-&gt;int{9}&lt;=int{3}[int{3}[mult,10],int{3}[mult,20],int{3}[mult,30]]][plus,100]
+
+instruction                                    domain            range       state
+-----------------------------------------------------------------------------------
+[mult,10]                                      int{3}       =&gt;   int{3}
+[int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,...    int{3}       =&gt;   int{0,18}
+ [is,bool{3}&lt;=int{3}[gt,20]]                    int{3}      =&gt;    int{0,3}
+  [gt,20]                                        int{3}     =&gt;     bool{3}
+ -&gt;[int{3}[plus,70],int{3}[plus,170],int{3}...    int{3}      =&gt;    int{9}
+  [plus,70]                                      int{3}     =&gt;     int{3}
+  [plus,170]                                     int{3}     =&gt;     int{3}
+  [plus,270]                                     int{3}     =&gt;     int{3}
+ [is,bool{3}&lt;=int{3}[gt,10]]                    int{3}      =&gt;    int{0,3}
+  [gt,10]                                        int{3}     =&gt;     bool{3}
+ -&gt;[int{3}[mult,10],int{3}[mult,20],int{3}[...    int{3}      =&gt;    int{9}
+  [mult,10]                                      int{3}     =&gt;     int{3}
+  [mult,20]                                      int{3}     =&gt;     int{3}
+  [mult,30]                                      int{3}     =&gt;     int{3}
+[plus,100]                                     int{0,18}    =&gt;   int{0,18}
+'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The above type can be expressed in a pure <code>poly</code> form as demonstrated below where <code>;</code> is serial composition and <code>,</code> is parallel branching. This construction is captured by the slanted morphism in the diagram above.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/obj/poly-embed-lifting.svg" alt="poly embed lifting" width="220">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
+                           [[is&gt;10];[*10,*20,*30  ]],
+                           [[_]    ;[{0}          ]]];[plus,100])
+==&gt;(int{3};_[mult,10];_[_[_[is,_[gt,20]];_[_[plus,70],_[plus,170],_[plus,270]]],_[_[is,_[gt,10]];_[_[mult,10],_[mult,20],_[mult,30]]],_[_[_];_[( )]]];_[plus,100])</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Finally, both types have a respective evaluation that yields the same result, where the final expression binds (<code>-&lt;</code>) the values 1, 2, and 3 to the indeterminate terms, thus solving (<code>&gt;-</code>) the <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> equation.</p>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/obj/poly-embed-solve.svg" alt="poly embed solve" width="220">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [1,2,3] =&gt; int{3}[mult,10][is&gt;20 -&gt; [+70,+170,+270],
+                                   is&gt;10 -&gt; [*10,*20,*30]  ,
+                                   _     -&gt; {0}            ][plus,100]
+==&gt;500
+==&gt;200
+==&gt;300{2}
+==&gt;400{2}
+==&gt;700{2}
+==&gt;1000
+
+mmlang&gt; [1,2,3]-&lt;([int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
+                                    [[is&gt;10];[*10,*20,*30  ]],
+                                    [[_]    ;[{0}          ]]];[plus,100]])&gt;-
+==&gt;500
+==&gt;200
+==&gt;300{2}
+==&gt;400{2}
+==&gt;700{2}
+==&gt;1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>mm-ADT can be <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in <code>poly</code> itself. The formal proof of this fact demonstrates that the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>, the two <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">ring</a> operators (\$+\$ and \$*\$), and the <em>reduce</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> operator (\$\oplus\$) are sufficiently expressive to yield a <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing Complete</a> computing machine.</p>
 </div>
 <hr>
 </div>
@@ -6325,7 +6415,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-25 02:04:42 -0600
+Last updated 2020-08-25 02:19:17 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
