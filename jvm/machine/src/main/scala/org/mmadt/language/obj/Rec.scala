@@ -120,18 +120,19 @@ object Rec {
       if (null == start) return pairs
       var running = start
       pairs.map(kv => {
-        val key = running `~~>` kv._1
+        val key = running ~~> kv._1
         val keyValue = (
           if (!key.alive) (key -> zeroObj)
-          else (key -> (running `~~>` kv._2))).asInstanceOf[Tuple2[A, A]]
+          else (key -> (running ~~> kv._2))).asInstanceOf[Tuple2[A, A]]
         running = keyValue._2
         keyValue
       }).asInstanceOf[Pairs[A, B]]
     /////////// |-rec
     case Tokens.`|` =>
       val nostart: Boolean = null == start
+      val newStart: Obj = if (nostart) __ else start
       var taken: Boolean = false
-      pairs.map(kv => ((if (nostart) __ else start) ~~> kv._1) -> kv._2)
+      pairs.map(kv => (newStart ~~> kv._1) -> kv._2)
         .filter(kv => kv._1.alive)
         .filter(kv =>
           if (taken) false

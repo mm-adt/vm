@@ -98,9 +98,9 @@ object Lst {
       }).asInstanceOf[List[A]]
     /////////// |-lst
     case Tokens.`|` =>
-      val nostart: Boolean = null == start
+      val newStart: Obj = if (null == start) __ else start
       var taken: Boolean = false
-      values.map(v => (if (nostart) __ else start) ~~> v)
+      values.map(v => newStart ~~> v)
         .filter(_.alive)
         .filter(v => {
           if (taken) false
