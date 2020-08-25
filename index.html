@@ -2478,7 +2478,7 @@ such that when two term objects are not equal, the <code>poly</code> is <a href=
 </div>
 <div class="paragraph">
 <div class="title">;-poly Collections</div>
-<p>The <strong>;-polys</strong> capture the non-commutative, multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. Due to non-commutativity, the <code>;</code> deliminated terms are ordered. The <code>lst</code> consequence is collection data structure with <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-semantics. For <code>rec</code>, an ordered <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a> is realized.</p>
+<p>The <strong>;-polys</strong> capture the non-commutative, multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. Due to non-commutativity, the <code>;</code> delimited terms form an <a href="https://en.wikipedia.org/wiki/Sequence">ordered sequence</a>. In <code>lst</code>, the consequence is collection data structure with <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-semantics. In <code>rec</code>, an ordered <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a> is realized.</p>
 </div>
 <div class="paragraph">
 <div class="title">|-poly Collections</div>
@@ -2711,7 +2711,7 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 </table>
 <div class="paragraph">
 <div class="title">|-poly Controls</div>
-<p>The <strong>|-polys</strong> capture a non-commutative group derived from the <a href="https://en.wikipedia.org/wiki/Distributive_property">distributive property</a> of \$\ast\$ over \$+\$ in mm-ADT&#8217;s non-commutative <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
+<p>The <strong>|-polys</strong> capture the non-commutative group of mm-ADT&#8217;s <em>reduce</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. As a control structure, <code>|-poly</code> is a <a href="https://en.wikipedia.org/wiki/Sequential_algorithm">sequential</a> branch that can be understood programmatically as a conditional <a href="https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29">fold</a>. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6325,7 +6325,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-25 01:28:27 -0600
+Last updated 2020-08-25 02:04:42 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
