@@ -2468,15 +2468,15 @@ a_{q_0} + b_{q_1} =
   a_{q_0} + b_{q_1} &amp; \text{otherwise},
 \end{cases}
 \]
-such that when two term objects are not equal, the <code>poly</code> is <a href="https://en.wikipedia.org/wiki/Irreducible_representation">irreducible</a>. The lack of order along with quantifier "weighting," <code>,-poly</code> collections realize <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a> semantics (also known as bags or weighted sets).</p>
+such that when two term objects are not equal, the <code>poly</code> is <a href="https://en.wikipedia.org/wiki/Irreducible_representation">irreducible</a>. Given the lack of order along with quantifier "weighting," <code>,-lst</code> collections realize <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a> semantics (also known as bags or weighted sets). <code>,-rec</code> collections realize <a href="https://en.wikipedia.org/wiki/Multimap">multimap</a> semantics which are <a href="https://en.wikipedia.org/wiki/Associative_array">associative arrays</a> that support multiple values for a single key.</p>
 </div>
 <div class="paragraph">
 <div class="title">;-poly Collections</div>
-<p>The <strong>;-polys</strong> capture the non-commutative, multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. Due to non-commutativity, the <code>;</code> deliminated terms are ordered. The consequence is a collection data structure with <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-semantics.</p>
+<p>The <strong>;-polys</strong> capture the non-commutative, multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. Due to non-commutativity, the <code>;</code> deliminated terms are ordered. The <code>lst</code> consequence is collection data structure with <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-semantics. For <code>rec</code>, an ordered <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a> is realized.</p>
 </div>
 <div class="paragraph">
 <div class="title">|-poly Collections</div>
-<p>The <strong>|-polys</strong> capture a non-commutative additive group.</p>
+<p>The <strong>|-polys</strong> capture a non-commutative additive group. The <code>|-poly</code> collections are less useful than the <code>|-poly</code> controls.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2492,7 +2492,7 @@ When each <code>poly</code> kind (<code>lst</code> or <code>rec</code>) contains
 </div>
 <h6 id="_poly_controls" class="discrete">Poly Controls</h6>
 <div class="paragraph">
-<p>The mm-ADT ring&#8217;s additive abelian (<a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>) group operator is accessible via the <code>[branch]</code> instruction. The <code>[branch]</code> instruction argument is a <code>poly</code>, where each term of the <code>poly</code> is an operand of the ring&#8217;s \$+\$-operator. In this way, a <code>poly</code> serves as a <a href="https://en.wikipedia.org/wiki/Control_flow">control structure</a>. Due to the prevelant use of this instruction, their is a simple syntactic sugar encoding in <code>mmlang</code>: <code>[ ]</code>.</p>
+<p>The mm-ADT ring&#8217;s additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> operator is accessible via the <code>[branch]</code> instruction. The <code>[branch]</code> instruction&#8217;s argument is a <code>poly</code>. Each term of the <code>poly</code> argument is an operand of the ring&#8217;s \$+\$-operator. In this way, each of the 6 <code>poly</code> forms represents a particular <a href="https://en.wikipedia.org/wiki/Control_flow">control structure</a>. Due to the prevalent use of <code>[branch]</code>, <code>mmlang</code> offers a sugar&#8217;d encoding of <code>[ ]</code>, where both the instruction opcode and the <code>poly</code> parentheses are not denoted. For example, <code>[branch,(+1,+2,+3)]</code> is equivalent to <code>[+1,+2,+3]</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2607,15 +2607,79 @@ When each <code>poly</code> kind (<code>lst</code> or <code>rec</code>) contains
 <hr>
 <div class="paragraph">
 <div class="title">,-poly Controls</div>
-<p>The algebra of the <strong>,-polys</strong> is the additive abelian group of the mm-ADT ring. This means that the order in which the terms are evaluated does not effect the result of the computation. More specifically the notion of control, it means that each irreducible term is isolated from the terms others in that they are not sequentially dependent on each other. This isolation of evaluation enables parallelism and realizes the notion of a computational branch.</p>
+<p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring. The <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> and <a href="https://en.wikipedia.org/wiki/Commutative_property">commutativity</a> of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a <code>,-poly</code> are not sequentially dependent on one another. This independence enables evaluation isolation and thus, enables <a href="https://en.wikipedia.org/wiki/Parallel_computing">parallelism</a>. This realizes <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> in <code>lst</code> and <a href="https://en.wikipedia.org/wiki/Method_cascading">cascade</a> in <code>rec</code>.</p>
+</div>
+<div class="paragraph">
+<p>\[
+x &#8658;
+\begin{bmatrix}
+k_0    &amp; v_0    \\
+k_1    &amp; v_1    \\
+\vdots &amp; \vdots \\
+k_n    &amp; v_n
+\end{bmatrix}_{\huge ,}
+=
+\biguplus_{i=0}^n
+\begin{cases}
+x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
+\mathbf{0} &amp; \text{otherwise}.
+\end{cases}
+\]</p>
 </div>
 <div class="paragraph">
 <div class="title">;-poly Controls</div>
-<p>&#8230;&#8203;</p>
+<p>The <strong>;-polys</strong> capture the multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. The result of each term is the input to the next term in the sequence. In <code>lst</code>, method chaining is realized and in <code>rec</code> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> chaining as specified in the equation below.</p>
+</div>
+<div class="paragraph">
+<p>\[
+x &#8658;
+\begin{bmatrix}
+k_0    &amp; v_0    \\
+k_1    &amp; v_1    \\
+\vdots &amp; \vdots \\
+k_n    &amp; v_n
+\end{bmatrix}_{\huge ;}
+=
+\begin{cases}
+x &#8658; v_0 &#8658; v_1 &#8658; \ldots &#8658; v_n  &amp; \text{if } (x &#8658; k_0) \neq \mathbf{0} \wedge \ldots \wedge (x &#8658; k_n) \neq \mathbf{0}, \\
+\mathbf{0} &amp; \text{otherwise}.
+\end{cases}
+\]</p>
 </div>
 <div class="paragraph">
 <div class="title">|-poly Controls</div>
-<p>&#8230;&#8203;</p>
+<p>The <strong>|-polys</strong> capture a non-commutative group, where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized. The <code>[branch,|-rec]</code> equation is provided below, where \$x\$ is an incoming <code>obj</code>.</p>
+</div>
+<div class="paragraph">
+<p>\[
+x &#8658;
+\begin{bmatrix}
+k_0    &amp; v_0    \\
+k_1    &amp; v_1    \\
+\vdots &amp; \vdots \\
+k_n    &amp; v_n
+\end{bmatrix}_{\large |}
+=
+\begin{cases}
+x &#8658; v_0  &amp; \text{if } (x &#8658; k_0) \neq \mathbf{0}, \\
+x &#8658; v_1  &amp; \text{if } (x &#8658; k_1) \neq \mathbf{0}, \\
+\ldots  &amp; \\
+x &#8658; v_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
+\mathbf{0} &amp; \text{otherwise}.
+\end{cases}
+\]</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+As previously stated for collection <code>poly</code>, control <code>poly</code> semantics are only discernible amongst <code>polys</code> with 2 or more terms.
+</td>
+</tr>
+</table>
 </div>
 <div class="paragraph">
 <p><span class="image left"><img src="./images/obj/poly-lift.svg" alt="poly lift" width="200"></span> An interesting consequence of this dual use of <code>poly</code> as both a data structure and a control structure is that <code>poly</code> supports a <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifted</a> encoding of mm-ADT itself.</p>
@@ -6166,7 +6230,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-24 22:13:52 -0600
+Last updated 2020-08-24 22:41:22 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
