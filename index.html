@@ -2343,14 +2343,14 @@ An mm-ADT type is the product of an <strong>object</strong> (variable) and a <st
 <div class="paragraph">
 <p>A <code>poly</code> can be used a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. There are a total of 6 sorts of collections as there are two kinds of <code>poly</code> (<code>lst</code> and <code>rec</code>) and each kind has 3 forms (<code>,</code>,<code>;</code>,<code>|</code>). The forms determine the <strong>ambient algebra</strong> associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> with unity maintaining a left <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">R-module</a>.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch small">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 3.8461%;">
-<col style="width: 11.5384%;">
-<col style="width: 34.6153%;">
-<col style="width: 3.8461%;">
-<col style="width: 11.5384%;">
-<col style="width: 34.6157%;">
+<col style="width: 3.5714%;">
+<col style="width: 14.2857%;">
+<col style="width: 32.1428%;">
+<col style="width: 3.5714%;">
+<col style="width: 14.2857%;">
+<col style="width: 32.143%;">
 </colgroup>
 <thead>
 <tr>
@@ -2460,7 +2460,7 @@ mm&gt; ('a'-&gt;1|'b'-&gt;2|'a'-&gt;3)&gt;-
 </table>
 <div class="paragraph">
 <div class="title">,-poly Collections</div>
-<p>The algebra of the <strong>,-polys</strong> is the additive abelian group of the mm-ADT ring. This means that the <code>,</code> (i.e., \$+\$) is commutative and thus, the terms need not maintain their lexical order. Moreover, given quantification, should two <code>,-poly</code> terms be equal at the <em>object</em>-level, they can be merged according to the \$+\$-operator&#8217;s semantics of
+<p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring, where the carrier set is <code>obj</code> and the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> binary operator is <code>,</code>. Being commutative, the terms are unordered. Moreover, given quantification, should two <code>,-poly</code> terms have equal <em>objects</em>, they can be merged using the mm-ADT \$+\$-operator equation of
 \[
 a_{q_0} + b_{q_1} =
 \begin{cases}
@@ -2468,32 +2468,40 @@ a_{q_0} + b_{q_1} =
   a_{q_0} + b_{q_1} &amp; \text{otherwise},
 \end{cases}
 \]
-such that when two term objects are not equal, the <code>poly</code> is <a href="https://en.wikipedia.org/wiki/Irreducible_representation">irreducible</a>. The lack of order and the "weighting" of quantifiers allows <code>,-polys</code> to be used as <a href="https://en.wikipedia.org/wiki/Multiset">multisets</a> (also known as bags or weighted sets). When a <code>,-poly</code> is merged via <code>[merge]</code> (sugar&#8217;d <code>&gt;-</code>), those terms that are no longer reducible are the result.</p>
+such that when two term objects are not equal, the <code>poly</code> is <a href="https://en.wikipedia.org/wiki/Irreducible_representation">irreducible</a>. The lack of order along with quantifier "weighting," <code>,-poly</code> collections realize <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a> semantics (also known as bags or weighted sets).</p>
 </div>
 <div class="paragraph">
 <div class="title">;-poly Collections</div>
-<p>The algebra of the <strong>;-polys</strong> is the non-commutative, multiplicative monoid of the mm-ADT ring. Due to non-commutativity, the terms may not be rearranged around <code>;</code> (i.e., \$\ast\$). The benefit of this monoidal algebra is that it enables ordered sequences which effect the semantics of a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>. Moreover, when a <code>;-poly</code> is merged, the \$\ast\$-operator&#8217;s semantics are
-\[
-a_{q_0} * b_{q_1} = ab_{q_0 * q_1}.
-\]
-In other words, the pairwise multiplication common of the <a href="https://en.wikipedia.org/wiki/Direct_product">direct product</a> of two algebraic structures (the <em>object</em> <a href="https://en.wikipedia.org/wiki/Semigroup">semigroup</a> and the <em>quantifier</em> <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">ring</a>). As there is no case-statement in the equation above, every <code>;-poly</code> can be reduced with the result of the merge being the final reduced term.</p>
+<p>The <strong>;-polys</strong> capture the non-commutative, multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. Due to non-commutativity, the <code>;</code> deliminated terms are ordered. The consequence is a collection data structure with <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-semantics.</p>
 </div>
 <div class="paragraph">
 <div class="title">|-poly Collections</div>
-<p>&#8230;&#8203;</p>
+<p>The <strong>|-polys</strong> capture a non-commutative additive group.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+When each <code>poly</code> kind (<code>lst</code> or <code>rec</code>) contains 0 or 1 term, their behavior&#8217;s are equivalent. It is only at 2+ terms that their respective algebras are discernible and instructions such as <code>[eq]</code> consider the <code>poly</code> term separator in their calculation.
+</td>
+</tr>
+</table>
 </div>
 <h6 id="_poly_controls" class="discrete">Poly Controls</h6>
 <div class="paragraph">
 <p>The mm-ADT ring&#8217;s additive abelian (<a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>) group operator is accessible via the <code>[branch]</code> instruction. The <code>[branch]</code> instruction argument is a <code>poly</code>, where each term of the <code>poly</code> is an operand of the ring&#8217;s \$+\$-operator. In this way, a <code>poly</code> serves as a <a href="https://en.wikipedia.org/wiki/Control_flow">control structure</a>. Due to the prevelant use of this instruction, their is a simple syntactic sugar encoding in <code>mmlang</code>: <code>[ ]</code>.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch small">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 3.8461%;">
-<col style="width: 11.5384%;">
-<col style="width: 34.6153%;">
-<col style="width: 3.8461%;">
-<col style="width: 11.5384%;">
-<col style="width: 34.6157%;">
+<col style="width: 3.5714%;">
+<col style="width: 14.2857%;">
+<col style="width: 32.1428%;">
+<col style="width: 3.5714%;">
+<col style="width: 14.2857%;">
+<col style="width: 32.143%;">
 </colgroup>
 <thead>
 <tr>
@@ -2512,10 +2520,7 @@ In other words, the pairwise multiplication common of the <a href="https://en.wi
 <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; int[+1,+3,+1]
-==&gt;int{3}&lt;=int[int[plus,3],int{2}&lt;=int[plus,1]{2}]
-
-mm&gt; 6 =&gt; int[+1,+3,+1]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 6 =&gt; int[+1,+3,+1]
 ==&gt;9
 ==&gt;7{2}</code></pre>
 </div>
@@ -6161,7 +6166,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-23 17:21:42 -0600
+Last updated 2020-08-24 22:13:52 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
