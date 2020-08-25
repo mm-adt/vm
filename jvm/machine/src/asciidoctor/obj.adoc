@@ -1064,7 +1064,7 @@ v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 |====
 
 .|-poly Controls
-The *|-polys* capture the non-commutative group of mm-ADT's _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-link:https://en.wikipedia.org/wiki/Null_pointer[null]") element is the output of the branch. As a control structure, `|-poly` is a https://en.wikipedia.org/wiki/Sequential_algorithm[sequential] branch that can be understood programmatically as a conditional https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]. In `lst`, https://en.wikipedia.org/wiki/Null_coalescing_operator[non-null coalescing] is realized and in `rec` a https://en.wikipedia.org/wiki/Switch_statement[switch statement] is realized.
+The *|-polys* capture the non-commutative group of mm-ADT's _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-link:https://en.wikipedia.org/wiki/Null_pointer[null]") element is the output of the branch. As a control structure, `|-poly` is a https://en.wikipedia.org/wiki/Sequential_algorithm[sequential] branch that can be understood programmatically as a https://en.wikipedia.org/wiki/Short-circuit_evaluation[short-circuit] https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]. In `lst`, https://en.wikipedia.org/wiki/Null_coalescing_operator[non-null coalescing] is realized and in `rec` a https://en.wikipedia.org/wiki/Switch_statement[switch statement] is realized.
 
 [cols="^1,^1"]
 |====
