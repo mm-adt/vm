@@ -480,6 +480,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_type_signature">Type Signature</a></li>
 <li><a href="#_type_definition">Type Definition</a></li>
 <li><a href="#_type_quantification">Type Quantification</a></li>
+<li><a href="#_type_evaluation">Type Evaluation</a></li>
 </ul>
 </li>
 <li><a href="#_type_system">Type System</a>
@@ -556,7 +557,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_type_specification">Type Specification</a></li>
 <li><a href="#_type_compilation">Type Compilation</a></li>
 <li><a href="#_type_optimization">Type Optimization</a></li>
-<li><a href="#_type_evaluation">Type Evaluation</a>
+<li><a href="#_type_evaluation_2">Type Evaluation</a>
 <ul class="sectlevel4">
 <li><a href="#_type_checking">Type Checking</a></li>
 </ul>
@@ -1858,6 +1859,132 @@ language error: int{2} is not an int{3}</code></pre>
 </tbody>
 </table>
 </div>
+<div class="sect4">
+<h5 id="_type_evaluation">Type Evaluation</h5>
+<table class="tableblock frame-none grid-none stretch right">
+<colgroup>
+<col style="width: 77.7777%;">
+<col style="width: 22.2223%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">mm-ADT instructions are curried <a href="https://en.wikipedia.org/wiki/Unary_function">unary functions</a>.
+For instance, the instruction <code>[neg]</code> takes an input <code>int</code> and outputs the inverse (or negative) <code>int</code>. Thus, <code>[neg]</code> behaves as its classic unary function counterpart
+\[
+\texttt{neg}(x) = -x,
+\]
+where <code>5=&gt;int[neg]</code> maps to <code>-5</code>.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5=&gt;int[neg]
+==&gt;-5
+mmlang&gt; 5=&gt;-5
+==&gt;-5
+mmlang&gt; -5
+==&gt;-5</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-none grid-none stretch right">
+<colgroup>
+<col style="width: 70%;">
+<col style="width: 30%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Next, suppose the <a href="https://en.wikipedia.org/wiki/Binary_function">binary function</a>
+\[
+\texttt{plus}(x,y) = x + y.
+\]
+In mm-ADT, a particular evaluation may be expressed as <code>6=&gt;[plus,2]</code>. Given that the instruction has a <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> value argument of \$2\$, <code>[plus,2]</code> acts in a manner analogous to a <a href="https://en.wikipedia.org/wiki/Currying">curried</a> unary function.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6=&gt;int[plus,2]
+==&gt;8
+mmlang&gt; 6=&gt;int[plus,[6=&gt;2]]
+==&gt;8
+mmlang&gt; 6=&gt;8
+==&gt;8
+mmlang&gt; 8
+==&gt;8</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-none grid-none stretch right">
+<colgroup>
+<col style="width: 58.3333%;">
+<col style="width: 41.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the argument to <code>[plus]</code> is a type (as opposed to a value), then the argument&#8217;s value resolution is <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> on the incoming <code>obj</code>. For instance, if <code>int[plus,[mult,2]]</code> has an incoming <code>int</code> of 6, the argument to <code>[plus]</code> is 12.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6=&gt;int[plus,[mult,2]]
+==&gt;18
+mmlang&gt; 6=&gt;int[plus,[6=&gt;[mult,2]]]
+==&gt;18
+mmlang&gt; 6=&gt;int[plus,[6=&gt;[mult,[6=&gt;2]]]]
+==&gt;18
+mmlang&gt; 6=&gt;int[plus,[6=&gt;[mult,2]]]
+==&gt;18
+mmlang&gt; 6=&gt;int[plus,12]
+==&gt;18
+mmlang&gt; 6=&gt;18
+==&gt;18
+mmlang&gt; 18
+==&gt;18</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-none grid-none stretch right">
+<colgroup>
+<col style="width: 58.3333%;">
+<col style="width: 41.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">However, if the incoming <code>int</code> is 8, then the <code>[plus]</code> argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming <code>obj</code>.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8=&gt;int[plus,[mult,2]]
+==&gt;24
+mmlang&gt; 8=&gt;int[plus,[8=&gt;[mult,2]]]
+==&gt;24
+mmlang&gt; 8=&gt;int[plus,[8=&gt;[mult,[8=&gt;2]]]]
+==&gt;24
+mmlang&gt; 8=&gt;int[plus,[8=&gt;[mult,2]]]
+==&gt;24
+mmlang&gt; 8=&gt;int[plus,16]
+==&gt;24
+mmlang&gt; 8=&gt;24
+==&gt;24
+mmlang&gt; 24
+==&gt;24</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_type_system">Type System</h4>
@@ -2853,7 +2980,6 @@ instruction                                    domain            range       sta
 ==&gt;400{2}
 ==&gt;700{2}
 ==&gt;1000
-
 mmlang&gt; [1,2,3]-&lt;([int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
                                     [[is&gt;10];[*10,*20,*30  ]],
                                     [[_]    ;[{0}          ]]];[plus,100]])&gt;-
@@ -2876,39 +3002,35 @@ mmlang&gt; [1,2,3]-&lt;([int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
 <div class="sect2">
 <h3 id="_the_obj_graph">The Obj Graph</h3>
 <div class="paragraph">
-<p>An mm-ADT program is a type.
-The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>.
-The mm-ADT VM encodes a type <code>obj</code> as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger type graph (a Cayley graph).
-While a type graph is a graphical encoding of the monoidal structure of a particular subset of <code>obj</code>, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that realizes elements of the type (i.e. computed resultant values).
-These values are encoded in the value graph subgraph of the <code>obj</code> graph.
-Every aspect of an mm-ADT computation from composition to evaluation is materialized in the <code>obj</code> graph.</p>
+<p>An mm-ADT program is a type. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. The mm-ADT VM encodes a type <code>obj</code> as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger <strong>type graph</strong> (a Cayley graph). While a path in the type graph is a graphical encoding of the ring structure of a type, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding in a larger <strong>value graph</strong>. Together, the type graph and the value graph form the <code>obj</code> graph.</p>
 </div>
-<div class="olist arabic">
-<ol class="arabic">
+<div class="paragraph">
+<p>Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the <code>obj</code> graph. The following itemization details the role of the <code>obj</code> graph across various stages of a computation.</p>
+</div>
+<div class="ulist">
+<ul>
 <li>
-<p><strong>Composition</strong>: The point-free style of <code>mmlang</code> is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.</p>
+<p><strong>Composition</strong>: The construction of a type via the <a href="https://en.wikipedia.org/wiki/Tacit_programming">point-free</a> style of <code>mmlang</code> is a the lexical correlate of walking the <code>obj</code> graph from a source vertex (domain ctype) across a series of instruction-labeled edges (<code>inst</code>) to ultimately arrive at a target vertex (range ctype).</p>
 </li>
 <li>
-<p><strong>Compilation</strong>: A path in the Cayley graph represents a program.
-By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.</p>
+<p><strong>Compilation</strong>: A path in the type graph can be prefixed with another ctype (e.g. <code>_</code> to <code>int</code>). In doing so, the path is recomputed to yield a variant path.</p>
 </li>
 <li>
-<p><strong>Rewrite</strong>: The vertices can be "merged" using the <code>[rewrite]</code> instruction to link two type vertices.</p>
+<p><strong>Rewrite</strong>: Subpaths of a path in the type graph can be specied as being semantically equivalent to another path in the type graph via <code>poly</code> lifted rewriting <code>(y)&lt;=(x)</code>. Subsequent compilations and evaluations of the path will yield variants.</p>
 </li>
 <li>
-<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost.
-Rewrites create a superposition of programs.
-A <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from domain to range is a simple technique for choosing an efficient execution plan.</p>
+<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. Given that the <code>obj</code> graph <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutes</a>, a <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from a domain vertex to a range vertex is a simple technique for choosing an efficient execution plan.</p>
 </li>
 <li>
-<p><strong>State</strong>: Variable bindings, type definitions, and rewrite rule are encoded in instructions (<code>[to]</code>, <code>[define]</code>, <code>[rewrite]</code> respectively).
-When the current monoid operation requires historic state information, the co-<code>obj</code> graph is searched for previously encoded stated-based <code>insts</code>.</p>
+<p><strong>Variables</strong>: Variable bindings are encoded in instructions. When the current instruction being evaluated requires historic state information, the <code>obj</code><sup>op</sup> graph (with edges reversed) is searched in order to locate the vertex incident to a variable <code>inst</code>.</p>
 </li>
 <li>
-<p><strong>Evaluation</strong>: When a program path is prefixed with a value, a computation takes place.
-The resultant path&#8217;s tail vertex is the result of the computation.</p>
+<p><strong>Evaluation</strong>: Program evaluation binds the type graph to the value graph. When a type path is prefixed with a value <code>obj</code>, the instructions along the path operate on the value, where the path&#8217;s target vertex is the result of the computation.</p>
 </li>
-</ol>
+</ul>
+</div>
+<div class="paragraph">
+<p>This section will discuss the particulars of the aforementioned uses of the <code>obj</code> graph.</p>
 </div>
 <div class="sect3">
 <h4 id="_state">State</h4>
@@ -2957,74 +3079,7 @@ However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a
 </tbody>
 </table>
 <div class="paragraph">
-<p>mm-ADT represents computations via <a href="https://en.wikipedia.org/wiki/Unary_function">unary functions</a>.
-For instance, the instruction <code>[neg]</code> takes an input <code>int</code> and returns the inverse (or negative) <code>int</code>.
-Thus, <code>[neg]</code> behaves as its classic unary function counterpart \$\tt{n\eg}(x) \mapsto -x\$, where <code>5 =&gt; int[neg]</code> maps to <code>-5</code>.
-Next, suppose the instruction <code>[plus,2]</code>.
-Given an input of \$6\$, <code>[plus,2]</code> ultimately evaluates the <a href="https://en.wikipedia.org/wiki/Binary_function">binary function</a> \$6+2\$.
-However, the instruction&#8217;s argument is the <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> value \$2\$ and therefore, <code>[plus,2]</code> acts in a manner analogous to a <a href="https://en.wikipedia.org/wiki/Currying">curried</a> unary function.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch small">
-<colgroup>
-<col style="width: 11.1111%;">
-<col style="width: 22.2222%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">pure unary</th>
-<th class="tableblock halign-center valign-top">curried unary</th>
-<th class="tableblock halign-center valign-top">dependent unary</th>
-<th class="tableblock halign-center valign-top">dependent unary</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[
-\begin{split}
-1 &amp;&#8658; \text{int}[\texttt{neg}]  \\
--1
-\end{split}
-\]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[
-\begin{split}
-6 &amp;&#8658; \texttt{int}[\texttt{plus},2]      \\
-6 &amp;&#8658; \texttt{int}[\texttt{plus},6 &#8658; 2] \\
-6 &amp;&#8658; \texttt{int}[\texttt{plus},2]      \\
-6 &amp;&#8658; 8 \\
-8
-\end{split}
-\]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[
-\begin{split}
-6 &amp;&#8658; \texttt{int}[\texttt{plus},[\texttt{mult},2]]            \\
-6 &amp;&#8658; \texttt{int}[\texttt{plus},6 &#8658; [\texttt{mult},2]]        \\
-6 &amp;&#8658; \texttt{int}[\texttt{plus},6 &#8658; [\texttt{mult},6 &#8658; 2]]   \\
-6 &amp;&#8658; \texttt{int}[\texttt{plus},6 &#8658; [\texttt{mult},2]]        \\
-6 &amp;&#8658; \texttt{int}[\texttt{plus},12]                            \\
-6 &amp;&#8658; 18                                                         \\
-18
-\end{split}
-\]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[
-\begin{split}
-8 &amp;&#8658; \texttt{int}[\texttt{plus},[\texttt{mult},2]]            \\
-8 &amp;&#8658; \texttt{int}[\texttt{plus},8 &#8658; [\texttt{mult},2]]        \\
-8 &amp;&#8658; \texttt{int}[\texttt{plus},8 &#8658; [\texttt{mult},8 &#8658; 2]]   \\
-8 &amp;&#8658; \texttt{int}[\texttt{plus},8 &#8658; [\texttt{mult},2]]        \\
-8 &amp;&#8658; \texttt{int}[\texttt{plus},16]                            \\
-8 &amp;&#8658; 24                                                         \\
-24
-\end{split}
-\]</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>If the argument to <code>[plus]</code> is a type (as opposed to a value), then the argument&#8217;s value resolution is <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> on the incoming <code>obj</code>.
-For instance, if <code>int[plus,[mult,2]]</code> has an incoming <code>int</code> of 6, the argument to <code>[plus]</code> is 12. However, if the incoming <code>int</code> is 8, then the <code>[plus]</code> argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming <code>obj</code>.
-In particular, state stored in the path history of the <code>obj</code>.</p>
+<p>In particular, state stored in the path history of the <code>obj</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6042,7 +6097,7 @@ Thus, algebraically, a type is an element of the <a href="https://en.wikipedia.o
 
 </div>
 <div class="sect3">
-<h4 id="_type_evaluation">Type Evaluation</h4>
+<h4 id="_type_evaluation_2">Type Evaluation</h4>
 <div class="paragraph">
 <p>A type <a href="https://en.wikipedia.org/wiki/Compiler">compiles</a> a type.
 A type <a href="https://en.wikipedia.org/wiki/Executable">evaluates</a> a value.
@@ -6415,7 +6470,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-25 02:19:17 -0600
+Last updated 2020-08-25 11:42:36 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
