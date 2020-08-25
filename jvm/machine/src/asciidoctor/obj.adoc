@@ -1110,7 +1110,49 @@ x => v_n  & \text{if } (x => k_n) \neq \mathbf{0}, \\
 
 NOTE: As previously stated for collection `polys`, control `poly` semantics are only discernible amongst `polys` with 2 or more terms.
 
-image:poly-lift.svg[float=left,width=200] An interesting consequence of this dual use of `poly` as both a data structure and a control structure is that `poly` supports a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself.
+====== Poly Lifting
+
+image:poly-lift.svg[float=left,width=210] An interesting consequence of the dual use of `poly` as both a data structure and a control structure is that `poly` supports a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself. Each `poly` form captures a fundamental https://en.wikipedia.org/wiki/Magma_%28algebra%29[magma] of the underlying mm-ADT stream ring algebra. As a collection, `poly` provides a programmatic way of writing mm-ADT programs (types) and as flow control, `poly` provides a programmatic way of executing `poly` encoded programs. The algebraic formulation of `poly` lifting as an `obj`-link:https://en.wikipedia.org/wiki/Module_(mathematics)[module] of the mm-ADT ring will be presented in a latter section. For now, the following `mmlang` examples demonstrate `poly` lifting in support of mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming].
+
+The mm-ADT type below contains both monoidal (serial composition) and group (parallel branching) components whose construction is captured by the bottom morphism of the diagram above. Note that `[explain]` is appended for educational purposes only -- so as to detail the \$\Rightarrow\$ composition.
+
+image::poly-embed-composition.svg[width=220,align=center]
+
+[exec]
+----
+int{3}[mult,10][is>20 -> [+70,+170,+270], %
+                is>10 -> [*10,*20,*30]  , %
+                _     -> {0}            ][plus,100][explain]
+----
+
+
+The above type can be expressed in a pure `poly` form as demonstrated below where `;` is serial composition and `,` is parallel branching. This construction is captured by the slanted morphism in the diagram above.
+
+image::poly-embed-lifting.svg[width=220,align=center]
+
+[exec]
+----
+(int{3};[mult,10];[[[is>20];[+70,+170,+270]], %
+                   [[is>10];[*10,*20,*30  ]], %
+                   [[_]    ;[{0}          ]]];[plus,100])
+----
+
+Finally, both types have a respective evaluation that yields the same result, where the final expression binds (`-<`) the values 1, 2, and 3 to the indeterminate terms, thus solving (`>-`) the https://en.wikipedia.org/wiki/Polynomial_ring[polynomial] equation.
+
+image::poly-embed-solve.svg[width=220,align=center]
+
+[exec]
+----
+[1,2,3] => int{3}[mult,10][is>20 -> [+70,+170,+270], %
+                           is>10 -> [*10,*20,*30]  , %
+                           _     -> {0}            ][plus,100]
+
+[1,2,3]-<([int{3};[mult,10];[[[is>20];[+70,+170,+270]], %
+                            [[is>10];[*10,*20,*30  ]], %
+                            [[_]    ;[{0}          ]]];[plus,100]])>-
+----
+
+mm-ADT can be https://en.wikipedia.org/wiki/Embedding[embedded] in `poly` itself. The formal proof of this fact demonstrates that the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture], the two https://en.wikipedia.org/wiki/Ring_%28mathematics%29[ring] operators (\$+\$ and \$*\$), and the _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] operator (\$\oplus\$) are sufficiently expressive to yield a https://en.wikipedia.org/wiki/Turing_completeness[Turing Complete] computing machine.
 
 '''
 
