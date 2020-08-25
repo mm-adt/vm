@@ -2408,9 +2408,9 @@ mm&gt; ('a'-&gt;1,'b'-&gt;2,'a'-&gt;3)&gt;-
 <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a'{?};'b';'a';'b')
-==&gt;('a'{?};'b';'a';'b')
-mm&gt; ('a'{?};'b';'a';'b')&gt;-
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a';'b';'a';'b')
+==&gt;('a';'b';'a';'b')
+mm&gt; ('a';'b';'a';'b')&gt;-
 ==&gt;'b'</code></pre>
 </div>
 </div>
@@ -2434,21 +2434,21 @@ mm&gt; ('a'-&gt;1;'b'-&gt;2;'a'-&gt;3)&gt;-
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a><br>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a><br>
 <a href="https://en.wikipedia.org/wiki/Scalar_(mathematics)">scalar</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a'{?}|'b'|'a'|'b')
-==&gt;('a'{?}|'b')
-mm&gt; ('a'{?}|'b'|'a'|'b')&gt;-
-==&gt;'a'{?}</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a'|'b'|'a'|'b')
+==&gt;('a')
+mm&gt; ('a'|'b'|'a'|'b')&gt;-
+==&gt;'a'</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p></p>
 </div></div></td>
 <th class="tableblock halign-center valign-top"><p class="tableblock"><code>|</code></p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a><br>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a><br>
 <a href="https://en.wikipedia.org/wiki/Tuple">pair</a></p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
@@ -2482,7 +2482,7 @@ such that when two term objects are not equal, the <code>poly</code> is <a href=
 </div>
 <div class="paragraph">
 <div class="title">|-poly Collections</div>
-<p>The <strong>|-polys</strong> capture a non-commutative additive group. The <code>|-poly</code> collections are less useful than the <code>|-poly</code> controls.</p>
+<p>The <strong>|-polys</strong> capture the non-commutative additive group of the mm-ADT <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a>. A forthcoming section detailing mm-ADT&#8217;s ring algebra will discuss the <strong>reduce near-ring</strong>. For now, note that the <code>|-poly</code> collections yield singleton <code>lsts</code> and <code>recs</code>. As such, the <code>|-polys</code> are less useful as collections than as controls.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2500,7 +2500,7 @@ When each <code>poly</code> kind (<code>lst</code> or <code>rec</code>) contains
 <div class="sect5">
 <h6 id="_poly_controls">Poly Controls</h6>
 <div class="paragraph">
-<p>The mm-ADT ring&#8217;s additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> operator is accessible via the <code>[branch]</code> instruction. The <code>[branch]</code> instruction&#8217;s argument is a <code>poly</code>. Each term of the <code>poly</code> argument is an operand of the ring&#8217;s \$+\$-operator. In this way, each of the 6 <code>poly</code> forms represents a particular <a href="https://en.wikipedia.org/wiki/Control_flow">control structure</a>. Due to the prevalent use of <code>[branch]</code>, <code>mmlang</code> offers a sugar&#8217;d encoding of <code>[ ]</code>, where both the instruction opcode and the <code>poly</code> parentheses are not denoted. For example, <code>[branch,(+1,+2,+3)]</code> is equivalent to <code>[+1,+2,+3]</code>.</p>
+<p>The mm-ADT ring&#8217;s additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> operator is accessible via the <code>[branch]</code> instruction. The <code>[branch]</code> instruction&#8217;s argument is a <code>poly</code>. Each term of the <code>poly</code> argument is an operand of the ring&#8217;s \$+\$-operator. In this way, each of the 6 <code>poly</code> forms represents a particular <a href="https://en.wikipedia.org/wiki/Control_flow">control structure</a>. Due to the prevalent use of <code>[branch]</code>, <code>mmlang</code> offers the sugar&#8217;d encoding of <code>[ ]</code>, where both the instruction opcode and the <code>poly</code> parentheses are not written. For example, <code>[branch,(+1,+2,+3)]</code> is equivalent to <code>[+1,+2,+3]</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2613,7 +2613,10 @@ When each <code>poly</code> kind (<code>lst</code> or <code>rec</code>) contains
 <hr>
 <div class="paragraph">
 <div class="title">,-poly Controls</div>
-<p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring. The <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> and <a href="https://en.wikipedia.org/wiki/Commutative_property">commutativity</a> of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a <code>,-poly</code> are not sequentially dependent on one another. This independence enables evaluation isolation and thus, enables <a href="https://en.wikipedia.org/wiki/Parallel_computing">parallelism</a>. This realizes <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> in <code>lst</code> and conditional cascading in <code>rec</code>. In all subsequent <code>[branch,poly]</code> equations to follow, \$x \in \tt{obj}\$ is an incoming <code>obj</code> to the <code>[branch]</code> instruction.</p>
+<p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring. The <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> and <a href="https://en.wikipedia.org/wiki/Commutative_property">commutativity</a> of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a <code>,-poly</code> are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes <a href="https://en.wikipedia.org/wiki/Parallel_computing">parallelism</a>. The <code>,-poly</code> algebra realizes <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> in <code>lst</code> and <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> cascading in <code>rec</code>.</p>
+</div>
+<div class="paragraph">
+<p>Note that in all subsequent <code>[branch,poly]</code> equations to follow, \$x \in \tt{obj}\$ is an incoming <code>obj</code> to the respective <code>[branch]</code> instruction.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2658,7 +2661,7 @@ x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 </table>
 <div class="paragraph">
 <div class="title">;-poly Controls</div>
-<p>The <strong>;-polys</strong> capture the multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. The result of each term is the input to the next term in the sequence. In <code>lst</code>, method chaining is realized and in <code>rec</code> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> chaining.</p>
+<p>The <strong>;-polys</strong> capture the multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. The result of each term is the input to the next term in the sequence. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Method_chaining">method chaining</a> is realized and in <code>rec</code> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> chaining.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -2708,7 +2711,7 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 </table>
 <div class="paragraph">
 <div class="title">|-poly Controls</div>
-<p>The <strong>|-polys</strong> capture a non-commutative group, where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
+<p>The <strong>|-polys</strong> capture a non-commutative group derived from the <a href="https://en.wikipedia.org/wiki/Distributive_property">distributive property</a> of \$\ast\$ over \$+\$ in mm-ADT&#8217;s non-commutative <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -6322,7 +6325,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-25 00:41:59 -0600
+Last updated 2020-08-25 01:28:27 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
