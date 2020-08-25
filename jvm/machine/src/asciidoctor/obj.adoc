@@ -582,6 +582,88 @@ a|
 \]
 |===
 
+===== Type Evaluation
+
+[cols="7,2",float=right,frame=none,grid=none]
+|====
+
+| mm-ADT instructions are curried https://en.wikipedia.org/wiki/Unary_function[unary functions].
+For instance, the instruction `[neg]` takes an input `int` and outputs the inverse (or negative) `int`. Thus, `[neg]` behaves as its classic unary function counterpart
+\[
+\texttt{neg}(x) = -x,
+\]
+where `5\=>int[neg]` maps to `-5`.
+
+
+a|
+[exec]
+----
+5=>int[neg]
+5=>-5
+-5
+----
+{blank}
+|====
+
+[cols="7,3",float=right,frame=none,grid=none]
+|====
+
+| Next, suppose the https://en.wikipedia.org/wiki/Binary_function[binary function]
+\[
+\texttt{plus\}(x,y) = x + y.
+\]
+In mm-ADT, a particular evaluation may be expressed as `6\=>[plus,2]`. Given that the instruction has a https://en.wikipedia.org/wiki/Constant_function[constant] value argument of \$2\$, `[plus,2]` acts in a manner analogous to a https://en.wikipedia.org/wiki/Currying[curried] unary function.
+
+a|
+[exec]
+----
+6=>int[plus,2]
+6=>int[plus,[6=>2]]
+6=>8
+8
+----
+{blank}
+|====
+
+[cols="7,5",float=right,frame=none,grid=none]
+|====
+
+| If the argument to `[plus]` is a type (as opposed to a value), then the argument's value resolution is https://en.wikipedia.org/wiki/Dependent_type[dependent] on the incoming `obj`. For instance, if `int[plus,[mult,2]]` has an incoming `int` of 6, the argument to `[plus]` is 12.
+
+a|[exec]
+----
+6=>int[plus,[mult,2]]
+6=>int[plus,[6=>[mult,2]]]
+6=>int[plus,[6=>[mult,[6=>2]]]]
+6=>int[plus,[6=>[mult,2]]]
+6=>int[plus,12]
+6=>18
+18
+----
+{blank}
+|====
+
+
+[cols="7,5",float=right,frame=none,grid=none]
+|====
+
+| However, if the incoming `int` is 8, then the `[plus]` argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming `obj`.
+
+
+a|[exec]
+----
+8=>int[plus,[mult,2]]
+8=>int[plus,[8=>[mult,2]]]
+8=>int[plus,[8=>[mult,[8=>2]]]]
+8=>int[plus,[8=>[mult,2]]]
+8=>int[plus,16]
+8=>24
+24
+----
+{blank}
+|====
+
+
 ==== Type System
 
 [cols="^1,4,9"]
@@ -1146,7 +1228,6 @@ image::poly-embed-solve.svg[width=220,align=center]
 [1,2,3] => int{3}[mult,10][is>20 -> [+70,+170,+270], %
                            is>10 -> [*10,*20,*30]  , %
                            _     -> {0}            ][plus,100]
-
 [1,2,3]-<([int{3};[mult,10];[[[is>20];[+70,+170,+270]], %
                             [[is>10];[*10,*20,*30  ]], %
                             [[_]    ;[{0}          ]]];[plus,100]])>-
@@ -1158,24 +1239,18 @@ mm-ADT can be https://en.wikipedia.org/wiki/Embedding[embedded] in `poly` itself
 
 === The Obj Graph
 
-An mm-ADT program is a type.
-The `mmlang` parser converts a textual representation of a type into a type `obj`.
-The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger type graph (a Cayley graph).
-While a type graph is a graphical encoding of the monoidal structure of a particular subset of `obj`, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that realizes elements of the type (i.e. computed resultant values).
-These values are encoded in the value graph subgraph of the `obj` graph.
-Every aspect of an mm-ADT computation from composition to evaluation is materialized in the `obj` graph.
+An mm-ADT program is a type. The `mmlang` parser converts a textual representation of a type into a type `obj`. The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger *type graph* (a Cayley graph). While a path in the type graph is a graphical encoding of the ring structure of a type, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding in a larger *value graph*. Together, the type graph and the value graph form the `obj` graph.
 
-. *Composition*: The point-free style of `mmlang` is a function of a source vertex following by a series of instructions that yield intermediate vertices along the way.
-. *Compilation*: A path in the Cayley graph represents a program.
-By altering the head of that path with a type, the path is re-evaluated compiling the program with (potentially) a different path through the Cayley graph.
-. *Rewrite*: The vertices can be "merged" using the `[rewrite]` instruction to link two type vertices.
-. *Optimization*: Every instruction in `inst` has an associated cost.
-Rewrites create a superposition of programs.
-A https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from domain to range is a simple technique for choosing an efficient execution plan.
-. *State*: Variable bindings, type definitions, and rewrite rule are encoded in instructions (`[to]`, `[define]`, `[rewrite]` respectively).
-When the current monoid operation requires historic state information, the co-`obj` graph is searched for previously encoded stated-based `insts`.
-. *Evaluation*: When a program path is prefixed with a value, a computation takes place.
-The resultant path's tail vertex is the result of the computation.
+Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the `obj` graph. The following itemization details the role of the `obj` graph across various stages of a computation.
+
+* *Composition*: The construction of a type via the https://en.wikipedia.org/wiki/Tacit_programming[point-free] style of `mmlang` is a the lexical correlate of walking the `obj` graph from a source vertex (domain ctype) across a series of instruction-labeled edges (`inst`) to ultimately arrive at a target vertex (range ctype).
+* *Compilation*: A path in the type graph can be prefixed with another ctype (e.g. `_` to `int`). In doing so, the path is recomputed to yield a variant path.
+* *Rewrite*: Subpaths of a path in the type graph can be specied as being semantically equivalent to another path in the type graph via `poly` lifted rewriting `(y)\<=(x)`. Subsequent compilations and evaluations of the path will yield variants.
+* *Optimization*: Every instruction in `inst` has an associated cost. Rewrites create a superposition of programs. Given that the `obj` graph https://en.wikipedia.org/wiki/Commutative_diagram[commutes], a https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from a domain vertex to a range vertex is a simple technique for choosing an efficient execution plan.
+* *Variables*: Variable bindings are encoded in instructions. When the current instruction being evaluated requires historic state information, the `obj`^op^ graph (with edges reversed) is searched in order to locate the vertex incident to a variable `inst`.
+* *Evaluation*: Program evaluation binds the type graph to the value graph. When a type path is prefixed with a value `obj`, the instructions along the path operate on the value, where the path's target vertex is the result of the computation.
+
+This section will discuss the particulars of the aforementioned uses of the `obj` graph.
 
 ==== State
 
@@ -1194,63 +1269,7 @@ It is through *multiple distinct identities* in `inst` that mm-ADT supports the 
 | https://en.wikipedia.org/wiki/Rewriting[rewrite rules]                     | `[rewrite]`  |       | type equivalences
 |===
 
-mm-ADT represents computations via https://en.wikipedia.org/wiki/Unary_function[unary functions].
-For instance, the instruction `[neg]` takes an input `int` and returns the inverse (or negative) `int`.
-Thus, `[neg]` behaves as its classic unary function counterpart \$\tt{n\eg}(x) \mapsto -x\$, where `5 \=> int[neg]` maps to `-5`.
-Next, suppose the instruction `[plus,2]`.
-Given an input of \$6\$, `[plus,2]` ultimately evaluates the https://en.wikipedia.org/wiki/Binary_function[binary function] \$6+2\$.
-However, the instruction's argument is the https://en.wikipedia.org/wiki/Constant_function[constant] value \$2\$ and therefore, `[plus,2]` acts in a manner analogous to a https://en.wikipedia.org/wiki/Currying[curried] unary function.
 
-[.small]
-[cols="1,2,3,3"]
-|===
-^| pure unary  ^| curried unary ^| dependent unary ^| dependent unary
-
-|
-\[
-\begin{split}
-1 &=> \text{int}[\texttt{neg}]  \\
--1
-\end{split}
-\]
-|
-\[
-\begin{split}
-6 &=> \texttt{int}[\texttt{plus\},2]      \\
-6 &=> \texttt{int}[\texttt{plus\},6 => 2] \\
-6 &=> \texttt{int}[\texttt{plus\},2]      \\
-6 &=> 8 \\
-8
-\end{split}
-\]
-|
-\[
-\begin{split}
-6 &=> \texttt{int}[\texttt{plus\},[\texttt{mult},2]]            \\
-6 &=> \texttt{int}[\texttt{plus\},6 => [\texttt{mult},2]]        \\
-6 &=> \texttt{int}[\texttt{plus\},6 => [\texttt{mult},6 => 2]]   \\
-6 &=> \texttt{int}[\texttt{plus\},6 => [\texttt{mult},2]]        \\
-6 &=> \texttt{int}[\texttt{plus\},12]                            \\
-6 &=> 18                                                         \\
-18
-\end{split}
-\]
-|
-\[
-\begin{split}
-8 &=> \texttt{int}[\texttt{plus\},[\texttt{mult},2]]            \\
-8 &=> \texttt{int}[\texttt{plus\},8 => [\texttt{mult},2]]        \\
-8 &=> \texttt{int}[\texttt{plus\},8 => [\texttt{mult},8 => 2]]   \\
-8 &=> \texttt{int}[\texttt{plus\},8 => [\texttt{mult},2]]        \\
-8 &=> \texttt{int}[\texttt{plus\},16]                            \\
-8 &=> 24                                                         \\
-24
-\end{split}
-\]
-|===
-
-If the argument to `[plus]` is a type (as opposed to a value), then the argument's value resolution is https://en.wikipedia.org/wiki/Dependent_type[dependent] on the incoming `obj`.
-For instance, if `int[plus,[mult,2]]` has an incoming `int` of 6, the argument to `[plus]` is 12. However, if the incoming `int` is 8, then the `[plus]` argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming `obj`.
 In particular, state stored in the path history of the `obj`.
 
 [exec]
