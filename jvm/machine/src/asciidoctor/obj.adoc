@@ -835,8 +835,7 @@ image:poly-kinds.svg[width=350,float=left]
 
 A `poly` can be used a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 forms (`,`,`;`,`|`). The forms determine the *ambient algebra* associated with the collection. These algebras are manifestations of particular magmas of the underlying algebra of mm-ADT: a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] with unity maintaining a left https://en.wikipedia.org/wiki/Module_(mathematics)[R-module].
 
-[.small]
-[cols="^1h,3,9,^1h,3,9"]
+[cols="^1h,4,9,^1h,4,9"]
 |===
 | lst | collection | mmlang example | rec | collection | mmlang example
 
@@ -897,7 +896,7 @@ a|
 |===
 
 .,-poly Collections
-The algebra of the *,-polys* is the additive abelian group of the mm-ADT ring. This means that the `,` (i.e., \$\+\$) is commutative and thus, the terms need not maintain their lexical order. Moreover, given quantification, should two `,-poly` terms be equal at the _object_-level, they can be merged according to the \$+\$-operator's semantics of
+The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring, where the carrier set is `obj` and the https://en.wikipedia.org/wiki/Commutative_property[commutative] binary operator is `,`. Being commutative, the terms are unordered. Moreover, given quantification, should two `,-poly` terms have equal _objects_, they can be merged using the mm-ADT \$+\$-operator equation of
 \[
 a_{q_0} + b_{q_1} =
 \begin{cases}
@@ -905,17 +904,15 @@ a_{q_0} + b_{q_1} =
   a_{q_0} + b_{q_1} & \text{otherwise},
 \end{cases}
 \]
-such that when two term objects are not equal, the `poly` is https://en.wikipedia.org/wiki/Irreducible_representation[irreducible]. The lack of order and the "weighting" of quantifiers allows `,-polys` to be used as https://en.wikipedia.org/wiki/Multiset[multisets] (also known as bags or weighted sets). When a `,-poly` is merged via `[merge]` (sugar'd `>-`), those terms that are no longer reducible are the result.
+such that when two term objects are not equal, the `poly` is https://en.wikipedia.org/wiki/Irreducible_representation[irreducible]. The lack of order along with quantifier "weighting," `,-poly` collections realize https://en.wikipedia.org/wiki/Multiset[multiset] semantics (also known as bags or weighted sets).
 
 .;-poly Collections
-The algebra of the *;-polys* is the non-commutative, multiplicative monoid of the mm-ADT ring. Due to non-commutativity, the terms may not be rearranged around `;` (i.e., \$\ast\$). The benefit of this monoidal algebra is that it enables ordered sequences which effect the semantics of a https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]. Moreover, when a `;-poly` is merged, the \$\ast\$-operator's semantics are
-\[
-a_{q_0} * b_{q_1} = ab_{q_0 * q_1}.
-\]
-In other words, the pairwise multiplication common of the https://en.wikipedia.org/wiki/Direct_product[direct product] of two algebraic structures (the _object_ https://en.wikipedia.org/wiki/Semigroup[semigroup] and the _quantifier_ https://en.wikipedia.org/wiki/Ring_%28mathematics%29[ring]). As there is no case-statement in the equation above, every `;-poly` can be reduced with the result of the merge being the final reduced term.
+The *;-polys* capture the non-commutative, multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] of the mm-ADT ring. Due to non-commutativity, the `;` deliminated terms are ordered. The consequence is a collection data structure with https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-semantics.
 
 .|-poly Collections
-...
+The *|-polys* capture a non-commutative additive group.
+
+NOTE: When each `poly` kind (`lst` or `rec`) contains 0 or 1 term, their behavior's are equivalent. It is only at 2+ terms that their respective algebras are discernible and instructions such as `[eq]` consider the `poly` term separator in their calculation.
 
 
 [discrete]
@@ -923,8 +920,7 @@ In other words, the pairwise multiplication common of the https://en.wikipedia.o
 
 The mm-ADT ring's additive abelian (https://en.wikipedia.org/wiki/Commutative_property[commutative]) group operator is accessible via the `[branch]` instruction. The `[branch]` instruction argument is a `poly`, where each term of the `poly` is an operand of the ring's \$+\$-operator. In this way, a `poly` serves as a https://en.wikipedia.org/wiki/Control_flow[control structure]. Due to the prevelant use of this instruction, their is a simple syntactic sugar encoding in `mmlang`: `[ ]`.
 
-[.small]
-[cols="^1h,3,9,^1h,3,9"]
+[cols="^1h,4,9,^1h,4,9"]
 |===
 | lst | control | mmlang example | rec | control | mmlang example
 
@@ -933,8 +929,6 @@ https://en.wikipedia.org/wiki/Union_(set_theory)[union]
 a|
 [exec,prompt="mm> "]
 ----
-int[+1,+3,+1]
-
 6 => int[+1,+3,+1]
 ----
 {blank}
