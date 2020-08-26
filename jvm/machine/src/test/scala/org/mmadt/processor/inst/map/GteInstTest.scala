@@ -22,52 +22,44 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Obj.{booleanToBool, intToInt}
+import org.mmadt.language.obj.`type`.__.{gte, mult}
 import org.mmadt.language.obj.op.map.GteOp
-import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.storage.StorageFactory.{bool, int}
 
-class GteInstTest extends FunSuite with TableDrivenPropertyChecks {
-
-  test("[gte] value, type, strm, anon combinations") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
-        //////// INT
-        (int(2).gte(1), btrue, "value"), // value * value = value
-        (int(2).q(10).gte(1), btrue.q(10), "value"), // value * value = value
-        (int(2).q(10).gte(1).q(20), btrue.q(200), "value"), // value * value = value
-        (int(2).gte(int(1).q(10)), btrue, "value"), // value * value = value
-        (int(2).gte(int), btrue, "value"), // value * type = value
-        (int(2).gte(__.mult(int)), bfalse, "value"), // value * anon = value
-        (int.gte(int(2)), int.gte(int(2)), "type"), // type * value = type
-        (int.q(10).gte(int(2)), int.q(10).gte(2), "type"), // type * value = type
-        (int.gte(int), int.gte(int), "type"), // type * type = type
-        (int(1, 2, 3).gte(2), bool(false, true, true), "strm"), // strm * value = strm
-        (int(1, 2, 3).gte(int(2).q(10)), bool(false, true, true), "strm"), // strm * value = strm
-        (int(1, 2, 3).gte(int(2)).q(10), bool(bfalse.q(10), btrue.q(10), btrue.q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3).gte(int(2)).q(10).id, bool(bfalse.q(10), btrue.q(10), btrue.q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3).gte(int(2)).q(10).id.q(5), bool(bfalse.q(50), btrue.q(50), btrue.q(50)), "strm"), // strm * value = strm
-        (int(1, 2, 3).gte(int), bool(true, true, true), "strm"), // strm * type = strm
-        (int(1, 2, 3).gte(__.mult(int)), bool(true, false, false), "strm"), // strm * anon = strm
-        //////// REAL
-        (real(2.0).gte(1.0), btrue, "value"), // value * value = value
-        (real(2.0).gte(real), btrue, "value"), // value * type = value
-        (real(2.0).gte(__.mult(real)), bfalse, "value"), // value * anon = value
-        (real.gte(real(2.0)), real.gte(2.0), "type"), // type * value = type
-        (real.gte(real), real.gte(real), "type"), // type * type = type
-        (real(1.0, 2.0, 3.0).gte(2.0), bool(false, true, true), "strm"), // strm * value = strm
-        (real(1.0, 2.0, 3.0).gte(real), bool(true, true, true), "strm"), // strm * type = strm
-        (real(1.0, 2.0, 3.0).gte(__.mult(real)), bool(true, false, false), "strm"), // strm * anon = strm
-      )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result)
-    }
-  }
-
-  test("[gte] exceptions") {
-    assertResult(LanguageException.unsupportedInstType(bfalse, GteOp(btrue)).getMessage)(intercept[LanguageException](bfalse ==> __.gte(btrue)).getMessage)
-  }
-}
+class GteInstTest extends BaseInstTest(
+  testSet("[gte] table test",
+    comment("int"),
+    testing(2, gte(1), true, "2>=1"),
+    testing(2.q(10), int.q(10).gte(1), true.q(10), "2{10} => int{10}[gte,1]"),
+    testing(2.q(10), gte(1).q(20), true.q(200), "2{10}[gte,1]{20}"),
+    testing(2, gte(1.q(10)), true, "2 >= 1{10}"),
+    testing(2, gte(int), true, "2[gte,int]"),
+    testing(2, int.gte(mult(int)), false, "2 => int[gte,[mult,int]]"),
+    testing(int, int.gte(2), int.gte(2), "int => int>=2"),
+    testing(int.q(10), gte(2), int.q(10).gte(2), "int{10} => [gte,2]"),
+    testing(int, gte(int), int.gte(int), "int => >=int"),
+    testing(int, int.gte(int), int.gte(int), "int => int>=int"),
+    /*
+    testing(int(1, 2, 3).gte(2), bool(false, true, true), "strm"),
+    testing(int(1, 2, 3).gte(int(2).q(10)), bool(false, true, true), "strm"),
+    testing(int(1, 2, 3).gte(int(2)).q(10), bool(bfalse.q(10), btrue.q(10), btrue.q(10)), "strm"),
+    testing(int(1, 2, 3).gte(int(2)).q(10).id, bool(bfalse.q(10), btrue.q(10), btrue.q(10)), "strm"),
+    testing(int(1, 2, 3).gte(int(2)).q(10).id.q(5), bool(bfalse.q(50), btrue.q(50), btrue.q(50)), "strm"),
+    testing(int(1, 2, 3).gte(int), bool(true, true, true), "strm"),*/
+    testing(int(1, 2, 3), int.q(3).gte(mult(int)), bool(true, false, false), "[1,2,3] => int{3}[gte,[mult,int]]"),
+    comment("real"),
+    testing(2.0, gte(1.0), true, "2.0 >= 1.0"),
+    /*testing(real(2.0).gte(real), btrue, "value"),
+    testing(real(2.0).gte(__.mult(real)), bfalse, "value"),
+    testing(real.gte(real(2.0)), real.gte(2.0), "type"),
+    testing(real.gte(real), real.gte(real), "type"),
+    testing(real(1.0, 2.0, 3.0).gte(2.0), bool(false, true, true), "strm"),
+    testing(real(1.0, 2.0, 3.0).gte(real), bool(true, true, true), "strm"),
+    testing(real(1.0, 2.0, 3.0).gte(__.mult(real)), bool(true, false, false), "strm"),*/
+    comment("exceptions"),
+    testing(false, gte(true), LanguageException.unsupportedInstType(false, GteOp(true)), "false >= true")
+  ))

@@ -33,7 +33,6 @@ import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class LtInstTest extends BaseInstTest(
-
   testSet("[lt] table testing",
     comment("int"),
     testing(int(2), lt(1), bfalse, "2 < 1"),
@@ -61,6 +60,6 @@ class LtInstTest extends BaseInstTest(
     testing(real(1.0, 2.0, 3.0), lt(real), bool(false, false, false), "[1.0,2.0,3.0] < real"),
     testing(real(1.0, 2.0, 3.0), lt(mult(real)), bool(false, true, true), "[1.0,2.0,3.0][lt,[mult,real]]"),
     comment("exception"),
-    testing(bfalse, lt(btrue), LanguageException.unsupportedInstType(bfalse, LtOp(btrue)), "false < true")
+    testing(false, lt(true), LanguageException.unsupportedInstType(false, LtOp(true)), "false < true")
   )) {
 }

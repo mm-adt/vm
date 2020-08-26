@@ -22,60 +22,26 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.`type`.__
+
+import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__.tail
-import org.mmadt.language.obj.{Lst, Obj, Str}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
 class TailInstTest extends BaseInstTest(
   testSet("[tail] table test",
-    comment("lst"),
-    testing(1`;`2`;`3, lst.tail, 2`;`3, "(1;2;3) => lst[tail]"),
-    testing(1`;`2`;`3, tail, 2`;`3, "(1;2;3)[tail]"),
+    comment(";-lst"),
+    testing(1 `;`, tail, lst(), "(1)[tail]"),
+    testing(1 `;`, lst.tail, lst(), "(1) => lst[tail]"),
+    testing(1 `;` 2, lst.tail, 2 `;`, "(1;2) => lst[tail]"),
+    testing(1 `;` 2 `;` 3, lst.tail, 2 `;` 3, "(1;2;3) => lst[tail]"),
+    testing(1 `;` 2 `;` 3, tail, 2 `;` 3, "(1;2;3)[tail]"),
+    testing((1 `;` 2 `;` 3).q(10), tail, (2 `;` 3).q(10), "(1;2;3){10}[tail]"),
+    testing((1 `;` 2 `;` 3).q(10), tail.q(2), (2 `;` 3).q(20), "(1;2;3){10}[tail]{2}"),
+    comment("|-lst"),
+    testing(int(1) `|` 2 `|` 3, tail, int(2) `|` 3, "(1|2|3)[tail]"),
+    comment(";-rec"),
+    testing(str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3), tail, (str("b") -> int(2) `_;` str("c") -> int(3)), "('a'->1;'b'->2;'c'->3)[tail]"),
+    testing((str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3)).q(5), tail.q(10), (str("b") -> int(2) `_;` str("c") -> int(3)).q(50), "('a'->1;'b'->2;'c'->3){5}[tail]{10}"),
   ))
-{
-
-
-  test("[tail] anonymous type") {
-    assertResult("b" |)(("a" | "b") ==> __.tail)
-    assertResult("b" | "c")(("a" | "b" | "c") ==> __.tail)
-    //
-    assertResult("b" `;`)(("a" `;` "b") ==> __.tail)
-    assertResult("b" `;` "c")(("a" `;` "b" `;` "c") ==> __.tail)
-  }
-
-  test("[tail] w/ parallel poly]") {
-    val check: TableFor2[Lst[Str], Obj] =
-      new TableFor2(("parallel", "tail"),
-        (str("a") |, (str("a") |).tail),
-        (str("a") | "b", str("b") |),
-        (str("a") | "b" | "c", str("b") | str("c")),
-        (str("d") | "b" | "c", str("b") | str("c")),
-      )
-    forEvery(check) { (left, right) => {
-      assertResult(right)(left.tail)
-    }
-    }
-  }
-
-  test("[tail] w/ serial poly") {
-    val check: TableFor2[Lst[Str], Obj] =
-      new TableFor2(("serial", "tail"),
-        //(str("a") /, /),
-        (str("a") `;` "b", str("b") `;`),
-        (str("a") `;` "b" `;` "c", str("b") `;` "c"),
-        (str("d") `;` "b" `;` "c", str("b") `;` "c"),
-      )
-    forEvery(check) { (left, right) => {
-      assertResult(right)(left.tail)
-    }
-    }
-  }
-
-
-}

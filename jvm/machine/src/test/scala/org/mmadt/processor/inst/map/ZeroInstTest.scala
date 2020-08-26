@@ -50,7 +50,7 @@ class ZeroInstTest extends BaseInstTest(
     testing(real, zero, real.zero, "real => [zero]"),
     testing(real(-1.0, -2.0, -3.0), zero, 0.0.q(3), "[-1.0,-2.0,-3.0][zero]"),
     testing(real(-1.0, -2.0, -3.0), plus(1.0).q(10).zero, 0.0.q(30), "[-1.0,-2.0,-3.0][plus,1.0]{10}[zero]"),
-   testing(real(-1.0, -2.0, -3.0), real.q(3).plus(1.0).q(20).zero, 0.0.q(60), "[-1.0,-2.0,-3.0] => real{3}[plus,1.0]{20}[zero]"),
+    testing(real(-1.0, -2.0, -3.0), real.q(3).plus(1.0).q(20).zero, 0.0.q(60), "[-1.0,-2.0,-3.0] => real{3}[plus,1.0]{20}[zero]"),
     comment("str"),
     testing("a", zero, "", "'a'[zero]"),
     testing("b", str.zero, "", "'b' => str[zero]"),
