@@ -32,13 +32,13 @@ import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Bool, Int}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.processor.inst.trace.DefineInstTest.MODEL
+import org.mmadt.processor.inst.trace.DefineInstTest.{MODEL, myListType, natType}
 import org.mmadt.storage.StorageFactory._
 
 object DefineInstTest {
   private val natType: Type[Int] = int.named("nat") <= int.is(int.gt(0))
-  private val abcType: Type[__] = __("mylist") <= __.-<(is(eqs(1)) `|` (1 `;` __("mylist"))) >-
-  private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(abcType)
+  private val myListType: Type[__] = __("mylist") <= __.-<(is(eqs(1)) `|` (1 `;` __("mylist"))) >-
+  private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(myListType)
   //     testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
   //    testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
 
@@ -50,12 +50,13 @@ class DefineInstTest extends BaseInstTest(
     testing(-2, a(__("nat")), false),
     testing(-2, int.a(__("nat").plus(100)), false),
     testing(2, as(__("nat")).plus(0), 2.named("nat")),
-    // testing(2, as(__("nat")).plus(-10), LanguageException.typingError(-8.named("nat"), __("nat") <= int.is(int.gt(0))), "2[as,nat][plus,-10]"),
+    testing(2, as(__("nat")).plus(-10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10]"),
     comment("mylist"),
     testing(1 `;` (1 `;` 1), lst.a(__("mylist")), true, "(1;(1;1)) => lst[a,mylist]"),
     testing(1 `,` (1 `,` 2), a(__("mylist")), false),
     testing(1 `,` (2 `,` 1), a(__("mylist")), false),
     testing(1 `,` (1 `,` 2), a(__("mylist")), false),
+    testing(1 `;` (1 `;` 1), as(__("mylist")).put(0, 34), LanguageException.typingError((34 `;` 1 `;` (1 `;` 1)).named("mylist"), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
   )
 ) {
 

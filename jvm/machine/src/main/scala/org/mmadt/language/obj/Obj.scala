@@ -202,4 +202,14 @@ object Obj {
           else throw LanguageException.labelNotFound(obj, arg.name)
       }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
   }
+
+  def objTypeCheck[A <: Obj](source: A): A = {
+    if (!source.isInstanceOf[Model] && source.isInstanceOf[Value[_]] && Tokens.named(source.name)) {
+      val resolvedTarget: Type[Obj] = source.model.search[A](source.name, source).map(x => x.asInstanceOf[Type[Obj]]).orNull
+      // println(source + "---" + resolvedTarget)
+      if (null != resolvedTarget && !Obj.resolveInternal(toBaseName(source), toBaseName(resolvedTarget)).alive)
+        throw LanguageException.typingError(source, resolvedTarget.named(source.name))
+    }
+    source
+  }
 }

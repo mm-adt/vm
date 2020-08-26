@@ -57,12 +57,8 @@ object AsOp extends Func[Obj, Obj] {
     source match {
       case value: Strm[Obj] => value(x => AsOp.autoAsType(x, target, rangeType, domain))
       case _ =>
-        if (source.name.equals(target.name)) {
-          val resolvedTarget: Type[Obj] = Obj.resolveToken(source, target).asInstanceOf[Type[Obj]]
-          if (!Obj.resolveInternal(toBaseName(source), resolvedTarget).alive)
-            throw LanguageException.typingError(source, resolvedTarget.named(target.name))
-          source
-        } else if (source.name.equals(target.name) || __.isAnonObj(target) || source.model.vars(target.name).isDefined) source
+        if (source.name.equals(target.name)) Obj.objTypeCheck(source)
+        else if (__.isAnonObj(target) || source.model.vars(target.name).isDefined) source
         else {
           source match {
             case _: Value[_] => internalConvertAs(source, target).hardQ(source.q)
