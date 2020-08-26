@@ -494,6 +494,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_poly_lifting">Poly Lifting</a></li>
 </ul>
 </li>
+<li><a href="#_refinement_types">Refinement Types</a></li>
 </ul>
 </li>
 </ul>
@@ -3030,6 +3031,38 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_refinement_types">Refinement Types</h5>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Refinement_type">Refinement types</a> extend a language&#8217;s base types with <a href="https://en.wikipedia.org/wiki/Predicate_(mathematical_logic)">predicates</a> that further <em>refine</em> (constrain) the base type values. A classic example is the set of natural numbers (\$\mathbb{N}\$) as a refinement of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In <a href="https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate">set builder notation</a>, specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
+\[
+\mathbb{N} = \{n \in \mathbb{Z} \;|\; n &gt; 0\}.
+\]
+In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form of <code>int{?}&lt;=int[is,[gt,0]]</code>. mm-ADT supports user defined types. In fact, mm-ADT&#8217;s primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The <code>[define]</code> instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on <em>model-ADTs</em>, the more general <code>[model]</code> instruction will be presented.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Deep Dive 2. mm-ADT Global Type</div>
+<div class="content">
+<div class="paragraph">
+<p>All <code>mmlang</code> examples with a <code>:type</code> expression are defining a <strong>global type</strong> (which itself may define zero or more types). The global type is prefixed to all subsequent expressions. In many ways, a global type is like an <a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a> <a href="https://en.wikipedia.org/wiki/Object_file">object file</a>. On the other hand, model-ADTs (of <code>[model]</code>) are similar to the <a href="https://en.wikipedia.org/wiki/Class_(computer_programming)">class files</a> of <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object-oriented languages</a>.</p>
+</div>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0]]
+mmlang&gt;
+mmlang&gt; 10 =&gt; nat
+==&gt;nat:10
+mmlang&gt; 0 =&gt; nat
+language error: 0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]
+mmlang&gt; 10 =&gt; nat[plus,5]
+==&gt;nat:15
+mmlang&gt; 10 =&gt; nat[plus,-10]
+language error: nat:0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
+</div>
+</div>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -4613,7 +4646,7 @@ The significance of branching being fundamental in mm-ADT is that individual bra
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. Process Architectures Sympathetic to the Type Ringoid</div>
+<div class="title">Deep Dive 3. Process Architectures Sympathetic to the Type Ringoid</div>
 <div class="content">
 <div class="paragraph">
 <p>An <code>mmlang</code> expression denotes a <strong>type</strong> (program) that is executed by a processor.
@@ -4775,7 +4808,7 @@ The axioms for both left and right modules are provided below, where if \$A\$ is
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 3. Poly Constructs in mmlang</div>
+<div class="title">Deep Dive 4. Poly Constructs in mmlang</div>
 <div class="content">
 <table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
@@ -6503,7 +6536,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-26 03:01:55 -0600
+Last updated 2020-08-26 03:08:25 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
