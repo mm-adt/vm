@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{IntType, LstType, Type, __}
+import org.mmadt.language.obj.`type`.{LstType, Type, __}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{IntValue, LstValue, Value}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -73,10 +73,10 @@ object GetOp extends Func[Obj, Obj] {
           else zeroObj.via(start, newInst)
         else if (1 == astrm.values.size) astrm.values.head match {
           case atype: Type[_] => atype.via(start, newInst)
-          case avalue: Value[_] => avalue.clone(q = avalue.q.mult(inst.q), via = (start, newInst))
+          case avalue: Value[_] => avalue.clone(q = avalue.q.mult(start.q).mult(inst.q), via = (start, newInst))
         } else
-          astrm(x => x.clone(q = x.q.mult(inst.q), via = (start, newInst)))
-      case avalue: Value[_] => avalue.clone(q = avalue.q.mult(inst.q), via = (start, newInst))
+          astrm(x => x.clone(q = x.q.mult(start.q).mult(inst.q), via = (start, newInst)))
+      case avalue: Value[_] => avalue.clone(q = avalue.q.mult(start.q).mult(inst.q), via = (start, newInst))
       case _ => value.via(start, newInst)
     }
   }

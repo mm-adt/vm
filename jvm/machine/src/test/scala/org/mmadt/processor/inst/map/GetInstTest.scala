@@ -45,6 +45,7 @@ class GetInstTest extends BaseInstTest(
     testing(1 `;` 2 `;` 3.q(5), get(2, int), 3.q(5), "(1;2;3{5})[get,2,int]"),
     testing(1 `;` (2 `;` 3) `;` 4, get(1), (2 `;` 3), "(1;(2;3);4).1"),
     testing(1 `;` (2 `;` 3).q(10) `;` 4, get(1).q(2), (2 `;` 3).q(20), "(1;(2;3){10};4).1{2}"),
+    testing((1 `;` (2 `;` 3).q(10) `;` 4).q(5), get(1).q(2), (2 `;` 3).q(100), "(1;(2;3){10};4){5}.1{2}"),
     // testing(1 `;` 2 `;` 3, get(2, str), "3", "(1;2;3)[get,2,str]"),
     comment(";-lst type index"),
     testing(1 `;` 2 `;` 3, lst.get(int.is(gt(0))), int(2, 3), "(1;2;3) => lst[get,int[is>0]]"),
@@ -65,6 +66,7 @@ class GetInstTest extends BaseInstTest(
   testSet("[get] |-lst test",
     comment("|-lst int index"),
     testing("a" `|` "b" `|` "c", get(0), "a", "('a'|'b'|'c').0"),
+    testing(("a".q(2) `|` "b" `|` "c").q(5), get(0).q(10), "a".q(100), "('a'{2}|'b'|'c'){5}.0{10}"),
     testing("a".q(10) `|` "b".q(0) `|` "c", get(0).q(4), "a".q(40), "('a'{10}|'b'{0}|'c').0{4}"), // TODO: should we follow the infix convention of .{4}0 ?
     testing("a".q(0) `|` "b" `|` "c", get(0), "b", "('a'{0}|'b'|'c').0"),
     comment("|-lst exceptions"),
@@ -80,6 +82,7 @@ class GetInstTest extends BaseInstTest(
     testing(str("a") -> int(1) `_,` str("a") -> int(2) `_,` str("b") -> int(3), get("a").q(10), int(1.q(10), 2.q(10)), "('a'->1,'a'->2,'b'->3).a{10}"),
     testing(str("a") -> 1.q(2, 3) `_,` str("a") -> 2.q(7) `_,` str("b") -> 3.q(2), get("a").q(10), int(1.q(20, 30), 2.q(70)), "('a'->1{2,3},'a'->2{7},'b'->3{2}).a{10}"),
     testing(str("a") -> 1.q(2, 3) `_,` str("a") -> 1.q(7) `_,` str("b") -> 3.q(2), get("a").q(10), 1.q(90, 100), "('a'->1{2,3},'a'->1{7},'b'->3{2}).a{10}"),
+    testing((str("a") -> 1.q(2, 3) `_,` str("a") -> 1.q(7) `_,` str("b") -> 3.q(2)).q(20), get("a").q(10), 1.q(1800, 2000), "('a'->1{2,3},'a'->1{7},'b'->3{2}){20}.a{10}"),
     comment(",-rec type index"),
     testing(int(1) -> int(1) `_,` int(100) -> int(2) `_,` int(200) -> int(3), get(int.is(gt(50))), int(2, 3), "(1->1,100->2,200->3)[get,int[is>50]]"),
     testing(int(1) -> int(1) `_,` int(100) -> 2.q(10) `_,` int(200) -> 2.q(20), get(int.is(gt(50))).q(100), 2.q(3000), "(1->1,100->2{10},200->2{20})[get,int[is>50]]{100}"),
