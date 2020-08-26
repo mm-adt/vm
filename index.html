@@ -495,6 +495,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_refinement_types">Refinement Types</a></li>
+<li><a href="#_dependent_types">Dependent Types</a></li>
 <li><a href="#_recursive_types">Recursive Types</a></li>
 </ul>
 </li>
@@ -3052,14 +3053,13 @@ In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0]]
-mmlang&gt;
 mmlang&gt; 10 =&gt; nat
 ==&gt;nat:10
-mmlang&gt; 0 =&gt; nat
-language error: 0 is not a nat
+mmlang&gt; -1 =&gt; nat
+language error: -1 is not a nat
 mmlang&gt; 10 =&gt; nat[plus,5]
 ==&gt;nat:15
-mmlang&gt; 10 =&gt; nat[plus,-10]
+mmlang&gt; 10 =&gt; nat[plus,5][plus,-15]
 language error: 0 is not a nat</code></pre>
 </div>
 </div>
@@ -3075,14 +3075,52 @@ language error: 0 is not a nat</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0],
-                 date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
-                 date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
-mmlang&gt;
+                date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
+                date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
 mmlang&gt; (8;26;2020) =&gt; date
 ==&gt;date:(nat:8;nat:26;nat:2020)
 mmlang&gt; (8;26)      =&gt; date
 ==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
 </div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_dependent_types">Dependent Types</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
+                        single&lt;=vec:(lst,is&lt;4).0[tail][head],
+                        single&lt;=vec:(lst,is&gt;3).0[head],
+                        single&lt;=int]
+mmlang&gt; (1;2;3)   =&gt; vec                                    <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;vec:((1;2;3),3)
+mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                          <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;single:2
+mmlang&gt; (1;2;3;4) =&gt; vec                                    <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;vec:((1;2;3;4),4)
+mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                          <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;single:1</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A <code>;-lst</code> of 3 terms is morphed into a <code>vec</code> using the <code>vec&lt;=lst</code> type.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>vec</code> is morphed into a <code>single</code> using the first <code>single&lt;=vec</code> type.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A <code>;-lst</code> of 4 terms is morphed into a <code>vec</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The <code>vec</code> is morphed into a <code>single</code> using the second <code>single&lt;=vec</code> type.</td>
+</tr>
+</table>
 </div>
 </div>
 <div class="sect4">
@@ -6601,7 +6639,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-26 12:48:47 -0600
+Last updated 2020-08-26 12:51:06 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
