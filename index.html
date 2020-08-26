@@ -2907,10 +2907,10 @@ As previously stated for collection <code>polys</code>, control <code>poly</code
 <div class="sect5">
 <h6 id="_poly_lifting">Poly Lifting</h6>
 <div class="paragraph">
-<p><span class="image left"><img src="./images/obj/poly-lift.svg" alt="poly lift" width="210"></span> An interesting consequence of the dual use of <code>poly</code> as both a data structure and a control structure is that <code>poly</code> supports a <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifted</a> encoding of mm-ADT itself. Each <code>poly</code> form captures a fundamental <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a> of the underlying mm-ADT stream ring algebra. As a collection, <code>poly</code> provides a programmatic way of writing mm-ADT programs (types) and as flow control, <code>poly</code> provides a programmatic way of executing <code>poly</code> encoded programs. The algebraic formulation of <code>poly</code> lifting as an <code>obj</code>-<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> of the mm-ADT ring will be presented in a latter section. For now, the following <code>mmlang</code> examples demonstrate <code>poly</code> lifting in support of mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.</p>
+<p><span class="image left"><img src="./images/obj/poly-lift.svg" alt="poly lift" width="250"></span> A consequence of the dual use of <code>poly</code> as both a data structure and a control structure is that <code>poly</code> supports a <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifted</a> encoding of mm-ADT itself. Each <code>poly</code> form captures a particular <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a> of the underlying mm-ADT stream ring algebra. As a collection, <code>poly</code> provides a programmatic way of writing mm-ADT programs (types) and as flow control, these <code>poly</code> encoded mm-ADT programs can be executed. The complete algebraic specification of <code>poly</code> lifting via an <code>obj</code>-<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> of the mm-ADT ring will be presented in a latter section. For now, the following <code>mmlang</code> examples demonstrate <code>poly</code> lifting in support of mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.</p>
 </div>
 <div class="paragraph">
-<p>The mm-ADT type below contains both monoidal (serial composition) and group (parallel branching) components whose construction is captured by the bottom morphism of the diagram above. Note that <code>[explain]</code> is appended for educational purposes only&#8201;&#8212;&#8201;so as to detail the \$\Rightarrow\$ composition.</p>
+<p>The mm-ADT type below contains both monoidal (serial composition) and group (parallel branching) components whose construction is captured by the bottom morphism of the diagram above. Note that the <code>[explain]</code> instruction is appended for educational purposes only&#8201;&#8212;&#8201;so as to detail the \$\Rightarrow\$ compositions.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -2946,7 +2946,7 @@ instruction                                    domain            range       sta
 </div>
 </div>
 <div class="paragraph">
-<p>The above type can be expressed in a pure <code>poly</code> form as demonstrated below where <code>;</code> is serial composition and <code>,</code> is parallel branching. This construction is captured by the slanted morphism in the diagram above.</p>
+<p>The above type can be expressed in a pure <code>poly</code> form, where <code>;</code> is serial composition and <code>,</code> is parallel branching. This construction is captured by the slanted morphism in the diagram above.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -2955,14 +2955,33 @@ instruction                                    domain            range       sta
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
-                           [[is&gt;10];[*10,*20,*30  ]],
-                           [[_]    ;[{0}          ]]];[plus,100])
-==&gt;(int{3};_[mult,10];_[_[_[is,_[gt,20]];_[_[plus,70],_[plus,170],_[plus,270]]],_[_[is,_[gt,10]];_[_[mult,10],_[mult,20],_[mult,30]]],_[_[_];_[( )]]];_[plus,100])</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
+                             -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-,
+                             -&lt;(_      ;{0}                )&gt;-)&gt;-;[plus,100])
+==&gt;(int{3};_[mult,10];_-&lt;(_-&lt;(_[is,_[gt,20]];_-&lt;(_[plus,70],_[plus,170],_[plus,270])&gt;-)&gt;-,_-&lt;(_[is,_[gt,10]];_-&lt;(_[mult,10],_[mult,20],_[mult,30])&gt;-)&gt;-,_-&lt;(_;{0})&gt;-)&gt;-;_[plus,100])</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Finally, both types have a respective evaluation that yields the same result, where the final expression binds (<code>-&lt;</code>) the values 1, 2, and 3 to the indeterminate terms, thus solving (<code>&gt;-</code>) the <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> equation.</p>
+<p>The <code>[split]</code> instruction (sugar&#8217;d <code>-&lt;</code>) renders <code>poly</code> a ring <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a>. Incoming <code>objs</code> are <a href="https://en.wikipedia.org/wiki/Scalar_(mathematics)">scalars</a> to a <code>poly</code> <a href="https://en.wikipedia.org/wiki/Vector_space">vector</a> according to the equations
+\[
+\begin{split}
+a \prec &amp;\; (x_0,x_1,\ldots,x_n) \;&amp;= (ax_0,ax_1,\ldots,ax_n) \\
+a \prec &amp;\; (x_0;x_1;\ldots;x_n) \;&amp;= (ax_0;x_1;\ldots;x_n)   \\
+a \prec &amp;\; (x_0|x_1|\ldots|x_n) \;&amp;= (ax_i),
+\end{split}
+\]
+where \$a \prec \tt{poly}\$ is the instruction <code>a =&gt; [split,poly]</code>. The <code>[merge]</code> instruction evaluates the <code>poly</code> according to the algebra denoted by its term separator (<code>,</code>, <code>;</code>, or <code>|</code>). This has the effect of "draining" the <code>poly</code> of it&#8217;s internal <code>objs</code> such that
+\[
+\begin{split}
+(ax_0,ax_1,\ldots,ax_n) \succ  \;&amp;= \left( \coprod_{i=0}^n a \Rightarrow x_i \right) \\
+(ax_0;x_1;\ldots;x_n)   \succ  \;&amp;= \left( a \Rightarrow \prod_{i=0}^n x_i \right)   \\
+(ax_i)                  \succ  \;&amp;= ax_i : x_i \neq \mathbf{0},
+\end{split}
+\]
+where \$\tt{poly} \succ\$ is the expression <code>poly =&gt; [merge]</code>.</p>
+</div>
+<div class="paragraph">
+<p>Finally, both the original unlifted form and the <code>poly</code> lifted form of the type yield the same result at evaluation, where the final expression binds (<code>-&lt;</code>) the values 1, 2, and 3 to the indeterminate terms, thus solving (<code>&gt;-</code>) the <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial</a> equation.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
@@ -2980,9 +2999,9 @@ instruction                                    domain            range       sta
 ==&gt;400{2}
 ==&gt;700{2}
 ==&gt;1000
-mmlang&gt; [1,2,3]-&lt;([int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
-                                    [[is&gt;10];[*10,*20,*30  ]],
-                                    [[_]    ;[{0}          ]]];[plus,100]])&gt;-
+mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
+                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-,
+                                      -&lt;(_      ;{0}                )&gt;-)&gt;-;[plus,100])&gt;-
 ==&gt;500
 ==&gt;200
 ==&gt;300{2}
@@ -2992,9 +3011,64 @@ mmlang&gt; [1,2,3]-&lt;([int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
 </div>
 </div>
 <div class="paragraph">
-<p>mm-ADT can be <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in <code>poly</code> itself. The formal proof of this fact demonstrates that the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>, the two <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">ring</a> operators (\$+\$ and \$*\$), and the <em>reduce</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> operator (\$\oplus\$) are sufficiently expressive to yield a <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing Complete</a> computing machine.</p>
+<p>Given that <code>[split,poly:x][merge]</code> is equivalent to <code>[branch,poly:x]</code>, the <code>poly</code> type can be written more succinctly in a pure <code>[branch]</code> form as below.</p>
 </div>
-<hr>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [1,2,3] =&gt; [int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
+                                      [[is&gt;10];[*10,*20,*30  ]],
+                                       [_     ;{0}            ]];[plus,100]]
+==&gt;500
+==&gt;200
+==&gt;300{2}
+==&gt;400{2}
+==&gt;700{2}
+==&gt;1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Note that, when incident to each other, <code>[split]/[merge]</code> has the same equation as <code>[branch]</code>.</p>
+</div>
+<div class="paragraph">
+<p>\[
+\begin{split}
+a \prec &amp;\; (x_0,x_1,\ldots,x_n) \succ  \;&amp;= \left( \coprod_{i=0}^n a \Rightarrow x_i \right)  \;&amp;= a \Rightarrow \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
+a \prec &amp;\; (x_0;x_1;\ldots;x_n) \succ  \;&amp;= \left( a \Rightarrow \prod_{i=0}^n x_i \right)    \;&amp;= a \Rightarrow  \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
+a \prec &amp;\; (x_0|x_1|\ldots|x_n) \succ  \;&amp;= ax_i : x_i \neq \mathbf{0}                        \;&amp;= a \Rightarrow \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
+\end{split}
+\]</p>
+</div>
+<div class="paragraph">
+<p>The reason for using <code>-&lt;( )&gt;-</code> versus <code>[ ]</code> is that when <code>[split]</code> and <code>[merge]</code> are not juxtaposed, <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">reflection</a> is possible on the intermediate results of the internal <code>poly</code> computation. That is, when only a <code>[split]</code> is applied, a <em>half-branch</em> occurs and all the <code>poly</code> domain instructions can operate on the midway results. Intuitively, <code>[split]</code> transforms a control structure into a data structure and <code>[merge]</code> transforms a data structure into a control structure. At this intermediate point when the computation is a data structure, the computation can be manipulated programmatically. That is the power of a lifted representation.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270))))
+==&gt;(1;10;(({0};{0})))
+==&gt;(2;20;(({0};{0})))
+==&gt;(3;30;((30;(100,200,300))))
+mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)),
+                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  ))))
+        [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
+                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-,
+                                      -&lt;(_      ;{0}                )&gt;-)&gt;-;[plus,100])
+==&gt;(1;10;{0};{0}){9}
+==&gt;(2;20;[200,400,600];[300,500,700]){9}
+==&gt;(3;30;[100,200,300{2},600,900];[200,300,400{2},700,1000]){9}
+mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
+                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-,
+                                      -&lt;(_      ;{0}                )&gt;-)&gt;-;[plus,100])&gt;-
+==&gt;500
+==&gt;200
+==&gt;300{2}
+==&gt;400{2}
+==&gt;700{2}
+==&gt;1000</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>In summary, mm-ADT can be <a href="https://en.wikipedia.org/wiki/Embedding">embedded</a> in <code>poly</code> itself. The formal proof of this fact demonstrates that the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>, the two <a href="https://en.wikipedia.org/wiki/Ring_%28mathematics%29">ring</a> operators (\$+\$ and \$*\$), and the <em>reduce</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> operator (\$\oplus\$) are sufficiently expressive to yield a <a href="https://en.wikipedia.org/wiki/Turing_completeness">Turing Complete</a> computing machine.</p>
+</div>
 </div>
 </div>
 </div>
@@ -6470,7 +6544,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-25 11:42:36 -0600
+Last updated 2020-08-25 14:58:15 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
