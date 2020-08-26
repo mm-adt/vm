@@ -65,7 +65,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   def rule(rewrite: Inst[Obj, Obj]): this.type = this.via(this, rewrite)
 }
 object Type {
-
+  def isIdentity(obj: Obj): Boolean = obj.isInstanceOf[Value[_]] || obj.root || !obj.trace.filter(x => !ModelOp.isMetaModel(x._2)).exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
   def mergeObjs[A <: Obj](objs: List[A]): List[A] = {
     var newList: ListBuffer[A] = ListBuffer.empty[A]
     objs.foreach(x =>
@@ -75,32 +75,11 @@ object Type {
       }).getOrElse(x))
     newList.filter(_.alive).toList
   }
-  def merge[A <: Obj](objA: A, objB: A): A = {
-    if (qZero == plusQ(objA.q, objB.q))
-      zeroObj.asInstanceOf[A]
-    else
-      unity(objA).q(plusQ(pureQ(objA), pureQ(objB)))
-  }
-
-  def pureQ(obj: Obj): IntQ = {
-    if (obj.root || obj.isInstanceOf[Value[_]])
-      obj.q
-    else
-      obj.trace.foldLeft(qOne)((a, b) => multQ(a, b._2.q))
-  }
-
-  def unity[A <: Obj](obj: A): A = {
+  private def merge[A <: Obj](objA: A, objB: A): A = if (qZero == plusQ(objA.q, objB.q)) zeroObj.asInstanceOf[A] else unity(objA).q(plusQ(pureQ(objA), pureQ(objB)))
+  private def pureQ(obj: Obj): IntQ = if (obj.root || obj.isInstanceOf[Value[_]]) obj.q else obj.trace.foldLeft(qOne)((a, b) => multQ(a, b._2.q))
+  private def unity[A <: Obj](obj: A): A = {
     if (obj.isInstanceOf[Value[_]]) obj.hardQ(qOne)
     else if (obj.trace.isEmpty && obj.isInstanceOf[Type[_]]) obj.domainObj.hardQ(qOne).id.asInstanceOf[A]
     else obj.trace.foldLeft(obj.domainObj.hardQ(qOne).asInstanceOf[A])((a, b) => b._2.hardQ(qOne).asInstanceOf[Inst[A, A]].exec(a))
   }
-
-  def isIdentity(obj: Obj): Boolean = {
-    if (obj.isInstanceOf[Value[_]]) return true
-    if (obj.root) return true
-    !obj.trace.filter(x => !ModelOp.isMetaModel(x._2)).exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
-  }
-
-  def tryCtype[A <: Obj](obj: A): A = if (obj.isInstanceOf[Type[_]] && isIdentity(obj) && obj.domain.q == qOne && pureQ(obj) == qOne) obj.rangeObj else obj
-
 }
