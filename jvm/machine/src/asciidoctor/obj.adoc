@@ -1076,25 +1076,12 @@ Note that in all subsequent `[branch,poly]` equations to follow, \$x \in \tt{obj
 
 |
 \[
-x =>
-\begin{bmatrix}
-v_0    \\
-v_1    \\
-\vdots \\
-v_n
-\end{bmatrix}_{\huge ,}
-= \coprod_{i=0}^n x => v_i
+x => \big[v_0,v_1,\ldots,v_n\big] \;\;=\;\; \coprod_{i=0}^n x => v_i
 \]
 |
 \[
-x =>
-\begin{bmatrix}
-k_0    & v_0    \\
-k_1    & v_1    \\
-\vdots & \vdots \\
-k_n    & v_n
-\end{bmatrix}_{\huge ,}
-=
+x => \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+\;\;=\;\;
 \coprod_{i=0}^n
 \begin{cases}
 x => v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
@@ -1112,36 +1099,18 @@ The *;-polys* capture the multiplicative https://en.wikipedia.org/wiki/Monoid[mo
 
 |
 \[
-x =>
-\begin{bmatrix}
-v_0    \\
-v_1    \\
-\vdots \\
-v_n
-\end{bmatrix}_{\huge ;}
-=
-\left(
-x => \prod_{i=0}^n v_i
-\right)
+x => \big[v_0;v_1;\ldots;v_n\big] \;\;=\;\; x => \prod_{i=0}^n v_i
 \]
 
 |
 \[
-x =>
-\begin{bmatrix}
-k_0    & v_0    \\
-k_1    & v_1    \\
-\vdots & \vdots \\
-k_n    & v_n
-\end{bmatrix}_{\huge ;}
-=
-\left(
+x => \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+\;\;=\;\;
 x => \prod_{i=0}^n
 \begin{cases}
 v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 \mathbf{0} & \text{otherwise}.
 \end{cases}
-\right)
 \]
 |====
 
@@ -1154,14 +1123,7 @@ The *|-polys* capture the non-commutative group of mm-ADT's _reduce_ https://en.
 
 |
 \[
-x =>
-\begin{bmatrix}
-v_0    \\
-v_1    \\
-\vdots \\
-v_n
-\end{bmatrix}_{\large \|}
-=
+x => \big[v_0,v_1,\ldots,v_n\big] =
 \begin{cases}
 x => v_0  & \text{if } (x => v_0) \neq \mathbf{0}, \\
 x => v_1  & \text{if } (x => v_1) \neq \mathbf{0}, \\
@@ -1172,13 +1134,7 @@ x => v_n  & \text{if } (x => v_n) \neq \mathbf{0}, \\
 \]
 |
 \[
-x =>
-\begin{bmatrix}
-k_0    & v_0    \\
-k_1    & v_1    \\
-\vdots & \vdots \\
-k_n    & v_n
-\end{bmatrix}_{\large \|}
+x => \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
 =
 \begin{cases}
 x => v_0  & \text{if } (x => k_0) \neq \mathbf{0}, \\
@@ -1222,17 +1178,17 @@ image::poly-embed-lifting.svg[width=220,align=center]
 The `[split]` instruction (sugar'd `-<`) renders `poly` a ring https://en.wikipedia.org/wiki/Module_(mathematics)[module]. Incoming `objs` are https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalars] to a `poly` https://en.wikipedia.org/wiki/Vector_space[vector] according to the equations
 \[
 \begin{split}
-a \prec &\; (x_0,x_1,\ldots,x_n) \;&= (ax_0,ax_1,\ldots,ax_n) \\
-a \prec &\; (x_0;x_1;\ldots;x_n) \;&= (ax_0;x_1;\ldots;x_n)   \\
-a \prec &\; (x_0|x_1|\ldots|x_n) \;&= (ax_i),
+x \prec &\; (v_0,v_1,\ldots,v_n) \;\;&=\;\; (xv_0,xv_1,\ldots,xv_n) \\
+x \prec &\; (v_0;v_1;\ldots;v_n) \;\;&=\;\; (xv_0;v_1;\ldots;v_n)   \\
+x \prec &\; (v_0|v_1|\ldots|v_n) \;\;&=\;\; (xv_i),
 \end{split}
 \]
-where \$a \prec \tt{poly}\$ is the instruction `a \=> [split,poly]`. The `[merge]` instruction evaluates the `poly` according to the algebra denoted by its term separator (`,`, `;`, or `|`). This has the effect of "draining" the `poly` of it's internal `objs` such that
+where \$x \prec \tt{poly}\$ is the instruction `x \=> [split,poly]`. The `[merge]` instruction evaluates the `poly` according to the algebra denoted by its term separator (`,`, `;`, or `|`). This has the effect of "draining" the `poly` of it's internal `objs` such that
 \[
 \begin{split}
-(ax_0,ax_1,\ldots,ax_n) \succ  \;&= \left( \coprod_{i=0}^n a \Rightarrow x_i \right) \\
-(ax_0;x_1;\ldots;x_n)   \succ  \;&= \left( a \Rightarrow \prod_{i=0}^n x_i \right)   \\
-(ax_i)                  \succ  \;&= ax_i : x_i \neq \mathbf{0},
+(xv_0,xv_1,\ldots,xv_n) \succ \;\;&=\;\; \coprod_{i=0}^n x \Rightarrow v_i \\
+(xv_0;v_1;\ldots;v_n)   \succ \;\;&=\;\; x \Rightarrow \prod_{i=0}^n v_i  \\
+(xv_i)                  \succ \;\;&=\;\; xv_i : v_i \neq \mathbf{0},
 \end{split}
 \]
 where \$\tt{poly} \succ\$ is the expression `poly \=> [merge]`.
@@ -1264,9 +1220,9 @@ Note that, when incident to each other, `[split]/[merge]` has the same equation 
 
 \[
 \begin{split}
-a \prec &\; (x_0,x_1,\ldots,x_n) \succ  \;&= \left( \coprod_{i=0}^n a \Rightarrow x_i \right)  \;&= a \Rightarrow \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
-a \prec &\; (x_0;x_1;\ldots;x_n) \succ  \;&= \left( a \Rightarrow \prod_{i=0}^n x_i \right)    \;&= a \Rightarrow  \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
-a \prec &\; (x_0|x_1|\ldots|x_n) \succ  \;&= ax_i : x_i \neq \mathbf{0}                        \;&= a \Rightarrow \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
+x \prec &\; (v_0,v_1,\ldots,v_n) \succ \;\;&=\;\; x \Rightarrow \big[v_0,v_1,\ldots,v_n \big] \;\;&=\;\; \coprod_{i=0}^n x \Rightarrow v_i  \\
+x \prec &\; (v_0;v_1;\ldots;v_n) \succ \;\;&=\;\; x \Rightarrow  \big[v_0;v_1;\ldots;v_n\big] \;\;&=\;\; x \Rightarrow \prod_{i=0}^n v_i   \\
+x \prec &\; (v_0|v_1|\ldots|v_n) \succ \;\;&=\;\; x \Rightarrow \big[v_0|v_1|\ldots|v_n\big]  \;\;&=\;\; xv_i : v_i \neq \mathbf{0}
 \end{split}
 \]
 
