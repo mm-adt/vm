@@ -38,7 +38,7 @@ import org.mmadt.storage.obj.`type`.{TLst, TRec}
 object mmlangPrinter {
 
   def qString(x: IntQ): String = x match {
-    case `qOne` => empty
+    case `qOne` => blank
     case `qZero` => QZERO
     case `qMark` => s"${LCURL}${Tokens.q_mark}${RCURL}"
     case `qPlus` => s"${LCURL}${Tokens.q_plus}${RCURL}"
@@ -46,7 +46,7 @@ object mmlangPrinter {
     case (x, y) if x == y => s"${LCURL}${x}${RCURL}"
     case (x, y) if y == int(Long.MaxValue) => "{" + x + ",}"
     case (x, y) if x == int(Long.MinValue) => "{," + y + "}"
-    case x if null == x => Tokens.empty
+    case x if null == x => Tokens.blank
     case _ => "{" + x._1.g + "," + x._2.g + "}"
   }
 
@@ -62,7 +62,7 @@ object mmlangPrinter {
   }
 
   private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else "{0}"
-  private def mapString(rec: Rec[_, _], map: List[Tuple2[_, _]], sep: String = COMMA, empty: String = Tokens.empty): String = {
+  private def mapString(rec: Rec[_, _], map: List[Tuple2[_, _]], sep: String = COMMA, empty: String = Tokens.blank): String = {
     if (rec.isEmpty)
       empty else
       map.foldLeft(if (rec.isInstanceOf[TRec[_, _]]) LROUND else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) +
@@ -87,14 +87,14 @@ object mmlangPrinter {
       case alst: Lst[_] => listString(alst)
       case _ => atype.name
     }) + qString(atype.q)
-    val domain = if (atype.root) Tokens.empty else {
+    val domain = if (atype.root) Tokens.blank else {
       (atype.domain match {
         case arec: Rec[_, _] => recString(arec)
         case alst: Lst[_] => listString(alst)
         case btype: Type[_] => btype.name
       }) + qString(atype.domain.q)
     }
-    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain.alive && !atype.domain.equals(obj.q(qStar))) domain else Tokens.empty))) + atype.trace.map(_._2.toString()).fold(Tokens.empty)((a, b) => a + b)
+    (if (domain.equals(EMPTY) || range.equals(domain)) range else (range + LDARROW + (if (atype.domain.alive && !atype.domain.equals(obj.q(qStar))) domain else Tokens.blank))) + atype.trace.map(_._2.toString()).fold(Tokens.blank)((a, b) => a + b)
   }
   def valueString(avalue: Value[_]): String = {
     val named = Tokens.named(avalue.name)
@@ -108,9 +108,9 @@ object mmlangPrinter {
   }
   def instString(inst: Inst[_, _]): String = {
     (inst.op match {
-      case Tokens.model => Tokens.empty
-      case Tokens.define => Tokens.empty
-      case Tokens.noop => Tokens.empty
+      case Tokens.model => Tokens.blank
+      case Tokens.define => Tokens.blank
+      case Tokens.noop => Tokens.blank
       case Tokens.to => LANGLE + inst.arg0[StrValue].g + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue].g + RANGLE
       case Tokens.branch => LBRACKET +

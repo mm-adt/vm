@@ -97,7 +97,7 @@ trait Obj
   def root: Boolean = null == this.via || null == this.via._2
   def range: Type[Obj] = asType(this.rangeObj)
   def domain: Type[Obj] = asType(this.domainObj)
-  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst))
+  def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = Obj.objTypeCheck(this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst)))
   def rinvert[R <: Obj]: R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
   def linvert: this.type = {
     if (this.root) throw LanguageException.zeroLengthPath(this)
@@ -204,10 +204,9 @@ object Obj {
   }
 
   def objTypeCheck[A <: Obj](source: A): A = {
-    if (!source.isInstanceOf[Model] && source.isInstanceOf[Value[_]] && Tokens.named(source.name)) {
+    if (Tokens.named(source.name) && source.isInstanceOf[Value[_]] && !source.isInstanceOf[Model]) {
       val resolvedTarget: Type[Obj] = source.model.search[A](source.name, source).map(x => x.asInstanceOf[Type[Obj]]).orNull
-      // println(source + "---" + resolvedTarget)
-      if (null != resolvedTarget && !Obj.resolveInternal(toBaseName(source), toBaseName(resolvedTarget)).alive)
+      if (null != resolvedTarget && !Obj.resolveInternal(toBaseName(source), resolvedTarget).alive)
         throw LanguageException.typingError(source, resolvedTarget.named(source.name))
     }
     source

@@ -33,7 +33,7 @@ object Tokens {
     Tokens.define, Tokens.neg, Tokens.branch,
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.defs, Tokens.load,
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
-    Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last,
+    Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last, Tokens.empty,
     Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.juxt, Tokens.fold, Tokens.error, Tokens.rewrite,
     Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id, Tokens.rule_unity)
 
@@ -67,6 +67,7 @@ object Tokens {
   val as = "as"
   val count = "count"
   val sum = "sum"
+  val empty = "empty"
   val error = "error"
   val eqs = "eq"
   val explain = "explain"
@@ -101,7 +102,7 @@ object Tokens {
   val split = "split"
   val repeat = "repeat"
 
-  val empty = ""
+  val blank = ""
   val space = " "
   val btrue = "true"
   val bfalse = "false"

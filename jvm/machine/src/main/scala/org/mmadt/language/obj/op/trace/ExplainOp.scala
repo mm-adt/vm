@@ -48,7 +48,7 @@ object ExplainOp extends Func[Obj, Str] {
   def apply(): Inst[Obj, Str] = new VInst[Obj, Str](g = (Tokens.explain, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Str]): Str = str(printableTable(asType(start))).start()
   private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj], String)
-  private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0, prefix: String = Tokens.empty): List[Row] = {
+  private def explain(atype: Type[Obj], state: mutable.LinkedHashMap[String, Obj], depth: Int = 0, prefix: String = Tokens.blank): List[Row] = {
     atype.model.definitions.foldLeft(state)((c, d) => c += (d.name -> d))
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {
       if (b._2.op == Tokens.from || b._2.op == Tokens.to) state += b._2.arg0[Str].g -> b._2.exec(b._1).range

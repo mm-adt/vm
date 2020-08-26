@@ -1265,6 +1265,38 @@ All `mmlang` examples with a `:type` expression are defining a *global type* (wh
 10 => nat[plus,-10]
 ----
 
+===== Recursive Types
+
+A recursive type's definition contains a reference to itself. Recursive type definitions require a _base case_ to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a `lst` containing only `ints`.
+
+
+[exec,exception=LanguageException]
+----
+:[define,xlist<=lst[[is,[empty]]|                  %
+                    [[is,[head][a,str]];           %
+                     [is,[tail][a,xlist]]]]]
+( ) => [a,xlist]
+('a';'b';'c') => [a,xlist]
+('a';'b';'c') => xlist
+(1;'a';'c') => xlist
+('a';'b';'c') => xlist[put,0,3]
+----
+
+[exec,exception=LanguageException]
+----
+:[define,ylist<=lst[[is,[empty]]|                  %
+                    [[is,[head][a,str]];           %
+                     [is,[tail][head][a,int]];     %
+                     [is,[tail][tail][a,ylist]]]]]
+( ) => [a,ylist]
+('a';1;'b';2) => [a,ylist]
+('a';1;'b';2) => ylist
+(1;'a';'c') => ylist
+('a';1;'b';2) => ylist[put,0,3]
+----
+
+
+
 === The Obj Graph
 
 An mm-ADT program is a type. The `mmlang` parser converts a textual representation of a type into a type `obj`. The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger *type graph* (a Cayley graph). While a path in the type graph is a graphical encoding of the ring structure of a type, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding in a larger *value graph*. Together, the type graph and the value graph form the `obj` graph.

@@ -57,7 +57,7 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
     val eval = java.lang.Boolean.valueOf(attributes.getOrDefault(EVAL, Tokens.btrue).toString)
     val prompt = attributes.getOrDefault(PROMPT, engine.getFactory.getLanguageName + "> ").toString
     val none = attributes.getOrDefault(NONE, prompt + "\n").toString
-    val exception = attributes.getOrDefault(EXCEPTION, Tokens.empty).toString
+    val exception = attributes.getOrDefault(EXCEPTION, Tokens.blank).toString
     val linebreak = attributes.getOrDefault(LINE_BREAK, "%").toString
 
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
@@ -72,7 +72,7 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
           if (eval)
             builder.append(prompt).append(query).append("\n")
           Try[Obj] {
-            engine.eval(query.toString().replaceAll("\n", Tokens.empty).replace(linebreak, Tokens.empty))
+            engine.eval(query.toString().replaceAll("\n", Tokens.blank).replace(linebreak, Tokens.blank))
           } match {
             case Failure(e) if e.getClass.getSimpleName.equals(exception) =>
               if (eval) {

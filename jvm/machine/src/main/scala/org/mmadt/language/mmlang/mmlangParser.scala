@@ -61,7 +61,7 @@ class mmlangParser extends JavaTokenParsers {
     }
   }
 
-  private def emptySpace[O <: Obj]: Parser[O] = (Tokens.empty | whiteSpace) ^^ (_ => estrm[O])
+  private def emptySpace[O <: Obj]: Parser[O] = (Tokens.blank | whiteSpace) ^^ (_ => estrm[O])
 
   // specific to mmlang execution
   def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = opt(startValue | objValue) ~ opt(Tokens.:=>) ~ opt(obj) ~ (opt(Tokens.:=>) ~> repsep(obj, Tokens.:=>)) ^^ {
@@ -99,7 +99,7 @@ class mmlangParser extends JavaTokenParsers {
   def lstStruct(parser: Parser[Obj]): Parser[LstTuple[Obj]] =
     (opt(parser) ~ polySep) ~ repsep(opt(parser), polySep) ^^ (x => (Some(x._1._2).map(y => if(y == juxt_op) Tokens.`;` else y).get, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)))) |
       parser ^^ (x => (Tokens.`,`, List(x))) |
-      Tokens.empty ^^ (_ => (Tokens.`,`, List.empty[Obj]))
+      Tokens.blank ^^ (_ => (Tokens.`,`, List.empty[Obj]))
 
   def recStruct(parser: Parser[Obj]): Parser[RecTuple[Obj, Obj]] =
     ((opt((parser <~ Tokens.->) ~ parser) ~ polySep) ~ rep1sep(opt((parser <~ Tokens.->) ~ parser), polySep)) ^^

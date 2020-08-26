@@ -53,7 +53,7 @@ object ModelOp extends Func[Obj, Obj] {
   private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
   private def model(name: String): Model = {
     val source = Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)
-    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.empty)((x, y) => x + "\n" + y))
+    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
     finally source.close();
   }
   /////

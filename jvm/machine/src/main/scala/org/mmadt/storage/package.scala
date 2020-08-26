@@ -40,13 +40,13 @@ package object storage {
 
   def model(name: String): Model = {
     val source = Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)
-    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.empty)((x, y) => x + "\n" + y))
+    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
     finally source.close();
   }
 
   def functor(from: String, to: String): Type[Obj] = {
     val source = Source.fromFile(getClass.getResource("/model/functor/" + (to + "_" + from) + ".mm").getFile)
-    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.empty)((x, y) => x + "\n" + y))
+    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
     finally source.close();
   }
 }

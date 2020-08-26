@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
-import org.mmadt.language.obj.op.rewrite.{IdRewrite, BranchRewrite}
+import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp, PutOp}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.trace._
@@ -70,6 +70,7 @@ object OpInstResolver {
       case Tokens.head => HeadOp()
       case Tokens.last => LastOp()
       case Tokens.tail => TailOp()
+      case Tokens.empty => EmptyOp()
       case Tokens.split | Tokens.split_op => SplitOp(args.head)
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head)
       case Tokens.merge | Tokens.merge_op => MergeOp()
