@@ -23,13 +23,12 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.TestUtil
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
 import org.mmadt.language.obj.`type`.LstTypeTest._
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.{Int, Lst, Obj, Poly}
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
@@ -117,19 +116,6 @@ class LstTypeTest extends BaseInstTest(
     //assert((int(1) `,` 2).test(int.q(2)))
   }
 
-  test("lst type [split]/[merge]") {
-    val clst: Lst[IntType] = lst(g = (Tokens.`,`, List(int.plus(1), int.plus(2), int.plus(3))))
-    val plst: Lst[IntType] = lst(g = (Tokens.`|`, List(int.plus(1), int.plus(2), int.plus(3))))
-    val slst: Lst[IntType] = lst(g = (Tokens.`;`, List(int.plus(1), int.plus(2), int.plus(3))))
-
-    assertResult(int.q(3))(clst.merge.range)
-    assertResult(int.q(1))(plst.merge.range)
-    assertResult(int.q(1))(slst.merge.range)
-
-    assertResult(int(11, 12, 13))(int(10).split(clst).merge)
-    assertResult(int(11))(int(10).split(plst).merge)
-    assertResult(int(16))(int(10).split(slst).merge)
-  }
 
   test("parallel expressions") {
     val starts: TableFor3[Obj, Lst[Obj], Obj] =
@@ -152,34 +138,6 @@ class LstTypeTest extends BaseInstTest(
         // (1, str | int, 1),
       )
     forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, split(rhs).merge[Obj], result, compile = false) }
-  }
-
-  test("parallel [get] types") {
-    assertResult(str)((str.plus("a") `;` str).get(0, str).range)
-  }
-
-  test("parallel structure") {
-    val poly: Poly[Int] = int.mult(8).split(id | plus(2) | 3)
-    assertResult("(int[id])<=int[mult,8]-<(int[id])")(poly.toString)
-    assertResult(int.id)(poly.glist.head)
-    /*    assertResult(int.plus(2))(poly.glist(1))
-        assertResult(int(3))(poly.glist(2))
-        assertResult(int)(poly.glist.head.via._1)
-        assertResult(int)(poly.glist(1).via._1)
-        assert(poly.glist(2).root)
-        assertResult(int.id | int.plus(2) | int(3))(poly.range)*/
-  }
-
-  test("parallel quantifier") {
-    val poly: Poly[Int] = int.q(2).mult(8).split(id | plus(2) | 3)
-    assertResult("(int[id]){2}<=int{2}[mult,8]-<(int[id])")(poly.toString)
-    /*    assertResult(int.q(2).id)(poly.glist.head)
-        assertResult(int.q(2).plus(2))(poly.glist(1))
-        assertResult(int(3))(poly.glist(2))
-        assertResult(int.q(2))(poly.glist.head.via._1)
-        assertResult(int.q(2))(poly.glist(1).via._1)
-        assert(poly.glist(2).root)
-        assertResult(int.q(2).id | int.q(2).plus(2) | int(3))(poly.range)*/
   }
 
   test("parallel [split] quantification") {
