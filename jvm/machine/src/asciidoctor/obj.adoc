@@ -1275,8 +1275,8 @@ image::date-example.svg[]
 [exec,exception=LanguageException]
 ----
 :[define,nat<=int[is>0], %
-         date<=(nat[is=<13];nat[is=<31];nat), %
-         date<=(nat[is=<13];nat[is=<31])[put,2,2020]]
+         date<=(nat[is=<12];nat[is=<31];nat), %
+         date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
 (8;26;2020) => date
 (8;26)      => date
 ----
