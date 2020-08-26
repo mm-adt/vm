@@ -1194,9 +1194,9 @@ NOTE: As previously stated for collection `polys`, control `poly` semantics are 
 
 ====== Poly Lifting
 
-image:poly-lift.svg[float=left,width=210] An interesting consequence of the dual use of `poly` as both a data structure and a control structure is that `poly` supports a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself. Each `poly` form captures a fundamental https://en.wikipedia.org/wiki/Magma_%28algebra%29[magma] of the underlying mm-ADT stream ring algebra. As a collection, `poly` provides a programmatic way of writing mm-ADT programs (types) and as flow control, `poly` provides a programmatic way of executing `poly` encoded programs. The algebraic formulation of `poly` lifting as an `obj`-link:https://en.wikipedia.org/wiki/Module_(mathematics)[module] of the mm-ADT ring will be presented in a latter section. For now, the following `mmlang` examples demonstrate `poly` lifting in support of mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming].
+image:poly-lift.svg[float=left,width=250] A consequence of the dual use of `poly` as both a data structure and a control structure is that `poly` supports a https://en.wikipedia.org/wiki/Lift_(mathematics)[lifted] encoding of mm-ADT itself. Each `poly` form captures a particular https://en.wikipedia.org/wiki/Magma_%28algebra%29[magma] of the underlying mm-ADT stream ring algebra. As a collection, `poly` provides a programmatic way of writing mm-ADT programs (types) and as flow control, these `poly` encoded mm-ADT programs can be executed. The complete algebraic specification of `poly` lifting via an `obj`-link:https://en.wikipedia.org/wiki/Module_(mathematics)[module] of the mm-ADT ring will be presented in a latter section. For now, the following `mmlang` examples demonstrate `poly` lifting in support of mm-ADT https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming].
 
-The mm-ADT type below contains both monoidal (serial composition) and group (parallel branching) components whose construction is captured by the bottom morphism of the diagram above. Note that `[explain]` is appended for educational purposes only -- so as to detail the \$\Rightarrow\$ composition.
+The mm-ADT type below contains both monoidal (serial composition) and group (parallel branching) components whose construction is captured by the bottom morphism of the diagram above. Note that the `[explain]` instruction is appended for educational purposes only -- so as to detail the \$\Rightarrow\$ compositions.
 
 image::poly-embed-composition.svg[width=220,align=center]
 
@@ -1208,18 +1208,36 @@ int{3}[mult,10][is>20 -> [+70,+170,+270], %
 ----
 
 
-The above type can be expressed in a pure `poly` form as demonstrated below where `;` is serial composition and `,` is parallel branching. This construction is captured by the slanted morphism in the diagram above.
+The above type can be expressed in a pure `poly` form, where `;` is serial composition and `,` is parallel branching. This construction is captured by the slanted morphism in the diagram above.
 
 image::poly-embed-lifting.svg[width=220,align=center]
 
 [exec]
 ----
-(int{3};[mult,10];[[[is>20];[+70,+170,+270]], %
-                   [[is>10];[*10,*20,*30  ]], %
-                   [[_]    ;[{0}          ]]];[plus,100])
+(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270)>-)>-, %
+                     -<([is>10];-<(*10,*20,*30  )>-)>-, %
+                     -<(_      ;{0}                )>-)>-;[plus,100])
 ----
 
-Finally, both types have a respective evaluation that yields the same result, where the final expression binds (`-<`) the values 1, 2, and 3 to the indeterminate terms, thus solving (`>-`) the https://en.wikipedia.org/wiki/Polynomial_ring[polynomial] equation.
+The `[split]` instruction (sugar'd `-<`) renders `poly` a ring https://en.wikipedia.org/wiki/Module_(mathematics)[module]. Incoming `objs` are https://en.wikipedia.org/wiki/Scalar_(mathematics)[scalars] to a `poly` https://en.wikipedia.org/wiki/Vector_space[vector] according to the equations
+\[
+\begin{split}
+a \prec &\; (x_0,x_1,\ldots,x_n) \;&= (ax_0,ax_1,\ldots,ax_n) \\
+a \prec &\; (x_0;x_1;\ldots;x_n) \;&= (ax_0;x_1;\ldots;x_n)   \\
+a \prec &\; (x_0|x_1|\ldots|x_n) \;&= (ax_i),
+\end{split}
+\]
+where \$a \prec \tt{poly}\$ is the instruction `a \=> [split,poly]`. The `[merge]` instruction evaluates the `poly` according to the algebra denoted by its term separator (`,`, `;`, or `|`). This has the effect of "draining" the `poly` of it's internal `objs` such that
+\[
+\begin{split}
+(ax_0,ax_1,\ldots,ax_n) \succ  \;&= \left( \coprod_{i=0}^n a \Rightarrow x_i \right) \\
+(ax_0;x_1;\ldots;x_n)   \succ  \;&= \left( a \Rightarrow \prod_{i=0}^n x_i \right)   \\
+(ax_i)                  \succ  \;&= ax_i : x_i \neq \mathbf{0},
+\end{split}
+\]
+where \$\tt{poly} \succ\$ is the expression `poly \=> [merge]`.
+
+Finally, both the original unlifted form and the `poly` lifted form of the type yield the same result at evaluation, where the final expression binds (`-<`) the values 1, 2, and 3 to the indeterminate terms, thus solving (`>-`) the https://en.wikipedia.org/wiki/Polynomial_ring[polynomial] equation.
 
 image::poly-embed-solve.svg[width=220,align=center]
 
@@ -1228,14 +1246,46 @@ image::poly-embed-solve.svg[width=220,align=center]
 [1,2,3] => int{3}[mult,10][is>20 -> [+70,+170,+270], %
                            is>10 -> [*10,*20,*30]  , %
                            _     -> {0}            ][plus,100]
-[1,2,3]-<([int{3};[mult,10];[[[is>20];[+70,+170,+270]], %
-                            [[is>10];[*10,*20,*30  ]], %
-                            [[_]    ;[{0}          ]]];[plus,100]])>-
+[1,2,3]-<(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270)>-)>-, %
+                              -<([is>10];-<(*10,*20,*30  )>-)>-, %
+                              -<(_      ;{0}                )>-)>-;[plus,100])>-
 ----
 
-mm-ADT can be https://en.wikipedia.org/wiki/Embedding[embedded] in `poly` itself. The formal proof of this fact demonstrates that the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture], the two https://en.wikipedia.org/wiki/Ring_%28mathematics%29[ring] operators (\$+\$ and \$*\$), and the _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] operator (\$\oplus\$) are sufficiently expressive to yield a https://en.wikipedia.org/wiki/Turing_completeness[Turing Complete] computing machine.
+Given that `[split,poly:x][merge]` is equivalent to `[branch,poly:x]`, the `poly` type can be written more succinctly in a pure `[branch]` form as below.
 
-'''
+[exec]
+----
+[1,2,3] => [int{3};[mult,10];[[[is>20];[+70,+170,+270]], %
+                              [[is>10];[*10,*20,*30  ]], %
+                               [_     ;{0}            ]];[plus,100]]
+----
+
+Note that, when incident to each other, `[split]/[merge]` has the same equation as `[branch]`.
+
+\[
+\begin{split}
+a \prec &\; (x_0,x_1,\ldots,x_n) \succ  \;&= \left( \coprod_{i=0}^n a \Rightarrow x_i \right)  \;&= a \Rightarrow \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
+a \prec &\; (x_0;x_1;\ldots;x_n) \succ  \;&= \left( a \Rightarrow \prod_{i=0}^n x_i \right)    \;&= a \Rightarrow  \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
+a \prec &\; (x_0|x_1|\ldots|x_n) \succ  \;&= ax_i : x_i \neq \mathbf{0}                        \;&= a \Rightarrow \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
+\end{split}
+\]
+
+The reason for using `-<( )>-` versus `[ ]` is that when `[split]` and `[merge]` are not juxtaposed, https://en.wikipedia.org/wiki/Reflection_(computer_programming)[reflection] is possible on the intermediate results of the internal `poly` computation. That is, when only a `[split]` is applied, a _half-branch_ occurs and all the `poly` domain instructions can operate on the midway results. Intuitively, `[split]` transforms a control structure into a data structure and `[merge]` transforms a data structure into a control structure. At this intermediate point when the computation is a data structure, the computation can be manipulated programmatically. That is the power of a lifted representation.
+
+[exec]
+----
+[1,2,3]-<(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270))))
+[1,2,3]-<(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270)),     %
+                              -<([is>10];-<(*10,*20,*30  ))))    %
+[1,2,3]-<(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270)>-)>-, %
+                              -<([is>10];-<(*10,*20,*30  )>-)>-, %
+                              -<(_      ;{0}                )>-)>-;[plus,100])
+[1,2,3]-<(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270)>-)>-, %
+                              -<([is>10];-<(*10,*20,*30  )>-)>-, %
+                              -<(_      ;{0}                )>-)>-;[plus,100])>-
+----
+
+In summary, mm-ADT can be https://en.wikipedia.org/wiki/Embedding[embedded] in `poly` itself. The formal proof of this fact demonstrates that the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture], the two https://en.wikipedia.org/wiki/Ring_%28mathematics%29[ring] operators (\$+\$ and \$*\$), and the _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] operator (\$\oplus\$) are sufficiently expressive to yield a https://en.wikipedia.org/wiki/Turing_completeness[Turing Complete] computing machine.
 
 === The Obj Graph
 
