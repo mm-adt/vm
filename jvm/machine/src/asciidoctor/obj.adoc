@@ -1243,6 +1243,28 @@ The reason for using `-<( )>-` versus `[ ]` is that when `[split]` and `[merge]`
 
 In summary, mm-ADT can be https://en.wikipedia.org/wiki/Embedding[embedded] in `poly` itself. The formal proof of this fact demonstrates that the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture], the two https://en.wikipedia.org/wiki/Ring_%28mathematics%29[ring] operators (\$+\$ and \$*\$), and the _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] operator (\$\oplus\$) are sufficiently expressive to yield a https://en.wikipedia.org/wiki/Turing_completeness[Turing Complete] computing machine.
 
+===== Refinement Types
+
+https://en.wikipedia.org/wiki/Refinement_type[Refinement types] extend a language's base types with https://en.wikipedia.org/wiki/Predicate_(mathematical_logic)[predicates] that further _refine_ (constrain) the base type values. A classic example is the set of natural numbers (\$\mathbb{N}\$) as a refinement of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate[set builder notation], specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
+\[
+\mathbb{N} = \{n \in \mathbb{Z} \;|\; n > 0\}.
+\]
+In mm-ADT, the above is denote `int[is>0]` which is the sugar form of `int{?}\<=int[is,[gt,0]]`. mm-ADT supports user defined types. In fact, mm-ADT's primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The `[define]` instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on _model-ADTs_, the more general `[model]` instruction will be presented.
+
+.mm-ADT Global Type
+================================================================
+All `mmlang` examples with a `:type` expression are defining a *global type* (which itself may define zero or more types). The global type is prefixed to all subsequent expressions. In many ways, a global type is like an https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler] https://en.wikipedia.org/wiki/Object_file[object file]. On the other hand, model-ADTs (of `[model]`) are similar to the https://en.wikipedia.org/wiki/Class_(computer_programming)[class files] of https://en.wikipedia.org/wiki/Object-oriented_programming[object-oriented languages].
+================================================================
+
+[exec,exception=LanguageException]
+----
+:[define,nat<=int[is>0]]
+10 => nat
+0 => nat
+10 => nat[plus,5]
+10 => nat[plus,-10]
+----
+
 === The Obj Graph
 
 An mm-ADT program is a type. The `mmlang` parser converts a textual representation of a type into a type `obj`. The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger *type graph* (a Cayley graph). While a path in the type graph is a graphical encoding of the ring structure of a type, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding in a larger *value graph*. Together, the type graph and the value graph form the `obj` graph.

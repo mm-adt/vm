@@ -167,7 +167,7 @@ object Obj {
     }
   }
 
-  private def resolveInternal[E <: Obj](domainObj: Obj, rangeType: E): E = {
+  def resolveInternal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
       case _: Value[_] => rangeType.q(multQ(domainObj.q, rangeType.q))
       case _: Type[_] =>
