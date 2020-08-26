@@ -2760,24 +2760,11 @@ When each <code>poly</code> kind (<code>lst</code> or <code>rec</code>) contains
 <tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\[
-x &#8658;
-\begin{bmatrix}
-v_0    \\
-v_1    \\
-\vdots \\
-v_n
-\end{bmatrix}_{\huge ,}
-= \coprod_{i=0}^n x &#8658; v_i
+x &#8658; \big[v_0,v_1,\ldots,v_n\big] \;\;=\;\; \coprod_{i=0}^n x &#8658; v_i
 \]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\[
-x &#8658;
-\begin{bmatrix}
-k_0    &amp; v_0    \\
-k_1    &amp; v_1    \\
-\vdots &amp; \vdots \\
-k_n    &amp; v_n
-\end{bmatrix}_{\huge ,}
-=
+x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+\;\;=\;\;
 \coprod_{i=0}^n
 \begin{cases}
 x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
@@ -2805,34 +2792,16 @@ x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\[
-x &#8658;
-\begin{bmatrix}
-v_0    \\
-v_1    \\
-\vdots \\
-v_n
-\end{bmatrix}_{\huge ;}
-=
-\left(
-x &#8658; \prod_{i=0}^n v_i
-\right)
+x &#8658; \big[v_0;v_1;\ldots;v_n\big] \;\;=\;\; x &#8658; \prod_{i=0}^n v_i
 \]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\[
-x &#8658;
-\begin{bmatrix}
-k_0    &amp; v_0    \\
-k_1    &amp; v_1    \\
-\vdots &amp; \vdots \\
-k_n    &amp; v_n
-\end{bmatrix}_{\huge ;}
-=
-\left(
+x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+\;\;=\;\;
 x &#8658; \prod_{i=0}^n
 \begin{cases}
 v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 \mathbf{0} &amp; \text{otherwise}.
 \end{cases}
-\right)
 \]</p></td>
 </tr>
 </tbody>
@@ -2855,14 +2824,7 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <tbody>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\[
-x &#8658;
-\begin{bmatrix}
-v_0    \\
-v_1    \\
-\vdots \\
-v_n
-\end{bmatrix}_{\large |}
-=
+x &#8658; \big[v_0,v_1,\ldots,v_n\big] =
 \begin{cases}
 x &#8658; v_0  &amp; \text{if } (x &#8658; v_0) \neq \mathbf{0}, \\
 x &#8658; v_1  &amp; \text{if } (x &#8658; v_1) \neq \mathbf{0}, \\
@@ -2872,13 +2834,7 @@ x &#8658; v_n  &amp; \text{if } (x &#8658; v_n) \neq \mathbf{0}, \\
 \end{cases}
 \]</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\[
-x &#8658;
-\begin{bmatrix}
-k_0    &amp; v_0    \\
-k_1    &amp; v_1    \\
-\vdots &amp; \vdots \\
-k_n    &amp; v_n
-\end{bmatrix}_{\large |}
+x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
 =
 \begin{cases}
 x &#8658; v_0  &amp; \text{if } (x &#8658; k_0) \neq \mathbf{0}, \\
@@ -2965,17 +2921,17 @@ instruction                                    domain            range       sta
 <p>The <code>[split]</code> instruction (sugar&#8217;d <code>-&lt;</code>) renders <code>poly</code> a ring <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a>. Incoming <code>objs</code> are <a href="https://en.wikipedia.org/wiki/Scalar_(mathematics)">scalars</a> to a <code>poly</code> <a href="https://en.wikipedia.org/wiki/Vector_space">vector</a> according to the equations
 \[
 \begin{split}
-a \prec &amp;\; (x_0,x_1,\ldots,x_n) \;&amp;= (ax_0,ax_1,\ldots,ax_n) \\
-a \prec &amp;\; (x_0;x_1;\ldots;x_n) \;&amp;= (ax_0;x_1;\ldots;x_n)   \\
-a \prec &amp;\; (x_0|x_1|\ldots|x_n) \;&amp;= (ax_i),
+x \prec &amp;\; (v_0,v_1,\ldots,v_n) \;\;&amp;=\;\; (xv_0,xv_1,\ldots,xv_n) \\
+x \prec &amp;\; (v_0;v_1;\ldots;v_n) \;\;&amp;=\;\; (xv_0;v_1;\ldots;v_n)   \\
+x \prec &amp;\; (v_0|v_1|\ldots|v_n) \;\;&amp;=\;\; (xv_i),
 \end{split}
 \]
-where \$a \prec \tt{poly}\$ is the instruction <code>a =&gt; [split,poly]</code>. The <code>[merge]</code> instruction evaluates the <code>poly</code> according to the algebra denoted by its term separator (<code>,</code>, <code>;</code>, or <code>|</code>). This has the effect of "draining" the <code>poly</code> of it&#8217;s internal <code>objs</code> such that
+where \$x \prec \tt{poly}\$ is the instruction <code>x =&gt; [split,poly]</code>. The <code>[merge]</code> instruction evaluates the <code>poly</code> according to the algebra denoted by its term separator (<code>,</code>, <code>;</code>, or <code>|</code>). This has the effect of "draining" the <code>poly</code> of it&#8217;s internal <code>objs</code> such that
 \[
 \begin{split}
-(ax_0,ax_1,\ldots,ax_n) \succ  \;&amp;= \left( \coprod_{i=0}^n a \Rightarrow x_i \right) \\
-(ax_0;x_1;\ldots;x_n)   \succ  \;&amp;= \left( a \Rightarrow \prod_{i=0}^n x_i \right)   \\
-(ax_i)                  \succ  \;&amp;= ax_i : x_i \neq \mathbf{0},
+(xv_0,xv_1,\ldots,xv_n) \succ \;\;&amp;=\;\; \coprod_{i=0}^n x \Rightarrow v_i \\
+(xv_0;v_1;\ldots;v_n)   \succ \;\;&amp;=\;\; x \Rightarrow \prod_{i=0}^n v_i  \\
+(xv_i)                  \succ \;\;&amp;=\;\; xv_i : v_i \neq \mathbf{0},
 \end{split}
 \]
 where \$\tt{poly} \succ\$ is the expression <code>poly =&gt; [merge]</code>.</p>
@@ -3032,9 +2988,9 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 <div class="paragraph">
 <p>\[
 \begin{split}
-a \prec &amp;\; (x_0,x_1,\ldots,x_n) \succ  \;&amp;= \left( \coprod_{i=0}^n a \Rightarrow x_i \right)  \;&amp;= a \Rightarrow \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
-a \prec &amp;\; (x_0;x_1;\ldots;x_n) \succ  \;&amp;= \left( a \Rightarrow \prod_{i=0}^n x_i \right)    \;&amp;= a \Rightarrow  \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
-a \prec &amp;\; (x_0|x_1|\ldots|x_n) \succ  \;&amp;= ax_i : x_i \neq \mathbf{0}                        \;&amp;= a \Rightarrow \begin{bmatrix} x_0 \\ x_1 \\ \vdots \\ x_n \end{bmatrix} \\
+x \prec &amp;\; (v_0,v_1,\ldots,v_n) \succ \;\;&amp;=\;\; x \Rightarrow \big[v_0,v_1,\ldots,v_n \big] \;\;&amp;=\;\; \coprod_{i=0}^n x \Rightarrow v_i  \\
+x \prec &amp;\; (v_0;v_1;\ldots;v_n) \succ \;\;&amp;=\;\; x \Rightarrow  \big[v_0;v_1;\ldots;v_n\big] \;\;&amp;=\;\; x \Rightarrow \prod_{i=0}^n v_i   \\
+x \prec &amp;\; (v_0|v_1|\ldots|v_n) \succ \;\;&amp;=\;\; x \Rightarrow \big[v_0|v_1|\ldots|v_n\big]  \;\;&amp;=\;\; xv_i : v_i \neq \mathbf{0}
 \end{split}
 \]</p>
 </div>
@@ -6544,7 +6500,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-25 14:58:15 -0600
+Last updated 2020-08-25 22:44:39 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
