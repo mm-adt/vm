@@ -1268,17 +1268,17 @@ All `mmlang` examples with a `:type` expression are defining a *global type* (wh
 [discrete]
 ====== Poly Refinement
 
-There are two canonical `poly` types: `lst` and `rec`. Any restriction on their respective values is a *refinement*. The example below defines a `date` to be a 2 or 3 `nat` termed `;-lst`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all graph search processes. When an `obj` is morphed to another type, a defined type (path) to the desired *range* is searched for in the `obj` graph and returned if and only if the `obj` matches the defined type's *domain*. Type defintions are simply other types that specify the means by which one type is translated into another type.
+There are two canonical `poly` types: `lst` and `rec`. Any restriction on their respective values is a *refinement*. The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all _graph search processes_. A defined type (path) with a desired *range* is searched for in the `obj` graph and returned if and only if the morphing `obj` matches the defined type's *domain*. Type definitions are simply other types that specify the means by which one type is translated into another type.
+
+image::date-example.svg[]
 
 [exec,exception=LanguageException]
 ----
 :[define,nat<=int[is>0], %
          date<=(nat[is=<13];nat[is=<31];nat), %
          date<=(nat[is=<13];nat[is=<31])[put,2,2020]]
-(8;26;2020) => lst
 (8;26;2020) => date
 (8;26)      => date
-(8)         => date
 ----
 
 ===== Recursive Types
