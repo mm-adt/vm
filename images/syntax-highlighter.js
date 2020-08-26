@@ -27,7 +27,7 @@ $(document).ready(function(){
                               "and","or","compose","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map",
                               "split","merge","last","head","tail","div","minus","choose","put","repeat","type",
-                              "define","rewrite","to","from","sum","model","as","a","q","path"],
+                              "define","rewrite","to","from","sum","model","as","a","q","path","empty"],
                   "type":    ["_","real","rec","lst","inst","obj","int","str","bool",
                               "nat","person"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
                   "special": ["mmlang","language error","mm",
