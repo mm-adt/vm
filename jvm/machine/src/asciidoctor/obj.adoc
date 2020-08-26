@@ -1070,7 +1070,7 @@ The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[a
 Note that in all subsequent `[branch,poly]` equations to follow, \$x \in \tt{obj}\$ is an incoming `obj` to the respective `[branch]` instruction.
 
 
-[cols="^1,^1"]
+[cols="^3,^4"]
 |====
 | ,-lst (union cascade) | ,-rec (conditional cascade)
 
@@ -1093,7 +1093,7 @@ x => v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 .;-poly Controls
 The *;-polys* capture the multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] of the mm-ADT ring. The result of each term is the input to the next term in the sequence. In `lst`, https://en.wikipedia.org/wiki/Method_chaining[method chaining] is realized and in `rec` https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional] chaining.
 
-[cols="^1,^1"]
+[cols="^3,^4"]
 |====
 | ;-lst (fluent chaining) | ;-rec (conditional chaining)
 
@@ -1117,7 +1117,7 @@ v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 .|-poly Controls
 The *|-polys* capture the non-commutative group of mm-ADT's _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-link:https://en.wikipedia.org/wiki/Null_pointer[null]") element is the output of the branch. As a control structure, `|-poly` is a https://en.wikipedia.org/wiki/Sequential_algorithm[sequential] branch that can be understood programmatically as a https://en.wikipedia.org/wiki/Short-circuit_evaluation[short-circuit] https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]. In `lst`, https://en.wikipedia.org/wiki/Null_coalescing_operator[non-null coalescing] is realized and in `rec` a https://en.wikipedia.org/wiki/Switch_statement[switch statement] is realized.
 
-[cols="^1,^1"]
+[cols="^3,^4"]
 |====
 | \|-lst (coalesce) | \|-rec (switch)
 
@@ -1263,6 +1263,22 @@ All `mmlang` examples with a `:type` expression are defining a *global type* (wh
 0 => nat
 10 => nat[plus,5]
 10 => nat[plus,-10]
+----
+
+[discrete]
+====== Poly Refinement
+
+There are two canonical `poly` types: `lst` and `rec`. Any restriction on their respective values is a *refinement*. The example below defines a `date` to be a 2 or 3 `nat` termed `;-lst`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all graph search processes. When an `obj` is morphed to another type, a defined type (path) to the desired *range* is searched for in the `obj` graph and returned if and only if the `obj` matches the defined type's *domain*. Type defintions are simply other types that specify the means by which one type is translated into another type.
+
+[exec,exception=LanguageException]
+----
+:[define,nat<=int[is>0], %
+         date<=(nat[is=<13];nat[is=<31];nat), %
+         date<=(nat[is=<13];nat[is=<31])[put,2,2020]]
+(8;26;2020) => lst
+(8;26;2020) => date
+(8;26)      => date
+(8)         => date
 ----
 
 ===== Recursive Types
