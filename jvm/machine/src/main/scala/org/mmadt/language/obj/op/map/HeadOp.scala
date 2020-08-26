@@ -24,7 +24,8 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj, Poly}
 import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
@@ -35,9 +36,12 @@ trait HeadOp[+A <: Obj] {
 }
 object HeadOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.head, Nil), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
-    case apoly: Poly[_] if apoly.ctype => __
-    case apoly: Poly[_] => apoly.glist.find(_.alive).getOrElse(zeroObj) //.getOrElse(throw LanguageException.PolyException.noHead)
-    case _ => start
-  }).via(start, inst)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
+    case apoly: Poly[_] if apoly.ctype => __.q(apoly.q).via(start, inst)
+    case apoly: Poly[_] => apoly.glist.find(_.alive).getOrElse(zeroObj) match {
+      case atype: Type[_] => atype.via(start, inst)
+      case avalue: Value[_] => avalue.clone(q = avalue.q.mult(inst.q).mult(apoly.q), via = (start, inst))
+    } //.getOrElse(throw LanguageException.PolyException.noHead)
+    case _ => start.via(start, inst)
+  }
 }

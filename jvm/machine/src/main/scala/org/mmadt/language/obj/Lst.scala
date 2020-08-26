@@ -52,8 +52,11 @@ trait Lst[+A <: Obj] extends Poly[A]
     case _ => true // MAIN EQUALS IS IN TYPE
   }
   def clone(f: List[A] => List[_]): this.type = this.clone(g = (this.gsep, f(this.glist)))
+  final override def `,`: Lst[this.type] = lst(g = (Tokens.`,`, List(this)))
   final override def `,`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`,`, next)
+  final override def `;`: Lst[this.type] = lst(g = (Tokens.`;`, List(this)))
   final override def `;`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`;`, next)
+  final override def `|`: Lst[this.type] = lst(g = (Tokens.`|`, List(this)))
   final override def `|`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`|`, next)
 
   private final def lstMaker(sep: String, obj: Obj): Lst[obj.type] = {

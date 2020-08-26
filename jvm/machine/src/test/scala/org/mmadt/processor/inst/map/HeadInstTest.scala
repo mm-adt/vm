@@ -22,65 +22,27 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
-import org.mmadt.language.obj.Obj._
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Int
+import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.{Lst, Obj}
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2, TableFor3}
 
-class HeadInstTest extends FunSuite with TableDrivenPropertyChecks {
-
-  test("[head] value, type, strm") {
-    val starts: TableFor3[Obj, Obj, Obj] =
-      new TableFor3[Obj, Obj, Obj](("lhs", "rhs", "result"),
-        (1 `;` 2 `;` 3, lst.head, 1),
-        (1 `;`, lst.head, 1),
-        (strm(1 `;` 2 `;` 3, (4 `;` 5)), head, int(1, 4)),
-        (strm(1 `;` 2 `;` 3, (1 `;` 5)), head, 1.q(2)),
-      )
-    forEvery(starts) { (lhs, rhs, result) => TestUtil.evaluate(lhs, rhs, result)
-    }
-  }
-
-
-  test("[head] anonymous type") {
-    assertResult(str("a"))(("a" |) ==> __.head)
-    assertResult(str("a"))(("a" | "b") ==> __.head)
-    assertResult(str("a"))(("a" | "b" | "c") ==> __.head)
-    //
-    assertResult(str("a"))(("a" `;`) ==> __.head)
-    assertResult(str("a"))(("a" `;` "b") ==> __.head)
-    assertResult(str("a"))(("a" `;` "b" `;` "c") ==> __.head)
-  }
-
-  test("[head] w/ parallel poly") {
-    val check: TableFor2[Lst[_], Obj] =
-      new TableFor2(("parallel", "head"),
-        (str("a") |, "a"),
-        (str("a") | "b", "a"),
-        (str("a") | "b" | "c", "a"),
-        (str("d") | "b" | "c", "d"),
-      )
-    forEvery(check) { (left, right) => {
-      assertResult(right)(left.head)
-    }
-    }
-  }
-
-  test("[head] w/ serial poly") {
-    val check: TableFor2[Lst[_], Obj] =
-      new TableFor2(("serial", "head"),
-        (str("a") `;`, "a"),
-        (str("a") `;` "b", "a"),
-        (str("a") `;` "b" `;` "c", "a"),
-        (str("d") `;` "b" `;` "c", "d"),
-      )
-    forEvery(check) { (left, right) => {
-      assertResult(right)(left.head)
-    }
-    }
-  }
-}
+class HeadInstTest extends BaseInstTest(
+  testSet("[head] table test",
+    comment(";-lst"),
+    testing(1 `;` 2 `;` 3, lst.head, 1, "(1;2;3) => lst[head]"),
+    testing(1 `;` 2 `;` 3, head, 1, "(1;2;3)[head]"),
+    testing((((1 `;` 2) `;`) `;` 3), head, (1 `;` 2), "((1;2);3)[head]"),
+    testing(1.q(5) `;` 2.q(4) `;` 3, lst.head, 1.q(5), "(1{5};2{4};3) => lst[head]"),
+    testing(1.q(5) `;` 2.q(4) `;` 3, lst[Int].head.q(2), 1.q(10), "(1{5};2{4};3)[head]{2}"),
+    testing((1.q(5) `;` 2.q(4) `;` 3).q(6), lst[Int].q(6).head.q(2), 1.q(60), "(1{5};2{4};3){6}[head]{2}"),
+    comment("|-lst"),
+    testing((1.q(5) `|` 2.q(4) `|` 3).q(6), lst[Int].q(6).head.q(2), 1.q(60), "(1{5}|2{4}|3){6}[head]{2}"),
+    testing((1.q(0) `|` 2.q(4) `|` 3).q(6), lst[Int].q(6).head.q(2), 2.q(48), "(1{0}|2{4}|3){6}[head]{2}"),
+    comment(";-rec"),
+    testing(str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3), rec.head, 1, "('a'->1;'b'->2;'c'->3) => rec[head]"),
+    testing(str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3), head, 1, "('a'->1;'b'->2;'c'->3)[head]"),
+    testing((str("a") -> (str("b") -> int(1) `_;` str("c") -> int(2))) `_;` str("c") -> int(3), head, (str("b") -> int(1) `_;` str("c") -> int(2)), "('a'->('b'->1;'c'->2);'d'->3)[head]"),
+  ))
