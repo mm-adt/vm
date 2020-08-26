@@ -495,6 +495,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_refinement_types">Refinement Types</a></li>
+<li><a href="#_recursive_types">Recursive Types</a></li>
 </ul>
 </li>
 </ul>
@@ -2061,7 +2062,7 @@ mmlang&gt; 5-&lt;(+{2}3,+{3}4,+{4}5)&gt;-[sum]
 mmlang&gt; 5 =&gt; nat
 ==&gt;nat:5
 mmlang&gt; 0 =&gt; nat
-language error: 0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
+language error: 0 is not a nat</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2083,9 +2084,9 @@ mmlang&gt; (1,(1,(1)))     =&gt; list
 mmlang&gt; (1,(1,(1,(1)))) =&gt; list
 ==&gt;list:(1,(1,(1,(1))))
 mmlang&gt; 1               =&gt; list
-language error: 1 is not a list&lt;=_[(_){?}|(_,list)]
+language error: 1 is not a list
 mmlang&gt; (1,1)           =&gt; list
-language error: (1{2}) is not a list&lt;=_[(_){?}|(_,list)]</code></pre>
+language error: (1{2}) is not a list</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3055,11 +3056,54 @@ mmlang&gt;
 mmlang&gt; 10 =&gt; nat
 ==&gt;nat:10
 mmlang&gt; 0 =&gt; nat
-language error: 0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]
+language error: 0 is not a nat
 mmlang&gt; 10 =&gt; nat[plus,5]
 ==&gt;nat:15
 mmlang&gt; 10 =&gt; nat[plus,-10]
-language error: nat:0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
+language error: 0 is not a nat</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_recursive_types">Recursive Types</h5>
+<div class="paragraph">
+<p>A recursive type&#8217;s definition contains a reference to itself. Recursive type definitions require a <em>base case</em> to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a <code>lst</code> containing only <code>ints</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,xlist&lt;=lst[[is,[empty]]|
+                            [[is,[head][a,str]];
+                             [is,[tail][a,xlist]]]]]
+mmlang&gt;
+mmlang&gt; ( ) =&gt; [a,xlist]
+==&gt;true
+mmlang&gt; ('a';'b';'c') =&gt; [a,xlist]
+==&gt;true
+mmlang&gt; ('a';'b';'c') =&gt; xlist
+==&gt;xlist:('a';'b';'c')
+mmlang&gt; (1;'a';'c') =&gt; xlist
+mmlang&gt;
+mmlang&gt; ('a';'b';'c') =&gt; xlist[put,0,3]
+language error: (3;'a';'b';'c') is not a xlist</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,ylist&lt;=lst[[is,[empty]]|
+                            [[is,[head][a,str]];
+                             [is,[tail][head][a,int]];
+                             [is,[tail][tail][a,ylist]]]]]
+mmlang&gt;
+mmlang&gt; ( ) =&gt; [a,ylist]
+==&gt;true
+mmlang&gt; ('a';1;'b';2) =&gt; [a,ylist]
+==&gt;true
+mmlang&gt; ('a';1;'b';2) =&gt; ylist
+==&gt;ylist:('a';1;'b';2)
+mmlang&gt; (1;'a';'c') =&gt; ylist
+mmlang&gt;
+mmlang&gt; ('a';1;'b';2) =&gt; ylist[put,0,3]
+language error: (3;'a';1;'b';2) is not a ylist</code></pre>
 </div>
 </div>
 </div>
@@ -3380,7 +3424,7 @@ mmlang&gt; int =&gt; [define,nat&lt;=int[is&gt;0]]                     <i class=
 mmlang&gt;  6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]             <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;nat:6
 mmlang&gt; -6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]             <i class="conum" data-value="4"></i><b>(4)</b>
-language error: -6 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
+language error: -6 is not a nat</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -3426,7 +3470,7 @@ language error: -6 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]</code></pre>
 mmlang&gt; 53 =&gt; [as,nat]                                                                <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;nat:53
 mmlang&gt; 0  =&gt; [as,nat]
-language error: 0 is not a nat&lt;=int[is,bool&lt;=int[gt,0]]
+language error: 0 is not a nat
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)  =&gt; [as,person]                                   <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;-29) =&gt; [as,person]                                   <i class="conum" data-value="4"></i><b>(4)</b>
@@ -6536,7 +6580,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-26 03:08:25 -0600
+Last updated 2020-08-26 04:45:13 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
