@@ -1256,13 +1256,13 @@ In mm-ADT, the above is denote `int[is>0]` which is the sugar form of `int{?}\<=
 All `mmlang` examples with a `:type` expression are defining a *global type* (which itself may define zero or more types). The global type is prefixed to all subsequent expressions. In many ways, a global type is like an https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler] https://en.wikipedia.org/wiki/Object_file[object file]. On the other hand, model-ADTs (of `[model]`) are similar to the https://en.wikipedia.org/wiki/Class_(computer_programming)[class files] of https://en.wikipedia.org/wiki/Object-oriented_programming[object-oriented languages].
 ================================================================
 
-[exec,exception=LanguageException]
+[exec,none="",exception=LanguageException]
 ----
 :[define,nat<=int[is>0]]
 10 => nat
-0 => nat
+-1 => nat
 10 => nat[plus,5]
-10 => nat[plus,-10]
+10 => nat[plus,5][plus,-15]
 ----
 
 [discrete]
@@ -1272,14 +1272,32 @@ There are two canonical `poly` types: `lst` and `rec`. Any restriction on their 
 
 image::date-example.svg[]
 
-[exec,exception=LanguageException]
+[exec,none="",exception=LanguageException]
 ----
-:[define,nat<=int[is>0], %
-         date<=(nat[is=<12];nat[is=<31];nat), %
-         date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
+:[define,nat<=int[is>0],                             %
+        date<=(nat[is=<12];nat[is=<31];nat),         %
+        date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
 (8;26;2020) => date
 (8;26)      => date
 ----
+
+===== Dependent Types
+
+[exec,none=""]
+----
+:[define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),       %
+                single<=vec:(lst,is<4).0[tail][head], %
+                single<=vec:(lst,is>3).0[head],       %
+                single<=int]
+(1;2;3)   => vec                                    //<1>
+(1;2;3)   => vec => single                          //<2>
+(1;2;3;4) => vec                                    //<3>
+(1;2;3;4) => vec => single                          //<4>
+----
+<1> A `;-lst` of 3 terms is morphed into a `vec` using the `vec\<=lst` type.
+<2> The `vec` is morphed into a `single` using the first `single\<=vec` type.
+<3> A `;-lst` of 4 terms is morphed into a `vec`.
+<4> The `vec` is morphed into a `single` using the second `single\<=vec` type.
 
 ===== Recursive Types
 

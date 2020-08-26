@@ -40,7 +40,8 @@ object DefineInstTest {
   private val myListType: Type[__] = __("mylist") <= __.-<(is(eqs(1)) `|` (1 `;` __("mylist"))) >-
   private val iListType: Type[__] = __("ilist") <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a(__("ilist")))))
   private val siListType: Type[__] = __("silist") <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a(__("silist")))))
-  private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(myListType).defining(iListType).defining(siListType)
+  private val vecType: Type[__] = __("vec") <= split(__ `;` lst.combine(__ `,`).merge.count)
+  private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(myListType).defining(iListType).defining(siListType).defining(vecType)
   //     testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
   //    testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
 
@@ -71,9 +72,13 @@ class DefineInstTest extends BaseInstTest(
     testing("a" `;` 1 `;` "b" `;` 2, a(__("silist")), true, "('a';1;'b';2)[a,silist]"),
     testing(1 `;` "a" `;` 1, lst.a(__("silist")), false, "(1;'a';1) => lst[a,silist]"),
     testing("a" `;` 1 `;` 2, lst.a(__("silist")), false, "('a';1;2) => lst[a,silist]"),
+    comment("vec"),
+    testing(lst(), a(__("vec")), true, "()[a,vec]"),
+    testing(lst(), as(__("vec")), (lst() `;` 0).named("vec"), "()[as,vec]"),
+    testing(1 `;` 2, as(__("vec")), (((1 `;` 2) `;`) `;` 2).named("vec"), "(1;2)[as,vec]"),
   )
 ) {
-println(__("silist") <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a(__("silist"))))))
+  println(__("silist") <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a(__("silist"))))))
   test("[define] play tests") {
     println(int.define(int.is(int.gt(0))).a(__("nat")))
     println(int(-10).define(__("nat") <= int.is(int.gt(0))).a(__("nat").plus(100)))
