@@ -3065,7 +3065,12 @@ language error: 0 is not a nat</code></pre>
 </div>
 <h6 id="_poly_refinement" class="discrete">Poly Refinement</h6>
 <div class="paragraph">
-<p>There are two canonical <code>poly</code> types: <code>lst</code> and <code>rec</code>. Any restriction on their respective values is a refinement. The example below defines a <code>date</code> to be a 2 or 3 <code>nat</code> termed <code>;-lst</code>. If the <code>;-lst</code> contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT&#8217;s type system. Variables, types, and rewrites are all graph search processes. When an <code>obj</code> is morphed to another type, a defined type (path) to the desired <strong>range</strong> is searched for in the <code>obj</code> graph and returned if and only if the <code>obj</code> matches the defined type&#8217;s <strong>domain</strong>. Type defintions are simply other types that specify the means by which one type is translated into another type.</p>
+<p>There are two canonical <code>poly</code> types: <code>lst</code> and <code>rec</code>. Any restriction on their respective values is a <strong>refinement</strong>. The example below defines a <code>date</code> to be a <code>;-lst</code> with 2 or 3 <code>nats</code>. If the <code>;-lst</code> contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT&#8217;s type system. Variables, types, and rewrites are all <em>graph search processes</em>. A defined type (path) with a desired <strong>range</strong> is searched for in the <code>obj</code> graph and returned if and only if the morphing <code>obj</code> matches the defined type&#8217;s <strong>domain</strong>. Type definitions are simply other types that specify the means by which one type is translated into another type.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/obj/date-example.svg" alt="date example">
+</div>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3073,14 +3078,10 @@ language error: 0 is not a nat</code></pre>
                  date&lt;=(nat[is=&lt;13];nat[is=&lt;31];nat),
                  date&lt;=(nat[is=&lt;13];nat[is=&lt;31])[put,2,2020]]
 mmlang&gt;
-mmlang&gt; (8;26;2020) =&gt; lst
-==&gt;(8;26;2020)
 mmlang&gt; (8;26;2020) =&gt; date
 ==&gt;date:(nat:8;nat:26;nat:2020)
 mmlang&gt; (8;26)      =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)
-mmlang&gt; (8)         =&gt; date
-language error: (8) is not a date</code></pre>
+==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
 </div>
 </div>
 </div>
@@ -6600,7 +6601,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-26 11:18:15 -0600
+Last updated 2020-08-26 12:08:34 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
