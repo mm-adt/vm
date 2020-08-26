@@ -46,6 +46,7 @@ class GetInstTest extends BaseInstTest(
     testing(1 `;` (2 `;` 3) `;` 4, get(1), (2 `;` 3), "(1;(2;3);4).1"),
     testing(1 `;` (2 `;` 3).q(10) `;` 4, get(1).q(2), (2 `;` 3).q(20), "(1;(2;3){10};4).1{2}"),
     testing((1 `;` (2 `;` 3).q(10) `;` 4).q(5), get(1).q(2), (2 `;` 3).q(100), "(1;(2;3){10};4){5}.1{2}"),
+    testing((int `;` (int `;` int).q(10) `;` int).q(5), get(1).q(2), (int `;` int).q(100) <= (int `;` (int `;` int).q(10) `;` int).q(5).get(1).q(2), "(int;(int;int){10};int){5}.1{2}"),
     // testing(1 `;` 2 `;` 3, get(2, str), "3", "(1;2;3)[get,2,str]"),
     comment(";-lst type index"),
     testing(1 `;` 2 `;` 3, lst.get(int.is(gt(0))), int(2, 3), "(1;2;3) => lst[get,int[is>0]]"),
@@ -83,6 +84,7 @@ class GetInstTest extends BaseInstTest(
     testing(str("a") -> 1.q(2, 3) `_,` str("a") -> 2.q(7) `_,` str("b") -> 3.q(2), get("a").q(10), int(1.q(20, 30), 2.q(70)), "('a'->1{2,3},'a'->2{7},'b'->3{2}).a{10}"),
     testing(str("a") -> 1.q(2, 3) `_,` str("a") -> 1.q(7) `_,` str("b") -> 3.q(2), get("a").q(10), 1.q(90, 100), "('a'->1{2,3},'a'->1{7},'b'->3{2}).a{10}"),
     testing((str("a") -> 1.q(2, 3) `_,` str("a") -> 1.q(7) `_,` str("b") -> 3.q(2)).q(20), get("a").q(10), 1.q(1800, 2000), "('a'->1{2,3},'a'->1{7},'b'->3{2}){20}.a{10}"),
+    testing((str("a") -> int.q(2, 3) `_,` str("a") -> int.q(7) `_,` str("b") -> int.q(2)).q(20), get("a").q(10), int.q(1800, 2000) <= (str("a") -> int.q(2, 3) `_,` str("a") -> int.q(7) `_,` str("b") -> int.q(2)).q(20).get("a").q(10), "('a'->int{2,3},'a'->int{7},'b'->int{2}){20}.a{10}"),
     comment(",-rec type index"),
     testing(int(1) -> int(1) `_,` int(100) -> int(2) `_,` int(200) -> int(3), get(int.is(gt(50))), int(2, 3), "(1->1,100->2,200->3)[get,int[is>50]]"),
     testing(int(1) -> int(1) `_,` int(100) -> 2.q(10) `_,` int(200) -> 2.q(20), get(int.is(gt(50))).q(100), 2.q(3000), "(1->1,100->2{10},200->2{20})[get,int[is>50]]{100}"),
@@ -93,4 +95,5 @@ class GetInstTest extends BaseInstTest(
     comment("|-rec value index"),
     testing(str("a") -> int(1) `|` str("a") -> int(1) `|` str("b") -> int(3), get("a"), 1, "('a'->1|'a'->1|'b'->3).a"),
     testing(str("a") -> 1.q(5) `|` str("a") -> 1.q(5) `|` str("b") -> int(3), get("a").q(10), 1.q(50), "('a'->1{5}|'a'->1{5}|'b'->3).a{10}"),
+    testing((str("a") -> 1.q(5) `|` str("a") -> 1.q(5) `|` str("b") -> int(3)).q(20), get("a").q(10), 1.q(1000), "('a'->1{5}|'a'->1{5}|'b'->3){20}.a{10}"),
   ))

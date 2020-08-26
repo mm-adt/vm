@@ -56,28 +56,20 @@ object GetOp extends Func[Obj, Obj] {
           case _: LstType[_] if LanguageException.testIndex(alst, aint.g.toInt) => alst.glist(aint.g.toInt)
           case _ => typeHint
         }
-        case aint: Type[_] => strm(alst.glist.view.zipWithIndex.filter(vi => int(vi._2).test(aint)).map(vi => vi._1 match {
+        case atype: Type[_] => strm(alst.glist.view.zipWithIndex.filter(vi => int(vi._2).test(atype)).map(vi => vi._1 match {
           case _: Value[_] => vi._1
           case _: Type[_] => __ `=>` vi._1
         }))
-        case _ => typeHint
       }
-      case _: Value[_] => zeroObj // throw LanguageException.typingError(start,branch(lst.q(?) `|` rec.q(?)).asInstanceOf[Type[_]])
       case anon: __ if anon.name.equals("x") => anon // TODO: so ghetto -- this is because defs and variables fighting for namespace
       case _ => typeHint
     }
     value match {
       case astrm: Strm[_] =>
-        if (astrm.values.isEmpty)
-          if (start.isInstanceOf[Type[_]]) typeHint.via(start, newInst)
-          else zeroObj.via(start, newInst)
-        else if (1 == astrm.values.size) astrm.values.head match {
-          case atype: Type[_] => atype.via(start, newInst)
-          case avalue: Value[_] => avalue.clone(q = avalue.q.mult(start.q).mult(inst.q), via = (start, newInst))
-        } else
-          astrm(x => x.clone(q = x.q.mult(start.q).mult(inst.q), via = (start, newInst)))
-      case avalue: Value[_] => avalue.clone(q = avalue.q.mult(start.q).mult(inst.q), via = (start, newInst))
-      case _ => value.via(start, newInst)
+        if (astrm.values.isEmpty) if (start.isInstanceOf[Type[_]]) typeHint.via(start, newInst) else zeroObj
+        else if (1 == astrm.values.size) Poly.finalResult(astrm.values.head, start, newInst)
+        else astrm(x => Poly.finalResult(x, start, newInst))
+      case _ => Poly.finalResult(value, start, newInst)
     }
   }
 }

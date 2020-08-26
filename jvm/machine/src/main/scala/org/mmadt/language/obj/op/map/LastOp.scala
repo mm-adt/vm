@@ -36,7 +36,7 @@ trait LastOp[+A <: Obj] {
 object LastOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.last, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    (start match {
+    Poly.finalResult(start match {
       case apoly: Poly[_] if apoly.ctype => __
       case apoly: Poly[_] =>
         Some(apoly.glist)
@@ -45,6 +45,6 @@ object LastOp extends Func[Obj, Obj] {
           .map(x => x._1(x._2))
           .getOrElse(zeroObj) // throw LanguageException.PolyException.noLast)
       case _ => start
-    }).via(start, inst)
+    }, start, inst)
   }
 }

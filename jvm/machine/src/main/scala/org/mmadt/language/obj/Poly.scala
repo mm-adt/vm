@@ -47,4 +47,6 @@ trait Poly[+A <: Obj] extends Obj
 object Poly {
   def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = (apoly.size < 2 || bpoly.size < 2) ||
     (apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial)
+
+  def finalResult[A <: Obj](obj: A, start: Obj, inst: Inst[Obj, Obj]): A = obj.clone(q = obj.q.mult(start.q).mult(inst.q), via = (start, inst))
 }
