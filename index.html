@@ -2989,8 +2989,7 @@ As previously stated for collection <code>polys</code>, control <code>poly</code
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{3}[mult,10][is&gt;20 -&gt; [+70,+170,+270],
-                        is&gt;10 -&gt; [*10,*20,*30]  ,
-                        _     -&gt; {0}            ][plus,100][explain]
+                        is&gt;10 -&gt;   [*10,*20,*30]][plus,100][explain]
 ==&gt;'
 int{0,18}&lt;=int{3}[mult,10][int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,20]]-&gt;int{9}&lt;=int{3}[int{3}[plus,70],int{3}[plus,170],int{3}[plus,270]],int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,10]]-&gt;int{9}&lt;=int{3}[int{3}[mult,10],int{3}[mult,20],int{3}[mult,30]]][plus,100]
 
@@ -3025,9 +3024,8 @@ instruction                                    domain            range       sta
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
-                             -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-,
-                             -&lt;(_      ;{0}                )&gt;-)&gt;-;[plus,100])
-==&gt;(int{3};_[mult,10];_-&lt;(_-&lt;(_[is,_[gt,20]];_-&lt;(_[plus,70],_[plus,170],_[plus,270])&gt;-)&gt;-,_-&lt;(_[is,_[gt,10]];_-&lt;(_[mult,10],_[mult,20],_[mult,30])&gt;-)&gt;-,_-&lt;(_;{0})&gt;-)&gt;-;_[plus,100])</code></pre>
+                             -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-)&gt;-;[plus,100])
+==&gt;(int{3};_[mult,10];_-&lt;(_-&lt;(_[is,_[gt,20]];_-&lt;(_[plus,70],_[plus,170],_[plus,270])&gt;-)&gt;-,_-&lt;(_[is,_[gt,10]];_-&lt;(_[mult,10],_[mult,20],_[mult,30])&gt;-)&gt;-)&gt;-;_[plus,100])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3060,8 +3058,7 @@ where \$\tt{poly} \succ\$ is the expression <code>poly =&gt; [merge]</code>.</p>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [1,2,3] =&gt; int{3}[mult,10][is&gt;20 -&gt; [+70,+170,+270],
-                                   is&gt;10 -&gt; [*10,*20,*30]  ,
-                                   _     -&gt; {0}            ][plus,100]
+                                   is&gt;10 -&gt;   [*10,*20,*30]][plus,100]
 ==&gt;500
 ==&gt;200
 ==&gt;300{2}
@@ -3069,8 +3066,7 @@ where \$\tt{poly} \succ\$ is the expression <code>poly =&gt; [merge]</code>.</p>
 ==&gt;700{2}
 ==&gt;1000
 mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
-                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-,
-                                      -&lt;(_      ;{0}                )&gt;-)&gt;-;[plus,100])&gt;-
+                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-)&gt;-;[plus,100])&gt;-
 ==&gt;500
 ==&gt;200
 ==&gt;300{2}
@@ -3085,8 +3081,7 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [1,2,3] =&gt; [int{3};[mult,10];[[[is&gt;20];[+70,+170,+270]],
-                                      [[is&gt;10];[*10,*20,*30  ]],
-                                       [_     ;{0}            ]];[plus,100]]
+                                      [[is&gt;10];[*10,*20,*30  ]]];[plus,100]]
 ==&gt;500
 ==&gt;200
 ==&gt;300{2}
@@ -3122,14 +3117,12 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 ==&gt;(2;20;(({0};{0}),(20;(200,400,600))))
 ==&gt;(3;30;((30;(100,200,300)),(30;(300,600,900))))
 mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
-                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-,
-                                      -&lt;(_      ;{0}                )&gt;-)&gt;-;[plus,100])
+                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-)&gt;-;[plus,100])
 ==&gt;(1;10;{0};{0})
 ==&gt;(2;20;[200,400,600];[300,500,700])
 ==&gt;(3;30;[100,200,300{2},600,900];[200,300,400{2},700,1000])
 mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
-                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-,
-                                      -&lt;(_      ;{0}                )&gt;-)&gt;-;[plus,100])&gt;-
+                                      -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-)&gt;-;[plus,100])&gt;-
 ==&gt;500
 ==&gt;200
 ==&gt;300{2}
@@ -6749,7 +6742,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-27 11:54:48 -0600
+Last updated 2020-08-27 13:39:40 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
