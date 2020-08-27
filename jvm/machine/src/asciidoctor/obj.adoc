@@ -584,7 +584,7 @@ a|
 
 ===== Type Evaluation
 
-[cols=1,width=25,float=right,grid=none,frame=none]
+[cols=1,width=20,float=right,grid=none,frame=none]
 |====
 |
 \[
@@ -599,7 +599,7 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 \]
 |====
 
-The mm-ADT virtual machine has two layers of logic: the https://zenodo.org/record/2565243[stream ring] and the https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The stream ring's axioms (and entailed theorems) dictate how  instructions are composed. The instructions dicatate how input `objs` are mapped to output `objs`. Instruction composition is determined by three operators: \$\ast\$, \$ +\$, and \$\oplus\$. The stream ring's multiplicative https://en.wikipedia.org/wiki/Monoid[monoid's] \$\ast\$-operator concatenates *serial streams*. The additive https://en.wikipedia.org/wiki/Abelian_group[abelian group's] \$ +\$-operator assembles *parallel streams*. Finally, the stream https://en.wikipedia.org/wiki/Near-ring[near-ring's] non-commutative group's \$\oplus\$-operator https://en.wikipedia.org/wiki/Fold_(higher-order_function)[reduces] streams down to a *singleton stream*.
+The mm-ADT virtual machine has two layers of logic: the https://zenodo.org/record/2565243[stream ring] and the https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture].  The stream ring's axioms (and entailed theorems) dictate how instructions are composed. The instructions specify how input `objs` are mapped to output `objs`. Instruction composition is determined by the stream ring's three operators: \$\ast\$, \$ +\$, and \$\oplus\$. The stream ring's multiplicative https://en.wikipedia.org/wiki/Monoid[monoid's] \$\ast\$-operator concatenates *serial streams*, the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group's] \$ +\$-operator arranges *parallel streams*, and the stream https://en.wikipedia.org/wiki/Near-ring[near-ring's] non-commutative group's \$\oplus\$-operator https://en.wikipedia.org/wiki/Fold_(higher-order_function)[reduces] streams down to a *singleton stream*.
 
 [.small]
 [cols="1,1,2",width=20,float=left]
@@ -611,7 +611,7 @@ The mm-ADT virtual machine has two layers of logic: the https://zenodo.org/recor
 | `=\|`  | \$ \oplus\$   | `[barrier]`
 |====
 
-The illustration above offers a intuitive visualization monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT ISA has three https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions] that provide direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the fundamental algebra of the mm-ADT VM -- the stream ring.
+The illustration above offers a intuitive visualization monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT ISA has three https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions] that provide direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying algebra of the mm-ADT VM -- https://zenodo.org/record/2565243[the stream ring].
 
 
 '''
