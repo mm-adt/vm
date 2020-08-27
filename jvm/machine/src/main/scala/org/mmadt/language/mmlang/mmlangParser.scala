@@ -97,13 +97,13 @@ class mmlangParser extends JavaTokenParsers {
   lazy val polyObj: Parser[Poly[Obj]] = lstObj | recObj
 
   def lstStruct(parser: Parser[Obj]): Parser[LstTuple[Obj]] =
-    (opt(parser) ~ polySep) ~ repsep(opt(parser), polySep) ^^ (x => (Some(x._1._2).map(y => if(y == juxt_op) Tokens.`;` else y).get, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)))) |
+    (opt(parser) ~ polySep) ~ repsep(opt(parser), polySep) ^^ (x => (Some(x._1._2).map(y => if (y == juxt_op) Tokens.`;` else y).get, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)))) |
       parser ^^ (x => (Tokens.`,`, List(x))) |
       Tokens.blank ^^ (_ => (Tokens.`,`, List.empty[Obj]))
 
   def recStruct(parser: Parser[Obj]): Parser[RecTuple[Obj, Obj]] =
     ((opt((parser <~ Tokens.->) ~ parser) ~ polySep) ~ rep1sep(opt((parser <~ Tokens.->) ~ parser), polySep)) ^^
-      (x => (Some(x._1._2).map(y => if(y == juxt_op) Tokens.`;` else y).get, x._1._1.map(a => List(a._1 -> a._2)).getOrElse(List.empty) ++ x._2.map(y => y.map(z => z._1 -> z._2).getOrElse(zeroObj -> zeroObj)).toMap[Obj, Obj])) |
+      (x => (Some(x._1._2).map(y => if (y == juxt_op) Tokens.`;` else y).get, x._1._1.map(a => List(a._1 -> a._2)).getOrElse(List.empty) ++ x._2.map(y => y.map(z => z._1 -> z._2).getOrElse(zeroObj -> zeroObj)).toMap[Obj, Obj])) |
       Tokens.-> ^^ (_ => (Tokens.`,`, List.empty)) |
       (parser <~ Tokens.->) ~ parser ^^ (x => (Tokens.`,`, List(x._1 -> x._2)))
 
@@ -132,10 +132,10 @@ class mmlangParser extends JavaTokenParsers {
 
   // value parsing
   lazy val objValue: Parser[Obj] = (boolValue | realValue | intValue | strValue | lstValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val boolValue: Parser[BoolValue] = opt(objName) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => vbool(x._1.getOrElse(Tokens.bool), x._2.toBoolean, qOne))
-  lazy val intValue: Parser[IntValue] = opt(objName) ~ wholeNumber ^^ (x => vint(x._1.getOrElse(Tokens.int), x._2.toLong, qOne))
-  lazy val realValue: Parser[RealValue] = opt(objName) ~ decimalNumber ^^ (x => vreal(x._1.getOrElse(Tokens.real), x._2.toDouble, qOne))
-  lazy val strValue: Parser[StrValue] = opt(objName) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => vstr(x._1.getOrElse(Tokens.str), x._2.subSequence(1, x._2.length - 1).toString, qOne))
+  lazy val boolValue: Parser[BoolValue] = opt(objName) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x._2.toBoolean, x._1.getOrElse(Tokens.bool), qOne))
+  lazy val intValue: Parser[IntValue] = opt(objName) ~ wholeNumber ^^ (x => int(x._2.toLong, x._1.getOrElse(Tokens.int), qOne))
+  lazy val realValue: Parser[RealValue] = opt(objName) ~ decimalNumber ^^ (x => real(x._2.toDouble, x._1.getOrElse(Tokens.real), qOne))
+  lazy val strValue: Parser[StrValue] = opt(objName) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => str(g=x._2.subSequence(1, x._2.length - 1).toString, name=x._1.getOrElse(Tokens.str), qOne))
   lazy val lstValue: Parser[Lst[Obj]] = (opt(objName) ~ (LROUND ~> lstStruct(objValue) <~ RROUND) ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = (x._2._1, x._2._2))))
   lazy val recValue: Parser[Rec[Obj, Obj]] = (opt(objName) ~ (LROUND ~> recStruct(objValue) <~ RROUND) ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = (x._2._1, x._2._2))))
   lazy val startValue: Parser[Obj] = ((LBRACKET ~> rep1sep(objValue, COMMA)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => estrm(x._1.filter(_.alive).map(y => y.q(q => multQ(q, x._2.getOrElse(qOne)))): _*))

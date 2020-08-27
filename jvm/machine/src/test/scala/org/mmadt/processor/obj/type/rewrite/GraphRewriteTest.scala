@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.obj.`type`.rewrite
 
-import org.mmadt.language.obj.value.strm.RecStrm
+import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Obj, Rec, Str}
+import org.mmadt.language.obj.{OStrm, Obj, Rec, Str}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -55,7 +55,7 @@ class GraphRewriteTest extends FunSuite {
     val josh: Vertex = rec(str("id") -> int(4)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
     val ripple: Vertex = rec(str("id") -> int(5)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
     val peter: Vertex = rec(str("id") -> int(6)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val graph: RecStrm[StrValue, Value[Obj]] = rec(marko, vadas, lop, josh, ripple, peter)
+    val graph: OStrm[Vertex] = strm[Vertex](marko, vadas, lop, josh, ripple, peter)
 
     assertResult(6)(graph.values.length)
     graph.values.foreach(v => assert(v.test(vertex)))

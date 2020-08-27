@@ -42,8 +42,8 @@ class BranchTest extends BaseInstTest(
   testSet("[branch] w/ mm", MM.rewriting((__.via(__, BranchOp(from("x"))) `;`) <= (split(to("x")).merge `,`)), //  ([branch,x])<=([split,<x>][merge])
     testing(str, -<(str `;` str) >-, str.branch(__ `;` __), "str-<(str;str)>-"),
     testing(str, id.-<(plus("a") `,` plus("b")).id.id.>-, str.branch(str.plus("a") `,` str.plus("b")), "str => [id]-<(+'a',+'b')[id][id]>-"),
-    testing("a", -<(plus("a") `,` plus("b")) >-, str("aa", "ab"), "'a' => str-<(+'a',+'b')>-"),
-    testing("a", id.-<(plus("a") `,` plus("b")).id.id.>-, str("aa", "ab"), "'a' => [id]-<(+'a',+'b')[id][id]>-"),
+    testing("a", -<(plus("a") `,` plus("b")) >-, str(str("aa"), str("ab")), "'a' => str-<(+'a',+'b')>-"),
+    testing("a", id.-<(plus("a") `,` plus("b")).id.id.>-, str(str("aa"), str("ab")), "'a' => [id]-<(+'a',+'b')[id][id]>-"),
   ),
   testSet("[branch] ,-lst",
     testing(int, branch(is(gt(10)) `,` is(gt(5)) `,` is(gt(0))), int.q(0, 3) <= int.branch(int.is(gt(10)) `,` int.is(gt(5)) `,` int.is(gt(0))),

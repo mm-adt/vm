@@ -24,10 +24,11 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
-import org.mmadt.language.obj.op.map.{HeadOp, LastOp, TailOp}
+import org.mmadt.language.obj.op.map.{EmptyOp, HeadOp, LastOp, TailOp}
 
 trait Poly[+A <: Obj] extends Obj
   with CombineOp[A]
+  with EmptyOp
   with HeadOp[A]
   with TailOp[A]
   with LastOp[A]

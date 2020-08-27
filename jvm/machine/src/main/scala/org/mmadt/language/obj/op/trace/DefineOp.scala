@@ -24,13 +24,9 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
-import org.mmadt.storage.StorageFactory.{lst, rec}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
 /**

@@ -42,9 +42,9 @@ package object op {
   object BranchInstruction {
     def mergeBranches[O <: Obj](brch: Poly[O], inst: Inst[Obj, Obj]): O = {
       brch.gsep match {
-        case Tokens.`,` => strm[O](brch.glist.map(x => BranchInstruction.multPolyQ(x, brch, inst)))
-        case Tokens.`;` => brch.glist.lastOption.map(x => BranchInstruction.multPolyQ(x, brch, inst)).getOrElse(zeroObj).asInstanceOf[O]
-        case Tokens.`|` => brch.glist.headOption.map(x => BranchInstruction.multPolyQ(x, brch, inst)).getOrElse(zeroObj).asInstanceOf[O]
+        case Tokens.`,` => strm[O](brch.glist.map(x => BranchInstruction.multPolyQ[O](x, brch, inst)))
+        case Tokens.`;` => brch.glist.lastOption.map(x => BranchInstruction.multPolyQ[O](x, brch, inst)).getOrElse(deadObj[O])
+        case Tokens.`|` => brch.glist.headOption.map(x => BranchInstruction.multPolyQ[O](x, brch, inst)).getOrElse(deadObj[O])
       }
     }
 
@@ -75,7 +75,7 @@ package object op {
       x.hardQ(q => multQ(multQ(q, brch.q), instQ))
     }
 
-    def multPolyQ[O <: Obj](obj: O, poly: Poly[_], inst: Inst[_, _]): O = obj.hardQ(q => multQ(multQ(q, poly.q), inst.q))
+    def multPolyQ[O <: Obj](obj: O, poly: Poly[O], inst: Inst[Obj, Obj]): O = obj.hardQ(q => multQ(multQ(q, poly.q), inst.q))
   }
 
   trait FilterInstruction

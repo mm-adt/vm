@@ -29,9 +29,10 @@ import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.RecType
 import org.mmadt.language.obj.value.strm.RecStrm
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.{OStrm, Obj, Rec}
 import org.mmadt.language.{LanguageException, LanguageFactory, LanguageProvider, Tokens}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.value.strm.VRecStrm
 
 import scala.collection.mutable
 import scala.io.{BufferedSource, Source}
@@ -69,13 +70,17 @@ class mmkvStore[K <: Obj, V <: Obj](val file: String) extends AutoCloseable {
   def put(key: K, value: V): V = store.put(key, value).getOrElse(value)
   def put(value: V): V = store.put(int(counter.get()).asInstanceOf[K], value).getOrElse(value)
   def remove(key: K): V = store.remove(key).get
-  def stream(via: ViaTuple = rootVia): RecStrm[StrValue, Value[Obj]] = vrec(values = store.iterator.map(x => {
-    val kv = rec(name = schema.name, via = via, g = (Tokens.`,`, List(
-      K -> x._1.asInstanceOf[Value[V]],
-      V -> x._2.asInstanceOf[Value[V]]))).asInstanceOf[RecValue[StrValue, Value[Obj]]]
-    LanguageException.testTypeCheck(kv, schema)
-    kv
-  }))
+  def stream(via: ViaTuple = rootVia): OStrm[RecValue[StrValue, Value[Obj]]] = {
+    if(store.isEmpty)
+      return new VRecStrm[StrValue,Value[Obj]](values=Nil).asInstanceOf[OStrm[RecValue[StrValue,Value[Obj]]]]
+    strm[RecValue[StrValue,Value[Obj]]](store.toList.map(x => {
+      val kv = rec(name = schema.name, via = via, g = (Tokens.`,`, List(
+        K -> x._1.asInstanceOf[Value[V]],
+        V -> x._2.asInstanceOf[Value[V]]))).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+      LanguageException.testTypeCheck(kv, schema)
+      kv
+    }))
+  }
   def clear(): Unit = {
     counter.set(0L)
     store.clear()
