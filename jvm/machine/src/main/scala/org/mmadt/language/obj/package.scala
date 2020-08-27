@@ -23,9 +23,9 @@
 package org.mmadt.language
 
 import org.mmadt.language.obj.Obj.IntQ
-import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.value.strm._
+import org.mmadt.language.obj.value._
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -71,6 +71,33 @@ package object obj {
       case _ => false
     }
   }
+
+  def baseName(obj: Obj): String = obj match {
+    case _: Bool => Tokens.bool
+    case _: Int => Tokens.int
+    case _: Real => Tokens.real
+    case _: Str => Tokens.str
+    case _: Lst[_] => Tokens.lst
+    case _: Rec[_, _] => Tokens.rec
+    case _: __ => Tokens.anon
+    case _ => Tokens.obj
+  }
+  def toBaseName[A <: Obj](obj: A): A = obj.clone(name = baseName(obj))
+  def asType[O <: Obj](obj: O): OType[O] = (obj match {
+    case atype: Type[_] => atype
+    case arec: RecStrm[Obj, Obj] => asType[O](arec.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
+    case alst: LstStrm[Obj] => asType[O](alst.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
+    case alst: LstValue[Obj] => if (alst.isEmpty) lst.q(obj.q) else lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
+    case arec: RecValue[Obj, Obj] => if (arec.isEmpty) rec.q(obj.q) else rec(name = obj.name, g = (arec.gsep, if (arec.ctype) null else arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
+    //
+    case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
+    case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
+    case _: StrValue | _: StrStrm => tstr(name = obj.name, q = obj.q)
+    case _: BoolValue | _: BoolStrm => tbool(name = obj.name, q = obj.q)
+    case _: ObjStrm => tobj(name = obj.name, q = obj.q)
+
+  }).asInstanceOf[OType[O]]
+
   def sameBase(objA: Obj, objB: Obj): Boolean = baseName(objA).equals(baseName(objB))
 }
 

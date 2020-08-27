@@ -24,8 +24,8 @@ package org.mmadt
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.StorageFactory.{asType, zeroObj}
+import org.mmadt.language.obj.{Inst, Obj, asType}
+import org.mmadt.storage.StorageFactory.zeroObj
 import org.scalatest.Matchers.assertResult
 
 /**

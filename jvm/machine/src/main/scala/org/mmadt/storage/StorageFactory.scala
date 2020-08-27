@@ -51,11 +51,7 @@ trait StorageFactory {
   lazy val real: RealType = treal()
   lazy val str: StrType = tstr()
   def rec[A <: Obj, B <: Obj]: Rec[A, B] = ORec.emptyType
-  def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = ORec.makeRec(name, g, q, via)
   def lst[A <: Obj]: Lst[A] = OLst.emptyType
-  def lst[A <: Obj](single: A): Lst[A] = lst(g = (Tokens.`,`, List(single)))
-  def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = OLst.makeLst(name, g, q, via)
-  def lst[A <: Obj](sep: String, values: A*): Lst[A] = OLst.makeLst(g = (sep, values.toList))
   //
   def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = rootVia): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = rootVia): BoolType
@@ -71,6 +67,10 @@ trait StorageFactory {
   def int(g: Long, name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = rootVia): IntValue
   def real(g: Double, name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = rootVia): RealValue
   def str(g: String, name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = rootVia): StrValue
+  def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = ORec.makeRec(name, g, q, via)
+  def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = OLst.makeLst(name, g, q, via)
+  def lst[A <: Obj](sep: String, values: A*): Lst[A] = OLst.makeLst(g = (sep, values.toList))
+  def lst[A <: Obj](single: A): Lst[A] = lst(g = (Tokens.`,`, List(single)))
   //
   def strm[O <: Obj](objs: Seq[O]): OStrm[O]
   def strm[O <: Obj]: OStrm[O]
@@ -126,31 +126,7 @@ object StorageFactory {
   lazy val * : (IntValue, IntValue) = qStar
   lazy val ? : (IntValue, IntValue) = qMark
   lazy val + : (IntValue, IntValue) = qPlus
-  def baseName(obj: Obj): String = obj match {
-    case _: Bool => Tokens.bool
-    case _: Int => Tokens.int
-    case _: Real => Tokens.real
-    case _: Str => Tokens.str
-    case _: Lst[_] => Tokens.lst
-    case _: Rec[_, _] => Tokens.rec
-    case _: __ => Tokens.anon
-    case _ => Tokens.obj
-  }
-  def toBaseName[A <: Obj](obj: A): A = obj.clone(name = baseName(obj))
-  def asType[O <: Obj](obj: O): OType[O] = (obj match {
-    case atype: Type[_] => atype
-    case arec: RecStrm[Obj, Obj] => asType[O](arec.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
-    case alst: LstStrm[Obj] => asType[O](alst.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
-    case alst: LstValue[Obj] => if (alst.isEmpty) lst.q(obj.q) else lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
-    case arec: RecValue[Obj, Obj] => if (arec.isEmpty) rec.q(obj.q) else rec(name = obj.name, g = (arec.gsep, if (arec.ctype) null else arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
-    //
-    case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
-    case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
-    case _: StrValue | _: StrStrm => tstr(name = obj.name, q = obj.q)
-    case _: BoolValue | _: BoolStrm => tbool(name = obj.name, q = obj.q)
-    case _: ObjStrm => tobj(name = obj.name, q = obj.q)
 
-  }).asInstanceOf[OType[O]]
   implicit val mmstoreFactory: StorageFactory = new StorageFactory {
     /////////TYPES/////////
     override def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = rootVia): ObjType = new TObj(name, q, via)

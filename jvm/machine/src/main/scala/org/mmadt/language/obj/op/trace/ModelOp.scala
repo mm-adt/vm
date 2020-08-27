@@ -29,9 +29,9 @@ import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
+import org.mmadt.language.obj.{Inst, Lst, Obj, Rec, toBaseName}
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
-import org.mmadt.storage.StorageFactory.{lst, rec, str, toBaseName}
+import org.mmadt.storage.StorageFactory.{lst, rec, str}
 import org.mmadt.storage.obj.value.VInst
 
 import scala.io.Source

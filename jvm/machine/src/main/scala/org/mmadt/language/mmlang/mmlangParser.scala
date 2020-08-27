@@ -36,7 +36,7 @@ import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory
-import org.mmadt.storage.StorageFactory.{asType, strm => estrm, _}
+import org.mmadt.storage.StorageFactory.{strm => estrm, _}
 
 import scala.util.matching.Regex
 import scala.util.parsing.combinator.JavaTokenParsers

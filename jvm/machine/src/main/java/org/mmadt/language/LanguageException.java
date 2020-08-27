@@ -30,7 +30,6 @@ import org.mmadt.language.obj.Rec;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
-import org.mmadt.storage.StorageFactory;
 
 import java.util.List;
 import java.util.stream.Stream;
@@ -60,12 +59,12 @@ public class LanguageException extends VmException {
     }
 
     public static void checkAnonymousTypeName(final Obj obj, final String name) {
-        if (!(obj instanceof __) && name.equals(Tokens.anon()))
+        if (!(obj instanceof __) && Tokens.anon().equals(name))
             throw new LanguageException(obj + " is not an anonymous type");
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
-        return new LanguageException(StorageFactory.toBaseName(source) + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + (Tokens.named(target.name()) ? target.rangeObj() : target));
+        return new LanguageException(source.named(null) + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + (Tokens.named(target.name()) ? target.rangeObj() : target));
     }
 
     public static LanguageException unknownInstruction(final String op, final List<Obj> args) {

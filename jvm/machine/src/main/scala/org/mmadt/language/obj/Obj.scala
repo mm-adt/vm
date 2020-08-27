@@ -82,7 +82,7 @@ trait Obj
   // type methods
   def named(name: String): this.type = {
     LanguageException.checkAnonymousTypeName(this, name)
-    this.clone(name = name)
+    this.clone(name = if (null == name) baseName(this) else name)
   }
   def <=[D <: Obj](domainType: D): this.type = {
     if (domainType.range.equals(this)) domainType.asInstanceOf[this.type]

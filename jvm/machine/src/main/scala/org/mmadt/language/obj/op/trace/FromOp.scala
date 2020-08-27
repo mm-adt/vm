@@ -27,9 +27,8 @@ import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, asType}
 import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 /**
