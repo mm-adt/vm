@@ -32,6 +32,7 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.inst.BaseInstTest._
+import org.mmadt.storage.StorageFactory.int
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
 
@@ -69,6 +70,16 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result
         case aobj: Obj if org.mmadt.language.obj.op.rewrite.exists(middle, Tokens.split) => aobj
         case atype: Type[_] => atype.domainObj ==> atype
         case avalue: Value[_] => avalue.domainObj ==> reconstructPath(avalue)
+      }),
+      ("eval-5", s => {
+        val result = s ==> (middle.domain ==> middle)
+        if (!middle.trace.exists(x => List(Tokens.one, Tokens.map, Tokens.neg).contains(x._2.op) || (x._2.op.equals(Tokens.plus) && x._2.arg0[Obj].equals(int(0)))))
+          result.trace.modeless.drop(1).zip(middle.trace.modeless).foreach(x => {
+            assert(x._1._1.test(x._2._1), s"${x._1._1} -- ${x._2._1}")
+            assertResult(x._1._2.op)(x._2._2.op)
+            // x._1._2.args.zip(x._2._2.args).headOption.map(y => assert(y._1.test(y._2), s"${x._1._2} -- ${x._2._2}"))
+          })
+        result
       }),
     )
     (evaluating ++

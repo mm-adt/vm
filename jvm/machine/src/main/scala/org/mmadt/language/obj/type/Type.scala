@@ -58,14 +58,14 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
     case atype: Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && // sameBase(this, other.domain)
-      this.trace.filter(x => !ModelOp.isMetaModel(x._2)) == atype.trace.filter(x => !ModelOp.isMetaModel(x._2))
+      this.trace.modeless == atype.trace.modeless
     case _ => false
   }
 
   def rule(rewrite: Inst[Obj, Obj]): this.type = this.via(this, rewrite)
 }
 object Type {
-  def isIdentity(obj: Obj): Boolean = obj.isInstanceOf[Value[_]] || obj.root || !obj.trace.filter(x => !ModelOp.isMetaModel(x._2)).exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
+  def isIdentity(obj: Obj): Boolean = obj.isInstanceOf[Value[_]] || obj.root || !obj.trace.modeless.exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
   def mergeObjs[A <: Obj](objs: List[A]): List[A] = {
     var newList: ListBuffer[A] = ListBuffer.empty[A]
     objs.foreach(x =>

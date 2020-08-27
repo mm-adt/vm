@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.Obj.{IntQ, ViaTuple}
+import org.mmadt.language.obj.Obj.{IntQ, Trace, ViaTuple}
 import org.mmadt.language.obj.Rec.RichTuple
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
@@ -93,7 +93,7 @@ trait Obj
   def model: Model = Option(this.domainObj.via._1).getOrElse(ModelOp.EMPTY).asInstanceOf[Model]
   lazy val rangeObj: this.type = this.clone(q = this.q, via = this.domainObj.via)
   lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj
-  lazy val trace: List[(Obj, Inst[Obj, Obj])] = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
+  lazy val trace: Trace = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
   def root: Boolean = null == this.via || null == this.via._2
   def range: Type[Obj] = asType(this.rangeObj)
   def domain: Type[Obj] = asType(this.domainObj)
@@ -143,6 +143,7 @@ trait Obj
 object Obj {
   type IntQ = (IntValue, IntValue)
   type ViaTuple = (Obj, Inst[_ <: Obj, _ <: Obj])
+  type Trace = List[(Obj, Inst[Obj, Obj])]
   val rootVia: ViaTuple = (null, null)
 
   @inline implicit def booleanToBool(ground: Boolean): BoolValue = bool(ground)
@@ -153,6 +154,11 @@ object Obj {
   @inline implicit def stringToStr(ground: String): StrValue = str(ground)
   @inline implicit def tupleToRecYES[A <: Obj, B <: Obj](ground: Tuple2[A, B]): RichTuple[A, B] = new RichTuple[A, B](ground)
   @inline implicit def tupleToRecNO[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
+  @inline implicit def listToTrace(ground: Trace): RichTrace = new RichTrace(ground)
+
+  class RichTrace(val ground: Trace) {
+    final def modeless: Trace = ground.filter(x => !ModelOp.isMetaModel(x._2))
+  }
 
   private def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]

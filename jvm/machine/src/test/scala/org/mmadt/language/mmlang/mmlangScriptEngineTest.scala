@@ -1023,7 +1023,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertThrows[LanguageException] {
       engine.eval("0 => nat")
     }
-    engine.eval(":[define,list<=[(_){?}|(_,list){?}]]")
+    engine.eval(":[define,list<=[(_){?}|(_,list)]]")
     assertResult(bfalse)(engine.eval("1              => [a,list]"))
     assertResult(bfalse)(engine.eval("(1,1)          => [a,list]"))
     assertResult(btrue)(engine.eval("(1)             => [a,list]"))
