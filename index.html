@@ -1864,7 +1864,7 @@ language error: int{2} is not an int{3}</code></pre>
 </div>
 <div class="sect4">
 <h5 id="_type_evaluation">Type Evaluation</h5>
-<table class="tableblock frame-none grid-none right" style="width: 25%;">
+<table class="tableblock frame-none grid-none right" style="width: 20%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -1884,7 +1884,7 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT virtual machine has two layers of logic: the <a href="https://zenodo.org/record/2565243">stream ring</a> and the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The stream ring&#8217;s axioms (and entailed theorems) dictate how  instructions are composed. The instructions dicatate how input <code>objs</code> are mapped to output <code>objs</code>. Instruction composition is determined by three operators: \$\ast\$, \$ +\$, and \$\oplus\$. The stream ring&#8217;s multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>. The additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator assembles <strong>parallel streams</strong>. Finally, the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
+<p>The mm-ADT virtual machine has two layers of logic: the <a href="https://zenodo.org/record/2565243">stream ring</a> and the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>.  The stream ring&#8217;s axioms (and entailed theorems) dictate how instructions are composed. The instructions specify how input <code>objs</code> are mapped to output <code>objs</code>. Instruction composition is determined by the stream ring&#8217;s three operators: \$\ast\$, \$ +\$, and \$\oplus\$. The stream ring&#8217;s multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator arranges <strong>parallel streams</strong>, and the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all left small" style="width: 20%;">
 <colgroup>
@@ -1918,7 +1918,7 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 </tbody>
 </table>
 <div class="paragraph">
-<p>The illustration above offers a intuitive visualization monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT ISA has three <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a> that provide direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the fundamental algebra of the mm-ADT VM&#8201;&#8212;&#8201;the stream ring.</p>
+<p>The illustration above offers a intuitive visualization monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT ISA has three <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a> that provide direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying algebra of the mm-ADT VM&#8201;&#8212;&#8201;<a href="https://zenodo.org/record/2565243">the stream ring</a>.</p>
 </div>
 <hr>
 <table class="tableblock frame-none grid-none stretch right">
@@ -6697,7 +6697,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-26 15:30:30 -0600
+Last updated 2020-08-26 23:05:20 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">

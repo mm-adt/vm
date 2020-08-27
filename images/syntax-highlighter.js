@@ -25,7 +25,7 @@ $(document).ready(function(){
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
   var items =    {"op":      [ "instruction","state","range","domain",
                               "and","or","compose","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
-                              "one","zero","noop","eq","is","id","db","explain","count","fold","map",
+                              "one","zero","noop","eq","is","id","db","explain","count","fold","map","juxta","barrier",
                               "split","merge","last","head","tail","div","minus","choose","put","repeat","type",
                               "define","rewrite","to","from","sum","model","as","a","q","path","empty"],
                   "type":    ["_","real","rec","lst","inst","obj","int","str","bool",
