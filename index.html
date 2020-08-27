@@ -1884,7 +1884,7 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT virtual machine has two layers of logic: the <a href="https://zenodo.org/record/2565243">stream ring</a> and the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>.  The stream ring&#8217;s axioms (and entailed theorems) dictate how instructions are composed. The instructions specify how input <code>objs</code> are mapped to output <code>objs</code>. Instruction composition is determined by the stream ring&#8217;s three operators: \$\ast\$, \$ +\$, and \$\oplus\$. The stream ring&#8217;s multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator arranges <strong>parallel streams</strong>, and the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
+<p>The mm-ADT virtual machine has two layers of logic: the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> and the <a href="https://zenodo.org/record/2565243">stream ring</a>. The instructions specify how input <code>objs</code> are mapped to output <code>objs</code>. Instruction composition is subject to the axioms (and entailed theorems) of the stream ring and its three operators: \$\ast\$, \$ +\$, and \$\oplus\$. The stream ring&#8217;s multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator arranges <strong>parallel streams</strong>, and the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all left small" style="width: 20%;">
 <colgroup>
@@ -1918,9 +1918,61 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 </tbody>
 </table>
 <div class="paragraph">
-<p>The illustration above offers a intuitive visualization monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT ISA has three <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a> that provide direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying algebra of the mm-ADT VM&#8201;&#8212;&#8201;<a href="https://zenodo.org/record/2565243">the stream ring</a>.</p>
+<p>The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT instruction set architecture has three <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a> providing direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying algebra of the mm-ADT VM&#8201;&#8212;&#8201;<a href="https://zenodo.org/record/2565243">the stream ring</a>.</p>
 </div>
-<hr>
+<div class="paragraph">
+<p>The primary distinguising characteristic of the three aforementioned <strong>stream instructions</strong> is that they are no preserved in the <code>obj</code> graph. Their purpose is to compose instructions, not <em>be</em> instructions. However, it is for this reason that processing can be detached from the <code>obj</code> graph, working a level below the instruction set architecture and directly at the stream ring level.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 36.3636%;">
+<col style="width: 63.6364%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top"><code>=&gt;</code></th>
+<th class="tableblock halign-center valign-top"><code>[ ]</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6 =&gt; 8 =&gt; 10
+==&gt;10
+mmlang&gt; 6[map,8][map,10]
+==&gt;10
+mmlang&gt; 6 =&gt; 8 =&gt; 10 =&gt; [path]
+==&gt;(10)
+mmlang&gt; 6[map,8][map,10][path]
+==&gt;(6;[map,8];8;[map,10];10)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[+1,+2]+3
+==&gt;10
+==&gt;11
+mmlang&gt; 6-&lt;(+1,+2)&gt;-+3
+==&gt;10
+==&gt;11
+mmlang&gt; 6[+1,+2]+3[path]
+==&gt;(6;[plus,1];7;[plus,3];10)
+==&gt;(6;[plus,2];8;[plus,3];11)
+mmlang&gt; 6-&lt;(+1,+2)&gt;-+3[path]
+==&gt;(6;-&lt;(int[plus,1],int[plus,2]);6;[plus,1];7;[plus,3];10)
+==&gt;(6;-&lt;(int[plus,1],int[plus,2]);6;[plus,2];8;[plus,3];11)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <table class="tableblock frame-none grid-none stretch right">
 <colgroup>
 <col style="width: 77.7777%;">
@@ -6697,7 +6749,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-26 23:05:20 -0600
+Last updated 2020-08-27 11:54:48 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
