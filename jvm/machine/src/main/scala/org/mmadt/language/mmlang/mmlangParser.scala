@@ -46,7 +46,7 @@ import scala.util.parsing.combinator.JavaTokenParsers
  */
 class mmlangParser extends JavaTokenParsers {
 
-  override val whiteSpace: Regex = """[\s]+(?://.*[\s]*)?""".r // includes support for single line "//" comments
+  override val whiteSpace: Regex = """[\s]*(?://.*[\s]*)?(/\*.*?\*/)?[\s]*""".r // includes support for single line // and /**/ comments
   override def decimalNumber: Parser[String] = """-?\d+\.\d+""".r
 
   // all mm-ADT languages must be able to accept a string representation of an expression in the language and return an Obj
