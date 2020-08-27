@@ -1864,6 +1864,63 @@ language error: int{2} is not an int{3}</code></pre>
 </div>
 <div class="sect4">
 <h5 id="_type_evaluation">Type Evaluation</h5>
+<table class="tableblock frame-none grid-none right" style="width: 25%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
+\big[ m_0 \ast m_1 \ast \ldots \ast m_n \big]
+\begin{bmatrix}
+g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
+\end{bmatrix} \left| \oplus r \right\rangle
+\big[ \ast \ldots \ast \big]
+\begin{bmatrix}
++ \\ \vdots \\ + \\
+\end{bmatrix} \ldots
+\]</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The mm-ADT virtual machine has two layers of logic: the <a href="https://zenodo.org/record/2565243">stream ring</a> and the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The stream ring&#8217;s axioms (and entailed theorems) dictate how  instructions are composed. The instructions dicatate how input <code>objs</code> are mapped to output <code>objs</code>. Instruction composition is determined by three operators: \$\ast\$, \$ +\$, and \$\oplus\$. The stream ring&#8217;s multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>. The additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator assembles <strong>parallel streams</strong>. Finally, the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
+</div>
+<table class="tableblock frame-all grid-all left small" style="width: 20%;">
+<colgroup>
+<col style="width: 25%;">
+<col style="width: 25%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-left valign-top">sugar</th>
+<th class="tableblock halign-left valign-top">op</th>
+<th class="tableblock halign-left valign-top">inst</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=&gt;</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\ast\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[juxta]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[ ]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$ +\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=|</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$ \oplus\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[barrier]</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The illustration above offers a intuitive visualization monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT ISA has three <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a> that provide direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the fundamental algebra of the mm-ADT VM&#8201;&#8212;&#8201;the stream ring.</p>
+</div>
+<hr>
 <table class="tableblock frame-none grid-none stretch right">
 <colgroup>
 <col style="width: 77.7777%;">
@@ -1987,6 +2044,7 @@ mmlang&gt; 24
 </tr>
 </tbody>
 </table>
+<hr>
 </div>
 </div>
 <div class="sect3">
@@ -6639,7 +6697,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-26 12:51:06 -0600
+Last updated 2020-08-26 15:30:30 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
