@@ -723,11 +723,11 @@ f: S \rightarrow E.
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/introduction/the-algebras.png" alt="the algebras" width="500">
+<img src="./images/introduction/the-algebras.svg" alt="the algebras" width="520">
 </div>
 </div>
 <div class="paragraph">
-<p>The base algebra of mm-ADT is a type-oriented ring algebra called the <strong>obj stream ring</strong>. There are three surjective <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphisms</a> yielding the three algebras of the aforementioned components.  The <strong>language algebra</strong>'s (<code>inst</code> monoid) <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> enables the nested, serial composition of parameterized instructions (<code>inst</code>) from the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> (type ringoid) is a free <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) for the compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong>  (<code>obj</code> magma) is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a partially <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary operator for constructing data streams.</p>
+<p>The base algebra of mm-ADT is a type-oriented ring algebra called the <strong>obj stream ring</strong>. There are three surjective <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphisms</a> yielding the three algebras of the aforementioned components.  The <strong>language algebra</strong>'s (<code>inst</code> monoid) <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> enables the nested, serial composition of parameterized instructions (<code>inst</code>) from the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> (type ringoid) is a free <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) for the compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong>  (<code>obj</code> monoid) is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a partially <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary operator for constructing data streams.</p>
 </div>
 <div class="paragraph">
 <p>These component algebras represent the particular perspective that each component has on a shared data structure known as the <strong>obj graph</strong> which realizes <em>a ringoid-embedded monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
@@ -754,7 +754,7 @@ f: S \rightarrow E.
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">storage</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> magma</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> monoid</p></td>
 </tr>
 </tbody>
 </table>
@@ -5056,7 +5056,7 @@ is realized as \[
 x \Delta (a + b) \mapsto (x&#8658;a,x&#8658;b).
 \]
 The \$\Delta\$ (<em>split</em>) copys an <code>obj</code> that is <em>outside</em> of a <code>poly</code> to the left of one or more <code>objs</code> <em>inside</em> the <code>poly</code>.
-When juxtaposed to the left and an internal <code>obj</code>, the <code>obj</code> magma&#8217;s binary operator \$&#8658;:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution.
+When juxtaposed to the left and an internal <code>obj</code>, the <code>obj</code> monoid&#8217;s binary operator \$&#8658;:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution.
 The following table provides a translation of the standard module axioms to mm-ADT.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -6708,7 +6708,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-27 16:29:44 -0600
+Last updated 2020-08-28 00:21:52 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
