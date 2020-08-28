@@ -46,7 +46,7 @@ object IdRewrite extends Func[Obj, Obj] {
   }
 
   def processType[A <: Obj](atype: A): A = {
-    if (__.isToken(atype) || !exists(atype, Tokens.id)) atype
+    if (__.isToken(atype) || !atype.via.exists(x => x._2.op.equals(Tokens.id))) atype
     else {
       var rollingQ: IntQ = qOne
       backPropagateQ(atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => {

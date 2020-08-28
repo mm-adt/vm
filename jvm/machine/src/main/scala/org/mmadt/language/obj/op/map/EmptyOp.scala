@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.value.PolyValue
 import org.mmadt.language.obj.{Bool, Inst, Obj, Poly}
 import org.mmadt.storage.StorageFactory.bool
 import org.mmadt.storage.obj.value.VInst
@@ -39,8 +40,7 @@ trait EmptyOp {
 object EmptyOp extends Func[Obj, Bool] {
   def apply[A <: Obj](): Inst[A, Bool] = new VInst[A, Bool](g = (Tokens.empty, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = (start match {
-    case apoly: Poly[_] if apoly.ctype => bool
-    case apoly: Poly[_] => bool(apoly.isEmpty)
-    case _: __ => bool
+    case apoly: PolyValue[_,_] => bool(apoly.isEmpty)
+    case _ => bool
   }).via(start, inst)
 }

@@ -59,7 +59,7 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result
       ("query-1", _ => engine.eval(query, bindings(model))),
       ("query-2", _ => engine.eval(query, bindings(model)) match {
         case atype: Type[_] => atype.domainObj ==> atype
-        case avalue: Value[_] => avalue.domainObj ==> reconstructPath(avalue)
+        case avalue: Value[_] => avalue.domainObj ==> avalue.trace.reconstruct(avalue.domain)
       })
     )
     val evaluating = List[(String, Obj => Obj)](
@@ -67,17 +67,17 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result
       ("eval-2", s => engine.eval(s"$s $middle", bindings(model))),
       ("eval-3", s => s ==> (middle.domain ==> middle)),
       ("eval-4", s => s ==> (middle.domain ==> middle) match {
-        case aobj: Obj if org.mmadt.language.obj.op.rewrite.exists(middle, Tokens.split) => aobj
+        case aobj: Obj if middle.via.exists(x => x._2.op.equals(Tokens.split)) => aobj
         case atype: Type[_] => atype.domainObj ==> atype
-        case avalue: Value[_] => avalue.domainObj ==> reconstructPath(avalue)
+        case avalue: Value[_] => avalue.domainObj ==> avalue.trace.reconstruct(avalue.domain)
       }),
       ("eval-5", s => {
         val result = s ==> (middle.domain ==> middle)
-        if (!middle.trace.exists(x => List(Tokens.one, Tokens.map, Tokens.neg).contains(x._2.op) || (x._2.op.equals(Tokens.plus) && x._2.arg0[Obj].equals(int(0)))))
+        if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg).contains(x._2.op) ||
+          (x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
           result.trace.modeless.drop(1).zip(middle.trace.modeless).foreach(x => {
-            assert(x._1._1.test(x._2._1), s"${x._1._1} -- ${x._2._1}")
-            assertResult(x._1._2.op)(x._2._2.op)
-            // x._1._2.args.zip(x._2._2.args).headOption.map(y => assert(y._1.test(y._2), s"${x._1._2} -- ${x._2._2}"))
+            assert(x._1._1.test(x._2._1), s"${x._1._1} -- ${x._2._1}") // test via tuples' obj
+            assert(x._1._2.test(x._2._2), s"${x._1._2} -- ${x._2._2}") // test via tuples' inst
           })
         result
       }),
@@ -109,5 +109,4 @@ object BaseInstTest {
     bindings
   }
   def prepModel(start: Obj, model: Model): Obj = if (null == model) start else start.model(model)
-  def reconstructPath(obj: Obj): Obj = obj.trace.map(x => x._2).foldLeft(obj.domain.asInstanceOf[Obj])((a, b) => b.exec(a))
 }

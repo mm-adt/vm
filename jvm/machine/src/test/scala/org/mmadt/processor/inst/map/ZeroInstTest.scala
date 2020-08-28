@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Obj.{doubleToReal, intToInt, stringToStr}
+import org.mmadt.language.obj.Obj.{doubleToReal, intToInt, stringToStr, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
@@ -58,6 +58,13 @@ class ZeroInstTest extends BaseInstTest(
     testing(str("a", "b", "c"), zero, "".q(3), "['a','b','c'][zero]"),
     comment("lst"),
     testing("a" `,`, zero, lst(), "('a')[zero]"),
+    testing("a" `,`, zero.q(4), lst().q(4), "('a')[zero]{4}"),
+    testing("a".q(2)`,`, zero.q(4), lst().q(4), "('a'{2})[zero]{4}"),
+    testing(("a"`,`).q(2), zero.q(4), lst().q(8), "('a'){2}[zero]{4}"),
     testing("a" `,` "b" `,` "c", zero, lst(), "('a','b','c')[zero]"),
     testing("a" `,` "b" `,` "c", lst.zero, lst(), "('a','b','c') => lst[zero]"),
+    comment("rec"),
+    testing(str("a")->int(1), zero, rec(), "('a'->1)[zero]"),
+    testing(str("a")->int(1)`_,` str("b")->int(2), zero, rec(), "('a'->1,'b'->2,'c'->3)[zero]"),
+    testing(str("a")->int(1)`_,` str("b")->int(2)`_,`str("c")->int(3), rec.zero, rec(), "('a'->1,'b'->2,'c'->3) => rec[zero]"),
   ))

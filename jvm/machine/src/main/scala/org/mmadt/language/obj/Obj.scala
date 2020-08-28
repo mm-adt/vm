@@ -39,6 +39,8 @@ import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
 
+import scala.annotation.tailrec
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -155,9 +157,19 @@ object Obj {
   @inline implicit def tupleToRecYES[A <: Obj, B <: Obj](ground: Tuple2[A, B]): RichTuple[A, B] = new RichTuple[A, B](ground)
   @inline implicit def tupleToRecNO[A <: Obj, B <: Obj](ground: Tuple2[A, B]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
   @inline implicit def listToTrace(ground: Trace): RichTrace = new RichTrace(ground)
+  @inline implicit def tupleToVia(ground: ViaTuple): RichVia = new RichVia(ground)
 
+  class RichVia(val ground: ViaTuple) {
+    final def root: Boolean = null == ground._2
+    @tailrec
+    final def exists(f: ViaTuple => Boolean): Boolean = if (ground.root) false else if (f(ground)) true else ground._1.via.exists(f)
+    @tailrec
+    final def headOption: Option[ViaTuple] = if (ground.root) None else if (ground._1.via.root) Option(ground) else ground._1.via.headOption
+  }
   class RichTrace(val ground: Trace) {
     final def modeless: Trace = ground.filter(x => !ModelOp.isMetaModel(x._2))
+    final def nexists(f: ViaTuple => Boolean): Boolean = ground.exists(x => if (f(x)) return true else x._2.args.exists(y => y.trace.nexists(f)))
+    final def reconstruct[A <: Obj](source: Obj): A = ground.map(x => x._2).foldLeft(source)((a, b) => b.exec(a)).asInstanceOf[A]
   }
 
   private def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
@@ -177,9 +189,9 @@ object Obj {
     rangeType match {
       case _: Value[_] => rangeType.q(multQ(domainObj.q, rangeType.q))
       case _: Type[_] =>
-        rangeType.trace
+        rangeType.via
           .headOption
-          .map(x => x._2.exec(domainObj))
+          .map(x => x._2.asInstanceOf[Inst[Obj,Obj]].exec(domainObj))
           .map(x => resolveInternal(x, rangeType.linvert))
           .getOrElse(domainObj.asInstanceOf[E])
     }

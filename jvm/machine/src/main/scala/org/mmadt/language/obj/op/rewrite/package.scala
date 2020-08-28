@@ -47,13 +47,6 @@ package object rewrite {
       else b.clone(args => args.map(arg => removeRules(arg))).exec(a)).asInstanceOf[A]
   }
 
-  @tailrec
-  def exists(aobj: Obj, op: String): Boolean = {
-    if (aobj.root) false
-    else if (aobj.via._2.op == op) true
-    else exists(aobj.via._1, op)
-  }
-
   def downPropagateRule(inst: Inst[Obj, Obj], f: Obj => Obj): Inst[Obj, Obj] = {
     if (inst.op.equals(Tokens.model)) return inst
     inst.clone(args => args.map {

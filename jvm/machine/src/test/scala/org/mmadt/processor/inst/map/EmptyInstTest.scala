@@ -45,7 +45,7 @@ class EmptyInstTest extends BaseInstTest(
     testing(1 `,`, lst.empty, false, "(1) => lst[empty]"),
     testing(1.q(10) `,`, empty.q(5), false.q(5), "(1{10})[empty]{5}"),
     testing(1.q(10) `,`, lst.empty.q(5), false.q(5), "(1{10}) => lst[empty]{5}"),
-    //testing(lst(1.q(10)).q(20), lst.q(20).empty.q(5), false.q(100), "(1{10}){20} => lst{20}[empty]{5}"),
+    testing(lst(1.q(10)).q(20), lst.q(20).empty.q(5), false.q(100), "(1{10}){20} => lst{20}[empty]{5}"),
     comment("rec"),
     testing(rec(), empty, true, "(->)[empty]"),
     testing(rec(), rec.empty, true, "(->) => rec[empty]"),
@@ -56,5 +56,5 @@ class EmptyInstTest extends BaseInstTest(
     testing(str("a") -> int(1), rec.empty, false, "('a'->1) => rec[empty]"),
     testing(str("a") -> 1.q(10), empty.q(5), false.q(5), "('a'->1{10})[empty]{5}"),
     testing(str("a") -> 1.q(10), rec.empty.q(5), false.q(5), "('a'->1{10}) => rec[empty]{5}"),
-    //testing((str("a")->1.q(10)).q(20), rec.q(20).empty.q(5), false.q(100), "('a'->1{10}){20} => rec{20}[empty]{5}"),
+    testing((str("a") -> 1.q(10)).q(20), rec.q(20).empty.q(5), false.q(100), "('a'->1{10}){20} => rec{20}[empty]{5}"),
   ))
