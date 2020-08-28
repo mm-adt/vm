@@ -44,16 +44,19 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("play2") {
-    println(engine.eval(":[define,list<=[[is,=(_)>-[count]==0]|[is,[and,[head][a,int],[tail][head][a,str],[tail][tail][a,list]]]]]"))
-    assertResult(btrue)(engine.eval("(1;'b')[a,list]"))
-    assertResult(bfalse)(engine.eval("(1;'b';5)[a,list]"))
-    assertResult(btrue)(engine.eval("(1;'b';5;'c')[a,list]"))
-    assertResult(bfalse)(engine.eval("(1;'b';5;6)[a,list]"))
-    assertResult(bfalse)(engine.eval("(1;'b';5;'a';'b')[a,list]"))
-    println(engine.eval(":[define,gist<=[[is,>-[count]==0]|[is,[and,[head][a,int],[tail][a,gist]]]]]"))
-    println(engine.eval("(1;2;6)[a,gist]"))
+    println(engine.eval(
+      """:[define,
+        |    nat<=int[is>0],
+        |    date:(nat[is=<12];nat[is=<31];nat),
+        |    date<=(nat[is=<12];nat[is=<31])[put,2,2020],
+        |    noyear:(nat;nat)<=int-<(_;+2)]
+        |    """.stripMargin))
+
+    println(engine.eval("5 => noyear => date"))
+    // println(engine.eval("5 => date"))
     engine.eval(":")
   }
+
 
   test("range<=domain") {
     assertResult(LanguageException.typingError(int.q(5), int.q(3)))(intercept[LanguageException](engine.eval("[4{2},5{1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]")))
