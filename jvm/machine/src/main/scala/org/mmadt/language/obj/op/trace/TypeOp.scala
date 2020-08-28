@@ -34,6 +34,8 @@ trait TypeOp[+A <: Obj] {
   def `type`(): Type[A] = TypeOp().exec(this).asInstanceOf[Type[A]]
 }
 object TypeOp extends Func[Obj, Type[Obj]] {
+  override val preArgs: Boolean = false
+  override val preStrm: Boolean = false
   def apply[A <: Obj](): Inst[A, Type[A]] = new VInst[A, Type[A]](g = (Tokens.`type`, Nil), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Type[Obj]]): Type[Obj] = start match {
     case atype: Type[Obj] => atype.via(start, inst)

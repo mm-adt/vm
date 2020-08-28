@@ -69,7 +69,7 @@ trait StorageFactory {
   def str(g: String, name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = rootVia): StrValue
   def rec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = ORec.makeRec(name, g, q, via)
   def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = OLst.makeLst(name, g, q, via)
-  def lst[A <: Obj](sep: String, values: A*): Lst[A] = OLst.makeLst(g = (sep, values.toList))
+  def lst[A <: Obj](sep: String, values: A*): Lst[A] = OLst.makeLst(g = (sep, values.toList)) // TODO: phase this out
   def lst[A <: Obj](single: A): Lst[A] = lst(g = (Tokens.`,`, List(single)))
   //
   def strm[O <: Obj](objs: Seq[O]): OStrm[O]

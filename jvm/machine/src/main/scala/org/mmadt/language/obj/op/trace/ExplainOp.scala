@@ -45,6 +45,9 @@ trait ExplainOp {
 }
 
 object ExplainOp extends Func[Obj, Str] {
+  override val preArgs: Boolean = false
+  override val preStrm: Boolean = false
+
   def apply(): Inst[Obj, Str] = new VInst[Obj, Str](g = (Tokens.explain, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Str]): Str = str(printableTable(asType(start))).start()
   private type Row = (Int, Inst[Obj, Obj], Type[Obj], Type[Obj], mutable.LinkedHashMap[String, Obj], String)

@@ -41,6 +41,9 @@ trait CountOp {
 }
 
 object CountOp extends Func[Obj, Obj] {
+  override val preArgs: Boolean = false
+  override val preStrm: Boolean = false
+
   def apply(): Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.count, Nil), func = this) with ReduceInstruction[Int] with TraceInstruction {
     val seed: Int = int(0)
     val reducer: Int = __.to("x").get(0).plus(__.from("x").get(1).quant()).as(int)

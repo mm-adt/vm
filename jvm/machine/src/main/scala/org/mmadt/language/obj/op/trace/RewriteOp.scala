@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.trace
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
@@ -34,11 +33,7 @@ trait RewriteOp {
   def rewrite(obj: Obj): this.type = RewriteOp(obj).exec(this)
 }
 object RewriteOp extends Func[Obj, Obj] {
+  override val preArgs: Boolean = false
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.rewrite, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    start match {
-      case astrm: Strm[_] => astrm.via(start, inst)
-      case _ => start.model(start.model.rewriting(inst.arg0[Lst[Obj]]))
-    }
-  }
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.model(start.model.rewriting(inst.arg0[Lst[Obj]]))
 }

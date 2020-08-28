@@ -38,6 +38,9 @@ trait DefsOp {
   def defs: Rec[Obj, Obj] = DefsOp().exec(this)
 }
 object DefsOp extends Func[Obj, Obj] {
+  override val preArgs: Boolean = false
+  override val preStrm: Boolean = false
+
   def apply(): Inst[Obj, Rec[Obj, Obj]] = new VInst[Obj, Rec[Obj, Obj]](g = (Tokens.defs, List.empty), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val defs: Rec[Obj, Obj] = rec(g = (Tokens.`,`, start.trace.map(x => x._2).

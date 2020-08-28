@@ -36,6 +36,9 @@ trait NoOp {
 }
 
 object NoOp extends Func[Obj, Obj] {
+  override val preArgs: Boolean = false
+  override val preStrm: Boolean = false
+
   def apply[O <: Obj](): Inst[O, O] = new VInst[O, O](g = (Tokens.noop, Nil), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start
 }

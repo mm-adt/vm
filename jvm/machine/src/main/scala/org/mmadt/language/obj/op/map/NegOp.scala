@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.value.{BoolValue, IntValue, RealValue, Value}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
 
@@ -39,10 +39,10 @@ trait NegOp[O <: Obj] {
 object NegOp extends Func[Obj, Obj] {
   def apply[A <: Obj](): Inst[A, A] = new VInst[A, A](g = (Tokens.neg, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start match {
-    case _: Type[_] => start
-    case aint: Int => start.clone(g = -aint.g)
-    case areal: Real => start.clone(g = -areal.g)
-    case abool: Bool => start.clone(g = !abool.g)
-    case _ => throw LanguageException.unsupportedInstType(start, inst)
+    case aint: IntValue => start.clone(g = -aint.g)
+    case areal: RealValue => start.clone(g = -areal.g)
+    case abool: BoolValue => start.clone(g = !abool.g)
+    case _: Value[_] => throw LanguageException.unsupportedInstType(start, inst)
+    case _ => start
   }).via(start, inst)
 }

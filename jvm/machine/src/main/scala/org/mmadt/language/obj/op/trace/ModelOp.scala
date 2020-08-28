@@ -47,7 +47,7 @@ trait ModelOp {
 }
 
 object ModelOp extends Func[Obj, Obj] {
-
+  override val preArgs: Boolean = false
   /////
   lazy val MM: Model = model("mm")
   private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
@@ -71,7 +71,6 @@ object ModelOp extends Func[Obj, Obj] {
   def apply[O <: Obj](file: StrValue): Inst[O, O] = this.apply(LoadOp.loadObj[Model](file.g))
   def apply[O <: Obj](model: Model): Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(model).asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
-    case astrm: Strm[_] => astrm(x => inst.exec(x))
     case _: Value[Obj] => start.update(inst.arg0[Model])
     case _: Type[Obj] => start.via(start, inst).update(inst.arg0[Model])
   }

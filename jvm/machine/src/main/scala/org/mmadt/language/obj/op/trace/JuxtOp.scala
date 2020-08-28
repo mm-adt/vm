@@ -38,6 +38,9 @@ trait JuxtOp {
 }
 
 object JuxtOp extends Func[Obj, Obj] {
+  override val preArgs: Boolean = false
+  override val preStrm: Boolean = false
+
   def apply[A <: Obj](right: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.juxt, List(right)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.arg0[Obj] match {
     case dead: Obj if !dead.alive => zeroObj

@@ -28,7 +28,6 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,12 +40,12 @@ trait AOp {
 }
 
 object AOp extends Func[Obj, Bool] {
+  override val preArgs: Boolean = false
   def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.a, List(other)), func = this) with TraceInstruction
 
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
     start match {
-      case _ if(!start.alive) => bfalse.via(start,inst)
-      case astrm: Strm[_] => astrm(x => inst.exec(x))
+      case _ if !start.alive => bfalse.via(start, inst)
       case _: Value[_] => bool(start.test(inst.arg0[Obj])).via(start, inst)
       case _: Type[_] => bool.via(start, inst)
     }

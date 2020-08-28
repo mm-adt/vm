@@ -37,6 +37,8 @@ trait StartOp {
   def start[O <: Obj](): O = StartOp(this).exec(zeroObj).asInstanceOf[O]
 }
 object StartOp extends Func[Obj, Obj] {
+  override val preArgs: Boolean = false
+  override val preStrm: Boolean = false
   def apply[O <: Obj](starts: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.start, List(starts)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.arg0[Obj]
 }

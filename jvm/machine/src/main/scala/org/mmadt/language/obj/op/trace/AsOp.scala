@@ -43,14 +43,11 @@ trait AsOp {
 }
 
 object AsOp extends Func[Obj, Obj] {
+  override val preArgs: Boolean = false
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    if (start.isInstanceOf[Strm[_]]) return start.via(start, inst)
-    internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
-  }
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
 
   def autoAsType[E <: Obj](source: Obj, f: Obj => Obj, target: Obj): E = autoAsType(f(autoAsType(source, target.domain, target, domain = true)), target.range, target, domain = false).asInstanceOf[E]
-
   private def autoAsType(source: Obj, target: Obj, rangeType: Obj, domain: Boolean): Obj = {
     if (!target.alive) return zeroObj
     if (!source.alive) return source
