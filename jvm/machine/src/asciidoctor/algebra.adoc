@@ -154,10 +154,10 @@ a| For example, given the free `inst` monoid word \$abcde \in \tt{i\nst}^\ast\$,
 image:biproduct.svg[float=right,width=250]
 
 https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* https://en.wikipedia.org/wiki/Semiring[semiring] and *coefficient* ring.
-Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms], the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding https://en.wikipedia.org/wiki/Coefficient[coefficient] dynamics.
+Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms] over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding https://en.wikipedia.org/wiki/Coefficient[coefficient] dynamics.
 Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts].
 A biproduct has both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams.
-Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located.
+Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located by the _reduce_ near-ring operator \$\oplus\$.
 
 mm-ADT adopts the algebra of stream ring theory, but uses the term *instruction* for _function_ and *quantifier* for _coefficient_.
 Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wiki/Inductive_type[inductive], https://en.wikipedia.org/wiki/Dependent_type[dependent] https://en.wikipedia.org/wiki/Type_theory[type theory] based on a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] stream ring with https://en.wikipedia.org/wiki/Interval_(mathematics)[interval] quantifiers called the *type ringoid*.
@@ -165,7 +165,7 @@ Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wik
 
 The *`obj` stream ringoid* is the https://en.wikipedia.org/wiki/Ring_theory[algebraic ring]
 \[
-(\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}), \]
+(\texttt{obj},[,],[;],\;\mathbf{0}\;\mathbf{1}), \]
 
 where
 
@@ -174,8 +174,8 @@ image::type-value-illustration.svg[float=right,width=525]
 * `obj` is the set of all quantified objects,
 * `[,]` the additive _parallel branch_ operator,
 * `[;]` the multiplicative _serial chain_ operator,
-* \$\underline{\mathbf{0}}\$ the additive identity, and
-* \$\underline{\mathbf{1}}\$ the multiplicative identity.
+* \$\mathbf{0}\$ the additive identity, and
+* \$\mathbf{1}\$ the multiplicative identity.
 
 '''
 
@@ -188,7 +188,7 @@ Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definit
 The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in `mmlang` using both `obj` *values* and *types*.
 
 NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugars].
-The term `\_{0}` is \$\underline{\mathbf{0}}\$, `_{1}` is \$\underline{\mathbf{1}}\$, `[a;b;c]` denotes `[branch,(a;b;c)]` and `+{q}n` denotes `[plus,n]{q}`.
+The term `\_{0}` (sugar'd `{0}`) is \$\mathbf{0}\$, `_{1}` (sugar'd `{1}`) is \$\mathbf{1}\$, `[a,b,c]` denotes `[branch,(a,b,c)]` and `+{q}n` denotes `[plus,n]{q}`.
 Finally, while `[,]` and `[;]` are defined as binary operators, due to the link:https://en.wikipedia.org/wiki/Associative_property[associativity] axioms of the respective additive group and multiplicative monoid of a ring, `[,]` and `[;]` are effectively \$n\$-ary operators and will be used as such in examples to follow.
 
 ==== Ring Axioms
@@ -200,7 +200,7 @@ Regardless of any other behaviors the system may express, if the system always r
 |===
 ^|  axiom ^| equation  ^| mmlang values ^| mmlang types
 
-4.+^h| Additive Abelian Group -- \$(\tt{obj},[,],\underline{\mathbf{0}})\$
+4.+^h| Additive Abelian Group -- \$(\tt{obj},[,],\mathbf{0})\$
 
 | Additive associativity
 | \[\begin{split}
@@ -269,7 +269,7 @@ str[[id],[id]{-1}]
 ----
 {blank}
 
-4.+^h| Multiplicative Monoid -- \$(\tt{obj},[;],\underline{\mathbf{1}})\$
+4.+^h| Multiplicative Monoid -- \$(\tt{obj},[;],\mathbf{1})\$
 | Multiplicative associativity
 | \[\begin{split}
 &(a \cdot b) \cdot c \\
@@ -304,7 +304,7 @@ str[[id];{1}]
 ----
 {blank}
 
-4.+^h| Ring with Unity -- \$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$
+4.+^h| Ring with Unity -- \$(\tt{obj},[,],[;],\mathbf{0},\mathbf{1})\$
 
 | Left distributivity
 | \[\begin{split}
@@ -356,7 +356,7 @@ Once a system is determined to be a ring, then all the theorems that have been p
 |===
 ^| theorem ^| equation  ^| mmlang values ^| mmlang types
 
-4.+^h| Ring with Unity -- \$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$
+4.+^h| Ring with Unity -- \$(\tt{obj},[,],[;],\mathbf{0},\mathbf{1})\$
 
 | Additive factoring
 | \[\begin{split}
@@ -809,12 +809,12 @@ The following table provides a translation of the standard module axioms to mm-A
 | \[x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \] | \[[x;[a,b]] = [[x;a],[x;b]]\]               | \[x \Delta (a,b) = (x=>a,x=>b)\]
 | \[(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \] | \[[ [x,y];a] = [[x;a],[y;a]]\]              | \[(x,y) \nabla a = (x=>a,y=>a)\nabla \]
 | \[(x \ast_X y) \cdot a = x \cdot (y \cdot a)\]       | \[[[x;y];a] = [x;y;a]\]                     | \[(x;y) \nabla a = x=>y=>a\]
-| \[\mathbf{1}_X \cdot a = a\]                         | \[[\underline{\mathbf{1}};a]  = a \]        | \[\underline{\mathbf{1}}=>a = a\]
+| \[\mathbf{1}_X \cdot a = a\]                         | \[[\mathbf{1};a]  = a \]        | \[\mathbf{1}=>a = a\]
 3.+^h| Right \$X\$-Module Axioms
 | \[(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \] | \[[ [a,b];x] = [[a;x],[b;x]]\]              | \[(a,b) \nabla x = (a=>x,b=>x)\nabla \]
 | \[a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \] | \[[a;[x,y]] = [[a;x],[a;y]]\]               | \[a \Delta (x,y) = (a=>x,a=>y) \]
 | \[a \cdot (x \ast_X y) = (a \cdot x) \cdot y\]       | \[[a;[x;y]] = [a;x;y]\]                     | \[a \Delta (x;y) = (a=>x;a=>x=>y) \]
-| \[a \cdot \mathbf{1}_X = a\]                         | \[[a;\underline{\mathbf{1}}] = a\]          | \[a=>\underline{\mathbf{1}} = a\]
+| \[a \cdot \mathbf{1}_X = a\]                         | \[[a;\mathbf{1}] = a\]          | \[a=>\mathbf{1} = a\]
 |===
 
 ===== Polynomials
@@ -1173,12 +1173,12 @@ If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then `|-poly` \$[a
 
 \[
 x_{q_2} [a_{q_0} | b_{q_1}] = \begin{cases}
-{xa}_{q_2 * q_0} & \text{if } x_{q_2} a_{q_0} \neq \underline{\bf{0}}, \\
-{bx}_{q_2 * q_1} & \text{if } x_{q_2} b_{q_1} \neq \underline{\bf{0}}, \\ \underline{\bf{0}} & \text{otherwise}.
+{xa}_{q_2 * q_0} & \text{if } x_{q_2} a_{q_0} \neq \bf{0}, \\
+{bx}_{q_2 * q_1} & \text{if } x_{q_2} b_{q_1} \neq \bf{0}, \\ \bf{0} & \text{otherwise}.
 \end{cases}
 \]
 
-Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\underline{\mathbf{0}}\$).
+Thus, while `,-lst` implements link:https://en.wikipedia.org/wiki/Union_(set_theory)[union], `|-lst` implements https://en.wikipedia.org/wiki/Null_coalescing_operator[null coalescing], where in mm-ADT, _null_ is `obj{0}` (the https://en.wikipedia.org/wiki/Zero_element[zero element] of the `obj` stream ring -- \$\mathbf{0}\$).
 Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation.
 This is the reason that the additive group of `|-lst` (and `|-poly` in general) is not commutative.
 
@@ -1196,14 +1196,14 @@ The polynomial reduces to `[plus,'b']{4}`.
 The polynomial reduces to `obj{0}`.
 
 `|-rec` enables link:https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29[predicate]-based coalescing which is a form of link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional branching] realized in most programming languages as link:https://en.wikipedia.org/wiki/Control_flow#If-then-(else)_statements[if/else] and link:https://en.wikipedia.org/wiki/Switch_statement[switch/case] branching.
-While predicate-based branching is a function of \$\mathbb{B}\$ (`bool`), in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where __false__ is `obj{0}` (\$\underline{\mathbf{0}}\$) and __true__ is any non-zero quantifier.
+While predicate-based branching is a function of \$\mathbb{B}\$ (`bool`), in mm-ADT it is determined by \$\tt{q}\$ (`{q}`), where __false__ is `obj{0}` (\$\mathbf{0}\$) and __true__ is any non-zero quantifier.
 The non-commutative additive group of `|-poly`, as inherited by `|-rec`, realizes link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Case_and_switch_statements[case-based] link:https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching[pattern matching] branch ordering semantics.
 Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then
 
 \[
 x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] = \begin{cases}
-{xb}_{q_4 * q_1} & \text{if } x_{q_4} a_{q_0} \neq \underline{\bf{0}}, \\
-{xd}_{q_4 * q_3} & \text{if } x_{q_4} c_{q_2} \neq \underline{\bf{0}}, \\ \underline{\bf{0}} & \text{otherwise}.
+{xb}_{q_4 * q_1} & \text{if } x_{q_4} a_{q_0} \neq \bf{0}, \\
+{xd}_{q_4 * q_3} & \text{if } x_{q_4} c_{q_2} \neq \bf{0}, \\ \bf{0} & \text{otherwise}.
 \end{cases}
 \]
 
