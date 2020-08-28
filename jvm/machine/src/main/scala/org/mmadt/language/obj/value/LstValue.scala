@@ -33,9 +33,7 @@ import scala.util.Try
 trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isToken(other) => Try[Boolean] {
-      this.test(Obj.resolveToken(this, other))
-    }.getOrElse(false)
+    case _: __ if __.isToken(other) => Obj.resolveTokenOption(this, other).exists(x => this.test(x))
     case alst: LstValue[A] => Lst.test(this, alst)
     case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
       case alst: Lst[A] => Lst.test(this, alst)

@@ -146,14 +146,4 @@ class LstTypeTest extends BaseInstTest(
     assertResult(int.q(20, 40))(int.q(2).mult(8).q(1).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
     assertResult(zeroObj)(int.q(2).mult(8).q(0).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
   }
-
-  test("[mult] w/ lst types") {
-    val check: TableFor3[Lst[Obj], Lst[Obj], Lst[Obj]] =
-      new TableFor3[Lst[Obj], Lst[Obj], Lst[Obj]](("alst", "blst", "clst"),
-        ((int.plus(1) `,` int.mult(2)), (int.plus(3) `,` int.mult(4)), (int.plus(1).plus(3) `,` int.plus(1).mult(4) `,` int.mult(2).plus(3) `,` int.mult(2).mult(4))),
-      )
-    forEvery(check) { (left, right, result) =>
-      assertResult(result)(Lst.cmult(left, right))
-    }
-  }
 }

@@ -29,8 +29,6 @@ import org.mmadt.language.obj.op.trace.TypeOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.obj.value.strm.util.MultiSet
 
-import scala.util.Try
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -39,19 +37,15 @@ trait Value[+V <: Obj] extends Obj with TypeOp[V] {
 
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isToken(other) => Try[Boolean] {
-      this.test(Obj.resolveToken(this, other))
-    }.getOrElse(false)
-    case _: Type[_] => (sameBase(this, other.domain) || __.isAnonObj(other.domain)) && withinQ(this, other.domain) && this.compute(other).alive
+    case _: __ if __.isToken(other) => Obj.resolveTokenOption(this, other).exists(x => this.test(x))
+    case _: Type[_] => (sameBase(this, other.domain) || __.isAnonTokenObj(other.domain)) && withinQ(this, other.domain) && this.compute(other).alive
     case avalue: Value[_] => this.g.equals(avalue.g) && withinQ(this, avalue)
     case _ => false
   }
 
   // standard Java implementations
   override def toString: String = LanguageFactory.printValue(this)
-
   override lazy val hashCode: scala.Int = this.name.hashCode ^ this.g.hashCode()
-
   override def equals(other: Any): Boolean = other match {
     case obj: Obj if !this.alive => !obj.alive
     case astrm: Strm[_] => MultiSet.equals(this, astrm)

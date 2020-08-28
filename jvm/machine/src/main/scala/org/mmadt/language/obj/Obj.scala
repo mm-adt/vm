@@ -105,7 +105,7 @@ trait Obj
     if (this.root) throw LanguageException.zeroLengthPath(this)
     this.trace.tail match {
       case Nil => this.rangeObj
-      case incidentRoot => incidentRoot.foldLeft[Obj](incidentRoot.head._1.rangeObj)((btype, inst) => inst._2.exec(btype)).asInstanceOf[this.type]
+      case incidentRoot => incidentRoot.reconstruct(incidentRoot.head._1.rangeObj)
     }
   }
 
@@ -172,6 +172,23 @@ object Obj {
     final def reconstruct[A <: Obj](source: Obj): A = ground.map(x => x._2).foldLeft(source)((a, b) => b.exec(a)).asInstanceOf[A]
   }
 
+  def resolveTokenOption[A <: Obj](obj: Obj, arg: A): Option[A] =
+    Some(arg).filter(a => __.isToken(a))
+      .map(a => obj.model.search[A](a.name, obj.asInstanceOf[A]))
+      .filter(x => x.isDefined)
+      .map(a => arg.trace.reconstruct[A](a.get))
+
+  def resolveToken[A <: Obj](obj: Obj, arg: A): A = {
+    if (!__.isToken(arg)) return arg
+    resolveTokenOption(obj, arg).getOrElse(obj match {
+      case _: Type[_] => arg
+      case _ => if (obj.model.search[A](arg.name).isDefined)
+        throw LanguageException.typingError(obj, asType(arg))
+      else
+        throw LanguageException.labelNotFound(obj, arg.name)
+    })
+  }
+
   private def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]
     else objB match {
@@ -185,13 +202,13 @@ object Obj {
     }
   }
 
-  def resolveInternal[E <: Obj](domainObj: Obj, rangeType: E): E = {
+  private def resolveInternal[E <: Obj](domainObj: Obj, rangeType: E): E = {
     rangeType match {
       case _: Value[_] => rangeType.q(multQ(domainObj.q, rangeType.q))
       case _: Type[_] =>
         rangeType.via
           .headOption
-          .map(x => x._2.asInstanceOf[Inst[Obj,Obj]].exec(domainObj))
+          .map(x => x._2.asInstanceOf[Inst[Obj, Obj]].exec(domainObj))
           .map(x => resolveInternal(x, rangeType.linvert))
           .getOrElse(domainObj.asInstanceOf[E])
     }
@@ -211,17 +228,7 @@ object Obj {
     }
   }
 
-  def resolveToken[A <: Obj](obj: Obj, arg: A): A = {
-    if (__.isToken(arg))
-      obj.model.search[A](arg.name, obj.asInstanceOf[A]).orElse[A](obj match {
-        case _: Type[_] => return arg
-        case _ =>
-          if (obj.model.search[A](arg.name).isDefined) throw LanguageException.typingError(obj, asType(arg))
-          else throw LanguageException.labelNotFound(obj, arg.name)
-      }).map(x => arg.trace.foldLeft(x)((a, b) => b._2.exec(a).asInstanceOf[A])).get else arg
-  }
-
-  def objTypeCheck[A <: Obj](source: A): A = {
+  private def objTypeCheck[A <: Obj](source: A): A = {
     if (Tokens.named(source.name) && source.isInstanceOf[Value[_]] && !source.isInstanceOf[Model]) {
       val resolvedTarget: Type[Obj] = source.model.search[A](source.name, source).map(x => x.asInstanceOf[Type[Obj]]).orNull
       if (null != resolvedTarget && !Obj.resolveInternal(toBaseName(source), resolvedTarget).alive)

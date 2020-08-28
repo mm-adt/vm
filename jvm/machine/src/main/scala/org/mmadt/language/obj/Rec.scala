@@ -98,7 +98,6 @@ object Rec {
   def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
-  private def isType(pairs: Pairs[_ <: Obj, _ <: Obj]): Boolean = pairs.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])
   def moduleStruct[A <: Obj, B <: Obj](gsep: String, pairs: Pairs[A, B], start: Obj = null): Pairs[A, B] = gsep match {
     /////////// ,-rec
     case Tokens.`,` =>
@@ -112,7 +111,6 @@ object Rec {
           val mergedBranches: List[B] = Type.mergeObjs(kv._2)
           if (mergedBranches.size == 1) mergedBranches.head
           else if (mergedBranches.exists(x => x.isInstanceOf[Type[_]])) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
-          //else if (isType(pairs)) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
           else strm(mergedBranches)
         }).toList
     /////////// ;-rec

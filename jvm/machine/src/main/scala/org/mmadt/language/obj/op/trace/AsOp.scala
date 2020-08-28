@@ -100,7 +100,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def intConverter(x: Int, y: Obj): Obj = {
-    val w: Obj = Obj.resolveToken(x, y).domain match {
+    val w: Obj = Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
       case _: __ => x
       case aint: IntType => int(name = aint.name, g = x.g, via = x.via)
       case areal: RealType => real(name = areal.name, g = x.g, via = x.via)
@@ -122,7 +122,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def strConverter(x: Str, y: Obj): Obj = {
-    val w: Obj = Obj.resolveToken(x, y).domain match {
+    val w: Obj = Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
       case _: __ => x
       case abool: BoolType => bool(name = abool.name, g = JBoolean.valueOf(x.g), via = x.via)
       case aint: IntType => int(name = aint.name, g = JLong.valueOf(x.g), via = x.via)
@@ -135,7 +135,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def lstConverter(x: Lst[Obj], y: Obj): Obj = {
-    val w: Obj = Obj.resolveToken(x, y).domain match {
+    val w: Obj = Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
       case _: __ => x
       case astr: StrType => str(name = astr.name, g = x.toString, via = x.via)
       case alst: LstType[Obj] if alst.ctype => x.named(alst.name)
@@ -147,7 +147,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def recConverter(x: Rec[Obj, Obj], y: Obj): Obj = {
-    val w: Obj = Obj.resolveToken(x, y).domain match {
+    val w: Obj = Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
       case _: __ => x
       case astr: StrType => str(name = astr.name, g = x.toString, via = x.via)
       case arec: RecType[Obj, Obj] if arec.ctype => x.named(arec.name)

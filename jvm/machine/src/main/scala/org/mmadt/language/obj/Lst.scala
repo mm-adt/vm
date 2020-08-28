@@ -62,7 +62,6 @@ trait Lst[+A <: Obj] extends Poly[A]
   private final def lstMaker(sep: String, obj: Obj): Lst[obj.type] = {
     obj match {
       case _ if sep != this.gsep => lst(g = (sep, List(this, obj).asInstanceOf[List[obj.type]]))
-      // case _ if this.ctype => this.clone(g = (sep, List(obj))).asInstanceOf[Lst[obj.type]]
       case _ => this.clone(g = (sep, this.g._2 :+ obj)).asInstanceOf[Lst[obj.type]]
     }
   }
@@ -113,13 +112,5 @@ object Lst {
             true
           }
         })
-  }
-
-  def cmult[A <: Obj](apoly: Lst[A], bpoly: Lst[A]): Lst[A] = {
-    var clist: List[A] = Nil
-    apoly.glist.foreach(a => bpoly.glist.foreach(b => {
-      clist = clist :+ (a `=>` b)
-    }))
-    lst(g = (Tokens.`,`, clist))
   }
 }

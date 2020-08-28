@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Obj.IntQ
-import org.mmadt.language.obj.op.trace.{ExplainOp, ModelOp}
+import org.mmadt.language.obj.op.trace.ExplainOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageFactory, Tokens}
@@ -36,16 +36,12 @@ import scala.collection.mutable.ListBuffer
  */
 trait Type[+T <: Obj] extends Obj with ExplainOp {
   // type signature properties and functions
-  //def value: Any = throw LanguageException.typesNoValue(this)
   override lazy val range: this.type = this.rangeObj
-
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
     case _: __ if __.isAnon(other) => true
-    case _: __ if __.isTokenRoot(other) =>
-      val temp = Obj.resolveToken(this, other)
-      if (temp == other) true else this.test(temp)
+    case _: __ if __.isTokenRoot(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
     case _: Type[_] => (sameBase(this, other.domain) || __.isAnonTokenObj(this) || __.isAnonObj(other.domain)) && withinQ(this, other)
     case _ => false
   }

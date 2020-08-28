@@ -33,9 +33,7 @@ import scala.util.Try
 trait RecValue[A <: Obj, B <: Obj] extends PolyValue[B, Rec[A, B]] with Rec[A, B] {
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isToken(other) => Try[Boolean] {
-      this.test(Obj.resolveToken(this, other))
-    }.getOrElse(false)
+    case _: __ if __.isToken(other) => Obj.resolveTokenOption(this, other).exists(x => this.test(x))
     case arec: RecValue[A, B] => Rec.test(this, arec)
     case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
       case arec: Rec[A, B] => Rec.test(this, arec)
