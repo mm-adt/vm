@@ -3,45 +3,45 @@
 
 == The Algebra
 
-=== The Obj Magma
+=== The Obj Monoid
 
 .Monoids
 ****
-A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the associative binary operator \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.
+A https://en.wikipedia.org/wiki/Monoid[monoid] is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the https://en.wikipedia.org/wiki/Associative_property[associative] https://en.wikipedia.org/wiki/Binary_operation[binary operator] \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the https://en.wikipedia.org/wiki/Identity_element[identity] such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.
 ****
 
-A https://en.wikipedia.org/wiki/Magma_(algebra)[magma] is a partially https://en.wikipedia.org/wiki/Associative_property[associative] algebraic structure with a single https://en.wikipedia.org/wiki/Binary_operation[binary operator].
-The `obj` magma is defined \[
-(\texttt{obj},=>,\underline{\mathbf{1}}), \]
-where `obj` is the set of all quantified mm-ADT objects, \$ =>: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary _apply_ operator, and \$\underline{\mathbf{1}}\$ the https://en.wikipedia.org/wiki/Identity_element[identity element].
-Given that an `obj` is either exclusively a type or a value, \$=>\$ supports four https://en.wikipedia.org/wiki/Argument_of_a_function[argument] combinations.
+The `obj` monoid is defined
+\[
+(\texttt{obj},=>,\mathbf{1},\mathbf{0}),
+\]
+where `obj` is the set of all quantified mm-ADT objects, \$ =>: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the https://en.wikipedia.org/wiki/Associative_property[associative] https://en.wikipedia.org/wiki/Binary_operation[binary] _juxtaposition_ operator (`[juxta]` \$\in\$ `inst`), \$\mathbf{1}\$ the https://en.wikipedia.org/wiki/Identity_element[identity element] `\_{1}` (or simply `{1}`), and \$\mathbf{0}\$ is the annihilator `_{0}` (or simply `{0}`). Given that an `obj` is either a type or a value, \$=>\$ supports four https://en.wikipedia.org/wiki/Argument_of_a_function[argument] combinations.
 
 [cols="1,1,2,5"]
 |===
 | arguments    | name                | equation | mmlang example
 
-| value/value  | push                | \$a_{q_0} => b_{q_1} \mapsto b_{q_0 \ast q_1}\$
+| value/value  | push                | \$a_{q_0} => b_{q_1} = b_{q_0 \ast q_1}\$
 a|
 [exec]
 ----
 'a'{2} => 'b'{6}
 ----
 {blank}
-| value/type    | evaluation         | \$a_{q_0} => b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$
+| value/type    | evaluate         | \$a_{q_0} => b_{q_1} = b(a)_{q_0 \ast q_1}\$
 a|
 [exec]
 ----
 'a'{2} => str{2}[plus,'b']{6}
 ----
 {blank}
-| type/value  |  push                |\$a_{q_0} => b_{q_1} \mapsto b_{q_0 \ast q_1}\$
+| type/value  |  push                |\$a_{q_0} => b_{q_1} = b_{q_0 \ast q_1}\$
 a|
 [exec]
 ----
 str[plus,'a']{2} => 'b'{6}
 ----
 {blank}
-| type/type  |  compilation          | \$a_{q_0} => b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$
+| type/type  |  compile          | \$a_{q_0} => b_{q_1} = b(a)_{q_0 \ast q_1}\$
 a|
 [exec]
 ----
@@ -51,39 +51,19 @@ str[plus,'a']{2} => str{2}[plus,'b']{6}
 |===
 
 For the two \$x => \tt{type}\$ argument patterns, the type https://en.wikipedia.org/wiki/Semigroup_action[acts] on \$x\$ -- i.e., \$\tt{type}(x)\$.
-The \$=>\$ operator is a https://en.wikipedia.org/wiki/Higher-order_function[higher order function], where the semantics of the application are in the type's definition.
-For instance, in the expression `'a' \=> str[plus,'b']`, `'a'` is being applied to `str[plus,'b']`, and only when `str[plus,'b']` acts on `'a'` is \$=>\$ full defined.
-Thus, the complexity of the `obj` magma lies in the elements of its carrier set -- in particular, in the virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`) which, by definition, is expressive enough to https://en.wikipedia.org/wiki/Embedding[embed] the fundamental `obj` stream ring, the `inst` monoid, and the type ringoid algebras.
+The \$=>\$ operator is a https://en.wikipedia.org/wiki/Higher-order_function[higher order function], where the semantics of the application are in the type's definition. For instance, in the expression `'a' \=> str[plus,'b']`, `'a'` is being applied to `str[plus,'b']`, and only when `str[plus,'b']` acts on `'a'` is \$=>\$ full defined. Thus, the complexity of the `obj` monoid lies in the elements of its carrier set -- in particular, in the virtual machine's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`).
 
-NOTE: The \$=>\$ (apply) operator is a monoidal generalization of https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication] that respects the axioms of a ring theoretic https://en.wikipedia.org/wiki/Bimodule[bimodule].
-In this interpretation, \$=>\$ is a third binary operator of the `obj` stream ring.
-A complete formalization of the `obj` https://en.wikipedia.org/wiki/Vector_space[vector space] is forthcoming.
+The `obj` monoid's \$=>\$ operator is a sugar symbol denoting the instruction `[juxta]`. Furthermore, `[juxta]` is one of three mm-ADT instructions in `inst` that provide direct access to the underlying stream ring algebra where `[juxta]` is the `inst` denotation of the \$\ast\$-operator of the stream ring. With the \$+\$ and \$\oplus\$ operators being denoted in `inst` via `[branch]` and `[barrier]`, respectively, their exists an isomorphism between `obj` monoid and the stream ring.
 
-The example below demonstrates the value/type argument pattern via the `int[plus,int[mult,2]]` right action on `5`.
-Note that within the initial action, a cascade of further actions take place highlighting the value/type and value/value argument patterns.
-
-[cols="1,2"]
-|===
-| \[
+\[
 \begin{split}
-5 =>&\; \texttt{int}[\texttt{plus\},\texttt{int}[\texttt{mult},2]]        \\
-5 =>&\; \texttt{int}[\texttt{plus\},5=>\texttt{int}[\texttt{mult},2]]     \\
-5 =>&\; \texttt{int}[\texttt{plus\},5=>\texttt{int}[\texttt{mult},5=>2]]  \\
-5 =>&\; \texttt{int}[\texttt{plus\},5=>\texttt{int}[\texttt{mult},2]]     \\
-5 =>&\; \texttt{int}[\texttt{plus\},10]                                   \\
-5 =>&\; 15                                                                \\
-15\;\;\,&
+a * b      \;\;\mapsto&\;\;  a \Rightarrow b          \\
+a + b      \;\;\mapsto&\;\;  \texttt{[branch,(a,b)]}  \\
+a \oplus b \;\;\mapsto&\;\;  \texttt{[a,b]} \Rightarrow \texttt{[barrier]} \\
+\mathbf{1} \;\;\mapsto&\;\;  \mathbf{1}               \\
+\mathbf{0} \;\;\mapsto&\;\;  \mathbf{0}
 \end{split}
 \]
-a|
-[exec]
-----
-5 => int[plus,int[mult,2]]
-5 => int[plus,int[mult,2]][explain]
-5 => int[plus,int[mult,2]][path]
-----
-{blank}
-|===
 
 === The Inst Monoid
 
@@ -116,45 +96,55 @@ In `mmlang`, an `inst` is defined by the grammar fragment
 [.text-center]
 `inst  ::= '[' op(','obj)* ']' q?`,
 
-where `op` is an https://en.wikipedia.org/wiki/Opcode[opcode] from a predefined set of character string.
-Example opcodes include `plus`, `mult`, `branch`, `is`, `gt`, `lt`, etc.
-An mm-ADT program is a https://en.wikipedia.org/wiki/Assembly_language[sequence of instructions] commonly known as https://en.wikipedia.org/wiki/Bytecode[bytecode].
-While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a https://en.wikipedia.org/wiki/Full_and_faithful_functors[faithful embedding] of this richer ring structure into a https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid] called the `inst` monoid defined as \[
-(\texttt{inst}^\ast,\circ,\emptyset), \]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element.
-An mm-ADT program is a type.
-In order to generate a type from a word of the free `inst` monoid, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] (https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler]) from the `inst` monoid to the `obj` magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.
+where `op` is an https://en.wikipedia.org/wiki/Opcode[opcode] from a predefined set of character string. Example opcodes include `plus`, `mult`, `branch`, `is`, `gt`, `lt`, etc. An mm-ADT program is a https://en.wikipedia.org/wiki/Assembly_language[sequence of instructions] commonly known as https://en.wikipedia.org/wiki/Bytecode[bytecode]. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a https://en.wikipedia.org/wiki/Full_and_faithful_functors[faithful embedding] of this richer ring structure into a https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid] called the `inst` monoid defined as
+\[
+(\texttt{inst}^\ast,\circ,\emptyset),
+\]
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates `inst` sequences and \$\emptyset\$ is the https://en.wikipedia.org/wiki/Empty_set[empty set] behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free `inst` monoid, there exists a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] (https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler]) from the `inst` monoid to the previously defined `obj` monoid \$(\tt{obj},\Rightarrow,\mathbf{1},\mathbf{0})\$.
 
 .Rosetta Stone
 [cols="1,2,3",width=35,float=right]
-|===
+|====
 | algebra   | machine        | mm-ADT
 
 | `inst`    | ISA            | `inst`
 | `inst^*^` | bytecode       | `inst` `poly`
 | \$\eta\$  | assembler      | type induction
 | `type`    | program        | type
-|===
+|====
 
-.`inst` monoid to `obj` magma homomorphism
+.`inst` monoid to `obj` monoid homomorphism
 \[
 \begin{split}
-& \eta: \texttt{inst}^\ast &\to \texttt{type} \\\\ & \eta(\emptyset) &= \underline{\mathbf{1}} \\ & \eta(a \circ b) &= a \Rightarrow b \\\\ & \eta(x) &= \prod_{i \lt |x|}^{\Rightarrow} x_i \\ & &= x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1} \end{split}
+  & \eta: \texttt{inst}^\ast &\to \texttt{type} \\\\
+  & \eta(\emptyset) &= \mathbf{1} \\
+  & \eta(a \circ b) &= a \Rightarrow b \\\\
+  & \eta(x)         &= \prod_{i=0}^n x_i \\
+  &                 &= x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_n
+\end{split}
 \]
+{blank}
+{blank}
 
-image::start-ctypes.png[float="right",width=315]
+[cols="5,4",frame=none,grid=none]
+|====
 
-For example, if \$abcde \in \tt{i\nst}^\ast\$, then \[
+a| For example, given the free `inst` monoid word \$abcde \in \tt{i\nst}^\ast\$, then
+\[
 \eta(abcde) \mapsto a => b => c => d => e.
 \]
 
 [exec]
 ----
 [start,int][plus,1][mult,2]
-[start,int]=>[plus,1]=>[mult,2]
+[start,int]=>[plus,1]=>[mult,2]=>{1}
 ----
+{blank}
 
-'''
+| image:start-ctypes.svg[]
+|====
+
+
 
 === The Stream Ringoid
 

@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.op.{BranchInstruction, TraceInstruction}
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.obj.value.VInst
 
 trait CombineOp[+A <: Obj] {
