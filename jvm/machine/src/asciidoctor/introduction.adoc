@@ -75,9 +75,9 @@ No one practitioner will ever have a complete grasp of the intricacies that bind
 
 ****
 
-image::../introduction/the-algebras.png[width=500,float=right]
+image::../introduction/the-algebras.svg[width=520,float=right]
 
-The base algebra of mm-ADT is a type-oriented ring algebra called the *obj stream ring*. There are three surjective https://en.wikipedia.org/wiki/Homomorphism[homomorphisms] yielding the three algebras of the aforementioned components.  The *language algebra*'s (`inst` monoid) https://en.wikipedia.org/wiki/Free_monoid[free monoid] enables the nested, serial composition of parameterized instructions (`inst`) from the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The *processor algebra* (type ringoid) is a free https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ringoid] (`poly`) for the compilation and evaluation of mm-ADT types (or programs). The *storage algebra*  (`obj` magma) is a https://en.wikipedia.org/wiki/Magma_(algebra)[magma] with a carrier set containing all mm-ADT objects (`obj`) and a partially https://en.wikipedia.org/wiki/Associative_property[associative], binary operator for constructing data streams.
+The base algebra of mm-ADT is a type-oriented ring algebra called the *obj stream ring*. There are three surjective https://en.wikipedia.org/wiki/Homomorphism[homomorphisms] yielding the three algebras of the aforementioned components.  The *language algebra*'s (`inst` monoid) https://en.wikipedia.org/wiki/Free_monoid[free monoid] enables the nested, serial composition of parameterized instructions (`inst`) from the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture]. The *processor algebra* (type ringoid) is a free https://en.wikipedia.org/wiki/Polynomial_ring[polynomial ringoid] (`poly`) for the compilation and evaluation of mm-ADT types (or programs). The *storage algebra*  (`obj` monoid) is a https://en.wikipedia.org/wiki/Magma_(algebra)[magma] with a carrier set containing all mm-ADT objects (`obj`) and a partially https://en.wikipedia.org/wiki/Associative_property[associative], binary operator for constructing data streams.
 
 These component algebras represent the particular perspective that each component has on a shared data structure known as the *obj graph* which realizes _a ringoid-embedded monoidal Cayley graph_. This https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] is the medium by which https://en.wikipedia.org/wiki/Semigroup_action[algebraic actions] effectively couple these components over the course of a computation: specification, compilation, and evaluation.
 
@@ -87,7 +87,7 @@ These component algebras represent the particular perspective that each componen
 
 | language  | `inst` monoid
 | processor | `type` ringoid
-| storage   | `obj` magma
+| storage   | `obj` monoid
 |===
 
 The primary purpose of this documentation is to explain these algebras, specify their relationship to one another and demonstrate how they are manipulated by mm-ADT technologies. Data system engineers will learn how to integrate their technology so end users may compose their efforts with others' to create _synthetic data systems_ tailored to a problem's particular computational requirements.

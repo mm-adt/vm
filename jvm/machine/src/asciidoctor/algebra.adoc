@@ -798,7 +798,7 @@ is realized as \[
 x \Delta (a + b) \mapsto (x=>a,x=>b).
 \]
 The \$\Delta\$ (_split_) copys an `obj` that is _outside_ of a `poly` to the left of one or more `objs` _inside_ the `poly`.
-When juxtaposed to the left and an internal `obj`, the `obj` magma's binary operator \$=>:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution.
+When juxtaposed to the left and an internal `obj`, the `obj` monoid's binary operator \$=>:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution.
 The following table provides a translation of the standard module axioms to mm-ADT.
 
 [cols="^1,^1,^1",width=100,align=center]
