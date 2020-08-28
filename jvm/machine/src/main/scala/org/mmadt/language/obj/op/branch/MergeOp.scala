@@ -28,7 +28,6 @@ import org.mmadt.language.obj.`type`.{LstType, PolyType, __}
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.{PolyValue, Value}
 import org.mmadt.language.obj.{Obj, _}
-import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait MergeOp[+A <: Obj] {
@@ -45,7 +44,7 @@ object MergeOp extends Func[Obj, Obj] {
       case apoly: Poly[_] if apoly.ctype => __.via(start, inst)
       case apoly: PolyValue[_, _] => BranchInstruction.mergeBranches(apoly, inst)
       case apoly: LstType[_] if apoly.isSerial && apoly.glist.lastOption.exists(x => x.isInstanceOf[Value[_]]) => apoly.glist.last.q(inst.q) // TODO: hack cause of [path]
-      case apoly: PolyType[_, _] => BranchInstruction.multPolyQ(BranchInstruction.brchType[Obj](apoly), lst, inst).clone(via = (start, inst)) // lst is acting a _{1}
+      case apoly: PolyType[_, _] => BranchInstruction.brchType[Obj](apoly).hardQ(q => q.mult(inst.q)).clone(via = (start, inst))
       case _ => start.via(start, inst)
     }
   }

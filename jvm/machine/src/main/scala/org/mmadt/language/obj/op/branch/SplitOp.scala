@@ -40,17 +40,12 @@ trait SplitOp {
 
 object SplitOp extends Func[Obj, Obj] {
   def apply(branches: Obj): Inst[Obj, branches.type] = new VInst[Obj, branches.type](g = (Tokens.split, List(branches)), func = this) with BranchInstruction
-
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val apoly: Poly[Obj] = Inst.oldInst(inst).arg0[Obj] match {
       case bpoly: Poly[_] => bpoly
-      case _ => inst.arg0[Obj] match {
-        case bpoly: Poly[_] => bpoly
-        case _: __ => return start.via(start, inst)
-      }
+      case _ => return start.via(start, inst)
     }
-    val startUnit = start.hardQ(qOne)
-    val newPoly: Poly[Obj] = apoly.scalarMult(startUnit.clone(via = (startUnit, Inst.oldInst(inst))))
+    val newPoly: Poly[Obj] = apoly.scalarMult(start.clone(q = qOne, via = (start, Inst.oldInst(inst)))) // unit the start
     newPoly.clone(via = (start, SplitOp(newPoly).hardQ(inst.q))).hardQ(BranchInstruction.multPolyQ(start, apoly, inst).q)
   }
 }

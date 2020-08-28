@@ -24,7 +24,7 @@ package org.mmadt.language.mmlang
 
 import java.util.Optional
 
-import javax.script.{Bindings, ScriptEngineManager, SimpleBindings}
+import javax.script.ScriptEngineManager
 import org.mmadt.language.LanguageProvider
 import org.mmadt.language.jsr223.mmADTScriptEngine
 
@@ -43,11 +43,5 @@ object mmlangLanguageProvider {
     manager
   }
   private def scriptEngine(): mmADTScriptEngine = scriptEngineManager.getEngineByName(_name).asInstanceOf[mmlangScriptEngine]
-
-  private def bindings(pairs: Tuple2[String, Any]*): Bindings = {
-    val bindings: Bindings = new SimpleBindings()
-    pairs.foreach(s => bindings.put(s._1, s._2))
-    bindings
-  }
 }
 

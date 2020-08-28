@@ -63,7 +63,7 @@ class mmlangParser extends JavaTokenParsers {
 
   private def emptySpace[O <: Obj]: Parser[O] = (Tokens.blank | whiteSpace) ^^ (_ => estrm[O])
 
-  // specific to mmlang execution
+  // specific to mmlang execution (auto-compiling)
   def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = opt(startValue | objValue) ~ opt(Tokens.:=>) ~ opt(obj) ~ (opt(Tokens.:=>) ~> repsep(obj, Tokens.:=>)) ^^ {
     case Some(source) ~ _ ~ Some(target: Type[Obj]) ~ aobjs =>
       aobjs.foldLeft(compile(prefix, asType(source), target) match {
@@ -117,8 +117,8 @@ class mmlangParser extends JavaTokenParsers {
   lazy val intType: Parser[IntType] = Tokens.int ^^ (_ => int)
   lazy val realType: Parser[RealType] = Tokens.real ^^ (_ => real)
   lazy val strType: Parser[StrType] = Tokens.str ^^ (_ => str)
-  lazy val lstType: Parser[Lst[Obj]] = (opt(objName) ~ (LROUND ~> lstStruct(obj)) <~ RROUND ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = x._2)) | Tokens.lst ^^ (_ => lst))
-  lazy val recType: Parser[Rec[Obj, Obj]] = (opt(objName) ~ (LROUND ~> recStruct(obj)) <~ RROUND ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = x._2)) | Tokens.rec ^^ (_ => rec))
+  lazy val lstType: Parser[Lst[Obj]] = opt(objName) ~ (LROUND ~> lstStruct(obj)) <~ RROUND ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = x._2)) | Tokens.lst ^^ (_ => lst)
+  lazy val recType: Parser[Rec[Obj, Obj]] = opt(objName) ~ (LROUND ~> recStruct(obj)) <~ RROUND ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = x._2)) | Tokens.rec ^^ (_ => rec)
   lazy val tokenType: Parser[__] = varName ^^ (x => __(x))
 
   lazy val cType: Parser[Obj] = (anonType | tobjType | boolType | realType | intType | strType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
@@ -135,7 +135,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val boolValue: Parser[BoolValue] = opt(objName) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x._2.toBoolean, x._1.getOrElse(Tokens.bool), qOne))
   lazy val intValue: Parser[IntValue] = opt(objName) ~ wholeNumber ^^ (x => int(x._2.toLong, x._1.getOrElse(Tokens.int), qOne))
   lazy val realValue: Parser[RealValue] = opt(objName) ~ decimalNumber ^^ (x => real(x._2.toDouble, x._1.getOrElse(Tokens.real), qOne))
-  lazy val strValue: Parser[StrValue] = opt(objName) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => str(g=x._2.subSequence(1, x._2.length - 1).toString, name=x._1.getOrElse(Tokens.str), qOne))
+  lazy val strValue: Parser[StrValue] = opt(objName) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => str(g = x._2.subSequence(1, x._2.length - 1).toString, name = x._1.getOrElse(Tokens.str), qOne))
   lazy val lstValue: Parser[Lst[Obj]] = (opt(objName) ~ (LROUND ~> lstStruct(objValue) <~ RROUND) ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = (x._2._1, x._2._2))))
   lazy val recValue: Parser[Rec[Obj, Obj]] = (opt(objName) ~ (LROUND ~> recStruct(objValue) <~ RROUND) ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = (x._2._1, x._2._2))))
   lazy val startValue: Parser[Obj] = ((LBRACKET ~> rep1sep(objValue, COMMA)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => estrm(x._1.filter(_.alive).map(y => y.q(q => multQ(q, x._2.getOrElse(qOne)))): _*))
