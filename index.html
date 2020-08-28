@@ -517,7 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_the_algebra">The Algebra</a>
 <ul class="sectlevel2">
-<li><a href="#_the_obj_magma">The Obj Magma</a></li>
+<li><a href="#_the_obj_monoid">The Obj Monoid</a></li>
 <li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
 <li><a href="#_the_stream_ringoid">The Stream Ringoid</a>
 <ul class="sectlevel3">
@@ -3667,21 +3667,21 @@ language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
 <h2 id="_the_algebra">The Algebra</h2>
 <div class="sectionbody">
 <div class="sect2">
-<h3 id="_the_obj_magma">The Obj Magma</h3>
+<h3 id="_the_obj_monoid">The Obj Monoid</h3>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Monoids</div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the associative binary operator \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.</p>
+<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.</p>
 </div>
 </div>
 </div>
 <div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> is a partially <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> algebraic structure with a single <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a>.
-The <code>obj</code> magma is defined \[
-(\texttt{obj},&#8658;,\underline{\mathbf{1}}), \]
-where <code>obj</code> is the set of all quantified mm-ADT objects, \$ &#8658;: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the binary <em>apply</em> operator, and \$\underline{\mathbf{1}}\$ the <a href="https://en.wikipedia.org/wiki/Identity_element">identity element</a>.
-Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658;\$ supports four <a href="https://en.wikipedia.org/wiki/Argument_of_a_function">argument</a> combinations.</p>
+<p>The <code>obj</code> monoid is defined
+\[
+(\texttt{obj},&#8658;,\mathbf{1},\mathbf{0}),
+\]
+where <code>obj</code> is the set of all quantified mm-ADT objects, \$ &#8658;: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> <a href="https://en.wikipedia.org/wiki/Binary_operation">binary</a> <em>juxtaposition</em> operator (<code>[juxta]</code> \$\in\$ <code>inst</code>), \$\mathbf{1}\$ the <a href="https://en.wikipedia.org/wiki/Identity_element">identity element</a> <code>_{1}</code> (or simply <code>{1}</code>), and \$\mathbf{0}\$ is the annihilator <code>_{0}</code> (or simply <code>{0}</code>). Given that an <code>obj</code> is either a type or a value, \$&#8658;\$ supports four <a href="https://en.wikipedia.org/wiki/Argument_of_a_function">argument</a> combinations.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -3702,7 +3702,7 @@ Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">value/value</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">push</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} \mapsto b_{q_0 \ast q_1}\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} = b_{q_0 \ast q_1}\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2} =&gt; 'b'{6}
@@ -3715,8 +3715,8 @@ Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">value/type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">evaluation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">evaluate</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} = b(a)_{q_0 \ast q_1}\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2} =&gt; str{2}[plus,'b']{6}
@@ -3730,7 +3730,7 @@ Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type/value</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">push</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} \mapsto b_{q_0 \ast q_1}\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} = b_{q_0 \ast q_1}\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; str[plus,'a']{2} =&gt; 'b'{6}
@@ -3743,8 +3743,8 @@ Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type/type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">compilation</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} \mapsto b(a)_{q_0 \ast q_1}\$</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">compile</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} = b(a)_{q_0 \ast q_1}\$</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; str[plus,'a']{2} =&gt; str{2}[plus,'b']{6}
@@ -3759,69 +3759,22 @@ Given that an <code>obj</code> is either exclusively a type or a value, \$&#8658
 </table>
 <div class="paragraph">
 <p>For the two \$x &#8658; \tt{type}\$ argument patterns, the type <a href="https://en.wikipedia.org/wiki/Semigroup_action">acts</a> on \$x\$&#8201;&#8212;&#8201;i.e., \$\tt{type}(x)\$.
-The \$&#8658;\$ operator is a <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher order function</a>, where the semantics of the application are in the type&#8217;s definition.
-For instance, in the expression <code>'a' =&gt; str[plus,'b']</code>, <code>'a'</code> is being applied to <code>str[plus,'b']</code>, and only when <code>str[plus,'b']</code> acts on <code>'a'</code> is \$&#8658;\$ full defined.
-Thus, the complexity of the <code>obj</code> magma lies in the elements of its carrier set&#8201;&#8212;&#8201;in particular, in the virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>) which, by definition, is expressive enough to <a href="https://en.wikipedia.org/wiki/Embedding">embed</a> the fundamental <code>obj</code> stream ring, the <code>inst</code> monoid, and the type ringoid algebras.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The \$&#8658;\$ (apply) operator is a monoidal generalization of <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a> that respects the axioms of a ring theoretic <a href="https://en.wikipedia.org/wiki/Bimodule">bimodule</a>.
-In this interpretation, \$&#8658;\$ is a third binary operator of the <code>obj</code> stream ring.
-A complete formalization of the <code>obj</code> <a href="https://en.wikipedia.org/wiki/Vector_space">vector space</a> is forthcoming.
-</td>
-</tr>
-</table>
+The \$&#8658;\$ operator is a <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher order function</a>, where the semantics of the application are in the type&#8217;s definition. For instance, in the expression <code>'a' =&gt; str[plus,'b']</code>, <code>'a'</code> is being applied to <code>str[plus,'b']</code>, and only when <code>str[plus,'b']</code> acts on <code>'a'</code> is \$&#8658;\$ full defined. Thus, the complexity of the <code>obj</code> monoid lies in the elements of its carrier set&#8201;&#8212;&#8201;in particular, in the virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>).</p>
 </div>
 <div class="paragraph">
-<p>The example below demonstrates the value/type argument pattern via the <code>int[plus,int[mult,2]]</code> right action on <code>5</code>.
-Note that within the initial action, a cascade of further actions take place highlighting the value/type and value/value argument patterns.</p>
+<p>The <code>obj</code> monoid&#8217;s \$&#8658;\$ operator is a sugar symbol denoting the instruction <code>[juxta]</code>. Furthermore, <code>[juxta]</code> is one of three mm-ADT instructions in <code>inst</code> that provide direct access to the underlying stream ring algebra where <code>[juxta]</code> is the <code>inst</code> denotation of the \$\ast\$-operator of the stream ring. With the \$+\$ and \$\oplus\$ operators being denoted in <code>inst</code> via <code>[branch]</code> and <code>[barrier]</code>, respectively, their exists an isomorphism between <code>obj</code> monoid and the stream ring.</p>
 </div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 66.6667%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[
+<div class="paragraph">
+<p>\[
 \begin{split}
-5 &#8658;&amp;\; \texttt{int}[\texttt{plus},\texttt{int}[\texttt{mult},2]]        \\
-5 &#8658;&amp;\; \texttt{int}[\texttt{plus},5&#8658;\texttt{int}[\texttt{mult},2]]     \\
-5 &#8658;&amp;\; \texttt{int}[\texttt{plus},5&#8658;\texttt{int}[\texttt{mult},5&#8658;2]]  \\
-5 &#8658;&amp;\; \texttt{int}[\texttt{plus},5&#8658;\texttt{int}[\texttt{mult},2]]     \\
-5 &#8658;&amp;\; \texttt{int}[\texttt{plus},10]                                   \\
-5 &#8658;&amp;\; 15                                                                \\
-15\;\;\,&amp;
+a * b      \;\;\mapsto&amp;\;\;  a \Rightarrow b          \\
+a + b      \;\;\mapsto&amp;\;\;  \texttt{[branch,(a,b)]}  \\
+a \oplus b \;\;\mapsto&amp;\;\;  \texttt{[a,b]} \Rightarrow \texttt{[barrier]} \\
+\mathbf{1} \;\;\mapsto&amp;\;\;  \mathbf{1}               \\
+\mathbf{0} \;\;\mapsto&amp;\;\;  \mathbf{0}
 \end{split}
-\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int[plus,int[mult,2]]
-==&gt;15
-mmlang&gt; 5 =&gt; int[plus,int[mult,2]][explain]
-==&gt;'
-int[plus,int[mult,2]]
-
-instruction           domain      range state
-----------------------------------------------
-[plus,int[mult,2]]    int    =&gt;   int
- [mult,2]              int   =&gt;    int
-'
-mmlang&gt; 5 =&gt; int[plus,int[mult,2]][path]
-==&gt;(5;[plus,10];15)</code></pre>
+\]</p>
 </div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
 </div>
 <div class="sect2">
 <h3 id="_the_inst_monoid">The Inst Monoid</h3>
@@ -3862,14 +3815,11 @@ In <code>mmlang</code>, an <code>inst</code> is defined by the grammar fragment<
 <p><code>inst  ::= '[' op(','obj)* ']' q?</code>,</p>
 </div>
 <div class="paragraph">
-<p>where <code>op</code> is an <a href="https://en.wikipedia.org/wiki/Opcode">opcode</a> from a predefined set of character string.
-Example opcodes include <code>plus</code>, <code>mult</code>, <code>branch</code>, <code>is</code>, <code>gt</code>, <code>lt</code>, etc.
-An mm-ADT program is a <a href="https://en.wikipedia.org/wiki/Assembly_language">sequence of instructions</a> commonly known as <a href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a>.
-While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a <a href="https://en.wikipedia.org/wiki/Full_and_faithful_functors">faithful embedding</a> of this richer ring structure into a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a> called the <code>inst</code> monoid defined as \[
-(\texttt{inst}^\ast,\circ,\emptyset), \]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and \$\emptyset\$ is the <a href="https://en.wikipedia.org/wiki/Empty_set">empty set</a> behaving as the identity element.
-An mm-ADT program is a type.
-In order to generate a type from a word of the free <code>inst</code> monoid, there exists a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> (<a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a>) from the <code>inst</code> monoid to the <code>obj</code> magma \$(\tt{obj},\Rightarrow,\underline{\mathbf{1}})\$.</p>
+<p>where <code>op</code> is an <a href="https://en.wikipedia.org/wiki/Opcode">opcode</a> from a predefined set of character string. Example opcodes include <code>plus</code>, <code>mult</code>, <code>branch</code>, <code>is</code>, <code>gt</code>, <code>lt</code>, etc. An mm-ADT program is a <a href="https://en.wikipedia.org/wiki/Assembly_language">sequence of instructions</a> commonly known as <a href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a>. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a <a href="https://en.wikipedia.org/wiki/Full_and_faithful_functors">faithful embedding</a> of this richer ring structure into a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a> called the <code>inst</code> monoid defined as
+\[
+(\texttt{inst}^\ast,\circ,\emptyset),
+\]
+where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and \$\emptyset\$ is the <a href="https://en.wikipedia.org/wiki/Empty_set">empty set</a> behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free <code>inst</code> monoid, there exists a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> (<a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a>) from the <code>inst</code> monoid to the previously defined <code>obj</code> monoid \$(\tt{obj},\Rightarrow,\mathbf{1},\mathbf{0})\$.</p>
 </div>
 <table class="tableblock frame-all grid-all right" style="width: 35%;">
 <caption class="title">Table 2. Rosetta Stone</caption>
@@ -3909,19 +3859,29 @@ In order to generate a type from a word of the free <code>inst</code> monoid, th
 </tbody>
 </table>
 <div class="paragraph">
-<div class="title"><code>inst</code> monoid to <code>obj</code> magma homomorphism</div>
+<div class="title"><code>inst</code> monoid to <code>obj</code> monoid homomorphism</div>
 <p>\[
 \begin{split}
-&amp; \eta: \texttt{inst}^\ast &amp;\to \texttt{type} \\\\ &amp; \eta(\emptyset) &amp;= \underline{\mathbf{1}} \\ &amp; \eta(a \circ b) &amp;= a \Rightarrow b \\\\ &amp; \eta(x) &amp;= \prod_{i \lt |x|}^{\Rightarrow} x_i \\ &amp; &amp;= x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_{{|x|}-1} \end{split}
-\]</p>
+  &amp; \eta: \texttt{inst}^\ast &amp;\to \texttt{type} \\\\
+  &amp; \eta(\emptyset) &amp;= \mathbf{1} \\
+  &amp; \eta(a \circ b) &amp;= a \Rightarrow b \\\\
+  &amp; \eta(x)         &amp;= \prod_{i=0}^n x_i \\
+  &amp;                 &amp;= x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_n
+\end{split}
+\]
+
+</p>
 </div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/algebra/start-ctypes.png" alt="start ctypes" width="315">
-</div>
-</div>
-<div class="paragraph">
-<p>For example, if \$abcde \in \tt{i\nst}^\ast\$, then \[
+<table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col style="width: 55.5555%;">
+<col style="width: 44.4445%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p>For example, given the free <code>inst</code> monoid word \$abcde \in \tt{i\nst}^\ast\$, then
+\[
 \eta(abcde) \mapsto a &#8658; b &#8658; c &#8658; d &#8658; e.
 \]</p>
 </div>
@@ -3929,11 +3889,17 @@ In order to generate a type from a word of the free <code>inst</code> monoid, th
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int][plus,1][mult,2]
 ==&gt;int[plus,1][mult,2]
-mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]
+mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]=&gt;{1}
 ==&gt;int[plus,1][mult,2]</code></pre>
 </div>
 </div>
-<hr>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/start-ctypes.svg" alt="start ctypes"></span></p></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect2">
 <h3 id="_the_stream_ringoid">The Stream Ringoid</h3>
@@ -6742,7 +6708,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-27 13:39:40 -0600
+Last updated 2020-08-27 16:29:44 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
