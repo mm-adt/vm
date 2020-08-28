@@ -727,7 +727,7 @@ f: S \rightarrow E.
 </div>
 </div>
 <div class="paragraph">
-<p>The base algebra of mm-ADT is a type-oriented ring algebra called the <strong>obj stream ring</strong>. There are three surjective <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphisms</a> yielding the three algebras of the aforementioned components.  The <strong>language algebra</strong>'s (<code>inst</code> monoid) <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> enables the nested, serial composition of parameterized instructions (<code>inst</code>) from the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> (type ringoid) is a free <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) for the compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong>  (<code>obj</code> monoid) is a <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and a partially <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary operator for constructing data streams.</p>
+<p>The base algebra of mm-ADT is a type-oriented ring algebra called the <strong>obj stream ring</strong>. There are three surjective <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphisms</a> yielding the three algebras of the aforementioned components.  The <strong>language algebra</strong>'s (<code>inst</code> monoid) <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a> enables the nested, serial composition of parameterized instructions (<code>inst</code>) from the mm-ADT <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>. The <strong>processor algebra</strong> (type ringoid) is a free <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ringoid</a> (<code>poly</code>) for the compilation and evaluation of mm-ADT types (or programs). The <strong>storage algebra</strong>  (<code>obj</code> monoid) is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> with a carrier set containing all mm-ADT objects (<code>obj</code>) and an <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a>, binary operator for constructing data streams.</p>
 </div>
 <div class="paragraph">
 <p>These component algebras represent the particular perspective that each component has on a shared data structure known as the <strong>obj graph</strong> which realizes <em>a ringoid-embedded monoidal Cayley graph</em>. This <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> is the medium by which <a href="https://en.wikipedia.org/wiki/Semigroup_action">algebraic actions</a> effectively couple these components over the course of a computation: specification, compilation, and evaluation.</p>
@@ -3911,10 +3911,10 @@ mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]=&gt;{1}
 </div>
 <div class="paragraph">
 <p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring.
-Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a>, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding <a href="https://en.wikipedia.org/wiki/Coefficient">coefficient</a> dynamics.
+Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding <a href="https://en.wikipedia.org/wiki/Coefficient">coefficient</a> dynamics.
 Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>.
 A biproduct has both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams.
-Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located.</p>
+Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located by the <em>reduce</em> near-ring operator \$\oplus\$.</p>
 </div>
 <div class="paragraph">
 <p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>.
@@ -3925,7 +3925,7 @@ Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedi
 <div class="paragraph">
 <p>The <strong><code>obj</code> stream ringoid</strong> is the <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring</a>
 \[
-(\texttt{obj},[,],[;],\;\underline{\mathbf{0}}\;\underline{\mathbf{1}}), \]</p>
+(\texttt{obj},[,],[;],\;\mathbf{0}\;\mathbf{1}), \]</p>
 </div>
 <div class="paragraph">
 <p>where</p>
@@ -3947,10 +3947,10 @@ Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedi
 <p><code>[;]</code> the multiplicative <em>serial chain</em> operator,</p>
 </li>
 <li>
-<p>\$\underline{\mathbf{0}}\$ the additive identity, and</p>
+<p>\$\mathbf{0}\$ the additive identity, and</p>
 </li>
 <li>
-<p>\$\underline{\mathbf{1}}\$ the multiplicative identity.</p>
+<p>\$\mathbf{1}\$ the multiplicative identity.</p>
 </li>
 </ul>
 </div>
@@ -3980,7 +3980,7 @@ The following tables provide a consolidated summary of the ring axioms, stream r
 </td>
 <td class="content">
 The <code>mmlang</code> examples are rife with <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugars</a>.
-The term <code>_{0}</code> is \$\underline{\mathbf{0}}\$, <code>_{1}</code> is \$\underline{\mathbf{1}}\$, <code>[a;b;c]</code> denotes <code>[branch,(a;b;c)]</code> and <code>+{q}n</code> denotes <code>[plus,n]{q}</code>.
+The term <code>_{0}</code> (sugar&#8217;d <code>{0}</code>) is \$\mathbf{0}\$, <code>_{1}</code> (sugar&#8217;d <code>{1}</code>) is \$\mathbf{1}\$, <code>[a,b,c]</code> denotes <code>[branch,(a,b,c)]</code> and <code>+{q}n</code> denotes <code>[plus,n]{q}</code>.
 Finally, while <code>[,]</code> and <code>[;]</code> are defined as binary operators, due to the <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> axioms of the respective additive group and multiplicative monoid of a ring, <code>[,]</code> and <code>[;]</code> are effectively \$n\$-ary operators and will be used as such in examples to follow.
 </td>
 </tr>
@@ -4009,7 +4009,7 @@ Regardless of any other behaviors the system may express, if the system always r
 </thead>
 <tbody>
 <tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Additive Abelian Group&#8201;&#8212;&#8201;\$(\tt{obj},[,],\underline{\mathbf{0}})\$</p></th>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Additive Abelian Group&#8201;&#8212;&#8201;\$(\tt{obj},[,],\mathbf{0})\$</p></th>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additive associativity</p></td>
@@ -4120,7 +4120,7 @@ mm&gt;</code></pre>
 </div></div></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Multiplicative Monoid&#8201;&#8212;&#8201;\$(\tt{obj},[;],\underline{\mathbf{1}})\$</p></th>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Multiplicative Monoid&#8201;&#8212;&#8201;\$(\tt{obj},[;],\mathbf{1})\$</p></th>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative associativity</p></td>
@@ -4174,7 +4174,7 @@ mm&gt; str[[id];[[id];[id]]]
 </div></div></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$</p></th>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},[,],[;],\mathbf{0},\mathbf{1})\$</p></th>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Left distributivity</p></td>
@@ -4262,7 +4262,7 @@ Once a system is determined to be a ring, then all the theorems that have been p
 </thead>
 <tbody>
 <tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},[,],[;],\underline{\mathbf{0}},\underline{\mathbf{1}})\$</p></th>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},[,],[;],\mathbf{0},\mathbf{1})\$</p></th>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Additive factoring</p></td>
@@ -5093,8 +5093,8 @@ The following table provides a translation of the standard module axioms to mm-A
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\[\mathbf{1}_X \cdot a = a\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[\underline{\mathbf{1}};a]  = a \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[\underline{\mathbf{1}}&#8658;a = a\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[[\mathbf{1};a]  = a \]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[\mathbf{1}&#8658;a = a\]</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-center valign-top" colspan="3"><p class="tableblock">Right \$X\$-Module Axioms</p></th>
@@ -5116,8 +5116,8 @@ The following table provides a translation of the standard module axioms to mm-A
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\[a \cdot \mathbf{1}_X = a\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[a;\underline{\mathbf{1}}] = a\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[a&#8658;\underline{\mathbf{1}} = a\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[[a;\mathbf{1}] = a\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[a&#8658;\mathbf{1} = a\]</p></td>
 </tr>
 </tbody>
 </table>
@@ -5747,13 +5747,13 @@ If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>|-poly<
 <div class="paragraph">
 <p>\[
 x_{q_2} [a_{q_0} | b_{q_1}] = \begin{cases}
-{xa}_{q_2 * q_0} &amp; \text{if } x_{q_2} a_{q_0} \neq \underline{\bf{0}}, \\
-{bx}_{q_2 * q_1} &amp; \text{if } x_{q_2} b_{q_1} \neq \underline{\bf{0}}, \\ \underline{\bf{0}} &amp; \text{otherwise}.
+{xa}_{q_2 * q_0} &amp; \text{if } x_{q_2} a_{q_0} \neq \bf{0}, \\
+{bx}_{q_2 * q_1} &amp; \text{if } x_{q_2} b_{q_1} \neq \bf{0}, \\ \bf{0} &amp; \text{otherwise}.
 \end{cases}
 \]</p>
 </div>
 <div class="paragraph">
-<p>Thus, while <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring&#8201;&#8212;&#8201;\$\underline{\mathbf{0}}\$).
+<p>Thus, while <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring&#8201;&#8212;&#8201;\$\mathbf{0}\$).
 Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation.
 This is the reason that the additive group of <code>|-lst</code> (and <code>|-poly</code> in general) is not commutative.</p>
 </div>
@@ -5788,15 +5788,15 @@ The polynomial reduces to <code>obj{0}</code>.</td>
 </div>
 <div class="paragraph">
 <p><code>|-rec</code> enables <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a>-based coalescing which is a form of <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a> realized in most programming languages as <a href="https://en.wikipedia.org/wiki/Control_flow#If-then-(else)<em>statements">if/else</a> and <a href="https://en.wikipedia.org/wiki/Switch_statement">switch/case</a> branching.
-While predicate-based branching is a function of \$\mathbb{B}\$ (<code>bool</code>), in mm-ADT it is determined by \$\tt{q}\$ (<code>{q}</code>), where <em>false</em> is <code>obj{0}</code> (\$\underline{\mathbf{0}}\$) and <em>true</em> is any non-zero quantifier.
+While predicate-based branching is a function of \$\mathbb{B}\$ (<code>bool</code>), in mm-ADT it is determined by \$\tt{q}\$ (<code>{q}</code>), where <em>false</em> is <code>obj{0}</code> (\$\mathbf{0}\$) and <em>true</em> is any non-zero quantifier.
 The non-commutative additive group of <code>|-poly</code>, as inherited by <code>|-rec</code>, realizes <a href="https://en.wikipedia.org/wiki/Conditional</em>(computer_programming)#Case_and_switch_statements">case-based</a> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">pattern matching</a> branch ordering semantics.
 Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then</p>
 </div>
 <div class="paragraph">
 <p>\[
 x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] = \begin{cases}
-{xb}_{q_4 * q_1} &amp; \text{if } x_{q_4} a_{q_0} \neq \underline{\bf{0}}, \\
-{xd}_{q_4 * q_3} &amp; \text{if } x_{q_4} c_{q_2} \neq \underline{\bf{0}}, \\ \underline{\bf{0}} &amp; \text{otherwise}.
+{xb}_{q_4 * q_1} &amp; \text{if } x_{q_4} a_{q_0} \neq \bf{0}, \\
+{xd}_{q_4 * q_3} &amp; \text{if } x_{q_4} c_{q_2} \neq \bf{0}, \\ \bf{0} &amp; \text{otherwise}.
 \end{cases}
 \]</p>
 </div>
@@ -6708,7 +6708,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-28 00:21:52 -0600
+Last updated 2020-08-28 01:22:39 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
