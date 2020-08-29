@@ -69,7 +69,7 @@ trait Obj
     with EqsOp
     with ToOp
     with PathOp
-  with WalkOp
+    with WalkOp
     with StartOp
     with SplitOp
     with RewriteOp
@@ -175,7 +175,7 @@ object Obj {
 
   def resolveTokenOption[A <: Obj](obj: Obj, arg: A): Option[A] =
     Some(arg).filter(a => __.isToken(a))
-      .map(a => obj.model.search[A](a.name, obj.asInstanceOf[A]))
+      .map(a => obj.model.search[A](obj, a).headOption)
       .filter(x => x.isDefined)
       .map(a => arg.trace.reconstruct[A](a.get))
 
@@ -183,7 +183,7 @@ object Obj {
     if (!__.isToken(arg)) return arg
     resolveTokenOption(obj, arg).getOrElse(obj match {
       case _: Type[_] => arg
-      case _ => if (obj.model.search[A](arg.name).isDefined)
+      case _ => if (obj.model.search[A](target = arg).nonEmpty)
         throw LanguageException.typingError(obj, asType(arg))
       else
         throw LanguageException.labelNotFound(obj, arg.name)
@@ -231,9 +231,11 @@ object Obj {
 
   private def objTypeCheck[A <: Obj](source: A): A = {
     if (Tokens.named(source.name) && source.isInstanceOf[Value[_]] && !source.isInstanceOf[Model]) {
-      val resolvedTarget: Type[Obj] = source.model.search[A](source.name, source).map(x => x.asInstanceOf[Type[Obj]]).orNull
-      if (null != resolvedTarget && !Obj.resolveInternal(toBaseName(source), resolvedTarget).alive)
-        throw LanguageException.typingError(source, resolvedTarget.named(source.name))
+      source.model.search[A](source, source).map(x => x.asInstanceOf[Type[Obj]]).headOption.map(y => {
+        if (null != y && !Obj.resolveInternal(toBaseName(source), y).alive)
+          throw LanguageException.typingError(source, y.named(source.name))
+        source
+      }).getOrElse(source)
     }
     source
   }

@@ -23,13 +23,12 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Rec._
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.obj.{Inst, Lst, Obj, Rec, toBaseName}
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 import org.mmadt.storage.StorageFactory.{lst, rec, str}
 import org.mmadt.storage.obj.value.VInst
@@ -83,19 +82,30 @@ object ModelOp extends Func[Obj, Obj] {
 
   @inline implicit def modelToRichModel(ground: Model): RichModel = new RichModel(ground)
   class RichModel(val model: Model) {
-    private final def findType[A <: Obj](model: Model, label: String, source: Obj): Option[A] =
-      (if (model.name.equals(label)) List(model).asInstanceOf[List[A]]
-      else model.gmap.fetchOrElse(TYPE, NOREC).gmap.filter(x => x._1.name == label).flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
-        .find(y => if (__.isTokenRoot(y.domainObj))
-          model.search(y.domainObj.name, source).exists(x => source.update(model).test(x)) else
-          source.update(model).test(y.domainObj.hardQ(source.q)))
+    private final def findType[A <: Obj](model: Model, source: Obj, targetName: String): List[A] =
+      (if (model.name.equals(targetName)) List(model).asInstanceOf[List[A]]
+      else model.gmap.fetchOrElse(TYPE, NOREC).gmap
+        .filter(x => x._1.name == targetName)
+        .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
+        .filter(x => if (__.isTokenRoot(x.domainObj))
+          model.search(source, x.domainObj).exists(y => source.update(model).test(y)) else
+          source.update(model).test(x.domainObj.hardQ(source.q)))
 
-    final def search[A <: Obj](name: StrValue, matcher: A = __.asInstanceOf[A]): Option[A] =
-      model.vars[A](name).map(x => if (x.isInstanceOf[Type[_]]) x.from(name) else x).orElse(findType[A](model, name.g, matcher).map(y => toBaseName(y))).map(x => x.update(model))
+    final def search[A <: Obj](source: Obj = __, target: A): List[A] =
+      model.vars[A](target.name)
+        .map(x => if (x.isInstanceOf[Type[_]]) x.from(target.name) else x)
+        .map(x => List(x))
+        .getOrElse[List[A]](
+          findType[A](model, source, target.name)
+            .map(y => toBaseName(y))
+            .map(x => x.update(model)))
 
     final def rewrites: List[Obj] = model.gmap.fetchOrElse(PATH, NOREC).gmap.values
       .flatMap(y => y.g._2)
-      .filter(y => y.isInstanceOf[Lst[Obj]] && y.domain.isInstanceOf[Lst[Obj]] && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty)
+      .filter(y =>
+        y.isInstanceOf[Lst[Obj]]
+          && y.domain.isInstanceOf[Lst[Obj]]
+          && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty)
 
     final def definitions: List[Obj] = {
       val map = Option(model.g._2).getOrElse(NOROOT)

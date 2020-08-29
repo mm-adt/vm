@@ -77,7 +77,7 @@ object AsOp extends Func[Obj, Obj] {
   private def pickMapping(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
     else {
-      val defined = if (__.isTokenRoot(asObj)) start.model.search(asObj.name, start) else None
+      val defined = if (__.isTokenRoot(asObj)) start.model.search(start,asObj).headOption else None
       (start match {
         case _: Type[Obj] => asObj
         case _ if defined.isDefined => pickMapping(start, defined.get)
