@@ -69,6 +69,7 @@ trait Obj
     with EqsOp
     with ToOp
     with PathOp
+  with WalkOp
     with StartOp
     with SplitOp
     with RewriteOp

@@ -67,6 +67,7 @@ object OpInstResolver {
       case Tokens.rule_id => IdRewrite()
       case Tokens.rule_unity => BranchRewrite()
 
+      case Tokens.`walk` | Tokens.`walk_op` => WalkOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.head => HeadOp()
       case Tokens.last => LastOp()
       case Tokens.tail => TailOp()

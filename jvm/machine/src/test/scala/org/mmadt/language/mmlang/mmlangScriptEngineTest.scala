@@ -43,21 +43,6 @@ class mmlangScriptEngineTest extends FunSuite {
 
   lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
-  test("play2") {
-    println(engine.eval(
-      """:[define,
-        |    nat<=int[is>0],
-        |    date:(nat[is=<12];nat[is=<31];nat),
-        |    date<=(nat[is=<12];nat[is=<31])[put,2,2020],
-        |    noyear:(nat;nat)<=int-<(_;+2)]
-        |    """.stripMargin))
-
-    println(engine.eval("5 => noyear => date"))
-    // println(engine.eval("5 => date"))
-    engine.eval(":")
-  }
-
-
   test("range<=domain") {
     assertResult(LanguageException.typingError(int.q(5), int.q(3)))(intercept[LanguageException](engine.eval("[4{2},5{1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]")))
     assertResult(int(5.q(4), 6.q(-2), 7.q(4)))(engine.eval("[4{2},5{-1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]"))
@@ -92,7 +77,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(4))(engine.eval("1 => int[plus,nat[plus,2]]"))
     assertResult(1.named("nat"))(engine.eval("0 => nat<=int[plus,1]"))
 
-//    assertResult(int(-1))(engine.eval("1 => int<=nat[plus,-2]"))
+    //    assertResult(int(-1))(engine.eval("1 => int<=nat[plus,-2]"))
     assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person")))
     assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person.name")))
     //assertResult(typingError(int(-1), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("-1 => int[plus,nat[plus,2]]")))
