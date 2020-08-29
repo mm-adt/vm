@@ -26,8 +26,8 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
-import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory.zeroObj
+import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.storage.StorageFactory.lst
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -35,37 +35,30 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait WalkOp {
   this: Obj =>
-  def walk(atype: Type[Obj]): atype.type = WalkOp(atype).exec(this).asInstanceOf[atype.type]
+  def walk(target: Type[Obj]): Lst[target.type] = WalkOp(target).exec(this).asInstanceOf[Lst[target.type]]
 }
 object WalkOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
   def apply[A <: Obj](atype: OType[A]): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.walk, List(atype)), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val target: Type[Obj] = inst.arg0[Type[Obj]]
-    start match {
-      case _: Type[_] => start.via(start, inst).named(target.name)
-      case _: Value[_] => WalkOp
-        .resolvePaths(start, inst.arg0[Obj])
-        .sortBy(x => x.trace.size)
-        .map(x => start ~~> toBaseName(x))
-        .find(_.alive)
-        .map(x => x.via(start, inst))
-        .getOrElse(zeroObj)
-    }
-  }
-  def resolvePaths[A <: Obj, B <: Obj](source: A, target: B, checked: List[Obj] = Nil): List[B] = {
-    source.model.definitions
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Lst[Obj] =
+    lst(g = (Tokens.`,`, WalkOp
+      .resolvePaths(start.model, List(asType(start)), inst.arg0[Obj])
+      .map(list => lst(g = (Tokens.`;`, list)))))
+      .via(start, inst)
+
+  def resolvePaths[A <: Obj, B <: Obj](model: Model, source: List[A], target: B, checked: List[Obj] = Nil): List[List[B]] = {
+    model.definitions
       .filter(t => !checked.contains(t))
       //.filter(_ => !source.name.equals(target.name))
-      .filter(t => source.rangeObj.name.equals(t.domainObj.name) || baseName(source.rangeObj).equals(baseName(t.domainObj)))
-      .filter(t => asType(source).test(t))
-      .flatMap(t => {
-        val nextT = asType(source) `=>` t
+      .filter(t => source.last.rangeObj.name.equals(t.domainObj.name))
+      .filter(t => asType(source.last).test(t))
+      .map(t => {
+        //val nextT = asType(source) `=>` t
         if (t.rangeObj.name == target.rangeObj.name) {
-          List(nextT.asInstanceOf[B])
+          source :+ t
         } else {
-          resolvePaths(nextT.model(source.model), target, checked :+ t)
+          resolvePaths(model, source :+ t, target, checked :+ t)
         }
-      })
+      }).asInstanceOf[List[List[B]]]
   }
 }

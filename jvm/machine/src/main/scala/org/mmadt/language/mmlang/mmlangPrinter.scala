@@ -30,7 +30,6 @@ import org.mmadt.language.obj.`type`.{RecType, Type}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.`type`.{TLst, TRec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -65,19 +64,17 @@ object mmlangPrinter {
   private def mapString(rec: Rec[_, _], map: List[Tuple2[_, _]], sep: String = COMMA, empty: String = Tokens.blank): String = {
     if (rec.isEmpty)
       empty else
-      map.foldLeft(if (rec.isInstanceOf[TRec[_, _]]) LROUND else LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) +
-        (if (rec.isInstanceOf[TRec[_, _]]) RROUND else RROUND)
+      map.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + sep)).dropRight(1) + RROUND
   }
   private def listString(lst: Lst[_]): String = {
     if (lst.isInstanceOf[Strm[_]]) return strmString(lst.asInstanceOf[Strm[Obj]])
     if (lst.isEmpty) {
-      lst match {
+      (if (Tokens.named(lst.name)) lst.name + COLON else Tokens.blank) + (lst match {
         case _: Type[_] => Tokens.lst
         case _ => LROUND + Tokens.space + RROUND
-      }
+      })
     } else
-      lst.glist.foldLeft(if (lst.isInstanceOf[TLst[_]]) LROUND else LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) +
-        (if (lst.isInstanceOf[TLst[_]]) RROUND else RROUND)
+      (if (Tokens.named(lst.name)) lst.name + COLON else Tokens.blank) + lst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + lst.gsep).dropRight(1) + RROUND
   }
 
   def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(LBRACKET)((a, b) => a + b.toString + ",").dropRight(1) + RBRACKET

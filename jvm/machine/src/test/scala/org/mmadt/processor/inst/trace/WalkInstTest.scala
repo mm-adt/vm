@@ -22,31 +22,49 @@
 
 package org.mmadt.processor.inst.trace
 
+import org.mmadt.language.obj.Lst
 import org.mmadt.language.obj.Obj.intToInt
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.processor.inst.trace.WalkInstTest.MODEL
-import org.mmadt.storage.StorageFactory.int
+import org.mmadt.processor.inst.trace.WalkInstTest.{MODEL, PARSE_MODEL}
+import org.mmadt.storage.{KV, model}
+import org.mmadt.storage.StorageFactory.{int, lst}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object WalkInstTest {
-  private val natType: Type[__] = __("nat") <= int.is(int.gt(0))
-  private val bigType: Type[__] = __("big") <= __("nat").plus(10)
-  private val incrType: Type[__] = __("nat") <= int.plus(10)
-  private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(bigType).defining(incrType)
+
+  private val natType: __ = __("nat") <= int.is(int.gt(0))
+  private val dateType: Lst[__] = ((__("nat") <= __("nat").is(lte(12))) `;` (__("nat") <= __("nat").is(lte(31))) `;` __("nat")).named("date")
+  private val noYearDateType: __ = __("date") <= ((__("nat") <= __("nat").is(lte(12))) `;` (__("nat") <= __("nat").is(lte(31)))).put(2, 2009)
+  private val monthDayTuple: __ = __("moday") <= int -< (__ `,` __)
+  private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(dateType).defining(noYearDateType).defining(monthDayTuple)
+  private val PARSE_MODEL:Model = org.mmadt.storage.model("social")
 }
 class WalkInstTest extends BaseInstTest(
-  testSet("[walk] table test", MODEL,
-    comment("int"),
-    testing(5, int.walk(__("nat")), 5.named("nat"), "5 => int[walk,nat]"),
-    testing(int, int.walk(__("big")), __("big") <= int.walk(__("big")), "int => int[walk,big]"),
-    testing(5, int.walk(__("big")), 15.named("big"), "5 => int[walk,big]"),
-    testing(-5, int.walk(__("big")), 15.named("big"), "-5 => int[walk,big]"),
+  testSet("[walk] table test", PARSE_MODEL,
+    comment("int=>nat"),
+    testing(int, int.walk(__("nat")), lst <= int.walk(__("nat")), "int => int[walk,nat]"),
+    testing(int, walk(__("nat")), lst <= int.walk(__("nat")), "int => [walk,nat]"),
+    testing(5, int.walk(__("nat")), ((int `;` (__("nat") <= int.is(int.gt(0)))) `,`) <= int.walk(__("nat")), "5 => int[walk,nat]"),
+    testing(-5, int.walk(__("nat")), lst <= int.walk(__("nat"))),
+    comment("int=>date"),
+    testing(int, int.walk(__("moday")), lst <= int.walk(__("moday")), "int => int[walk,moday]"),
+    testing(5, int.walk(__("moday")), ((int `;` __("moday") <= int -< (__ `,` __).:=(__ `;`)) `,`) <= int.walk(__("moday")), "5 => int[walk,moday]"),
+    //testing(5, int.walk(__("moday")).get(0), (int `;` __("moday") <= int -< (__ `,` __)) <= int.walk(__("moday").get(0)), "5 => int[walk,moday].0"),
+    testing(-5, int.walk(__("nat")), lst <= int.walk(__("nat"))),
+    //testing(5, int.walk(__("big")), 15.named("big"), "5 => int[walk,big]"),
+    //testing(-5, int.walk(__("big")), 15.named("big"), "-5 => int[walk,big]"),
+  )) {
+  test("") {
+    println(MODEL)
+    println(PARSE_MODEL)
 
-  ))
+  }
+}
 
