@@ -22,16 +22,15 @@
 
 package org.mmadt.processor.inst.trace
 
-import org.mmadt.language.obj.Lst
 import org.mmadt.language.obj.Obj.intToInt
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.processor.inst.trace.WalkInstTest.{MODEL, PARSE_MODEL}
-import org.mmadt.storage.{KV, model}
+import org.mmadt.processor.inst.trace.WalkInstTest.{PARSE_MODEL, dateType, monthDayTuple, natType}
 import org.mmadt.storage.StorageFactory.{int, lst}
 
 /**
@@ -42,29 +41,27 @@ object WalkInstTest {
   private val natType: __ = __("nat") <= int.is(int.gt(0))
   private val dateType: Lst[__] = ((__("nat") <= __("nat").is(lte(12))) `;` (__("nat") <= __("nat").is(lte(31))) `;` __("nat")).named("date")
   private val noYearDateType: __ = __("date") <= ((__("nat") <= __("nat").is(lte(12))) `;` (__("nat") <= __("nat").is(lte(31)))).put(2, 2009)
-  private val monthDayTuple: __ = __("moday") <= int -< (__ `,` __)
+  private val monthDayType: Lst[Obj] =(int `;` int).named("moday")
+  private val monthDayTuple: __ = __("moday") <= int -< (int `;` int)
   private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(dateType).defining(noYearDateType).defining(monthDayTuple)
-  private val PARSE_MODEL:Model = org.mmadt.storage.model("social")
+  private val PARSE_MODEL: Model = org.mmadt.storage.model("social")
 }
 class WalkInstTest extends BaseInstTest(
   testSet("[walk] table test", PARSE_MODEL,
     comment("int=>nat"),
     testing(int, int.walk(__("nat")), lst <= int.walk(__("nat")), "int => int[walk,nat]"),
     testing(int, walk(__("nat")), lst <= int.walk(__("nat")), "int => [walk,nat]"),
-    testing(5, int.walk(__("nat")), ((int `;` (__("nat") <= int.is(int.gt(0)))) `,`) <= int.walk(__("nat")), "5 => int[walk,nat]"),
-    testing(-5, int.walk(__("nat")), lst <= int.walk(__("nat"))),
+    testing(5, int.walk(__("nat")), ((int `;` natType) `,`) <= 5.walk(__.named("nat")), "5 => int[walk,nat]"),
+    testing(-5, int.walk(__("nat")), ((int `;` natType) `,`) <= (-5).walk(__.named("nat")), "-5 => int[walk,nat]"),
     comment("int=>date"),
     testing(int, int.walk(__("moday")), lst <= int.walk(__("moday")), "int => int[walk,moday]"),
-    testing(5, int.walk(__("moday")), ((int `;` __("moday") <= int -< (__ `,` __).:=(__ `;`)) `,`) <= int.walk(__("moday")), "5 => int[walk,moday]"),
-    //testing(5, int.walk(__("moday")).get(0), (int `;` __("moday") <= int -< (__ `,` __)) <= int.walk(__("moday").get(0)), "5 => int[walk,moday].0"),
-    testing(-5, int.walk(__("nat")), lst <= int.walk(__("nat"))),
-    //testing(5, int.walk(__("big")), 15.named("big"), "5 => int[walk,big]"),
-    //testing(-5, int.walk(__("big")), 15.named("big"), "-5 => int[walk,big]"),
+    testing(5, int.walk(__("moday")), ((int `;` monthDayTuple) `,`) <= 5.walk(__("moday")), "5 => int[walk,moday]"),
+    // testing(5, int.walk(__("date")), ((int `;` monthDayTuple `;` dateType) `,`) <= 5.walk(__("date")), "5 => int[walk,date]"),
   )) {
-  test("") {
-    println(MODEL)
-    println(PARSE_MODEL)
-
-  }
+  /*test("") {
+      println(MODEL)
+      println(PARSE_MODEL)
+      println(BaseInstTest.engine.eval("int => int[walk,nat]",BaseInstTest.bindings(MODEL)))
+  }*/
 }
 

@@ -27,6 +27,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.lst
 import org.mmadt.storage.obj.value.VInst
 
@@ -41,24 +42,26 @@ object WalkOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
   def apply[A <: Obj](atype: OType[A]): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.walk, List(atype)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Lst[Obj] =
-    lst(g = (Tokens.`,`, WalkOp
-      .resolvePaths(start.model, List(asType(start)), inst.arg0[Obj])
-      .map(list => lst(g = (Tokens.`;`, list)))))
-      .via(start, inst)
+    (start match {
+      case _: Type[_] => lst
+      case _: Value[_] => lst(g = (Tokens.`,`, WalkOp.resolvePaths(start.model, List(asType(start).rangeObj), inst.arg0[Obj]).map(list => lst(g = (Tokens.`;`, list)))))
+    }).via(start, inst)
+
 
   def resolvePaths[A <: Obj, B <: Obj](model: Model, source: List[A], target: B, checked: List[Obj] = Nil): List[List[B]] = {
     model.definitions
       .filter(t => !checked.contains(t))
-      //.filter(_ => !source.name.equals(target.name))
+      .filter(_ => !source.last.name.equals(target.name))
       .filter(t => source.last.rangeObj.name.equals(t.domainObj.name))
       .filter(t => asType(source.last).test(t))
       .map(t => {
-        //val nextT = asType(source) `=>` t
-        if (t.rangeObj.name == target.rangeObj.name) {
-          source :+ t
-        } else {
-          resolvePaths(model, source :+ t, target, checked :+ t)
-        }
-      }).asInstanceOf[List[List[B]]]
+        val nextT = asType(source.last) `=>` t
+        if (nextT.rangeObj.name == target.rangeObj.name)
+          source :+ nextT
+        else if (!source.last.root || (source.last != nextT))
+          resolvePaths(model, source :+ t, target, checked :+ t).headOption.getOrElse(Nil)
+        else Nil
+      })
+      .filter(list => list.nonEmpty).asInstanceOf[List[List[B]]]
   }
 }

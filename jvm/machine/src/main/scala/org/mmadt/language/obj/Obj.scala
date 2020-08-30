@@ -88,7 +88,7 @@ trait Obj
     this.clone(name = if (null == name) baseName(this) else name)
   }
   def <=[D <: Obj](domainType: D): this.type = {
-    if (domainType.range.equals(this)) domainType.asInstanceOf[this.type]
+    if (domainType.rangeObj.equals(this)) domainType.asInstanceOf[this.type]
     else if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert, domainType.via._2))
   }
@@ -171,6 +171,12 @@ object Obj {
     final def modeless: Trace = ground.filter(x => !ModelOp.isMetaModel(x._2))
     final def nexists(f: ViaTuple => Boolean): Boolean = ground.exists(x => if (f(x)) return true else x._2.args.exists(y => y.trace.nexists(f)))
     final def reconstruct[A <: Obj](source: Obj): A = ground.map(x => x._2).foldLeft(source)((a, b) => b.exec(a)).asInstanceOf[A]
+  }
+
+  def iterator[A <: Obj](obj: A): Iterator[A] = obj match {
+    case _: Strm[_] => obj.toStrm.values.iterator
+    case _: Value[_] => Iterator(obj)
+    case _: Type[_] => Iterator(obj)
   }
 
   def resolveTokenOption[A <: Obj](obj: Obj, arg: A): Option[A] =

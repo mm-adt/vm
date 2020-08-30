@@ -38,6 +38,7 @@ import org.mmadt.VmException;
 import org.mmadt.language.LanguageFactory;
 import org.mmadt.language.Tokens;
 import org.mmadt.language.jsr223.mmADTScriptEngine;
+import org.mmadt.language.obj.Obj$;
 import org.mmadt.language.obj.Rec;
 import org.mmadt.language.obj.type.__;
 import scala.collection.JavaConverters;
@@ -107,7 +108,7 @@ public class Console {
                     engineName = line.replace(LANG_OP, "").trim();
                     engine = (mmADTScriptEngine) MANAGER.getEngineByName(engineName);
                 } else
-                    JavaConverters.asJavaIterator(engine.eval(line).toStrm().values().iterator()).forEachRemaining(o -> writeHighlighter(o, reader, terminal));
+                    JavaConverters.asJavaIterator(Obj$.MODULE$.iterator(engine.eval(line))).forEachRemaining(o -> writeHighlighter(o, reader, terminal));
             } catch (final UserInterruptException e) {
                 break;
             } catch (final VmException e) {
