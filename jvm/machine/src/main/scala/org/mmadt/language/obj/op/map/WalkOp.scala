@@ -47,13 +47,18 @@ object WalkOp extends Func[Obj, Obj] {
       case _: Value[_] => lst(g = (Tokens.`,`, WalkOp.resolvePaths(start.model, List(asType(start).rangeObj), inst.arg0[Obj]).map(list => lst(g = (Tokens.`;`, list)))))
     }).via(start, inst)
 
-
+  /*
+  TODO: Lst.test()/equals() needs to determine equality different for different forms (just sort order on ,-lst)
+  TODO: Get rid of __ tokens if you have the known base type
+   */
   def resolvePaths[A <: Obj, B <: Obj](model: Model, source: List[A], target: B, checked: List[Obj] = Nil): List[List[B]] = {
     model.definitions
       .filter(t => !checked.contains(t))
       .filter(_ => !source.last.name.equals(target.name))
-      .filter(t => source.last.rangeObj.name.equals(t.domainObj.name))
-      .filter(t => asType(source.last).test(t))
+      .filter(t => {
+        // println(toBaseName(Type.trueRange(source.last).rangeObj) + "===TESTING==>" + toBaseName(t.domainObj) + " ::: " + Type.trueRange(source.last).rangeObj.test(t.domainObj))
+        Type.trueRange(source.last).rangeObj.test(t.domainObj)
+      })
       .map(t => {
         val nextT = asType(source.last) `=>` t
         if (nextT.rangeObj.name == target.rangeObj.name)

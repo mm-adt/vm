@@ -41,8 +41,8 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
     case _: __ if __.isAnon(other) => true
-    case _: __ if __.isTokenRoot(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
-    case _: Type[_] => (sameBase(this, other.domain) || __.isAnonTokenObj(this) || __.isAnonObj(other.domain)) && withinQ(this, other)
+    case _: __ if __.isToken(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
+    case _: Type[_] => (sameBase(this, other.domain) || __.isAnonTokenObj(this) || __.isAnonTokenObj(other.domain)) && withinQ(this, other)
     case _ => false
   }
 
@@ -61,6 +61,12 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   def rule(rewrite: Inst[Obj, Obj]): this.type = this.via(this, rewrite)
 }
 object Type {
+  def trueRange(atype: Obj): Obj = {
+    if (atype.isInstanceOf[__] && !atype.root)
+      asType(atype.via._1)
+    else atype
+  }
+
   def isIdentity(obj: Obj): Boolean = obj.isInstanceOf[Value[_]] || obj.root || !obj.trace.modeless.exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
   def mergeObjs[A <: Obj](objs: List[A]): List[A] = {
     var newList: ListBuffer[A] = ListBuffer.empty[A]
