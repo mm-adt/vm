@@ -40,6 +40,7 @@ import org.mmadt.storage.obj.value.VInst
 trait AsOp {
   this: Obj =>
   def as[O <: Obj](obj: O): O = AsOp(obj).exec(this).asInstanceOf[O]
+  def as(obj: Symbol): __ = AsOp(__(obj.name)).exec(this).asInstanceOf[__]
 }
 
 object AsOp extends Func[Obj, Obj] {
@@ -77,7 +78,7 @@ object AsOp extends Func[Obj, Obj] {
   private def pickMapping(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
     else {
-      val defined = if (__.isToken(asObj)) start.model.search(start,asObj).headOption else None
+      val defined = if (__.isToken(asObj)) start.model.search(start, asObj).headOption else None
       (start match {
         case _: Type[Obj] => asObj
         case _ if defined.isDefined => pickMapping(start, defined.get)

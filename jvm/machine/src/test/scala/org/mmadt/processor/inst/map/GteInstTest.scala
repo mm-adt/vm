@@ -43,14 +43,14 @@ class GteInstTest extends BaseInstTest(
     testing(int.q(10), gte(2), int.q(10).gte(2), "int{10} => [gte,2]"),
     testing(int, gte(int), int.gte(int), "int => >=int"),
     testing(int, int.gte(int), int.gte(int), "int => int>=int"),
-    /*
-    testing(int(1, 2, 3).gte(2), bool(false, true, true), "strm"),
-    testing(int(1, 2, 3).gte(int(2).q(10)), bool(false, true, true), "strm"),
-    testing(int(1, 2, 3).gte(int(2)).q(10), bool(bfalse.q(10), btrue.q(10), btrue.q(10)), "strm"),
-    testing(int(1, 2, 3).gte(int(2)).q(10).id, bool(bfalse.q(10), btrue.q(10), btrue.q(10)), "strm"),
-    testing(int(1, 2, 3).gte(int(2)).q(10).id.q(5), bool(bfalse.q(50), btrue.q(50), btrue.q(50)), "strm"),
-    testing(int(1, 2, 3).gte(int), bool(true, true, true), "strm"),*/
-    testing(int(1, 2, 3), int.q(3).gte(mult(int)), bool(true, false, false), "[1,2,3] => int{3}[gte,[mult,int]]"),
+
+    testing(int(1, 2, 3), int.q(3).gte(2), bool(false, true, true), "[1,2,3] => int{3}>=2"),
+    testing(int(1, 2, 3), gte(2.q(10)), bool(false, true, true), "[1,2,3][gte,2{10}]"),
+    testing(int(1, 2, 3), gte(2).q(10), bool(false.q(10), true.q(10), true.q(10)), "[1,2,3][gte,2]{10}"),
+    testing(int(1, 2, 3), int.q(3).gte(2).q(10).id, bool(false.q(10), true.q(10), true.q(10)), "[1,2,3] => int{3}[gte,2]{10}[id]"),
+    testing(int(1, 2, 3), gte(2).q(10).id.q(5), bool(false.q(50), true.q(50), true.q(50)), "[1,2,3][gte,2]{10}[id]{5}"),
+    testing(int(1, 2, 3), gte(int), bool(true, true, true), "[1,2,3][gte,int][id]"),
+    testing(int(1, 2, 3), int.q(3).gte(mult(int)), bool(true, false, false), "[1,2,3] => int{3}[gte,*int]"),
     comment("real"),
     testing(2.0, gte(1.0), true, "2.0 >= 1.0"),
     /*testing(real(2.0).gte(real), btrue, "value"),

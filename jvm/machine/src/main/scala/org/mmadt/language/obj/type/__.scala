@@ -63,6 +63,7 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
 }
 
 object __ extends __(Tokens.anon, qOne, rootVia) {
+  @inline implicit def symbolToToken(ground: Symbol): __ = __(ground.name)
   def apply(name: String): __ = __.named(name)
   def isAnon(obj: Obj): Boolean = obj.isInstanceOf[__] && obj.name.equals(Tokens.anon)
   def isToken(obj: Obj): Boolean = obj.isInstanceOf[__] && !obj.name.equals(Tokens.anon)

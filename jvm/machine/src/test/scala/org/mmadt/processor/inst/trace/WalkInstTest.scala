@@ -38,10 +38,9 @@ import org.mmadt.storage.StorageFactory.{int, lst, strm}
  */
 object WalkInstTest {
 
-  private val natType: __ = __("nat") <= int.is(int.gt(0))
-  private val dateType: Lst[__] = ((__("nat") <= __("nat").is(lte(12))) `;` (__("nat") <= __("nat").is(lte(31))) `;` __("nat")).named("date")
-  private val noYearDateType: __ = __("date") <= ((__("nat") <= __("nat").is(lte(12))) `;` (__("nat") <= __("nat").is(lte(31)))).put(2, 2009)
-  //private val monthDayType: Lst[Obj] = __("moday") <= (int `;` int).named("moday")
+  private val natType: __ = 'nat <= int.is(int.gt(0))
+  private val dateType: Lst[__] = (('nat <= 'nat.is(lte(12))) `;` ('nat <= 'nat.is(lte(31))) `;` 'nat).named("date")
+  private val noYearDateType: __ = 'date <= (('nat <= 'nat.is(lte(12))) `;` ('nat <= 'nat.is(lte(31)))).put(2, 2009)
   private val modayType: Obj = (int -< (int `;` int)).named("moday")
   private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(dateType).defining(noYearDateType).defining(modayType)
   private val PARSE_MODEL: Model = org.mmadt.storage.model("social")
@@ -49,23 +48,23 @@ object WalkInstTest {
 class WalkInstTest extends BaseInstTest(
   testSet("[walk] table test", MODEL,
     comment("int=>nat"),
-    testing(int, int.walk(__("nat")), lst <= int.walk(__("nat")), "int => int[walk,nat]"),
-    testing(int, walk(__("nat")), lst <= int.walk(__("nat")), "int => [walk,nat]"),
-    testing(5, int.walk(__("nat")), ((int `;` natType) `,`) <= 5.walk(__.named("nat")), "5 => int[walk,nat]"),
-    testing(-5, int.walk(__("nat")), ((int `;` natType) `,`) <= (-5).walk(__.named("nat")), "-5 => int[walk,nat]"),
+    testing(int, int.walk('nat), lst <= int.walk('nat), "int => int[walk,nat]"),
+    testing(int, walk('nat), lst <= int.walk('nat), "int => [walk,nat]"),
+    testing(5, int.walk('nat), ((int `;` natType) `,`) <= 5.walk('nat), "5 => int[walk,nat]"),
+    testing(-5, int.walk('nat), ((int `;` natType) `,`) <= (-5).walk('nat), "-5 => int[walk,nat]"),
     comment("int=>date"),
-    testing(int, int.walk(__("moday")), lst <= int.walk(__("moday")), "int => int[walk,moday]"),
-    testing(5, int.walk(__("moday")),
+    testing(int, int.walk('moday), lst <= int.walk('moday), "int => int[walk,moday]"),
+    testing(5, int.walk('moday),
       ((int `;` natType `;` modayType) `,`
-        (int `;` modayType)) <= 5.walk(__("moday")), "5 => int[walk,moday]"),
-    testing(5, int.walk(__("date")),
+        (int `;` modayType)) <= 5.walk('moday), "5 => int[walk,moday]"),
+    testing(5, int.walk('date),
       ((int `;` natType `;` modayType `;` noYearDateType) `,`
-        (int `;` modayType `;` noYearDateType)) <= 5.walk(__("date")), "5 => int[walk,date]"),
+        (int `;` modayType `;` noYearDateType)) <= 5.walk('date), "5 => int[walk,date]"),
     comment("int-<[walk]"),
-    IGNORING("eval-5")(50, int.split(walk(__("nat")).head).merge, 50, "50 => int[split,[walk,nat][head]][merge][merge]"),
-    IGNORING("eval-5")(50, split(walk(__("nat")).head).merge, 50, "50 => [split,[walk,nat][head]][merge][merge]"), // TODO: use exec() in parser to compose monoid
-    IGNORING("eval-5")(50, int.split(walk(__("moday")).head).merge, (50 `;` 50).named("moday"), "50 => int[split,[walk,moday][head]][merge]"),
-    IGNORING("eval-5")(int(50, 100), int.q(2).split(walk(__("moday")).head).merge[Obj], strm((100 `;` 100).named("moday"), (50 `;` 50).named("moday"))), //"[50,100] => int{2}[split,[walk,moday][head]][merge]"
+    IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 50, "50 => int[split,[walk,nat][head]][merge][merge]"),
+    IGNORING("eval-5")(50, split(walk('nat).head).merge, 50, "50 => [split,[walk,nat][head]][merge][merge]"), // TODO: use exec() in parser to compose monoid
+    IGNORING("eval-5")(50, int.split(walk('moday).head).merge, (50 `;` 50).named("moday"), "50 => int[split,[walk,moday][head]][merge]"),
+    IGNORING("eval-5")(int(50, 100), int.q(2).split(walk('moday).head).merge[Obj], strm((100 `;` 100).named("moday"), (50 `;` 50).named("moday"))), //"[50,100] => int{2}[split,[walk,moday][head]][merge]"
   )) {
 
   test("test model test") {

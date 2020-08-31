@@ -37,10 +37,10 @@ import org.mmadt.storage.StorageFactory._
 
 object DefineInstTest {
   private val natType: Type[Int] = int.named("nat") <= int.is(int.gt(0))
-  private val myListType: Type[__] = __("mylist") <= __.-<(is(eqs(1)) `|` (1 `;` __("mylist"))) >-
-  private val iListType: Type[__] = __("ilist") <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a(__("ilist")))))
-  private val siListType: Type[__] = __("silist") <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a(__("silist")))))
-  private val vecType: Type[__] = __("vec") <= split(__ `;` lst.combine(__ `,`).merge.count)
+  private val myListType: Type[__] = 'mylist <= __.-<(is(eqs(1)) `|` (1 `;` 'mylist)) >-
+  private val iListType: Type[__] = 'ilist <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a('ilist))))
+  private val siListType: Type[__] = 'silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist))))
+  private val vecType: Type[__] = 'vec <= split(__ `;` lst.combine(__ `,`).merge.count)
   private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(myListType).defining(iListType).defining(siListType).defining(vecType)
   //     testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
   //    testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
@@ -49,42 +49,42 @@ object DefineInstTest {
 class DefineInstTest extends BaseInstTest(
   testSet("[define] table test w/ nat model", MODEL,
     comment("nat"),
-    testing(2, a(__("nat")), true),
-    testing(-2, a(__("nat")), false),
-    testing(-2, int.a(__("nat").plus(100)), false),
-    testing(2, as(__("nat")).plus(0), 2.named("nat")),
-    testing(2, as(__("nat")).plus(-10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10]"),
-    testing(2, as(__("nat")).plus(-10).plus(10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10][plus,10]"),
+    testing(2, a('nat), true),
+    testing(-2, a('nat), false),
+    testing(-2, int.a('nat.plus(100)), false),
+    testing(2, as('nat).plus(0), 2.named("nat")),
+    testing(2, as('nat).plus(-10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10]"),
+    testing(2, as('nat).plus(-10).plus(10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10][plus,10]"),
     comment("mylist"),
-    testing(1 `;` (1 `;` 1), lst.a(__("mylist")), true, "(1;(1;1)) => lst[a,mylist]"),
-    testing(1 `,` (1 `,` 2), a(__("mylist")), false),
-    testing(1 `,` (2 `,` 1), a(__("mylist")), false),
-    testing(1 `,` (1 `,` 2), a(__("mylist")), false),
-    testing(1 `;` (1 `;` 1), as(__("mylist")).put(0, 34), LanguageException.typingError((34 `;` 1 `;` (1 `;` 1)).named("mylist"), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
+    testing(1 `;` (1 `;` 1), lst.a('mylist), true, "(1;(1;1)) => lst[a,mylist]"),
+    testing(1 `,` (1 `,` 2), a('mylist), false),
+    testing(1 `,` (2 `,` 1), a('mylist), false),
+    testing(1 `,` (1 `,` 2), a('mylist), false),
+    testing(1 `;` (1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError((34 `;` 1 `;` (1 `;` 1)).named("mylist"), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
     comment("ilist"),
-    testing(lst(), a(__("ilist")), true, "()[a,ilist]"),
-    testing(1 `;`, a(__("ilist")), true, "(1)[a,ilist]"),
-    testing(1 `;` 2 `;` 3, a(__("ilist")), true, "(1;2;3)[a,ilist]"),
-    testing(1 `;` "a" `;` 1, lst.a(__("ilist")), false, "(1;'a';1) => lst[a,ilist]"),
+    testing(lst(), a('ilist), true, "()[a,ilist]"),
+    testing(1 `;`, a('ilist), true, "(1)[a,ilist]"),
+    testing(1 `;` 2 `;` 3, a('ilist), true, "(1;2;3)[a,ilist]"),
+    testing(1 `;` "a" `;` 1, lst.a('ilist), false, "(1;'a';1) => lst[a,ilist]"),
     comment("silist"),
-    testing(lst(), a(__("silist")), true, "()[a,silist]"),
-    testing("a" `;` 1, a(__("silist")), true, "('a';1)[a,silist]"),
-    testing("a" `;` 1 `;` "b" `;` 2, a(__("silist")), true, "('a';1;'b';2)[a,silist]"),
-    testing(1 `;` "a" `;` 1, lst.a(__("silist")), false, "(1;'a';1) => lst[a,silist]"),
-    testing("a" `;` 1 `;` 2, lst.a(__("silist")), false, "('a';1;2) => lst[a,silist]"),
+    testing(lst(), a('silist), true, "()[a,silist]"),
+    testing("a" `;` 1, a('silist), true, "('a';1)[a,silist]"),
+    testing("a" `;` 1 `;` "b" `;` 2, a('silist), true, "('a';1;'b';2)[a,silist]"),
+    testing(1 `;` "a" `;` 1, lst.a('silist), false, "(1;'a';1) => lst[a,silist]"),
+    testing("a" `;` 1 `;` 2, lst.a('silist), false, "('a';1;2) => lst[a,silist]"),
     comment("vec"),
-    testing(lst(), a(__("vec")), true, "()[a,vec]"),
-    testing(lst(), as(__("vec")), (lst() `;` 0).named("vec"), "()[as,vec]"),
-    testing(1 `;` 2, as(__("vec")), (((1 `;` 2) `;`) `;` 2).named("vec"), "(1;2)[as,vec]"),
+    testing(lst(), a('vec), true, "()[a,vec]"),
+    testing(lst(), as('vec), (lst() `;` 0).named("vec"), "()[as,vec]"),
+    testing(1 `;` 2, as('vec), (((1 `;` 2) `;`) `;` 2).named("vec"), "(1;2)[as,vec]"),
   )
 ) {
-  println(__("silist") <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a(__("silist"))))))
+  println('silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist)))))
   test("[define] play tests") {
-    println(int.define(int.is(int.gt(0))).a(__("nat")))
-    println(int(-10).define(__("nat") <= int.is(int.gt(0))).a(__("nat").plus(100)))
-    println(__("nat").plus(100).domain)
-    println(int(-10).compute(int.define(__("nat") <= int.is(int.gt(0))).a(__("nat")).asInstanceOf[Type[Bool]]))
-    println(int.define(int.plus(10).mult(20)).plus(2) -< (__("x").plus(100) `,` __("x")) >-)
+    println(int.define(int.is(int.gt(0))).a('nat))
+    println(int(-10).define('nat <= int.is(int.gt(0))).a('nat.plus(100)))
+    println('nat.plus(100).domain)
+    println(int(-10).compute(int.define('nat <= int.is(int.gt(0))).a('nat).asInstanceOf[Type[Bool]]))
+    println(int.define(int.plus(10).mult(20)).plus(2) -< ('x.plus(100) `,` 'x) >-)
     println(new mmlangScriptEngineFactory().getScriptEngine.eval("1[a,[real|str]]"))
     println(str.a(__.-<(real `|` int) >-)) // TODO
   }
