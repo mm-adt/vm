@@ -27,10 +27,10 @@ import org.mmadt.VmException
 import org.mmadt.language.Tokens
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
-import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Obj, asType}
 import org.mmadt.processor.inst.BaseInstTest._
 import org.mmadt.storage.StorageFactory.int
 import org.scalatest.FunSuite
@@ -75,9 +75,10 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Result
         val result = s ==> (middle.domain ==> middle)
         if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg).contains(x._2.op) ||
           (x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
-          result.trace.modeless.drop(1).zip(middle.trace.modeless).foreach(x => {
-            assert(x._1._1.test(x._2._1), s"${x._1._1} -- ${x._2._1}") // test via tuples' obj
-            assert(x._1._2.test(x._2._2), s"${x._1._2} -- ${x._2._2}") // test via tuples' inst
+          result.trace.modeless.zip((asType(s) ==> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
+            assert(asType(x._1._1).test(x._2._1), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
+            assertResult(x._1._2.op)(x._2._2.op) // test via tuples' inst opcode
+            //assert(x._1._2.test(x._2._2), s"\n\t${x._1._2} -- ${x._2._2}\n\t\t==>${x}") // test via tuples' inst
           })
         result
       }),

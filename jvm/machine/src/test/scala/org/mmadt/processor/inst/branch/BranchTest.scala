@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.branch.BranchOp
 import org.mmadt.language.obj.op.map.PlusOp
 import org.mmadt.language.obj.op.trace.ModelOp.MM
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.StorageFactory.int.⨁
 
@@ -48,11 +48,15 @@ class BranchTest extends BaseInstTest(
   testSet("[branch] ,-lst",
     testing(int, branch(is(gt(10)) `,` is(gt(5)) `,` is(gt(0))), int.q(0, 3) <= int.branch(int.is(gt(10)) `,` int.is(gt(5)) `,` int.is(gt(0))),
       "int[[is>10],[is>5],[is>0]]"),
-    testing(7, branch(is(gt(10)) `,` is(gt(5)) `,` is(gt(0))), 7.q(2),
+    IGNORING("eval-5")(7, branch(is(gt(10)) `,` is(gt(5)) `,` is(gt(0))), 7.q(2),
       "7 => int[[is>10],[is>5],[is>0]]"),
     testing(int.q(10), plus(0).branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).plus(0).branch(plus(1) `,` plus(2)).is(gt(10)),
       "int{10}[plus,0][+1,+2][is>10]"),
-    testing(1, int.plus(0).branch(plus(1) `,` plus(2)), int(2, 3),
+    testing(int.q(10), branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).branch(plus(1) `,` plus(2)).is(gt(10)),
+      "int{10}[+1,+2][is>10]"),
+    testing(7.q(10), branch(plus(1).q(6) `,` plus(2)).is(gt(5)), int(8.q(60),9.q(10)),
+      "7{10}[+{6}1,+2][is>5]"),
+    testing(1, int.branch(plus(1) `,` plus(2)), int(2, 3),
       "1 => int+0[+1,+2]"),
     testing(1, int.plus(0).branch(plus(1) `,` plus(2) `,` int.plus(3)), int(2, 3, 4),
       "1 => int+0[+1,+2,int+3]"),

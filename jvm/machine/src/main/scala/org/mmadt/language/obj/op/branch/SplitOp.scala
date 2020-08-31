@@ -45,7 +45,7 @@ object SplitOp extends Func[Obj, Obj] {
     val apoly: Poly[Obj] = inst.arg0[Obj] match {
       case bpoly: Poly[_] => bpoly
       case aobj: Obj => start ~~> aobj match {
-        case bpoly: Poly[Obj] => bpoly
+        case bpoly: Poly[Obj] => bpoly.clone(via = aobj.via)
         case anon: __ => return lst.via(start, inst.clone(_ => List(anon)))
       }
     }
