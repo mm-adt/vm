@@ -52,9 +52,9 @@ object WalkOp extends Func[Obj, Obj] {
   TODO: Get rid of __ tokens if you have the known base type
    */
   def resolvePaths[A <: Obj, B <: Obj](model: Model, source: List[A], target: B, checked: List[Obj] = Nil): List[List[B]] = {
+    if (source.last.rangeObj == target.rangeObj) return Nil
     model.definitions
       .filter(t => !checked.contains(t))
-      .filter(_ => !source.last.name.equals(target.name))
       .filter(t => {
         // println(toBaseName(Type.trueRange(source.last).rangeObj) + "===TESTING==>" + toBaseName(t.domainObj) + " ::: " + Type.trueRange(source.last).rangeObj.test(t.domainObj))
         Type.trueRange(source.last).rangeObj.test(t.domainObj)
@@ -63,7 +63,7 @@ object WalkOp extends Func[Obj, Obj] {
         val nextT = asType(source.last) `=>` t
         if (nextT.rangeObj.name == target.rangeObj.name)
           source :+ nextT
-        else if (!source.last.root || (source.last != nextT))
+        else if ((!source.last.root || (source.last != nextT)))
           resolvePaths(model, source :+ t, target, checked :+ t).headOption.getOrElse(Nil)
         else Nil
       })

@@ -69,7 +69,7 @@ public class LanguageException extends VmException {
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
-        return new LanguageException(source.named(null) + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + (Tokens.named(target.name()) ? target.rangeObj() : target));
+        return new LanguageException(source.named(null,false) + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + (Tokens.named(target.name()) ? target.rangeObj() : target));
     }
 
     public static LanguageException unknownInstruction(final String op, final List<Obj> args) {

@@ -46,7 +46,7 @@ object SplitOp extends Func[Obj, Obj] {
       case bpoly: Poly[_] => bpoly
       case aobj: Obj => start ~~> aobj match {
         case bpoly: Poly[Obj] => bpoly.clone(via = aobj.via)
-        case anon: __ => return lst.via(start, inst.clone(_ => List(anon)))
+        case _ => return lst.via(start, inst)
       }
     }
     val newPoly: Poly[Obj] = apoly.scalarMult(start.clone(q = qOne, via = (start, inst))) // unit the start

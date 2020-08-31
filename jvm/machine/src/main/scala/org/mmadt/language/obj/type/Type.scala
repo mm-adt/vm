@@ -42,7 +42,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
     case _: Obj if !other.alive => !this.alive
     case _ if __.isAnon(this) || __.isAnon(other) => true
     case _: __ if __.isToken(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
-    case _: Type[_] => sameBase(this, other.domain) && withinQ(this, other)
+    case _: Type[_] => sameBase(this, other.domain) && withinQ(this, other) // withinQ domain?
     case _ => false
   }
 
@@ -61,11 +61,9 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   def rule(rewrite: Inst[Obj, Obj]): this.type = this.via(this, rewrite)
 }
 object Type {
-  def trueRange(atype: Obj): Obj = {
-    if (atype.isInstanceOf[__] && !atype.root)
-      asType(atype.via._1).named(atype.name)
-    else atype
-  }
+  // this is a total hack -- I'm encoding the range of the type in the via of the last instruction
+  // the fix is to make it so <= doesn't rinvert and instead extends via a [noop] of some sort
+  def trueRange(atype: Obj): Obj = if (__.isToken(atype) && !atype.root) asType(atype.via._2.via._1) else atype
 
   def isIdentity(obj: Obj): Boolean = obj.isInstanceOf[Value[_]] || obj.root || !obj.trace.modeless.exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
   def mergeObjs[A <: Obj](objs: List[A]): List[A] = {
