@@ -34,18 +34,22 @@ trait SplitOp {
   this: Obj =>
   def split(branches: Poly[Obj]): branches.type = SplitOp(branches).exec(this)
   final def -<(branches: Poly[Obj]): branches.type = this.split(branches)
-  def split(branches: __): branches.type = SplitOp(branches).exec(this)
-  final def -<(branches: __): branches.type = this.split(branches)
+  def split(branches: __): Poly[Obj] = SplitOp(branches).exec(this).asInstanceOf[Poly[Obj]]
+  final def -<(branches: __): Poly[Obj] = this.split(branches)
 }
 
 object SplitOp extends Func[Obj, Obj] {
+  override val preArgs: Boolean = false
   def apply(branches: Obj): Inst[Obj, branches.type] = new VInst[Obj, branches.type](g = (Tokens.split, List(branches)), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val apoly: Poly[Obj] = Inst.oldInst(inst).arg0[Obj] match {
+    val apoly: Poly[Obj] = inst.arg0[Obj] match {
       case bpoly: Poly[_] => bpoly
-      case _ => return start.via(start, inst)
+      case aobj: Obj => start ~~> aobj match {
+        case bpoly: Poly[Obj] => bpoly
+        case anon: __ => return lst.via(start, inst.clone(_ => List(anon)))
+      }
     }
-    val newPoly: Poly[Obj] = apoly.scalarMult(start.clone(q = qOne, via = (start, Inst.oldInst(inst)))) // unit the start
-    newPoly.clone(via = (start, SplitOp(newPoly).hardQ(inst.q))).hardQ(BranchInstruction.multPolyQ(start, apoly, inst).q)
+    val newPoly: Poly[Obj] = apoly.scalarMult(start.clone(q = qOne, via = (start, inst))) // unit the start
+    newPoly.clone(via = (start, SplitOp(newPoly).hardQ(inst.q))).hardQ(BranchInstruction.multPolyQ(start, apoly, inst.clone(_ => List(apoly))).q)
   }
 }

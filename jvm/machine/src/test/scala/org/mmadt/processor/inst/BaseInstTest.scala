@@ -34,13 +34,13 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.processor.inst.BaseInstTest._
 import org.mmadt.storage.StorageFactory.int
 import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
+import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result, String])*) extends FunSuite with TableDrivenPropertyChecks {
+abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Result, String, List[String]])*) extends FunSuite with TableDrivenPropertyChecks {
   testSets.foreach(testSet => {
     test(testSet._1) {
       val model = testSet._2
@@ -48,18 +48,18 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result
       forEvery(testSet._3) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
-        case (null, null, comment, null) => lastComment = comment.toString
-        case (lhs, rhs, result: Result, query) => evaluate(lastComment, lhs, rhs, result, query = query, model = model)
+        case (null, null, comment, null, Nil) => lastComment = comment.toString
+        case (lhs, rhs, result: Result, query, ignore) => evaluate(lastComment, lhs, rhs, result, query = query, model = model, ignore = ignore)
       }
     }
   })
 
-  private def evaluate(lastComment: String = "", start: Obj, middle: Obj, end: Result, query: String = null, model: Model = null): Unit = {
+  private def evaluate(lastComment: String = "", start: Obj, middle: Obj, end: Result, query: String = null, model: Model = null, ignore: List[String]): Unit = {
     val querying = List[(String, Obj => Obj)](
       ("query-1", _ => engine.eval(query, bindings(model))),
       ("query-2", _ => engine.eval(query, bindings(model)) match {
         case atype: Type[_] => atype.domainObj ==> atype
-        case avalue: Value[_] => avalue.domainObj ==> avalue.trace.reconstruct(avalue.domain)
+        case avalue: Value[_] => avalue.domainObj ==> avalue.trace.reconstruct(avalue.domain, avalue.name)
       })
     )
     val evaluating = List[(String, Obj => Obj)](
@@ -69,7 +69,7 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result
       ("eval-4", s => s ==> (middle.domain ==> middle) match {
         case aobj: Obj if middle.via.exists(x => x._2.op.equals(Tokens.split)) => aobj
         case atype: Type[_] => atype.domainObj ==> atype
-        case avalue: Value[_] => avalue.domainObj ==> avalue.trace.reconstruct(avalue.domain)
+        case avalue: Value[_] => avalue.domainObj ==> avalue.trace.reconstruct(avalue.domain, avalue.name)
       }),
       ("eval-5", s => {
         val result = s ==> (middle.domain ==> middle)
@@ -85,12 +85,15 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor4[Obj, Obj, Result
     (evaluating ++
       (if (null != query) querying else Nil))
       .foreach(example => {
-        end match {
-          case Left(result: Obj) =>
-            assertResult(result, s"[${example._1}] $lastComment")(example._2(prepModel(start, model)))
-          case Right(exception: VmException) =>
-            assertResult(exception, s"[${example._1}] $lastComment")(intercept[VmException](example._2(prepModel(start, model))))
-        }
+        if (ignore.contains(example._1))
+          println(s"IGNORING[${example._1}]: $start => $middle")
+        else
+          end match {
+            case Left(result: Obj) =>
+              assertResult(result, s"[${example._1}] $lastComment")(example._2(prepModel(start, model)))
+            case Right(exception: VmException) =>
+              assertResult(exception, s"[${example._1}] $lastComment")(intercept[VmException](example._2(prepModel(start, model))))
+          }
       })
   }
 

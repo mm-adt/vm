@@ -29,9 +29,9 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.processor.inst.trace.WalkInstTest._
-import org.mmadt.storage.StorageFactory.{int, lst}
+import org.mmadt.storage.StorageFactory.{int, lst, strm}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -61,12 +61,18 @@ class WalkInstTest extends BaseInstTest(
     testing(5, int.walk(__("date")),
       ((int `;` natType `;` modayType `;` noYearDateType) `,`
         (int `;` modayType `;` noYearDateType)) <= 5.walk(__("date")), "5 => int[walk,date]"),
+    comment("int-<[walk]"),
+    IGNORING("eval-5")(50, int.split(walk(__("nat")).head).merge, 50, "50 => int[split,[walk,nat][head]][merge][merge]"),
+    IGNORING("eval-5")(50, split(walk(__("nat")).head).merge, 50, "50 => [split,[walk,nat][head]][merge][merge]"), // TODO: use exec() in parser to compose monoid
+    IGNORING("eval-5")(50, int.split(walk(__("moday")).head).merge, (50 `;` 50).named("moday"), "50 => int[split,[walk,moday][head]][merge]"),
+    IGNORING("eval-5")(int(50, 100), int.q(2).split(walk(__("moday")).head).merge[Obj], strm((100 `;` 100).named("moday"), (50 `;` 50).named("moday"))), //"[50,100] => int{2}[split,[walk,moday][head]][merge]"
   )) {
+
   test("test model test") {
-    //  assertResult(MODEL)(PARSE_MODEL)
-    println(MODEL)
-    println(PARSE_MODEL)
-    println(BaseInstTest.engine.eval("int => int[walk,nat]", BaseInstTest.bindings(MODEL)))
+    assertResult(MODEL)(PARSE_MODEL)
+    //println(MODEL)
+    //println(PARSE_MODEL)
+    //println(BaseInstTest.engine.eval("int => int[walk,nat]", BaseInstTest.bindings(MODEL)))
   }
 }
 

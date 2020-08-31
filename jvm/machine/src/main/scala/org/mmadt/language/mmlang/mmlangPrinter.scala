@@ -110,7 +110,7 @@ object mmlangPrinter {
           .filter(x => !x.isEmpty)
           .map(x => x.hardQ(1).toString.drop(1).dropRight(1))
           .getOrElse(inst.arg0[Obj]) + RBRACKET
-      case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]].toString
+     // case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]].toString
       case Tokens.merge => Tokens.merge_op
       case _ => inst.args match {
         case Nil => LBRACKET + inst.op + RBRACKET

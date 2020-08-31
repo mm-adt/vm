@@ -30,7 +30,7 @@ import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj, Rec}
 import org.mmadt.processor.inst.BaseInstTest.Result
 import org.mmadt.storage.StorageFactory.{int, str}
-import org.scalatest.prop.TableFor4
+import org.scalatest.prop.TableFor5
 
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
@@ -45,16 +45,17 @@ object TestSetUtil {
   val car: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("year") -> int)
   val alst: Lst[StrValue] = str("a") `,` "b"
 
-  def testSet(testName: String, model: Model, data: (Obj, Obj, Result, String)*): (String, Model, TableFor4[Obj, Obj, Result, String]) =
-    (testName, model, new TableFor4[Obj, Obj, Result, String](("lhs", "rhs", "result", "query"), data: _*))
-  def testSet(testName: String, data: (Obj, Obj, Result, String)*): (String, Model, TableFor4[Obj, Obj, Result, String]) =
-    (testName, null, new TableFor4[Obj, Obj, Result, String](("lhs", "rhs", "result", "query"), data: _*))
+  def testSet(testName: String, model: Model, data: (Obj, Obj, Result, String, List[String])*): (String, Model, TableFor5[Obj, Obj, Result, String, List[String]]) =
+    (testName, model, new TableFor5[Obj, Obj, Result, String, List[String]](("lhs", "rhs", "result", "query", "ignore"), data: _*))
+  def testSet(testName: String, data: (Obj, Obj, Result, String, List[String])*): (String, Model, TableFor5[Obj, Obj, Result, String, List[String]]) =
+    (testName, null, new TableFor5[Obj, Obj, Result, String, List[String]](("lhs", "rhs", "result", "query", "ignore"), data: _*))
 
-  def testing(lhs: Obj, rhs: Obj, result: Obj): (Obj, Obj, Result, String) = (lhs, rhs, Left(result), null)
-  def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Result, String) = (lhs, rhs, Left(result), query)
-  def testing(lhs: Obj, rhs: Obj, result: VmException, query: String = null): (Obj, Obj, Result, String) = (lhs, rhs, Right(result), query)
+  def testing(lhs: Obj, rhs: Obj, result: Obj): (Obj, Obj, Result, String, List[String]) = (lhs, rhs, Left(result), null, Nil)
+  def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Result, String, List[String]) = (lhs, rhs, Left(result), query, Nil)
+  def testing(lhs: Obj, rhs: Obj, result: VmException, query: String = null): (Obj, Obj, Result, String, List[String]) = (lhs, rhs, Right(result), query, Nil)
+  def IGNORING(ignore:String*)(lhs: Obj, rhs: Obj, result: Obj, query: String=null): (Obj, Obj, Result, String, List[String]) = (lhs, rhs, Left(result), query, ignore.toList)
 
-  def comment(comment: String): (Obj, Obj, Result, String) = (null, null, Left(str(comment)), null)
+  def comment(comment: String): (Obj, Obj, Result, String, List[String]) = (null, null, Left(str(comment)), null, Nil)
 }
 
 
