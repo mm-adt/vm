@@ -44,7 +44,7 @@ object WalkOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Lst[Obj] =
     (start match {
       case _: Type[_] => lst
-      case _: Value[_] => lst(g = (Tokens.`,`, WalkOp.resolvePaths(start.model, List(asType(start).rangeObj), inst.arg0[Obj]).map(list => lst(g = (Tokens.`;`, list)))))
+      case _: Value[_] => lst(g = (Tokens.`,`, WalkOp.resolvePaths(start.model, List(asType(start).rangeObj), inst.arg0[Obj]).map(list => lst(g = (Tokens.`;`, list.map(step => step.rangeObj))))))
     }).via(start, inst)
 
   /*
@@ -63,10 +63,11 @@ object WalkOp extends Func[Obj, Obj] {
         val nextT = asType(source.last) `=>` t
         if (nextT.rangeObj.name == target.rangeObj.name)
           source :+ nextT
-        else if ((!source.last.root || (source.last != nextT)))
+        else if (!source.last.root || (source.last != nextT))
           resolvePaths(model, source :+ t, target, checked :+ t).headOption.getOrElse(Nil)
         else Nil
       })
-      .filter(list => list.nonEmpty).asInstanceOf[List[List[B]]]
+      .filter(list => list.nonEmpty)
+      .asInstanceOf[List[List[B]]]
   }
 }

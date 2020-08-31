@@ -96,7 +96,7 @@ object Lst {
           case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
         }
-        running
+        running.named(v.name,ignoreAnon = true)
       }).asInstanceOf[List[A]]
     /////////// |-lst
     case Tokens.`|` =>
