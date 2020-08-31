@@ -40,9 +40,9 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
   // pattern matching methods
   override def test(other: Obj): Boolean = other match {
     case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isAnon(other) => true
+    case _ if __.isAnon(this) || __.isAnon(other) => true
     case _: __ if __.isToken(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
-    case _: Type[_] => (sameBase(this, other.domain) || __.isAnonTokenObj(this) || __.isAnonTokenObj(other.domain)) && withinQ(this, other)
+    case _: Type[_] => sameBase(this, other.domain) && withinQ(this, other)
     case _ => false
   }
 
@@ -63,7 +63,7 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
 object Type {
   def trueRange(atype: Obj): Obj = {
     if (atype.isInstanceOf[__] && !atype.root)
-      asType(atype.via._1)
+      asType(atype.via._1).named(atype.name)
     else atype
   }
 

@@ -22,18 +22,15 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{Obj, Rec, withinQ}
+import org.mmadt.language.obj.{Obj, Rec}
 
 trait RecType[A <: Obj, B <: Obj] extends PolyType[B, Rec[A, B]] with Rec[A, B] {
-  override def test(other: Obj): Boolean = other match {
-    case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isAnon(other) => true
-    case _: __ if __.isTokenRoot(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
-    case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
+  override def test(other: Obj): Boolean = {
+    if (!super[PolyType].test(other)) return false
+    other match {
       case arec: Rec[A, B] => Rec.test(this, arec)
-      case x => __.isAnonObj(x)
-    })
-    case _ => false
+      case _ =>  __.isAnonToken(other)
+    }
   }
   override def equals(other: Any): Boolean = other match {
     case alst: Rec[_, _] if alst.isEmpty && this.isEmpty => super[Rec].equals(other)

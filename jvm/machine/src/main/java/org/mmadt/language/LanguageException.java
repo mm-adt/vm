@@ -58,9 +58,14 @@ public class LanguageException extends VmException {
         return new LanguageException(prefix + "\n" + rowSubstring + "\n" + Stream.generate(() -> " ").limit(Math.min(rowSubstring.length(), column) - 1).reduce((a, b) -> a + b).orElse("") + "^ near here");
     }
 
-    public static void checkAnonymousTypeName(final Obj obj, final String name) {
+    public static void checkTypeNaming(final Obj obj, final String name) {
         if (!(obj instanceof __) && Tokens.anon().equals(name))
-            throw new LanguageException(obj + " is not an anonymous type");
+            throw new LanguageException(obj + " can not be named anonymously");
+    }
+
+    public static void checkRootRange(final Obj obj) {
+        if (!obj.root() || !(obj instanceof Type<?>))
+            throw new LanguageException(obj + " must be a rooted type to be a range");
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {

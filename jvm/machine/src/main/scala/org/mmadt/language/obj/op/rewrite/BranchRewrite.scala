@@ -47,7 +47,7 @@ object BranchRewrite extends Func[Obj, Obj] {
     }
   }
   def processType[A <: Obj](atype: A): A = {
-    if (atype.isInstanceOf[Value[_]] || __.isAnon(atype) || __.isToken(atype) || !atype.via.exists(x => x._2.op.equals(Tokens.branch))) return atype
+    if (atype.isInstanceOf[Value[_]] || __.isAnonToken(atype) || !atype.via.exists(x => x._2.op.equals(Tokens.branch))) return atype
     atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) => {
       if (b.op == Tokens.branch) {
         if (b.arg0[Obj].isInstanceOf[Poly[Obj]] && b.arg0[Poly[Obj]].gsep == Tokens.`;`) {
@@ -56,7 +56,7 @@ object BranchRewrite extends Func[Obj, Obj] {
             case arec: Rec[Obj, Obj] => if (arec.gmap.exists(x => !x._1.alive || !x._2.alive)) arec.rangeObj.q(qZero) else arec
           }
           if (!apoly.alive) return zeroObj.asInstanceOf[A]
-          val start = if (__.isAnonRoot(a)) apoly.glist.head.domainObj else a
+          val start = if (__.isAnon(a)) apoly.glist.head.domainObj else a
           val branches: List[Obj] = apoly.glist
             .map(x => singleOrPair(x, s => IdRewrite.processType(s)))
             .map(x => singleOrPair(x, s => processObj(s)))

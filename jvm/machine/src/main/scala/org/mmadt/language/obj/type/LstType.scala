@@ -22,18 +22,15 @@
 
 package org.mmadt.language.obj.`type`
 
-import org.mmadt.language.obj.{Lst, Obj, withinQ}
+import org.mmadt.language.obj.{Lst, Obj}
 
 trait LstType[A <: Obj] extends PolyType[A, Lst[A]] with Lst[A] {
-  override def test(other: Obj): Boolean = other match {
-    case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isAnon(other) => true
-    case _: __ if __.isTokenRoot(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
-    case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
+  override def test(other: Obj): Boolean = {
+    if (!super[PolyType].test(other)) return false
+    other match {
       case alst: Lst[A] => Lst.test(this, alst)
-      case x => __.isAnonObj(x)
-    })
-    case _ => false
+      case _ =>  __.isAnonToken(other)
+    }
   }
   override def equals(other: Any): Boolean = other match {
     case alst: Lst[_] if alst.isEmpty && this.isEmpty => super[Lst].equals(other)

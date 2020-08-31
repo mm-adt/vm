@@ -87,7 +87,7 @@ object ModelOp extends Func[Obj, Obj] {
       else model.gmap.fetchOrElse(TYPE, NOREC).gmap
         .filter(x => x._1.name == targetName)
         .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
-        .filter(x => if (__.isTokenRoot(x.domainObj))
+        .filter(x => if (__.isToken(x.domainObj))
           model.search(source, x.domainObj).exists(y => source.update(model).test(y)) else
           source.update(model).test(x.domainObj.hardQ(source.q)))
 

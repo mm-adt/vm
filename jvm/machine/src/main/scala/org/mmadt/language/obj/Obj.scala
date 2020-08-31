@@ -84,10 +84,11 @@ trait Obj
 
   // type methods
   def named(name: String): this.type = {
-    LanguageException.checkAnonymousTypeName(this, name)
+    LanguageException.checkTypeNaming(this, name)
     this.clone(name = if (null == name) baseName(this) else name)
   }
   def <=[D <: Obj](domainType: D): this.type = {
+    LanguageException.checkRootRange(this)
     if (domainType.rangeObj.equals(this)) domainType.asInstanceOf[this.type]
     else if (domainType.root) this.clone(via = (domainType, NoOp()))
     else this.clone(via = (domainType.rinvert, domainType.via._2))
@@ -97,7 +98,7 @@ trait Obj
   lazy val rangeObj: this.type = this.clone(q = this.q, via = this.domainObj.via)
   lazy val domainObj: Obj = if (this.root) this else this.via._1.domainObj
   lazy val trace: Trace = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
-  def root: Boolean = null == this.via || null == this.via._2
+  def root: Boolean = (null == this.via || null == this.via._2) // NOTE: null via._2 ensures model isn't considered -- TEST w/ !via.exists(x => !ModelOp.isMetaModel(x._2))
   def range: Type[Obj] = asType(this.rangeObj)
   def domain: Type[Obj] = asType(this.domainObj)
   def via(obj: Obj, inst: Inst[_ <: Obj, _ <: Obj]): this.type = Obj.objTypeCheck(this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst)))
@@ -166,6 +167,7 @@ object Obj {
     final def exists(f: ViaTuple => Boolean): Boolean = if (ground.root) false else if (f(ground)) true else ground._1.via.exists(f)
     @tailrec
     final def headOption: Option[ViaTuple] = if (ground.root) None else if (ground._1.via.root) Option(ground) else ground._1.via.headOption
+    final def exec: Obj = ground._2.asInstanceOf[Inst[Obj, Obj]].exec(ground._1)
   }
   class RichTrace(val ground: Trace) {
     final def modeless: Trace = ground.filter(x => !ModelOp.isMetaModel(x._2))
@@ -224,7 +226,7 @@ object Obj {
   private def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     if (!obj.alive || !arg.alive) return arg.hardQ(qZero)
     resolveToken(obj, arg) match {
-      case anon: __ if __.isTokenRoot(anon) => anon.asInstanceOf[E]
+      case anon: __ if __.isToken(anon) => anon.asInstanceOf[E]
       case valueArg: OValue[E] => valueArg
       case typeArg: OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>
         obj match {

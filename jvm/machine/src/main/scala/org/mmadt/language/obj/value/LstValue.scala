@@ -23,9 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.{Inst, Lst, Obj, withinQ}
-
-import scala.util.Try
+import org.mmadt.language.obj.{Lst, Obj, withinQ}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)

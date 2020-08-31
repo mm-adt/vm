@@ -64,11 +64,9 @@ class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple =
 
 object __ extends __(Tokens.anon, qOne, rootVia) {
   def apply(name: String): __ = __.named(name)
-  def isAnonRoot(obj: Obj): Boolean = obj.root && isAnon(obj)
   def isAnon(obj: Obj): Boolean = obj.isInstanceOf[__] && obj.name.equals(Tokens.anon)
-  def isToken(obj: Obj): Boolean = obj.isInstanceOf[__] && Tokens.named(obj.name)
-  def isTokenRoot(obj: Obj): Boolean = obj.root && isToken(obj)
+  def isToken(obj: Obj): Boolean = obj.isInstanceOf[__] && !obj.name.equals(Tokens.anon)
+  def isAnonToken(obj: Obj): Boolean = __.isAnon(obj) || __.isToken(obj)
   def isAnonObj(obj: Obj): Boolean = __.isAnon(obj) || obj.name.equals(Tokens.obj)
-  def isAnonTokenObj(obj: Obj): Boolean = __.isAnon(obj) || __.isToken(obj) || obj.name.equals(Tokens.obj)
 }
 

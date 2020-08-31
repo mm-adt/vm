@@ -66,7 +66,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def internalConvertAs(source: Obj, target: Obj): Obj = {
-    val asObj: Obj = if (__.isTokenRoot(target)) Obj.resolveToken(source, target) else target
+    val asObj: Obj = if (__.isToken(target)) Obj.resolveToken(source, target) else target
     val dObj: Obj = pickMapping(source, asObj).update(source.model)
     val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, Tokens.tryName(target, asObj.range)) else dObj
     val result = Tokens.tryName(target, rObj)
@@ -77,7 +77,7 @@ object AsOp extends Func[Obj, Obj] {
   private def pickMapping(start: Obj, asObj: Obj): Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
     else {
-      val defined = if (__.isTokenRoot(asObj)) start.model.search(start,asObj).headOption else None
+      val defined = if (__.isToken(asObj)) start.model.search(start,asObj).headOption else None
       (start match {
         case _: Type[Obj] => asObj
         case _ if defined.isDefined => pickMapping(start, defined.get)
