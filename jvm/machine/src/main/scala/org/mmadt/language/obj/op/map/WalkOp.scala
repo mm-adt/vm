@@ -81,10 +81,7 @@ object WalkOp extends Func[Obj, Obj] {
         WalkOp
           .resolvePaths[Obj, Obj](obj.model, List(obj), arg)
           .headOption
-          .map(path => {
-            println(path)
-            path.foldLeft(obj)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true))
-          }).get
+          .map(path => path.foldLeft(obj)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true))).get
       }) match {
         case y: Success[A] => y.value
         case _: Failure[Obj] => if (obj.model.search[A](target = arg).nonEmpty)
