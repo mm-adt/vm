@@ -1,3 +1,4 @@
+[model,mm]
 [define,
   edge:('outV'->int,'label'->str,'inV'->int),
   vertex:('id'->int,'name'->str,'outE'->edge{*}),

@@ -54,7 +54,8 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("nat")(engine.eval("nat").toString)
     // assertResult(labelNotFound(int.is(bool <= int.gt(0)), "nat"))(intercept[LanguageException](engine.eval("nat<=int[is>0]")))
     assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
-    engine.eval(":[define,nat<=int[is>0]]")
+    engine.eval(":[model,('type'->(nat->(nat<=int[is>0]))) <= mm]")
+    engine.eval("5 => nat")
     assertResult(13.q(8))(engine.eval("10 => int[plus,1]{2}[plus,2]{4}"))
     assertResult(13.q(8).named("nat"))(engine.eval("10 => nat[plus,1]{2}[plus,2]{4}"))
     assertResult(13.q(80).named("nat"))(engine.eval("10{10} => nat{10}[plus,1]{2}[plus,2]{4}"))
@@ -322,7 +323,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("prefix model") {
-    println(engine.eval(":[model,numbers:('type'->(nat -> (nat<=int[is>0])))]"))
+    println(engine.eval(":[model,numbers:('type'->(nat -> (nat<=int[is>0]))) <= mm]"))
     println(engine.eval("53 => int").model)
     println(engine.eval("53[as,nat]"))
     println(engine.eval(":"))
@@ -911,6 +912,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("define parsing") {
+    engine.eval(":[model,mm]")
     assertResult("nat")(engine.eval("int[define,nat<=int[is>0]][as,nat][plus,10]").name)
     assertResult(true.q(3))(engine.eval("(1,2,3)[define,nat<=int[is>0]]>-[a,nat]"))
     assertResult(btrue)(engine.eval("10[define,big<=int[is>4]][a,big]"))
@@ -928,12 +930,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->int)][a,person]{100}"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str)][a,person]{100}"))
     assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][a,person]{100}"))
-    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person<=('name'->str,'age'->int)][a,person]{100}"))
+    assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][a,person]{100}"))
     assertResult(btrue.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][plus,('age'->29)][a,person]{100}"))
     assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][plus,('years'->29)][a,person]{100}"))
-    assertResult(btrue.q(350))(engine.eval("('name'->'marko','age'->29)[define,person<=('name'->str,'age'->years)][define,years<=int][a,person]{350}"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,person<=('name'->str,'age'->years)][define,years<=int][is,[a,person]]{350}"))
+    assertResult(btrue.q(350))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->years)][define,years<=int][a,person]{350}"))
+//    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
+    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->years)][define,years<=int][is,[a,person]]{350}"))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
         | [define,person:('name'->str,'age'->int)]
@@ -1005,6 +1007,7 @@ class mmlangScriptEngineTest extends FunSuite {
         | [define,z:0]
         | [define,o<=int[one]]
         | [as,o]""".stripMargin))
+    engine.eval(":")
   }
 
   test("defined types") {
@@ -1128,9 +1131,9 @@ class mmlangScriptEngineTest extends FunSuite {
     // assertResult(zeroObj) (engine.eval("('name'->'marko','age'->29) => person[is,person.age>20][is,user.id[a,large]]"))
   }
   test("model parsing") {
-    engine.eval(":[model,mm:('type' -> (person -> (person:('name'->str))))]")
+    engine.eval(":[model,pp:('type' -> (person -> (person:('name'->str)))) <= mm]")
     assertResult("person:('name'->'marko')")(engine.eval("('name'->'marko') => [as,person]").toString)
-    assertResult("('type'->(person->(person)))<=_[map,('type'->(person->(person)))]")(engine.eval("[map,mm]").toString)
+   // assertResult("('type'->(person->(person)))<=_[map,('type'->(person->(person)))]")(engine.eval("[map,pp]").toString)
     engine.eval(":")
     val mm: Model = LoadOp.loadObj[Model](getClass.getResource("/model/mm.mm").getPath)
     assert(toBaseName(mm).toString.nonEmpty)

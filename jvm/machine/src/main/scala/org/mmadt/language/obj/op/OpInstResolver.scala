@@ -37,6 +37,7 @@ import org.mmadt.language.obj.op.trace._
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.language.{LanguageException, Tokens}
+import org.mmadt.storage
 import org.mmadt.storage.StorageProvider
 
 import scala.collection.JavaConverters
@@ -83,6 +84,7 @@ object OpInstResolver {
       case Tokens.model => args.head match {
         case model: Model => ModelOp(model)
         case file: StrValue => ModelOp(file)
+        case token: __ => ModelOp(storage.model(token.name))
       }
       case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()

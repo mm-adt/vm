@@ -21,8 +21,9 @@
  */
 
 package org.mmadt
+
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 
@@ -40,8 +41,20 @@ package object storage {
 
   def model(name: String): Model = {
     val source = Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)
-    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
+    try {
+      val rangeModel: Model = mmlang.parse(source.getLines().foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
+      model(rangeModel)
+    }
     finally source.close();
+  }
+
+  def model(rangeModel: Model): Model = {
+    if (rangeModel == rangeModel.domainObj) return rangeModel
+    val domainModel: Model = {
+      if (__.isToken(rangeModel.domainObj)) this.model(rangeModel.domainObj.name)
+      else rangeModel.domainObj.asInstanceOf[Model]
+    }
+    rangeModel.merging(domainModel)
   }
 
   def functor(from: String, to: String): Type[Obj] = {

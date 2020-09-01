@@ -69,7 +69,7 @@ public class LanguageException extends VmException {
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
-        return new LanguageException(source.named(null,false) + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + (Tokens.named(target.name()) ? target.rangeObj() : target));
+        return new LanguageException(source.named(null, false) + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + (Tokens.named(target.name()) ? target.rangeObj() : target));
     }
 
     public static LanguageException unknownInstruction(final String op, final List<Obj> args) {
@@ -108,6 +108,10 @@ public class LanguageException extends VmException {
 
     public static boolean testIndex(final Lst<?> lst, final int index) {
         return !(index < 0) && lst.size() >= (index + 1);
+    }
+
+    public static LanguageException typeNotInModel(final Obj aobj, final Type<?> atype, final String modelName) {
+        return new LanguageException(aobj + " can not be a " + atype.name() + " in the model " + modelName);
     }
 
     public static class Poly {

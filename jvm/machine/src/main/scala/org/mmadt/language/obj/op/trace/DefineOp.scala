@@ -26,6 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -38,5 +39,5 @@ trait DefineOp {
 object DefineOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
   def apply[O <: Obj](objs: Obj*): Inst[O, O] = new VInst[O, O](g = (Tokens.define, objs.toList.asInstanceOf[List[O]]), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.args.foldLeft(start)((a, b) => a.model(a.model.defining(b)))
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.model(inst.args.foldLeft(start.model)((a, b) => a.defining(b)))
 }

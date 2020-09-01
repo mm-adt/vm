@@ -33,7 +33,7 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest extends FunSuite {
-  val tp3_kv: Type[Obj] = functor(KV, TP3)
+/*  val tp3_kv: Type[Obj] = functor(KV, TP3)
   val kv: Type[Obj] = __.model(model(KV))
   val tp3: Type[Obj] = __.model(model(TP3))
   val all: Type[Obj] = kv `=>` tp3 `=>` tp3_kv
@@ -98,5 +98,5 @@ class ModelTest extends FunSuite {
     //val g: Type[Obj] = all.as(__("graph"))
     //println(g)
     //println(store ==> g)
-  }
+  }*/
 }

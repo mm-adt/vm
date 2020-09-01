@@ -41,7 +41,7 @@ object DefineInstTest {
   private val iListType: Type[__] = 'ilist <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a('ilist))))
   private val siListType: Type[__] = 'silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist))))
   private val vecType: Type[__] = 'vec <= split(__ `;` lst.combine(__ `,`).merge.count)
-  private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(myListType).defining(iListType).defining(siListType).defining(vecType)
+  private val MODEL: Model = ModelOp.MM.defining(natType).defining(myListType).defining(iListType).defining(siListType).defining(vecType)
   //     testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
   //    testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
 
@@ -80,6 +80,7 @@ class DefineInstTest extends BaseInstTest(
 ) {
   println('silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist)))))
   test("[define] play tests") {
+    println(MODEL + "!!!")
     println(int.define(int.is(int.gt(0))).a('nat))
     println(int(-10).define('nat <= int.is(int.gt(0))).a('nat.plus(100)))
     println('nat.plus(100).domain)

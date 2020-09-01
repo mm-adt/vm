@@ -29,7 +29,6 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.BaseInstTest.{bindings, engine}
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.processor.inst.trace.WalkInstTest._
 import org.mmadt.storage.StorageFactory.{int, lst, str, strm}
@@ -44,11 +43,15 @@ object WalkInstTest {
   private val noYearDateType: __ = 'date <= (('nat <= 'nat.is(lte(12))) `;` ('nat <= 'nat.is(lte(31)))).put(2, 2009)
   private val modayType: Obj = 'moday <= (int -< (int `;` int))
   private val sdateType: Obj = 'sdate <= 'moday(int `;` int).:=(str `;` str)
-  private val MODEL: Model = ModelOp.EMPTY.defining(natType).defining(dateType).defining(noYearDateType).defining(modayType) //.defining(sdateType)
+  private val MODEL: Model = ModelOp.MM
+    .defining(natType)
+    .defining(dateType)
+    .defining(noYearDateType)
+    .defining(modayType) //.defining(sdateType)
   private val PARSE_MODEL: Model = org.mmadt.storage.model("social")
 }
 class WalkInstTest extends BaseInstTest(
-  testSet("[walk] table test", MODEL, //PARSE_MODEL,
+  testSet("[walk] table test", PARSE_MODEL,
     comment("int=>nat"),
     testing(int, int.walk('nat), lst <= int.walk('nat), "int => int[walk,nat]"),
     testing(int, walk('nat), lst <= int.walk('nat), "int => [walk,nat]"),
@@ -57,10 +60,10 @@ class WalkInstTest extends BaseInstTest(
     comment("int=>date"),
     testing(int, int.walk('moday), lst <= int.walk('moday), "int => int[walk,moday]"),
     testing(5, int.walk('moday),
-      ((int `;` 'nat `;` 'moday) `,`
+      ((int `;` 'nat `;` int `;` 'moday) `,`
         (int `;` 'moday)) <= 5.walk('moday), "5 => int[walk,moday]"),
     testing(5, int.walk('date),
-      ((int `;` 'nat `;` 'moday `;` 'date) `,`
+      ((int `;` 'nat `;` 'int `;` 'moday `;` 'date) `,`
         (int `;` 'moday `;` 'date)) <= 5.walk('date), "5 ~> date"),
     comment("int-<[walk]"),
     IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
@@ -73,11 +76,11 @@ class WalkInstTest extends BaseInstTest(
   )) {
 
   test("test model test") {
-    println(engine.eval("5 => date.2 => person", bindings(PARSE_MODEL)))
-    println(engine.eval("5 ~> date", bindings(MODEL)))
-  //  assertResult(MODEL)(PARSE_MODEL)
-  //  println(MODEL)
-   // println(PARSE_MODEL)
+    // println(engine.eval("5 => date.2 => person", bindings(PARSE_MODEL)))
+    // println(engine.eval("5 ~> date", bindings(MODEL)))
+    //  assertResult(MODEL)(PARSE_MODEL)
+    //  println(MODEL)
+    println(PARSE_MODEL.domainObj.asInstanceOf[Model].definitions)
     //println(BaseInstTest.engine.eval("int => int[walk,nat]", BaseInstTest.bindings(MODEL)))
   }
 }

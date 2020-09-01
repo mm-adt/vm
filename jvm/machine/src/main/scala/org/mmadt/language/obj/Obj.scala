@@ -225,7 +225,7 @@ object Obj {
       case typeArg: OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>
         obj match {
           case _: Value[_] => obj.compute(typeArg)
-          case _: Type[_] => obj.range.update(obj.model).compute(typeArg)
+          case _: Type[_] => obj.range.compute(typeArg)
         }
       case _ => arg.hardQ(qZero)
     }

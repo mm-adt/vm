@@ -21,6 +21,7 @@
  */
 package org.mmadt.language.obj.op.trace
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj._
@@ -29,11 +30,10 @@ import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.{StrValue, Value}
-import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
+import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{lst, rec, str}
+import org.mmadt.storage.model
 import org.mmadt.storage.obj.value.VInst
-
-import scala.io.Source
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -47,16 +47,7 @@ trait ModelOp {
 
 object ModelOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
-  /////
   lazy val MM: Model = model("mm")
-  private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
-  private def model(name: String): Model = {
-    val source = Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)
-    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
-    finally source.close();
-  }
-  /////
-
   type Model = Rec[StrValue, ModelMap]
   type ModelMap = Rec[Obj, Lst[Obj]]
   val TYPE: StrValue = str("type")
@@ -67,11 +58,11 @@ object ModelOp extends Func[Obj, Obj] {
   val NOREC: ModelMap = rec[Obj, Lst[Obj]]
   val EMPTY: Model = rec[StrValue, ModelOp.ModelMap]
 
-  def apply[O <: Obj](file: StrValue): Inst[O, O] = this.apply(LoadOp.loadObj[Model](file.g))
-  def apply[O <: Obj](model: Model): Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(model).asInstanceOf[List[O]]), func = this) with TraceInstruction
+  def apply[O <: Obj](file: StrValue): Inst[O, O] = this.apply(storage.model(LoadOp.loadObj[Model](file.g)))
+  def apply[O <: Obj](model: Model): Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(storage.model(model)).asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
-    case _: Value[Obj] => start.update(inst.arg0[Model])
-    case _: Type[Obj] => start.via(start, inst).update(inst.arg0[Model])
+    case _: Value[Obj] => start.update(storage.model(inst.arg0[Model]))
+    case _: Type[Obj] => start.via(start, inst).update(storage.model(inst.arg0[Model]))
   }
   def updateModel(amodel: Model, aobj: Obj): aobj.type = {
     if (amodel.isEmpty) aobj
@@ -90,6 +81,8 @@ object ModelOp extends Func[Obj, Obj] {
         .filter(x => if (__.isToken(x.domainObj))
           model.search(source, x.domainObj).exists(y => source.update(model).test(y)) else
           source.update(model).test(x.domainObj.hardQ(source.q)))
+
+    final def typeExists(aobj: Obj): Boolean = model.definitions.isEmpty || model.vars(str(aobj.name)).isDefined || __.isAnon(aobj) || model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap.exists(x => x._1.name == aobj.name)
 
     final def search[A <: Obj](source: Obj = __, target: A): List[A] =
       model.vars[A](target.name)
