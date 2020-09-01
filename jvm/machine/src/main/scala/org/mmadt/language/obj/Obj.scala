@@ -28,6 +28,7 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
+import org.mmadt.language.obj.op.map.WalkOp.resolveTokenPath
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp}
@@ -190,17 +191,6 @@ object Obj {
       .filter(x => x.isDefined)
       .map(a => arg.trace.reconstruct[A](a.get))
 
-  def resolveToken[A <: Obj](obj: Obj, arg: A): A = {
-    if (!__.isToken(arg)) return arg
-    resolveTokenOption(obj, arg).getOrElse(obj match {
-      case _: Type[_] => arg
-      case _ => if (obj.model.search[A](target = arg).nonEmpty)
-        throw LanguageException.typingError(obj, asType(arg))
-      else
-        throw LanguageException.labelNotFound(obj, arg.name)
-    })
-  }
-
   private def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]
     else objB match {
@@ -228,7 +218,7 @@ object Obj {
 
   private def resolveArg[S <: Obj, E <: Obj](obj: S, arg: E): E = {
     if (!obj.alive || !arg.alive) return arg.hardQ(qZero)
-    resolveToken(obj, arg) match {
+    resolveTokenPath(obj, arg) match {
       case anon: __ if __.isToken(anon) => anon.asInstanceOf[E]
       case valueArg: OValue[E] => valueArg
       case typeArg: OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>

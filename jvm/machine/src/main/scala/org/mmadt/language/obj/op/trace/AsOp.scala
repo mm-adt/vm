@@ -27,6 +27,7 @@ import java.lang.{Boolean => JBoolean, Double => JDouble, Long => JLong}
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, _}
@@ -67,7 +68,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def internalConvertAs(source: Obj, target: Obj): Obj = {
-    val asObj: Obj = if (__.isToken(target)) Obj.resolveToken(source, target) else target
+    val asObj: Obj = if (__.isToken(target)) WalkOp.resolveTokenPath(source, target) else target
     val dObj: Obj = pickMapping(source, asObj).update(source.model)
     val rObj: Obj = if (asObj.domain != asObj.range) pickMapping(dObj, Tokens.tryName(target, asObj.range)) else dObj
     val result = Tokens.tryName(target, rObj)

@@ -22,14 +22,16 @@
 
 package org.mmadt.language.obj.op.map
 
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.lst
 import org.mmadt.storage.obj.value.VInst
+
+import scala.util.{Failure, Success, Try}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -37,6 +39,7 @@ import org.mmadt.storage.obj.value.VInst
 trait WalkOp {
   this: Obj =>
   def walk(target: Type[Obj]): Lst[target.type] = WalkOp(target).exec(this).asInstanceOf[Lst[target.type]]
+  def ~>(target: Type[Obj]): Lst[target.type] = this.walk(target)
 }
 object WalkOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
@@ -49,10 +52,9 @@ object WalkOp extends Func[Obj, Obj] {
 
   /*
   TODO: Lst.test()/equals() needs to determine equality different for different forms (just sort order on ,-lst)
-  TODO: Get rid of __ tokens if you have the known base type
    */
   def resolvePaths[A <: Obj, B <: Obj](model: Model, source: List[A], target: B, checked: List[Obj] = Nil): List[List[B]] = {
-    if (source.last.rangeObj == target.rangeObj) return Nil
+    if (source.last.rangeObj.name == target.rangeObj.name) return Nil
     model.definitions
       .filter(t => !checked.contains(t))
       .filter(t => {
@@ -60,7 +62,7 @@ object WalkOp extends Func[Obj, Obj] {
         Type.trueRange(source.last).rangeObj.test(t.domainObj)
       })
       .map(t => {
-        val nextT = asType(source.last) `=>` t
+        val nextT = asType(source.last) ~~> t
         if (nextT.rangeObj.name == target.rangeObj.name)
           source :+ nextT
         else if (!source.last.root || (source.last != nextT))
@@ -69,5 +71,27 @@ object WalkOp extends Func[Obj, Obj] {
       })
       .filter(list => list.nonEmpty)
       .asInstanceOf[List[List[B]]]
+  }
+
+  def resolveTokenPath[A <: Obj](obj: Obj, arg: A): A = {
+    if (!__.isToken(arg)) return arg
+    Obj.resolveTokenOption(obj, arg).getOrElse({
+      if (obj.isInstanceOf[Type[_]]) return arg
+      Try[Obj]({
+        WalkOp
+          .resolvePaths[Obj, Obj](obj.model, List(obj), arg)
+          .headOption
+          .map(path => {
+            println(path)
+            path.foldLeft(obj)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true))
+          }).get
+      }) match {
+        case y: Success[A] => y.value
+        case _: Failure[Obj] => if (obj.model.search[A](target = arg).nonEmpty)
+          throw LanguageException.typingError(obj, asType(arg))
+        else
+          throw LanguageException.labelNotFound(obj, arg.name)
+      }
+    })
   }
 }

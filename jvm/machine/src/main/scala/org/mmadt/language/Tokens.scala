@@ -130,7 +130,7 @@ object Tokens {
   val merge_op = ">-"
   val as_op = "~"
   val juxt_op = "=>"
-  val walk_op = "==>"
+  val walk_op = "~>"
 
 
   val :: = ":"

@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj, _}

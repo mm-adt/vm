@@ -79,9 +79,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(4))(engine.eval("1 => int[plus,nat[plus,2]]"))
     assertResult(1.named("nat"))(engine.eval("0 => nat<=int[plus,1]"))
 
-    //    assertResult(int(-1))(engine.eval("1 => int<=nat[plus,-2]"))
-    assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person")))
-    assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person.name")))
+    // assertResult(int(-1))(engine.eval("1 => int<=nat[plus,-2]"))
+    // assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person")))
+    // assertResult(labelNotFound(rec(str("name") -> str("marko")), "person"))(intercept[LanguageException](engine.eval("('name'->'marko') => person.name")))
     //assertResult(typingError(int(-1), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("-1 => int[plus,nat[plus,2]]")))
     assertResult(typingError(int(-1), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("-1 => int<=nat[plus,2]")))
     assertResult(typingError(int(0), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("0 => nat[plus,1]")))

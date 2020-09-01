@@ -29,6 +29,7 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.BaseInstTest.{bindings, engine}
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.processor.inst.trace.WalkInstTest._
 import org.mmadt.storage.StorageFactory.{int, lst, str, strm}
@@ -60,19 +61,23 @@ class WalkInstTest extends BaseInstTest(
         (int `;` 'moday)) <= 5.walk('moday), "5 => int[walk,moday]"),
     testing(5, int.walk('date),
       ((int `;` 'nat `;` 'moday `;` 'date) `,`
-        (int `;` 'moday `;` 'date)) <= 5.walk('date), "5 => int[walk,date]"),
+        (int `;` 'moday `;` 'date)) <= 5.walk('date), "5 ~> date"),
     comment("int-<[walk]"),
     IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
     IGNORING("eval-5")(50, int.split(int.walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
     IGNORING("eval-5")(50, split(walk('nat).head).merge, 'nat(50), "50 => [split,[walk,nat][head]][merge][merge]"), // TODO: use exec() in parser to compose monoid
     IGNORING("eval-5")(50, int.split(walk('moday).head).merge, 'moday(50 `;` 50), "50 => int[split,[walk,moday][head]][merge]"),
-    IGNORING("eval-5")(int(50, 100), int.q(2).split(walk('moday).head).merge[Obj], strm('moday(100 `;` 100), 'moday(50 `;` 50))) //,"[50,100] => int{2}[split,[walk,moday][head]]"),
+    IGNORING("eval-5")(int(50, 100), int.q(2).split(walk('moday).head).merge[Obj], strm('moday(100 `;` 100), 'moday(50 `;` 50))),
+    comment("int => far"),
+    IGNORING("eval-4", "eval-5", "query-2")(6, __.juxta('date), 'date('nat(6) `;` 'nat(6) `;` 2009), "6 => date"), // TODO: create a "lazy juxta operator"
   )) {
 
   test("test model test") {
-    assertResult(MODEL)(PARSE_MODEL)
-    println(MODEL)
-    println(PARSE_MODEL)
+    println(engine.eval("5 => date.2 => person", bindings(PARSE_MODEL)))
+    println(engine.eval("5 ~> date", bindings(MODEL)))
+  //  assertResult(MODEL)(PARSE_MODEL)
+  //  println(MODEL)
+   // println(PARSE_MODEL)
     //println(BaseInstTest.engine.eval("int => int[walk,nat]", BaseInstTest.bindings(MODEL)))
   }
 }
