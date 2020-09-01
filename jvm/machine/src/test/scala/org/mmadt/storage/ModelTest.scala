@@ -22,7 +22,10 @@
 
 package org.mmadt.storage
 
+
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Obj.tupleToRecYES
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Obj, Rec}
@@ -33,70 +36,63 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest extends FunSuite {
-/*  val tp3_kv: Type[Obj] = functor(KV, TP3)
+  val tp3_kv: Type[Obj] = __.model(model(TPKV))
   val kv: Type[Obj] = __.model(model(KV))
-  val tp3: Type[Obj] = __.model(model(TP3))
-  val all: Type[Obj] = kv `=>` tp3 `=>` tp3_kv
+  val tp3: Type[Obj] = __.model(model(TP))
 
   test("[tp3] model") {
     val record1a = rec(
       str("id") -> int(1),
       str("label") -> str("person"))
-    assertResult(record1a.named("vertex"))(record1a ==> tp3.as(__("vertex")))
+    assertResult(record1a.named("vertex"))(record1a ==> tp3 `=>` as('vertex))
     ///
-    val record2a = rec(
-      str("id") -> int(1),
-      str("label") -> str("person"),
-      str("properties") -> rec(str("name") -> str("marko")))
-    val record2b = rec(
-      str("id") -> int(1),
-      str("label") -> str("person"),
-      str("properties") -> rec(str("name") -> str("marko")).named("property")).named("vertex")
-    assertResult(record2b)(record2a ==> tp3.as(__("vertex")))
+    val record2a = str("id") -> int(1) `_,`
+      str("label") -> str("person") `_,`
+      str("properties") -> (str("name") -> str("marko"))
+    val record2b: Rec[_, _] = 'vertex(str("id") -> int(1) `_,` str("label") -> str("person") `_,` str("properties") -> 'property(str("name") -> str("marko")))
+    assertResult(record2b)(record2a ==> tp3 `=>` as('vertex))
     ///
-    val record3 = rec(
+    val record3 = 'vertex(rec(
       str("id") -> int(1),
       str("label") -> str("person"),
-      str("properties") -> rec(str("id") -> str("marko")).named("property")).named("vertex")
+      str("properties") -> 'property(rec(str("id") -> str("marko")))))
     assertThrows[LanguageException] {
-      record3 ==> tp3.as(__("vertex"))
+      record3 ==> tp3 `=>` as('vertex)
     }
   }
 
   test("[kv] model") {
-    val record1 = rec(
-      str("k") -> int(1),
-      str("v") -> str("marko"))
-    assertResult(record1.named("kv"))(record1 ==> kv.as(__("kv")))
+    val record1 = str("k") -> int(1) `_,` str("v") -> str("marko")
+    assertResult('kv(record1))(record1 ==> kv `=>` as('kv))
   }
 
 
   test("[tp3<=kv] functor") {
-    val record1a: Rec[StrValue, Obj] = rec(
-      str("k") -> (str("vertex") `,` int(1)),
-      str("v") -> rec(str("name") -> str("marko")))
-    val record1b = rec(
-      str("id") -> int(1),
-      str("label") -> str("vertex"),
-      str("properties") -> rec(str("name") -> str("marko")).named("property")).named("vertex")
-    assertResult(record1a.named("kv"))(record1a ==> kv.as(__("kv")))
-//    assertResult(record1b)(record1a ==> all ==> __.as(__("kv")).as(__("vertex")))
+    val record1a: Rec[StrValue, Obj] =
+      str("k") -> (str("vertex") `,` int(1)) `_,`
+        str("v") -> rec(str("name") -> str("marko"))
+    val record1b =
+      'vertex(str("id") -> int(1) `_,`
+        str("label") -> str("vertex") `_,`
+        str("properties") -> 'property(str("name") -> str("marko")))
+    assertResult(record1a.named("kv"))(record1a ==> kv `=>` as('kv))
+    assertResult(record1b)(record1a ==> kv `=>` as('kv) `=>` tp3 `=>` tp3_kv `=>` as('vertex))
     //
-    val record2a = rec(
-      str("k") -> (str("vertex") `,` int(1)),
-      str("v") -> rec(str("label") -> str("person"), str("name") -> str("marko")))
-    val record2b = rec(
-      str("id") -> int(1),
-      str("label") -> str("person"),
-      str("properties") -> rec(str("label") -> str("person"), str("name") -> str("marko")).named("property")).named("vertex")
-    assertResult(record2a.named("kv"))(record2a ==> kv.as(__("kv")))
-//    assertResult(record2b)(record2a ==> all.as(__("kv")).as(__("vertex")))
-    assertResult(record2b)(record2a ==> all.as(__("vertex")))
+    val record2a =
+      str("k") -> (str("vertex") `,` int(1)) `_,`
+        str("v") -> (str("label") -> str("person") `_,` str("name") -> str("marko"))
+    val record2b =
+      'vertex(str("id") -> int(1) `_,`
+        str("label") -> str("person") `_,`
+        str("properties") -> 'property(str("label") -> str("person") `_,` str("name") -> str("marko")))
+    assertResult('kv(record2a))(record2a ==> kv `=>` as('kv))
+    assertResult(record2b)(record2a ==> kv `=>` as('kv) `=>` tp3_kv `=>` as('vertex))
+    assertResult(record2b)(record2a ==> tp3_kv `=>` as('vertex))
     //
     //val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))
     //val store: Lst[Rec[StrValue, Obj]] = lst(",", strm(List(record1a, edge1)))
     //val g: Type[Obj] = all.as(__("graph"))
     //println(g)
     //println(store ==> g)
-  }*/
+  }
 }

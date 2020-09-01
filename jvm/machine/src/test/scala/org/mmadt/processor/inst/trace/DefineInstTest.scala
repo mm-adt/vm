@@ -25,6 +25,8 @@ package org.mmadt.processor.inst.trace
 import org.mmadt.language.LanguageException
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
+import org.mmadt.language.obj.`type`.__.symbolToToken
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
@@ -60,7 +62,7 @@ class DefineInstTest extends BaseInstTest(
     testing(1 `,` (1 `,` 2), a('mylist), false),
     testing(1 `,` (2 `,` 1), a('mylist), false),
     testing(1 `,` (1 `,` 2), a('mylist), false),
-    testing(1 `;` (1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError((34 `;` 1 `;` (1 `;` 1)).named("mylist"), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
+    testing(1 `;` (1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` (1 `;` 1)), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
     comment("ilist"),
     testing(lst(), a('ilist), true, "()[a,ilist]"),
     testing(1 `;`, a('ilist), true, "(1)[a,ilist]"),

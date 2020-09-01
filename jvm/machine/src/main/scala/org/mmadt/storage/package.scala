@@ -22,8 +22,7 @@
 
 package org.mmadt
 
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 
@@ -34,8 +33,9 @@ import scala.io.Source
  */
 package object storage {
 
-  val TP3: String = "tp3"
+  val TP: String = "tp"
   val KV: String = "kv"
+  val TPKV: String = "tpkv"
 
   private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
 
@@ -55,11 +55,5 @@ package object storage {
       else rangeModel.domainObj.asInstanceOf[Model]
     }
     rangeModel.merging(domainModel)
-  }
-
-  def functor(from: String, to: String): Type[Obj] = {
-    val source = Source.fromFile(getClass.getResource("/model/functor/" + (to + "_" + from) + ".mm").getFile)
-    try mmlang.parse(source.getLines().filter(x => !x.startsWith("//")).foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
-    finally source.close();
   }
 }

@@ -8,4 +8,4 @@ ex:('type' -> (nat    -> (nat<=int[is>0]),
                           person<=('name'->str,'age'->int),
                           person<=('name'->str)[put,'age',1],
                           person<=names-<('name'-><y>.0+<.y>.1,'age'->1),
-                          person<=str-<('name'->_,'age'->1))))<=mm
+                          person<=str-<('name'->_,'age'->1)))) <= mm

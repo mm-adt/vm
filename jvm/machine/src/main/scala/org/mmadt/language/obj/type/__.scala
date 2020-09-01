@@ -67,6 +67,7 @@ object __ extends __(Tokens.anon, qOne, rootVia) {
   @inline implicit def symbolToRichToken(ground: Symbol): RichToken = new RichToken(ground)
   class RichToken(val ground: Symbol) {
     final def apply(obj: Obj): obj.type = obj.named(ground.name)
+    final def unapply(arg: RichToken): __ = __(ground.name)
   }
   def apply(name: String): __ = __.named(name)
   def isAnon(obj: Obj): Boolean = obj.isInstanceOf[__] && obj.name.equals(Tokens.anon)

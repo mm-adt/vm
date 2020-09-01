@@ -46,9 +46,8 @@ class mmkvInstTest extends FunSuite {
   val source4: String = getClass.getResource("/mmkv/source-4.mm").getPath
   val source5: String = getClass.getResource("/mmkv/source-5.mm").getPath
   val kv: String = getClass.getResource("/model/kv.mm").getPath
-  val tp3: String = getClass.getResource("/model/tp3.mm").getPath
-  val tp3_kv: String = getClass.getResource("/model/functor/tp3_kv.mm").getPath
-  val social_kv: String = getClass.getResource("/model/functor/social_kv.mm").getPath
+  val tp3: String = getClass.getResource("/model/tp.mm").getPath
+  val tp3_kv: String = getClass.getResource("/model/tpkv.mm").getPath
 
   test("mmkv parsing") {
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)

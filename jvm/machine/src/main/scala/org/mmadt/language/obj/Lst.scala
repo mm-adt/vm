@@ -96,14 +96,23 @@ object Lst {
           case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
         }
-        running.named(v.name,ignoreAnon = true)
+        running.named(v.name, ignoreAnon = true)
       }).asInstanceOf[List[A]]
     /////////// |-lst
     case Tokens.`|` =>
       val newStart: Obj = if (null == start) __ else start
       var taken: Boolean = false
-      values.map(v => newStart ~~> v)
-        .filter(_.alive)
+      values.map(v => {
+        (newStart ~~> v) match {
+          // TODO: we need a concept of stable vs. non-stable quantifiers as
+          //  you don't want types to alter values quantifiers if they are zeroable.
+          case avalue: OValue[A]
+            if avalue.alive &&
+              v.isInstanceOf[Type[_]] &&
+              zeroable(v.q) => avalue.hardQ(newStart.q)
+          case x => x
+        }
+      }).filter(_.alive)
         .filter(v => {
           if (taken) false
           else if (zeroable(v.q)) true

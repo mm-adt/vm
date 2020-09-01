@@ -21,6 +21,7 @@
  */
 package org.mmadt.language.obj.op.trace
 
+import org.mmadt
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Rec._
@@ -43,6 +44,7 @@ trait ModelOp {
   def update(model: Model): this.type = ModelOp.updateModel(model, this)
   def model(model: Model): this.type = ModelOp(model).exec(this)
   def model(file: StrValue): this.type = ModelOp(file).exec(this)
+  def model(token:__): this.type = ModelOp(mmadt.storage.model(token.name)).exec(this)
 }
 
 object ModelOp extends Func[Obj, Obj] {
@@ -138,7 +140,10 @@ object ModelOp extends Func[Obj, Obj] {
     final def merging(other: Model): Model = {
       if (other.isEmpty) return model
       else if (model.isEmpty) return other
-      var x: Model = other.g._2.fetchOrElse(ModelOp.TYPE, rec(g = (Tokens.`,`, NOMAP))).g._2.flatMap(x => x._2.g._2).foldLeft(model)((a, b) => a.defining(b))
+      var x: Model = other.g._2.
+        fetchOrElse(ModelOp.TYPE, rec(g = (Tokens.`,`, NOMAP))).g._2.
+        flatMap(x => x._2.g._2).
+        foldLeft(model)((a, b) => a.defining(b))
       x = other.g._2.fetchOrElse(ModelOp.VAR, rec(g = (Tokens.`,`, NOMAP))).gmap.foldLeft(x)((a, b) => a.varing(b._1.asInstanceOf[StrValue], b._2.asInstanceOf[Lst[Obj]].glist.head))
       rec(g = (Tokens.`,`, x.g._2.replace(ModelOp.PATH -> other.g._2.fetchOrElse(ModelOp.PATH, NOREC))))
     }
