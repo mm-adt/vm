@@ -26,7 +26,7 @@ import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
-import org.mmadt.storage.StorageFactory.int
+import org.mmadt.storage.StorageFactory.{int, str}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,4 +40,5 @@ class LiftInstTest extends BaseInstTest(
     testing(int(5, 6), int.q(2).plus(1).lift(int.q(2).plus(2)).plus(3), int(11, 12), "[5,6] => int{2}[plus,1][lift,int{2}[plus,2]][plus,3]"),
     testing(int(5, 6), int.q(2).lift(int.plus(2)).plus(3).path.get(2), int(7, 8), "[5,6] => int{2}[lift,int{2}[plus,2]][plus,3][path].2"),
     testing(int(5, 6), int.q(2).lift[Int](plus(2)).plus(3).path.get(2), int(7, 8), "[5,6] => int{2}<<[plus,2]>>[plus,3][path].2"),
+    testing(5, int.as(str).plus("1").lift(plus("a").plus("b")), "51ab", "5 => int[as,str][plus,'1']<<+'a'+'b'>>"),
   ))

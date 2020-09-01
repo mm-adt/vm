@@ -24,9 +24,8 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.BranchInstruction
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
@@ -46,10 +45,7 @@ object LiftOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
   def apply(atype: Obj): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.lift, List(atype)), func = this) with BranchInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    (start.clone(via = (start.domainObj, inst.clone(_ => List(zeroObj)))) ==> inst.arg0[Obj].trace.reconstruct[Obj](start.domain)) match {
-      case atype: Type[Obj] => atype.via(start, inst)
-      case avalue: Value[Obj] => avalue.via(start, inst)
-    }
+    (start.clone(via = (start.rangeObj, inst.clone(_ => List(zeroObj)))) ==> inst.arg0[Obj].trace.reconstruct[Obj](start.range)).via(start, inst)
   }
 
   def inLift(aobj: Obj, inst: Inst[_, _]): Boolean = !inst.op.equals(Tokens.lift) && aobj.via.exists(x => x._2.op.equals(Tokens.lift) && x._2.arg0[Obj].equals(zeroObj)) // TODO: this is costly
