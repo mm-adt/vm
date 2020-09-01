@@ -52,5 +52,6 @@ object QOp extends Func[Obj, Int] {
     def minus(otherQ: IntQ): IntQ = minusQ(richQ, otherQ)
     def div(otherQ: IntQ): IntQ = divQ(richQ, otherQ)
     def isZero: Boolean = richQ.equals(qZero)
+    def certain: Boolean = richQ._1.g == richQ._2.g
   }
 }

@@ -59,7 +59,7 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Result
       ("query-1", _ => engine.eval(query, bindings(model))),
       ("query-2", _ => engine.eval(query, bindings(model)) match {
         case atype: Type[_] => atype.domainObj ==> atype
-        case avalue: Value[_] => avalue.domainObj ==> avalue.trace.reconstruct(avalue.domain, avalue.name)
+        case avalue: Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
       })
     )
     val evaluating = List[(String, Obj => Obj)](
@@ -67,14 +67,14 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Result
       ("eval-2", s => engine.eval(s"$s $middle", bindings(model))),
       ("eval-3", s => s ==> (middle.domain ==> middle)),
       ("eval-4", s => s ==> (middle.domain ==> middle) match {
-        case aobj: Obj if middle.via.exists(x => x._2.op.equals(Tokens.split)) => aobj
+        case aobj: Obj if middle.via.exists(x => List(Tokens.split,Tokens.lift).contains(x._2.op)) => aobj
         case atype: Type[_] => atype.domainObj ==> atype
-        case avalue: Value[_] => avalue.domainObj ==> avalue.trace.reconstruct(avalue.domain, avalue.name)
+        case avalue: Value[Obj] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
       }),
       ("eval-5", s => {
         val result = s ==> (middle.domain ==> middle)
         if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg).contains(x._2.op) ||
-          (x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
+          (x._2.op.equals(Tokens.lift)  || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
           result.trace.modeless.zip((asType(s) ==> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
             assert(asType(x._1._1).test(x._2._1), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
             assertResult(x._1._2.op)(x._2._2.op) // test via tuples' inst opcode

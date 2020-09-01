@@ -73,6 +73,7 @@ trait Obj
     with WalkOp
     with StartOp
     with SplitOp
+    with LiftOp
     with RewriteOp
     with RepeatOp[Obj] {
 
@@ -194,7 +195,7 @@ object Obj {
   private def resolveObj[S <: Obj, E <: Obj](objA: S, objB: E): E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]
     else objB match {
-      case _: Value[_] => objB.hardQ(q => multQ(objA.q, q))
+      case _: Value[_] => objB.hardQ(q => q.mult(objA.q))
       case rangeType: Type[_] =>
         LanguageException.testTypeCheck(objA, objB.domain)
         objA match {

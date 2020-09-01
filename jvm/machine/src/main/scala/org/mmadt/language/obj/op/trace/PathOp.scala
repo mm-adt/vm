@@ -33,7 +33,7 @@ import org.mmadt.storage.obj.value.VInst
 
 trait PathOp {
   this: Obj =>
-  def path(): Lst[Obj] = PathOp().exec(this)
+  def path: Lst[Obj] = PathOp().exec(this)
   def path(pattern: Lst[_ <: Obj]): Lst[_ <: Obj] = PathOp(pattern).exec(this)
 }
 

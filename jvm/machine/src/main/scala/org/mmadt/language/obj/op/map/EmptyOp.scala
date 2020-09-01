@@ -40,7 +40,7 @@ trait EmptyOp {
 object EmptyOp extends Func[Obj, Bool] {
   def apply[A <: Obj](): Inst[A, Bool] = new VInst[A, Bool](g = (Tokens.empty, Nil), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = (start match {
-    case apoly: PolyValue[_,_] => bool(apoly.isEmpty)
+    case apoly: Poly[_] if !apoly.ctype => bool(apoly.isEmpty)
     case _ => bool
   }).via(start, inst)
 }

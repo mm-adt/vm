@@ -64,9 +64,11 @@ object OpInstResolver {
 
   def resolve[S <: Obj, E <: Obj](op: String, args: List[Obj]): Inst[S, E] = {
     (op match {
+
       case Tokens.rule_id => IdRewrite()
       case Tokens.rule_unity => BranchRewrite()
 
+      case Tokens.lift => LiftOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.`walk` | Tokens.`walk_op` => WalkOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.head => HeadOp()
       case Tokens.last => LastOp()
@@ -102,6 +104,7 @@ object OpInstResolver {
         case List(key: Obj, typeHint: Type[Obj]) => GetOp(key, typeHint)
         case List(key: Obj) => GetOp(key)
       }
+
       case Tokens.juxt | Tokens.juxt_op => JuxtOp(args.head)
       case Tokens.branch => BranchOp(args.head)
       case Tokens.map => MapOp(args.head)

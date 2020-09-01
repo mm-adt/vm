@@ -22,10 +22,12 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.LanguageFactory
+import org.mmadt.language.{LanguageFactory, Tokens}
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.LstType
+import org.mmadt.language.obj.`type`.{LstType, Type}
+import org.mmadt.language.obj.op.branch.LiftOp
 import org.mmadt.language.obj.op.map.IdOp
+import org.mmadt.language.obj.op.trace.NoOp
 import org.mmadt.language.obj.value.strm.Strm
 
 /**
@@ -40,10 +42,14 @@ trait Inst[S <: Obj, +E <: Obj] extends LstType[S] {
   final def arg2[O <: Obj]: O = this.glist.tail.tail.head.asInstanceOf[O]
   final def arg3[O <: Obj]: O = this.glist.tail.tail.tail.head.asInstanceOf[O]
 
-  def exec(start: S): E = start match {
-    case _: Strm[_] if this.func.preStrm => start.via(start, this).asInstanceOf[E]
-    case _ if this.func.preArgs => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => start ~~> arg)), via = (this, IdOp()))) // TODO: It's not an [id] that processes the inst. hmmm...
-    case _ => this.func.asInstanceOf[Func[S, E]](start, this)
+  def exec(start: S): E = {
+    val end: E = start match {
+      case _: Strm[_] if this.func.preStrm => start.via(start, this).asInstanceOf[E]
+      case _ if this.func.preArgs => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => start ~~> arg)), via = (this, IdOp()))) // TODO: It's not an [id] that processes the inst. hmmm...
+      case _ => this.func.asInstanceOf[Func[S, E]](start, this)
+    }
+    if (LiftOp.inLift(end, this)) end.via(start, IdOp())
+    else end
   }
 
   // standard Java implementations

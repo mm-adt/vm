@@ -68,7 +68,7 @@ class BranchTest extends BaseInstTest(
       "[1,2] => int{2}[plus,0][+1+1,+2]"),
     testing(int(1, 2), plus(0).branch(plus(1).plus(1) `,` plus(2)), int(3.q(2), 4.q(2)),
       "[1,2][plus,0][+1+1,+2]"),
-    testing(1, int.plus(0).branch(plus(1) `,` plus(2)).path(), strm(
+    testing(1, int.plus(0).branch(plus(1) `,` plus(2)).path, strm(
       (1 `;` plus(0).inst `;` 1 `;` plus(1).inst `;` 2),
       (1 `;` plus(0).inst `;` 1 `;` plus(2).inst `;` 3)),
       "1 => int+0[+1,+2][path]"),
@@ -86,7 +86,7 @@ class BranchTest extends BaseInstTest(
       "1 => int[plus,0][[plus,1][plus,1];[plus,2]]"),
     testing(int(1, 2), plus(0).branch(plus(1).plus(1) `;` plus(2)), int(5, 6),
       "[1,2]+0[branch,(+1+1;+2)]"),
-    testing(int(1, 2), plus(0).branch(plus(1) `;` plus(2)).path(), strm(
+    testing(int(1, 2), plus(0).branch(plus(1) `;` plus(2)).path, strm(
       (1 `;` plus(0).inst `;` 1 `;` plus(1).inst `;` 2 `;` plus(2).inst `;` 4),
       (2 `;` plus(0).inst `;` 2 `;` plus(1).inst `;` 3 `;` plus(2).inst `;` 5)),
       "[1,2]+0[+1;+2][path]")
@@ -120,7 +120,7 @@ class BranchTest extends BaseInstTest(
       "1[plus,0][[plus,1][plus,1]{0}|[plus,3]{0}]"),
     testing(int(1, 2), plus(0).branch(plus(1).plus(1) | plus(2)), int(3, 4),
       "[1,2][plus,0][+1+1 | +2]"),
-    testing(int(1, 2), int.q(2).plus(0).branch(plus(1) | plus(2)).path(), strm(
+    testing(int(1, 2), int.q(2).plus(0).branch(plus(1) | plus(2)).path, strm(
       (1 `;` plus(0).inst `;` 1 `;` plus(1).inst `;` 2),
       (2 `;` plus(0).inst `;` 2 `;` plus(1).inst `;` 3)))),
   testSet("[branch] ,-rec",
@@ -136,7 +136,7 @@ class BranchTest extends BaseInstTest(
     testing(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int -> plus(3).q(0)), zeroObj),
     testing(int(1), int.plus(0).branch(int.q(0) -> plus(1).plus(1) `_|` int.plus(1).q(0) -> plus(3)), zeroObj),
     testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1).plus(1) `_|` int -> plus(2)), int(3, 4)),
-    testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).path(), strm(
+    testing(int(1, 2), int.q(2).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).path, strm(
       lst(g = (";", List[Obj](int(1), PlusOp(0), 1, PlusOp(1), 2))),
       lst(g = (";", List[Obj](int(2), PlusOp(0), 2, PlusOp(1), 3)))))),
   testSet("[branch] lst stream ring theory", MM,
@@ -212,14 +212,14 @@ class BranchTest extends BaseInstTest(
 ) {
 
   test("[branch] path testing") {
-    assertResult("(5;[plus,0];5;[plus,1];6;[plus,3];9)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path().toStrm.values(0).toString)
-    assertResult("(5;[plus,0];5;[plus,2];7;[plus,3];10)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path().toStrm.values(1).toString)
+    assertResult("(5;[plus,0];5;[plus,1];6;[plus,3];9)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path.toStrm.values(0).toString)
+    assertResult("(5;[plus,0];5;[plus,2];7;[plus,3];10)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path.toStrm.values(1).toString)
     //
-    assertResult("(5;[plus,1];6;[plus,11];17;[plus,3];20)")(int(5).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path().toStrm.values(0).toString)
-    assertResult("(5;[plus,2];7;[plus,3];10)")(int(5).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path().toStrm.values(1).toString)
+    assertResult("(5;[plus,1];6;[plus,11];17;[plus,3];20)")(int(5).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.values(0).toString)
+    assertResult("(5;[plus,2];7;[plus,3];10)")(int(5).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.values(1).toString)
     //
-    assertResult("(5;[plus,0];5;[plus,1];6;[plus,11];17;[plus,3];20)")(int(5).plus(0).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path().toStrm.values(0).toString)
-    assertResult("(5;[plus,0];5;[plus,2];7;[plus,3];10)")(int(5).plus(0).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path().toStrm.values(1).toString)
+    assertResult("(5;[plus,0];5;[plus,1];6;[plus,11];17;[plus,3];20)")(int(5).plus(0).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.values(0).toString)
+    assertResult("(5;[plus,0];5;[plus,2];7;[plus,3];10)")(int(5).plus(0).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.values(1).toString)
   }
 
   /*(int(1, 2), int.q(2).plus(0).branch[Int](plus(1) `,` plus(2)).path(), strm(List(
