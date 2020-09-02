@@ -74,6 +74,8 @@ public class Console {
     private static final String MM_MODEL = "data/model/mm.mm";
     private static final ScriptEngineManager MANAGER = new ScriptEngineManager();
     private static final Highlighter HIGHLIGHTER = new DefaultHighlighter();
+    /*private static final Nano.SyntaxHighlighter HIGHLIGHT = Nano.SyntaxHighlighter.build(
+            new ConfigurationPath(Paths.get("bin"), Paths.get(System.getProperty("user.home"), ".mmadt")).getConfig("mmlang.nanorc"), "mmlang");*/
 
     public static void main(final String[] args) throws Exception {
         String engineName = "mmlang";
@@ -82,6 +84,7 @@ public class Console {
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
         parser.setEofOnUnclosedBracket(DefaultParser.Bracket.CURLY, DefaultParser.Bracket.ROUND, DefaultParser.Bracket.SQUARE);
+
         // THIS IS ONLY FOR mmlang. MOVING FORWARD, MAKE COMPLETERS PART OF THE LANGUAGE PROVIDER INTERFACE
         final Completers.TreeCompleter completer = new Completers.TreeCompleter(
                 JavaConverters
