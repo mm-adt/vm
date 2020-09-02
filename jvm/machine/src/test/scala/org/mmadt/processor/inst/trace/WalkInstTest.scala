@@ -49,7 +49,12 @@ object WalkInstTest {
     .defining(noYearDateType)
     .defining(modayType) //.defining(sdateType)
   private val PARSE_MODEL: Model = org.mmadt.storage.model("social")
-  ////
+  /**
+   *
+   * /-------------\
+   * z-->y-->x-->w-->v
+   * \------/
+   */
   private val CHAIN_MODEL: Model = ModelOp.EMPTY
     .defining('ztype <= int)
     .defining('ytype <= 'ztype.id)
@@ -61,22 +66,25 @@ object WalkInstTest {
 }
 class WalkInstTest extends BaseInstTest(
   testSet("[walk] table test", MODEL,
-    comment("int=>nat"),
+    comment("int~>int"),
+    testing(int, int.walk(int), lst(int `;`) <= int.walk(int), "int => int[walk,int]"),
+    comment("int~>nat"),
     testing(int, int.walk('nat), lst <= int.walk('nat), "int => int[walk,nat]"),
     testing(int, walk('nat), lst <= int.walk('nat), "int => [walk,nat]"),
     testing(5, int.walk('nat), ((int `;` 'nat) `,`) <= 5.walk('nat), "5 => int[walk,nat]"),
     testing(-5, int.walk('nat), ((int `;` 'nat) `,`) <= (-5).walk('nat), "-5 => int[walk,nat]"),
-    comment("int=>date"),
+    comment("int~>date"),
     testing(int, int.walk('moday), lst <= int.walk('moday), "int => int[walk,moday]"),
     testing(5, int.walk('moday), lst(int `;` 'moday) <= 5.walk('moday), "5 => int[walk,moday]"),
     testing(5, int.walk('date), lst((int `;` 'moday `;` 'date)) <= 5.walk('date), "5 ~> date"),
-    comment("int-<[walk]"),
+    comment("int-<walk>-"),
     IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
+    IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int-<:[walk,nat][head]:>-[merge]"),
     IGNORING("eval-5")(50, int.split(int.walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
     IGNORING("eval-5")(50, split(walk('nat).head).merge, 'nat(50), "50 => [split,[walk,nat][head]][merge][merge]"), // TODO: use exec() in parser to compose monoid
     IGNORING("eval-5")(50, int.split(walk('moday).head).merge, 'moday(50 `;` 50), "50 => int[split,[walk,moday][head]][merge]"),
     IGNORING("eval-5")(int(50, 100), int.q(2).split(walk('moday).head).merge[Obj], strm('moday(100 `;` 100), 'moday(50 `;` 50))),
-    comment("int => far"),
+    comment("int=>date"),
     testing(6, __.juxta[Obj]('date), 'date(6 `;` 6 `;` 2009), "6 => date"), // TODO: create a "lazy juxta operator"
   ), testSet("[walk] table test w/ chain model", CHAIN_MODEL,
     comment("linear chains"),
@@ -103,6 +111,7 @@ class WalkInstTest extends BaseInstTest(
     //  println(MODEL)
     println(PARSE_MODEL.domainObj.asInstanceOf[Model].definitions)
     println(5.model(CHAIN_MODEL).walk('vtype))
+    println(CHAIN_MODEL)
     //println(BaseInstTest.engine.eval("int => int[walk,nat]", BaseInstTest.bindings(MODEL)))
   }
 }
