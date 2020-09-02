@@ -54,19 +54,21 @@ object WalkOp extends Func[Obj, Obj] {
   TODO: Lst.test()/equals() needs to determine equality different for different forms (just sort order on ,-lst)
    */
   def resolvePaths[A <: Obj, B <: Obj](model: Model, source: List[A], target: B, checked: List[Obj] = Nil): List[List[B]] = {
-    if (source.last.rangeObj.name == target.rangeObj.name) return Nil
+    if (source.last.rangeObj.name == target.rangeObj.name) {
+      if (source.last.test(target)) return List(List(target)) else return Nil
+    }
     model.definitions
       .filter(t => !checked.contains(t))
       .filter(t => {
-        // println(toBaseName(Type.trueRange(source.last).rangeObj) + "===TESTING==>" + toBaseName(t.domainObj) + " ::: " + Type.trueRange(source.last).rangeObj.test(t.domainObj))
-        Type.trueRange(source.last).rangeObj.test(t.domainObj)
+        //println(toBaseName(Type.trueRange(source.last).rangeObj) + "===TESTING==>" + toBaseName(t.domainObj) + " ::: " + Type.trueRange(source.last).rangeObj.test(t.domainObj))
+        source.last.rangeObj.name == t.domainObj.name && Type.trueRange(source.last).rangeObj.test(t.domainObj)
       })
-      .map(t => {
+      .flatMap(t => {
         val nextT = asType(source.last) ~~> t
         if (nextT.rangeObj.name == target.rangeObj.name)
-          source :+ nextT
+          List(source :+ nextT)
         else if (!source.last.root || (source.last != nextT))
-          resolvePaths(model, source :+ t, target, checked :+ t).headOption.getOrElse(Nil)
+          resolvePaths(model, source :+ t, target, checked :+ t)
         else Nil
       })
       .filter(list => list.nonEmpty)

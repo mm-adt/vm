@@ -40,18 +40,27 @@ object WalkInstTest {
 
   private val natType: __ = 'nat <= int.is(int.gt(0))
   private val dateType: Lst[__] = 'date(('nat <= 'nat.is(lte(12))) `;` ('nat <= 'nat.is(lte(31))) `;` 'nat)
-  private val noYearDateType: __ = 'date <= (('nat <= 'nat.is(lte(12))) `;` ('nat <= 'nat.is(lte(31)))).put(2, 2009)
+  private val noYearDateType: __ = 'date <= 'moday(('nat <= 'nat.is(lte(12))) `;` ('nat <= 'nat.is(lte(31)))).put(2, 2009)
   private val modayType: Obj = 'moday <= (int -< (int `;` int))
   private val sdateType: Obj = 'sdate <= 'moday(int `;` int).:=(str `;` str)
-  private val MODEL: Model = ModelOp.MM
+  private val MODEL: Model = ModelOp.EMPTY
     .defining(natType)
     .defining(dateType)
     .defining(noYearDateType)
     .defining(modayType) //.defining(sdateType)
   private val PARSE_MODEL: Model = org.mmadt.storage.model("social")
+  ////
+  private val CHAIN_MODEL: Model = ModelOp.EMPTY
+    .defining('ztype <= int)
+    .defining('ytype <= 'ztype.id)
+    .defining('xtype <= 'ytype.id)
+    .defining('wtype <= 'xtype.id)
+    .defining('wtype <= 'ytype.id)
+    .defining('vtype <= 'wtype.id)
+    .defining('vtype <= 'ztype.id)
 }
 class WalkInstTest extends BaseInstTest(
-  testSet("[walk] table test", PARSE_MODEL,
+  testSet("[walk] table test", MODEL,
     comment("int=>nat"),
     testing(int, int.walk('nat), lst <= int.walk('nat), "int => int[walk,nat]"),
     testing(int, walk('nat), lst <= int.walk('nat), "int => [walk,nat]"),
@@ -59,12 +68,8 @@ class WalkInstTest extends BaseInstTest(
     testing(-5, int.walk('nat), ((int `;` 'nat) `,`) <= (-5).walk('nat), "-5 => int[walk,nat]"),
     comment("int=>date"),
     testing(int, int.walk('moday), lst <= int.walk('moday), "int => int[walk,moday]"),
-    testing(5, int.walk('moday),
-      ((int `;` 'nat `;` int `;` 'moday) `,`
-        (int `;` 'moday)) <= 5.walk('moday), "5 => int[walk,moday]"),
-    testing(5, int.walk('date),
-      ((int `;` 'nat `;` 'int `;` 'moday `;` 'date) `,`
-        (int `;` 'moday `;` 'date)) <= 5.walk('date), "5 ~> date"),
+    testing(5, int.walk('moday), lst(int `;` 'moday) <= 5.walk('moday), "5 => int[walk,moday]"),
+    testing(5, int.walk('date), lst((int `;` 'moday `;` 'date)) <= 5.walk('date), "5 ~> date"),
     comment("int-<[walk]"),
     IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
     IGNORING("eval-5")(50, int.split(int.walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
@@ -72,15 +77,32 @@ class WalkInstTest extends BaseInstTest(
     IGNORING("eval-5")(50, int.split(walk('moday).head).merge, 'moday(50 `;` 50), "50 => int[split,[walk,moday][head]][merge]"),
     IGNORING("eval-5")(int(50, 100), int.q(2).split(walk('moday).head).merge[Obj], strm('moday(100 `;` 100), 'moday(50 `;` 50))),
     comment("int => far"),
-    IGNORING("eval-4", "eval-5", "query-2")(6, __.juxta('date), 'date('nat(6) `;` 'nat(6) `;` 2009), "6 => date"), // TODO: create a "lazy juxta operator"
+    testing(6, __.juxta[Obj]('date), 'date(6 `;` 6 `;` 2009), "6 => date"), // TODO: create a "lazy juxta operator"
+  ), testSet("[walk] table test w/ chain model", CHAIN_MODEL,
+    comment("linear chains"),
+    testing(int, int.walk('ztype), lst <= int.walk('ztype), "int ~> ztype"),
+    testing(int, int.walk(int), lst <= int.walk(int), "int ~> int"),
+    testing(5, int.walk(int), lst(int `;`) <= 5.walk(int), "5 ~> int"),
+    testing(5, int.walk('ztype), lst(int `;` 'ztype) <= 5.walk('ztype), "5 ~> ztype"),
+    testing(5, int.walk('ytype), lst(int `;` 'ztype `;` 'ytype) <= 5.walk('ytype), "5 ~> ytype"),
+    testing(5, int.walk('xtype), lst(int `;` 'ztype `;` 'ytype `;` 'xtype) <= 5.walk('xtype), "5 ~> xtype"),
+    testing(5.q(3), int.q(3).walk('xtype), (int `;` 'ztype `;` 'ytype `;` 'xtype).q(3) <= int.q(3).walk('xtype), "5{3} ~> xtype"),
+    comment("branching chains"),
+    testing(5, int.walk('wtype),
+      ((int `;` 'ztype `;` 'ytype `;` 'xtype `;` 'wtype) `,`
+        (int `;` 'ztype `;` 'ytype `;` 'wtype)) <= 5.walk('wtype), "5 ~> wtype"),
+    testing(5, int.walk('vtype),
+      ((int `;` 'ztype `;` 'ytype `;` 'xtype `;` 'wtype `;` 'vtype) `,`
+        (int `;` 'ztype `;` 'ytype `;` 'wtype `;` 'vtype) `,`
+        (int `;` 'ztype `;` 'vtype)) <= 5.walk('vtype), "5 ~> vtype"),
   )) {
-
   test("test model test") {
     // println(engine.eval("5 => date.2 => person", bindings(PARSE_MODEL)))
     // println(engine.eval("5 ~> date", bindings(MODEL)))
     //  assertResult(MODEL)(PARSE_MODEL)
     //  println(MODEL)
     println(PARSE_MODEL.domainObj.asInstanceOf[Model].definitions)
+    println(5.model(CHAIN_MODEL).walk('vtype))
     //println(BaseInstTest.engine.eval("int => int[walk,nat]", BaseInstTest.bindings(MODEL)))
   }
 }
