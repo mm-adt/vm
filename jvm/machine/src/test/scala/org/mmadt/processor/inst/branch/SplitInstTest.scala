@@ -25,36 +25,95 @@ package org.mmadt.processor.inst.branch
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__.{symbolToToken, _}
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.StorageFactory.{real, _}
 
 class SplitInstTest extends BaseInstTest(
   testSet("[split] table test",
-    testing(lst, __.is(lst.eqs(lst.zero)), lst),
-    testing(lst, __.eqs(lst.zero), btrue),
-    testing(1, __.map(lst).eqs(lst.zero), btrue),
-    testing(1, __ -< (int `,` int), int(1) `,` int(1)),
-    testing(1, __ -< (int `,` int.plus(2)), int(1) `,` int(3)),
-    testing(1, __ -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10)),
-    testing(1.q(5), __ -< (int `,` int.plus(2).q(10)), (int(1) `,` int(3).q(10)).q(5)),
-    testing(1.q(5), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
-    testing(int(1, 100), __ -< (int | int) >-, int(int(1), int(100))),
-    testing(int(1, 100), __ -< (int `,` int) >-, int(1, 1, 100, 100)),
-    testing(int(1, 100), __ -< (int `,` int) >-, int(int(1).q(2), int(100).q(2))),
-    testing(int(1.q(5), 100), __ -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
-    testing(int(1.q(5), 100), __ -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
-    testing(int(1, 2), __ -< (int | (int -< (int | int))), obj(int(1) `|`, int(2) `|`)),
-    testing(int(1, 2), __ -< (int `,` (int -< (int | int))), obj(int(1) `,` (int(1) |), int(2) `,` (int(2) |))),
-    testing(1, __ -< (str | int), zeroObj | int(1)),
-    testing(int(1), int.-<(int `;` int), int(1) `;` int(1)),
+    testing(lst, is(lst.eqs(lst.zero)), lst, "lst => [is,lst[eq,lst[zero]]]"),
+    testing(lst, eqs(lst.zero), btrue, "lst => [eq,lst[zero]]"),
+    testing(1, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"), // why 1 not work?
+    testing(lst, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"),
+    testing(1, -< (int `,` int), int(1) `,` int(1), "1-<(int,int)"),
+    testing(1,  -< (int `,` int.plus(2)), int(1) `,` int(3), "1-<(int,int+2)"),
+    testing(1, -< (int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10), "1-<(int,int+{10}2)"),
+    testing(1.q(5), -< (int `,` int.plus(2).q(10)), (int(1) `,` int(3).q(10)).q(5), "1{5}-<(int,int+{10}2)"),
+    testing(1.q(5), -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50))),
+    testing(int(1, 100), -< (int | int) >-, int(int(1), int(100))),
+    testing(int(1, 100), -< (int `,` int) >-, int(1, 1, 100, 100)),
+    testing(int(1, 100), -< (int `,` int) >-, int(int(1).q(2), int(100).q(2))),
+    testing(int(1.q(5), 100), -< (int `,` int.plus(2).q(10)) >-, int(int(1).q(5), int(3).q(50), int(100), int(102).q(10))),
+    testing(int(1.q(5), 100), -< (int | int.plus(2).q(10)) >-, int(int(1).q(5), int(100))),
+    testing(int(1, 2), -< (int | (int -< (int | int))), obj(int(1) `|`, int(2) `|`)),
+    testing(int(1, 2), -< (int `,` (int -< (int | int))), obj(int(1) `,` (int(1) |), int(2) `,` (int(2) |))),
+    testing(1, -< (str | int), zeroObj | 1, "1-<(str|int)"),
+    testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
     testing(int(1, 2, 3), int.q(3).-<(int.q(3) `;` int.q(3)), strm(List(int(1) `;` 1, int(2) `;` 2, int(3) `;` 3))),
-    testing(int(2), __.-<(int | str), int(2) | obj.q(qZero)),
-    testing(int(4).q(2), int.q(2).-<(int | int.is(__.gt(10))), (int(4) | obj.q(qZero)).q(2)),
-    testing(int(2).q(2), int.q(2).-<(int `;` int.is(__.gt(10))), (int(2) `;` obj.q(qZero)).q(2)),
-    testing(int(2), int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)),
-    testing(int(2), int.-<((int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero))
+    testing(2, -<(int | str), int(2) | obj.q(qZero)),
+    testing(4.q(2), int.q(2).-<(int | int.is(__.gt(10))), (int(4) | obj.q(qZero)).q(2)),
+    testing(2.q(2), int.q(2).-<(int `;` int.is(__.gt(10))), (int(2) `;` obj.q(qZero)).q(2)),
+    testing(2, int.-<(int `;` int.is(__.gt(10))), int(2) `;` obj.q(qZero)),
+    testing(2, int.-<((int | int.is(__.gt(11))) | int.is(__.gt(10))), (int(2) | obj.q(qZero)) | obj.q(qZero)),
+    comment("[split] |-rec table test"),
+    testing(0, plus(1).-<(
+      int.is(int.gt(2)) -> int.mult(3) |
+        int -> int.mult(4)) >-, 4),
+    testing(0, int.plus(int(39)).-<(
+      int.is(int.gt(40)) -> int.plus(1) |
+        int.is(int.gt(30)) -> int.plus(2) |
+        int.is(int.gt(20)) -> int.plus(3) |
+        int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 42),
+    testing(0, int.plus(29).-<(
+      int.is(int.gt(40)) -> int.plus(1) |
+        int.is(int.gt(30)) -> int.plus(2) |
+        int.is(int.gt(20)) -> int.plus(3) |
+        int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 33),
+    testing(0, int.plus(29).-<(
+      int.is(gt(40)) -> int.plus(1) |
+        int.is(gt(30)) -> int.plus(2) |
+        int.is(gt(20)) -> int.plus(3) |
+        int.is(gt(10)) -> int.plus(4)).>-.plus(1), 33),
+    IGNORING("eval-5", "query-2")(29, int.-<(
+      int.is(int.gt(40)) -> plus(1) `_|`
+        int.is(int.gt(30)) -> plus(2) `_|`
+        int.is(int.gt(20)) -> plus(3) `_|`
+        int.is(int.gt(10)) -> plus(4)).>-, 32, "29-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-"),
+    testing(real(0.0, 1.0, 1.0),
+      real.q(3).to('x).plus(1.0).to('y).-<(
+        (is(eqs(1.0)) -> real.from('y)) |
+          (is(eqs(2.0)) -> real.from('x))).>-.plus(real.from('y)), real(2.0, 3.0, 3.0)),
+    comment("[split] ,-rec table test"),
+    testing(0, plus(1).-<(int.is(int.gt(2)) -> int.mult(3) `_,` int -> int.mult(4)) >-, 4),
+    testing(0, plus(4).-<(
+      (int.is(int.gt(2)) -> int.mult(3)) `,`
+        (int -> int.mult(4))) >-, int(12, 16)),
+    testing(0, int.plus(int(39)).-<(
+      (int.is(int.gt(40)) -> int.plus(1)) `,`
+        (int.is(int.gt(30)) -> int.plus(2)) `,`
+        (int.is(int.gt(20)) -> int.plus(3)) `,`
+        (int.is(int.gt(10)) -> int.plus(4))).>-.plus(1), int(42, 43, 44)),
+    testing(0, int.plus(29).-<(
+      (int.is(int.gt(40)) -> int.plus(1)) `,`
+        (int.is(int.gt(30)) -> int.plus(2)) `,`
+        (int.is(int.gt(20)) -> int.plus(3)) `,`
+        (int.is(int.gt(10)) -> int.plus(4))).>-.plus(1), int(33, 34)),
+    testing(0, int.plus(29).-<(
+      (int.is(gt(40)) -> int.plus(1)) `,`
+        (int.is(gt(30)) -> int.plus(2)) `,`
+        (int.is(gt(20)) -> int.plus(3)) `,`
+        (int.is(gt(10)) -> int.plus(4))).>-.plus(int(1)), int(33, 34)),
+    testing(0, int.plus(29).-<(
+      (int.is(int.gt(40)) -> plus(1)) `,`
+        (int.is(int.gt(30)) -> plus(2)) `,`
+        (int.is(int.gt(20)) -> plus(3)) `,`
+        (int.is(int.gt(10)) -> plus(4))).>-, int(32, 33)),
+    testing(real(0.0, 1.0, 1.0), real.q(3).to('x).plus(1.0).to('y).-<(
+      (is(eqs(1.0)) -> real.from('y)) `_,`
+        (is(eqs(2.0)) -> real.from('x))
+    ).>-.plus(real.from('y)), real(2.0, 3.0, 3.0), "[0.0,1.0,1.0]=>real{3}<x>[plus,1.0]<y>-<([is==1.0]-><.y>,[is==2.0]-><.x>)>-[plus,<.y>]"),
   )) {
 
   test("lineage preservation (products)") {
@@ -62,7 +121,6 @@ class SplitInstTest extends BaseInstTest(
     assertResult(int.plus(100).plus(200).split(int | bool).merge[Int].plus(20))(int ==> int.plus(100).plus(200).split(int | bool).merge[Int].plus(20))
     assertResult(int(1) `;` 101 `;` 301 `;` 301 `;` 321)((int(1) ==> int.plus(100).plus(200).split(int `,` bool).merge[Int].plus(20)).path(VERTICES))
   }
-
   test("lineage preservation (coproducts)") {
     assertResult(int(321, 323))(int(1) ==> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
     assertResult(int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))(int ==> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
@@ -70,150 +128,10 @@ class SplitInstTest extends BaseInstTest(
       int(1) `;` 101 `;` 301 `;` 301 `;` 321,
       int(1) `;` 101 `;` 301 `;` 301 `;` 303 `;` 323)))(int(1) ==> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20).path(VERTICES))
   }
-
   test("quantifiers") {
     assertResult(int(1))((int(1) | 2).merge)
     assertResult(int(1).q(10))((int(1) | 2).q(10).merge)
     assertResult(int(1).q(10))((int(1) | int(2).q(5)).q(10).merge)
     assertResult(int(1).q(4, 10))((int(1) | int(2).q(5)).q(4, 10).merge)
-  }
-
-  ////////////////////////////
-
-  /*test("[;] trace w/ state") {
-    val results = int(2, 8, 15, 20) ==> int.q(4).to("x").plus(1).-<(
-      (int.is(int.gt(10)) --> int.mult(10)) `;`
-        (int --> int.id().plus(int.from("x")).to("y").id())).>-
-
-    println(results.toStrm.values.map(x=>x.trace))
-    assertResult(6)(results.toStrm.values.length)
-    results.toStrm.values.foreach {
-      case x if x == int(5) =>
-        assertResult(5)(x.trace.length)
-        assertResult(int(2))(Obj.fetch(x, "x"))
-        assertResult(int(5))(Obj.fetch(x, "y"))
-      case x if x == int(17) =>
-        assertResult(5)(x.trace.length)
-        assertResult(int(8))(Obj.fetch(x, "x"))
-        assertResult(int(17))(Obj.fetch(x, "y"))
-      case x if x == int(160) =>
-        assertResult(3)(x.trace.length)
-        assertResult(int(15))(Obj.fetch(x, "x"))
-        assertThrows[LanguageException] {
-          Obj.fetch(x, "y")
-        }
-      case x if x == int(31) =>
-        assertResult(5)(x.trace.length)
-        assertResult(int(15))(Obj.fetch(x, "x"))
-        assertResult(int(31))(Obj.fetch(x, "y"))
-      case x if x == int(210) =>
-        assertResult(3)(x.trace.length)
-        assertResult(int(20))(Obj.fetch(x, "x"))
-        assertThrows[LanguageException] {
-          Obj.fetch(x, "y")
-        }
-      case x if x == int(41) =>
-        assertResult(5)(x.trace.length)
-        assertResult(int(20))(Obj.fetch(x, "x"))
-        assertResult(int(41))(Obj.fetch(x, "y"))
-    }
-  }*/
-
-  test("[,] w/ values") {
-    assertResult(int(4))(
-      int(0).plus(1).-<(
-        (int.is(int.gt(2)) -> int.mult(3)) `,`
-          (int -> int.mult(4))) >-)
-
-    assertResult(int(12, 16))(
-      int(0).plus(4).-<(
-        (int.is(int.gt(2)) -> int.mult(3)) `,`
-          (int -> int.mult(4))) >-)
-
-    assertResult(int(42, 43, 44))(
-      int(0) ==> int.plus(int(39)).-<(
-        (int.is(int.gt(40)) -> int.plus(1)) `,`
-          (int.is(int.gt(30)) -> int.plus(2)) `,`
-          (int.is(int.gt(20)) -> int.plus(3)) `,`
-          (int.is(int.gt(10)) -> int.plus(4))).>-.plus(1))
-
-    assertResult(int(33, 34))(
-      int(0) ==> int.plus(29).-<(
-        (int.is(int.gt(40)) -> int.plus(1)) `,`
-          (int.is(int.gt(30)) -> int.plus(2)) `,`
-          (int.is(int.gt(20)) -> int.plus(3)) `,`
-          (int.is(int.gt(10)) -> int.plus(4))).>-.plus(1))
-
-    assertResult(int(33, 34))(
-      int(0) ==> int.plus(29).-<(
-        (int.is(__.gt(40)) -> int.plus(1)) `,`
-          (int.is(__.gt(30)) -> int.plus(2)) `,`
-          (int.is(__.gt(20)) -> int.plus(3)) `,`
-          (int.is(__.gt(10)) -> int.plus(4))).>-.plus(int(1)))
-
-    assertResult(int(32, 33))(
-      int(0) ==> int.plus(29).-<(
-        (int.is(int.gt(40)) -> __.plus(1)) `,`
-          (int.is(int.gt(30)) -> __.plus(2)) `,`
-          (int.is(int.gt(20)) -> __.plus(3)) `,`
-          (int.is(int.gt(10)) -> __.plus(4))).>-)
-  }
-
-  test("[,] w/ state") {
-    assertResult(real(2.0, 3.0, 3.0))(
-      real(0.0, 1.0, 1.0) ==> real.q(3).to("x").plus(1.0).to("y").-<(
-        (__.is(__.eqs(1.0)) -> real.from("y")) `_,`
-          (__.is(__.eqs(2.0)) -> real.from("x"))
-      ).>-.plus(real.from("y")))
-  }
-
-  ////////////////////////////
-
-  test("[||] w/ values") {
-    assertResult(int(4))(
-      int(0).plus(1).-<(
-        int.is(int.gt(2)) -> int.mult(3) |
-          int -> int.mult(4)) >-)
-
-    assertResult(int(12))(
-      int(0).plus(4).-<(
-        int.is(int.gt(2)) -> int.mult(3) |
-          int -> int.mult(4)) >-)
-
-    assertResult(int(42))(
-      int(0) ==> int.plus(int(39)).-<(
-        int.is(int.gt(40)) -> int.plus(1) |
-          int.is(int.gt(30)) -> int.plus(2) |
-          int.is(int.gt(20)) -> int.plus(3) |
-          int.is(int.gt(10)) -> int.plus(4)).>-.plus(1))
-
-    assertResult(int(33))(
-      int(0) ==> int.plus(29).-<(
-        int.is(int.gt(40)) -> int.plus(1) |
-          int.is(int.gt(30)) -> int.plus(2) |
-          int.is(int.gt(20)) -> int.plus(3) |
-          int.is(int.gt(10)) -> int.plus(4)).>-.plus(1))
-
-    assertResult(int(33))(
-      int(0) ==> int.plus(29).-<(
-        int.is(__.gt(40)) -> int.plus(1) |
-          int.is(__.gt(30)) -> int.plus(2) |
-          int.is(__.gt(20)) -> int.plus(3) |
-          int.is(__.gt(10)) -> int.plus(4)).>-.plus(int(1)))
-
-    assertResult(int(32))(
-      int(0) ==> int.plus(29).-<(
-        int.is(int.gt(40)) -> __.plus(1) |
-          int.is(int.gt(30)) -> __.plus(2) |
-          int.is(int.gt(20)) -> __.plus(3) |
-          int.is(int.gt(10)) -> __.plus(4)).>-)
-  }
-
-  test("[||] w/ state") {
-    assertResult(real(2.0, 3.0, 3.0))(
-      real(0.0, 1.0, 1.0) ==> real.q(3).to("x").plus(1.0).to("y").-<(
-        (__.is(__.eqs(1.0)) -> real.from("y")) |
-          (__.is(__.eqs(2.0)) -> real.from("x"))
-      ).>-.plus(real.from("y")))
   }
 }

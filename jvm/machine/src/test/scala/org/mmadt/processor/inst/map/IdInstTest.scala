@@ -36,6 +36,9 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
+object IdInstTest {
+  val IDRULE: Model = (ModelOp.PATH -> (__ -> lst(g = (",", List((__ `,`) <= (id `,`)))) `,`) `,`).asInstanceOf[Model]
+}
 class IdInstTest extends BaseInstTest(
   testSet("[id] table test",
     comment("int"),
@@ -70,6 +73,3 @@ class IdInstTest extends BaseInstTest(
     testing(int, id.plus(id.id.plus(id.id.plus(id).id.id).id.id).id, int.plus(int.plus(int.plus(int))), "int[id][plus,[id][id][plus,[id][id][plus,[id]][id][id]][id][id]][id]"),
     testing(int, id.plus(id.plus(id.plus(id.plus(id)).id).id).id, int.plus(int.plus(int.plus(int.plus(int)))), "int[id][plus,[id][plus,[id][plus,[id][plus,[id]]][id]][id]][id]"),
   ))
-object IdInstTest {
-  val IDRULE: Model = (ModelOp.PATH -> (__ -> lst(g = (",", List((__ `,`) <= (id `,`)))) `,`) `,`).asInstanceOf[Model]
-}

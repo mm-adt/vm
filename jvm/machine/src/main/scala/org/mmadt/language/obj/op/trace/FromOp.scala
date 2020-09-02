@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, Obj, asType}
@@ -36,6 +36,7 @@ import org.mmadt.storage.obj.value.VInst
 trait FromOp {
   this: Obj =>
   def from(label: StrValue): this.type = FromOp(label).exec(this).asInstanceOf[this.type]
+  def from(label: __): this.type = this.from(label.name)
   def from[O <: Obj](label: StrValue, atype: O): O = FromOp(label, atype).exec(this)
 }
 object FromOp extends Func[Obj, Obj] {
