@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.Tokens.{LBRACKET, int => _, obj => _, _}
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{RecType, Type}
+import org.mmadt.language.obj.`type`.{LstType, RecType, Type}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.storage.StorageFactory._
@@ -67,7 +67,7 @@ object mmlangPrinter {
     typeName(alst) +
       (alst match {
         case _: Strm[_] => strmString(alst.asInstanceOf[Strm[Obj]])
-        //case _: LstType[_] if Tokens.named(alst.name) => alst.name
+        case _: LstType[_] if Tokens.named(alst.name) => alst.name
         case _ if alst.isEmpty => EMPTYLST
         case _ => alst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + alst.gsep).dropRight(1) + RROUND
       })
@@ -104,7 +104,7 @@ object mmlangPrinter {
 
   def instString(inst: Inst[_, _]): String = {
     (inst.op match {
-      case Tokens.model | Tokens.define | Tokens.noop => Tokens.blank
+      case Tokens.model => Tokens.blank
       case Tokens.to => LANGLE + inst.arg0[StrValue].g + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue].g + RANGLE
       case Tokens.branch => LBRACKET +
@@ -114,8 +114,6 @@ object mmlangPrinter {
           .filter(x => !x.isEmpty)
           .map(x => x.hardQ(1).toString.drop(1).dropRight(1))
           .getOrElse(inst.arg0[Obj]) + RBRACKET
-      // case Tokens.split => Tokens.split_op + inst.arg0[Poly[_]].toString
-      case Tokens.merge => Tokens.merge_op
       case _ => inst.args match {
         case Nil => LBRACKET + inst.op + RBRACKET
         case args: List[Obj] => LBRACKET + inst.op + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET

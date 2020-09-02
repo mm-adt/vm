@@ -23,6 +23,8 @@
 package org.mmadt.language.console;
 
 
+import org.jline.builtins.Completers;
+import org.jline.builtins.Widgets;
 import org.jline.reader.Highlighter;
 import org.jline.reader.LineReader;
 import org.jline.reader.LineReaderBuilder;
@@ -80,17 +82,28 @@ public class Console {
         final DefaultHistory history = new DefaultHistory();
         final DefaultParser parser = new DefaultParser();
         parser.setEofOnUnclosedBracket(DefaultParser.Bracket.CURLY, DefaultParser.Bracket.ROUND, DefaultParser.Bracket.SQUARE);
+        // THIS IS ONLY FOR mmlang. MOVING FORWARD, MAKE COMPLETERS PART OF THE LANGUAGE PROVIDER INTERFACE
+        final Completers.TreeCompleter completer = new Completers.TreeCompleter(
+                JavaConverters
+                        .seqAsJavaList(Tokens.reservedOps())
+                        .stream()
+                        .map(op -> Tokens.LBRACKET() + op + Tokens.COMMA())
+                        .map(Completers.TreeCompleter::node)
+                        .collect(Collectors.toList()).toArray(new Completers.TreeCompleter.Node[Tokens.reservedOps().length()]));
         final LineReader reader = LineReaderBuilder.builder()
                 .appName("mm-ADT Console")
                 .terminal(terminal)
                 .highlighter(HIGHLIGHTER)
                 .variable(LineReader.HISTORY_FILE, HISTORY)
-                .history(history).parser(parser)
+                .history(history)
+                .parser(parser)
+                .completer(completer)
                 .variable(LineReader.SECONDARY_PROMPT_PATTERN, IntStream.range(0, engineName.length()).mapToObj(x -> ".").collect(Collectors.joining()) + "> ")
                 .variable(LineReader.INDENTATION, 2)   // indentation size
                 .option(LineReader.Option.INSERT_BRACKET, true)   // insert closing bracket automatically
                 .build();
-
+        Widgets.AutopairWidgets autopairWidgets = new Widgets.AutopairWidgets(reader);
+        autopairWidgets.enable();
         ///////////////////////////////////
         terminal.writer().println(HEADER);
         terminal.flush();
