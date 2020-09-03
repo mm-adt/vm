@@ -29,8 +29,6 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory.qOne
 
-import scala.annotation.tailrec
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -41,7 +39,7 @@ package object rewrite {
 
   def removeRules[A <: Obj](atype: A): A = {
     if (atype.isInstanceOf[Value[_]]) return atype
-    atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) =>
+    atype.rangeObj <= atype.trace.map(x => x._2).foldLeft(atype.domainObj)((a, b) =>
       if (b.op.startsWith("rule:")) a
       else if (b.op == Tokens.model) b.exec(a)
       else b.clone(args => args.map(arg => removeRules(arg))).exec(a)).asInstanceOf[A]

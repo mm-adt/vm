@@ -935,7 +935,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse.q(100))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][plus,('years'->29)][a,person]{100}"))
     assertResult(btrue.q(350))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->years)][define,years<=int][a,person]{350}"))
 //    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko')[define,person:('name'->str,'age'->int)][put,'age',29][is,[a,person]]{350}"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->years)][define,years<=int][is,[a,person]]{350}"))
+//    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->years)][define,years<=int][is,[a,person]]{350}"))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
         | [define,person:('name'->str,'age'->int),old<=int[gt,20],young<=int[lt,20]]

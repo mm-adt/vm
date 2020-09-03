@@ -25,12 +25,10 @@ package org.mmadt.processor.inst.trace
 import org.mmadt.language.LanguageException
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
-import org.mmadt.language.obj.`type`.__.symbolToToken
-import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
-import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.`type`.__.{symbolToToken, _}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.language.obj.{Bool, Int}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
@@ -78,6 +76,12 @@ class DefineInstTest extends BaseInstTest(
     testing(lst(), a('vec), true, "()[a,vec]"),
     testing(lst(), as('vec), (lst() `;` 0).named("vec"), "()[as,vec]"),
     testing(1 `;` 2, as('vec), (((1 `;` 2) `;`) `;` 2).named("vec"), "(1;2)[as,vec]"),
+  ), testSet("[define] table test w/ mm", MM,
+    comment("midway-define]"),
+    testing(2, define('x <= int.plus(1)), 2, "2[define,x<=int+1]"),
+    testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
+    testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
+    // testing(2, define('x <= int.plus(1)).as('x), 'x(3), "2[define,x<=int+1][as,x]"),
   )
 ) {
   println('silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist)))))
