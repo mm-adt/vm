@@ -74,11 +74,9 @@ public interface mmADTScriptEngine extends ScriptEngine {
     }
 
     public default Optional<Obj> evalMeta(String line) {
-        if (line.trim().equals(Tokens.COLON())) {
-            final Obj obj = (Obj) this.getContext().getBindings(ScriptContext.ENGINE_SCOPE).get(Tokens.COLON());
-            this.getContext().getBindings(ScriptContext.ENGINE_SCOPE).remove(Tokens.COLON());
-            return Optional.ofNullable(obj);
-        } else {
+        this.getContext().getBindings(ScriptContext.ENGINE_SCOPE).remove(Tokens.COLON());
+        if (line.trim().equals(Tokens.COLON())) return Optional.empty();
+        else {
             final Obj newValue = this.eval(line.trim().substring(1));
             this.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.COLON(), newValue);
             return Optional.ofNullable(newValue);

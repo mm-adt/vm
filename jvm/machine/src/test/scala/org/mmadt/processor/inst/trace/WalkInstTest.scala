@@ -56,7 +56,7 @@ object WalkInstTest {
    * z-->y-->x-->w-->v
    * \------/
    */
-  private val CHAIN_MODEL: Model = ModelOp.EMPTY
+  private val CHAIN_MODEL: Model = ModelOp.MM
     .defining('ztype <= int)
     .defining('ytype <= 'ztype.id)
     .defining('xtype <= 'ytype.id)

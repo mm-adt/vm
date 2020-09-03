@@ -53,19 +53,13 @@ object AsOp extends Func[Obj, Obj] {
   private def autoAsType(source: Obj, target: Obj, rangeType: Obj, domain: Boolean): Obj = {
     if (!target.alive) return zeroObj
     if (!source.alive) return source
+    if (source.isInstanceOf[Strm[Obj]]) return source.toStrm(x => AsOp.autoAsType(x, target, rangeType, domain))
+    if (source.name.equals(target.name) || __.isAnonObj(target) || source.model.vars(target.name).isDefined) return source
+    if (!source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
     source match {
-      case value: Strm[Obj] => value(x => AsOp.autoAsType(x, target, rangeType, domain))
-      case _ =>
-        if (source.name.equals(target.name) || __.isAnonObj(target) || source.model.vars(target.name).isDefined) source
-        else {
-          if (!target.model.typeExists(source) && // TODO: this should be required (the model needs to always bind to the source
-            !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
-          source match {
-            case _: Value[_] => internalConvertAs(source, target).hardQ(source.q)
-            case _: Type[_] if domain => target.update(source.model)
-            case _: Type[_] => target <= source
-          }
-        }
+      case _: Value[_] => internalConvertAs(source, target).hardQ(source.q)
+      case _: Type[_] if domain => target.update(source.model)
+      case _: Type[_] => target <= source
     }
   }
 

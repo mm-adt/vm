@@ -30,8 +30,9 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.LoadOp
-import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
+import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -937,21 +938,15 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).q(350))(engine.eval("('name'->'marko','age'->29)[define,person:('name'->str,'age'->years)][define,years<=int][is,[a,person]]{350}"))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
-        | [define,person:('name'->str,'age'->int)]
-        | [define,old<=int[gt,20]]
-        | [define,young<=int[lt,20]]
+        | [define,person:('name'->str,'age'->int),old<=int[gt,20],young<=int[lt,20]]
         | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
     assertResult(str("young guy"))(engine.eval(
       """ ('name'->'ryan','age'->2)
-        | [define,person:('name'->str,'age'->int)]
-        | [define,old<=int[gt,20]]
-        | [define,young<=int[lt,20]]
+        | [define,person:('name'->str,'age'->int),old<=int[gt,20],young<=int[lt,20]]
         | [is,[a,person]][.age[is,old] -> 'old guy' , .age[is,young] -> 'young guy']""".stripMargin))
     assertResult(zeroObj)(engine.eval(
       """ ('name'->'marko','age'->29)
-        | [define,person:('name'->str,'age'->young)]
-        | [define,old<=int[is>20]]
-        | [define,young<=int[is<20]]
+        | [define,person:('name'->str,'age'->young),old<=int[is>20],young<=int[is<20]]
         | [is,[a,person]][.age+-100[is>0] -> 'old guy' , .age+-100[is<0] -> 'young guy']""".stripMargin))
     assertResult(str("old guy"))(engine.eval(
       """ ('name'->'marko','age'->29)
@@ -959,13 +954,11 @@ class mmlangScriptEngineTest extends FunSuite {
         | [is,[a,person]][[is.age>20] -> 'old guy' , [is.age<20] -> 'young guy']""".stripMargin))
     assertResult(str("old guy"))(engine.eval(
       """ [('name'->'marko','age'->-29),('name'->'marko','age'->29)]
-        | [define,nat<=int[is>0]]
-        | [define,person:('name'->str,'age'->nat)]
+        | [define,nat<=int[is>0],person:('name'->str,'age'->nat)]
         | [is,[a,person]][[is,[get,'age'][gt,20]] -> 'old guy' , [is,[get,'age'][lt,20]] -> 'young guy']""".stripMargin))
     assertResult(rec(str("name") -> str("ryan"), str("age") -> int(2)))(engine.eval(
       """ [('name'->'ryan','age'->2),('name'->'marko','age'->-29)]
-        | [define,nat<=int[is>0]]
-        | [define,person:('name'->str,'age'->nat)]
+        | [define,nat<=int[is>0],person:('name'->str,'age'->nat)]
         | [is,[a,person]]""".stripMargin))
     assertResult(zeroObj)(engine.eval(
       """ ('name'->'marko','age'->-29)
@@ -979,9 +972,7 @@ class mmlangScriptEngineTest extends FunSuite {
         | [is,[a,person]]""".stripMargin))
     assertResult(zeroObj)(engine.eval(
       """ ('name'->'marko','age'->29)
-        | [define,person:('name'->str,'age'->int)]
-        | [define,old<=int[is>20]]
-        | [define,young<=int[is<20]]
+        | [define,person:('name'->str,'age'->int),old<=int[is>20],young<=int[is<20]]
         | [is,[a,person]][is.age<0][.age+-100[is,[a,old]] -> 'old guy' , .age+-100[is,[a,young]] -> 'young guy']""".stripMargin))
     ///////////////////
     assertResult(btrue `,` bfalse `,` btrue)(engine.eval(
@@ -998,8 +989,7 @@ class mmlangScriptEngineTest extends FunSuite {
             |   -<([a,nat],[a,z],[a,o])""".stripMargin).range.toString) */
     assertResult(int(11))(engine.eval(
       """ 10
-        | [define,z<=int[zero]]
-        | [define,o<=int[one]]
+        | [define,z<=int[zero],o<=int[one]]
         | [plus,z][plus,o]""".stripMargin))
     assertResult(int(1).named("o"))(engine.eval(
       """ 10

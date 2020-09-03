@@ -111,7 +111,7 @@ public class LanguageException extends VmException {
     }
 
     public static LanguageException typeNotInModel(final Obj aobj, final Type<?> atype, final String modelName) {
-        return new LanguageException(aobj + " can not be a " + atype.name() + " in the model " + modelName);
+        return new LanguageException(atype.name() + " is not a type in model " + modelName);
     }
 
     public static class Poly {
