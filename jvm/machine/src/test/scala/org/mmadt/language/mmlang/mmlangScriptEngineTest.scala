@@ -895,7 +895,6 @@ class mmlangScriptEngineTest extends FunSuite {
     //assertResult(((1 `,` 1).q(2)`,`).q(2))(engine.eval("1(-<(_,_))^(3)"))
     assertResult(int(11))(engine.eval("1(+2)^(<10)"))
     assertResult(int(11))(engine.eval("1(+1)^(10)"))
-    println(engine.eval("[[[1,2],[3,4]],[[5,6],[7,8]]](>-)^(3)[path]"))
   }
 
   test("combine parsing") {
@@ -906,7 +905,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("(8,(3,10))")(engine.eval("1-<(+1,+2)=(*4,-<(_,+7))").toString)
     assertResult("(8,10,(16,18))")(engine.eval("1-<(+1,+2,+3-<(+4,+5))=(+6,+7,=(+8,+9))").toString)
     //assertResult("(8,(3,10))WRONG")(engine.eval("1-<(+1,+2)=(*4,-<(_,+7))=(_,_)").toString)
-    assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("(1,(2,(3,4,(5,6,7))))(>-)^([a,lst])"))
+    assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("(1,(2,(3,4,(5,6,7))))([lst{?} -> [merge] | _ -> int])^([a,lst])"))
     //assertResult("((1,1),(1,1)),((3,3),(3,3)),(((1,2),(3,4)),((1,2),(3,4))){3}")(engine.eval("[1,3,((1,2),(3,4))](-<(_,_))^([a,(int,int)])").toString) // TODO: strm q
     //assertResult(int(1, 2, 3))(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
   }
@@ -1099,9 +1098,9 @@ class mmlangScriptEngineTest extends FunSuite {
     }*/
 
   test("frobenius axioms parsing") {
-    assertResult(int(1) `;` 1)(engine.eval("(1;1)=(_;>-)=(>-;_)"))
-    assertResult(int(1) `;` 1)(engine.eval("(1;1)=(>-;_)=(_;>-)"))
-    assertResult((int(1) `;` 1).q(2))(engine.eval("(1,1)>--<(_;_)"))
+    assertResult(1 `;` 2)(engine.eval("(1,2)-<(_,>-)=(>-,_)=(_;_)"))
+    assertResult(1 `;` 2)(engine.eval("(1,2)-<(>-,_)=(_,>-)=(_;_)"))
+    assertResult((1 `;` 1).q(2))(engine.eval("(1,1)>--<(_;_)"))
     assertResult(int(1).q(2))(engine.eval("1-<(_,_)>-"))
     // complex quantifier examples
     assertResult(int(1).q(4))(engine.eval("1{2}-<(_,_)>-"))

@@ -29,6 +29,7 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.BaseInstTest.{bindings, engine}
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.processor.inst.trace.WalkInstTest._
 import org.mmadt.storage.StorageFactory.{int, lst, str, strm}
@@ -78,10 +79,10 @@ class WalkInstTest extends BaseInstTest(
     testing(5, int.walk('moday), lst(int `;` 'moday) <= 5.walk('moday), "5 => int[walk,moday]"),
     testing(5, int.walk('date), lst((int `;` 'moday `;` 'date)) <= 5.walk('date), "5 ~> date"),
     comment("int-<walk>-"),
-    IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
-    IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int-<:[walk,nat][head]:>-[merge]"),
-    IGNORING("eval-5")(50, int.split(int.walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge][merge]"),
-    IGNORING("eval-5")(50, split(walk('nat).head).merge, 'nat(50), "50 => [split,[walk,nat][head]][merge][merge]"), // TODO: use exec() in parser to compose monoid
+    IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge]"),
+    IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int-<:[walk,nat][head]:>-"),
+    IGNORING("eval-5")(50, int.split(walk('nat).head).merge, 'nat(50), "50 => int[split,[walk,nat][head]][merge]"),
+    IGNORING("eval-5")(50, split(walk('nat).head).merge, 'nat(50), "50 => [split,[walk,nat][head]][merge]"),
     IGNORING("eval-5")(50, int.split(walk('moday).head).merge, 'moday(50 `;` 50), "50 => int[split,[walk,moday][head]][merge]"),
     IGNORING("eval-5")(int(50, 100), int.q(2).split(walk('moday).head).merge[Obj], strm('moday(100 `;` 100), 'moday(50 `;` 50))),
     comment("int=>date"),
@@ -113,6 +114,18 @@ class WalkInstTest extends BaseInstTest(
     println(5.model(CHAIN_MODEL).walk('vtype))
     println(CHAIN_MODEL)
     //println(BaseInstTest.engine.eval("int => int[walk,nat]", BaseInstTest.bindings(MODEL)))
+  }
+  test("test triangle model") {
+    val MODEL_3: Model = ModelOp.EMPTY
+      .defining('A <= int)
+      .defining('B <= 'A.id)
+      .defining('C <= 'B.id)
+      .defining('A <= 'C.id)
+    assertResult(lst(int `;` 'A `;` 'B))(5.model(MODEL_3).walk('B).range)
+    assertResult(lst(int `;` 'A `;` 'B `;` 'C))(5.model(MODEL_3).walk('C).range)
+
+    println(engine.eval("50 => int[split,[walk,nat][head]][merge]",bindings(MODEL)))
+    println(engine.eval("5 int[split,[walk,xtype][head]]",bindings(CHAIN_MODEL)))
   }
 }
 

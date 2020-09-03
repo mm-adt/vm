@@ -26,7 +26,8 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 
-import scala.io.Source
+import scala.io.{BufferedSource, Source}
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,7 +41,7 @@ package object storage {
   private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
 
   def model(name: String): Model = {
-    val source = Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)
+    val source = Try[BufferedSource](Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)).getOrElse(Source.fromFile("data/model/" + name + ".mm"))
     try {
       val rangeModel: Model = mmlang.parse(source.getLines().foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
       model(rangeModel)

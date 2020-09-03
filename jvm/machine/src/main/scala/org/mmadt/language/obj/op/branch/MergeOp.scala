@@ -42,10 +42,10 @@ object MergeOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
       case apoly: Poly[_] if apoly.ctype => __.via(start, inst)
-      case apoly: PolyValue[_, _] => BranchInstruction.mergeBranches(apoly, inst)
+      case apoly: PolyValue[_, _] => BranchInstruction.mergeBranches(apoly, inst).clone(via = (start, inst))
       case apoly: LstType[_] if apoly.isSerial && apoly.glist.lastOption.exists(x => x.isInstanceOf[Value[_]]) => apoly.glist.last.q(inst.q) // TODO: hack cause of [path]
       case apoly: PolyType[_, _] => BranchInstruction.brchType[Obj](apoly).hardQ(q => q.mult(inst.q)).clone(via = (start, inst))
-      case _ => start.via(start, inst)
+      case _: __ => start.via(start, inst)
     }
   }
 }
