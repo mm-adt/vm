@@ -24,11 +24,11 @@ package org.mmadt.storage
 
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj.tupleToRecYES
+import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.{Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -36,20 +36,21 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest extends FunSuite {
-  val tp3_kv: Type[Obj] = __.model(model(TPKV))
-  val kv: Type[Obj] = __.model(model(KV))
-  val tp3: Type[Obj] = __.model(model(TP))
+  val tp3_kv:Type[Obj] = __.model(model(TPKV))
+  val kv:Type[Obj] = __.model(model(KV))
+  val tp3:Type[Obj] = __.model(model(TP))
 
   test("[tp3] model") {
     val record1a = rec(
       str("id") -> int(1),
       str("label") -> str("person"))
-    assertResult(record1a.named("vertex"))(record1a ==> tp3 `=>` as('vertex))
+    assertResult('vertex(record1a))(record1a ==> tp3 `=>` as('vertex))
     ///
     val record2a = str("id") -> int(1) `_,`
       str("label") -> str("person") `_,`
       str("properties") -> (str("name") -> str("marko"))
-    val record2b: Rec[_, _] = 'vertex(str("id") -> int(1) `_,` str("label") -> str("person") `_,` str("properties") -> 'property(str("name") -> str("marko")))
+    val record2b:Rec[_, _] = 'vertex(str("id") -> int(1) `_,` str("label") -> str("person") `_,` str("properties") -> 'property(str("name") -> str("marko")))
+    assertResult(record2b)(record2a ==> tp3 `=>` __("vertex"))
     assertResult(record2b)(record2a ==> tp3 `=>` as('vertex))
     ///
     val record3 = 'vertex(rec(
@@ -68,16 +69,17 @@ class ModelTest extends FunSuite {
 
 
   test("[tp3<=kv] functor") {
-    val record1a: Rec[StrValue, Obj] =
+    val record1a:Rec[StrValue, Obj] =
       str("k") -> (str("vertex") `,` int(1)) `_,`
         str("v") -> rec(str("name") -> str("marko"))
     val record1b =
       'vertex(str("id") -> int(1) `_,`
         str("label") -> str("vertex") `_,`
         str("properties") -> 'property(str("name") -> str("marko")))
-    assertResult(record1a.named("kv"))(record1a ==> kv `=>` as('kv))
+    assertResult('kv(record1a))(record1a ==> kv `=>` as('kv))
     assertResult(record1b)(record1a ==> kv `=>` as('kv) `=>` tp3 `=>` tp3_kv `=>` as('vertex))
     //
+
     val record2a =
       str("k") -> (str("vertex") `,` int(1)) `_,`
         str("v") -> (str("label") -> str("person") `_,` str("name") -> str("marko"))
@@ -88,11 +90,14 @@ class ModelTest extends FunSuite {
     assertResult('kv(record2a))(record2a ==> kv `=>` as('kv))
     assertResult(record2b)(record2a ==> kv `=>` as('kv) `=>` tp3_kv `=>` as('vertex))
     assertResult(record2b)(record2a ==> tp3_kv `=>` as('vertex))
-    //
-    //val edge1: Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("outV") -> int(1), str("inV") -> int(1)))
-    //val store: Lst[Rec[StrValue, Obj]] = lst(",", strm(List(record1a, edge1)))
-    //val g: Type[Obj] = all.as(__("graph"))
-    //println(g)
-    //println(store ==> g)
+    // (edge<=kv:('k'->(is=='edge',obj),'v'->('link'->(obj;obj),str->obj{*}))<x>-<
+    val edge1:Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("link") -> (1 `;` 1)))
+    val store:Lst[Rec[StrValue, Obj]] = record1a `;` edge1
+    val s:Obj = store ==> kv `=>` 'store
+    println(s)
+    assertResult(btrue)(s ==> kv `=>` combine(__`;`).a('store))
+    val g:Obj = s ==> tp3_kv `=>` 'graph
+    println(g)
+    assertResult(btrue)(g ==> tp3 `=>` a('graph))
   }
 }

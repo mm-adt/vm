@@ -34,45 +34,46 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class __(val name: String = Tokens.anon, val q: IntQ = qOne, val via: ViaTuple = rootVia) extends Type[__] {
-  override def clone(name: String = this.name, g: Any = null, q: IntQ = this.q, via: ViaTuple = this.via): this.type = new __(name, q, via).asInstanceOf[this.type]
-  def combine(other: Obj): this.type = this.via(this, CombineOp(other))
-  def plus(other: Obj): this.type = this.via(this, PlusOp(other))
-  def mult(other: Obj): this.type = this.via(this, MultOp(other))
-  def neg: this.type = this.via(this, NegOp())
-  def or(other: Obj): this.type = this.via(this, OrOp(other))
-  def and(other: Obj): this.type = this.via(this, AndOp(other))
-  def one: this.type = this.via(this, OneOp())
-  def zero: this.type = this.via(this, ZeroOp())
-  def gt(other: Obj): this.type = this.via(this, GtOp(other))
-  def gte(other: Obj): this.type = this.via(this, GteOp(other))
-  def lt(other: Obj): this.type = this.via(this, LtOp(other))
-  def lte(other: Obj): this.type = this.via(this, LteOp(other))
-  def head: this.type = this.via(this, HeadOp())
-  def tail: this.type = this.via(this, TailOp())
-  def last: this.type = this.via(this, LastOp())
-  def merge: this.type = this.via(this, MergeOp())
-  def empty: this.type = this.via(this, EmptyOp())
-  def `>-`: this.type = this.merge
-  override def not(other: Obj): Bool = bool.via(this, NotOp(other))
+class __(val name:String = Tokens.anon, val q:IntQ = qOne, val via:ViaTuple = rootVia) extends Type[__] {
+  override def clone(name:String = this.name, g:Any = null, q:IntQ = this.q, via:ViaTuple = this.via):this.type = new __(name, q, via).asInstanceOf[this.type]
+  def combine(other:Obj):this.type = this.via(this, CombineOp(other))
+  def plus(other:Obj):this.type = this.via(this, PlusOp(other))
+  def mult(other:Obj):this.type = this.via(this, MultOp(other))
+  def neg:this.type = this.via(this, NegOp())
+  def or(other:Obj):this.type = this.via(this, OrOp(other))
+  def and(other:Obj):this.type = this.via(this, AndOp(other))
+  def one:this.type = this.via(this, OneOp())
+  def zero:this.type = this.via(this, ZeroOp())
+  def gt(other:Obj):this.type = this.via(this, GtOp(other))
+  def gte(other:Obj):this.type = this.via(this, GteOp(other))
+  def lt(other:Obj):this.type = this.via(this, LtOp(other))
+  def lte(other:Obj):this.type = this.via(this, LteOp(other))
+  def head:this.type = this.via(this, HeadOp())
+  def tail:this.type = this.via(this, TailOp())
+  def last:this.type = this.via(this, LastOp())
+  def merge:this.type = this.via(this, MergeOp())
+  def empty:this.type = this.via(this, EmptyOp())
+  def `>-`:this.type = this.merge
+  override def not(other:Obj):Bool = bool.via(this, NotOp(other))
   ///
-  def get(key: Obj): this.type = this.via(this, GetOp(key))
-  def get[BB <: Obj](key: Obj, btype: BB): BB = btype.via(this, GetOp(key, btype))
-  def put(key: Obj, value: Obj): this.type = this.via(this, PutOp(key, value))
-  def inst: Inst[_ <: Obj, _ <: Obj] = this.via._2
+  def get(key:Obj):this.type = this.via(this, GetOp(key))
+  def get[BB <: Obj](key:Obj, btype:BB):BB = btype.via(this, GetOp(key, btype))
+  def put(key:Obj, value:Obj):this.type = this.via(this, PutOp(key, value))
+  def inst:Inst[_ <: Obj, _ <: Obj] = this.via._2
 }
 
 object __ extends __(Tokens.anon, qOne, rootVia) {
-  @inline implicit def symbolToToken(ground: Symbol): __ = __(ground.name)
-  @inline implicit def symbolToRichToken(ground: Symbol): RichToken = new RichToken(ground)
-  class RichToken(val ground: Symbol) {
-    final def apply(obj: Obj): obj.type = obj.named(ground.name)
-    final def unapply(arg: RichToken): __ = __(ground.name)
+  @inline implicit def symbolToToken(ground:Symbol):__ = __(ground.name)
+  @inline implicit def symbolToRichToken(ground:Symbol):RichToken = new RichToken(ground)
+  class RichToken(val ground:Symbol) {
+    final def :#(aobj:Obj):aobj.type = this (aobj)
+    final def apply(aobj:Obj):aobj.type = aobj.named(ground.name)
+    final def unapply(arg:RichToken):__ = __(ground.name)
   }
-  def apply(name: String): __ = __.named(name)
-  def isAnon(aobj: Obj): Boolean = aobj.isInstanceOf[__] && aobj.name.equals(Tokens.anon)
-  def isToken(aobj: Obj): Boolean = aobj.isInstanceOf[__] && !aobj.name.equals(Tokens.anon) && !aobj.name.equals(Tokens.obj)
-  def isAnonToken(aobj: Obj): Boolean = __.isAnon(aobj) || __.isToken(aobj)
-  def isAnonObj(aobj: Obj): Boolean = __.isAnon(aobj) || aobj.name.equals(Tokens.obj)
+  def apply(name:String):__ = __.named(name)
+  def isAnon(aobj:Obj):Boolean = aobj.isInstanceOf[__] && aobj.name.equals(Tokens.anon)
+  def isToken(aobj:Obj):Boolean = aobj.isInstanceOf[__] && !aobj.name.equals(Tokens.anon) && !aobj.name.equals(Tokens.obj)
+  def isAnonToken(aobj:Obj):Boolean = __.isAnon(aobj) || __.isToken(aobj)
+  def isAnonObj(aobj:Obj):Boolean = __.isAnon(aobj) || aobj.name.equals(Tokens.obj)
 }
 

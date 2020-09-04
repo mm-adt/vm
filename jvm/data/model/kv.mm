@@ -1,2 +1,2 @@
-('type' -> (store -> (store<=kv{*}),
-            kv    -> (kv:('k'->obj,'v'->obj)))) <= mm
+('type' -> (store -> (store<=(kv;kv)=(_)),
+            kv    -> (kv:('k'->_,'v'->_)))) <= mm
