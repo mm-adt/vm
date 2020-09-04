@@ -1334,21 +1334,6 @@ image::date-example.svg[]
 
 ===== Dependent Types
 
-[exec,none=""]
-----
-:[define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),       %
-                single<=vec:(lst,is<4).0[tail][head], %
-                single<=vec:(lst,is>3).0[head],       %
-                single<=int]
-(1;2;3)   => vec                                    //<1>
-(1;2;3)   => vec => single                          //<2>
-(1;2;3;4) => vec                                    //<3>
-(1;2;3;4) => vec => single                          //<4>
-----
-<1> A `;-lst` of 3 terms is morphed into a `vec` using the `vec\<=lst` type.
-<2> The `vec` is morphed into a `single` using the first `single\<=vec` type.
-<3> A `;-lst` of 4 terms is morphed into a `vec`.
-<4> The `vec` is morphed into a `single` using the second `single\<=vec` type.
 
 ===== Recursive Types
 

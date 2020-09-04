@@ -26,6 +26,7 @@ import java.io.File
 import java.util
 import java.util.stream.{Collectors, IntStream}
 
+import javax.script.ScriptContext
 import org.asciidoctor.ast.{ContentModel, StructuralNode}
 import org.asciidoctor.extension.{BlockProcessor, Contexts, Name, Reader}
 import org.asciidoctor.jruby.{AsciiDocDirectoryWalker, DirectoryWalker}
@@ -40,10 +41,10 @@ import scala.util.{Failure, Success, Try}
 @Name("exec")
 @Contexts(Array(Contexts.LISTING))
 @ContentModel(ContentModel.RAW)
-class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, Object]) extends BlockProcessor {
+class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Object]) extends BlockProcessor {
   val STYLE = "source"
   val LANGUAGE = "mmlang"
-  lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage(LANGUAGE).getEngine.get()
+  lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage(LANGUAGE).getEngine.get()
   //////////////////////////////////////
   val PROMPT = "prompt" // String
   val EVAL = "eval" // Boolean
@@ -51,15 +52,15 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
   val EXCEPTION = "exception" // String
   val LINE_BREAK = "linebreak" // String
 
-  override def process(parent: StructuralNode, reader: Reader, attributes: java.util.Map[String, Object]): Object = {
-    val builder: StringBuilder = new StringBuilder
-    val query: StringBuilder = new StringBuilder
+  override def process(parent:StructuralNode, reader:Reader, attributes:java.util.Map[String, Object]):Object = {
+    val builder:StringBuilder = new StringBuilder
+    val query:StringBuilder = new StringBuilder
     val eval = java.lang.Boolean.valueOf(attributes.getOrDefault(EVAL, Tokens.btrue).toString)
     val prompt = attributes.getOrDefault(PROMPT, engine.getFactory.getLanguageName + "> ").toString
     val none = attributes.getOrDefault(NONE, prompt + "\n").toString
     val exception = attributes.getOrDefault(EXCEPTION, Tokens.blank).toString
     val linebreak = attributes.getOrDefault(LINE_BREAK, "%").toString
-
+    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).remove(Tokens.::)
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
       if (w.trim.isBlank)
         builder.append("\n")
@@ -77,7 +78,7 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
             case Failure(e) if e.getClass.getSimpleName.equals(exception) =>
               if (eval) {
                 (e match {
-                  case _: LanguageException => builder.append("language error: ")
+                  case _:LanguageException => builder.append("language error: ")
                   case _ => builder.append("error: ")
                 }).append(e.getLocalizedMessage).append("\n")
               } else
@@ -98,9 +99,9 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
         }
       }
     })
-    engine.eval(":")
+    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).remove(Tokens.::)
     println(builder)
-    val endAttributes: java.util.Map[String, Object] = new util.HashMap[String, Object]
+    val endAttributes:java.util.Map[String, Object] = new util.HashMap[String, Object]
     endAttributes.putAll(config)
     endAttributes.putAll(JavaConverters.mapAsJavaMap(Map("style" -> STYLE, "language" -> LANGUAGE)))
     this.createBlock(parent, "listing", builder.toString().trim(), endAttributes)
@@ -108,15 +109,15 @@ class ScriptEngineBlockProcessor(astring: String, config: java.util.Map[String, 
 }
 
 object ScriptEngineBlockProcessor {
-  val source: String = "machine/src/asciidoctor/"
-  val target: String = "machine/target/asciidoctor/"
+  val source:String = "machine/src/asciidoctor/"
+  val target:String = "machine/target/asciidoctor/"
 
-  def main(args: Array[String]): Unit = {
+  def main(args:Array[String]):Unit = {
     val asciidoctor = Asciidoctor.Factory.create()
     asciidoctor.readDocumentHeader(new File(source + "docinfo.html"))
     // RubyUtils.loadRubyClass(JRubyRuntimeContext.get(asciidoctor), new FileInputStream("/Library/Ruby/Gems/2.6.0/gems/asciidoctor-latex-1.5.0.17.dev/lib/asciidoctor-latex.rb"))
     asciidoctor.requireLibrary("asciidoctor-diagram")
-    val directoryWalker: DirectoryWalker = new AsciiDocDirectoryWalker(source);
+    val directoryWalker:DirectoryWalker = new AsciiDocDirectoryWalker(source);
     val asciidocFiles = directoryWalker.scan();
     JavaConverters.collectionAsScalaIterable[File](asciidocFiles).map(z => {
       println("Current file: " + z)
