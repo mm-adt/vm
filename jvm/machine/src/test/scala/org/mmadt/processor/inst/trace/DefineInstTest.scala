@@ -25,7 +25,7 @@ package org.mmadt.processor.inst.trace
 import org.mmadt.language.LanguageException
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
-import org.mmadt.language.obj.`type`.__.{symbolToToken, symbolToRichToken,_}
+import org.mmadt.language.obj.`type`.__.{branch, symbolToRichToken, symbolToToken, _}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
@@ -80,8 +80,10 @@ class DefineInstTest extends BaseInstTest(
     comment("midway-define]"),
     testing(2, define('x <= int.plus(1)), 2, "2[define,x<=int+1]"),
     testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
-    testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
-    // testing(2, define('x <= int.plus(1)).as('x), 'x(3), "2[define,x<=int+1][as,x]"),
+    testing(int(2, 3, 4.q(2)), define('x <= int.plus(1)).plus('x), int(5, 7, 9.q(2)), "[2,3,4{2}][define,x<=int+1][plus,x]"),
+    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x]"),
+    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x<=x]"),
+    // testing(int(-2,2.q(5)), int.q(6).define('y<=int.plus(-1000),'x <=int.plus(1).as('y)).branch('x`,`), int(-998,1002.q(5)), "[-2,2{5}] => int{6}[define,y<=int+-1000,x<=int+1[as,y]][x]"),
   )
 ) {
   println('silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist)))))
