@@ -26,7 +26,7 @@ import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -58,11 +58,11 @@ class GetInstTest extends BaseInstTest(
     testing(1 `;` 2 `;` 3, lst.get(get(0, int)), 2, "(1;2;3) => lst[get,.0,int]"),
     testing(1 `;` 2 `;` 3, (int `;` int `;` int).get(get(0).plus(1)), 3, "(1;2;3) => (int;int;int)[get,.0+1]"),
     comment(";-lst exceptions"),
-    testing(lst(), get(0), LanguageException.Poly.noIndexValue(lst(), 0), "()[get,0]"),
-    testing(lst(), get(0), LanguageException.Poly.noIndexValue(lst(), 0), "().0"),
-    testing(1 `;` 2 `;` 3, get(10), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, 10), "(1;2;3).10"),
-    testing(1 `;` 2 `;` 3, get(-1), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, -1), "(1;2;3).-1"),
-    testing(1 `;` 2 `;` 3, get(-1), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, -1), "(1;2;3)[get,-1]"),
+    excepting(lst(), get(0), LanguageException.Poly.noIndexValue(lst(), 0), "()[get,0]"),
+    excepting(lst(), get(0), LanguageException.Poly.noIndexValue(lst(), 0), "().0"),
+    excepting(1 `;` 2 `;` 3, get(10), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, 10), "(1;2;3).10"),
+    excepting(1 `;` 2 `;` 3, get(-1), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, -1), "(1;2;3).-1"),
+    excepting(1 `;` 2 `;` 3, get(-1), LanguageException.Poly.noIndexValue(1 `;` 2 `;` 3, -1), "(1;2;3)[get,-1]"),
   ),
   testSet("[get] |-lst test",
     comment("|-lst int index"),
@@ -71,8 +71,8 @@ class GetInstTest extends BaseInstTest(
     testing("a".q(10) `|` "b".q(0) `|` "c", get(0).q(4), "a".q(40), "('a'{10}|'b'{0}|'c').0{4}"), // TODO: should we follow the infix convention of .{4}0 ?
     testing("a".q(0) `|` "b" `|` "c", get(0), "b", "('a'{0}|'b'|'c').0"),
     comment("|-lst exceptions"),
-    testing("a" `|` "b" `|` "c", get(1), LanguageException.Poly.noIndexValue("a" `|` "b" `|` "c", 1), "('a'|'b'|'c')[get,1]"),
-    testing("a".q(0) `|` "b".q(0), get(0), LanguageException.Poly.noIndexValue("a".q(0) `|` "b".q(0), 0), "('a'{0}|'b'{0}).0"),
+    excepting("a" `|` "b" `|` "c", get(1), LanguageException.Poly.noIndexValue("a" `|` "b" `|` "c", 1), "('a'|'b'|'c')[get,1]"),
+    excepting("a".q(0) `|` "b".q(0), get(0), LanguageException.Poly.noIndexValue("a".q(0) `|` "b".q(0), 0), "('a'{0}|'b'{0}).0"),
   ),
   testSet("[get] ,-rec test",
     comment(",-rec value index"),

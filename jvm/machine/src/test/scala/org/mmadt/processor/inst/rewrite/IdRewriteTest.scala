@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.rewrite
 
 
 import org.mmadt.language.obj.Obj.intToInt
-import org.mmadt.language.obj.`type`.__.{id, one, plus, q, zero}
+import org.mmadt.language.obj.`type`.__.{id, one, plus, zero}
 import org.mmadt.language.obj.op.RewriteInstruction._
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}

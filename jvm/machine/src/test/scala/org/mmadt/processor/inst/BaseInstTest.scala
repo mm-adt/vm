@@ -71,7 +71,7 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Result
       ("eval-4", s => s ==> (middle.domain ==> middle) match {
         case aobj: Obj if middle.via.exists(x => List(Tokens.split, Tokens.lift).contains(x._2.op)) => aobj
         case atype: Type[_] => atype.domainObj ==> atype
-        case avalue: Value[Obj] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
+        case avalue: Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
       }),
       ("eval-5", s => {
         val result = s ==> (middle.domain ==> middle)

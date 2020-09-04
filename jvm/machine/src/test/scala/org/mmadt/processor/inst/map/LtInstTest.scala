@@ -26,7 +26,7 @@ import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.LtOp
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
 
 /**
@@ -60,6 +60,6 @@ class LtInstTest extends BaseInstTest(
     testing(real(1.0, 2.0, 3.0), lt(real), bool(false, false, false), "[1.0,2.0,3.0] < real"),
     testing(real(1.0, 2.0, 3.0), lt(mult(real)), bool(false, true, true), "[1.0,2.0,3.0][lt,[mult,real]]"),
     comment("exception"),
-    testing(false, lt(true), LanguageException.unsupportedInstType(false, LtOp(true)), "false < true")
+    excepting(false, lt(true), LanguageException.unsupportedInstType(false, LtOp(true)), "false < true")
   )) {
 }

@@ -25,13 +25,13 @@ package org.mmadt.processor.inst.trace
 import org.mmadt.language.LanguageException
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
-import org.mmadt.language.obj.`type`.__.{symbolToToken, _}
+import org.mmadt.language.obj.`type`.__.{symbolToToken, symbolToRichToken,_}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.language.obj.{Bool, Int}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.processor.inst.trace.DefineInstTest.{MODEL, myListType, natType}
 import org.mmadt.storage.StorageFactory._
 
@@ -53,14 +53,14 @@ class DefineInstTest extends BaseInstTest(
     testing(-2, a('nat), false),
     testing(-2, int.a('nat.plus(100)), false),
     testing(2, as('nat).plus(0), 2.named("nat")),
-    testing(2, as('nat).plus(-10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10]"),
-    testing(2, as('nat).plus(-10).plus(10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10][plus,10]"),
+    excepting(2, as('nat).plus(-10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10]"),
+    excepting(2, as('nat).plus(-10).plus(10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10][plus,10]"),
     comment("mylist"),
     testing(1 `;` (1 `;` 1), lst.a('mylist), true, "(1;(1;1)) => lst[a,mylist]"),
     testing(1 `,` (1 `,` 2), a('mylist), false),
     testing(1 `,` (2 `,` 1), a('mylist), false),
     testing(1 `,` (1 `,` 2), a('mylist), false),
-    testing(1 `;` (1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` (1 `;` 1)), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
+    excepting(1 `;` (1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` (1 `;` 1)), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
     comment("ilist"),
     testing(lst(), a('ilist), true, "()[a,ilist]"),
     testing(1 `;`, a('ilist), true, "(1)[a,ilist]"),

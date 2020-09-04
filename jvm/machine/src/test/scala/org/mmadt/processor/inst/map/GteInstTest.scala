@@ -27,7 +27,7 @@ import org.mmadt.language.obj.Obj.{booleanToBool, intToInt}
 import org.mmadt.language.obj.`type`.__.{gte, mult}
 import org.mmadt.language.obj.op.map.GteOp
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.storage.StorageFactory.{bool, int}
 
 class GteInstTest extends BaseInstTest(
@@ -61,5 +61,5 @@ class GteInstTest extends BaseInstTest(
     testing(real(1.0, 2.0, 3.0).gte(real), bool(true, true, true), "strm"),
     testing(real(1.0, 2.0, 3.0).gte(__.mult(real)), bool(true, false, false), "strm"),*/
     comment("exceptions"),
-    testing(false, gte(true), LanguageException.unsupportedInstType(false, GteOp(true)), "false >= true")
+    excepting(false, gte(true), LanguageException.unsupportedInstType(false, GteOp(true)), "false >= true")
   ))

@@ -80,7 +80,7 @@ class GtInstTest extends BaseInstTest(
     testing(str("a", "b", "c"), gt("b").q(10), bool(false.q(10), false.q(10), true.q(10))),
     testing(str("a", "b", "c"), gt(str), bool(false, false, false)),
     comment("exceptions"),
-    testing(false, gt(true), LanguageException.unsupportedInstType(false, GtOp(true)), "false > true"),
-    testing(false, gt("b"), LanguageException.unsupportedInstType(false, GtOp("b")), "false > 'b'"),
+    excepting(false, gt(true), LanguageException.unsupportedInstType(false, GtOp(true)), "false > true"),
+    excepting(false, gt("b"), LanguageException.unsupportedInstType(false, GtOp("b")), "false > 'b'"),
   ))
 

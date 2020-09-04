@@ -54,7 +54,7 @@ class BranchTest extends BaseInstTest(
       "int{10}[plus,0][+1,+2][is>10]"),
     testing(int.q(10), branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).branch(plus(1) `,` plus(2)).is(gt(10)),
       "int{10}[+1,+2][is>10]"),
-    testing(7.q(10), branch(plus(1).q(6) `,` plus(2)).is(gt(5)), int(8.q(60),9.q(10)),
+    testing(7.q(10), branch(plus(1).q(6) `,` plus(2)).is(gt(5)), int(8.q(60), 9.q(10)),
       "7{10}[+{6}1,+2][is>5]"),
     testing(1, int.branch(plus(1) `,` plus(2)), int(2, 3),
       "1 => int+0[+1,+2]"),

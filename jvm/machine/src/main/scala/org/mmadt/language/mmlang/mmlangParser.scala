@@ -67,7 +67,7 @@ class mmlangParser extends JavaTokenParsers {
   def expr(prefix: Option[Type[Obj]] = None): Parser[Obj] = opt(startValue | objValue) ~ opt(Tokens.:=>) ~ opt(obj) ~ (opt(Tokens.:=>) ~> repsep(obj, Tokens.:=>)) ^^ {
     case Some(source) ~ _ ~ Some(target: Type[Obj]) ~ aobjs =>
       aobjs.foldLeft(compile(prefix, asType(source), target) match {
-        case avalue: Value[Obj] => avalue
+        case avalue: Value[Obj] => avalue.start[Obj]()
         case atype: Type[Obj] => source ==>[Obj] atype
       })((a, b) => a `=>` b)
     case Some(source) ~ _ ~ Some(target: Value[Obj]) ~ aobjs => aobjs.foldLeft((source ==> target).asInstanceOf[Obj])((a, b) => a `=>` b)

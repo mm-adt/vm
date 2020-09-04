@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.op.trace.ModelOp.MM
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.storage.StorageFactory.{int, real}
 
 class NegInstTest extends BaseInstTest(
@@ -48,7 +48,7 @@ class NegInstTest extends BaseInstTest(
     testing(real(-1.0, -2.0, -3.0), real.q(3).neg, real(1.0, 2.0, 3.0), "[-1.0,-2.0,-3.0] => real{3}[neg]"),
     testing(real(-1.0, -2.0, -3.0), neg.q(10), real(1.0.q(10), 2.0.q(10), 3.0.q(10)), "[-1.0,-2.0,-3.0][neg]{10}"),
     comment("exceptions"),
-    testing("a", neg, LanguageException.unsupportedInstType("a", NegOp()), "'a'[neg]")
+    excepting("a", neg, LanguageException.unsupportedInstType("a", NegOp()), "'a'[neg]")
   ),
   testSet("[neg] table test w/ mm", MM,
     comment("int"),

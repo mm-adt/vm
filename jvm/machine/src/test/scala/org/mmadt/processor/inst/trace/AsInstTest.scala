@@ -22,8 +22,9 @@
 
 package org.mmadt.processor.inst.trace
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.`type`.__.{as, mult, plus}
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
@@ -34,8 +35,11 @@ class AsInstTest extends BaseInstTest(
     testing(true, as(__), true, "true[as,_]"),
     testing(true, as(str), "true", "true[as,str]"),
     testing(true, as(str.plus("dat")), "truedat", "true[as,str[plus,'dat']]"),
-    //testing(true, as(str.as("false")), "false"),
+    testing(true, as(str.as(str("false"))), "false"),
     comment("int"),
+    excepting(3, as('C), LanguageException.labelNotFound(3, "C"), "3[as,C]"),
+    excepting(3, juxta('C), LanguageException.labelNotFound(3, "C"), "3 => C"),
+    // excepting('C(3), __,  LanguageException.typeNotInModel('C(3), 'C, Tokens.rec), "C:3"),
     testing(3, as(__), 3, "3[as,_]"),
     testing(3, as(mult(3)), 9, "3[as,[mult,3]]"),
     testing(3, as(int), 3, "3[as,int]"),
