@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.trace
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
@@ -39,8 +40,11 @@ trait DefineOp {
 object DefineOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
   def apply[O <: Obj](objs: Obj*): Inst[O, O] = new VInst[O, O](g = (Tokens.define, objs.toList.asInstanceOf[List[O]]), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.model(inst.args.foldLeft(start.model)((a, b) => a.defining(b))) match {
-    case avalue: Value[_] => avalue
-    case atype => atype.via(start.update(atype.model), inst)
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+    val updatedModel: Model = inst.args.foldLeft(start.model)((a, b) => a.defining(b))
+    start match {
+      case avalue: Value[_] => avalue.update(updatedModel)
+      case atype => atype.via(start, inst).update(updatedModel)
+    }
   }
 }

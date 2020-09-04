@@ -34,6 +34,7 @@ import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
+import __._
 
 
 /**
@@ -1049,12 +1050,11 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("(1;(1;(1;(1;'1'))))[define,wxy<=_[is==1]][define,xyz<=_[wxy{?}|(wxy;xyz)]][a,xyz]"))
     assertResult(btrue)(engine.eval("1[define,wxy<=_[is==1]][define,xyz<=_[wxy{?}|(wxy,xyz)]][a,xyz]"))
     assertResult(bfalse)(engine.eval("2[define,wxy<=_[is==1]][define,xyz<=_[wxy{?}|(wxy,xyz)]][a,xyz]"))
+    assertResult(btrue)(engine.eval("1[define,xyz<=xyz][a,xyz]"))
     assertThrows[StackOverflowError] {
       engine.eval("1[define,wxy<=xyz][define,xyz<=wxy][a,xyz]")
     }
-    assertThrows[StackOverflowError] {
-      engine.eval("1[define,xyz<=xyz][a,xyz]")
-    }
+
   }
 
   test("loading definitions parser") {
@@ -1101,9 +1101,9 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("model example") {
     engine.eval(":{1}")
-    val mm: Model = LoadOp.loadObj[Model](getClass.getResource("/model/ex.mm").getPath)
-    assert(toBaseName(mm).toString.nonEmpty)
-    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(":", __.model(mm))
+    val ex: Model = LoadOp.loadObj[Model](getClass.getResource("/model/ex.mm").getPath)
+    assert(toBaseName(ex).toString.nonEmpty)
+    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(":", __.model(ex))
     // assertResult(int(1))(engine.eval("'marko' => person => user => .login => user => .id"))
     assertResult(int(1).named("nat"))(engine.eval("'marko' => person => user => .login => person => .age"))
     //    assertResult((str("name") -> str("marko") `_,` str("age") -> int(1).named("nat")).named("person"))(engine.eval("('marko','') => person"))

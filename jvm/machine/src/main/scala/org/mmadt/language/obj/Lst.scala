@@ -76,8 +76,13 @@ object Lst {
       (blst.ctype || {
         if (blst.isChoice) alst.glist.exists(x => x.alive)
         else alst.size == blst.size
-      }) &&
-      alst.glist.zip(blst.glist).forall(pair => if (blst.isChoice && pair._1.alive && pair._2.alive && pair._1 == pair._2) true else pair._1.test(pair._2))
+      }) && {
+      val isInst = alst.isInstanceOf[Inst[Obj, Obj]]
+      alst.glist.zip(blst.glist).forall(pair =>
+        if (blst.isChoice && pair._1.alive && pair._2.alive && pair._1 == pair._2) true
+        else if (isInst) pair._1.rangeObj.test(pair._2.rangeObj)
+        else pair._1.test(pair._2))
+    }
 
   def moduleStruct[A <: Obj](gsep: String, values: List[A], start: Obj = null): List[A] = gsep match {
     /////////// ,-lst

@@ -55,7 +55,7 @@ object WalkOp extends Func[Obj, Obj] {
    */
   def resolvePaths[A <: Obj, B <: Obj](model: Model, source: List[A], target: B, checked: List[Obj] = Nil): List[List[B]] = {
     if (source.last.rangeObj.name == target.rangeObj.name) {
-      if (source.last.test(target)) return List(List(target)) else return Nil
+      if (source.last.test(target.range)) return List(List(target)) else return Nil
     }
     model.definitions
       .filter(t => !checked.contains(t))

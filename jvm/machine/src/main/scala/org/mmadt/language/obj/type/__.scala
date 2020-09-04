@@ -70,10 +70,9 @@ object __ extends __(Tokens.anon, qOne, rootVia) {
     final def unapply(arg: RichToken): __ = __(ground.name)
   }
   def apply(name: String): __ = __.named(name)
-  def isAnon(obj: Obj): Boolean = obj.isInstanceOf[__] && obj.name.equals(Tokens.anon)
-  def isToken(obj: Obj): Boolean = obj.isInstanceOf[__] && !obj.name.equals(Tokens.anon)
-  def isObj(obj: Obj): Boolean = obj.name.equals(Tokens.obj)
-  def isAnonToken(obj: Obj): Boolean = __.isAnon(obj) || __.isToken(obj)
-  def isAnonObj(obj: Obj): Boolean = __.isAnon(obj) || obj.name.equals(Tokens.obj)
+  def isAnon(aobj: Obj): Boolean = aobj.isInstanceOf[__] && aobj.name.equals(Tokens.anon)
+  def isToken(aobj: Obj): Boolean = aobj.isInstanceOf[__] && !aobj.name.equals(Tokens.anon) && !aobj.name.equals(Tokens.obj)
+  def isAnonToken(aobj: Obj): Boolean = __.isAnon(aobj) || __.isToken(aobj)
+  def isAnonObj(aobj: Obj): Boolean = __.isAnon(aobj) || aobj.name.equals(Tokens.obj)
 }
 

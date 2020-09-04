@@ -44,7 +44,7 @@ trait ModelOp {
   def update(model: Model): this.type = ModelOp.updateModel(model, this)
   def model(model: Model): this.type = ModelOp(model).exec(this)
   def model(file: StrValue): this.type = ModelOp(file).exec(this)
-  def model(token:__): this.type = ModelOp(mmadt.storage.model(token.name)).exec(this)
+  def model(token: __): this.type = ModelOp(mmadt.storage.model(token.name)).exec(this)
 }
 
 object ModelOp extends Func[Obj, Obj] {
@@ -80,11 +80,20 @@ object ModelOp extends Func[Obj, Obj] {
       else model.gmap.fetchOrElse(TYPE, NOREC).gmap
         .filter(x => x._1.name == targetName)
         .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
+        .map(x => if (__.isToken(x.domainObj) && !typeGrounded(model, x)) asType(source).asInstanceOf[A] else x) // is the type is not grounded, anything matches
         .filter(x => if (__.isToken(x.domainObj))
           model.search(source, x.domainObj).exists(y => source.update(model).test(y)) else
           source.update(model).test(x.domainObj.hardQ(source.q)))
 
-    final def typeExists(aobj: Obj): Boolean = model.definitions.isEmpty || model.vars(str(aobj.name)).isDefined || __.isAnon(aobj) || model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap.exists(x => x._1.name == aobj.name)
+    final def typeExists(aobj: Obj): Boolean = model.definitions.isEmpty ||
+      model.vars(str(aobj.name)).isDefined ||
+      __.isAnon(aobj) ||
+      model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap.exists(x => x._1.name == aobj.name)
+
+    private final def typeGrounded(model: Model, aobj: Obj): Boolean =
+      model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap
+        .find(x => x._1.name == aobj.name).map(x => x._2.glist)
+        .exists(x => x.exists(y => !baseName(y.domainObj).equals(Tokens.anon) || !Type.isIdentity(y)))
 
     final def search[A <: Obj](source: Obj = __, target: A): List[A] =
       model.vars[A](target.name)

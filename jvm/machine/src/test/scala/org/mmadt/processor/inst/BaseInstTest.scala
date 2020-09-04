@@ -32,7 +32,7 @@ import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Obj, asType}
 import org.mmadt.processor.inst.BaseInstTest._
-import org.mmadt.storage.StorageFactory.int
+import org.mmadt.storage.StorageFactory.{int, oneObj}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
 
@@ -44,7 +44,7 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Result
   testSets.foreach(testSet => {
     test(testSet._1) {
       val model = testSet._2
-      var lastComment: String = ""
+      var lastComment: String = Tokens.blank
       forEvery(testSet._3) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
@@ -67,18 +67,19 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Result
       ("eval-2", s => engine.eval(s"$s $middle", bindings(model))),
       ("eval-3", s => s ==> (middle.domain ==> middle)),
       ("eval-4", s => s ==> (middle.domain ==> middle) match {
-        case aobj: Obj if middle.via.exists(x => List(Tokens.split,Tokens.lift).contains(x._2.op)) => aobj
+        case aobj: Obj if middle.via.exists(x => List(Tokens.split, Tokens.lift).contains(x._2.op)) => aobj
         case atype: Type[_] => atype.domainObj ==> atype
         case avalue: Value[Obj] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
       }),
       ("eval-5", s => {
         val result = s ==> (middle.domain ==> middle)
         if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg).contains(x._2.op) ||
-          (x._2.op.equals(Tokens.lift)  || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
+          (x._2.op.equals(Tokens.lift) || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
           result.trace.modeless.zip((asType(s) ==> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
             assert(asType(x._1._1).test(x._2._1), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
             assertResult(x._1._2.op)(x._2._2.op) // test via tuples' inst opcode
-            //assert(x._1._2.test(x._2._2), s"\n\t${x._1._2} -- ${x._2._2}\n\t\t==>${x}") // test via tuples' inst
+            if (!List(Tokens.split, Tokens.combine).contains(x._1._2.op))
+              assert(x._1._2.test(x._2._2), s"\n\t${x._1._2} -- ${x._2._2}\n\t\t==>${x}") // test via tuples' inst
           })
         result
       }),
@@ -104,7 +105,7 @@ object BaseInstTest {
   val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
   private val modelEngine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
   def model(model: String): Model = {
-    modelEngine.eval(Tokens.::)
+    modelEngine.eval(Tokens.:: + oneObj)
     modelEngine.eval(model).asInstanceOf[Model]
   }
   def bindings(model: Model): Bindings = {

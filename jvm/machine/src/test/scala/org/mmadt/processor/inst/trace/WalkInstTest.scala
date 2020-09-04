@@ -123,9 +123,11 @@ class WalkInstTest extends BaseInstTest(
       .defining('A <= 'C.id)
     assertResult(lst(int `;` 'A `;` 'B))(5.model(MODEL_3).walk('B).range)
     assertResult(lst(int `;` 'A `;` 'B `;` 'C))(5.model(MODEL_3).walk('C).range)
-
-    println(engine.eval("50 => int[split,[walk,nat][head]][merge]",bindings(MODEL)))
-    println(engine.eval("5 int[split,[walk,xtype][head]]",bindings(CHAIN_MODEL)))
+    assertResult('C(5))(5.model(MODEL_3) ==> int.split(walk('C).head).merge)
+    assertResult('C(5))(engine.eval("5-<:[walk,C][head]:>-",bindings(MODEL_3)))
+    //println(engine.eval("5-<:[walk,C][head]:>-", bindings(MODEL)))
+    //println(engine.eval("50 => int[split,[walk,nat][head]][merge]", bindings(MODEL)))
+    //println(engine.eval("5 int[split,[walk,xtype][head]]", bindings(CHAIN_MODEL)))
   }
 }
 
