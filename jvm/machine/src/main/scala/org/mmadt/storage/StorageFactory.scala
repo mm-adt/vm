@@ -81,7 +81,8 @@ object StorageFactory {
   val providers: ServiceLoader[StorageProvider] = ServiceLoader.load(classOf[StorageProvider])
   /////////TYPES/////////
   def deadObj[O <: Obj]: O = zeroObj.asInstanceOf[O]
-  lazy val zeroObj: ObjType = tobj().q(qZero)
+  lazy val zeroObj: __ = __.q(qZero)
+  lazy val oneObj: __ = __.q(qOne)
   lazy val obj: ObjType = tobj()
   lazy val bool: BoolType = tbool()
   lazy val int: IntType = tint()

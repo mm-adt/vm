@@ -110,7 +110,7 @@ class mmlangParser extends JavaTokenParsers {
   // type parsing
   lazy val objType: Parser[Obj] = aType | anonTypeSugar | objZero | objOne
   lazy val objZero: Parser[Obj] = LCURL ~> "0" <~ RCURL ^^ (_ => zeroObj)
-  lazy val objOne: Parser[Obj] = LCURL ~> "1" <~ RCURL ^^ (_ => tobj())
+  lazy val objOne: Parser[Obj] = LCURL ~> "1" <~ RCURL ^^ (_ => oneObj)
   lazy val tobjType: Parser[Type[Obj]] = Tokens.obj ^^ (_ => StorageFactory.obj)
   lazy val anonType: Parser[__] = Tokens.anon ^^ (_ => __)
   lazy val boolType: Parser[BoolType] = Tokens.bool ^^ (_ => bool)
