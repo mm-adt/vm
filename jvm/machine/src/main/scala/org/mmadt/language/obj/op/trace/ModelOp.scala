@@ -80,7 +80,7 @@ object ModelOp extends Func[Obj, Obj] {
       else model.gmap.fetchOrElse(TYPE, NOREC).gmap
         .filter(x => x._1.name == targetName)
         .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
-        .map(x => if (__.isToken(x.domainObj) && !typeGrounded(model, x)) asType(source).asInstanceOf[A] else x) // is the type is not grounded, anything matches
+        .map(x => if (__.isToken(x.domainObj) && !typeGrounded(model, x)) __.asInstanceOf[A] else x) // is the type is not grounded, anything matches
         .filter(x => if (__.isToken(x.domainObj))
           model.search(source, x.domainObj).exists(y => source.update(model).test(y)) else
           source.update(model).test(x.domainObj.hardQ(source.q)))

@@ -29,7 +29,6 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.BaseInstTest.{bindings, engine}
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.processor.inst.trace.WalkInstTest._
 import org.mmadt.storage.StorageFactory.{int, lst, str, strm}
@@ -64,6 +63,11 @@ object WalkInstTest {
     .defining('wtype <= 'ytype.id)
     .defining('vtype <= 'wtype.id)
     .defining('vtype <= 'ztype.id)
+  private val CAT3_MODEL: Model = ModelOp.EMPTY
+    .defining('A <= int)
+    .defining('B <= __("A"))
+    .defining('C <= __("B"))
+    .defining('A <= __("C"))
 }
 class WalkInstTest extends BaseInstTest(
   testSet("[walk] table test", MODEL,
@@ -104,30 +108,27 @@ class WalkInstTest extends BaseInstTest(
       ((int `;` 'ztype `;` 'ytype `;` 'xtype `;` 'wtype `;` 'vtype) `,`
         (int `;` 'ztype `;` 'ytype `;` 'wtype `;` 'vtype) `,`
         (int `;` 'ztype `;` 'vtype)) <= 5.walk('vtype), "5 ~> vtype"),
+  ), testSet("[walk] table test w/ cat3 model", CAT3_MODEL,
+    testing(5, walk(int), lst(int `;`) <= 5.walk(int), "5[walk,int]"),
+    testing(5, walk('A), lst(int `;` 'A) <= 5.walk('A), "5[walk,A]"),
+    testing(5, walk('B), lst(int `;` 'A `;` 'B) <= 5.walk('B), "5[walk,B]"),
+    testing(5, walk('C), lst(int `;` 'A `;` 'B `;` 'C) <= 5.walk('C), "5[walk,C]"),
+    testing(5, walk(str), lst(), "5[walk,str]"),
+    IGNORING("eval-5")(5, /*int.split(walk(int).head).merge*/ 5, 5, "5-<:[walk,int][head]:>-"),
+    IGNORING("eval-5")(5, int.split(walk('A).head).merge, 'A(5), "5-<:[walk,A][head]:>-"),
+    IGNORING("eval-5")(5, int.split(walk('B).head).merge, 'B(5), "5-<:[walk,B][head]:>-"),
+    IGNORING("eval-5")(5, int.split(walk('C).head).merge, 'C(5), "5-<:[walk,C][head]:>-"),
+    testing(int, __, int, "int"),
+    testing('A, __, 'A, "A"),
+    testing('B, __, 'B, "B"),
+    testing('C, __, 'C, "C"),
   )) {
-  test("test model test") {
-    // println(engine.eval("5 => date.2 => person", bindings(PARSE_MODEL)))
-    // println(engine.eval("5 ~> date", bindings(MODEL)))
-    //  assertResult(MODEL)(PARSE_MODEL)
-    //  println(MODEL)
+  test("walk play") {
+    // assertResult(MODEL)(PARSE_MODEL)
+    println(MODEL)
     println(PARSE_MODEL.domainObj.asInstanceOf[Model].definitions)
-    println(5.model(CHAIN_MODEL).walk('vtype))
     println(CHAIN_MODEL)
-    //println(BaseInstTest.engine.eval("int => int[walk,nat]", BaseInstTest.bindings(MODEL)))
-  }
-  test("test triangle model") {
-    val MODEL_3: Model = ModelOp.EMPTY
-      .defining('A <= int)
-      .defining('B <= 'A.id)
-      .defining('C <= 'B.id)
-      .defining('A <= 'C.id)
-    assertResult(lst(int `;` 'A `;` 'B))(5.model(MODEL_3).walk('B).range)
-    assertResult(lst(int `;` 'A `;` 'B `;` 'C))(5.model(MODEL_3).walk('C).range)
-    assertResult('C(5))(5.model(MODEL_3) ==> int.split(walk('C).head).merge)
-    assertResult('C(5))(engine.eval("5-<:[walk,C][head]:>-",bindings(MODEL_3)))
-    //println(engine.eval("5-<:[walk,C][head]:>-", bindings(MODEL)))
-    //println(engine.eval("50 => int[split,[walk,nat][head]][merge]", bindings(MODEL)))
-    //println(engine.eval("5 int[split,[walk,xtype][head]]", bindings(CHAIN_MODEL)))
+    println(CAT3_MODEL)
   }
 }
 

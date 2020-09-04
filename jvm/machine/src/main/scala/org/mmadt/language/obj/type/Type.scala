@@ -63,9 +63,9 @@ trait Type[+T <: Obj] extends Obj with ExplainOp {
 object Type {
   // this is a total hack -- I'm encoding the range of the type in the via of the last instruction
   // the fix is to make it so <= doesn't rinvert and instead extends via a [noop] of some sort
-  def trueRange(atype: Obj): Obj = if (__.isToken(atype) && !atype.root) if(null == atype.via._2.via._1) atype.rangeObj else asType(atype.via._2.via._1) else atype
+  def trueRange(atype: Obj): Obj = if (__.isToken(atype) && !atype.root) if (null == atype.via._2.via._1) atype.rangeObj else asType(atype.via._2.via._1) else atype
 
-  def isIdentity(obj: Obj): Boolean = obj.isInstanceOf[Value[_]] || obj.root || !obj.trace.modeless.exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.id))
+  def isIdentity(obj: Obj): Boolean = obj.isInstanceOf[Value[_]] || obj.root || !obj.trace.modeless.exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.noop))
   def mergeObjs[A <: Obj](objs: List[A]): List[A] = {
     var newList: ListBuffer[A] = ListBuffer.empty[A]
     objs.foreach(x =>
