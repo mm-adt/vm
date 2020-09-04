@@ -1963,8 +1963,8 @@ mmlang&gt; 6[+1,+2]+3[path]
 ==&gt;(6;[plus,1];7;[plus,3];10)
 ==&gt;(6;[plus,2];8;[plus,3];11)
 mmlang&gt; 6-&lt;(+1,+2)&gt;-+3[path]
-==&gt;(6;-&lt;(int[plus,1],int[plus,2]);6;[plus,1];7;[plus,3];10)
-==&gt;(6;-&lt;(int[plus,1],int[plus,2]);6;[plus,2];8;[plus,3];11)</code></pre>
+==&gt;(6;[split,(int[plus,1],int[plus,2])];6;[plus,1];7;[plus,3];10)
+==&gt;(6;[split,(int[plus,1],int[plus,2])];6;[plus,2];8;[plus,3];11)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3025,7 +3025,7 @@ instruction                                    domain            range       sta
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
                              -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-)&gt;-;[plus,100])
-==&gt;(int{3};_[mult,10];_-&lt;(_-&lt;(_[is,_[gt,20]];_-&lt;(_[plus,70],_[plus,170],_[plus,270])&gt;-)&gt;-,_-&lt;(_[is,_[gt,10]];_-&lt;(_[mult,10],_[mult,20],_[mult,30])&gt;-)&gt;-)&gt;-;_[plus,100])</code></pre>
+==&gt;(int{3};_[mult,10];_[split,(_[split,(_[is,_[gt,20]];_[split,(_[plus,70],_[plus,170],_[plus,270])][merge])][merge],_[split,(_[is,_[gt,10]];_[split,(_[mult,10],_[mult,20],_[mult,30])][merge])][merge])][merge];_[plus,100])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3189,42 +3189,7 @@ mmlang&gt; (8;26)      =&gt; date
 </div>
 <div class="sect4">
 <h5 id="_dependent_types">Dependent Types</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
-                        single&lt;=vec:(lst,is&lt;4).0[tail][head],
-                        single&lt;=vec:(lst,is&gt;3).0[head],
-                        single&lt;=int]
-mmlang&gt; (1;2;3)   =&gt; vec                                    <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;vec:((1;2;3),3)
-mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                          <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;single:2
-mmlang&gt; (1;2;3;4) =&gt; vec                                    <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;vec:((1;2;3;4),4)
-mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                          <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;single:1</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A <code>;-lst</code> of 3 terms is morphed into a <code>vec</code> using the <code>vec&lt;=lst</code> type.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>vec</code> is morphed into a <code>single</code> using the first <code>single&lt;=vec</code> type.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A <code>;-lst</code> of 4 terms is morphed into a <code>vec</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The <code>vec</code> is morphed into a <code>single</code> using the second <code>single&lt;=vec</code> type.</td>
-</tr>
-</table>
-</div>
+
 </div>
 <div class="sect4">
 <h5 id="_recursive_types">Recursive Types</h5>
@@ -3582,7 +3547,7 @@ While model-ADT design and development will be discussed in a latter section, th
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [define,nat&lt;=int[is&gt;0]]                            <i class="conum" data-value="1"></i><b>(1)</b>
 mmlang&gt; int =&gt; [define,nat&lt;=int[is&gt;0]]                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;int
+==&gt;int[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
 mmlang&gt;  6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]             <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;nat:6
 mmlang&gt; -6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]             <i class="conum" data-value="4"></i><b>(4)</b>
@@ -6708,7 +6673,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-28 01:22:39 -0600
+Last updated 2020-08-28 01:52:31 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
