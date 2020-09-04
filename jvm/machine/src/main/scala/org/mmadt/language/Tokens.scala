@@ -29,15 +29,15 @@ import org.mmadt.language.obj.Obj
  */
 object Tokens {
 
-  lazy val reservedOps: List[String] = List(
+  lazy val reservedOps:List[String] = List(
     Tokens.define, Tokens.neg, Tokens.branch,
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.defs, Tokens.load,
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
-    Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last, Tokens.empty,
+    Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last, Tokens.empty, Tokens.swap,
     Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.juxt, Tokens.fold, Tokens.error, Tokens.rewrite,
     Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id, Tokens.rule_unity, Tokens.walk, Tokens.lift)
 
-  lazy val reservedTypes: List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
+  lazy val reservedTypes:List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
 
   val rule_id = "rule:id"
   val rule_unity = "rule:unity"
@@ -52,6 +52,7 @@ object Tokens {
   val lst = "lst"
   val inst = "inst"
 
+  val swap = "swap"
   val lift = "lift"
   val walk = "walk"
   val model = "model"
@@ -132,7 +133,7 @@ object Tokens {
   val as_op = "~"
   val juxt_op = "=>"
   val walk_op = "~>"
-
+  val swap_op = "%"
 
   val :: = ":"
   val -> = "->"
@@ -142,8 +143,8 @@ object Tokens {
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name: String): Boolean = !Set(bool, str, real, rec, int, inst, lst, anon, obj).contains(name) // TODO: global immutable set
-  def tryName[A <: Obj](fromObj: Obj, toObj: A): A = if (Tokens.named(fromObj.name)) toObj.named(fromObj.name) else toObj
+  def named(name:String):Boolean = !Set(bool, str, real, rec, int, inst, lst, anon, obj).contains(name) // TODO: global immutable set
+  def tryName[A <: Obj](fromObj:Obj, toObj:A):A = if (Tokens.named(fromObj.name)) toObj.named(fromObj.name) else toObj
 
   lazy val LANGLE = "<"
   lazy val RANGLE = ">"

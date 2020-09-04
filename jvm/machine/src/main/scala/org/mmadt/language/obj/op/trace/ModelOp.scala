@@ -64,7 +64,7 @@ object ModelOp extends Func[Obj, Obj] {
   def apply[O <: Obj](model: Model): Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(storage.model(model)).asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start match {
     case _: Value[Obj] => start.update(storage.model(inst.arg0[Model]))
-    case _: Type[Obj] => start.via(start, inst).update(storage.model(inst.arg0[Model]))
+    case _: Type[Obj] => start.via(start.update(storage.model(inst.arg0[Model])), inst)
   }
   def updateModel(amodel: Model, aobj: Obj): aobj.type = {
     if (amodel.isEmpty) aobj

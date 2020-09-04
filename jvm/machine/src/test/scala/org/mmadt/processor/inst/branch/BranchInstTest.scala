@@ -37,7 +37,7 @@ import org.mmadt.storage.StorageFactory.int.⨁
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class BranchTest extends BaseInstTest(
+class BranchInstTest extends BaseInstTest(
 
   testSet("[branch] w/ mm", MM.rewriting((__.via(__, BranchOp(from("x"))) `;`) <= (split(to("x")).merge `,`)), //  ([branch,x])<=([split,<x>][merge])
     testing(str, -<(str `;` str) >-, str.branch(__ `;` __), "str-<(str;str)>-"),

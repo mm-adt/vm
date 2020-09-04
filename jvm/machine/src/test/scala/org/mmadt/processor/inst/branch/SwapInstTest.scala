@@ -20,23 +20,18 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.trace
+package org.mmadt.processor.inst.branch
 
-import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.value.VInst
+import org.mmadt.language.obj.`type`.__.plus
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
+import org.mmadt.storage.StorageFactory.str
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait DefineOp {
-  this:Obj =>
-  def define(objs:Obj*):this.type = DefineOp(objs:_*).exec(this)
-}
-object DefineOp extends Func[Obj, Obj] {
-  override val preArgs:Boolean = false
-  def apply[O <: Obj](objs:Obj*):Inst[O, O] = new VInst[O, O](g = (Tokens.define, objs.toList.asInstanceOf[List[O]]), func = this) with TraceInstruction
-  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start.via(start.update(inst.args.foldLeft(start.model)((a, b) => a.defining(b))), inst)
-}
+class SwapInstTest extends BaseInstTest(
+  testSet("[flip] [plus]",
+    testing("rodriguez", str.swap(plus("marko")), "markorodriguez", "'rodriguez' => str[swap,[plus,'marko']]"),
+    testing("roro", str.swap(plus("maro")), "marororo", "'roro' => %:[plus,'maro']:"),
+  ))

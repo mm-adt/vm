@@ -20,23 +20,33 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.trace
+package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.BranchInstruction
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Inst, Obj, asType}
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait DefineOp {
+trait SwapOp {
   this:Obj =>
-  def define(objs:Obj*):this.type = DefineOp(objs:_*).exec(this)
+  def swap[A <: Obj](atype:A):A = SwapOp(atype).exec(this).asInstanceOf[A]
 }
-object DefineOp extends Func[Obj, Obj] {
+
+object SwapOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
-  def apply[O <: Obj](objs:Obj*):Inst[O, O] = new VInst[O, O](g = (Tokens.define, objs.toList.asInstanceOf[List[O]]), func = this) with TraceInstruction
-  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start.via(start.update(inst.args.foldLeft(start.model)((a, b) => a.defining(b))), inst)
+  def apply(atype:Obj):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.swap, List(atype)), func = this) with BranchInstruction
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
+    val nestedInst:Inst[Obj, Obj] = inst.arg0[Obj].via._2.asInstanceOf[Inst[Obj, Obj]]
+    val arg:Obj = nestedInst.arg0[Obj]
+    start match {
+      case _:Type[_] => start.via(start, inst)
+      case _:Value[_] => (arg ~~> nestedInst.clone(_ => List(start)).exec(asType(arg))).via(start, inst)
+    }
+  }
 }

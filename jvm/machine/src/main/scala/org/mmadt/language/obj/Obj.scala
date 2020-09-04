@@ -57,6 +57,7 @@ trait Obj
     with DefsOp
     with IdOp
     with IsOp
+  with SwapOp
     with FoldOp
     with MapOp
     with ModelOp

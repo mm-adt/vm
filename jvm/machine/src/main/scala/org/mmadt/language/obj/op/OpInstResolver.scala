@@ -74,6 +74,7 @@ object OpInstResolver {
       case Tokens.head => HeadOp()
       case Tokens.last => LastOp()
       case Tokens.tail => TailOp()
+      case Tokens.`swap` => SwapOp(args.head)
       case Tokens.empty => EmptyOp()
       case Tokens.split | Tokens.split_op => SplitOp(args.head)
       case Tokens.combine | Tokens.combine_op => CombineOp(args.head)
