@@ -30,6 +30,7 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Obj, asType}
 import org.mmadt.processor.inst.BaseInstTest._
 import org.mmadt.storage.StorageFactory.{int, oneObj}
@@ -58,6 +59,7 @@ abstract class BaseInstTest(testSets: (String, Model, TableFor5[Obj, Obj, Result
     val querying = List[(String, Obj => Obj)](
       ("query-1", _ => engine.eval(query, bindings(model))),
       ("query-2", _ => engine.eval(query, bindings(model)) match {
+        case x: Strm[_] => x // TODO: reconstruct type from a stream
         case atype: Type[_] => atype.domainObj ==> atype
         case avalue: Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
       })

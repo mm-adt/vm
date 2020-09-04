@@ -47,8 +47,9 @@ trait Lst[+A <: Obj] extends Poly[A]
     case alst: Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
       eqQ(this, alst) &&
-      // this.glist.size == alst.glist.size &&
-      this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))
+      //this.glist.size == alst.glist.size &&
+      (if (this.isParallel) alst.glist.forall(x => this.glist.contains(x)) // set semantics for abelian group
+      else this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))) // lst semantics for monoids
     case _ => true // MAIN EQUALS IS IN TYPE
   }
   def clone(f: List[A] => List[_]): this.type = this.clone(g = (this.gsep, f(this.glist)))

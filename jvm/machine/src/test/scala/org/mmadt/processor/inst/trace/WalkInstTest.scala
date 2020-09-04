@@ -72,7 +72,7 @@ object WalkInstTest {
 class WalkInstTest extends BaseInstTest(
   testSet("[walk] table test", MODEL,
     comment("int~>int"),
-    testing(int, int.walk(int), lst(int `;`) <= int.walk(int), "int => int[walk,int]"),
+    testing(int, int.walk(int), lst <= int.walk(int), "int => int[walk,int]"),
     comment("int~>nat"),
     testing(int, int.walk('nat), lst <= int.walk('nat), "int => int[walk,nat]"),
     testing(int, walk('nat), lst <= int.walk('nat), "int => [walk,nat]"),
@@ -99,11 +99,14 @@ class WalkInstTest extends BaseInstTest(
     testing(5, int.walk('ztype), lst(int `;` 'ztype) <= 5.walk('ztype), "5 ~> ztype"),
     testing(5, int.walk('ytype), lst(int `;` 'ztype `;` 'ytype) <= 5.walk('ytype), "5 ~> ytype"),
     testing(5, int.walk('xtype), lst(int `;` 'ztype `;` 'ytype `;` 'xtype) <= 5.walk('xtype), "5 ~> xtype"),
-    testing(5.q(3), int.q(3).walk('xtype), (int `;` 'ztype `;` 'ytype `;` 'xtype).q(3) <= int.q(3).walk('xtype), "5{3} ~> xtype"),
+    testing(5.q(3), int.q(3).walk('xtype), lst(int `;` 'ztype `;` 'ytype `;` 'xtype).q(3) <= 5.q(3).walk('xtype), "5{3} ~> xtype"),
     comment("branching chains"),
     testing(5, int.walk('wtype),
       ((int `;` 'ztype `;` 'ytype `;` 'xtype `;` 'wtype) `,`
         (int `;` 'ztype `;` 'ytype `;` 'wtype)) <= 5.walk('wtype), "5 ~> wtype"),
+    testing(5, int.walk('wtype),
+      ((int `;` 'ztype `;` 'ytype `;` 'wtype) `,`
+        (int `;` 'ztype `;` 'ytype `;` 'xtype `;` 'wtype)) <= 5.walk('wtype), "5 ~> wtype"),
     testing(5, int.walk('vtype),
       ((int `;` 'ztype `;` 'ytype `;` 'xtype `;` 'wtype `;` 'vtype) `,`
         (int `;` 'ztype `;` 'ytype `;` 'wtype `;` 'vtype) `,`
@@ -113,6 +116,7 @@ class WalkInstTest extends BaseInstTest(
     testing(5, walk('A), lst(int `;` 'A) <= 5.walk('A), "5[walk,A]"),
     testing(5, walk('B), lst(int `;` 'A `;` 'B) <= 5.walk('B), "5[walk,B]"),
     testing(5, walk('C), lst(int `;` 'A `;` 'B `;` 'C) <= 5.walk('C), "5[walk,C]"),
+    // testing(int(5,6,7), int.q(3).walk('C), lst(int `;` 'A `;` 'B `;` 'C).q(3) <= int.q(3).walk('C), "[5,6,7] => int{3}[walk,C]"),
     testing(5, walk(str), lst(), "5[walk,str]"),
     IGNORING("eval-5")(5, /*int.split(walk(int).head).merge*/ 5, 5, "5-<:[walk,int][head]:>-"),
     IGNORING("eval-5")(5, int.split(walk('A).head).merge, 'A(5), "5-<:[walk,A][head]:>-"),

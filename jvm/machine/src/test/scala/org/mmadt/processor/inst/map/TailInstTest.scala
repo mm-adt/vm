@@ -40,7 +40,7 @@ class TailInstTest extends BaseInstTest(
     testing((1 `;` 2 `;` 3).q(10), tail, (2 `;` 3).q(10), "(1;2;3){10}[tail]"),
     testing((1 `;` 2 `;` 3).q(10), tail.q(2), (2 `;` 3).q(20), "(1;2;3){10}[tail]{2}"),
     comment("|-lst"),
-    testing(int(1) `|` 2 `|` 3, tail, int(2) `|` 3, "(1|2|3)[tail]"),
+    testing(int(1) `|` 2 `|` 3, tail, lst, "(1|2|3)[tail]"),
     comment(";-rec"),
     testing(str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3), tail, (str("b") -> int(2) `_;` str("c") -> int(3)), "('a'->1;'b'->2;'c'->3)[tail]"),
     testing((str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3)).q(5), tail.q(10), (str("b") -> int(2) `_;` str("c") -> int(3)).q(50), "('a'->1;'b'->2;'c'->3){5}[tail]{10}"),

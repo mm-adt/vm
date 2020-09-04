@@ -86,7 +86,7 @@ object mmlangPrinter {
         case arec: Rec[_, _] => recString(arec)
         case alst: Lst[_] => listString(alst)
         case atype: Type[_] => atype.name
-        case avalue: Value[_] => avalue.toString
+        case avalue: Value[_] => avalue.hardQ(qOne).toString
       }) + qString(atype.domain.q)
     }
     (if (domain.equals(EMPTY) || range.equals(domain)) range else range + LDARROW + domain) +
