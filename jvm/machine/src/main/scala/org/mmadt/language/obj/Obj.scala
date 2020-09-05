@@ -178,7 +178,10 @@ object Obj {
   class RichTrace(val ground: Trace) {
     final def modeless: Trace = ground.filter(x => !ModelOp.isMetaModel(x._2))
     final def nexists(f: ViaTuple => Boolean): Boolean = ground.exists(x => if (f(x)) return true else x._2.args.exists(y => y.trace.nexists(f)))
-    final def reconstruct[A <: Obj](source: Obj, name: String = null): A = Some(ground.map(x => x._2).foldLeft(source)((a, b) => b.exec(a)).asInstanceOf[A]).map(x => if (null == name) x else x.named(name)).get
+    final def reconstruct[A <: Obj](source: Obj, name: String = null): A =
+      Some(ground.map(x => x._2)
+      .foldLeft(source)((a, b) => b.exec(a)).asInstanceOf[A])
+        .map(x => if (null == name) x else x.named(name)).get
   }
 
   def iterator[A <: Obj](obj: A): Iterator[A] = obj match {

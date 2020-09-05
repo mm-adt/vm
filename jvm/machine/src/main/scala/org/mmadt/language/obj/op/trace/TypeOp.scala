@@ -24,23 +24,27 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.Obj.Trace
+import org.mmadt.language.obj.Obj.{Trace, ViaTuple}
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.TraceInstruction
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
 trait TypeOp[+A <: Obj] {
-  this: Obj =>
-  def `type`(): Type[A] = TypeOp().exec(this).asInstanceOf[Type[A]]
+  this:Obj =>
+  def `type`:Type[A] = TypeOp().exec(this).asInstanceOf[Type[A]]
 }
 object TypeOp extends Func[Obj, Type[Obj]] {
-  override val preArgs: Boolean = false
-  override val preStrm: Boolean = false
-  def apply[A <: Obj](): Inst[A, Type[A]] = new VInst[A, Type[A]](g = (Tokens.`type`, Nil), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Type[Obj]]): Type[Obj] = start match {
-    case atype: Type[_] => atype.via(start, inst)
-    // use preArg instruction as that is the type instruction
-    case _ => start.trace.map(x => (x._1, x._2.via._1)).asInstanceOf[Trace].reconstruct(start.domain)
+  override val preArgs:Boolean = false
+  override val preStrm:Boolean = false
+  def apply[A <: Obj]():Inst[A, Type[A]] = new VInst[A, Type[A]](g = (Tokens.`type`, Nil), func = this) with TraceInstruction
+  override def apply(start:Obj, inst:Inst[Obj, Type[Obj]]):Type[Obj] = start match {
+    case _:Value[_] => start.trace.map(x => typeVia(x)).asInstanceOf[Trace].reconstruct(start.domain)
+    case atype:Type[_] => atype.via(start, inst)
   }
+  // use preArg instruction as that is the type instruction
+  private def typeVia(via:ViaTuple):ViaTuple =
+    if (null == via._2.via._1) (via._1, via._2)
+    else (via._1, via._2.via._1.asInstanceOf[Inst[Obj, Obj]])
 }
