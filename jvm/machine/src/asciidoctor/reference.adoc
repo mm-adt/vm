@@ -123,16 +123,16 @@ The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruc
 
 The branch instructions support the splitting and merging of parallel, data flows, where each branch is a type `obj`.
 
-
-[cols="1,8,7"]
+[cols="^1,7,7"]
 |====
 | inst         | description | example
 
 // BRANCH
-| `[branch]`
-| Juxtapose start (scalar) across `poly` terms (vector) and then serialize the resultant `poly` (vector).
+| `[branch]` +
+`[ ]`
+| Juxtapose start across `poly` terms and then aggregate the terms of the resultant `poly` as dictated by the `polys` underlying magma (https://en.wikipedia.org/wiki/Module_(mathematics)[obj~LR~-module]).
 \[
-x(a_0,a_1,\ldots,a_n) =  \coprod_{i=0}^{i<n} xa_i
+x(a_0,a_1,\ldots,a_n) =  \bigodot_{i=0}^{i<n} xa_i
 \]
 a|
 [exec,prompt="mm> "]
@@ -143,10 +143,11 @@ a|
 {blank}
 
 // COMBINE
-| `[combine]`
-| Juxtapose two `polys` term-wise.
+| `[combine]` +
+`=`
+| Pairwise juxtapose the terms of two `polys` (https://en.wikipedia.org/wiki/Hadamard_product_(matrices)[Hadamard product] and link:https://en.wikipedia.org/wiki/Polynomial_ring[obj[X]]).
 \[
-(a_0,\ldots,a_n) \bullet (b_0,\ldots,b_n) = (a_0b_0,\ldots,a_nb_n)
+(a_0,\ldots,a_n) \circ (b_0,\ldots,b_n) = (a_0b_0,\ldots,a_nb_n)
 \]
 a|
 [exec,prompt="mm> "]
@@ -157,27 +158,31 @@ a|
 {blank}
 
 // LIFT
-| `[lift]`    | operate on the `obj` graph in a stateless manner. |
+| `[lift]` +
+`<< >>`
+| Detach from the `obj` graph and operate stateless. |
 
 // MERGE
-| `[merge]`
-| Sum the terms of the start `poly`, where sum semantics is determined by the underlying magma of the `poly`.
+| `[merge]` +
+`>-`
+| Aggregate the terms of the start `poly`, where aggregation semantics is determined by the underlying magma of the `poly` (https://en.wikipedia.org/wiki/Module_(mathematics)[obj~R~-module]).
 \[
-(a_0,a_1,\ldots,a_n) = \coprod_{i=0}^{i<n} a_i
+(a_0,a_1,\ldots,a_n) = \bigodot_{i=0}^{i<n} a_i
 \]
 a|
 [exec,prompt="mm> "]
 ----
 (1,2,3)[merge]
 (1,2,3)>-
-(1;+2;+3)>-
+(1;2;3)>-
 (1\|2\|3)>-
 ----
 {blank}
 
 // SPLIT
-| `[split]`
-| Juxtapose start across `poly` terms as a scalar to a vector. `[branch]` is equivalent to `[split][merge]`.
+| `[split]` +
+`-<`
+| Juxtapose start across `poly` terms as a scalar to a vector. `[branch]` is equivalent to `[split][merge]` (https://en.wikipedia.org/wiki/Module_(mathematics)[obj~L~-module]).
 \[
 x(a_0,a_1,\ldots,a_n) = (xa_0,xa_1,\ldots,xa_n)
 \]
@@ -191,8 +196,9 @@ a|
 ----
 {blank}
 
-| `[swap]`
-| Replace the `[swap]` type's last `inst` argument with the start and the start with the `inst` argument.
+| `[swap]` +
+`/ /`
+| Replace the `[swap]` type's last `inst` argument with the start and the start with the `inst` argument (https://en.wikipedia.org/wiki/Swap_(computer_programming)[swap]).
 \[
 xa = ax
 \]
@@ -208,7 +214,10 @@ a|
 |====
 
 ==== Filter Instructions
+
 ==== Map Instructions
+
 ==== Reduce Instructions
+
 ==== Trace Instructions
 
