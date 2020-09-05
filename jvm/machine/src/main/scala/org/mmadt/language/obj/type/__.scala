@@ -55,7 +55,6 @@ class __(val name:String = Tokens.anon, val q:IntQ = qOne, val via:ViaTuple = ro
   def merge:this.type = this.via(this, MergeOp())
   def empty:this.type = this.via(this, EmptyOp())
   def `>-`:this.type = this.merge
-  def `type`:this.type = this.via(this, TypeOp())
   override def not(other:Obj):Bool = bool.via(this, NotOp(other))
   ///
   def get(key:Obj):this.type = this.via(this, GetOp(key))

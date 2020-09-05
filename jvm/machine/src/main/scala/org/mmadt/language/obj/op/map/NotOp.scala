@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.op.map
+
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.value.Value
@@ -29,16 +30,16 @@ import org.mmadt.storage.StorageFactory.bool
 import org.mmadt.storage.obj.value.VInst
 
 trait NotOp {
-  this: Obj =>
-  def not(other: Obj): Bool = NotOp(other).exec(this)
-  final def !(other: Obj): Bool = this.not(other)
+  this:Obj =>
+  def not(other:Obj):Bool = NotOp(other).exec(this)
+  final def !(other:Obj):Bool = this.not(other)
 }
 object NotOp extends Func[Obj, Bool] {
-  def apply(other: Obj): Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.not, List(other)), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Bool]): Bool = {
+  def apply(other:Obj):Inst[Obj, Bool] = new VInst[Obj, Bool](g = (Tokens.not, List(other)), func = this)
+  override def apply(start:Obj, inst:Inst[Obj, Bool]):Bool = {
     (start match {
-      case _: Value[Obj] => inst.arg0[Obj] match {
-        case y: Bool if y.alive => y.clone(g = !y.g)
+      case _:Value[Obj] => inst.arg0[Obj] match {
+        case y:Bool if y.alive => y.clone(g = !y.g)
         case y => bool(!y.alive)
       }
       case _ => bool

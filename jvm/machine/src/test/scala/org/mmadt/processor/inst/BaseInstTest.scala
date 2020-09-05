@@ -86,6 +86,8 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
           })
         result
       }),
+      // ("eval-6", s => s ==> (s.range ==> middle)),
+      // ("eval-7", s => s ==> (s.range ==> (middle.domain ==> middle))),
     )
     (evaluating ++
       (if (null != query) querying else Nil))
