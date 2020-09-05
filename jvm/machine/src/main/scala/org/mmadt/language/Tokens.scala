@@ -133,7 +133,7 @@ object Tokens {
   val as_op = "~"
   val juxt_op = "=>"
   val walk_op = "~>"
-  val swap_op = "%"
+  val swap_op = "/"
 
   val :: = ":"
   val -> = "->"

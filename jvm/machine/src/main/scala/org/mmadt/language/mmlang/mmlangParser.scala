@@ -155,7 +155,7 @@ class mmlangParser extends JavaTokenParsers {
     (x => x._2.map(q => SplitOp(x._1.q(q))).getOrElse(SplitOp(x._1)).asInstanceOf[Inst[Obj, Obj]]) | Tokens.split_op ~> infixArg ^^
     (x => SplitOp(x))
   lazy val mergeSugar:Parser[Inst[Obj, Obj]] = Tokens.merge_op ^^ (_ => MergeOp().asInstanceOf[Inst[Obj, Obj]])
-  lazy val swapSugar:Parser[Inst[Obj, Obj]] = Tokens.swap_op ~> infixArg ^^ (x => SwapOp(x))
+  lazy val swapSugar:Parser[Inst[Obj, Obj]] = Tokens.swap_op ~> obj <~ Tokens.swap_op ^^ (x => SwapOp(x))
   lazy val getStrSugar:Parser[Inst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
   lazy val getIntSugar:Parser[Inst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
   lazy val toSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> symbolName <~ RANGLE ^^ (x => ToOp(x))

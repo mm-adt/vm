@@ -13,6 +13,7 @@ include::images/reference/mmlang.ebnf[]
 <iframe src="images/reference/mmlang-ebnf.html" width="100%" height="1000px"></iframe>
 ++++
 
+////
 The following https://en.wikipedia.org/wiki/Axiomatic_semantics[language axioms] have variables:
 
 [.small]
@@ -94,12 +95,13 @@ o1    [a,o1]                := true
 o1{0} [a,{0}]               := true
 o1    [a,t1]                := t1(o1) != {0}
 ----
-
+////
 
 === Instructions
 
 The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.
 
+////
 .Instruction classes
 [cols="^1h,4,6",width=80%]
 |===
@@ -115,14 +117,95 @@ The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruc
 | Terminal   | `x{*}\<=obj{0}[terminal]`  | Generate `objs` for evaluation
 | Trace      | `y\<=x[trace]`             | Traverser the `obj` graph (reflection)
 |===
+////
 
 ==== Branch Instructions
 
-The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.
+The branch instructions support the splitting and merging of parallel, data flows, where each branch is a type `obj`.
 
-===== [compose]
-===== [branch]
-===== [choose]
+
+[cols="1,8,7"]
+|====
+| inst         | description | example
+
+// BRANCH
+| `[branch]`
+| Juxtapose start (scalar) across `poly` terms (vector) and then serialize the resultant `poly` (vector).
+\[
+x(a_0,a_1,\ldots,a_n) =  \coprod_{i=0}^{i<n} xa_i
+\]
+a|
+[exec,prompt="mm> "]
+----
+6[branch,(+1,'a',*int)]
+6[+1,'a',*int]
+----
+{blank}
+
+// COMBINE
+| `[combine]`
+| Juxtapose two `polys` term-wise.
+\[
+(a_0,\ldots,a_n) \bullet (b_0,\ldots,b_n) = (a_0b_0,\ldots,a_nb_n)
+\]
+a|
+[exec,prompt="mm> "]
+----
+(1;2;3)[combine,(+10;+20;+30)]
+(1;2;3)=(+10;+20;+30)
+----
+{blank}
+
+// LIFT
+| `[lift]`    | operate on the `obj` graph in a stateless manner. |
+
+// MERGE
+| `[merge]`
+| Sum the terms of the start `poly`, where sum semantics is determined by the underlying magma of the `poly`.
+\[
+(a_0,a_1,\ldots,a_n) = \coprod_{i=0}^{i<n} a_i
+\]
+a|
+[exec,prompt="mm> "]
+----
+(1,2,3)[merge]
+(1,2,3)>-
+(1;+2;+3)>-
+(1\|2\|3)>-
+----
+{blank}
+
+// SPLIT
+| `[split]`
+| Juxtapose start across `poly` terms as a scalar to a vector. `[branch]` is equivalent to `[split][merge]`.
+\[
+x(a_0,a_1,\ldots,a_n) = (xa_0,xa_1,\ldots,xa_n)
+\]
+a|
+[exec,prompt="mm> "]
+----
+1[split,(+1,+2,+3)]
+1-<(+2,+3,+4)
+1-<(+2;+3;+4)
+1-<(+2\|+3\|+4)
+----
+{blank}
+
+| `[swap]`
+| Replace the `[swap]` type's last `inst` argument with the start and the start with the `inst` argument.
+\[
+xa = ax
+\]
+a|
+[exec,prompt="mm> "]
+----
+'-adt'[plus,'mm']
+'-adt'[swap,[plus,'mm']]
+'-adt'/+'mm'/
+----
+{blank}
+
+|====
 
 ==== Filter Instructions
 ==== Map Instructions

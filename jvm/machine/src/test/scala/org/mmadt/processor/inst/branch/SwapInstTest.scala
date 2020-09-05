@@ -31,7 +31,8 @@ import org.mmadt.storage.StorageFactory.str
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class SwapInstTest extends BaseInstTest(
-  testSet("[flip] [plus]",
+  testSet("[swap] [plus]",
     testing("rodriguez", str.swap(plus("marko")), "markorodriguez", "'rodriguez' => str[swap,[plus,'marko']]"),
-    testing("roro", str.swap(plus("maro")), "marororo", "'roro' => %:[plus,'maro']:"),
+    //testing("roro", str.swap(plus("maro")), "marororo", "'roro' => ^:[plus,'maro']:"),
+    testing("roro", str.swap(plus("maro")), "marororo", "'roro' => /[plus,'maro']/"),
   ))
