@@ -583,13 +583,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_mmlang_grammar">mmlang Grammar</a></li>
 <li><a href="#_instructions">Instructions</a>
 <ul class="sectlevel3">
-<li><a href="#_branch_instructions">Branch Instructions</a>
-<ul class="sectlevel4">
-<li><a href="#_compose">[compose]</a></li>
-<li><a href="#_branch_2">[branch]</a></li>
-<li><a href="#_choose">[choose]</a></li>
-</ul>
-</li>
+<li><a href="#_branch_instructions">Branch Instructions</a></li>
 <li><a href="#_filter_instructions">Filter Instructions</a></li>
 <li><a href="#_map_instructions">Map Instructions</a></li>
 <li><a href="#_reduce_instructions">Reduce Instructions</a></li>
@@ -6434,222 +6428,146 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 </div>
 </div>
 <iframe src="images/reference/mmlang-ebnf.html" width="100%" height="1000px"></iframe>
-<div class="paragraph">
-<p>The following <a href="https://en.wikipedia.org/wiki/Axiomatic_semantics">language axioms</a> have variables:</p>
-</div>
-<table class="tableblock frame-none grid-none small" style="width: 25%;">
-<colgroup>
-<col style="width: 66.6666%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">variable</th>
-<th class="tableblock halign-left valign-top">range</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>o1</code>, <code>o2</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>objs</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>t1</code>, <code>t2</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">types</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>v1</code>, <code>v2</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">values</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[a]</code>, <code>[b]</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">instructions</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>{q1}</code>, <code>{q2}</code>, &#8230;&#8203;</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">quantifiers</p></td>
-</tr>
-</tbody>
-</table>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">id</span>(t1)                    := t1&lt;=t1[<span style="color:#369;font-weight:bold">id</span>]
-domain(t1)                := t1
-<span style="color:#369;font-weight:bold">range</span>(t1)                 := t1
-domain(t2&lt;=t1[a])         := t1
-<span style="color:#369;font-weight:bold">range</span>(t2&lt;=t1[a])          := t2</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The quantifiers of an <code>mmlang</code> program are elements of a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> called the <em>quantifier ring</em>. In the equations to follow, <code>*</code> and <code>+</code> refer to the respective monoid and group operations the quantifier ring.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>obj</code> magma juxtapositions, where instructions <code>[a]</code>, <code>[b]</code>, etc. act as <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">functions</a> on values and as free monoid concatenation on types. The particulars <code>objs</code> that are yielded juxtaposing an <code>obj</code> to the left of a type are forthcoming.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">v1{q1}                v2{q2}               := v2{q1*q2}
-v1{q1}                t2{q2}&lt;=t1[a][b]     := b(a(v1)){q1*q2}
-t2{q1}&lt;=t1[a][b]      t3{q2}&lt;=t2[c][d]     := t3{q1*q2}&lt;=t1[a][b][c][d]
-t2{q1}&lt;=t1[a][b]      v1{q2}               := v1{q1*q2}</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>inst</code> instructions denote functions that operate on <code>objs</code>. The particular of each instruction is forthcoming. The branch instructions denote flow control operations that mirror the type ringoid where <code>[compose]</code> is <code>*</code>, <code>[branch]</code> is <code>+</code>, and <code>[choose]</code> is <code>|</code>.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">v1{q1}[compose,t2{q2}&lt;=t1[a][b],t3{q3}&lt;=t2[c][d]]]     := t3{q1*q2*q3}&lt;=t1[a][b][c][d](v1)
-v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1),t2{q1*q2}&lt;=t1[c][d](v1)
-v1{q1}[branch,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[a][b]]       := t2{q1*(q2+q3)}&lt;=t1[a][b][c][d](v1)
-v1{q1}[choose,t2{q2}&lt;=t1[a][b],t2{q3}&lt;=t1[c][d]]       := t2{q1*q2}&lt;=t1[a][b](v1) | t2{q1*q2}&lt;=t1[c][d](v1)
-v1{q1}[repeat,[obj{<span style="color:#F00;background-color:#FAA">?</span>}-&gt;{<span style="color:#00D">0</span>},obj{<span style="color:#F00;background-color:#FAA">?</span>}-&gt;<span style="color:#369;font-weight:bold">type</span>,n]]            := ...</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The <code>polys</code> are the free algebra of the branch operations encoded in <code>mmlang</code> itself. Thus, the <code>inst</code> branch rules above are mirrored in the <code>poly</code> compositions below.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">(t2{q1}&lt;=t1[a][b];t3{q2}&lt;=t2[c][d])  := t3{q1*q2}[a][b][c][d]
-(t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d])  := t2{q1+q2}&lt;=t1[branch,t2{q1}&lt;=t1[a][b],t2{q1}&lt;=t1[c][d]]
-(t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[a][b])  := t2{q1+q2}&lt;=t1[a][b]
-(t2{q1}&lt;=t1[a][b]|t2{q2}&lt;=t1[c][d])  := t2{<span style="color:#369;font-weight:bold">min</span>(q1,q2),<span style="color:#369;font-weight:bold">max</span>(q1,q2)}&lt;=t1[choose,t2{q1}&lt;=t1[a][b],t2{q2}&lt;=t1[c][d]]</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The non-branching <code>inst</code> instructions are the functional primitives that are composed to create mm-ADT programs.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">obj    <span style="color:#369;font-weight:bold">type</span>                     := operation <span style="color:#080;font-weight:bold">or</span> equivalence
---------------------------------------------------------
-o1     <span style="color:#369;font-weight:bold">bool</span>&lt;=obj[a,o2]          := o1.test(o2)
-bool1  <span style="color:#369;font-weight:bold">bool</span>&lt;=<span style="color:#369;font-weight:bold">bool</span>[<span style="color:#080;font-weight:bold">and</span>,bool2]    := bool1 &amp; bool2
-o1{q1} <span style="color:#369;font-weight:bold">int</span>&lt;=obj[count]          := q1
-o1     <span style="color:#369;font-weight:bold">bool</span>&lt;=obj[eq,o2]         := o1 == o2
-t1     <span style="color:#369;font-weight:bold">str</span>&lt;=obj[explain]        ...
-...</code></pre>
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>The type-oriented <code>inst</code> instructions specify the typing rules, where the <code>_</code> symbol refers to the <em>anonymous type</em>. These equations are presented using the <code>obj</code> magma&#8217;s juxtaposition.</p>
-</li>
-</ul>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">t1    _                     := t1
-t1    _[a][b]               := b(a(t1))&lt;=t1[a][b]
-o1    [a,_]                 := true
-o1    [a,o1]                := true
-o1{<span style="color:#00D">0</span>} [a,{<span style="color:#00D">0</span>}]               := true
-o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</code></pre>
-</div>
-</div>
 </div>
 <div class="sect2">
 <h3 id="_instructions">Instructions</h3>
 <div class="paragraph">
 <p>The mm-ADT VM <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> is presented below, where the instructions are ordered by their classification and within each classification, they are ordered alphabetically.</p>
 </div>
-<table class="tableblock frame-all grid-all" style="width: 80%;">
-<caption class="title">Table 3. Instruction classes</caption>
+<div class="sect3">
+<h4 id="_branch_instructions">Branch Instructions</h4>
+<div class="paragraph">
+<p>The branch instructions support the splitting and merging of parallel, data flows, where each branch is a type <code>obj</code>.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 9.0909%;">
-<col style="width: 36.3636%;">
-<col style="width: 54.5455%;">
+<col style="width: 6.25%;">
+<col style="width: 50%;">
+<col style="width: 43.75%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-center valign-top">Class</th>
-<th class="tableblock halign-left valign-top">Signature</th>
-<th class="tableblock halign-left valign-top">Description</th>
+<th class="tableblock halign-left valign-top">inst</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">example</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Branch</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y{*}&lt;=x[branch]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Split <code>objs</code> across instructions.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Juxtapose start (scalar) across <code>poly</code> terms (vector) and then serialize the resultant <code>poly</code> (vector).
+\[
+x(a_0,a_1,\ldots,a_n) =  \coprod_{i=0}^{i&lt;n} xa_i
+\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 6[branch,(+1,'a',*int)]
+==&gt;7
+==&gt;'a'
+==&gt;36
+mm&gt; 6[+1,'a',*int]
+==&gt;7
+==&gt;'a'
+==&gt;36</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Filter</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>x{?}&lt;=x[filter]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Remove <code>objs</code> from an evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[combine]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Juxtapose two <code>polys</code> term-wise.
+\[
+(a_0,\ldots,a_n) \bullet (b_0,\ldots,b_n) = (a_0b_0,\ldots,a_nb_n)
+\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; (1;2;3)[combine,(+10;+20;+30)]
+==&gt;(11;22;33)
+mm&gt; (1;2;3)=(+10;+20;+30)
+==&gt;(11;22;33)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Flatmap</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y{*}&lt;=x[flatmap]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Split <code>objs</code> across objects.</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[lift]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">operate on the <code>obj</code> graph in a stateless manner.</p></td>
+<td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Initial</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj{0}&lt;=x[initial]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Finalize <code>objs</code> in an evaluation</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[merge]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Sum the terms of the start <code>poly</code>, where sum semantics is determined by the underlying magma of the <code>poly</code>.
+\[
+(a_0,a_1,\ldots,a_n) = \coprod_{i=0}^{i&lt;n} a_i
+\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; (1,2,3)[merge]
+==&gt;1
+==&gt;2
+==&gt;3
+mm&gt; (1,2,3)&gt;-
+==&gt;1
+==&gt;2
+==&gt;3
+mm&gt; (1;+2;+3)&gt;-
+==&gt;int&lt;=(1;_[plus,2];_[plus,3])[merge]
+mm&gt; (1|2|3)&gt;-
+==&gt;1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Map</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[map]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Move <code>objs</code> between objects</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[split]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Juxtapose start across <code>poly</code> terms as a scalar to a vector. <code>[branch]</code> is equivalent to <code>[split][merge]</code>.
+\[
+x(a_0,a_1,\ldots,a_n) = (xa_0,xa_1,\ldots,xa_n)
+\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 1[split,(+1,+2,+3)]
+==&gt;(2,3,4)
+mm&gt; 1-&lt;(+2,+3,+4)
+==&gt;(3,4,5)
+mm&gt; 1-&lt;(+2;+3;+4)
+==&gt;(3;6;10)
+mm&gt; 1-&lt;(+2|+3|+4)
+==&gt;(3)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 <tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Reduce</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x{*}[reduce]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Fold <code>objs</code> down to a single <code>obj</code></p></td>
-</tr>
-<tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">SideEffect</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>x&lt;=x[sideeffect]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Global state mutations</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Terminal</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>x{*}&lt;=obj{0}[terminal]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Generate <code>objs</code> for evaluation</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-center valign-top"><p class="tableblock">Trace</p></th>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>y&lt;=x[trace]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Traverser the <code>obj</code> graph (reflection)</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[swap]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Replace the <code>[swap]</code> type&#8217;s last <code>inst</code> argument with the start and the start with the <code>inst</code> argument.
+\[
+xa = ax
+\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; '-adt'[plus,'mm']
+==&gt;'-adtmm'
+mm&gt; '-adt'[swap,[plus,'mm']]
+==&gt;'mm-adt'
+mm&gt; '-adt'/+'mm'/
+==&gt;'mm-adt'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
-<div class="sect3">
-<h4 id="_branch_instructions">Branch Instructions</h4>
-<div class="paragraph">
-<p>The branch instruction support the splitting and merging of parallel, data flows, where each branch is a type and, depending on the particular branch instruction, some types, all types, or only those types given a predicate are evaluated.</p>
-</div>
-<div class="sect4">
-<h5 id="_compose">[compose]</h5>
-
-</div>
-<div class="sect4">
-<h5 id="_branch_2">[branch]</h5>
-
-</div>
-<div class="sect4">
-<h5 id="_choose">[choose]</h5>
-
-</div>
 </div>
 <div class="sect3">
 <h4 id="_filter_instructions">Filter Instructions</h4>
@@ -6673,7 +6591,7 @@ o1    [a,t1]                := t1(o1) != {<span style="color:#00D">0</span>}</co
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-08-28 01:52:31 -0600
+Last updated 2020-09-04 16:05:07 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
