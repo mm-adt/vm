@@ -34,6 +34,8 @@ import org.mmadt.storage.StorageFactory.{?, int, str}
  */
 class TypeInstTest extends BaseInstTest(
   testSet("[type] table",
+    comment("[noop]"),
+    testing(__, __.`type`, __.`type`, "[type]"),
     comment("[plus][mult]"),
     testing(2, `type`, int, "2[type]"),
     testing(2, plus(10).mult(plus(int)).`type`, int.plus(10).mult(int.plus(int)), "2+10[mult,+int][type]"),
@@ -49,9 +51,7 @@ class TypeInstTest extends BaseInstTest(
     comment("[swap]"),
     testing("a", swap(plus("b")).`type`, str.swap(plus("b")), "'a'[swap,+'b'][type]"),
     testing("a", plus(str).swap(plus("b")).`type`, str.plus(str).swap(plus("b")), "'a'[plus,str][swap,+'b'][type]"),
-    comment("[noop]"),
-    testing(__, __.`type`, __.`type`, "[type]"),
-    comment("[split][merge]"),
+    comment("[split]"),
     testing(5, int.split(plus(1) `,` plus(2)).`type`, int.split(plus(1) `,` plus(2)), "5 => int-<(+1,+2)[type]"),
     testing(5, int.split(plus(1) `;` plus(2)).`type`, int.split(plus(1) `;` plus(2)), "5 => int-<(+1;+2)[type]"),
     testing(5, int.split(int -> plus(1) `_,` is(gt(10)) -> plus(2)).`type`, int.split(int -> int.plus(1)), "5 => int-<(int -> +1, [is>10] -> +2)[type]"), // you lose the >10 branch

@@ -22,98 +22,43 @@
 
 package org.mmadt.processor.inst.filter
 
-import org.mmadt.TestUtil
-import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.filter.IsOp
-import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Obj, Rec}
+import org.mmadt.language.obj.Obj.{booleanToBool, doubleToReal, intToInt}
+import org.mmadt.language.obj.`type`.__._
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor3}
 
-class IsInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[is] value, type, strm, anon combinations") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
-        //////// INT
-        (int(2).is(true), int(2), "value"), // value * value = value
-        (int(2).q(10).is(true), int(2).q(10), "value"), // value * value = value
-        (int(2).q(10).is(true).q(20), int(2).q(200), "value"), // value * value = value
-        (int(2).is(btrue.q(10)), int(2), "value"), // value * value = value
-        (int(2).is(bool), int(2).is(bool), "value"), // value * type = value
-        (int(2).is(__.gt(int)), int(2).q(qZero), "value"), // value * anon = value
-        (int(2).is(__.gte(int)), int(2), "value"), // value * anon = value
-        (int(2).q(10).is(__.gte(int)), int(2).q(10), "value"), // value * anon = value
-        (int(2).is(__.gte(int)).q(10), int(2).q(10), "value"), // value * anon = value
-        (int(2).q(10).is(__.gte(int)).q(20), int(2).q(200), "value"), // value * anon = value
-        (int.is(btrue), int.is(btrue), "type"), // type * value = type
-        (int.q(10).is(btrue), int.q(10).is(btrue), "type"), // type * value = type
-        (int(1, 2, 3).is(btrue), int(1, 2, 3), "strm"), // strm * value = strm
-        (int(1, 2, 3).is(bfalse), strm, "strm"), // strm * value = strm
-        (int(1, 2, 3).is(int.gt(int(2).q(10))), strm(List(int(3))), "strm"), // strm * value = strm
-        (int(1, 2, 3).is(int.gte(int(2))).q(10), int(int(2).q(10), int(3).q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3).is(int.gt(int)), strm, "strm"), // strm * type = strm
-        (int(1, 2, 3).is(__.gte(__.mult(int))), strm(List(int(1))), "strm"), // strm * anon = strm
-        //////// REAL
-        (real(2.0).is(btrue), 2.0, "value"), // value * value = value
-        (real(2.0).is(bfalse), real(2.0).q(qZero), "value"), // value * value = value
-        (real(2.0).is(real.gt(real.mult(real))), real(2.0).q(qZero), "value"), // value * type = value
-        (real(2.0).is(__.gt(__.mult(real))), real(2.0).q(qZero), "value"), // value * anon = value
-        (real.is(real.gt(real(2.0))), real.is(real.gt(2.0)), "type"), // type * value = type
-        (real.is(__.gt(real(2.0))), real.is(real.gt(2.0)), "type"), // type * anon = type
-        (real.is(bool), real.is(bool), "type"), // type * type = type
-        (real(1.0, 2.0, 3.0).is(real.gt(2.0)), strm(List(real(3.0))), "strm"), // strm * value = strm
-        (real(1.0, 2.0, 3.0).is(real.gt(real)), strm, "strm"), // strm * type = strm
-        (real(1.0, 2.0, 3.0).is(__.gt(__.mult(real))), strm, "strm"), // strm * anon = strm
-        (real(1.0, 2.0, 3.0).is(__.lte(__.mult(real))), real(1.0, 2.0, 3.0), "strm"), // strm * anon = strm
-
-      )
-    forEvery(starts) { (query, result, _) => TestUtil.evaluate(query, __, result)
-    }
-  }
-
-  test("[is] lineage") {
-    def maker(x: Obj): Obj = x.q(2).is(btrue).q(3).is(btrue).q(10)
-
-    val starts: TableFor1[Obj] =
-      new TableFor1("obj",
-        bool,
-        int,
-        real,
-        str,
-        rec,
-        btrue,
-        bfalse,
-        int(10),
-        real(23.0),
-        str("a"),
-        rec(str("a") -> int, str("b") -> bool),
-        rec(str("a") -> int(1), str("b") -> int(2)))
-    forEvery(starts) { obj => {
-      val expr = maker(obj)
-      obj match {
-        case _: Rec[_, _] =>
-        case value: Value[_] => assert(value.g == expr.asInstanceOf[Value[_]].g)
-        case _ =>
-      }
-      assert(obj.q != expr.q)
-      assertResult(2)(expr.trace.length)
-      assertResult((int(60), int(60)))(expr.q)
-      assertResult((obj.q(2), IsOp(btrue).q(3)))(expr.trace.head)
-      assertResult((obj.q(2).is(btrue).q(3), IsOp(btrue).q(10)))(expr.trace.last)
-    }
-    }
-  }
-
-  test("[is] w/ int") {
-    assertResult(int(15).q(48))(int(5).q(2).plus(10).q(2).id.q(4).is(int.gt(2)).q(3))
-    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(0, 48) <= int.q(2).plus(10).q(2).id.q(4).is(int.gt(2)).q(3))
-    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id.q(4).is(int.gt(2)).q(3))
-    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id.q(4).is(int.q(16).gt(2)).q(3))
-    assertResult(int(15).q(48))(int(5).q(2) ==> int.q(2).plus(10).q(2).id.q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))
-    assertThrows[LanguageException] {
-      assertResult(int(15).q(48))(int(5).q(2) ==> int.plus(10).q(2).id.q(4).is(bool.q(16) <= int.q(16).gt(2)).q(3))
-    }
-  }
-}
+class IsInstTest extends BaseInstTest(
+  testSet("[is] table test",
+    comment("int"),
+    testing(2, is(true), 2, "2[is,true]"),
+    testing(2.q(10), int.q(10).is(true), 2.q(10), "2{10} => int{10}[is,true]"),
+    testing(2.q(10), is(true).q(20), 2.q(200), "2{10}[is,true]{20}"),
+    testing(2, is(true.q(10)), 2, "2[is,true{10}]"),
+    testing(2, is(bool), 2.is(bool), "2[is,bool]"),
+    testing(2, int.is(gt(int)), zeroObj, "2 => int[is>int]"),
+    testing(2, is(gte(int)), 2, "2[is>=int]"),
+    testing(2.q(10), int.q(10).is(gte(int)), 2.q(10), "2{10} => int{10}[is>=int]"),
+    testing(2, int.is(gte(int)).q(10), 2.q(10), "2 => int[is>=int]{10}"),
+    testing(2.q(10), is(gte(int)).q(20), 2.q(200), "2{10}[is>=int]{20}"),
+    testing(int, int.is(true), int.is(true), "int => int[is,true]"),
+    testing(int.q(10), is(true), int.q(10).is(true), "int{10} => [is,true]"),
+    testing(int(1, 2, 3), is(true), int(1, 2, 3), "[1,2,3][is,true]"),
+    testing(int(1, 2, 3), is(false), zeroObj, "[1,2,3][is,false]"),
+    IGNORING("eval-5")(int(1, 2, 3), int.q(3).is(int.gt(2.q(10))), 3, "[1,2,3] => int{3}[is,int[gt,2{10}]]"),
+    IGNORING("eval-5")(int(1, 2, 3), int.q(3).is(gte(2)).q(10), int(2.q(10), 3.q(10)), "[1,2,3] => int{3}[is,>=2]{10}"),
+    testing(int(1, 2, 3), is(gt(int)), zeroObj, "[1,2,3][is>int]"),
+    IGNORING("eval-5")(int(1, 2, 3), int.q(3).is(gte(mult(int))), 1, "[1,2,3] => int{3}[is>=*int]"),
+    comment("real"),
+    testing(2.0, is(true), 2.0, "2.0[is,true]"),
+    testing(2.0, is(false), zeroObj, "2.0[is,false]"),
+    testing(2.0, is(real.gt(real.mult(real))), zeroObj, "2.0[is,real[gt,real[mult,real]]]"),
+    testing(2.0, real.is(gt(mult(real))), zeroObj, "2.0 => real[is>*real]"),
+    testing(real, is(real.gt(2.0)), real.is(real.gt(2.0)), "real[is,real>2.0]"),
+    testing(real, real.is(gt(2.0)), real.is(real.gt(2.0)), "real => real[is>2.0]"),
+    testing(real, is(bool), real.is(bool), "real[is,bool]"),
+    IGNORING("eval-5")(real(1.0, 2.0, 3.0), is(real.gt(2.0)), 3.0, "[1.0,2.0,3.0][is,real>2.0]"),
+    testing(real(1.0, 2.0, 3.0), real.q(3).is(real.gt(real)), zeroObj, "[1.0,2.0,3.0] => real{3}[is,real>real]"),
+    testing(real(1.0, 2.0, 3.0), is(gt(mult(real))), zeroObj, "[1.0,2.0,3.0][is>*real]"),
+    testing(real(1.0, 2.0, 3.0), is(lte(mult(real))), real(1.0, 2.0, 3.0), "[1.0,2.0,3.0][is,=<*real]"),
+  ))
