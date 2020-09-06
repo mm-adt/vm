@@ -33,6 +33,8 @@ import org.asciidoctor.jruby.{AsciiDocDirectoryWalker, DirectoryWalker}
 import org.asciidoctor.{Asciidoctor, OptionsBuilder, SafeMode}
 import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.trace.ModelOp.MM
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 
 import scala.collection.JavaConverters
@@ -60,7 +62,7 @@ class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Ob
     val none = attributes.getOrDefault(NONE, prompt + "\n").toString
     val exception = attributes.getOrDefault(EXCEPTION, Tokens.blank).toString
     val linebreak = attributes.getOrDefault(LINE_BREAK, "%").toString
-    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).remove(Tokens.::)
+    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.::,__.model(MM))
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
       if (w.trim.isBlank)
         builder.append("\n")

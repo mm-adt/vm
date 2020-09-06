@@ -69,7 +69,7 @@ object BranchRewrite extends Func[Obj, Obj] {
               .map(z => singleOrPair(z, z => z.trace.reconstruct[A](start))).get
             else if (singleOrPair[Poly[Obj], Boolean](apoly, x => x.glist.forall(z => Type.isIdentity(z)))) BranchInstruction.brchType[Obj](apoly)
             else BranchInstruction.brchType[Obj](apoly).clone(via = (start, BranchOp(apoly match {
-              case arec: Rec[Obj, Obj] => arec.clone(_ => branches.asInstanceOf[Pairs[Obj, Obj]])
+              case arec: Rec[Obj, Obj] => arec.clone(_ => arec.gmap.zip(branches).map(triple => (triple._1._1,triple._2)))
               case alst: Lst[Obj] => alst.clone(_ => branches)
             })))
           }
