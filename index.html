@@ -1455,7 +1455,7 @@ In practice, the string representation of a value is its <em>ground</em> and the
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 2[plus,4][is&gt;0]
 ==&gt;6
 mmlang&gt; 2[plus,4][is&gt;0][path]
-==&gt;(2;[plus,4];6;[is,true];6)
+==&gt;(2;[plus,4];6;[is,true];6)&lt;=2[plus,4][is,true][path,(_;_)]
 mmlang&gt; 2[plus,4][is&gt;0][type]
 ==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]]</code></pre>
 </div>
@@ -1939,7 +1939,7 @@ mmlang&gt; 6[map,8][map,10]
 mmlang&gt; 6 =&gt; 8 =&gt; 10 =&gt; [path]
 ==&gt;(10)
 mmlang&gt; 6[map,8][map,10][path]
-==&gt;(6;[map,8];8;[map,10];10)</code></pre>
+==&gt;(6;[map,8];8;[map,10];10)&lt;=6[map,8][map,10][path,(_;_)]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2164,6 +2164,7 @@ mmlang&gt; 5-&lt;(+{2}3,+{3}4,+{4}5)&gt;-[sum]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0]]
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
 mmlang&gt; 5 =&gt; nat
 ==&gt;nat:5
 mmlang&gt; 0 =&gt; nat
@@ -2180,6 +2181,7 @@ language error: 0 is not a nat</code></pre>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,list&lt;=[(_){?}|(_,list)]]
+==&gt;_[define,list&lt;=_[(_){?}|(_,list)]]
 mmlang&gt; (1)             =&gt; list
 ==&gt;list:(1)
 mmlang&gt; (1,(1))         =&gt; list
@@ -2220,6 +2222,7 @@ mmlang&gt; 5 =&gt; [plus,int]
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type'-&gt;
           (person -&gt; (person:('name'-&gt;str,'age'-&gt;nat)),
            nat    -&gt; (nat&lt;=int[is&gt;0])))]
+==&gt;_
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;0)                =&gt; person
 language error: ('name'-&gt;'marko','age'-&gt;0) is not a person
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
@@ -2261,7 +2264,7 @@ mmlang&gt; _&lt;=int[gt,10]         <i class="conum" data-value="2"></i><b>(2)</
 mmlang&gt; int[gt,10]            <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;bool&lt;=int[gt,10]
 mmlang&gt; _
-mmlang&gt;</code></pre>
+==&gt;_</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -2329,7 +2332,7 @@ mmlang&gt; int[is,[gt,10]]                      <i class="conum" data-value="4">
 ==&gt;'
 bool{6}&lt;=_{2}[plus,1]{3}[gt,0]
 
-instruction    domain       range     state
+inst           domain       range     state
 --------------------------------------------
 [plus,1]{3}    _{2}    =&gt;   _{6}
 [gt,0]         _{6}    =&gt;   bool{6}
@@ -2347,7 +2350,7 @@ instruction    domain       range     state
 ==&gt;'
 bool{6}&lt;=int{2}[plus,1]{3}[gt,0]
 
-instruction    domain         range     state
+inst           domain         range     state
 ----------------------------------------------
 [plus,1]{3}    int{2}    =&gt;   int{6}
 [gt,0]         int{6}    =&gt;   bool{6}
@@ -2460,7 +2463,7 @@ mmlang&gt; (bool[one],int[one],real[one])
 mmlang&gt; (true,6,5.5)=([one],[one],[one])
 ==&gt;(true{3},1{3},1.0{3})
 mmlang&gt; 'ryan'[one]
-language error: 'ryan' is not supported by [one]</code></pre>
+==&gt;1</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2469,18 +2472,16 @@ language error: 'ryan' is not supported by [one]</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (true,6,5.5,'ryan')&gt;-[plus,[zero]]
-==&gt;true
-==&gt;6
-==&gt;5.5
-==&gt;'ryan'
+==&gt;true{4}
+==&gt;6{4}
+==&gt;5.5{4}
+==&gt;'ryan'{4}
 mmlang&gt; (true,6,5.5)&gt;-[mult,[one]]
-==&gt;true
-==&gt;6
-==&gt;5.5
+==&gt;true{3}
+==&gt;6{3}
+==&gt;5.5{3}
 mmlang&gt; (true,6,5.5)&gt;-[mult,[zero]]
-==&gt;false
-==&gt;0
-==&gt;0.0</code></pre>
+==&gt;0</code></pre>
 </div>
 </div>
 </div>
@@ -2987,7 +2988,7 @@ As previously stated for collection <code>polys</code>, control <code>poly</code
 ==&gt;'
 int{0,18}&lt;=int{3}[mult,10][int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,20]]-&gt;int{9}&lt;=int{3}[int{3}[plus,70],int{3}[plus,170],int{3}[plus,270]],int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,10]]-&gt;int{9}&lt;=int{3}[int{3}[mult,10],int{3}[mult,20],int{3}[mult,30]]][plus,100]
 
-instruction                                    domain            range       state
+inst                                           domain            range       state
 -----------------------------------------------------------------------------------
 [mult,10]                                      int{3}       =&gt;   int{3}
 [int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,...    int{3}       =&gt;   int{0,18}
@@ -3150,6 +3151,7 @@ In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0]]
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
 mmlang&gt; 10 =&gt; nat
 ==&gt;nat:10
 mmlang&gt; -1 =&gt; nat
@@ -3174,6 +3176,7 @@ language error: 0 is not a nat</code></pre>
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0],
                 date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
                 date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]],date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat),date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]])[put,2,2020]]
 mmlang&gt; (8;26;2020) =&gt; date
 ==&gt;date:(nat:8;nat:26;nat:2020)
 mmlang&gt; (8;26)      =&gt; date
@@ -3195,7 +3198,7 @@ mmlang&gt; (8;26)      =&gt; date
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,xlist&lt;=lst[[is,[empty]]|
                             [[is,[head][a,str]];
                              [is,[tail][a,xlist]]]]]
-mmlang&gt;
+==&gt;_[define,xlist&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[empty]]|lst{?}&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[head][a,str]];lst{?}[is,bool{?}&lt;=lst{?}[tail][a,xlist]]]]]
 mmlang&gt; ( ) =&gt; [a,xlist]
 ==&gt;true
 mmlang&gt; ('a';'b';'c') =&gt; [a,xlist]
@@ -3203,7 +3206,7 @@ mmlang&gt; ('a';'b';'c') =&gt; [a,xlist]
 mmlang&gt; ('a';'b';'c') =&gt; xlist
 ==&gt;xlist:('a';'b';'c')
 mmlang&gt; (1;'a';'c') =&gt; xlist
-mmlang&gt;
+==&gt;xlist
 mmlang&gt; ('a';'b';'c') =&gt; xlist[put,0,3]
 language error: (3;'a';'b';'c') is not a xlist</code></pre>
 </div>
@@ -3214,7 +3217,7 @@ language error: (3;'a';'b';'c') is not a xlist</code></pre>
                             [[is,[head][a,str]];
                              [is,[tail][head][a,int]];
                              [is,[tail][tail][a,ylist]]]]]
-mmlang&gt;
+==&gt;_[define,ylist&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[empty]]|lst{?}&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[head][a,str]];lst{?}[is,bool{?}&lt;=lst{?}[tail][head][a,int]];lst{?}[is,bool{?}&lt;=lst{?}[tail][tail][a,ylist]]]]]
 mmlang&gt; ( ) =&gt; [a,ylist]
 ==&gt;true
 mmlang&gt; ('a';1;'b';2) =&gt; [a,ylist]
@@ -3222,7 +3225,7 @@ mmlang&gt; ('a';1;'b';2) =&gt; [a,ylist]
 mmlang&gt; ('a';1;'b';2) =&gt; ylist
 ==&gt;ylist:('a';1;'b';2)
 mmlang&gt; (1;'a';'c') =&gt; ylist
-mmlang&gt;
+==&gt;ylist
 mmlang&gt; ('a';1;'b';2) =&gt; ylist[put,0,3]
 language error: (3;'a';1;'b';2) is not a ylist</code></pre>
 </div>
@@ -3315,9 +3318,9 @@ However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6 =&gt; int[plus,[mult,2]][path]
-==&gt;(6;[plus,12];18)
+==&gt;(6;[plus,12];18)&lt;=6[plus,12][path,(_;_)]
 mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
-==&gt;(8;[plus,16];24)</code></pre>
+==&gt;(8;[plus,16];24)&lt;=8[plus,16][path,(_;_)]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3334,7 +3337,7 @@ The output of <code>[path]</code> is a <code>;-lst</code> that can be <a href="h
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63]                        <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;true
 mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path]                  <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(8;[plus,1];9;[mult,2];18;[lt,63];true)
+==&gt;(8;[plus,1];9;[mult,2];18;[lt,63];true)&lt;=8[plus,1][mult,2][lt,63][path,(_;_)]
 mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]    <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;63</code></pre>
 </div>
@@ -3371,12 +3374,12 @@ In effect, the execution context is transformed from a memory-less <a href="http
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]         <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;120
 mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]   <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10];120)
+==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10];120)&lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path,(_;_)]
 mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;'
 int[plus,1]&lt;x&gt;[plus,2][mult,int&lt;.x&gt;]
 
-instruction       domain      range state
+inst              domain      range state
 ------------------------------------------
 [plus,1]          int    =&gt;   int
 [plus,2]          int    =&gt;   int    x-&gt;int
@@ -3411,12 +3414,12 @@ language error: 4 does not contain the label 'y'
 mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x]                                      <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;12
 mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]                                <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)
+==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)&lt;=2&lt;x&gt;[plus,8][plus,2][path,(_;_)]
 mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]  <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;'
 int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,int&lt;.x&gt;][plus,int&lt;.y&gt;][plus,int&lt;.z&gt;]][plus,int&lt;.y&gt;]][plus,int&lt;.x&gt;]
 
-instruction                                    domain      range state
+inst                                           domain      range state
 -----------------------------------------------------------------------
 [plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,int&lt;.x&gt;][p...    int    =&gt;   int    x-&gt;int
  [plus,int&lt;z&gt;[plus,int&lt;.x&gt;][plus,int&lt;.y&gt;]...    int   =&gt;    int   x-&gt;int y-&gt;int
@@ -3540,6 +3543,7 @@ While model-ADT design and development will be discussed in a latter section, th
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [define,nat&lt;=int[is&gt;0]]                            <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
 mmlang&gt; int =&gt; [define,nat&lt;=int[is&gt;0]]                     <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;int[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
 mmlang&gt;  6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]             <i class="conum" data-value="3"></i><b>(3)</b>
@@ -3588,6 +3592,7 @@ language error: -6 is not a nat</code></pre>
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type' -&gt; (nat    -&gt; (nat&lt;=int[is&gt;0]),
                                    person -&gt; (person:('name'-&gt;str,'age'-&gt;nat))))&lt;=mm] <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;_
 mmlang&gt; 53 =&gt; [as,nat]                                                                <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;nat:53
 mmlang&gt; 0  =&gt; [as,nat]
@@ -3707,7 +3712,7 @@ where <code>obj</code> is the set of all quantified mm-ADT objects, \$ &#8658;: 
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; str[plus,'a']{2} =&gt; str{2}[plus,'b']{6}
-==&gt;str{12}&lt;=str[plus,'a']{2}[plus,'b']{6}</code></pre>
+==&gt;str{12}&lt;=str[plus,'a'][plus,'b']{12}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4049,7 +4054,7 @@ mm&gt; str[[id]{3},[id]{2}]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],{0}]
-==&gt;str[id]</code></pre>
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4101,9 +4106,9 @@ mm&gt; ['a';['b';'c']]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id];[id]];[id]]
-==&gt;str[str[str[id];str[id]];str[id]]
+==&gt;str
 mm&gt; str[[id];[[id];[id]]]
-==&gt;str[str[id];str[str[id];str[id]]]</code></pre>
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4125,7 +4130,7 @@ mm&gt; str[[id];[[id];[id]]]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];{1}]
-==&gt;str[str[id];str]</code></pre>
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4157,9 +4162,9 @@ mm&gt; [['a';'b'],['a';'c']]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];[[id],[id]]]
-==&gt;str{2}&lt;=str[str[id];str{2}&lt;=str[id]{2}]
+==&gt;str{2}&lt;=str[id]{2}
 mm&gt; str[[[id];[id]],[[id];[id]]]
-==&gt;str{2}&lt;=str[str[id];str[id]]{2}</code></pre>
+==&gt;str{2}&lt;=str[id]{2}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4186,9 +4191,9 @@ mm&gt; [['a';'c'],['b';'c']]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id],[id]];[id]]
-==&gt;str{2}&lt;=str[str{2}&lt;=str[id]{2};str{2}[id]]
+==&gt;str{2}&lt;=str[id]{2}
 mm&gt; str[[[id];[id]],[[id];[id]]]
-==&gt;str{2}&lt;=str[str[id];str[id]]{2}</code></pre>
+==&gt;str{2}&lt;=str[id]{2}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4296,7 +4301,7 @@ mm&gt; str[[id]{-1},[id]{-1}]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{-1}]{-1}
-==&gt;str[id]</code></pre>
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4356,11 +4361,11 @@ mm&gt; ['a';'b']{-1}
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];[id]{-1}]
-==&gt;str{-1}&lt;=str[str[id];str{-1}&lt;=str[id]{-1}]
+==&gt;str{-1}&lt;=str[id]{-1}
 mm&gt; str[[id]{-1};[id]]
-==&gt;str{-1}&lt;=str[str{-1}&lt;=str[id]{-1};str{-1}[id]]
+==&gt;str{-1}&lt;=str[id]{-1}
 mm&gt; str[[id];[id]]{-1}
-==&gt;str{-1}&lt;=str[str[id];str[id]]{-1}</code></pre>
+==&gt;str{-1}&lt;=str[id]{-1}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4387,9 +4392,9 @@ mm&gt; ['a';'b']
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{-1};[id]{-1}]
-==&gt;str[str{-1}&lt;=str[id]{-1};str&lt;=str{-1}[id]{-1}]
+==&gt;str
 mm&gt; str[[id];[id]]
-==&gt;str[str[id];str[id]]</code></pre>
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4578,7 +4583,7 @@ mm&gt; str[[id]{2},[id]{3}]
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[{0},[id]]
-==&gt;str[id]</code></pre>
+==&gt;str</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5814,7 +5819,7 @@ mmlang&gt; [1,10,100][is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30]     
 ==&gt;'
 int{3}[int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,50]]-&gt;int{3}[plus,10]|int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[lt,5]]-&gt;int{3}[plus,20]|int{3}-&gt;int{3}[plus,30]]
 
-instruction                                    domain         range      state
+inst                                           domain         range      state
 -------------------------------------------------------------------------------
 [int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,...    int{3}    =&gt;   int{3}
  [is,bool{3}&lt;=int{3}[gt,50]]                    int{3}   =&gt;    int{0,3}
@@ -6327,11 +6332,11 @@ y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int[plus,1][plus,2][plus,3]
 mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(int;[plus,1];int;[plus,2];int;[plus,3];int)
+==&gt;(int;;int;[plus,1];int;[plus,2];int;[plus,3];int)&lt;=int[plus,1][plus,2][plus,3][path,(_;_)]
 mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;7
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;(1;[plus,1];2;[plus,2];4;[plus,3];7)
+==&gt;(1;[plus,1];2;[plus,2];4;[plus,3];7)&lt;=1[plus,1][plus,2][plus,3][path,(_;_)]
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
 ==&gt;7</code></pre>
 </div>
@@ -6597,7 +6602,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-05 00:57:47 -0600
+Last updated 2020-09-05 01:26:32 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
