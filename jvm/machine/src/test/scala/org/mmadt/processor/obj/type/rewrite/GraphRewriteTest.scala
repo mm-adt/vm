@@ -22,6 +22,8 @@
 
 package org.mmadt.processor.obj.`type`.rewrite
 
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{OStrm, Obj, Rec, Str}
@@ -35,10 +37,10 @@ class GraphRewriteTest extends FunSuite {
   private type Vertex = RecValue[StrValue, Value[Obj]]
   private type Graph = RecValue[StrValue, Value[Obj]]
 
-  val vertex: Rec[Str, Obj] = rec(str("id") -> int, str("outE") -> tobj("edge").q {
+  val vertex: Rec[Str, Obj] = rec(str("id") -> int, str("outE") -> 'edge.q {
     *
   })
-  val edge: Rec[Str, Obj] = rec(str("id") -> int, str("inV") -> tobj("vertex"), str("outV") -> tobj("vertex"), str("label") -> str)
+  val edge: Rec[Str, Obj] = rec(str("id") -> int, str("inV") -> 'vertex.q(1), str("outV") -> 'vertex.q(1), str("label") -> str)
 
   /*val model: Model = Model.simple().
     put(rec(str("id") -> int, str("outE") -> tobj("edge").q(*), str("inE") -> tobj("edge").q(*)), rec(str("id") -> int, str("outE") -> tobj("edge").q(*), str("inE") -> tobj("edge").q(*)).named("vertex")).

@@ -23,10 +23,11 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__.merge
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.storage.StorageFactory.{int, lst, obj, str, zeroObj}
+import org.mmadt.storage.StorageFactory.{int, lst, str, zeroObj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -39,16 +40,17 @@ class MergeInstTest extends BaseInstTest(
     testing(1 `,` 2, merge, int(1, 2), "(1,2)>-"),
     testing(1 `,` 2 `,` 3, merge, int(1, 2, 3), "(1,2,3)>-"),
     testing(1 `,` 2 `,` 3 `,` 3, merge, int(1, 2, 3.q(2)), "(1,2,3,3)>-"),
-    testing(1 `,` "a" `,` 2 `,` "a", merge, obj(1, "a", 2, "a"), "(1,'a',2,'a')>-"),
+    testing(1 `,` "a" `,` 2 `,` "a", merge, __(1, "a", 2, "a"), "(1,'a',2,'a')>-"),
     comment("quantifiers"),
     testing(lst().q(10), merge, zeroObj, "( ){10}>-"),
     testing((1.q(2) `,`).q(5), merge, 1.q(10), "(1{2}){5}>-"),
     testing((1.q(2) `,` 2.q(3)).q(4), merge.q(5), int(1.q(40), 2.q(60)), "(1{2},2{3}){4}>-{5}"),
     testing(1 `,` 2.q(10) `,` 3, merge.q(2), int(1.q(2), 2.q(20), 3.q(2)), "(1,2{10},3)>-{2}"),
     testing((1 `,` 2 `,` 3 `,` 3).q(2, 5), merge.q(10), int(1.q(20, 50), 2.q(20, 50), 3.q(40, 100)), "(1,2,3,3){2,5}>-{10}"),
-    testing(1 `,` "a".q(10) `,` 2 `,` "a".q(2), merge.q(3), obj(1.q(3), "a".q(30), 2.q(3), "a".q(6)), "(1,'a'{10},2,'a'{2})>-{3}"),
+    testing(1 `,` "a".q(10) `,` 2 `,` "a".q(2), merge.q(3), __(1.q(3), "a".q(30), 2.q(3), "a".q(6)), "(1,'a'{10},2,'a'{2})>-{3}"),
   ), testSet(";-lst table test",
     comment("no quantifiers"),
+
     testing(lst(), merge, zeroObj, "()>-"),
     testing(1 `;`, merge, 1, "(1)>-"),
     testing(1 `;` 2 `;` 3, merge, 3, "(1;2;3)>-"),

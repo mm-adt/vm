@@ -24,7 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.IntQ
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, _}
@@ -55,7 +55,7 @@ package object op {
       }.asInstanceOf[Iterable[OType[OT]]]
       val result: OType[OT] = types.toSet.size match {
         case 1 => types.head
-        case _ => new TObj().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
+        case _ => new __().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
       val x = if (brch.isParallel) { // [,] sum the min/max quantification
         brch match {

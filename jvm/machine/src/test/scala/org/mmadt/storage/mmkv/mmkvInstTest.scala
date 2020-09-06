@@ -23,6 +23,7 @@
 package org.mmadt.storage.mmkv
 
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.{LanguageException, LanguageFactory}
 import org.mmadt.processor.Processor
@@ -34,20 +35,20 @@ import org.scalatest.FunSuite
  */
 class mmkvInstTest extends FunSuite {
 
-  lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
+  lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
-  val mmkv: String = "=mmkv"
-  val file1: String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
-  val file2: String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
-  val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
-  val file4: String = getClass.getResource("/mmkv/mmkv-4.mm").getPath
-  val file5: String = getClass.getResource("/mmkv/mmkv-5.mm").getPath
-  val file6: String = getClass.getResource("/mmkv/mmkv-6.mm").getPath
-  val source4: String = getClass.getResource("/mmkv/source-4.mm").getPath
-  val source5: String = getClass.getResource("/mmkv/source-5.mm").getPath
-  val kv: String = getClass.getResource("/model/kv.mm").getPath
-  val tp3: String = getClass.getResource("/model/tp.mm").getPath
-  val tp3_kv: String = getClass.getResource("/model/tpkv.mm").getPath
+  val mmkv:String = "=mmkv"
+  val file1:String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
+  val file2:String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
+  val file3:String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
+  val file4:String = getClass.getResource("/mmkv/mmkv-4.mm").getPath
+  val file5:String = getClass.getResource("/mmkv/mmkv-5.mm").getPath
+  val file6:String = getClass.getResource("/mmkv/mmkv-6.mm").getPath
+  val source4:String = getClass.getResource("/mmkv/source-4.mm").getPath
+  val source5:String = getClass.getResource("/mmkv/source-5.mm").getPath
+  val kv:String = getClass.getResource("/model/kv.mm").getPath
+  val tp3:String = getClass.getResource("/model/tp.mm").getPath
+  val tp3_kv:String = getClass.getResource("/model/tpkv.mm").getPath
 
   test("mmkv parsing") {
     assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
@@ -82,7 +83,7 @@ class mmkvInstTest extends FunSuite {
   }
 
   test("[=mmkv] with mmkv-1.mm") {
-    assertResult(s"mmkv{*}<=obj[=mmkv,'${file1}']")(obj.=:(mmkv)(str(file1)).toString)
+    assertResult(s"mmkv{*}<=_[=mmkv,'${file1}']")(__.=:(mmkv)(str(file1)).toString)
     assertResult("[mmkv:('k'->1,'v'->'marko'),mmkv:('k'->2,'v'->'ryan'),mmkv:('k'->3,'v'->'stephen'),mmkv:('k'->4,'v'->'kuppitz')]")(int(1).=:(mmkv)(str(file1)).toString)
     assertResult(int(1, 2, 3, 4))(Processor.iterator(int(4), int.=:[Rec[Obj, Obj]](mmkv)(str(file1)).get(str("k"), int)))
     // assertResult("mmkv:('k'->1,'v'->'marko')")((int(1) ==> int.=:[RecType[Obj, Obj]](mmkv)(str(file1))).toStrm.values.iterator.next().toString)

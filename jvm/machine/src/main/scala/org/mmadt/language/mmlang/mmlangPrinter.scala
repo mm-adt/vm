@@ -23,12 +23,13 @@
 package org.mmadt.language.mmlang
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.Tokens.{LBRACKET, int => _, obj => _, _}
+import org.mmadt.language.Tokens._
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.storage.StorageFactory
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -36,73 +37,73 @@ import org.mmadt.storage.StorageFactory._
  */
 object mmlangPrinter {
 
-  private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else "{0}"
-  private def typeName(aobj: Obj): String = if (Tokens.named(aobj.name)) aobj.name + COLON else EMPTY
+  private def aliveString(obj:Any):String = if (obj.asInstanceOf[Obj].alive) obj.toString else "{0}"
+  private def typeName(aobj:Obj):String = if (Tokens.named(aobj.name)) aobj.name + COLON else EMPTY
 
-  private def recString(arec: Rec[_, _]): String = {
+  private def recString(arec:Rec[_, _]):String = {
     if (arec.ctype) return arec.name
     typeName(arec) +
       (arec match {
-        case _: Strm[_] => strmString(arec.asInstanceOf[Strm[Obj]])
-        case _: RecType[_, _] if Tokens.named(arec.name) => return arec.name
+        case _:Strm[_] => strmString(arec.asInstanceOf[Strm[Obj]])
+        case _:RecType[_, _] if Tokens.named(arec.name) => return arec.name
         case _ if arec.isEmpty => EMPTYREC
         case _ => arec.gmap.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + arec.gsep)).dropRight(1) + RROUND
       })
   }
 
-  private def listString(alst: Lst[_]): String = {
+  private def listString(alst:Lst[_]):String = {
     if (alst.ctype) return alst.name
     typeName(alst) +
       (alst match {
-        case _: Strm[_] => strmString(alst.asInstanceOf[Strm[Obj]])
-        case _: LstType[_] if Tokens.named(alst.name) => return alst.name
+        case _:Strm[_] => strmString(alst.asInstanceOf[Strm[Obj]])
+        case _:LstType[_] if Tokens.named(alst.name) => return alst.name
         case _ if alst.isEmpty => EMPTYLST
         case _ => alst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + alst.gsep).dropRight(1) + RROUND
       })
   }
 
 
-  def qString(x: IntQ): String = x match {
+  def qString(x:IntQ):String = x match {
     case `qOne` => blank
     case `qZero` => QZERO
     case `qMark` => s"${LCURL}${Tokens.q_mark}${RCURL}"
     case `qPlus` => s"${LCURL}${Tokens.q_plus}${RCURL}"
     case `qStar` => s"${LCURL}${Tokens.q_star}${RCURL}"
     case (x, y) if x == y => s"${LCURL}${x}${RCURL}"
-    case (x, y) if y == int(Long.MaxValue) => "{" + x + ",}"
-    case (x, y) if x == int(Long.MinValue) => "{," + y + "}"
+    case (x, y) if y == StorageFactory.int(Long.MaxValue) => "{" + x + ",}"
+    case (x, y) if x == StorageFactory.int(Long.MinValue) => "{," + y + "}"
     case x if null == x => Tokens.blank
     case _ => "{" + x._1.g + "," + x._2.g + "}"
   }
 
-  def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(LBRACKET)((a, b) => a + b.toString + COMMA).dropRight(1) + RBRACKET
+  def strmString(strm:Strm[_]):String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(LBRACKET)((a, b) => a + b.toString + COMMA).dropRight(1) + RBRACKET
 
-  def typeString(atype: Type[_]): String = {
+  def typeString(atype:Type[_]):String = {
     val range = (atype match {
-      case arec: Rec[_, _] => recString(arec)
-      case alst: Lst[_] => listString(alst)
-      case atype: Type[_] => atype.name
+      case arec:Rec[_, _] => recString(arec)
+      case alst:Lst[_] => listString(alst)
+      case atype:Type[_] => atype.name
     }) + qString(atype.q)
     val domain = if (atype.root) EMPTY else {
       (atype.domainObj match {
-        case arec: Rec[_, _] => recString(arec)
-        case alst: Lst[_] => listString(alst)
-        case atype: Type[_] => atype.name
-        case avalue: Value[_] => avalue.hardQ(qOne).toString
+        case arec:Rec[_, _] => recString(arec)
+        case alst:Lst[_] => listString(alst)
+        case atype:Type[_] => atype.name
+        case avalue:Value[_] => avalue.hardQ(qOne).toString
       }) + qString(atype.domain.q)
     }
     (if (domain.equals(EMPTY) || range.equals(domain)) range else range + LDARROW + domain) +
       atype.trace.map(_._2.toString()).fold(EMPTY)((a, b) => a + b)
   }
 
-  def valueString(avalue: Value[_]): String = (avalue match {
-    case arec: Rec[_, _] => recString(arec)
-    case alst: Lst[_] => listString(alst)
-    case astr: StrValue => typeName(astr) + SQUOTE + astr.g + SQUOTE
+  def valueString(avalue:Value[_]):String = (avalue match {
+    case arec:Rec[_, _] => recString(arec)
+    case alst:Lst[_] => listString(alst)
+    case astr:StrValue => typeName(astr) + SQUOTE + astr.g + SQUOTE
     case _ => typeName(avalue) + avalue.g
   }) + qString(avalue.q)
 
-  def instString(inst: Inst[_, _]): String = {
+  def instString(inst:Inst[_, _]):String = {
     (inst.op match {
       case Tokens.model | Tokens.noop => Tokens.blank
       case Tokens.to => LANGLE + inst.arg0[StrValue].g + RANGLE
@@ -116,7 +117,7 @@ object mmlangPrinter {
           .getOrElse(inst.arg0[Obj]) + RBRACKET
       case _ => inst.args match {
         case Nil => LBRACKET + inst.op + RBRACKET
-        case args: List[Obj] => LBRACKET + inst.op + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET
+        case args:List[Obj] => LBRACKET + inst.op + COMMA + args.map(arg => arg.toString + COMMA).fold(EMPTY)((a, b) => a + b).dropRight(1) + RBRACKET
       }
     }) + qString(inst.q)
   }

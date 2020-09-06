@@ -30,5 +30,5 @@ import org.mmadt.language.obj.value.strm.ObjStrm
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VObjStrm(val name: String = Tokens.obj, val values: Seq[ObjValue], val via: ViaTuple = rootVia) extends ObjStrm
+class VObjStrm(val name: String = Tokens.anon, val values: Seq[ObjValue], val via: ViaTuple = rootVia) extends ObjStrm
 

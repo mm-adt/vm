@@ -24,6 +24,7 @@ package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__.{symbolToToken, _}
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.processor.inst.BaseInstTest
@@ -47,13 +48,13 @@ class SplitInstTest extends BaseInstTest(
     testing(int(1, 100), -<(int `,` int) >-, int(int(1).q(2), int(100).q(2)), "[1,100]-<(int,int)>-"),
     testing(int(1.q(5), 100), -<(int `,` int.plus(2).q(10)) >-, int(1.q(5), 3.q(50), 100, 102.q(10))),
     testing(int(1.q(5), 100), -<(int | int.plus(2).q(10)) >-, int(int(1).q(5), 100)),
-    testing(int(1, 2), -<(int.q(?) | (int -< (int.q(?) | int))), obj(int(1) `|`, int(2) `|`), "[1,2] => -<(int{?}|int-<(int{?}|int))"),
-    testing(int(1, 2), -<(int | (int -< (int | int))), obj(int(1) `|`, int(2) `|`), "[1,2]-<(int|int-<(int|int))"),
-    testing(int(1, 2), -<(int `,` (int -< (int | int))), obj(int(1) `,` (int(1) |), 2 `,` (int(2) |))),
+    testing(int(1, 2), -<(int.q(?) | (int -< (int.q(?) | int))), __(int(1) `|`, int(2) `|`), "[1,2] => -<(int{?}|int-<(int{?}|int))"),
+    testing(int(1, 2), -<(int | (int -< (int | int))), __(int(1) `|`, int(2) `|`), "[1,2]-<(int|int-<(int|int))"),
+    testing(int(1, 2), -<(int `,` (int -< (int | int))), __(int(1) `,` (int(1) |), 2 `,` (int(2) |))),
     testing(1, -<(str.q(?) | int), zeroObj | 1, "1-<(str{?}|int)"),
     testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
     testing(int(1, 2, 3), int.q(3).-<(int.q(3) `;` int.q(3)), strm(List(1 `;` 1, 2 `;` 2, 3 `;` 3)), "(1,2,3) => lst>--<(int{3};int{3})"),
-    testing(2, -<(int.q(?) | str), int(2) | obj.q(qZero), "2-<(int{?}|str)"),
+    testing(2, -<(int.q(?) | str), int(2) | __.q(qZero), "2-<(int{?}|str)"),
     testing(4.q(2), int.q(2).-<(int | int.is(gt(10))), (4 | zeroObj).q(2), "4{2} => int{2}-<(int|int[is>10])"),
     testing(2.q(2), int.q(2).-<(int `;` int.is(gt(10))), (2 `;` zeroObj).q(2), "2{2} => int{2}-<(int;int[is>10])"),
     testing(2, int.-<(int `;` int.is(gt(10))), 2 `;` zeroObj, "2 => int-<(int;int[is>10])"),

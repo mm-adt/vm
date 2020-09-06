@@ -24,8 +24,8 @@ package org.mmadt.language
 
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.value._
+import org.mmadt.language.obj.value.strm._
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -37,32 +37,32 @@ package object obj {
   type OValue[+O <: Obj] = Value[O] with O
   type OStrm[+O <: Obj] = O with Strm[O]
   // quantifier utilities
-  def minZero(quantifier: IntQ): IntQ = (int(0), quantifier._2)
-  def maxZero(quantifier: IntQ): IntQ = (quantifier._2, quantifier._2)
-  def multQ(qA: IntQ, qB: IntQ): IntQ = qB match {
-    case x: IntQ if qOne.equals(x) => qA
+  def minZero(quantifier:IntQ):IntQ = (int(0), quantifier._2)
+  def maxZero(quantifier:IntQ):IntQ = (quantifier._2, quantifier._2)
+  def multQ(qA:IntQ, qB:IntQ):IntQ = qB match {
+    case x:IntQ if qOne.equals(x) => qA
     case _ => (qA._1.g * qB._1.g, qA._2.g * qB._2.g)
   }
-  def zeroable(quantifier: IntQ): Boolean = quantifier._1.g <= 0 && quantifier._2.g >= 0
+  def zeroable(quantifier:IntQ):Boolean = quantifier._1.g <= 0 && quantifier._2.g >= 0
 
-  def plusQ(qA: IntQ, qB: IntQ): IntQ = qB match {
+  def plusQ(qA:IntQ, qB:IntQ):IntQ = qB match {
     case _ if equals(qZero) => qA
-    case _: IntQ => (qA._1.g + qB._1.g, qA._2.g + qB._2.g)
+    case _:IntQ => (qA._1.g + qB._1.g, qA._2.g + qB._2.g)
   }
-  def minusQ(qA: IntQ, qB: IntQ): IntQ = qB match {
+  def minusQ(qA:IntQ, qB:IntQ):IntQ = qB match {
     case _ if equals(qZero) => qA
-    case _: IntQ => (qA._1.g - qB._1.g, qA._2.g - qB._2.g)
+    case _:IntQ => (qA._1.g - qB._1.g, qA._2.g - qB._2.g)
   }
-  def divQ(qA: IntQ, qB: IntQ): IntQ = qB match {
+  def divQ(qA:IntQ, qB:IntQ):IntQ = qB match {
     case _ if equals(qZero) => qA
-    case _: IntQ if (qB._1.g == 0) => (0, qA._2.g / qB._2.g)
-    case _: IntQ => (qA._1.g / qB._1.g, qA._2.g / qB._2.g)
+    case _:IntQ if (qB._1.g == 0) => (0, qA._2.g / qB._2.g)
+    case _:IntQ => (qA._1.g / qB._1.g, qA._2.g / qB._2.g)
   }
-  def withinQ(objA: Obj, objB: Obj): Boolean = {
+  def withinQ(objA:Obj, objB:Obj):Boolean = {
     objA.q._1.g >= objB.q._1.g &&
       objA.q._2.g <= objB.q._2.g
   }
-  def eqQ(objA: Obj, objB: Obj): Boolean = {
+  def eqQ(objA:Obj, objB:Obj):Boolean = {
     (objA.q, objB.q) match {
       case (null, null) => true
       case (null, y) if y._1.g == 1 && y._2.g == 1 => true
@@ -72,33 +72,33 @@ package object obj {
     }
   }
 
-  def baseName(obj: Obj): String = obj match {
-    case _: Bool => Tokens.bool
-    case _: Int => Tokens.int
-    case _: Real => Tokens.real
-    case _: Str => Tokens.str
-    case _: Lst[_] => Tokens.lst
-    case _: Rec[_, _] => Tokens.rec
-    case _: __ => Tokens.anon
-    case _ => Tokens.obj
+  def baseName(obj:Obj):String = obj match {
+    case _:Bool => Tokens.bool
+    case _:Int => Tokens.int
+    case _:Real => Tokens.real
+    case _:Str => Tokens.str
+    case _:Inst[_, _] => Tokens.inst
+    case _:Lst[_] => Tokens.lst
+    case _:Rec[_, _] => Tokens.rec
+    case _:__ => Tokens.anon
   }
-  def toBaseName[A <: Obj](obj: A): A = obj.clone(name = baseName(obj))
-  def asType[O <: Obj](obj: O): OType[O] = (obj match {
-    case atype: Type[_] => atype
-    case arec: RecStrm[Obj, Obj] => asType[O](arec.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
-    case alst: LstStrm[Obj] => asType[O](alst.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
-    case alst: LstValue[Obj] => if (alst.isEmpty) lst.q(obj.q) else lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
-    case arec: RecValue[Obj, Obj] => if (arec.isEmpty) rec.q(obj.q) else rec(name = obj.name, g = (arec.gsep, if (arec.ctype) null else arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
+  def toBaseName[A <: Obj](obj:A):A = obj.clone(name = baseName(obj))
+  def asType[O <: Obj](obj:O):OType[O] = (obj match {
+    case atype:Type[_] => atype
+    case arec:RecStrm[Obj, Obj] => asType[O](arec.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
+    case alst:LstStrm[Obj] => asType[O](alst.values.headOption.getOrElse(zeroObj).asInstanceOf[O])
+    case alst:LstValue[Obj] => if (alst.isEmpty) lst.q(obj.q) else lst(name = obj.name, g = (alst.gsep, if (alst.ctype) null else alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)
+    case arec:RecValue[Obj, Obj] => if (arec.isEmpty) rec.q(obj.q) else rec(name = obj.name, g = (arec.gsep, if (arec.ctype) null else arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
     //
-    case _: IntValue | _: IntStrm => tint(name = obj.name, q = obj.q)
-    case _: RealValue | _: RealStrm => treal(name = obj.name, q = obj.q)
-    case _: StrValue | _: StrStrm => tstr(name = obj.name, q = obj.q)
-    case _: BoolValue | _: BoolStrm => tbool(name = obj.name, q = obj.q)
-    case _: ObjStrm => tobj(name = obj.name, q = obj.q)
+    case _:IntValue | _:IntStrm => tint(name = obj.name, q = obj.q)
+    case _:RealValue | _:RealStrm => treal(name = obj.name, q = obj.q)
+    case _:StrValue | _:StrStrm => tstr(name = obj.name, q = obj.q)
+    case _:BoolValue | _:BoolStrm => tbool(name = obj.name, q = obj.q)
+    case _:ObjStrm => __.clone(name = obj.name, q = obj.q)
 
   }).asInstanceOf[OType[O]]
 
-  def sameBase(objA: Obj, objB: Obj): Boolean = baseName(objA).equals(baseName(objB))
+  def sameBase(objA:Obj, objB:Obj):Boolean = baseName(objA).equals(baseName(objB))
 }
 
 

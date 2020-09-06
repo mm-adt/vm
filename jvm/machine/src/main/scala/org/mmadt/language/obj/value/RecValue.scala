@@ -35,7 +35,7 @@ trait RecValue[A <: Obj, B <: Obj] extends PolyValue[B, Rec[A, B]] with Rec[A, B
     case arec: RecValue[A, B] => Rec.test(this, arec)
     case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
       case arec: Rec[A, B] => Rec.test(this, arec)
-      case x => __.isAnonObj(x)
+      case x => __.isAnon(x)
     }) && this.compute(other).alive
     case _ => false
   }

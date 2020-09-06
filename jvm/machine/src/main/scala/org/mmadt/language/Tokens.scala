@@ -37,13 +37,12 @@ object Tokens {
     Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.juxt, Tokens.fold, Tokens.error, Tokens.rewrite,
     Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id, Tokens.rule_unity, Tokens.walk, Tokens.lift)
 
-  lazy val reservedTypes:List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.obj, Tokens.anon)
+  lazy val reservedTypes:List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.anon)
 
   val rule_id = "rule:id"
   val rule_unity = "rule:unity"
 
   val anon = "_"
-  val obj = "obj"
   val bool = "bool"
   val str = "str"
   val rec = "rec"
@@ -143,7 +142,7 @@ object Tokens {
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name:String):Boolean = !Set(bool, str, real, rec, int, inst, lst, anon, obj).contains(name) // TODO: global immutable set
+  def named(name:String):Boolean = !Set(bool, str, real, rec, int, inst, lst, anon).contains(name) // TODO: global immutable set
   def tryName[A <: Obj](fromObj:Obj, toObj:A):A = if (Tokens.named(fromObj.name)) toObj.named(fromObj.name) else toObj
 
   lazy val LANGLE = "<"

@@ -44,8 +44,7 @@ import org.mmadt.storage.obj.{OLst, ORec}
  */
 trait StorageFactory {
   /////////TYPES/////////
-  lazy val zeroObj: ObjType = tobj().q(qZero)
-  lazy val obj: ObjType = tobj()
+  lazy val zeroObj: __ = __.q(qZero)
   lazy val bool: BoolType = tbool()
   lazy val int: IntType = tint()
   lazy val real: RealType = treal()
@@ -53,7 +52,6 @@ trait StorageFactory {
   def rec[A <: Obj, B <: Obj]: Rec[A, B] = ORec.emptyType
   def lst[A <: Obj]: Lst[A] = OLst.emptyType
   //
-  def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = rootVia): ObjType
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = rootVia): BoolType
   def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = rootVia): IntType
   def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = rootVia): RealType
@@ -83,7 +81,6 @@ object StorageFactory {
   def deadObj[O <: Obj]: O = zeroObj.asInstanceOf[O]
   lazy val zeroObj: __ = __.q(qZero)
   lazy val oneObj: __ = __.q(qOne)
-  lazy val obj: ObjType = tobj()
   lazy val bool: BoolType = tbool()
   lazy val int: IntType = tint()
   lazy val real: RealType = treal()
@@ -96,7 +93,6 @@ object StorageFactory {
   def lst[A <: Obj](sep: String, values: A*)(implicit f: StorageFactory): Lst[A] = f.lst[A](sep, values: _*)
   def lst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, List.empty), q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): Lst[A] = OLst.makeLst(name, g, q, via)
   //
-  def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): ObjType = f.tobj(name, q, via)
   def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): BoolType = f.tbool(name, q, via)
   def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): IntType = f.tint(name, q, via)
   def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): RealType = f.treal(name, q, via)
@@ -112,7 +108,6 @@ object StorageFactory {
   def real(g: Double, name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): RealValue = f.real(g, name, q, via)
   def str(g: String, name: String = Tokens.str, q: IntQ = qOne, via: ViaTuple = rootVia)(implicit f: StorageFactory): StrValue = f.str(g, name, q, via)
 
-  def obj(obj: Obj, objs: Obj*): Obj = strm[Obj](obj +: objs.toList)
   def strm[O <: Obj](objs: O*): OStrm[O] = strm[O](objs.toList)
   def strm[O <: Obj](seq: Seq[O])(implicit f: StorageFactory): OStrm[O] = f.strm[O](seq)
   def strm[O <: Obj](implicit f: StorageFactory): OStrm[O] = f.strm[O]
@@ -130,7 +125,6 @@ object StorageFactory {
 
   implicit val mmstoreFactory: StorageFactory = new StorageFactory {
     /////////TYPES/////////
-    override def tobj(name: String = Tokens.obj, q: IntQ = qOne, via: ViaTuple = rootVia): ObjType = new TObj(name, q, via)
     override def tbool(name: String = Tokens.bool, q: IntQ = qOne, via: ViaTuple = rootVia): BoolType = new TBool(name, q, via)
     override def tint(name: String = Tokens.int, q: IntQ = qOne, via: ViaTuple = rootVia): IntType = new TInt(name, q, via)
     override def treal(name: String = Tokens.real, q: IntQ = qOne, via: ViaTuple = rootVia): RealType = new TReal(name, q, via)

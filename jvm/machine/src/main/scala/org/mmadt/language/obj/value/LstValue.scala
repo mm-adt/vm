@@ -35,7 +35,7 @@ trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
     case alst: LstValue[A] => Lst.test(this, alst)
     case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
       case alst: Lst[A] => Lst.test(this, alst)
-      case x => __.isAnonObj(x)
+      case x => __.isAnon(x)
     }) && this.compute(other).alive
     case _ => false
   }

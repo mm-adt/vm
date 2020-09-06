@@ -29,7 +29,6 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.trace.TypeOp
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -67,14 +66,13 @@ object __ extends __(Tokens.anon, qOne, rootVia) {
   @inline implicit def symbolToToken(ground:Symbol):__ = __(ground.name)
   @inline implicit def symbolToRichToken(ground:Symbol):RichToken = new RichToken(ground)
   class RichToken(val ground:Symbol) {
-    final def :#(aobj:Obj):aobj.type = this (aobj)
     final def apply(aobj:Obj):aobj.type = aobj.named(ground.name)
     final def unapply(arg:RichToken):__ = __(ground.name)
   }
+  final def apply(aobj:Obj, bobj:Obj, objs:Obj*):Obj = strm[Obj](aobj +: bobj +: objs.toList)
   def apply(name:String):__ = __.named(name)
   def isAnon(aobj:Obj):Boolean = aobj.isInstanceOf[__] && aobj.name.equals(Tokens.anon)
-  def isToken(aobj:Obj):Boolean = aobj.isInstanceOf[__] && !aobj.name.equals(Tokens.anon) && !aobj.name.equals(Tokens.obj)
+  def isToken(aobj:Obj):Boolean = aobj.isInstanceOf[__] && !aobj.name.equals(Tokens.anon)
   def isAnonToken(aobj:Obj):Boolean = __.isAnon(aobj) || __.isToken(aobj)
-  def isAnonObj(aobj:Obj):Boolean = __.isAnon(aobj) || aobj.name.equals(Tokens.obj)
 }
 

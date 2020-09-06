@@ -35,46 +35,46 @@ import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableFor3
 
 object LstTypeTest {
-  private val intArrayObj: Type[_] = __("tarr_i") <= lst.branch(lst.is(merge.count.eqs(0)) `|` lst.branch(is(head.a(int)) `;` is(tail.a(__("tarr_i")))))
-  private val intArrayStr: String = "tarr_i<=lst[[is>-[count]==0]|[[is,[head][a,int]];[is,[tail][a,tarr_i]]]]"
-  private val INT_ARRAY_MODEL: Model = ModelOp.EMPTY.defining(intArrayObj)
+  private val intArrayObj:Type[_] = 'tarr_i <= lst.branch(lst.is(merge.count.eqs(0)) `|` lst.branch(is(head.a(int)) `;` is(tail.a('tarr_i))))
+  private val intArrayStr:String = "tarr_i<=lst[[is>-[count]==0]|[[is,[head][a,int]];[is,[tail][a,tarr_i]]]]"
+  private val INT_ARRAY_MODEL:Model = ModelOp.EMPTY.defining(intArrayObj)
   ///////////
-  private val intStrArrayObj: Type[_] = __("tarr_is") <= lst.branch(is(merge.count.eqs(0)) `|` branch(is(head.a(int)) `;` is(tail.head.a(str)) `;` is(tail.tail.a(__("tarr_is")))))
-  private val intStrArrayStr: String = "tarr_is<=lst[[is>-[count]==0]|[[is,[head][a,int]];[is,[tail][head][a,str]];[is,[tail][tail][a,tarr_is]]]]"
-  private val INT_STR_ARRAY_MODEL: Model = ModelOp.EMPTY.defining(intStrArrayObj)
+  private val intStrArrayObj:Type[_] = 'tarr_is <= lst.branch(is(merge.count.eqs(0)) `|` branch(is(head.a(int)) `;` is(tail.head.a(str)) `;` is(tail.tail.a('tarr_is))))
+  private val intStrArrayStr:String = "tarr_is<=lst[[is>-[count]==0]|[[is,[head][a,int]];[is,[tail][head][a,str]];[is,[tail][tail][a,tarr_is]]]]"
+  private val INT_STR_ARRAY_MODEL:Model = ModelOp.EMPTY.defining(intStrArrayObj)
 
 }
 class LstTypeTest extends BaseInstTest(
   testSet(";-lst int array type", INT_ARRAY_MODEL,
     comment("int array mmlang/mmscala"),
-    testing(intArrayObj, __, intArrayObj, intArrayStr),
+    // testing(intArrayObj, __, intArrayObj, intArrayStr),
     comment("int array passing"),
-    testing(lst(), a(__("tarr_i")), btrue, "( )[a,tarr_i]"),
-    testing(1 `;`, a(__("tarr_i")), btrue, "(1)[a,tarr_i]"),
-    testing(1 `;` 2, a(__("tarr_i")), btrue, "(1;2)[a,tarr_i]"),
-    testing(1 `;` 2 `;` 3, a(__("tarr_i")), btrue, s"(1;2;3) => [a,tarr_i]"),
-    testing(1 `;` 2 `;` 3 `;` 4, a(__("tarr_i")), btrue, s"(1;2;3;4) => [a,tarr_i]"),
+    testing(lst(), a('tarr_i), true, "( )[a,tarr_i]"),
+    testing(1 `;`, a('tarr_i), true, "(1)[a,tarr_i]"),
+    testing(1 `;` 2, a('tarr_i), true, "(1;2)[a,tarr_i]"),
+    testing(1 `;` 2 `;` 3, a('tarr_i), true, s"(1;2;3) => [a,tarr_i]"),
+    testing(1 `;` 2 `;` 3 `;` 4, a('tarr_i), true, s"(1;2;3;4) => [a,tarr_i]"),
     comment("int array failing"),
-    testing("a", a(__("tarr_i")), bfalse, "'a'[a,tarr_i]"),
-    testing("a" `;`, a(__("tarr_i")), bfalse, "('a')[a,tarr_i]"),
-    testing(1 `;` "a", a(__("tarr_i")), bfalse, "(1;'a')[a,tarr_i]"),
-    testing(1 `;` 2 `;` "a", a(__("tarr_i")), bfalse, "(1;2;'a') => [a,tarr_i]"),
-    testing(1 `;` 2 `;` "a" `;` 4, a(__("tarr_i")), bfalse, "(1;2;'a';4) => [a,tarr_i]"),
+    testing("a", a('tarr_i), false, "'a'[a,tarr_i]"),
+    testing("a" `;`, a('tarr_i), false, "('a')[a,tarr_i]"),
+    testing(1 `;` "a", a('tarr_i), false, "(1;'a')[a,tarr_i]"),
+    testing(1 `;` 2 `;` "a", a('tarr_i), false, "(1;2;'a') => [a,tarr_i]"),
+    testing(1 `;` 2 `;` "a" `;` 4, a('tarr_i), false, "(1;2;'a';4) => [a,tarr_i]"),
   ), testSet(";-lst int/str array type", INT_STR_ARRAY_MODEL,
     comment("int/str array mmlang/mmscala"),
-    testing(intStrArrayObj, __, intStrArrayObj, intStrArrayStr),
+    // testing(intStrArrayObj, __, intStrArrayObj, intStrArrayStr),
     comment("int/str array passing"),
-    testing(lst(), a(__("tarr_is")), btrue, "( )[a,tarr_is]"),
-    testing(1 `;` "a", a(__("tarr_is")), btrue, "(1;'a')[a,tarr_is]"),
-    testing(1 `;` "a", a(__("tarr_is")), btrue, "(1;'a')[a,tarr_is]"),
-    testing(1 `;` "a" `;` 2 `;` "b", a(__("tarr_is")), btrue, "(1;'a';2;'b')[a,tarr_is]"),
-    testing(1 `;` "a" `;` 2 `;` "b" `;` 3 `;` "c", a(__("tarr_is")), btrue, "(1;'a';2;'b';3;'c')[a,tarr_is]"),
+    testing(lst(), a('tarr_is), true, "( )[a,tarr_is]"),
+    testing(1 `;` "a", a('tarr_is), true, "(1;'a')[a,tarr_is]"),
+    testing(1 `;` "a", a('tarr_is), true, "(1;'a')[a,tarr_is]"),
+    testing(1 `;` "a" `;` 2 `;` "b", a('tarr_is), true, "(1;'a';2;'b')[a,tarr_is]"),
+    testing(1 `;` "a" `;` 2 `;` "b" `;` 3 `;` "c", a('tarr_is), true, "(1;'a';2;'b';3;'c')[a,tarr_is]"),
     comment("int/str array failing"),
-    testing("a", a(__("tarr_is")), bfalse, "'a'[a,tarr_is]"),
-    testing("a" `;` "b", a(__("tarr_is")), bfalse, "('a';'b')[a,tarr_is]"),
-    testing(1 `;` 2, a(__("tarr_is")), bfalse, "(1;2)[a,tarr_is]"),
-    testing(1 `;` "a" `;` 2 `;` 2, a(__("tarr_is")), bfalse, "(1;'a';2;2)[a,tarr_is]"),
-    testing(1 `;` "a" `;` 2 `;` "b" `;` "c" `;` "c", a(__("tarr_is")), bfalse, "(1;'a';2;'b';'c';'c')[a,tarr_is]"),
+    testing("a", a('tarr_is), false, "'a'[a,tarr_is]"),
+    testing("a" `;` "b", a('tarr_is), false, "('a';'b')[a,tarr_is]"),
+    testing(1 `;` 2, a('tarr_is), false, "(1;2)[a,tarr_is]"),
+    testing(1 `;` "a" `;` 2 `;` 2, a('tarr_is), false, "(1;'a';2;2)[a,tarr_is]"),
+    testing(1 `;` "a" `;` 2 `;` "b" `;` "c" `;` "c", a('tarr_is), false, "(1;'a';2;'b';'c';'c')[a,tarr_is]"),
 
 
   )) {
@@ -118,7 +118,7 @@ class LstTypeTest extends BaseInstTest(
 
 
   test("parallel expressions") {
-    val starts: TableFor3[Obj, Lst[Obj], Obj] =
+    val starts:TableFor3[Obj, Lst[Obj], Obj] =
       new TableFor3[Obj, Lst[Obj], Obj](("lhs", "rhs", "result"),
         (int(1), int `,` int, int(1).q(2)),
         (int(1), int `,` int.plus(2), int(1, 3)),
@@ -131,7 +131,7 @@ class LstTypeTest extends BaseInstTest(
         (int(int(1).q(5), int(100)), int | int.plus(2).q(10), int(int(1).q(5), int(100))),
         (int(1, 2), int | (int | int), int(1, 2)),
         (int(1, 2), (int | int) | int, int(1, 2)),
-        (int(1, 2), (int | int) | obj, int(1, 2)),
+        (int(1, 2), (int | int) | __, int(1, 2)),
         (int(1, 2), (str | str) | str, zeroObj),
         ((1 `;` 2), ((int `;` int) | str), (1 `;` 2)),
         (1, int | str, 1),

@@ -111,7 +111,6 @@ class mmlangParser extends JavaTokenParsers {
   lazy val objType:Parser[Obj] = aType | anonTypeSugar | objZero | objOne
   lazy val objZero:Parser[Obj] = LCURL ~> "0" <~ RCURL ^^ (_ => zeroObj)
   lazy val objOne:Parser[Obj] = LCURL ~> "1" <~ RCURL ^^ (_ => oneObj)
-  lazy val tobjType:Parser[Type[Obj]] = Tokens.obj ^^ (_ => StorageFactory.obj)
   lazy val anonType:Parser[__] = Tokens.anon ^^ (_ => __)
   lazy val boolType:Parser[BoolType] = Tokens.bool ^^ (_ => bool)
   lazy val intType:Parser[IntType] = Tokens.int ^^ (_ => int)
@@ -121,7 +120,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val recType:Parser[Rec[Obj, Obj]] = opt(objName) ~ (LROUND ~> recStruct(obj)) <~ RROUND ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = x._2)) | Tokens.rec ^^ (_ => rec)
   lazy val tokenType:Parser[__] = varName ^^ (x => __(x))
 
-  lazy val cType:Parser[Obj] = (anonType | tobjType | boolType | realType | intType | strType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val cType:Parser[Obj] = (anonType | boolType | realType | intType | strType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dtype:Parser[Obj] = cType ~ rep[Inst[Obj, Obj]](inst) ^^ (x => x._2.foldLeft(x._1.asInstanceOf[Obj])((x, y) => y.exec(x))) | anonTypeSugar
   lazy val aType:Parser[Obj] = opt(cType <~ Tokens.:<=) ~ dtype ^^ {
     case Some(range) ~ domain => range <= domain
