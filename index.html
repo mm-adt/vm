@@ -6536,7 +6536,7 @@ mmlang&gt;</code></pre>
 <thead>
 <tr>
 <th class="tableblock halign-center valign-top">inst</th>
-<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-middle">description</th>
 <th class="tableblock halign-left valign-top">example</th>
 </tr>
 </thead>
@@ -6544,7 +6544,7 @@ mmlang&gt;</code></pre>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>[branch]</code><br>
 <code>[ ]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Juxtapose start across <code>poly</code> terms and then aggregate the terms of the resultant <code>poly</code> as dictated by the <code>polys</code> underlying magma (<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">obj<sub>LR</sub>-module</a>).
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Juxtapose start across <code>poly</code> terms and then aggregate the terms of the resultant <code>poly</code> as dictated by the <code>polys</code> underlying magma (<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">obj<sub>LR</sub>-module</a>).
 \[
 x(a_0,a_1,\ldots,a_n) =  \bigodot_{i=0}^{i \leq n} xa_i
 \]</p></td>
@@ -6567,7 +6567,7 @@ mm&gt; 6[+1,'a',*int]
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>[combine]</code><br>
 <code>=</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Pairwise juxtapose the terms of two <code>polys</code> (<a href="https://en.wikipedia.org/wiki/Hadamard_product_(matrices)">Hadamard product</a> and <a href="https://en.wikipedia.org/wiki/Polynomial_ring">obj[X</a>]).
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Pairwise juxtapose the terms of two <code>polys</code> (<a href="https://en.wikipedia.org/wiki/Hadamard_product_(matrices)">Hadamard product</a> and <a href="https://en.wikipedia.org/wiki/Polynomial_ring">obj[X</a>]).
 \[
 (a_0,\ldots,a_n) \circ (b_0,\ldots,b_n) = (a_0b_0,\ldots,a_nb_n)
 \]</p></td>
@@ -6586,13 +6586,13 @@ mm&gt; (1;2;3)=(+10;+20;+30)
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>[lift]</code><br>
 <code>&lt;&lt; &gt;&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Detach from the <code>obj</code> graph and operate stateless.</p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Detach from the <code>obj</code> graph and operate stateless.</p></td>
 <td class="tableblock halign-left valign-top"></td>
 </tr>
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>[merge]</code><br>
 <code>&gt;-</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Aggregate the terms of the start <code>poly</code>, where aggregation semantics is determined by the underlying magma of the <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">obj<sub>R</sub>-module</a>).
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Aggregate the terms of the start <code>poly</code>, where aggregation semantics is determined by the underlying magma of the <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">obj<sub>R</sub>-module</a>).
 \[
 (a_0,a_1,\ldots,a_n) = \bigodot_{i=0}^{i \leq n} a_i
 \]</p></td>
@@ -6619,7 +6619,7 @@ mm&gt; (1|2|3)&gt;-
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>[repeat]</code><br>
 <code>( )^( )</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Apply the first <code>obj</code> (typically a type) to the incoming <code>obj</code> until the second <code>obj</code> is not <code>{0}</code>. For ease of  use, if the second <code>obj</code> is an <code>int</code> value, then this is interpreted as number of times to iterate.</p>
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Apply the first <code>obj</code> (typically a type) to the incoming <code>obj</code> until the second <code>obj</code> is not <code>{0}</code>. For ease of  use, if the second <code>obj</code> is an <code>int</code> value, then this is interpreted as number of times to iterate.</p>
 <p class="tableblock">\[
 x(a^n) = x \prod^{i \leq n}_{i=0} a
 \]</p></td>
@@ -6645,7 +6645,7 @@ mm&gt; (1,2,3)&gt;-(*2)^(is&lt;10)
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>[split]</code><br>
 <code>-&lt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Juxtapose start across <code>poly</code> terms as a scalar to a vector. <code>[branch]</code> is equivalent to <code>[split][merge]</code> (<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">obj<sub>L</sub>-module</a>).
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Juxtapose start across <code>poly</code> terms as a scalar to a vector. <code>[branch]</code> is equivalent to <code>[split][merge]</code> (<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">obj<sub>L</sub>-module</a>).
 \[
 x(a_0,a_1,\ldots,a_n) = (xa_0,xa_1,\ldots,xa_n)
 \]</p></td>
@@ -6668,7 +6668,7 @@ mm&gt; 1-&lt;(+2|+3|+4)
 <tr>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>[swap]</code><br>
 <code>/ /</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Replace the <code>[swap]</code> type&#8217;s last <code>inst</code> argument with the start and the start with the <code>inst</code> argument (<a href="https://en.wikipedia.org/wiki/Swap_(computer_programming)">swap</a>).
+<td class="tableblock halign-left valign-middle"><p class="tableblock">Replace the <code>[swap]</code> type&#8217;s last <code>inst</code> argument with the start and the start with the <code>inst</code> argument (<a href="https://en.wikipedia.org/wiki/Swap_(computer_programming)">swap</a>).
 \[
 xa = ax
 \]</p></td>
@@ -6678,6 +6678,8 @@ xa = ax
 ==&gt;'-adtmm'
 mm&gt; '-adt'[swap,[plus,'mm']]
 ==&gt;'mm-adt'
+mm&gt; '-adt'+'mm'
+==&gt;'-adtmm'
 mm&gt; '-adt'/+'mm'/
 ==&gt;'mm-adt'</code></pre>
 </div>
@@ -6711,7 +6713,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-05 23:28:00 -0600
+Last updated 2020-09-06 12:13:37 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
