@@ -62,17 +62,17 @@ class SplitInstTest extends BaseInstTest(
     testing(0, plus(1).-<(
       int.is(int.gt(2)) -> int.mult(3) |
         int -> int.mult(4)) >-, 4, "0[plus,1]-<(int[is>2] -> int[mult,3] | int -> int[mult,4])>-"),
-    testing(0, int.plus(39).-<(
+    IGNORING("eval-6")(0, int.plus(39).-<(
       int.is(int.gt(40)) -> int.plus(1) |
         int.is(int.gt(30)) -> int.plus(2) |
         int.is(int.gt(20)) -> int.plus(3) |
         int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 42, "0 => int[plus,39]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    testing(0, int.plus(29).-<(
+    IGNORING("eval-6")(0, int.plus(29).-<(
       int.is(int.gt(40)) -> int.plus(1) |
         int.is(int.gt(30)) -> int.plus(2) |
         int.is(int.gt(20)) -> int.plus(3) |
         int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    testing(0, int.plus(29).-<(
+    IGNORING("eval-6")(0, int.plus(29).-<(
       int.is(gt(40)) -> int.plus(1) |
         int.is(gt(30)) -> int.plus(2) |
         int.is(gt(20)) -> int.plus(3) |

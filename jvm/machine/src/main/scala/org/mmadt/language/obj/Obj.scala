@@ -77,6 +77,7 @@ trait Obj
     with LiftOp
     with RewriteOp
     with RepeatOp[Obj]
+    with ExplainOp
     with TypeOp {
 
   //////////////////////////////////////////////////////////////

@@ -43,7 +43,7 @@ object JuxtOp extends Func[Obj, Obj] {
 
   def apply[A <: Obj](right: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.juxt, List(right)), func = this) with TraceInstruction
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.arg0[Obj] match {
-    case dead: Obj if !dead.alive => zeroObj
+    case aobj: Obj if !aobj.alive => zeroObj
     case avalue: Value[_] => start.compute(avalue).hardQ(multQ(start.q, avalue.q))
     case atype: Type[_] => start.compute(atype).hardQ(multQ(start.q, atype.pureQ))
   }

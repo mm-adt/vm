@@ -333,11 +333,11 @@ class mmlangScriptEngineTest extends FunSuite {
     assert(engine.eval("int{3}[is>50 -> +10 | is<5 -> +20 | _ -> +30][explain]").toString.contains("[is,bool{3}<=int{3}[lt,5]]"))
     assert(engine.eval("int[define,nat<=int[is>0]]<x>[plus,[mult,x]][[is,[a,nat]][plus,10]|[define,nonat<=int[plus,0]]]<y>[plus,x][explain]").toString.contains("nat->nat<=int[is,bool<=int[gt,0]] x->int nonat->nonat<=int[plus,0]"))
     assert(engine.eval("int{3}[+1,+2,+3][explain]").toString.contains("[int{3}[plus,1],int{3}[plus,2],int{3}[pl..."))
-    assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("instruction"))
+    assert(engine.eval("int[plus,int[mult,6]][explain]").toString.contains("inst"))
     assert(engine.eval("int[plus,[plus,2][mult,7]]<x>[mult,[plus,5]<y>[mult,[plus,<y>]]][is,[gt,<x>]<z>[id]][plus,5][explain]").toString.contains("z->bool"))
     assertResult(str("\n" +
       "int<x>[plus,int<y>[plus,int<z>[plus,int<.x>][plus,int<.y>][plus,int<.z>]][plus,int<.y>]][plus,int<.x>]\n\n" +
-      "instruction                                    domain      range state\n" +
+      "inst                                           domain      range state\n" +
       "-----------------------------------------------------------------------\n" +
       "[plus,int<y>[plus,int<z>[plus,int<.x>][p...    int    =>   int    x->int \n" +
       " [plus,int<z>[plus,int<.x>][plus,int<.y>]...    int   =>    int   x->int y->int \n" +

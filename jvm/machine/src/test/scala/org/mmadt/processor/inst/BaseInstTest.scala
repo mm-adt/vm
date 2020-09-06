@@ -86,6 +86,10 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
           })
         result
       }),
+      ("eval-6", s => end match {
+        case Left(value) => middle.trace.reconstruct[Obj](s).explain; value
+        case Right(value) => throw value
+      }),
       // ("eval-6", s => s ==> (s.range ==> middle)),
       // ("eval-7", s => s ==> (s.range ==> (middle.domain ==> middle))),
     )

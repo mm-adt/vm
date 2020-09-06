@@ -34,7 +34,7 @@ import scala.collection.mutable.ListBuffer
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Type[+T <: Obj] extends Obj with ExplainOp {
+trait Type[+T <: Obj] extends Obj {
   // type signature properties and functions
   override lazy val range: this.type = this.rangeObj
   // pattern matching methods

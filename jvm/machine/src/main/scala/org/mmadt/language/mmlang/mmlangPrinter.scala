@@ -37,19 +37,7 @@ import org.mmadt.storage.StorageFactory._
 object mmlangPrinter {
 
   private def aliveString(obj: Any): String = if (obj.asInstanceOf[Obj].alive) obj.toString else "{0}"
-
-  def qString(x: IntQ): String = x match {
-    case `qOne` => blank
-    case `qZero` => QZERO
-    case `qMark` => s"${LCURL}${Tokens.q_mark}${RCURL}"
-    case `qPlus` => s"${LCURL}${Tokens.q_plus}${RCURL}"
-    case `qStar` => s"${LCURL}${Tokens.q_star}${RCURL}"
-    case (x, y) if x == y => s"${LCURL}${x}${RCURL}"
-    case (x, y) if y == int(Long.MaxValue) => "{" + x + ",}"
-    case (x, y) if x == int(Long.MinValue) => "{," + y + "}"
-    case x if null == x => Tokens.blank
-    case _ => "{" + x._1.g + "," + x._2.g + "}"
-  }
+  private def typeName(aobj: Obj): String = if (Tokens.named(aobj.name)) aobj.name + COLON else EMPTY
 
   private def recString(arec: Rec[_, _]): String = {
     if (arec.ctype) return arec.name
@@ -73,6 +61,20 @@ object mmlangPrinter {
       })
   }
 
+
+  def qString(x: IntQ): String = x match {
+    case `qOne` => blank
+    case `qZero` => QZERO
+    case `qMark` => s"${LCURL}${Tokens.q_mark}${RCURL}"
+    case `qPlus` => s"${LCURL}${Tokens.q_plus}${RCURL}"
+    case `qStar` => s"${LCURL}${Tokens.q_star}${RCURL}"
+    case (x, y) if x == y => s"${LCURL}${x}${RCURL}"
+    case (x, y) if y == int(Long.MaxValue) => "{" + x + ",}"
+    case (x, y) if x == int(Long.MinValue) => "{," + y + "}"
+    case x if null == x => Tokens.blank
+    case _ => "{" + x._1.g + "," + x._2.g + "}"
+  }
+
   def strmString(strm: Strm[_]): String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(LBRACKET)((a, b) => a + b.toString + COMMA).dropRight(1) + RBRACKET
 
   def typeString(atype: Type[_]): String = {
@@ -92,8 +94,6 @@ object mmlangPrinter {
     (if (domain.equals(EMPTY) || range.equals(domain)) range else range + LDARROW + domain) +
       atype.trace.map(_._2.toString()).fold(EMPTY)((a, b) => a + b)
   }
-
-  def typeName(aobj: Obj): String = if (Tokens.named(aobj.name)) aobj.name + COLON else EMPTY
 
   def valueString(avalue: Value[_]): String = (avalue match {
     case arec: Rec[_, _] => recString(arec)

@@ -86,7 +86,7 @@ class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Ob
             case Failure(e) => throw new Exception(e.getMessage + ":::" + builder, e)
             case Success(value) =>
               if (eval) {
-                val results = value.toStrm.values.toList
+                val results = Obj.iterator(value)
                 if (results.isEmpty) builder.append(none)
                 else results.foreach(a => {
                   builder.append(Tokens.RRDARROW).append(a).append("\n")
