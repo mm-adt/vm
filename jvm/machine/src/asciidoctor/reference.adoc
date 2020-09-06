@@ -176,7 +176,7 @@ int{0}
 
 
 
-[cols="^1,9,7"]
+[cols="^1,.^9,7"]
 |====
 | inst         | description | example
 
@@ -278,6 +278,7 @@ a|
 ----
 '-adt'[plus,'mm']
 '-adt'[swap,[plus,'mm']]
+'-adt'+'mm'
 '-adt'/+'mm'/
 ----
 {blank}
