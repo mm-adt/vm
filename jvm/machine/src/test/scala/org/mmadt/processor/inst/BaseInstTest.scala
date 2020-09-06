@@ -76,7 +76,7 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
       }),
       ("eval-5", s => {
         val result = s ==> (middle.domain ==> middle)
-        if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg).contains(x._2.op) ||
+        if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg, Tokens.repeat).contains(x._2.op) ||
           (x._2.op.equals(Tokens.lift) || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
           result.trace.modeless.zip((asType(s) ==> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
             assert(asType(x._1._1).test(x._2._1), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
@@ -86,9 +86,12 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
           })
         result
       }),
-      ("eval-6", s => end match {
-        case Left(value) => middle.trace.reconstruct[Obj](s).explain; value
-        case Right(value) => throw value
+      ("eval-6", s => {
+        val print:Boolean = false
+        end match {
+          case Left(value) => Some(middle.trace.reconstruct[Obj](s).explain).filter(_ => print).foreach(x => println(x)); value
+          case Right(value) => throw value
+        }
       }),
       // ("eval-6", s => s ==> (s.range ==> middle)),
       // ("eval-7", s => s ==> (s.range ==> (middle.domain ==> middle))),

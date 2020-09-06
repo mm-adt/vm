@@ -889,7 +889,6 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(64))(engine.eval("20[plus,10]([plus,1])^(34)"))
     assertResult(int(64))(engine.eval("20+10(+1)^(34)"))
     assertResult(int(67, 64))(engine.eval("[23,20]+10(+1)^(34)"))
-    assertResult((1 `,` 1).q(2) `,`)(engine.eval("1(-<(_,_))^(2)"))
     //assertResult(((1 `,` 1).q(2)`,`).q(2))(engine.eval("1(-<(_,_))^(3)"))
     assertResult(int(11))(engine.eval("1(+2)^(is<10)"))
     assertResult(int(11))(engine.eval("1(+1)^(10)"))
@@ -1172,6 +1171,5 @@ class mmlangScriptEngineTest extends FunSuite {
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?|y?)"))
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?[map,'x:']+x[as,str]|y?[map,'y:']+y[as,str])"))
     //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<('x' -> x?,'y' -> y?)"))
-    println(engine.eval("1(-<(_,_))^(3)"))
   }
 }

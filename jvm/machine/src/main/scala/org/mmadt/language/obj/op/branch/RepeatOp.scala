@@ -24,40 +24,41 @@ package org.mmadt.language.obj.op.branch
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.BranchInstruction
 import org.mmadt.language.obj.value.{IntValue, Value}
-import org.mmadt.language.obj.{Inst, Int, Obj}
+import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait RepeatOp {
   this:Obj =>
-  //def repeat(branch:this.type)(until:Obj):this.type = RepeatOp(branch, until).exec(this).asInstanceOf[this.type]
   def repeat(branch:Obj)(until:Obj):this.type = RepeatOp(branch, until).exec(this).asInstanceOf[this.type]
   //def until(until:Obj)(branch:A):A = RepeatOp(branch, until).exec(this)
 }
 
 object RepeatOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
-  def apply(branch:Obj, until:Obj):Inst[Obj,Obj] = new VInst[Obj,Obj](g = (Tokens.repeat, List(branch, until)), func = this) with BranchInstruction
+  def apply(branch:Obj, until:Obj):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.repeat, List(branch, until)), func = this) with BranchInstruction
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
     val body:Obj = inst.arg0[Obj]
     val until:Obj = inst.arg1[Obj]
     //
     start match {
       case _:Value[Obj] => until match {
-        case times:IntValue => 1L.to(times.g).foldLeft(start)((aobj, _) => aobj `=>` body)
+        case times:IntValue => 1L.to(times.g).foldLeft(start.q(q => q.mult(inst.q)).asInstanceOf[Obj])((aobj, _) => aobj `=>` body)
         case _:Obj =>
           def loop(incoming:Obj):Obj = {
             strm(incoming.toStrm.values.map(x => {
               val outgoing:Obj = x `=>` body
-              if (!outgoing.test(until)) outgoing else loop(outgoing)
+              if (!(outgoing ~~> until).alive) outgoing else loop(outgoing)
             }))
           }
-          loop(start)
+          loop(start.q(q => q.mult(inst.q)))
       }
-      case _:Type[_] => (start ~~> inst.arg0[Obj]).via(start, inst)
+      case atype:Type[_] =>
+        val compiledBody = atype ~~> body
+        compiledBody.via(start, inst.clone(_ => List(compiledBody, atype ~~> until)))
     }
   }
 }
