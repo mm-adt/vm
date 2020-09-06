@@ -23,17 +23,17 @@ $(document).ready(function(){
                   "type":    ["",       ospan + "#369" + bold + cspan],     // dark blue
 
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
-  var items =    {"op":      [ "state","range","domain",
+  var items =    {"op":      ["state","range","domain",
                               "and","or","compose","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map","juxta","barrier",
                               "split","merge","last","head","tail","div","minus","choose","put","repeat","type",
                               "define","rewrite","to","from","sum","model","as","a","q","path","empty","lift","swap"],
-                  "type":    ["_","real","rec","lst","inst","obj","int","str","bool","poly"
+                  "type":    ["_","real","rec","lst","inst","obj","int","str","bool","poly",
                               "nat","person"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
                   "special": ["mmlang","language error","mm",
                               "social"],        // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
-                  "tokens":  ["{","}","(",")","/"],
-                  "infix":   ["|","&&",",","+","*","=>","^","="],
+                  "tokens":  ["{","}","(",")"],
+                  "infix":   ["|","&&",",","+","*","=>","^"],
                   "value":   ["true","false"],
                   "plain":   ["is not"]};
   $.each(items, function(key, values) {
