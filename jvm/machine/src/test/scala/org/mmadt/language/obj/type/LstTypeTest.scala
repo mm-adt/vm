@@ -45,7 +45,17 @@ object LstTypeTest {
 
 }
 class LstTypeTest extends BaseInstTest(
-  testSet(";-lst int array type", INT_ARRAY_MODEL,
+  testSet("lst ctype basics",
+    testing(lst(), a(lst), true, "()[a,lst]"),
+    testing(lst(), a(rec), false, "()[a,rec]"),
+    testing((str("a") `,` "b"), a(lst), true, "('a','b')[a,lst]"),
+    testing((str("a") `|` "b"), a(lst), true, "('a'|'b')[a,lst]"),
+    testing((str("a") `;` "b"), a(lst), true, "('a';'b')[a,lst]"),
+    testing((str("a") `,` "b"), a(lst.q(10)), false, "('a','b')[a,lst{10}]"),
+    testing((str("a") `,` "b"), a(lst.q(0, 10)), true, "('a','b')[a,lst{0,10}]"),
+    testing((str("a") `;` "b"), a(str `;` str), true, "('a';'b')[a,(str;str)]"),
+    // testing((str("a") `,` "b"), a(str `,` str), true, "('a','b')[a,(str,str)]"), TODO: this is a big issue
+  ), testSet(";-lst int array type", INT_ARRAY_MODEL,
     comment("int array mmlang/mmscala"),
     // testing(intArrayObj, __, intArrayObj, intArrayStr),
     comment("int array passing"),
@@ -75,48 +85,9 @@ class LstTypeTest extends BaseInstTest(
     testing(1 `;` 2, a('tarr_is), false, "(1;2)[a,tarr_is]"),
     testing(1 `;` "a" `;` 2 `;` 2, a('tarr_is), false, "(1;'a';2;2)[a,tarr_is]"),
     testing(1 `;` "a" `;` 2 `;` "b" `;` "c" `;` "c", a('tarr_is), false, "(1;'a';2;'b';'c';'c')[a,tarr_is]"),
-
-
   )) {
 
-  test("mmlang and mmscala strings") {
-    println(intArrayObj)
-    println(BaseInstTest.engine.eval(intArrayStr))
-    println(INT_ARRAY_MODEL)
-    assertResult(intArrayObj)(BaseInstTest.engine.eval(intArrayStr))
-    assertResult(BaseInstTest.engine.eval(intArrayStr))(intArrayObj)
-    assertResult(intArrayObj.toString)(BaseInstTest.engine.eval(intArrayStr).toString)
-    //////////////////////
-    println("----\n\n")
-    println(intStrArrayObj)
-    println(BaseInstTest.engine.eval(intStrArrayStr))
-    println(INT_STR_ARRAY_MODEL)
-    assertResult(intStrArrayObj)(BaseInstTest.engine.eval(intStrArrayStr))
-    assertResult(BaseInstTest.engine.eval(intStrArrayStr))(intStrArrayObj)
-    assertResult(intStrArrayObj.toString)(BaseInstTest.engine.eval(intStrArrayStr).toString)
-  }
-
   ///////// MOVE BELOW INTO TABLE TEST RIG
-
-  test("lst type token") {
-    assertResult("lst")(lst.toString)
-    assert(lst.isInstanceOf[LstType[_]])
-    assert(lst.test(lst))
-    assert(!lst.test(rec))
-    assert(!lst.test(int))
-    assert((str("a") `,` "b").test(lst))
-    assert((str("a") `|` "b").test(lst))
-    assert((str("a") `;` "b").test(lst))
-    assert(!(str("a") `;` "b").test(lst.q(20)))
-    assert((str("a") `;` "b").test(lst.q(0, 20)))
-  }
-
-  test("lst type basics") {
-    assert((int(1) `;` 2).test(int `;` int))
-    //assert((int(1) `,` 2).test(int.q(2)))
-  }
-
-
   test("parallel expressions") {
     val starts:TableFor3[Obj, Lst[Obj], Obj] =
       new TableFor3[Obj, Lst[Obj], Obj](("lhs", "rhs", "result"),

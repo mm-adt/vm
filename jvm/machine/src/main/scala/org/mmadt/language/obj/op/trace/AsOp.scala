@@ -55,7 +55,7 @@ object AsOp extends Func[Obj, Obj] {
     if (!source.alive) return source
     if (source.isInstanceOf[Strm[Obj]]) return source.toStrm(x => AsOp.autoAsType(x, target, rangeType, domain))
     if (source.name.equals(target.name) || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
-    if ((!__.isAnon(source) && source.root) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
+    if ((!__.isAnon(source)) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
     source match {
       case _:Value[_] => internalConvertAs(source, target).hardQ(source.q)
       case _:Type[_] if domain => target.update(source.model)
