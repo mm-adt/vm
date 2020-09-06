@@ -2226,9 +2226,9 @@ mmlang&gt; 5 =&gt; [plus,int]
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;0)                =&gt; person
 language error: ('name'-&gt;'marko','age'-&gt;0) is not a person
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
-==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
+language error: int for nat:29 is not a type in model rec
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
-==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)</code></pre>
+language error: int for nat:29 is not a type in model rec</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2468,21 +2468,6 @@ mmlang&gt; 'ryan'[one]
 </div>
 <div class="paragraph">
 <p>Each type&#8217;s \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the <code>[plus]</code> and <code>[mult]</code> instruction identities, respectively. Furthermore, for those types that form a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a>, the <code>[zero]</code> is their respective multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (true,6,5.5,'ryan')&gt;-[plus,[zero]]
-==&gt;true{4}
-==&gt;6{4}
-==&gt;5.5{4}
-==&gt;'ryan'{4}
-mmlang&gt; (true,6,5.5)&gt;-[mult,[one]]
-==&gt;true{3}
-==&gt;6{3}
-==&gt;5.5{3}
-mmlang&gt; (true,6,5.5)&gt;-[mult,[zero]]
-==&gt;0</code></pre>
-</div>
 </div>
 </div>
 <div class="sect4">
@@ -3157,9 +3142,9 @@ mmlang&gt; 10 =&gt; nat
 mmlang&gt; -1 =&gt; nat
 language error: -1 is not a nat
 mmlang&gt; 10 =&gt; nat[plus,5]
-==&gt;nat:15
+language error: int for nat:15 is not a type in model rec
 mmlang&gt; 10 =&gt; nat[plus,5][plus,-15]
-language error: 0 is not a nat</code></pre>
+language error: int for nat:15 is not a type in model rec</code></pre>
 </div>
 </div>
 <h6 id="_poly_refinement" class="discrete">Poly Refinement</h6>
@@ -3178,9 +3163,9 @@ language error: 0 is not a nat</code></pre>
                 date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
 ==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]],date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat),date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]])[put,2,2020]]
 mmlang&gt; (8;26;2020) =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)
+language error: int for nat:8 is not a type in model rec
 mmlang&gt; (8;26)      =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
+language error: int for nat:8 is not a type in model rec</code></pre>
 </div>
 </div>
 </div>
@@ -3208,7 +3193,7 @@ mmlang&gt; ('a';'b';'c') =&gt; xlist
 mmlang&gt; (1;'a';'c') =&gt; xlist
 ==&gt;xlist
 mmlang&gt; ('a';'b';'c') =&gt; xlist[put,0,3]
-language error: (3;'a';'b';'c') is not a xlist</code></pre>
+language error: lst for xlist:(3;'a';'b';'c') is not a type in model rec</code></pre>
 </div>
 </div>
 <div class="listingblock">
@@ -3227,7 +3212,7 @@ mmlang&gt; ('a';1;'b';2) =&gt; ylist
 mmlang&gt; (1;'a';'c') =&gt; ylist
 ==&gt;ylist
 mmlang&gt; ('a';1;'b';2) =&gt; ylist[put,0,3]
-language error: (3;'a';1;'b';2) is not a ylist</code></pre>
+language error: lst for ylist:(3;'a';1;'b';2) is not a type in model rec</code></pre>
 </div>
 </div>
 </div>
@@ -6442,13 +6427,111 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 <div class="sect3">
 <h4 id="_branch_instructions">Branch Instructions</h4>
 <div class="paragraph">
-<p>The branch instructions support the splitting and merging of parallel, data flows, where each branch is a type <code>obj</code>.</p>
+<p>Branch instructions enable the splitting, composing, and merging of streams. This subset of <code>inst</code> is a particular type of <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> called a <a href="https://en.wikipedia.org/wiki/Traced_monoidal_category">traced monoidal category</a>, where <code>[repeat]</code> provides feedback and each instruction&#8217;s <code>poly</code> arguments are  <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a> maintaining both injective and projective morphisms. There exists a well-established graphical language for such monoidal categories that has been adopted in <code>mmlang</code> sugar syntax (or as best as can be reasonably captured using <a href="https://en.wikipedia.org/wiki/ASCII">ASCII</a> characters).</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 6.6666%;">
-<col style="width: 46.6666%;">
-<col style="width: 46.6668%;">
+<col style="width: 11.1111%;">
+<col style="width: 22.2222%;">
+<col style="width: 11.1111%;">
+<col style="width: 55.5556%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">name</th>
+<th class="tableblock halign-center valign-middle">string diagram</th>
+<th class="tableblock halign-center valign-middle">sugar</th>
+<th class="tableblock halign-left valign-middle">mmlang example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">initial</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="image"><img src="./images/reference/branch-initial.svg" alt="branch initial" width="100"></span></p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><code>A</code></p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int
+==&gt;int
+mmlang&gt; 6
+==&gt;6</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">split</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="image"><img src="./images/reference/branch-split.svg" alt="branch split" width="130"></span></p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><code>-&lt;(A,A)</code></p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int-&lt;(_,_)
+==&gt;(int{2}&lt;=int[id]{2})&lt;=int[split,(int{2}&lt;=int[id]{2})]
+mmlang&gt; 6-&lt;(int,int)
+==&gt;(6{2})</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">merge</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="image"><img src="./images/reference/branch-merge.svg" alt="branch merge" width="130"></span></p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><code>(A,A)&gt;-</code></p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (int,int)&gt;-
+==&gt;int{2}&lt;=(int{2}&lt;=int[id]{2})[merge]
+mmlang&gt; (6,6)&gt;-
+==&gt;6{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">repeat</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="image"><img src="./images/reference/branch-repeat.svg" alt="branch repeat"></span></p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><code>(A)^(A)</code></p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int(+3)^(5)
+==&gt;int[repeat,_[plus,3],5]
+mmlang&gt; 6(+3)^(5)
+==&gt;21</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">terminal</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><span class="image"><img src="./images/reference/branch-terminal.svg" alt="branch terminal" width="100"></span></p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><code>A{0}</code></p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{0}
+mmlang&gt;
+mmlang&gt; 6{0}
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 5.8823%;">
+<col style="width: 52.9411%;">
+<col style="width: 41.1766%;">
 </colgroup>
 <thead>
 <tr>
@@ -6463,7 +6546,7 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 <code>[ ]</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Juxtapose start across <code>poly</code> terms and then aggregate the terms of the resultant <code>poly</code> as dictated by the <code>polys</code> underlying magma (<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">obj<sub>LR</sub>-module</a>).
 \[
-x(a_0,a_1,\ldots,a_n) =  \bigodot_{i=0}^{i&lt;n} xa_i
+x(a_0,a_1,\ldots,a_n) =  \bigodot_{i=0}^{i \leq n} xa_i
 \]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
@@ -6511,7 +6594,7 @@ mm&gt; (1;2;3)=(+10;+20;+30)
 <code>&gt;-</code></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Aggregate the terms of the start <code>poly</code>, where aggregation semantics is determined by the underlying magma of the <code>poly</code> (<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">obj<sub>R</sub>-module</a>).
 \[
-(a_0,a_1,\ldots,a_n) = \bigodot_{i=0}^{i&lt;n} a_i
+(a_0,a_1,\ldots,a_n) = \bigodot_{i=0}^{i \leq n} a_i
 \]</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
@@ -6527,6 +6610,32 @@ mm&gt; (1;2;3)&gt;-
 ==&gt;3
 mm&gt; (1|2|3)&gt;-
 ==&gt;1</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>[repeat]</code><br>
+<code>( )^( )</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Apply the first <code>obj</code> (typically a type) to the incoming <code>obj</code> until the second <code>obj</code> is not <code>{0}</code>. For ease of  use, if the second <code>obj</code> is an <code>int</code> value, then this is interpreted as number of times to iterate.</p>
+<p class="tableblock">\[
+x(a^n) = x \prod^{i \leq n}_{i=0} a
+\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [1,2,3][repeat,+2,3]
+==&gt;7
+==&gt;8
+==&gt;9
+mm&gt; (1,2,3)&gt;-(+2)^(3)
+==&gt;7
+==&gt;8
+==&gt;9
+mm&gt; (1,2,3)&gt;-(*2)^(is&lt;10)
+==&gt;16{2}
+==&gt;12</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -6602,7 +6711,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-05 01:26:32 -0600
+Last updated 2020-09-05 23:28:00 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
