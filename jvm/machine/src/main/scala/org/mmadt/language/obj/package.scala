@@ -80,7 +80,7 @@ package object obj {
     case _:Inst[_, _] => Tokens.inst
     case _:Lst[_] => Tokens.lst
     case _:Rec[_, _] => Tokens.rec
-    case _:__ => Tokens.anon
+    case _ => Tokens.anon
   }
   def toBaseName[A <: Obj](obj:A):A = obj.clone(name = baseName(obj))
   def asType[O <: Obj](obj:O):OType[O] = (obj match {

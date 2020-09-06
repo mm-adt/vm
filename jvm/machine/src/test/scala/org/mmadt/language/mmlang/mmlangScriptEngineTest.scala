@@ -41,7 +41,7 @@ import org.scalatest.FunSuite
  */
 class mmlangScriptEngineTest extends FunSuite {
 
-  lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
+  lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("range<=domain") {
     println(engine.eval("lst"))
@@ -189,7 +189,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("rec get/put") {
     assertResult(bfalse)(engine.eval("(1->'a',2->'b')==(2->'b',1->'a')"))
-    val person: Rec[Obj, Obj] = rec(g = (Tokens.`|`, List(str("name") -> str, str("age") -> int)))
+    val person:Rec[Obj, Obj] = rec(g = (Tokens.`|`, List(str("name") -> str, str("age") -> int)))
     //    assertResult(str <= person.get("name"))(engine.eval("('name'->str|'age'->int)[get,'name']"))
     //    assertResult(int <= person.get("age"))(engine.eval("('name'->str|'age'->int)[get,'age']"))
     //    assertResult(str <= person.get("name"))(engine.eval("str<=('name'->str|'age'->int)[get,'name']"))
@@ -359,7 +359,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("map instruction parsing") {
-    assertResult(int.to("x").map(int.from("x").plus(int.from("x"))))(engine.eval("int<x>[map,<.x>+<.x>]"))
+    assertResult(int.to("x").map(int.from('x).plus(int.from('x))))(engine.eval("int<x>[map,<.x>+<.x>]"))
     assertResult(int(10))(engine.eval("5<x>[map,<.x>+<.x>]"))
     assertResult(int(11))(engine.eval("5<x>[plus,1]<y>[map,<.x>+<.y>]"))
   }
@@ -891,7 +891,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(67, 64))(engine.eval("[23,20]+10(+1)^(34)"))
     assertResult((1 `,` 1).q(2) `,`)(engine.eval("1(-<(_,_))^(2)"))
     //assertResult(((1 `,` 1).q(2)`,`).q(2))(engine.eval("1(-<(_,_))^(3)"))
-    assertResult(int(11))(engine.eval("1(+2)^(<10)"))
+    assertResult(int(11))(engine.eval("1(+2)^(is<10)"))
     assertResult(int(11))(engine.eval("1(+1)^(10)"))
   }
 
@@ -903,7 +903,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("(8,(3,10))")(engine.eval("1-<(+1,+2)=(*4,-<(_,+7))").toString)
     assertResult("(8,10,(16,18))")(engine.eval("1-<(+1,+2,+3-<(+4,+5))=(+6,+7,=(+8,+9))").toString)
     //assertResult("(8,(3,10))WRONG")(engine.eval("1-<(+1,+2)=(*4,-<(_,+7))=(_,_)").toString)
-    assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("(1,(2,(3,4,(5,6,7))))([lst{?} -> [merge] | _ -> int])^([a,lst])"))
+    // assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("(1,(2,(3,4,(5,6,7))))([lst{?} -> [merge] | _ -> int])^([is,[a,lst]])"))
     //assertResult("((1,1),(1,1)),((3,3),(3,3)),(((1,2),(3,4)),((1,2),(3,4))){3}")(engine.eval("[1,3,((1,2),(3,4))](-<(_,_))^([a,(int,int)])").toString) // TODO: strm q
     //assertResult(int(1, 2, 3))(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
   }
@@ -1050,12 +1050,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(bfalse)(engine.eval("2[define,wxy<=_[is==1]][define,xyz<=_[wxy{?}|(wxy,xyz)]][a,xyz]"))
     assertResult(btrue)(engine.eval("1[define,xyz<=xyz][a,xyz]"))
     //assertThrows[StackOverflowError] { // TODO: ungrounded types should not bind?
-      assertResult(btrue)(engine.eval("1[define,wxy<=xyz][define,xyz<=wxy][a,xyz]"))
+    assertResult(btrue)(engine.eval("1[define,wxy<=xyz][define,xyz<=wxy][a,xyz]"))
     //}
   }
 
   test("loading definitions parser") {
-    val file1: String = "'" + getClass.getResource("/load/source-1.mm").getPath + "'"
+    val file1:String = "'" + getClass.getResource("/load/source-1.mm").getPath + "'"
     assertResult("person:('name'->'marko','age'->nat:29)")(engine.eval(s"('name'->'marko','age'->29)[load,${file1}][as,person]").toString)
     assertThrows[LanguageException] {
       engine.eval(s"('naame'->'marko','age'->29)[load,${file1}][as,person]")
@@ -1098,7 +1098,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("model example") {
     engine.eval(":{1}")
-    val ex: Model = LoadOp.loadObj[Model](getClass.getResource("/model/ex.mm").getPath)
+    val ex:Model = LoadOp.loadObj[Model](getClass.getResource("/model/ex.mm").getPath)
     assert(toBaseName(ex).toString.nonEmpty)
     engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(":", __.model(ex))
     // assertResult(int(1))(engine.eval("'marko' => person => user => .login => user => .id"))
@@ -1119,7 +1119,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("person:('name'->'marko')")(engine.eval("('name'->'marko') => [as,person]").toString)
     // assertResult("('type'->(person->(person)))<=_[map,('type'->(person->(person)))]")(engine.eval("[map,pp]").toString)
     engine.eval(":{1}")
-    val mm: Model = LoadOp.loadObj[Model](getClass.getResource("/model/mm.mm").getPath)
+    val mm:Model = LoadOp.loadObj[Model](getClass.getResource("/model/mm.mm").getPath)
     assert(toBaseName(mm).toString.nonEmpty)
     assert(mm.rewrites.nonEmpty)
     //println(mm.named("rec"))

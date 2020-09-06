@@ -904,14 +904,14 @@ The instructions `[zero]` and `[one]` are https://en.wikipedia.org/wiki/Constant
 ----
 
 Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `[mult]` instruction identities, respectively. Furthermore, for those types that form a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity], the `[zero]` is their respective multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator].
-
+////
 [exec]
 ----
 (true,6,5.5,'ryan')>-[plus,[zero]]
 (true,6,5.5)>-[mult,[one]]
 (true,6,5.5)>-[mult,[zero]]
 ----
-
+////
 ===== Poly Types
 
 mm-ADT types are either https://en.wikipedia.org/wiki/Monomial[monomials] or https://en.wikipedia.org/wiki/Polynomial[polynomials]. The components of a polynomial are called *terms*. A term is the product of a *variable* and a *coefficient*. If \$X\$ is a set of variables and \$Q\$ a set of coefficients, then a polynomial is the https://en.wikipedia.org/wiki/Linear_combination[linear combinations]  of \$Q \times X\$ elements typically written

@@ -121,9 +121,62 @@ The mm-ADT VM https://en.wikipedia.org/wiki/Instruction_set_architecture[instruc
 
 ==== Branch Instructions
 
-The branch instructions support the splitting and merging of parallel, data flows, where each branch is a type `obj`.
+Branch instructions enable the splitting, composing, and merging of streams. This subset of `inst` is a particular type of https://en.wikipedia.org/wiki/Additive_category[additive category] called a https://en.wikipedia.org/wiki/Traced_monoidal_category[traced monoidal category], where `[repeat]` provides feedback and each instruction's `poly` arguments are  https://en.wikipedia.org/wiki/Biproduct[biproducts] maintaining both injective and projective morphisms. There exists a well-established graphical language for such monoidal categories that has been adopted in `mmlang` sugar syntax (or as best as can be reasonably captured using https://en.wikipedia.org/wiki/ASCII[ASCII] characters).
 
-[cols="^1,7,7"]
+
+
+[cols="^.^1,^.^2,^.^1,.^5"]
+|====
+| name | string diagram |  sugar | mmlang example
+
+| initial | image:branch-initial.svg[width=100]  | `A`
+a|
+[exec]
+----
+int
+6
+----
+{blank}
+| split | image:branch-split.svg[width=130]    | `-<(A,A)`
+a|
+[exec]
+----
+int-<(_,_)
+6-<(int,int)
+----
+{blank}
+
+| merge | image:branch-merge.svg[width=130]    | `(A,A)>-`
+a|
+[exec]
+----
+(int,int)>-
+(6,6)>-
+----
+{blank}
+
+| repeat | image:branch-repeat.svg[]    | `(A)^(A)`
+a|
+[exec]
+----
+int(+3)^(5)
+6(+3)^(5)
+----
+{blank}
+
+| terminal | image:branch-terminal.svg[width=100] | `A{0}`
+a|
+[exec]
+----
+int{0}
+6{0}
+----
+{blank}
+|====
+
+
+
+[cols="^1,9,7"]
 |====
 | inst         | description | example
 
@@ -132,7 +185,7 @@ The branch instructions support the splitting and merging of parallel, data flow
 `[ ]`
 | Juxtapose start across `poly` terms and then aggregate the terms of the resultant `poly` as dictated by the `polys` underlying magma (https://en.wikipedia.org/wiki/Module_(mathematics)[obj~LR~-module]).
 \[
-x(a_0,a_1,\ldots,a_n) =  \bigodot_{i=0}^{i<n} xa_i
+x(a_0,a_1,\ldots,a_n) =  \bigodot_{i=0}^{i \leq n} xa_i
 \]
 a|
 [exec,prompt="mm> "]
@@ -167,7 +220,7 @@ a|
 `>-`
 | Aggregate the terms of the start `poly`, where aggregation semantics is determined by the underlying magma of the `poly` (https://en.wikipedia.org/wiki/Module_(mathematics)[obj~R~-module]).
 \[
-(a_0,a_1,\ldots,a_n) = \bigodot_{i=0}^{i<n} a_i
+(a_0,a_1,\ldots,a_n) = \bigodot_{i=0}^{i \leq n} a_i
 \]
 a|
 [exec,prompt="mm> "]
@@ -178,6 +231,24 @@ a|
 (1\|2\|3)>-
 ----
 {blank}
+
+// REPEAT
+| `[repeat]` +
+`( )^( )`
+| Apply the first `obj` (typically a type) to the incoming `obj` until the second `obj` is not `{0}`. For ease of  use, if the second `obj` is an `int` value, then this is interpreted as number of times to iterate.
+
+\[
+x(a^n) = x \prod^{i \leq n}_{i=0} a
+\]
+a|
+[exec,prompt="mm> "]
+----
+[1,2,3][repeat,+2,3]
+(1,2,3)>-(+2)^(3)
+(1,2,3)>-(*2)^(is<10)
+----
+{blank}
+
 
 // SPLIT
 | `[split]` +

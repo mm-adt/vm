@@ -76,7 +76,7 @@ trait Obj
     with SplitOp
     with LiftOp
     with RewriteOp
-    with RepeatOp[Obj]
+    with RepeatOp
     with ExplainOp
     with TypeOp {
 
