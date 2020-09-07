@@ -1039,8 +1039,8 @@ The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[a
 \[
 a_{q_0} + b_{q_1} =
 \begin{cases}
-  a_{q_0 + q_1}     & \text{if } a == b, \\
-  a_{q_0} + b_{q_1} & \text{otherwise},
+a_{q_0 + q_1}     & \text{if } a == b, \\
+a_{q_0} + b_{q_1} & \text{otherwise},
 \end{cases}
 \]
 such that when two term objects are not equal, the `poly` is https://en.wikipedia.org/wiki/Irreducible_representation[irreducible]. Given the lack of order along with quantifier "weighting," `,-lst` collections realize https://en.wikipedia.org/wiki/Multiset[multiset] semantics (also known as bags or weighted sets). `,-rec` collections realize https://en.wikipedia.org/wiki/Multimap[multimap] semantics which are https://en.wikipedia.org/wiki/Associative_array[associative arrays] that support multiple values for a single key.
@@ -1438,7 +1438,7 @@ In effect, the execution context is transformed from a memory-less https://en.wi
 
 ===== Variables
 
-The `[to]` instruction's type definition is `a\<=a[to,_]`. For every incoming \$a \in \tt{obj}\$, there is an outgoing \$a\$ whose path has been extended with `[to]`. The argument to `[to]` is a *named anonymous type*. An example is provided below.
+The `[to]` instruction's type definition is `a\<=a[to,_]`. The argument to `[to]` is a *named anonymous type*. For every incoming \$a \in \tt{obj}\$, there is an outgoing \$a\$ whose path has been extended with the `[to]` instruction. An example is provided below.
 
 [.center]
 [cols=^.^1,width=40,grid=none,frame=none]

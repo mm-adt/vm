@@ -180,6 +180,7 @@ object Obj {
   }
   class RichTrace(val ground:Trace) {
     final def modeless:Trace = ground.filter(x => !ModelOp.isMetaModel(x._2))
+    final def identity:Boolean = this.modeless.isEmpty
     final def nexists(f:ViaTuple => Boolean):Boolean = ground.exists(x => if (f(x)) return true else x._2.args.exists(y => y.trace.nexists(f)))
     final def reconstruct[A <: Obj](source:Obj, name:String = null):A =
       Some(ground.map(x => x._2)

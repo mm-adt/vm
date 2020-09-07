@@ -47,7 +47,7 @@ object mmlangPrinter {
         case _:Strm[_] => strmString(arec.asInstanceOf[Strm[Obj]])
         case _:RecType[_, _] if Tokens.named(arec.name) => return arec.name
         case _ if arec.isEmpty => EMPTYREC
-        case _ => arec.gmap.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + arec.gsep)).dropRight(1) + RROUND
+        case _ => Some(arec.gmap.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + arec.gsep)).dropRight(1) + RROUND).map(x => if (arec.isInstanceOf[Value[_]] || arec.trace.identity) x else (x + "\n  ")).get
       })
   }
 
@@ -58,7 +58,7 @@ object mmlangPrinter {
         case _:Strm[_] => strmString(alst.asInstanceOf[Strm[Obj]])
         case _:LstType[_] if Tokens.named(alst.name) => return alst.name
         case _ if alst.isEmpty => EMPTYLST
-        case _ => alst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + alst.gsep).dropRight(1) + RROUND
+        case _ => Some(alst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + alst.gsep).dropRight(1) + RROUND).map(x => if (alst.isInstanceOf[Value[_]] || alst.trace.identity) x else (x + "\n  ")).get
       })
   }
 
@@ -92,6 +92,7 @@ object mmlangPrinter {
         case avalue:Value[_] => avalue.hardQ(qOne).toString
       }) + qString(atype.domain.q)
     }
+
     (if (domain.equals(EMPTY) || range.equals(domain)) range else range + LDARROW + domain) +
       atype.trace.map(_._2.toString()).fold(EMPTY)((a, b) => a + b)
   }
