@@ -27,6 +27,7 @@ import org.mmadt.language.obj.Inst;
 import org.mmadt.language.obj.Lst;
 import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.Rec;
+import org.mmadt.language.obj.op.map.WalkOp;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
@@ -102,7 +103,9 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (!obj.range().test(type.domain()))
+        if(__.isToken(type))
+            WalkOp.resolveTokenPath(obj,type);
+        else if (!obj.range().test(type.domain()))
             throw LanguageException.typingError(obj, type);
     }
 

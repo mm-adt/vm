@@ -24,9 +24,9 @@ $(document).ready(function(){
 
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
   var items =    {"op":      ["state","range","domain",
-                              "and","or","compose","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
+                              "and","or","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map","juxta","barrier",
-                              "split","merge","last","head","tail","div","minus","choose","put","repeat","type",
+                              "split","merge","last","head","tail","minus","put","repeat","type",
                               "define","rewrite","to","from","sum","model","as","a","q","path","empty","lift","swap"],
                   "type":    ["_","real","rec","lst","inst","obj","int","str","bool","poly",
                               "nat","person"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)

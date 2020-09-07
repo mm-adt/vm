@@ -68,7 +68,7 @@ class mmlangParser extends JavaTokenParsers {
     case Some(source) ~ _ ~ Some(target:Type[Obj]) ~ aobjs =>
       aobjs.foldLeft(compile(prefix, asType(source), target) match {
         case avalue:Value[Obj] => avalue.start[Obj]()
-        case atype:Type[Obj] => source ==>[Obj] atype
+        case atype:Type[Obj] => source.update(atype.model) ==>[Obj] atype
       })((a, b) => a `=>` b)
     case Some(source) ~ _ ~ Some(target:Value[Obj]) ~ aobjs => aobjs.foldLeft((source ==> target).asInstanceOf[Obj])((a, b) => a `=>` b)
     case None ~ None ~ Some(target) ~ aobjs => target.domainObj ==> compile(prefix, target.domain, aobjs.foldLeft(target)((a, b) => a `=>` b))

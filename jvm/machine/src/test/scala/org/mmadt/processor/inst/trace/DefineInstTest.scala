@@ -31,17 +31,18 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.language.obj.{Bool, Int}
 import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.BaseInstTest.engine
 import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.processor.inst.trace.DefineInstTest.{MODEL, myListType, natType}
 import org.mmadt.storage.StorageFactory._
 
 object DefineInstTest {
-  private val natType: Type[Int] = int.named("nat") <= int.is(int.gt(0))
-  private val myListType: Type[__] = 'mylist <= __.-<(is(eqs(1)) `|` (1 `;` 'mylist)) >-
-  private val iListType: Type[__] = 'ilist <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a('ilist))))
-  private val siListType: Type[__] = 'silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist))))
-  private val vecType: Type[__] = 'vec <= __.split(__ `;` lst.combine(__ `,`).merge.count)
-  private val MODEL: Model = ModelOp.MM.defining(natType).defining(myListType).defining(iListType).defining(siListType).defining(vecType)
+  private val natType:Type[Int] = int.named("nat") <= int.is(int.gt(0))
+  private val myListType:Type[__] = 'mylist <= __.-<(is(eqs(1)) `|`(1 `;` 'mylist)) >-
+  private val iListType:Type[__] = 'ilist <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a('ilist))))
+  private val siListType:Type[__] = 'silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist))))
+  private val vecType:Type[__] = 'vec <= __.split(__ `;` lst.combine(__ `,`).merge.count)
+  private val MODEL:Model = ModelOp.MM.defining(natType).defining(myListType).defining(iListType).defining(siListType).defining(vecType)
   //     testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
   //    testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
 
@@ -56,11 +57,11 @@ class DefineInstTest extends BaseInstTest(
     excepting(2, as('nat).plus(-10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10]"),
     excepting(2, as('nat).plus(-10).plus(10), LanguageException.typingError(-8.named("nat"), natType), "2[as,nat][plus,-10][plus,10]"),
     comment("mylist"),
-    testing(1 `;` (1 `;` 1), lst.a('mylist), true, "(1;(1;1)) => lst[a,mylist]"),
-    testing(1 `,` (1 `,` 2), a('mylist), false),
-    testing(1 `,` (2 `,` 1), a('mylist), false),
-    testing(1 `,` (1 `,` 2), a('mylist), false),
-    excepting(1 `;` (1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` (1 `;` 1)), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
+    testing(1 `;`(1 `;` 1), lst.a('mylist), true, "(1;(1;1)) => lst[a,mylist]"),
+    testing(1 `,`(1 `,` 2), a('mylist), false),
+    testing(1 `,`(2 `,` 1), a('mylist), false),
+    testing(1 `,`(1 `,` 2), a('mylist), false),
+    excepting(1 `;`(1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;`(1 `;` 1)), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
     comment("ilist"),
     testing(lst(), a('ilist), true, "()[a,ilist]"),
     testing(1 `;`, a('ilist), true, "(1)[a,ilist]"),
@@ -96,4 +97,15 @@ class DefineInstTest extends BaseInstTest(
     println(new mmlangScriptEngineFactory().getScriptEngine.eval("1[a,[real|str]]"))
     println(str.a(__.-<(real `|` int) >-)) // TODO
   }
+  test("vec documentation example") {
+    engine.eval(
+      """:[model,mm][define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),
+        |                single<=vec:(lst,is<4).0[tail][head],
+        |                single<=vec:(lst,is>3).0[head],
+        |                single<=int]""".stripMargin)
+    assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3)[as,vec]"))
+    assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3) => vec<=lst"))
+    assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3) => vec"))
+  }
+
 }
