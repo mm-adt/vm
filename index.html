@@ -3406,7 +3406,7 @@ In effect, the execution context is transformed from a memory-less <a href="http
 </tbody>
 </table>
 <div class="paragraph">
-<p>Suppose the above anonymous type is evaluated with <code>int</code> (i.e., the root of the type is now <code>int</code>). This triggers a cascade of events whereby <code>[plus,1]</code> maps <code>int</code> to <code>int[plus,1]</code>, then <code>[to,x]</code> maps <code>int[plus,1]</code> to <code>int[plus,1][to,x]</code>, and so forth. The resultant compiled <code>int</code>-type can be evaluated with an <code>int</code> value such as 9. The respective commuting diagram below has a top chain that is the <strong>value graph</strong> (evaluation) and two bottom chains that are the <strong>type graph</strong> (compilation). The union of these graphs via the <a href="https://en.wikipedia.org/wiki/Inclusion_map">inclusion morphism</a> (<code>[type]</code>) is the <code>obj</code> graph of the computation.</p>
+<p>Suppose <code>int</code> is applied to the above anonymous type. This triggers a cascade of events whereby <code>[plus,1]</code> maps <code>int</code> to <code>int[plus,1]</code>, then <code>[to,x]</code> maps <code>int[plus,1]</code> to <code>int[plus,1][to,x]</code>, and so forth. The resultant compiled <code>int</code>-type can then be evaluated by an <code>int</code> value such as 9. In the commuting diagram below, the top instruction sequence forms a value graph (<strong>evaluation</strong>), the middle sequence a type graph (<strong>compilation</strong>), and the bottom, an <em> un</em>typed graph (<strong>composition</strong>). The union of these graphs via the <a href="https://en.wikipedia.org/wiki/Inclusion_map">inclusion morphism</a> (<code>[type]</code>) is the complete <code>obj</code> graph of the computation.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -3428,9 +3428,11 @@ In <code>mmlang</code>, the <code>[to]</code> instruction&#8217;s sugar is <code
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; _[plus,1]&lt;x&gt;[plus,2][mult,x]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; _   =&gt; [plus,1]&lt;x&gt;[plus,2][mult,x]
+==&gt;_[plus,1]&lt;x&gt;[plus,2][mult,x]
+mmlang&gt; int =&gt; _[plus,1]&lt;x&gt;[plus,2][mult,x]
 ==&gt;int[plus,1]&lt;x&gt;[plus,2][mult,x]
-mmlang&gt; 9 =&gt; int =&gt; _[plus,1]&lt;x&gt;[plus,2][mult,x]
+mmlang&gt; 9   =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]
 ==&gt;120</code></pre>
 </div>
 </div>
@@ -3451,7 +3453,7 @@ mmlang&gt; 9 =&gt; int =&gt; _[plus,1]&lt;x&gt;[plus,2][mult,x]
 </div>
 </div>
 <div class="paragraph">
-<p>The key point is that when <code>[mult,x]</code> is reached, the <code>x</code> is a named anonymous type. This means that the argument to <code>[mult]</code> needs to be <strong>resolved</strong> before it can evaluate. To do so, the <code>obj</code> graph&#8217;s edges are searched for a <code>[to,x]</code>. When that instruction is found, the range (or domain as it&#8217;s an identity) replaces <code>x</code> and <code>[mult,10]</code> is evaluated. The intutition for this process is illustrated on the right.</p>
+<p>The primary idea concerning variable state is that when <code>[mult,x]</code> is reached by the <code>int</code> value 12 via instruction application, the anonymous type <code>x</code>  must be <strong>resolved</strong> before <code>[mult]</code> can evaluate. To do so, the instruction <code>[to,x]</code> is searched for in the path history of 12. When that instruction is found, the range (or domain as it&#8217;s an identity) replaces <code>x</code> and <code>[mult,10]</code> is evaluated and the edge \[12 \rightarrow_{\texttt{[mult,10]}} 120 \] extends the value graph. The intuition for this process is illustrated on the right.</p>
 </div>
 <hr>
 <div class="listingblock">
@@ -3484,8 +3486,7 @@ inst        domain      range state
 </table>
 </div>
 <div class="paragraph">
-<p>The scope of a variable starts at the moment of declaration (<code>[to]</code>) and ends when the declaring branch is complete.
-If an <code>inst</code> has a type argument, that type has access to the variables declared in any parent branch.</p>
+<p>The variable&#8217;s <a href="https://en.wikipedia.org/wiki/Scope_(computer_science)">scope</a> starts at <code>[to]</code> and ends when there is no longer a path to <code>[to]</code>. If an <code>inst</code> argument is a type (e.g. <code>[mult,[plus,x]]</code>), then the <strong>child type</strong> (<code>[plus,x]</code>) path extends the <strong>parent type</strong> (<code>[mult]</code>) path. As such, the child type has access to the variables declared in the parent composition up to the <code>inst</code> containing the child type (<code>[mult]</code>). Finally, if <code>[to,x]</code> is evaluated and later along that path <code>[to,x]</code> is evaluated again, all subsequent types will resolve <code>x</code> at the latter <code>[to,x]</code> instruction. That is, the graph search halts at the first encounter of <code>[to,x]</code>&#8201;&#8212;&#8201;the <a href="https://en.wikipedia.org/wiki/Shortest_path_problem">shortest path</a> to a declaration.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -6812,7 +6813,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-07 16:08:03 -0600
+Last updated 2020-09-07 16:11:32 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
