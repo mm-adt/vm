@@ -37,8 +37,11 @@ import org.mmadt.storage.StorageFactory._
  */
 object mmlangPrinter {
 
+  private val prettyPrint:Boolean = true
+
   private def aliveString(obj:Any):String = if (obj.asInstanceOf[Obj].alive) obj.toString else "{0}"
   private def typeName(aobj:Obj):String = if (Tokens.named(aobj.name)) aobj.name + COLON else EMPTY
+
 
   private def recString(arec:Rec[_, _]):String = {
     if (arec.ctype) return arec.name
@@ -47,7 +50,9 @@ object mmlangPrinter {
         case _:Strm[_] => strmString(arec.asInstanceOf[Strm[Obj]])
         case _:RecType[_, _] if Tokens.named(arec.name) => return arec.name
         case _ if arec.isEmpty => EMPTYREC
-        case _ => Some(arec.gmap.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + arec.gsep)).dropRight(1) + RROUND).map(x => if (arec.isInstanceOf[Value[_]] || arec.trace.identity) x else (x + "\n  ")).get
+        case _ =>
+          val recString:String = arec.gmap.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + arec.gsep)).dropRight(1) + RROUND
+          if (prettyPrint && (arec.isInstanceOf[Type[_]] && !arec.trace.identity)) recString + "\n\t" else recString
       })
   }
 
@@ -58,7 +63,9 @@ object mmlangPrinter {
         case _:Strm[_] => strmString(alst.asInstanceOf[Strm[Obj]])
         case _:LstType[_] if Tokens.named(alst.name) => return alst.name
         case _ if alst.isEmpty => EMPTYLST
-        case _ => Some(alst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + alst.gsep).dropRight(1) + RROUND).map(x => if (alst.isInstanceOf[Value[_]] || alst.trace.identity) x else (x + "\n  ")).get
+        case _ =>
+          val lstString:String = alst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + alst.gsep).dropRight(1) + RROUND
+          if (prettyPrint && (alst.isInstanceOf[Type[_]] && !alst.trace.identity)) lstString + "\n\t" else lstString
       })
   }
 
