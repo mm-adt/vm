@@ -3126,10 +3126,10 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form of <code>int{?}&lt;=int[is,[gt,0]]</code>. mm-ADT supports user defined types. In fact, mm-ADT&#8217;s primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The <code>[define]</code> instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on <em>model-ADTs</em>, the more general <code>[model]</code> instruction will be presented.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. mm-ADT Global Type</div>
+<div class="title">Deep Dive 2. mm-ADT Prefix Type</div>
 <div class="content">
 <div class="paragraph">
-<p>All <code>mmlang</code> examples with a <code>:type</code> expression are defining a <strong>global type</strong> (which itself may define zero or more types). The global type is prefixed to all subsequent expressions. In many ways, a global type is like an <a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a> <a href="https://en.wikipedia.org/wiki/Object_file">object file</a>. On the other hand, model-ADTs (of <code>[model]</code>) are similar to the <a href="https://en.wikipedia.org/wiki/Class_(computer_programming)">class files</a> of <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object-oriented languages</a>.</p>
+<p>All <code>mmlang</code> examples with a <code>:type</code> expression are defining a <strong>prefix type</strong>. This type is prefixed to all subsequent expressions. In many ways, a prefix type is like an <a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a> <a href="https://en.wikipedia.org/wiki/Object_file">object file</a>. On the other hand, model-ADTs (of <code>[model]</code>) are similar to the <code>import</code> of <a href="https://en.wikipedia.org/wiki/Class_(computer_programming)">class files</a> in <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object-oriented languages</a>.</p>
 </div>
 </div>
 </div>
@@ -3171,7 +3171,42 @@ language error: int for nat:8 is not a type in model rec</code></pre>
 </div>
 <div class="sect4">
 <h5 id="_dependent_types">Dependent Types</h5>
-
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
+                        single&lt;=vec:(lst,is&lt;4).0[tail][head],
+                        single&lt;=vec:(lst,is&gt;3).0[head]]
+==&gt;_[define,vec&lt;=lst[split,(lst,int&lt;=lst[combine,(_)][merge][count])],single&lt;=vec[get,0,_][tail][head],single&lt;=vec[get,0,_][head]]
+mmlang&gt; (1;2;3)   =&gt; vec                                    <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;vec:((1;2;3),3)
+mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                          <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;single:2
+mmlang&gt; (1;2;3;4) =&gt; vec                                    <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;vec:((1;2;3;4),4)
+mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                          <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;single:1</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A <code>;-lst</code> of 3 terms is morphed into a <code>vec</code> using the <code>vec&lt;=lst</code> type.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>vec</code> is morphed into a <code>single</code> using the first <code>single&lt;=vec</code> type.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A <code>;-lst</code> of 4 terms is morphed into a <code>vec</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The <code>vec</code> is morphed into a <code>single</code> using the second <code>single&lt;=vec</code> type.</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_recursive_types">Recursive Types</h5>
@@ -6713,7 +6748,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-06 16:33:50 -0600
+Last updated 2020-09-06 16:41:04 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
