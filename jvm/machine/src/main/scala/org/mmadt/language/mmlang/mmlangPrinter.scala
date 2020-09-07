@@ -38,6 +38,7 @@ import org.mmadt.storage.StorageFactory._
 object mmlangPrinter {
 
   private val prettyPrint:Boolean = true
+  private val tab:String = "\n   "
 
   private def aliveString(obj:Any):String = if (obj.asInstanceOf[Obj].alive) obj.toString else "{0}"
   private def typeName(aobj:Obj):String = if (Tokens.named(aobj.name)) aobj.name + COLON else EMPTY
@@ -52,7 +53,7 @@ object mmlangPrinter {
         case _ if arec.isEmpty => EMPTYREC
         case _ =>
           val recString:String = arec.gmap.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + arec.gsep)).dropRight(1) + RROUND
-          if (prettyPrint && (arec.isInstanceOf[Type[_]] && !arec.trace.identity)) recString + "\n\t" else recString
+          if (prettyPrint && (arec.isInstanceOf[Type[_]] && !arec.trace.identity)) recString + tab else recString
       })
   }
 
@@ -65,7 +66,7 @@ object mmlangPrinter {
         case _ if alst.isEmpty => EMPTYLST
         case _ =>
           val lstString:String = alst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + alst.gsep).dropRight(1) + RROUND
-          if (prettyPrint && (alst.isInstanceOf[Type[_]] && !alst.trace.identity)) lstString + "\n\t" else lstString
+          if (prettyPrint && (alst.isInstanceOf[Type[_]] && !alst.trace.identity)) lstString + tab else lstString
       })
   }
 

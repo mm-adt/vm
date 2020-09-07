@@ -818,9 +818,9 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("2")(engine.eval("(1;(2|3))[get,1][get,0]").toString)
     assertResult("6")(engine.eval("(1;(2;(3;(4;5;6)))).1.1.1.2").toString)
     //////
-    assertResult("(str;{0};{0})\n\t<=str[split,(str;{0};{0})]")(engine.eval("str-<(str;int;int[plus,2])").toString)
+    assertResult("(str;{0};{0})\n   <=str[split,(str;{0};{0})]")(engine.eval("str-<(str;int;int[plus,2])").toString)
     assertResult("int{8}<=(int{2};int{4}<=int[plus,2]{4})[merge][is,true][id]")(engine.eval("(int{2};int[plus,2]{4})>-[is,true][id]").toString)
-    assertResult("(str)\n\t<=str[split,(str)]")(engine.eval("str-<(int{?}|bool{?}|str)").toString)
+    assertResult("(str)\n   <=str[split,(str)]")(engine.eval("str-<(int{?}|bool{?}|str)").toString)
     assertResult("str[split,(str)][merge][plus,'hello']")(engine.eval("str-<(str,,)>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz' str-<(str,int,int[plus,2])>-[plus,'hello']").toString)
     assertResult("'kuppitzhello'")(engine.eval("'kuppitz'-<(str,int,int[plus,2])>-[plus,'hello']").toString)
