@@ -1309,7 +1309,7 @@ All `mmlang` examples with a `:type` expression are defining a *prefix type*. Th
 
 [exec,none="",exception=LanguageException]
 ----
-:[define,nat<=int[is>0]]
+:[model,mm][define,nat<=int[is>0]]
 10 => nat
 -1 => nat
 10 => nat[plus,5]
@@ -1325,9 +1325,9 @@ image::date-example.svg[]
 
 [exec,none="",exception=LanguageException]
 ----
-:[define,nat<=int[is>0],                             %
-        date<=(nat[is=<12];nat[is=<31];nat),         %
-        date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
+:[model,mm][define,nat<=int[is>0],                              %
+                   date<=(nat[is=<12];nat[is=<31];nat),         %
+                   date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
 (8;26;2020) => date
 (8;26)      => date
 ----
@@ -1336,13 +1336,13 @@ image::date-example.svg[]
 
 [exec,none=""]
 ----
-:[define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),       %
-                single<=vec:(lst,is<4).0[tail][head], %
-                single<=vec:(lst,is>3).0[head]]
-(1;2;3)   => vec                                    //<1>
-(1;2;3)   => vec => single                          //<2>
-(1;2;3;4) => vec                                    //<3>
-(1;2;3;4) => vec => single                          //<4>
+:[model,mm][define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),       %
+                          single<=vec:(lst,is<4).0[tail][head], %
+                          single<=vec:(lst,is>3).0[head]]
+(1;2;3)   => vec                                               //<1>
+(1;2;3)   => vec => single                                     //<2>
+(1;2;3;4) => vec                                               //<3>
+(1;2;3;4) => vec => single                                     //<4>
 ----
 <1> A `;-lst` of 3 terms is morphed into a `vec` using the `vec\<=lst` type.
 <2> The `vec` is morphed into a `single` using the first `single\<=vec` type.
@@ -1356,9 +1356,9 @@ A recursive type's definition contains a reference to itself. Recursive type def
 
 [exec,exception=LanguageException]
 ----
-:[define,xlist<=lst[[is,[empty]]|                  %
-                    [[is,[head][a,str]];           %
-                     [is,[tail][a,xlist]]]]]
+:[model,mm][define,xlist<=lst[[is,[empty]]|                  %
+                              [[is,[head][a,str]];           %
+                               [is,[tail][a,xlist]]]]]
 ( ) => [a,xlist]
 ('a';'b';'c') => [a,xlist]
 ('a';'b';'c') => xlist
@@ -1368,10 +1368,10 @@ A recursive type's definition contains a reference to itself. Recursive type def
 
 [exec,exception=LanguageException]
 ----
-:[define,ylist<=lst[[is,[empty]]|                  %
-                    [[is,[head][a,str]];           %
-                     [is,[tail][head][a,int]];     %
-                     [is,[tail][tail][a,ylist]]]]]
+:[model,mm][define,ylist<=lst[[is,[empty]]|                  %
+                              [[is,[head][a,str]];           %
+                               [is,[tail][head][a,int]];     %
+                               [is,[tail][tail][a,ylist]]]]]
 ( ) => [a,ylist]
 ('a';1;'b';2) => [a,ylist]
 ('a';1;'b';2) => ylist
@@ -1379,18 +1379,16 @@ A recursive type's definition contains a reference to itself. Recursive type def
 ('a';1;'b';2) => ylist[put,0,3]
 ----
 
-
-
 === The Obj Graph
 
-An mm-ADT program is a type. The `mmlang` parser converts a textual representation of a type into a type `obj`. The mm-ADT VM encodes a type `obj` as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger *type graph* (a Cayley graph). While a path in the type graph is a graphical encoding of the ring structure of a type, it is also a specification of a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding in a larger *value graph*. Together, the type graph and the value graph form the `obj` graph.
+An mm-ADT program is a *type*. The `mmlang` parser converts a textual representation of a type into a type `obj`. A type is inductively defined and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger *type graph*. The type's path is a graphical encoding specifying a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in a *value graph*. Together, the type graph and the value graph form the *obj graph*.
 
-Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the `obj` graph. The following itemization details the role of the `obj` graph across various stages of a computation.
+Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the `obj` graph. The following itemizations summarizes the various roles that the `obj` graph throughout a computation.
 
-* *Composition*: The construction of a type via the https://en.wikipedia.org/wiki/Tacit_programming[point-free] style of `mmlang` is a the lexical correlate of walking the `obj` graph from a source vertex (domain ctype) across a series of instruction-labeled edges (`inst`) to ultimately arrive at a target vertex (range ctype).
-* *Compilation*: A path in the type graph can be prefixed with another ctype (e.g. `_` to `int`). In doing so, the path is recomputed to yield a variant path.
-* *Rewrite*: Subpaths of a path in the type graph can be specied as being semantically equivalent to another path in the type graph via `poly` lifted rewriting `(y)\<=(x)`. Subsequent compilations and evaluations of the path will yield variants.
-* *Optimization*: Every instruction in `inst` has an associated cost. Rewrites create a superposition of programs. Given that the `obj` graph https://en.wikipedia.org/wiki/Commutative_diagram[commutes], a https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from a domain vertex to a range vertex is a simple technique for choosing an efficient execution plan.
+* *Composition*: The construction of a type via the https://en.wikipedia.org/wiki/Tacit_programming[point-free] style of `mmlang` is a the lexical correlate of walking the `obj` graph from a source vertex (domain ctype) across a series of instruction-labeled edges (`inst`) to ultimately arrive at a target vertex (range ctype). The path, a https://en.wikipedia.org/wiki/Free_object[free object], contains both the type's signature and definition.
+* *Compilation*: A path in the type graph can be prefixed with another ctype (e.g. placing `int` before `_`). In doing so, the path's domain has been alterered and the path is recomputed to potentially yield a variant of the original path (e.g. a type inferenced path).
+* *Rewrite*: Subpaths of a path in the type graph can be specified as being semantically equivalent to another path in the type graph via `poly` lifted rewriting `(y)\<=(x)`. Subsequent compilations and evaluations of the path may yield path variants.
+* *Optimization*: Every instruction in `inst` has an associated cost dependent on the underlying storage and processor. Rewrites create a superposition of programs. Given that the `obj` graph https://en.wikipedia.org/wiki/Commutative_diagram[commutes], a https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm[weighted shortest path] calculation from a domain vertex to a range vertex is an example of a simple technique for choosing an efficient execution plan.
 * *Variables*: Variable bindings are encoded in instructions. When the current instruction being evaluated requires historic state information, the `obj`^op^ graph (with edges reversed) is searched in order to locate the vertex incident to a variable `inst`.
 * *Evaluation*: Program evaluation binds the type graph to the value graph. When a type path is prefixed with a value `obj`, the instructions along the path operate on the value, where the path's target vertex is the result of the computation.
 
@@ -1402,19 +1400,20 @@ Let \$(M,\cdot,e)\$ be a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e
 Thus, every monoid has a *single unique identity*.
 However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
 
-It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms below.
 
-[cols="3,1,1,4" width=65%]
-|===
-| idiom                                                                      | inst         | sugar | description
+[.small]
+[cols="2,1,2" width=45, float=right]
+|====
+| idiom                                                                      | inst           | description
 
-| https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]   | `[to]`       | `< >` | nominal `obj` references
-| https://en.wikipedia.org/wiki/Data_type[type definitions]                  | `[define]`   |       | user defined types
-| https://en.wikipedia.org/wiki/Rewriting[rewrite rules]                     | `[rewrite]`  |       | type equivalences
-|===
+| https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]   | `[to]/[from]`  | `obj` references
+| https://en.wikipedia.org/wiki/Data_type[type definitions]                  | `[define]`     | user defined types
+| https://en.wikipedia.org/wiki/Rewriting[rewrite rules]                     | `[rewrite]`    | type equivalences
+| https://en.wikipedia.org/wiki/Category_(mathematics)[models]               | `[model]`      | domain of discourse
+| https://en.wikipedia.org/wiki/Reversible_computing[reversible computing]   | `[path]`       | computing history
+|====
 
-
-In particular, state stored in the path history of the `obj`.
+It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms in the associated table. In particular, state stored in the path history of the `obj`.
 
 [exec]
 ----
@@ -1432,15 +1431,15 @@ The output of `[path]` is a `;-lst` that can be https://en.wikipedia.org/wiki/Re
 
 [exec]
 ----
-8 => int[plus,1][mult,2][lt,63]                        //<1>
-8 => int[plus,1][mult,2][lt,63][path]                  //<2>
-8 => int[plus,1][mult,2][lt,63][path][get,5][get,0]    //<3>
+8 => int[plus,1][mult,2][lt,63]                                                           //<1>
+8 => int[plus,1][mult,2][lt,63][path]                                                     //<2>
+8 => int[plus,1][mult,2][lt,63][path][get,5][get,0]                                       //<3>
 ----
 <1> The evaluation of an `bool\<=int` type via 8.
 <2> The `obj` graph path from 8 to `[lt,63]`.
 <3> A projection of the instruction `[lt,63]` from the path and then the first argument of the `inst`.
 
-mm-ADT leverages a collection of *distinct identity instructions*, such that as instructions, they simply compute \$f(x) \mapsto x\$, but as edge labels in the `obj` Cayley graph, they store state information that can be later accessed via trace-based path analysis.
+mm-ADT's *multiple identity instructions* simply compute \$f(x) \mapsto x\$, but as edge labels in the `obj` graph, they store state information that can be later accessed via trace-based path analysis (i.e. via `[path]`).
 In effect, the execution context is transformed from a memory-less https://en.wikipedia.org/wiki/Finite-state_machine[finite state automata] to a https://en.wikipedia.org/wiki/Processor_register[register]-based https://en.wikipedia.org/wiki/Turing_machine[Turing machine].
 
 ===== Variables
@@ -1449,9 +1448,9 @@ image::linear-variable-example.svg[align=center,width=600]
 
 [exec]
 ----
-9 => int[plus,1]<x>[plus,2][mult,x]         //<1>
-9 => int[plus,1]<x>[plus,2][mult,x][path]   //<2>
-int[plus,1]<x>[plus,2][mult,x][explain]     //<3>
+9 => int[plus,1]<x>[plus,2][mult,x]                                                       //<1>
+9 => int[plus,1]<x>[plus,2][mult,x][path]                                                 //<2>
+int[plus,1]<x>[plus,2][mult,x][explain]                                                   //<3>
 ----
 <1> The `<x>` instruction stores the value `10` in the value's path through the `obj` graph.
 <2> The `[path]` instruction provides the automaton's path through the `obj` graph as `;-lst`.
@@ -1462,10 +1461,10 @@ If an `inst` has a type argument, that type has access to the variables declared
 
 [exec,exception=LanguageException]
 ----
-2 => int<x>[plus,<y>][plus,y]                                                      //<1>
-2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x]                                      //<2>
-2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x][path]                                //<3>
-int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]  //<4>
+2 => int<x>[plus,<y>][plus,y]                                                             //<1>
+2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x]                                             //<2>
+2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x][path]                                       //<3>
+int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]         //<4>
 ----
 <1> The variable `y` is declared in a branch nested within the retrieving branch.
 <2> The variable `x` is redefined in the nested branch and recovers its original value when the nested branch completes.
