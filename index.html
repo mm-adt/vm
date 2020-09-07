@@ -1456,7 +1456,7 @@ In practice, the string representation of a value is its <em>ground</em> and the
 ==&gt;6
 mmlang&gt; 2[plus,4][is&gt;0][path]
 ==&gt;(2;[plus,4];6;[is,true];6)
-        &lt;=2[plus,4][is,true][path,(_;_)]
+   &lt;=2[plus,4][is,true][path,(_;_)]
 mmlang&gt; 2[plus,4][is&gt;0][type]
 ==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]]</code></pre>
 </div>
@@ -1941,7 +1941,7 @@ mmlang&gt; 6 =&gt; 8 =&gt; 10 =&gt; [path]
 ==&gt;(10)
 mmlang&gt; 6[map,8][map,10][path]
 ==&gt;(6;[map,8];8;[map,10];10)
-        &lt;=6[map,8][map,10][path,(_;_)]</code></pre>
+   &lt;=6[map,8][map,10][path,(_;_)]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3343,10 +3343,10 @@ However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6 =&gt; int[plus,[mult,2]][path]
 ==&gt;(6;[plus,12];18)
-        &lt;=6[plus,12][path,(_;_)]
+   &lt;=6[plus,12][path,(_;_)]
 mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
 ==&gt;(8;[plus,16];24)
-        &lt;=8[plus,16][path,(_;_)]</code></pre>
+   &lt;=8[plus,16][path,(_;_)]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3358,7 +3358,7 @@ mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
 ==&gt;true
 mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path]                                                     <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;(8;[plus,1];9;[mult,2];18;[lt,63];true)
-        &lt;=8[plus,1][mult,2][lt,63][path,(_;_)]
+   &lt;=8[plus,1][mult,2][lt,63][path,(_;_)]
 mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]                                       <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;63</code></pre>
 </div>
@@ -3458,7 +3458,7 @@ mmlang&gt; 9 =&gt; int =&gt; _[plus,1]&lt;x&gt;[plus,2][mult,x]
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]                                                 <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10];120)
-        &lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path,(_;_)]
+   &lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path,(_;_)]
 mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]                                                   <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'
 int[plus,1]&lt;x&gt;[plus,2][mult,x]
@@ -3495,7 +3495,7 @@ mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x]         
 ==&gt;12
 mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]                                       <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)
-        &lt;=2&lt;x&gt;[plus,8][plus,2][path,(_;_)]
+   &lt;=2&lt;x&gt;[plus,8][plus,2][path,(_;_)]
 mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]         <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;'
 int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x]
@@ -6414,12 +6414,12 @@ y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_
 ==&gt;int[plus,1][plus,2][plus,3]
 mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;(int;;int;[plus,1];int;[plus,2];int;[plus,3];int)
-        &lt;=int[plus,1][plus,2][plus,3][path,(_;_)]
+   &lt;=int[plus,1][plus,2][plus,3][path,(_;_)]
 mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;7
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;(1;[plus,1];2;[plus,2];4;[plus,3];7)
-        &lt;=1[plus,1][plus,2][plus,3][path,(_;_)]
+   &lt;=1[plus,1][plus,2][plus,3][path,(_;_)]
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
 ==&gt;7</code></pre>
 </div>
@@ -6567,7 +6567,7 @@ mmlang&gt; 6
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int-&lt;(_,_)
 ==&gt;(int{2}&lt;=int[id]{2})
-        &lt;=int[split,(int{2}&lt;=int[id]{2})]
+   &lt;=int[split,(int{2}&lt;=int[id]{2})]
 mmlang&gt; 6-&lt;(int,int)
 ==&gt;(6{2})</code></pre>
 </div>
@@ -6812,7 +6812,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-07 16:00:55 -0600
+Last updated 2020-09-07 16:08:03 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
