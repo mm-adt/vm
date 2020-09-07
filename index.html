@@ -3135,16 +3135,16 @@ In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0]]
 ==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
 mmlang&gt; 10 =&gt; nat
 ==&gt;nat:10
 mmlang&gt; -1 =&gt; nat
 language error: -1 is not a nat
 mmlang&gt; 10 =&gt; nat[plus,5]
-language error: int for nat:15 is not a type in model rec
+==&gt;nat:15
 mmlang&gt; 10 =&gt; nat[plus,5][plus,-15]
-language error: int for nat:15 is not a type in model rec</code></pre>
+language error: 0 is not a nat</code></pre>
 </div>
 </div>
 <h6 id="_poly_refinement" class="discrete">Poly Refinement</h6>
@@ -3158,14 +3158,14 @@ language error: int for nat:15 is not a type in model rec</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0],
-                date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
-                date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0],
+                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
+                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
 ==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]],date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat),date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]])[put,2,2020]]
 mmlang&gt; (8;26;2020) =&gt; date
-language error: int for nat:8 is not a type in model rec
+==&gt;date:(nat:8;nat:26;nat:2020)
 mmlang&gt; (8;26)      =&gt; date
-language error: int for nat:8 is not a type in model rec</code></pre>
+==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
 </div>
 </div>
 </div>
@@ -3173,17 +3173,17 @@ language error: int for nat:8 is not a type in model rec</code></pre>
 <h5 id="_dependent_types">Dependent Types</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
-                        single&lt;=vec:(lst,is&lt;4).0[tail][head],
-                        single&lt;=vec:(lst,is&gt;3).0[head]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
+                                  single&lt;=vec:(lst,is&lt;4).0[tail][head],
+                                  single&lt;=vec:(lst,is&gt;3).0[head]]
 ==&gt;_[define,vec&lt;=lst[split,(lst,int&lt;=lst[combine,(_)][merge][count])],single&lt;=vec[get,0,_][tail][head],single&lt;=vec[get,0,_][head]]
-mmlang&gt; (1;2;3)   =&gt; vec                                    <i class="conum" data-value="1"></i><b>(1)</b>
+mmlang&gt; (1;2;3)   =&gt; vec                                               <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;vec:((1;2;3),3)
-mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                          <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                                     <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;single:2
-mmlang&gt; (1;2;3;4) =&gt; vec                                    <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; (1;2;3;4) =&gt; vec                                               <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;vec:((1;2;3;4),4)
-mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                          <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                                     <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;single:1</code></pre>
 </div>
 </div>
@@ -3215,9 +3215,9 @@ mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                          <i class="c
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,xlist&lt;=lst[[is,[empty]]|
-                            [[is,[head][a,str]];
-                             [is,[tail][a,xlist]]]]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,xlist&lt;=lst[[is,[empty]]|
+                                      [[is,[head][a,str]];
+                                       [is,[tail][a,xlist]]]]]
 ==&gt;_[define,xlist&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[empty]]|lst{?}&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[head][a,str]];lst{?}[is,bool{?}&lt;=lst{?}[tail][a,xlist]]]]]
 mmlang&gt; ( ) =&gt; [a,xlist]
 ==&gt;true
@@ -3228,15 +3228,15 @@ mmlang&gt; ('a';'b';'c') =&gt; xlist
 mmlang&gt; (1;'a';'c') =&gt; xlist
 ==&gt;xlist
 mmlang&gt; ('a';'b';'c') =&gt; xlist[put,0,3]
-language error: lst for xlist:(3;'a';'b';'c') is not a type in model rec</code></pre>
+language error: (3;'a';'b';'c') is not a xlist</code></pre>
 </div>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,ylist&lt;=lst[[is,[empty]]|
-                            [[is,[head][a,str]];
-                             [is,[tail][head][a,int]];
-                             [is,[tail][tail][a,ylist]]]]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,ylist&lt;=lst[[is,[empty]]|
+                                      [[is,[head][a,str]];
+                                       [is,[tail][head][a,int]];
+                                       [is,[tail][tail][a,ylist]]]]]
 ==&gt;_[define,ylist&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[empty]]|lst{?}&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[head][a,str]];lst{?}[is,bool{?}&lt;=lst{?}[tail][head][a,int]];lst{?}[is,bool{?}&lt;=lst{?}[tail][tail][a,ylist]]]]]
 mmlang&gt; ( ) =&gt; [a,ylist]
 ==&gt;true
@@ -3247,7 +3247,7 @@ mmlang&gt; ('a';1;'b';2) =&gt; ylist
 mmlang&gt; (1;'a';'c') =&gt; ylist
 ==&gt;ylist
 mmlang&gt; ('a';1;'b';2) =&gt; ylist[put,0,3]
-language error: lst for ylist:(3;'a';1;'b';2) is not a type in model rec</code></pre>
+language error: (3;'a';1;'b';2) is not a ylist</code></pre>
 </div>
 </div>
 </div>
@@ -3256,24 +3256,24 @@ language error: lst for ylist:(3;'a';1;'b';2) is not a type in model rec</code><
 <div class="sect2">
 <h3 id="_the_obj_graph">The Obj Graph</h3>
 <div class="paragraph">
-<p>An mm-ADT program is a type. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. The mm-ADT VM encodes a type <code>obj</code> as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger <strong>type graph</strong> (a Cayley graph). While a path in the type graph is a graphical encoding of the ring structure of a type, it is also a specification of a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding in a larger <strong>value graph</strong>. Together, the type graph and the value graph form the <code>obj</code> graph.</p>
+<p>An mm-ADT program is a <strong>type</strong>. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. A type is inductively defined and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger <strong>type graph</strong>. The type&#8217;s path is a graphical encoding specifying a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in a <strong>value graph</strong>. Together, the type graph and the value graph form the <strong>obj graph</strong>.</p>
 </div>
 <div class="paragraph">
-<p>Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the <code>obj</code> graph. The following itemization details the role of the <code>obj</code> graph across various stages of a computation.</p>
+<p>Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the <code>obj</code> graph. The following itemizations summarizes the various roles that the <code>obj</code> graph throughout a computation.</p>
 </div>
 <div class="ulist">
 <ul>
 <li>
-<p><strong>Composition</strong>: The construction of a type via the <a href="https://en.wikipedia.org/wiki/Tacit_programming">point-free</a> style of <code>mmlang</code> is a the lexical correlate of walking the <code>obj</code> graph from a source vertex (domain ctype) across a series of instruction-labeled edges (<code>inst</code>) to ultimately arrive at a target vertex (range ctype).</p>
+<p><strong>Composition</strong>: The construction of a type via the <a href="https://en.wikipedia.org/wiki/Tacit_programming">point-free</a> style of <code>mmlang</code> is a the lexical correlate of walking the <code>obj</code> graph from a source vertex (domain ctype) across a series of instruction-labeled edges (<code>inst</code>) to ultimately arrive at a target vertex (range ctype). The path, a <a href="https://en.wikipedia.org/wiki/Free_object">free object</a>, contains both the type&#8217;s signature and definition.</p>
 </li>
 <li>
-<p><strong>Compilation</strong>: A path in the type graph can be prefixed with another ctype (e.g. <code>_</code> to <code>int</code>). In doing so, the path is recomputed to yield a variant path.</p>
+<p><strong>Compilation</strong>: A path in the type graph can be prefixed with another ctype (e.g. placing <code>int</code> before <code>_</code>). In doing so, the path&#8217;s domain has been alterered and the path is recomputed to potentially yield a variant of the original path (e.g. a type inferenced path).</p>
 </li>
 <li>
-<p><strong>Rewrite</strong>: Subpaths of a path in the type graph can be specied as being semantically equivalent to another path in the type graph via <code>poly</code> lifted rewriting <code>(y)&lt;=(x)</code>. Subsequent compilations and evaluations of the path will yield variants.</p>
+<p><strong>Rewrite</strong>: Subpaths of a path in the type graph can be specified as being semantically equivalent to another path in the type graph via <code>poly</code> lifted rewriting <code>(y)&lt;=(x)</code>. Subsequent compilations and evaluations of the path may yield path variants.</p>
 </li>
 <li>
-<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost. Rewrites create a superposition of programs. Given that the <code>obj</code> graph <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutes</a>, a <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from a domain vertex to a range vertex is a simple technique for choosing an efficient execution plan.</p>
+<p><strong>Optimization</strong>: Every instruction in <code>inst</code> has an associated cost dependent on the underlying storage and processor. Rewrites create a superposition of programs. Given that the <code>obj</code> graph <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutes</a>, a <a href="https://en.wikipedia.org/wiki/Dijkstra%27s_algorithm">weighted shortest path</a> calculation from a domain vertex to a range vertex is an example of a simple technique for choosing an efficient execution plan.</p>
 </li>
 <li>
 <p><strong>Variables</strong>: Variable bindings are encoded in instructions. When the current instruction being evaluated requires historic state information, the <code>obj</code><sup>op</sup> graph (with edges reversed) is searched in order to locate the vertex incident to a variable <code>inst</code>.</p>
@@ -3293,47 +3293,49 @@ language error: lst for ylist:(3;'a';1;'b';2) is not a type in model rec</code><
 Thus, every monoid has a <strong>single unique identity</strong>.
 However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a>, where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly <em>labeled</em> elements even though their role in the non-free monoid&#8217;s binary composition are the same&#8201;&#8212;&#8201;namely, that they both act as identities.</p>
 </div>
-<div class="paragraph">
-<p>It is through <strong>multiple distinct identities</strong> in <code>inst</code> that mm-ADT supports the programming idioms below.</p>
-</div>
-<table class="tableblock frame-all grid-all" style="width: 65%;">
+<table class="tableblock frame-all grid-all right small" style="width: 45%;">
 <colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 11.1111%;">
-<col style="width: 11.1111%;">
-<col style="width: 44.4445%;">
+<col style="width: 40%;">
+<col style="width: 20%;">
+<col style="width: 40%;">
 </colgroup>
 <thead>
 <tr>
 <th class="tableblock halign-left valign-top">idiom</th>
 <th class="tableblock halign-left valign-top">inst</th>
-<th class="tableblock halign-left valign-top">sugar</th>
 <th class="tableblock halign-left valign-top">description</th>
 </tr>
 </thead>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Variable_%28computer_science%29">variables</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[to]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&lt; &gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">nominal <code>obj</code> references</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[to]/[from]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> references</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Data_type">type definitions</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[define]</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">user defined types</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Rewriting">rewrite rules</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[rewrite]</code></p></td>
-<td class="tableblock halign-left valign-top"></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">type equivalences</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Category_(mathematics)">models</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[model]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">domain of discourse</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Reversible_computing">reversible computing</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[path]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">computing history</p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>In particular, state stored in the path history of the <code>obj</code>.</p>
+<p>It is through <strong>multiple distinct identities</strong> in <code>inst</code> that mm-ADT supports the programming idioms in the associated table. In particular, state stored in the path history of the <code>obj</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3354,11 +3356,11 @@ The output of <code>[path]</code> is a <code>;-lst</code> that can be <a href="h
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63]                        <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63]                                                           <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;true
-mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path]                  <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path]                                                     <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;(8;[plus,1];9;[mult,2];18;[lt,63];true)&lt;=8[plus,1][mult,2][lt,63][path,(_;_)]
-mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]    <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]                                       <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;63</code></pre>
 </div>
 </div>
@@ -3379,7 +3381,7 @@ mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]    <i class="c
 </table>
 </div>
 <div class="paragraph">
-<p>mm-ADT leverages a collection of <strong>distinct identity instructions</strong>, such that as instructions, they simply compute \$f(x) \mapsto x\$, but as edge labels in the <code>obj</code> Cayley graph, they store state information that can be later accessed via trace-based path analysis.
+<p>mm-ADT&#8217;s <strong>multiple identity instructions</strong> simply compute \$f(x) \mapsto x\$, but as edge labels in the <code>obj</code> graph, they store state information that can be later accessed via trace-based path analysis (i.e. via <code>[path]</code>).
 In effect, the execution context is transformed from a memory-less <a href="https://en.wikipedia.org/wiki/Finite-state_machine">finite state automata</a> to a <a href="https://en.wikipedia.org/wiki/Processor_register">register</a>-based <a href="https://en.wikipedia.org/wiki/Turing_machine">Turing machine</a>.</p>
 </div>
 <div class="sect4">
@@ -3391,11 +3393,11 @@ In effect, the execution context is transformed from a memory-less <a href="http
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]         <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]                                                       <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;120
-mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]   <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]                                                 <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10];120)&lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path,(_;_)]
-mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]     <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]                                                   <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;'
 int[plus,1]&lt;x&gt;[plus,2][mult,int&lt;.x&gt;]
 
@@ -3429,13 +3431,13 @@ If an <code>inst</code> has a type argument, that type has access to the variabl
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,&lt;y&gt;][plus,y]                                                      <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,&lt;y&gt;][plus,y]                                                             <i class="conum" data-value="1"></i><b>(1)</b>
 language error: 4 does not contain the label 'y'
-mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x]                                      <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x]                                             <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;12
-mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]                                <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]                                       <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)&lt;=2&lt;x&gt;[plus,8][plus,2][path,(_;_)]
-mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]  <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]         <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;'
 int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,int&lt;.x&gt;][plus,int&lt;.y&gt;][plus,int&lt;.z&gt;]][plus,int&lt;.y&gt;]][plus,int&lt;.x&gt;]
 
@@ -6748,7 +6750,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-06 16:41:04 -0600
+Last updated 2020-09-07 00:14:16 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
