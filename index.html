@@ -3293,7 +3293,7 @@ language error: (3;'a';1;'b';2) is not a ylist</code></pre>
 Thus, every monoid has a <strong>single unique identity</strong>.
 However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a>, where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly <em>labeled</em> elements even though their role in the non-free monoid&#8217;s binary composition are the same&#8201;&#8212;&#8201;namely, that they both act as identities.</p>
 </div>
-<table class="tableblock frame-all grid-all right small" style="width: 45%;">
+<table class="tableblock frame-all grid-all right small" style="width: 42%;">
 <colgroup>
 <col style="width: 40%;">
 <col style="width: 20%;">
@@ -3309,18 +3309,18 @@ However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Variable_%28computer_science%29">variables</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[to]/[from]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> references</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[to]</code></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>obj</code> reference</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Data_type">type definitions</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[define]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">user defined types</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code> reference</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Rewriting">rewrite rules</a></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[rewrite]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type equivalences</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><code>path</code> equivalence</p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Category_(mathematics)">models</a></p></td>
@@ -3335,7 +3335,7 @@ However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a
 </tbody>
 </table>
 <div class="paragraph">
-<p>It is through <strong>multiple distinct identities</strong> in <code>inst</code> that mm-ADT supports the programming idioms in the associated table. In particular, state stored in the path history of the <code>obj</code>.</p>
+<p>It is through <strong>multiple distinct identities</strong> in <code>inst</code> that mm-ADT supports the programming idioms in the associated table. The general approach: <em>state is stored along the path of the <code>obj</code>.</em></p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3346,13 +3346,7 @@ mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
 </div>
 </div>
 <div class="paragraph">
-<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph.
-If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed.
-Thus, the edge \$a \to_i b\$ records the instruction and incoming <code>obj</code> that yielded the <code>obj</code> at the head of the edge.
-The <code>obj</code> at the tail of the edge may also have incoming edges in the <code>obj</code> graph.
-Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a <strong>path</strong>.
-The computational path of an <code>obj</code> is accessed via <code>[path]</code>.
-The output of <code>[path]</code> is a <code>;-lst</code> that can be <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">introspected</a> as any other <code>lst</code>.</p>
+<p>Every <code>obj</code> exists as a distinct vertex in the <code>obj</code> graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming <code>obj</code> (\$a\$) that yielded the <code>obj</code> at the head of the edge (\$b\$). Since types are defined <strong>inductively</strong> and their respective values generated <strong>deductively</strong> via instruction evaluation along the type&#8217;s <strong>path</strong>, the path contains all the information necessary to effect <a href="https://en.wikipedia.org/wiki/State_(computer_science)">state</a>-based computing. The path of an <code>obj</code> is accessed via the <code>[path]</code> instruction. The output of <code>[path]</code> is a <code>;-lst</code>&#8201;&#8212;&#8201;i.e., an element of the <code>inst</code> <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a>. This path <code>lst</code> is also a <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a> and as such, can be <a href="https://en.wikipedia.org/wiki/Reflection_(computer_programming)">introspected</a> via it&#8217;s projection morphisms (e.g., via <code>[get]</code>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3381,31 +3375,93 @@ mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]               
 </table>
 </div>
 <div class="paragraph">
-<p>mm-ADT&#8217;s <strong>multiple identity instructions</strong> simply compute \$f(x) \mapsto x\$, but as edge labels in the <code>obj</code> graph, they store state information that can be later accessed via trace-based path analysis (i.e. via <code>[path]</code>).
+<p>mm-ADT&#8217;s <strong>multiple identity instructions</strong> simply compute the identity function \$f(x) \mapsto x\$, but as edge labels in the <code>obj</code> graph, they store state information that can be later accessed via trace-based path analysis (i.e. via <code>[path]</code>).
 In effect, the execution context is transformed from a memory-less <a href="https://en.wikipedia.org/wiki/Finite-state_machine">finite state automata</a> to a <a href="https://en.wikipedia.org/wiki/Processor_register">register</a>-based <a href="https://en.wikipedia.org/wiki/Turing_machine">Turing machine</a>.</p>
 </div>
 <div class="sect4">
 <h5 id="_variables">Variables</h5>
+<div class="paragraph">
+<p>The <code>[to]</code> instruction&#8217;s type definition is <code>a&lt;=a[to,_]</code>. For every incoming \$a \in \tt{obj}\$, there is an outgoing \$a\$ whose path has been extended with <code>[to]</code>. The argument to <code>[to]</code> is a <strong>named anonymous type</strong>. An example is provided below.</p>
+</div>
+<table class="tableblock frame-none grid-none center" style="width: 40%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">_[plus,1][to,x][plus,2][mult,x]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Suppose the above anonymous type is evaluated with <code>int</code> (i.e., the root of the type is now <code>int</code>). This triggers a cascade of events whereby <code>[plus,1]</code> maps <code>int</code> to <code>int[plus,1]</code>, then <code>[to,x]</code> maps <code>int[plus,1]</code> to <code>int[plus,1][to,x]</code>, and so forth. The resultant compiled <code>int</code>-type can be evaluated with an <code>int</code> value such as 9. The respective commuting diagram below has a top chain that is the <strong>value graph</strong> (evaluation) and two bottom chains that are the <strong>type graph</strong> (compilation). The union of these graphs via the <a href="https://en.wikipedia.org/wiki/Inclusion_map">inclusion morphism</a> (<code>[type]</code>) is the <code>obj</code> graph of the computation.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In <code>mmlang</code>, the <code>[to]</code> instruction&#8217;s sugar is <code>&lt; &gt;</code>. It is the only instruction whose sugar is printed as opposed to its <code>[ ]</code> form.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-none grid-none center" style="width: 50%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; _[plus,1]&lt;x&gt;[plus,2][mult,x]
+==&gt;int[plus,1]&lt;x&gt;[plus,2][mult,x]
+mmlang&gt; 9 =&gt; int =&gt; _[plus,1]&lt;x&gt;[plus,2][mult,x]
+==&gt;120</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="imageblock text-center">
 <div class="content">
 <img src="./images/obj/linear-variable-example.svg" alt="linear variable example" width="600">
 </div>
 </div>
+<div class="imageblock right text-center">
+<div class="content">
+<img src="./images/obj/linear-variable-example-2.svg" alt="linear variable example 2" width="350">
+</div>
+</div>
+<div class="paragraph">
+<p>The key point is that when <code>[mult,x]</code> is reached, the <code>x</code> is a named anonymous type. This means that the argument to <code>[mult]</code> needs to be <strong>resolved</strong> before it can evaluate. To do so, the <code>obj</code> graph&#8217;s edges are searched for a <code>[to,x]</code>. When that instruction is found, the range (or domain as it&#8217;s an identity) replaces <code>x</code> and <code>[mult,10]</code> is evaluated. The intutition for this process is illustrated on the right.</p>
+</div>
+<hr>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]                                                       <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;120
-mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]                                                 <i class="conum" data-value="2"></i><b>(2)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]                                                 <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10];120)&lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path,(_;_)]
-mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]                                                   <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'
-int[plus,1]&lt;x&gt;[plus,2][mult,int&lt;.x&gt;]
+int[plus,1]&lt;x&gt;[plus,2][mult,x]
 
-inst              domain      range state
-------------------------------------------
-[plus,1]          int    =&gt;   int
-[plus,2]          int    =&gt;   int    x-&gt;int
-[mult,int&lt;.x&gt;]    int    =&gt;   int    x-&gt;int
+inst        domain      range state
+------------------------------------
+[plus,1]    int    =&gt;   int
+[plus,2]    int    =&gt;   int    x-&gt;int
+[mult,x]    int    =&gt;   int    x-&gt;int
 '</code></pre>
 </div>
 </div>
@@ -3413,14 +3469,10 @@ inst              domain      range state
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>&lt;x&gt;</code> instruction stores the value <code>10</code> in the value&#8217;s path through the <code>obj</code> graph.</td>
+<td>The <code>[path]</code> instruction provides the path of the current <code>obj</code> as a <code>;-lst</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>[path]</code> instruction provides the automaton&#8217;s path through the <code>obj</code> graph as <code>;-lst</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>The <code>[explain]</code> instruction details the scope of state variables.</td>
 </tr>
 </table>
@@ -3439,17 +3491,17 @@ mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]   
 ==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)&lt;=2&lt;x&gt;[plus,8][plus,2][path,(_;_)]
 mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]         <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;'
-int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,int&lt;.x&gt;][plus,int&lt;.y&gt;][plus,int&lt;.z&gt;]][plus,int&lt;.y&gt;]][plus,int&lt;.x&gt;]
+int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x]
 
 inst                                           domain      range state
 -----------------------------------------------------------------------
-[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,int&lt;.x&gt;][p...    int    =&gt;   int    x-&gt;int
- [plus,int&lt;z&gt;[plus,int&lt;.x&gt;][plus,int&lt;.y&gt;]...    int   =&gt;    int   x-&gt;int y-&gt;int
-  [plus,int&lt;.x&gt;]                                 int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
-  [plus,int&lt;.y&gt;]                                 int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
-  [plus,int&lt;.z&gt;]                                 int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
- [plus,int&lt;.y&gt;]                                 int   =&gt;    int   x-&gt;int y-&gt;int
-[plus,int&lt;.x&gt;]                                 int    =&gt;   int    x-&gt;int
+[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y]...    int    =&gt;   int    x-&gt;int
+ [plus,int&lt;z&gt;[plus,x][plus,y][plus,z]]          int   =&gt;    int   x-&gt;int y-&gt;int
+  [plus,x]                                       int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
+  [plus,y]                                       int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
+  [plus,z]                                       int  =&gt;     int  x-&gt;int y-&gt;int z-&gt;int
+ [plus,y]                                       int   =&gt;    int   x-&gt;int y-&gt;int
+[plus,x]                                       int    =&gt;   int    x-&gt;int
 '</code></pre>
 </div>
 </div>
@@ -6750,7 +6802,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-07 00:14:16 -0600
+Last updated 2020-09-07 01:23:18 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
