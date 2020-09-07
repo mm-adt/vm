@@ -1451,7 +1451,7 @@ _[plus,1][to,x][plus,2][mult,x]
 {blank}
 |====
 
-Suppose the above anonymous type is evaluated with `int` (i.e., the root of the type is now `int`). This triggers a cascade of events whereby `[plus,1]` maps `int` to `int[plus,1]`, then `[to,x]` maps `int[plus,1]` to `int[plus,1][to,x]`, and so forth. The resultant compiled `int`-type can be evaluated with an `int` value such as 9. The respective commuting diagram below has a top chain that is the *value graph* (evaluation) and two bottom chains that are the *type graph* (compilation). The union of these graphs via the https://en.wikipedia.org/wiki/Inclusion_map[inclusion morphism] (`[type]`) is the `obj` graph of the computation.
+Suppose `int` is applied to the above anonymous type. This triggers a cascade of events whereby `[plus,1]` maps `int` to `int[plus,1]`, then `[to,x]` maps `int[plus,1]` to `int[plus,1][to,x]`, and so forth. The resultant compiled `int`-type can then be evaluated by an `int` value such as 9. In the commuting diagram below, the top instruction sequence forms a value graph (*evaluation*), the middle sequence a type graph (*compilation*), and the bottom, an __ un__typed graph (*composition*). The union of these graphs via the https://en.wikipedia.org/wiki/Inclusion_map[inclusion morphism] (`[type]`) is the complete `obj` graph of the computation.
 
 NOTE: In `mmlang`, the `[to]` instruction's sugar is `< >`. It is the only instruction whose sugar is printed as opposed to its `[ ]` form.
 
@@ -1461,8 +1461,9 @@ NOTE: In `mmlang`, the `[to]` instruction's sugar is `< >`. It is the only instr
 a|
 [exec]
 ----
+_   => [plus,1]<x>[plus,2][mult,x]
 int => _[plus,1]<x>[plus,2][mult,x]
-9 => int => _[plus,1]<x>[plus,2][mult,x]
+9   => int[plus,1]<x>[plus,2][mult,x]
 ----
 {blank}
 |====
@@ -1471,7 +1472,7 @@ image::linear-variable-example.svg[align=center,width=600]
 
 image::linear-variable-example-2.svg[align=center,width=350,float=right]
 
-The key point is that when `[mult,x]` is reached, the `x` is a named anonymous type. This means that the argument to `[mult]` needs to be *resolved* before it can evaluate. To do so, the `obj` graph's edges are searched for a `[to,x]`. When that instruction is found, the range (or domain as it's an identity) replaces `x` and `[mult,10]` is evaluated. The intutition for this process is illustrated on the right.
+The primary idea concerning variable state is that when `[mult,x]` is reached by the `int` value 12 via instruction application, the anonymous type `x`  must be *resolved* before `[mult]` can evaluate. To do so, the instruction `[to,x]` is searched for in the path history of 12. When that instruction is found, the range (or domain as it's an identity) replaces `x` and `[mult,10]` is evaluated and the edge \[12 \rightarrow_{\texttt{[mult,10]}} 120 \] extends the value graph. The intuition for this process is illustrated on the right.
 
 '''
 
@@ -1483,8 +1484,7 @@ int[plus,1]<x>[plus,2][mult,x][explain]                                         
 <1> The `[path]` instruction provides the path of the current `obj` as a `;-lst`.
 <2> The `[explain]` instruction details the scope of state variables.
 
-The scope of a variable starts at the moment of declaration (`[to]`) and ends when the declaring branch is complete.
-If an `inst` has a type argument, that type has access to the variables declared in any parent branch.
+The variable's https://en.wikipedia.org/wiki/Scope_(computer_science)[scope] starts at `[to]` and ends when there is no longer a path to `[to]`. If an `inst` argument is a type (e.g. `[mult,[plus,x]]`), then the *child type* (`[plus,x]`) path extends the *parent type* (`[mult]`) path. As such, the child type has access to the variables declared in the parent composition up to the `inst` containing the child type (`[mult]`). Finally, if `[to,x]` is evaluated and later along that path `[to,x]` is evaluated again, all subsequent types will resolve `x` at the latter `[to,x]` instruction. That is, the graph search halts at the first encounter of `[to,x]` -- the https://en.wikipedia.org/wiki/Shortest_path_problem[shortest path] to a declaration.
 
 [exec,exception=LanguageException]
 ----
