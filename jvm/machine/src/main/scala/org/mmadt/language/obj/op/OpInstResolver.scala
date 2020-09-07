@@ -130,7 +130,7 @@ object OpInstResolver {
       case Tokens.defs => DefsOp()
       case Tokens.define => DefineOp(args: _*)
       case Tokens.rewrite => RewriteOp(args.head)
-      case Tokens.to => ToOp(args.head.asInstanceOf[StrValue])
+      case Tokens.to => ToOp(args.head.asInstanceOf[__])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()
       case Tokens.zero => ZeroOp()

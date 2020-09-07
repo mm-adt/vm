@@ -97,7 +97,7 @@ object ModelOp extends Func[Obj, Obj] {
 
     final def search[A <: Obj](source: Obj = __, target: A): List[A] =
       model.vars[A](target.name)
-        .map(x => if (x.isInstanceOf[Type[_]]) x.from(target.name) else x)
+        .map(x => if (x.isInstanceOf[Type[_]]) target.range.asInstanceOf[A] else x)
         .map(x => List(x))
         .getOrElse[List[A]](
           findType[A](model, source, target.name)

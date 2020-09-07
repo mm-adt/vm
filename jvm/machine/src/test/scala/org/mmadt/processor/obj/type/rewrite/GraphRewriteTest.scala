@@ -22,9 +22,7 @@
 
 package org.mmadt.processor.obj.`type`.rewrite
 
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.value.strm.{RecStrm, Strm}
+import org.mmadt.language.obj.Obj.symbolToToken
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
 import org.mmadt.language.obj.{OStrm, Obj, Rec, Str}
 import org.mmadt.storage.StorageFactory._
@@ -37,10 +35,10 @@ class GraphRewriteTest extends FunSuite {
   private type Vertex = RecValue[StrValue, Value[Obj]]
   private type Graph = RecValue[StrValue, Value[Obj]]
 
-  val vertex: Rec[Str, Obj] = rec(str("id") -> int, str("outE") -> 'edge.q {
+  val vertex:Rec[Str, Obj] = rec(str("id") -> int, str("outE") -> 'edge.q {
     *
   })
-  val edge: Rec[Str, Obj] = rec(str("id") -> int, str("inV") -> 'vertex.q(1), str("outV") -> 'vertex.q(1), str("label") -> str)
+  val edge:Rec[Str, Obj] = rec(str("id") -> int, str("inV") -> 'vertex.q(1), str("outV") -> 'vertex.q(1), str("label") -> str)
 
   /*val model: Model = Model.simple().
     put(rec(str("id") -> int, str("outE") -> tobj("edge").q(*), str("inE") -> tobj("edge").q(*)), rec(str("id") -> int, str("outE") -> tobj("edge").q(*), str("inE") -> tobj("edge").q(*)).named("vertex")).
@@ -51,13 +49,13 @@ class GraphRewriteTest extends FunSuite {
  */
 
   test("model types") {
-    val marko: Vertex = rec(str("id") -> int(1)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val vadas: Vertex = rec(str("id") -> int(2)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val lop: Vertex = rec(str("id") -> int(3)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val josh: Vertex = rec(str("id") -> int(4)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val ripple: Vertex = rec(str("id") -> int(5)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val peter: Vertex = rec(str("id") -> int(6)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val graph: OStrm[Vertex] = strm[Vertex](marko, vadas, lop, josh, ripple, peter)
+    val marko:Vertex = rec(str("id") -> int(1)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val vadas:Vertex = rec(str("id") -> int(2)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val lop:Vertex = rec(str("id") -> int(3)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val josh:Vertex = rec(str("id") -> int(4)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val ripple:Vertex = rec(str("id") -> int(5)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val peter:Vertex = rec(str("id") -> int(6)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val graph:OStrm[Vertex] = strm[Vertex](marko, vadas, lop, josh, ripple, peter)
 
     assertResult(6)(graph.values.length)
     graph.values.foreach(v => assert(v.test(vertex)))
@@ -69,24 +67,25 @@ class GraphRewriteTest extends FunSuite {
   }
 
   test("connected values") {
-    def makeEdge(outV: Vertex, label: String, inV: Vertex) = {
+    def makeEdge(outV:Vertex, label:String, inV:Vertex) = {
       rec(str("outV") -> outV, str("label") -> str(label), str("inV") -> inV)
     }
-    var marko: Vertex = rec(str("id") -> int(1)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val vadas: Vertex = rec(str("id") -> int(2)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val lop: Vertex = rec(str("id") -> int(3)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val josh: Vertex = rec(str("id") -> int(4)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val ripple: Vertex = rec(str("id") -> int(5)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
-    val peter: Vertex = rec(str("id") -> int(6)).asInstanceOf[RecValue[StrValue,Value[Obj]]]
+    var marko:Vertex = rec(str("id") -> int(1)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val vadas:Vertex = rec(str("id") -> int(2)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val lop:Vertex = rec(str("id") -> int(3)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val josh:Vertex = rec(str("id") -> int(4)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val ripple:Vertex = rec(str("id") -> int(5)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
+    val peter:Vertex = rec(str("id") -> int(6)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
 
-   // marko = marko.put(str("outE"), rec(makeEdge(marko, "knows", vadas), makeEdge(marko, "created", lop), makeEdge(marko, "knows", josh)))
-   // val graph: RecStrm[StrValue, Value[Obj]] = rec(marko, vadas, lop, josh, ripple, peter)
+    // marko = marko.put(str("outE"), rec(makeEdge(marko, "knows", vadas), makeEdge(marko, "created", lop), makeEdge(marko, "knows", josh)))
+    // val graph: RecStrm[StrValue, Value[Obj]] = rec(marko, vadas, lop, josh, ripple, peter)
 
     /*assertResult(6)(graph.values.length)
     graph.values.foreach(v => assert(v.test(vertex)))
     graph.values.foreach(v => assert(!v.test(edge)))
     assertResult(str(str("knows").q(2), "created"))(graph.is(vertex.get("id").eqs(int(1))).get("outE", edge).get("label"))
-    *///assertResult(str("created"))(graph.is(__.get("id").eqs(int(1))).get("outE", edge).is(__.get("label", str).eqs("created")).get("label"))
+    */
+    //assertResult(str("created"))(graph.is(__.get("id").eqs(int(1))).get("outE", edge).is(__.get("label", str).eqs("created")).get("label"))
   }
 
 }

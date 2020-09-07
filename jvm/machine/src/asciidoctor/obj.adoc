@@ -1402,18 +1402,18 @@ However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where elem
 
 
 [.small]
-[cols="2,1,2" width=45, float=right]
+[cols="2,1,2" width=42, float=right]
 |====
 | idiom                                                                      | inst           | description
 
-| https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]   | `[to]/[from]`  | `obj` references
-| https://en.wikipedia.org/wiki/Data_type[type definitions]                  | `[define]`     | user defined types
-| https://en.wikipedia.org/wiki/Rewriting[rewrite rules]                     | `[rewrite]`    | type equivalences
+| https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]   | `[to]`         | `obj` reference
+| https://en.wikipedia.org/wiki/Data_type[type definitions]                  | `[define]`     | `type` reference
+| https://en.wikipedia.org/wiki/Rewriting[rewrite rules]                     | `[rewrite]`    | `path` equivalence
 | https://en.wikipedia.org/wiki/Category_(mathematics)[models]               | `[model]`      | domain of discourse
 | https://en.wikipedia.org/wiki/Reversible_computing[reversible computing]   | `[path]`       | computing history
 |====
 
-It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms in the associated table. In particular, state stored in the path history of the `obj`.
+It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms in the associated table. The general approach: __state is stored along the path of the `obj`.__
 
 [exec]
 ----
@@ -1421,13 +1421,7 @@ It is through *multiple distinct identities* in `inst` that mm-ADT supports the 
 8 => int[plus,[mult,2]][path]
 ----
 
-Every `obj` exists as a distinct vertex in the `obj` graph.
-If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed.
-Thus, the edge \$a \to_i b\$ records the instruction and incoming `obj` that yielded the `obj` at the head of the edge.
-The `obj` at the tail of the edge may also have incoming edges in the `obj` graph.
-Inductively, these edges can be followed back to root such that the aggregation of the traversed vertices and edges is a *path*.
-The computational path of an `obj` is accessed via `[path]`.
-The output of `[path]` is a `;-lst` that can be https://en.wikipedia.org/wiki/Reflection_(computer_programming)[introspected] as any other `lst`.
+Every `obj` exists as a distinct vertex in the `obj` graph. If \$b \in \tt{obj}\$ has an incoming edge labeled \$i \in \tt{i\nst}\$, then when applied to the outgoing adjacent vertex \$a\$, \$b\$ is computed. Thus, the edge \$a \to_i b\$ records the instruction and incoming `obj` (\$a\$) that yielded the `obj` at the head of the edge (\$b\$). Since types are defined *inductively* and their respective values generated *deductively* via instruction evaluation along the type's *path*, the path contains all the information necessary to effect https://en.wikipedia.org/wiki/State_(computer_science)[state]-based computing. The path of an `obj` is accessed via the `[path]` instruction. The output of `[path]` is a `;-lst` -- i.e., an element of the `inst` https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid]. This path `lst` is also a https://en.wikipedia.org/wiki/Product_(category_theory)[product] and as such, can be https://en.wikipedia.org/wiki/Reflection_(computer_programming)[introspected] via it's projection morphisms (e.g., via `[get]`).
 
 [exec]
 ----
@@ -1439,22 +1433,55 @@ The output of `[path]` is a `;-lst` that can be https://en.wikipedia.org/wiki/Re
 <2> The `obj` graph path from 8 to `[lt,63]`.
 <3> A projection of the instruction `[lt,63]` from the path and then the first argument of the `inst`.
 
-mm-ADT's *multiple identity instructions* simply compute \$f(x) \mapsto x\$, but as edge labels in the `obj` graph, they store state information that can be later accessed via trace-based path analysis (i.e. via `[path]`).
+mm-ADT's *multiple identity instructions* simply compute the identity function \$f(x) \mapsto x\$, but as edge labels in the `obj` graph, they store state information that can be later accessed via trace-based path analysis (i.e. via `[path]`).
 In effect, the execution context is transformed from a memory-less https://en.wikipedia.org/wiki/Finite-state_machine[finite state automata] to a https://en.wikipedia.org/wiki/Processor_register[register]-based https://en.wikipedia.org/wiki/Turing_machine[Turing machine].
 
 ===== Variables
 
+The `[to]` instruction's type definition is `a\<=a[to,_]`. For every incoming \$a \in \tt{obj}\$, there is an outgoing \$a\$ whose path has been extended with `[to]`. The argument to `[to]` is a *named anonymous type*. An example is provided below.
+
+[.center]
+[cols=^.^1,width=40,grid=none,frame=none]
+|====
+a|
+[exec,eval=false,prompt=""]
+----
+_[plus,1][to,x][plus,2][mult,x]
+----
+{blank}
+|====
+
+Suppose the above anonymous type is evaluated with `int` (i.e., the root of the type is now `int`). This triggers a cascade of events whereby `[plus,1]` maps `int` to `int[plus,1]`, then `[to,x]` maps `int[plus,1]` to `int[plus,1][to,x]`, and so forth. The resultant compiled `int`-type can be evaluated with an `int` value such as 9. The respective commuting diagram below has a top chain that is the *value graph* (evaluation) and two bottom chains that are the *type graph* (compilation). The union of these graphs via the https://en.wikipedia.org/wiki/Inclusion_map[inclusion morphism] (`[type]`) is the `obj` graph of the computation.
+
+NOTE: In `mmlang`, the `[to]` instruction's sugar is `< >`. It is the only instruction whose sugar is printed as opposed to its `[ ]` form.
+
+[.center]
+[cols="1",width=50,frame=none,grid=none]
+|====
+a|
+[exec]
+----
+int => _[plus,1]<x>[plus,2][mult,x]
+9 => int => _[plus,1]<x>[plus,2][mult,x]
+----
+{blank}
+|====
+
 image::linear-variable-example.svg[align=center,width=600]
+
+image::linear-variable-example-2.svg[align=center,width=350,float=right]
+
+The key point is that when `[mult,x]` is reached, the `x` is a named anonymous type. This means that the argument to `[mult]` needs to be *resolved* before it can evaluate. To do so, the `obj` graph's edges are searched for a `[to,x]`. When that instruction is found, the range (or domain as it's an identity) replaces `x` and `[mult,10]` is evaluated. The intutition for this process is illustrated on the right.
+
+'''
 
 [exec]
 ----
-9 => int[plus,1]<x>[plus,2][mult,x]                                                       //<1>
-9 => int[plus,1]<x>[plus,2][mult,x][path]                                                 //<2>
-int[plus,1]<x>[plus,2][mult,x][explain]                                                   //<3>
+9 => int[plus,1]<x>[plus,2][mult,x][path]                                                 //<1>
+int[plus,1]<x>[plus,2][mult,x][explain]                                                   //<2>
 ----
-<1> The `<x>` instruction stores the value `10` in the value's path through the `obj` graph.
-<2> The `[path]` instruction provides the automaton's path through the `obj` graph as `;-lst`.
-<3> The `[explain]` instruction details the scope of state variables.
+<1> The `[path]` instruction provides the path of the current `obj` as a `;-lst`.
+<2> The `[explain]` instruction details the scope of state variables.
 
 The scope of a variable starts at the moment of declaration (`[to]`) and ends when the declaring branch is complete.
 If an `inst` has a type argument, that type has access to the variables declared in any parent branch.

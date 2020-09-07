@@ -106,7 +106,7 @@ object mmlangPrinter {
   def instString(inst:Inst[_, _]):String = {
     (inst.op match {
       case Tokens.model | Tokens.noop => Tokens.blank
-      case Tokens.to => LANGLE + inst.arg0[StrValue].g + RANGLE
+      case Tokens.to => LANGLE + inst.arg0[Obj].name + RANGLE
       case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue].g + RANGLE
       case Tokens.branch => LBRACKET +
         Some[Obj](inst.arg0[Obj])

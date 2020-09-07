@@ -34,14 +34,14 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait ToOp {
-  this: Obj =>
-  def to(label: StrValue): this.type = ToOp(label).exec(this)
-  def to(label: __): this.type = this.to(label.name)
+  this:Obj =>
+  def to(label:StrValue):this.type = this.to(__(label.g))
+  def to(label:__):this.type = ToOp(label).exec(this)
 }
 object ToOp extends Func[Obj, Obj] {
-  override val preArgs: Boolean = false
-  def apply[O <: Obj](label: StrValue): Inst[O, O] = new VInst[O, O](g = (Tokens.to, List(label.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start.via(start.update(start.model.varing(inst.arg0[StrValue], start)), inst)
+  override val preArgs:Boolean = false
+  def apply[O <: Obj](label:__):Inst[O, O] = new VInst[O, O](g = (Tokens.to, List(label.asInstanceOf[O])), func = this) with TraceInstruction
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start.via(start.update(start.model.varing(inst.arg0[Obj].name, start)), inst)
 }
 
 

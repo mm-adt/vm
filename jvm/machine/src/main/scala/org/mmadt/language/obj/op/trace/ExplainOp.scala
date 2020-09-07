@@ -52,7 +52,7 @@ object ExplainOp extends Func[Obj, Str] {
   private def explain(atype:Obj, state:mutable.LinkedHashMap[String, Obj], depth:Int = 0, prefix:String = Tokens.blank):List[Row] = {
     atype.model.definitions.foldLeft(state)((c, d) => c += (d.name -> d))
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {
-      if (List(Tokens.from, Tokens.to).contains(b._2.op)) state += b._2.arg0[Str].g -> b._2.exec(b._1).rangeObj
+      if (List(Tokens.from, Tokens.to).contains(b._2.op)) state += b._2.arg0[Obj].toString -> b._2.exec(b._1).rangeObj
       val outer =
         if (List(Tokens.from, Tokens.to, Tokens.model).contains(b._2.op)) a
         else a :+ (depth, b._2, lastRange(b._1), b._2.exec(b._1).rangeObj, mutable.LinkedHashMap(state.toSeq:_*), prefix)

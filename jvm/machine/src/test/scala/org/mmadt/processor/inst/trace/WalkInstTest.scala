@@ -22,7 +22,7 @@
 
 package org.mmadt.processor.inst.trace
 
-import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.language.obj.Obj.{intToInt, symbolToToken}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
@@ -38,24 +38,24 @@ import org.mmadt.storage.StorageFactory.{int, lst, str, strm}
  */
 object WalkInstTest {
 
-  private val natType: __ = 'nat <= int.is(int.gt(0))
-  private val dateType: Lst[__] = 'date(('nat <= 'nat.is(lte(12))) `;` ('nat <= 'nat.is(lte(31))) `;` 'nat)
-  private val noYearDateType: __ = 'date <= 'moday(('nat <= 'nat.is(lte(12))) `;` ('nat <= 'nat.is(lte(31)))).put(2, 2009)
-  private val modayType: Obj = 'moday <= (int -< (int `;` int))
-  private val sdateType: Obj = 'sdate <= 'moday(int `;` int).:=(str `;` str)
-  private val MODEL: Model = ModelOp.EMPTY
+  private val natType:__ = 'nat <= int.is(int.gt(0))
+  private val dateType:Lst[__] = 'date(('nat <= 'nat.is(lte(12))) `;`('nat <= 'nat.is(lte(31))) `;` 'nat)
+  private val noYearDateType:__ = 'date <= 'moday(('nat <= 'nat.is(lte(12))) `;`('nat <= 'nat.is(lte(31)))).put(2, 2009)
+  private val modayType:Obj = 'moday <= (int -< (int `;` int))
+  private val sdateType:Obj = 'sdate <= 'moday(int `;` int).:=(str `;` str)
+  private val MODEL:Model = ModelOp.EMPTY
     .defining(natType)
     .defining(dateType)
     .defining(noYearDateType)
     .defining(modayType) //.defining(sdateType)
-  private val PARSE_MODEL: Model = org.mmadt.storage.model("social")
+  private val PARSE_MODEL:Model = org.mmadt.storage.model("social")
   /**
    *
    * /-------------\
    * z-->y-->x-->w-->v
    * \------/
    */
-  private val CHAIN_MODEL: Model = ModelOp.MM
+  private val CHAIN_MODEL:Model = ModelOp.MM
     .defining('ztype <= int)
     .defining('ytype <= 'ztype.id)
     .defining('xtype <= 'ytype.id)
@@ -63,7 +63,7 @@ object WalkInstTest {
     .defining('wtype <= 'ytype.id)
     .defining('vtype <= 'wtype.id)
     .defining('vtype <= 'ztype.id)
-  private val CAT3_MODEL: Model = ModelOp.EMPTY
+  private val CAT3_MODEL:Model = ModelOp.EMPTY
     .defining('A <= int)
     .defining('B <= __("A"))
     .defining('C <= __("B"))

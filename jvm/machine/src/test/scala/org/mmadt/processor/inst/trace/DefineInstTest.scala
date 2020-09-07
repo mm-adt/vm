@@ -24,8 +24,8 @@ package org.mmadt.processor.inst.trace
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
-import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
-import org.mmadt.language.obj.`type`.__.{branch, symbolToRichToken, symbolToToken, _}
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken}
+import org.mmadt.language.obj.`type`.__.{branch, symbolToRichToken, _}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
@@ -93,7 +93,7 @@ class DefineInstTest extends BaseInstTest(
     println(int(-10).define('nat <= int.is(int.gt(0))).a('nat.plus(100)))
     println('nat.plus(100).domain)
     println(int(-10).compute(int.define('nat <= int.is(int.gt(0))).a('nat).asInstanceOf[Type[Bool]]))
-    println(int.define(int.plus(10).mult(20)).plus(2) -< ('x.plus(100) `,` 'x) >-)
+//    println(int.define(int.plus(10).mult(20)).plus(2) -< ('x.plus(100) `,` 'x) >-)
     println(new mmlangScriptEngineFactory().getScriptEngine.eval("1[a,[real|str]]"))
     println(str.a(__.-<(real `|` int) >-)) // TODO
   }

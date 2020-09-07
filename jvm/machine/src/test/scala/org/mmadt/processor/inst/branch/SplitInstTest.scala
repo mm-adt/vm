@@ -23,9 +23,9 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
+import org.mmadt.language.obj.Obj.{symbolToToken, intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.`type`.__.{symbolToToken, _}
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._

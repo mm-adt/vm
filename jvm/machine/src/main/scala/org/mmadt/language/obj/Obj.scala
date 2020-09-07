@@ -106,7 +106,7 @@ trait Obj
   lazy val rangeObj:this.type = this.clone(q = this.q, via = this.domainObj.via)
   lazy val domainObj:Obj = if (this.root) this else this.via._1.domainObj
   lazy val trace:Trace = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]
-  def root:Boolean = (null == this.via || null == this.via._2) // NOTE: null via._2 ensures model isn't considered -- TEST w/ !via.exists(x => !ModelOp.isMetaModel(x._2))
+  def root:Boolean = null == this.via || null == this.via._2 // NOTE: null via._2 ensures model isn't considered -- TEST w/ !via.exists(x => !ModelOp.isMetaModel(x._2))
   def range:Type[Obj] = asType(this.rangeObj)
   def domain:Type[Obj] = asType(this.domainObj)
   def via(obj:Obj, inst:Inst[_ <: Obj, _ <: Obj]):this.type = Obj.objTypeCheck(this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst)))
@@ -164,6 +164,7 @@ object Obj {
   @inline implicit def doubleToReal(ground:scala.Double):RealValue = real(ground)
   @inline implicit def floatToReal(ground:scala.Float):RealValue = real(ground)
   @inline implicit def stringToStr(ground:String):StrValue = str(ground)
+  @inline implicit def symbolToToken(ground:Symbol):__ = __(ground.name)
   @inline implicit def tupleToRecYES[A <: Obj, B <: Obj](ground:Tuple2[A, B]):RichTuple[A, B] = new RichTuple[A, B](ground)
   @inline implicit def tupleToRecNO[A <: Obj, B <: Obj](ground:Tuple2[A, B]):Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
   @inline implicit def listToTrace(ground:Trace):RichTrace = new RichTrace(ground)

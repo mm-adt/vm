@@ -63,7 +63,6 @@ class __(val name:String = Tokens.anon, val q:IntQ = qOne, val via:ViaTuple = ro
 }
 
 object __ extends __(Tokens.anon, qOne, rootVia) {
-  @inline implicit def symbolToToken(ground:Symbol):__ = __(ground.name)
   @inline implicit def symbolToRichToken(ground:Symbol):RichToken = new RichToken(ground)
   class RichToken(val ground:Symbol) {
     final def apply(aobj:Obj):aobj.type = aobj.named(ground.name)

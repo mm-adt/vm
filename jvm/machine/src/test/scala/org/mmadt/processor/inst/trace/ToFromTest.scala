@@ -23,6 +23,8 @@
 package org.mmadt.processor.inst.trace
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -41,7 +43,7 @@ class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[to][from] w/ values") {
-    assertResult("int<x>[plus,1]<.x>")(int.to("x").plus(1).from("x").toString)
+    assertResult("int<x>[plus,1]<.x>")(int.to('x).plus(1).from('x).toString)
     assertResult("int<x>[plus,1]<.x>")(int.to("x").plus(1).from("x").toString)
     assertResult("int<x>[plus,1][plus,int<.x>]")((int ==> int.to("x").plus(1).plus(int.from("x"))).toString)
     assertResult("int<x>[plus,1][plus,int<.x>]")((int ==> int.to("x").plus(1).plus(int.from("x"))).toString)
@@ -50,6 +52,7 @@ class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult(int(5))(int(1) ==> int.to("x").plus(1).plus(int.from("x", int).plus(2)))
     assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.plus(2).from("x", int)))
     assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from("x", int)))
+    assertResult(int(1))(int(1) ==> int.to('x).plus(1).map[Obj]('x))
     //
     assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.from("x")))
     assertResult(int(5))(int(1) ==> int.to("x").plus(1).plus(2).plus(int.from("x")))
@@ -70,7 +73,7 @@ class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[to][from] w/ types") {
     assertResult("int[plus,1][map,int]<x>")(int.plus(1).map(int).to("x").toString)
-    assertResult("int[id]<x>[map,int<.x>]<y><.x><.y>")(int.id.to("x").map(int.from("x")).to("y").from("x").from("y").toString)
+//    assertResult("int[id]<x>[map,int<.x>]<y><.x><.y>")(int.id.to("x").map[__]('x).to("y").from("x").from("y").toString)
     assertResult("int[id]<x>[map,int[plus,int<.x>]]<y><.x><.y>")(int.id.to("x").map(int.plus(int.from("x"))).to("y").from("x").from("y").toString)
     assertResult("int[id]<x>[map,int[plus,int[mult,int<.x>]]]<y><.x><.y>")(int.id.to("x").map(int.plus(int.mult(int.from("x")))).to("y").from("x").from("y").toString)
     assertResult("int[id]<x>[plus,int<.x>]<y><.x><.y>")(int.id.to("x").plus(int.from("x")).to("y").from("x").from("y").toString)

@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.TestUtil
-import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr,symbolToToken}
 import org.mmadt.language.obj.`type`.LstTypeTest._
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
