@@ -104,7 +104,7 @@ object Rec {
       val nostart: Boolean = null == start
       pairs.map(kv => (if (nostart) kv._1 else (start ~~> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
-        .map(kv => kv._1 -> (if (nostart) kv._2 else (start ~~> kv._2)))
+        .map(kv => kv._1 -> (if (nostart) kv._2 else Tokens.tryName(kv._2,start ~~> toBaseName(kv._2)))) // this is odd
         .filter(kv => kv._2.alive)
         .foldLeft(Map.empty[A, List[B]])((a, b) => a + (b._1 -> (a.get(b._1).map(c => c :+ b._2).getOrElse(List(b._2)))))
         .map(kv => kv._1 -> {

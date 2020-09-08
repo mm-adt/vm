@@ -38,6 +38,7 @@ object Tokens {
     Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id, Tokens.rule_unity, Tokens.walk, Tokens.lift)
 
   lazy val reservedTypes:List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.anon)
+  lazy val reservedTokens:Set[String] = (reservedTypes ++ reservedOps).toSet
 
   val rule_id = "rule:id"
   val rule_unity = "rule:unity"

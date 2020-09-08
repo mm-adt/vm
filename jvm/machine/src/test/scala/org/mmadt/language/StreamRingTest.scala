@@ -14,7 +14,7 @@ import org.mmadt.storage.StorageFactory.{str, zeroObj}
 class StreamRingTest extends BaseInstTest {
 
   test("old examples to relocate") {
-    engine.eval(":")
+    engine.eval(":{1}")
     engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.::, __.model(MM))
     assertResult(str)(engine.eval("str[[id]{-1};[id]{-1}]"))
     assertResult("a".q(2))(engine.eval("'a'[_,_]"))
@@ -74,6 +74,6 @@ class StreamRingTest extends BaseInstTest {
     assertResult(str.id.q(2))(engine.eval("str[_[str;str],_[str;str]]"))
     //    assertResult(__.id.q(2))(engine.eval("[_,_]"))
     //    assertResult(str.id.q(2))(engine.eval("[str;[str,str]]"))
-    engine.eval(":")
+    engine.eval(":{1}")
   }
 }

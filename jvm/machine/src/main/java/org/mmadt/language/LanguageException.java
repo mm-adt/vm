@@ -64,9 +64,9 @@ public class LanguageException extends VmException {
             throw new LanguageException(obj + " can not be named anonymously");
     }
 
-    public static void checkRootRange(final Obj obj) {
-        if (!obj.root() || !(obj instanceof Type<?>))
-            throw new LanguageException(obj + " must be a rooted type to be a range");
+    public static void checkRootRange(final Obj range,final Obj domain) {
+        if (!range.root() || !(range instanceof Type<?>))
+            throw new LanguageException(range + " must be a rooted type to be a range for " + domain);
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {

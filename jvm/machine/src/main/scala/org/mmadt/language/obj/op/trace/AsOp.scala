@@ -26,10 +26,10 @@ import java.lang.{Boolean => JBoolean, Double => JDouble, Long => JLong}
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.map.WalkOp
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -128,6 +128,7 @@ object AsOp extends Func[Obj, Obj] {
     y.trace.reconstruct(Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
       case _:__ => x
       case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
+      case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
       case alst:LstType[Obj] if alst.ctype => x.named(alst.name)
       case alst:LstType[Obj] if x.glist.size == alst.glist.size => lst(g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))), via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))

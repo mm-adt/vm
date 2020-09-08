@@ -34,24 +34,24 @@ import scala.util.Try
  */
 package object storage {
 
-  val TP: String = "tp"
-  val KV: String = "kv"
-  val TPKV: String = "tpkv"
+  val TP:String = "tp"
+  val KV:String = "kv"
+  val TPKV:String = "tpkv"
 
-  private lazy val mmlang: LanguageProvider = LanguageFactory.getLanguage("mmlang")
+  private lazy val mmlang:LanguageProvider = LanguageFactory.getLanguage("mmlang")
 
-  def model(name: String): Model = {
+  def model(name:String):Model = {
     val source = Try[BufferedSource](Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)).getOrElse(Source.fromFile("data/model/" + name + ".mm"))
     try {
-      val rangeModel: Model = mmlang.parse(source.getLines().foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
+      val rangeModel:Model = mmlang.parse(source.getLines().foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
       model(rangeModel)
     }
     finally source.close();
   }
 
-  def model(rangeModel: Model): Model = {
+  def model(rangeModel:Model):Model = {
     if (rangeModel == rangeModel.domainObj) return rangeModel
-    val domainModel: Model = {
+    val domainModel:Model = {
       if (__.isToken(rangeModel.domainObj)) this.model(rangeModel.domainObj.name)
       else rangeModel.domainObj.asInstanceOf[Model]
     }

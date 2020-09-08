@@ -44,6 +44,18 @@ class mmlangScriptEngineTest extends FunSuite {
 
   lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
+  test("play2") {
+    println(engine.eval(":[model,mm]"))
+  println(engine.eval("('plus',1)[as,inst]"))
+    println(engine.eval(
+      """:[model,mm]
+        |[define,node:('name'->str)]
+        |[define,edge:('dom'->node,'cod'->node)]
+        |[define,edge<=(_;_)-<('dom'->.0,'cod'->.1)]""".stripMargin))
+    println(engine.eval("(('name'->'marko');('name'->'jen')) => edge"))
+    engine.eval(":{1}")
+  }
+
   test("range<=domain") {
     println(engine.eval("lst"))
     println(lst)
