@@ -41,15 +41,20 @@ object digraphTest {
 }
 class digraphTest extends BaseInstTest(
   testSet("digraph model table test", DIGRAPH,
+    comment("int"),
+    testing('nat(53), int, 53, "nat:53 => int"),
+    testing(53, 'nat, 'nat(53), "53 => nat"),
+    excepting(-51, 'nat, LanguageException.typingError(-51, 'nat), "-51 => nat"),
+    // testing((str("id") -> 'nat(45)), 'nat, 'nat(45), "('id'->nat:45) => nat"),
     comment("attr"),
     testing(("name" `;` "marko"), 'attr, 'attr(str("key") -> str("name") `_,` str("value") -> str("marko")), "('name';'marko') => attr"),
     testing(("age" `;` 29), 'attr, 'attr(str("key") -> str("age") `_,` str("value") -> int(29)), "('age';29) => attr"),
     /*testing(__(
-      ("name" `;` "marko"), ("age" `;` 29)), id.map(id).as('attr).map(id),
+      ("name" `;` "marko"), ("age" `;` 29)), 'attr.q(2),
       strm(
         'attr(str("key") -> str("name") `_,` str("value") -> str("marko")),
         'attr(str("key") -> str("age") `_,` str("value") -> int(29))),
-      "[('name';'marko'),('age';29)] => [map,id][as,attr]"),*/
+      "[('name';'marko'),('age';29)] => attr{2}"),*/
     excepting((20 `;` "marko"), 'attr, LanguageException.typingError((20 `;` "marko"), 'attr), "(20;'marko') => attr"),
     comment("vertex via int"),
     testing(23, 'vertex, 'vertex(str("id") -> 'nat(23) `,`), "23 => vertex"),
@@ -72,4 +77,7 @@ class digraphTest extends BaseInstTest(
       'vertex,
       'vertex(str("id") -> 'nat(32) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
       "(32;('name';'marko')) => vertex"),
+    comment("edge"),
+    testing((1 `;` 2), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>edge"),
+    testing((1 `;` 2), ('vertex `;` 'vertex) `=>` 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>(vertex;vertex)=>edge"),
   ))
