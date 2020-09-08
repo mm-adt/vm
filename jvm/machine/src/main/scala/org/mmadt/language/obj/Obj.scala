@@ -94,7 +94,7 @@ trait Obj
     this.clone(name = if (null == name) baseName(this) else name)
   }
   def <=[D <: Obj](domainType:D):this.type = {
-    LanguageException.checkRootRange(this,domainType)
+    LanguageException.checkRootRange(this, domainType)
     if (domainType.rangeObj.equals(this)) domainType.asInstanceOf[this.type]
     else if (domainType.root) this.clone(via = (domainType, NoOp()))
     // this is a total hack -- I'm encoding the range of the type in the via of the last instruction

@@ -37,18 +37,18 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   with GetOp[A, B]
   with PutOp[A, Obj]
   with ZeroOp[Rec[A, Obj]] {
-  def g: RecTuple[A, B]
-  def gsep: String = g._1
-  lazy val gmap: Pairs[A, B] =
+  def g:RecTuple[A, B]
+  def gsep:String = g._1
+  lazy val gmap:Pairs[A, B] =
     if (null == this.g._2) Nil
     else g._2.map(x => x._1.update(this.model).asInstanceOf[A] -> x._2.update(this.model).asInstanceOf[B])
-  override def glist: Seq[B] = this.gmap.values
-  override def ctype: Boolean = null == g._2 // type token
-  override def scalarMult(start: Obj): this.type = this.clone(pairs => Rec.moduleStruct(gsep, pairs, start))
+  override def glist:Seq[B] = this.gmap.values
+  override def ctype:Boolean = null == g._2 // type token
+  override def scalarMult(start:Obj):this.type = this.clone(pairs => Rec.moduleStruct(gsep, pairs, start))
 
-  def clone(f: Pairs[A, B] => Pairs[A, Obj]): this.type = this.clone(g = (this.gsep, f(this.gmap)))
-  override def equals(other: Any): Boolean = other match {
-    case arec: Rec[_, _] => Poly.sameSep(this, arec) &&
+  def clone(f:Pairs[A, B] => Pairs[A, Obj]):this.type = this.clone(g = (this.gsep, f(this.gmap)))
+  override def equals(other:Any):Boolean = other match {
+    case arec:Rec[_, _] => Poly.sameSep(this, arec) &&
       this.name.equals(arec.name) &&
       eqQ(this, arec) &&
       this.size == arec.size &&
@@ -56,59 +56,59 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
     case _ => true
   }
 
-  final def `,`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.clone(g = (Tokens.`,`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
-  final def `;`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.clone(g = (Tokens.`;`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
-  final def `|`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.clone(g = (Tokens.`|`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
-  final def `_,`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.`,`(next)
-  final def `_;`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.`;`(next)
-  final def `_|`(next: Tuple2[_ <: Obj, _ <: Obj]): this.type = this.`|`(next)
+  final def `,`(next:Tuple2[_ <: Obj, _ <: Obj]):this.type = this.clone(g = (Tokens.`,`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `;`(next:Tuple2[_ <: Obj, _ <: Obj]):this.type = this.clone(g = (Tokens.`;`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `|`(next:Tuple2[_ <: Obj, _ <: Obj]):this.type = this.clone(g = (Tokens.`|`, this.g._2 :+ next.asInstanceOf[Tuple2[A, B]]))
+  final def `_,`(next:Tuple2[_ <: Obj, _ <: Obj]):this.type = this.`,`(next)
+  final def `_;`(next:Tuple2[_ <: Obj, _ <: Obj]):this.type = this.`;`(next)
+  final def `_|`(next:Tuple2[_ <: Obj, _ <: Obj]):this.type = this.`|`(next)
 }
 
 object Rec {
   type RecTuple[A <: Obj, +B <: Obj] = (String, Pairs[A, B])
   type Pairs[A <: Obj, +B <: Obj] = List[Tuple2[A, B]]
 
-  class RichTuple[A <: Obj, +B <: Obj](val ground: Tuple2[A, B]) {
-    final def `;`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = rec(g = (Tokens.`;`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
-    final def `,`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = rec(g = (Tokens.`,`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
-    final def `|`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = rec(g = (Tokens.`|`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
-    final def `_;`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = this.`;`(next)
-    final def `_,`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = this.`,`(next)
-    final def `_|`(next: Tuple2[_ <: Obj, _ <: Obj]): Rec[A, B] = this.`|`(next)
-    final def `;`: Rec[A, B] = rec(g = (Tokens.`;`, List(ground)))
-    final def `,`: Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
-    final def `|`: Rec[A, B] = rec(g = (Tokens.`|`, List(ground)))
-    final def `_;`: Rec[A, B] = this.`;`
-    final def `_,`: Rec[A, B] = this.`,`
-    final def `_|`: Rec[A, B] = this.`|`
+  class RichTuple[A <: Obj, +B <: Obj](val ground:Tuple2[A, B]) {
+    final def `;`(next:Tuple2[_ <: Obj, _ <: Obj]):Rec[A, B] = rec(g = (Tokens.`;`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    final def `,`(next:Tuple2[_ <: Obj, _ <: Obj]):Rec[A, B] = rec(g = (Tokens.`,`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    final def `|`(next:Tuple2[_ <: Obj, _ <: Obj]):Rec[A, B] = rec(g = (Tokens.`|`, List(ground, next.asInstanceOf[Tuple2[A, B]])))
+    final def `_;`(next:Tuple2[_ <: Obj, _ <: Obj]):Rec[A, B] = this.`;`(next)
+    final def `_,`(next:Tuple2[_ <: Obj, _ <: Obj]):Rec[A, B] = this.`,`(next)
+    final def `_|`(next:Tuple2[_ <: Obj, _ <: Obj]):Rec[A, B] = this.`|`(next)
+    final def `;`:Rec[A, B] = rec(g = (Tokens.`;`, List(ground)))
+    final def `,`:Rec[A, B] = rec(g = (Tokens.`,`, List(ground)))
+    final def `|`:Rec[A, B] = rec(g = (Tokens.`|`, List(ground)))
+    final def `_;`:Rec[A, B] = this.`;`
+    final def `_,`:Rec[A, B] = this.`,`
+    final def `_|`:Rec[A, B] = this.`|`
   }
 
-  @inline implicit def pairsToRichPairs[A <: Obj, B <: Obj](ground: Pairs[A, B]): RichPairs[A, B] = new RichPairs[A, B](ground)
-  protected class RichPairs[A <: Obj, B <: Obj](val list: Pairs[A, B]) {
-    def fetchOption(key: A): Option[B] = list.filter(x => key == x._1).map(x => x._2).headOption
-    def fetch(key: A): B = fetchOption(key).get
-    def fetchOrElse(key: A, other: B): B = fetchOption(key).getOrElse(other)
-    def values: List[B] = list.map(x => x._2)
-    def replace(other: Pairs[A, B]): Pairs[A, B] = other.foldLeft(list)((a, b) => a.replace(b))
-    def replace(other: Tuple2[A, B]): Pairs[A, B] =
+  @inline implicit def pairsToRichPairs[A <: Obj, B <: Obj](ground:Pairs[A, B]):RichPairs[A, B] = new RichPairs[A, B](ground)
+  protected class RichPairs[A <: Obj, B <: Obj](val list:Pairs[A, B]) {
+    def fetchOption(key:A):Option[B] = list.filter(x => key == x._1).map(x => x._2).headOption
+    def fetch(key:A):B = fetchOption(key).get
+    def fetchOrElse(key:A, other:B):B = fetchOption(key).getOrElse(other)
+    def values:List[B] = list.map(x => x._2)
+    def replace(other:Pairs[A, B]):Pairs[A, B] = other.foldLeft(list)((a, b) => a.replace(b))
+    def replace(other:Tuple2[A, B]):Pairs[A, B] =
       if (list.fetchOption(other._1).isDefined) list.map(x => if (other._1 == x._1) other._1 -> other._2 else x) // TODO: equality order matters! (cause of lst size)
       else list :+ other
   }
 
-  def test[A <: Obj, B <: Obj](arec: Rec[A, B], brec: Rec[A, B]): Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
+  def test[A <: Obj, B <: Obj](arec:Rec[A, B], brec:Rec[A, B]):Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
-  def moduleStruct[A <: Obj, B <: Obj](gsep: String, pairs: Pairs[A, B], start: Obj = null): Pairs[A, B] = gsep match {
+  def moduleStruct[A <: Obj, B <: Obj](gsep:String, pairs:Pairs[A, B], start:Obj = null):Pairs[A, B] = gsep match {
     /////////// ,-rec
     case Tokens.`,` =>
-      val nostart: Boolean = null == start
+      val nostart:Boolean = null == start
       pairs.map(kv => (if (nostart) kv._1 else (start ~~> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
-        .map(kv => kv._1 -> (if (nostart) kv._2 else Tokens.tryName(kv._2,start ~~> toBaseName(kv._2)))) // this is odd
+        .map(kv => kv._1 -> (if (nostart) kv._2 else Tokens.tryName(kv._2, start ~~> toBaseName(kv._2)))) // this is odd
         .filter(kv => kv._2.alive)
         .foldLeft(Map.empty[A, List[B]])((a, b) => a + (b._1 -> (a.get(b._1).map(c => c :+ b._2).getOrElse(List(b._2)))))
         .map(kv => kv._1 -> {
-          val mergedBranches: List[B] = Type.mergeObjs(kv._2)
+          val mergedBranches:List[B] = Type.mergeObjs(kv._2)
           if (mergedBranches.size == 1) mergedBranches.head
           else if (mergedBranches.exists(x => x.isInstanceOf[Type[_]])) __.branch(lst(g = (Tokens.`,`, mergedBranches)))
           else strm(mergedBranches)
@@ -127,9 +127,9 @@ object Rec {
       }).asInstanceOf[Pairs[A, B]]
     /////////// |-rec
     case Tokens.`|` =>
-      val nostart: Boolean = null == start
-      val newStart: Obj = if (nostart) __ else start
-      var taken: Boolean = false
+      val nostart:Boolean = null == start
+      val newStart:Obj = if (nostart) __ else start
+      var taken:Boolean = false
       pairs.map(kv => (newStart ~~> kv._1) -> kv._2)
         .filter(kv => kv._1.alive)
         .filter(kv =>
