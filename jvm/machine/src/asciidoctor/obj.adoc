@@ -303,13 +303,11 @@ int<=bool
 
 .Commuting Diagrams
 ****
-https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies algebraic structures via their homomorphic https://en.wikipedia.org/wiki/Embedding[embedding] in a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*.
-
-A category \$\mathcal{C}\$ is denoted
+https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies algebraic structures via their homomorphic https://en.wikipedia.org/wiki/Embedding[embedding] in a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*. A category \$\mathcal{C}\$ is denoted
 \[
 (\mathbf{C} ,\circ ,\mathbf{1}),
 \]
-where \$\mathbf{C}\$ is a https://en.wikipedia.org/wiki/Family_of_sets[set-family] of _morphisms_, \$\circ: \mathbf{C} \times \mathbf{C} \rightarrow \mathbf{C}\$ is an associative binary morphism _composition_ operator, and for every _identity_ morphism \$\mathbf{1}_A \in \mathbf{1}\$, \$\mathbf{1}_A \circ \mathbf{1}_A = \mathbf{1}_A\$ denotes an _object_ that is more simply written \$A\$ such that \$A \mapsto \mathbf{1}_A\$. The family set \$mathbf{C}\$ indexes https://ncatlab.org/nlab/show/hom-set[hom-sets] with \$\mathbf{C}(A,B)\$ denoting the hom-set of all morphism between objects \$A\$ and \$B\$, where a morphism \$f:A\to B \in \mathbf{C}(A,B)\$ and \$id: A \rightarrow A \cong \mathbf{1}_A \cong A\$.
+where \$\mathbf{C}\$ is a https://en.wikipedia.org/wiki/Family_of_sets[set-family] of _morphisms_, \$\circ: \mathbf{C} \times \mathbf{C} \rightarrow \mathbf{C}\$ is an associative binary morphism _composition_ operator, and for every _identity_ morphism \$\mathbf{1}_A \in \mathbf{1}\$, \$\mathbf{1}_A \circ \mathbf{1}_A = \mathbf{1}_A\$ denotes an _object_ that is more simply written \$A\$ such that \$A \mapsto \mathbf{1}_A\$. The family set \$mathbf{C}\$ indexes https://ncatlab.org/nlab/show/hom-set[hom-sets] with \$\mathbf{C}(A,B)\$ denoting all morphism between objects \$A\$ and \$B\$, where \$f:A\to B \in \mathbf{C}(A,B)\$ and \$id: A \rightarrow A \cong \mathbf{1}_A \cong A\$.
 
 Unlike classical monoids, a category's \$\circ\$ operator is generally not https://en.wikipedia.org/wiki/Closure_(mathematics)[closed]. That is, there are compositions which may not be defined. It is this aspect of a category that makes it a _multi-sorted_ (or typed) monoid.
 
@@ -319,7 +317,7 @@ The discipline of category theory makes extensive use of a https://en.wikipedia.
 \[
 A \xrightarrow{f} B \xrightarrow{g} C,
 \]
-which, in Cayley graph notation, is denoted \$A \to_f B \to_g C\$. An important subset of diagrams are the https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagrams]. In a commutative diagram every morphism path starting at the same source and ending at the same destination are considered equivalent (with respects to _equivalence_ in the respective algebraic structure being modeled categorically). Thus, if \$g \circ f = i \circ h\$, then it is said that the above diagram _commutes_.
+which, in Cayley graph notation, is denoted \$A \to_f B \to_g C\$. An important subset of diagrams are the https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagrams]. In a commutative diagram every morphism path starting at the same source and ending at the same destination are considered _equivalent_ (with respects to equivalence in the respective algebraic structure being modeled categorically). Thus, if \$g \circ f = i \circ h\$, then it is said that the above diagram _commutes_.
 ****
 
 Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]).
