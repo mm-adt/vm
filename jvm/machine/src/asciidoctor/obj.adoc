@@ -303,7 +303,7 @@ int<=bool
 
 .Commuting Diagrams
 ****
-https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies algebraic structures via their homomorphic https://en.wikipedia.org/wiki/Embedding[embedding] in a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*. A category \$\mathcal{C}\$ is denoted
+https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies, among other things, arbitrary algebraic structures via their homomorphic https://en.wikipedia.org/wiki/Embedding[embedding] in a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*. A category \$\mathcal{C}\$ is denoted
 \[
 (\mathbf{C} ,\circ ,\mathbf{1}),
 \]
