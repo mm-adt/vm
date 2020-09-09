@@ -2393,7 +2393,20 @@ mmlang&gt; 5-&lt;([a,int],[a,_],[a,str])             <i class="conum" data-value
 <div class="paragraph">
 <p>In general, anonymous types are <a href="https://en.wikipedia.org/wiki/Pattern_matching#Primitive_patterns">wildcards</a> because they <a href="https://en.wikipedia.org/wiki/Matching_wildcards">pattern match</a> to every <code>obj</code>. As will be demonstrated soon, when a <strong>variable</strong> is specified (e.g. <code>[plus,x]</code>) or a new type is specified (e.g. <code>x:42</code>), The <code>x</code> is a <strong>named anonymous type</strong>. The entailment of this is that types and variables are in the same <a href="https://en.wikipedia.org/wiki/Namespace">namespace</a>. Two presumably self-explanatory examples are provided below with a more detailed discussion of variables and named types forthcoming.</p>
 </div>
-<div class="listingblock">
+<table class="tableblock frame-all grid-all stretch small">
+<colgroup>
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">variables</th>
+<th class="tableblock halign-center valign-top">named types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; int[plus,2][to,x][plus,3][mult,x]
 ==&gt;18
@@ -2406,21 +2419,34 @@ inst        domain      range state
 [plus,2]    int    =&gt;   int
 [plus,3]    int    =&gt;   int    x-&gt;int
 [mult,x]    int    =&gt;   int    x-&gt;int
-'
-mmlang&gt; 1 =&gt; int[define,x&lt;=int[plus,100]][x]
-==&gt;101
-mmlang&gt; int[define,x&lt;=int[plus,100]][x][explain]
-==&gt;'
-int[define,x&lt;=int[plus,100]][plus,100]
-
-inst                         domain      range state
------------------------------------------------------
-[define,x&lt;=int[plus,100]]    int    =&gt;   int    x-&gt;x&lt;=int[plus,100]
- [plus,100]                   int   =&gt;    int   x-&gt;x&lt;=int[plus,100]
-[plus,100]                   int    =&gt;   int    x-&gt;x&lt;=int[plus,100]
 '</code></pre>
 </div>
 </div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; int[define,x&lt;=int[plus,2]][x]
+==&gt;3
+mmlang&gt; int[define,x&lt;=int[plus,2]][x][explain]
+==&gt;'
+int[define,x&lt;=int[plus,2]][plus,2]
+
+inst                       domain      range state
+---------------------------------------------------
+[define,x&lt;=int[plus,2]]    int    =&gt;   int    x-&gt;x&lt;=int[plus,2]
+ [plus,2]                   int   =&gt;    int   x-&gt;x&lt;=int[plus,2]
+[plus,2]                   int    =&gt;   int    x-&gt;x&lt;=int[plus,2]
+'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="_mono_types">Mono Types</h5>
@@ -6835,7 +6861,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-08 23:17:30 -0600
+Last updated 2020-09-08 23:50:17 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
