@@ -866,13 +866,28 @@ Anonymous types are useful in other situations besides https://en.wikipedia.org/
 
 In general, anonymous types are https://en.wikipedia.org/wiki/Pattern_matching#Primitive_patterns[wildcards] because they https://en.wikipedia.org/wiki/Matching_wildcards[pattern match] to every `obj`. As will be demonstrated soon, when a *variable* is specified (e.g. `[plus,x]`) or a new type is specified (e.g. `x:42`), The `x` is a *named anonymous type*. The entailment of this is that types and variables are in the same https://en.wikipedia.org/wiki/Namespace[namespace]. Two presumably self-explanatory examples are provided below with a more detailed discussion of variables and named types forthcoming.
 
+[.small]
+[cols="7,9"]
+|====
+^| variables      ^|  named types
+
+a|
 [exec]
 ----
 1 => int[plus,2][to,x][plus,3][mult,x]
 int[plus,2][to,x][plus,3][mult,x][explain]
-1 => int[define,x<=int[plus,100]][x]
-int[define,x<=int[plus,100]][x][explain]
 ----
+{blank}
+a|
+[exec]
+----
+1 => int[define,x<=int[plus,2]][x]
+int[define,x<=int[plus,2]][x][explain]
+----
+{blank}
+|====
+
+
 
 ===== Mono Types
 
