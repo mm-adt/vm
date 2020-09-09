@@ -16,6 +16,7 @@ $(document).ready(function(){
   $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;" + bcolor)
   // END: general random tweaks to convert python highlighting to mmlang
   var rewrites = {"special": ["",       ospan + "#710" + cspan],            // dark red
+                  // "str":     ["'",  "\'"+ospan + "#D20" + cspan],            // dark red
                   "op":      ["[",  "["+ospan + "#080" +bold + cspan],      // bold green
                   "tokens":  ["",       ospan + "#000" +bold + cspan],      // bold green
                   "infix":   ["",       ospan + "#080" +bold + cspan],      // bold green
@@ -27,9 +28,9 @@ $(document).ready(function(){
                               "and","or","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
                               "one","zero","noop","eq","is","id","db","explain","count","fold","map","juxta","barrier",
                               "split","merge","last","head","tail","minus","put","repeat","type",
-                              "define","rewrite","to","from","sum","model","as","a","q","path","empty","lift","swap"],
+                              "define","to","from","sum","model","as","a","q","path","empty","lift","swap"],
                   "type":    ["_","real","rec","lst","inst","obj","int","str","bool","poly",
-                              "nat","person"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
+                              "nat","person","vertex","edge"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
                   "special": ["mmlang","language error","mm",
                               "social"],        // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
                   "tokens":  ["{","}","(",")"],

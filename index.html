@@ -506,8 +506,11 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_state">State</a>
 <ul class="sectlevel4">
 <li><a href="#_variables">Variables</a></li>
-<li><a href="#_definitions">Definitions</a></li>
+<li><a href="#_definitions">Definitions</a>
+<ul class="sectlevel5">
 <li><a href="#_rewrites">Rewrites</a></li>
+</ul>
+</li>
 </ul>
 </li>
 <li><a href="#_models">Models</a></li>
@@ -2519,6 +2522,23 @@ mmlang&gt; 'ryan'[one]
 <div class="paragraph">
 <p>Each type&#8217;s \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the <code>[plus]</code> and <code>[mult]</code> instruction identities, respectively. Furthermore, for those types that form a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a>, the <code>[zero]</code> is their respective multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>.</p>
 </div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (true,6,5.5,'ryan')&gt;-_[plus,[zero]]
+==&gt;true
+==&gt;6
+==&gt;5.5
+==&gt;'ryan'
+mmlang&gt; (true,6,5.5)&gt;-_[mult,[one]]
+==&gt;true
+==&gt;6
+==&gt;5.5
+mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
+==&gt;false
+==&gt;0
+==&gt;0.0</code></pre>
+</div>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
@@ -3584,10 +3604,69 @@ inst                                           domain      range state
 </div>
 <div class="sect4">
 <h5 id="_definitions">Definitions</h5>
-
+<div class="paragraph">
+<p>A <strong>definition</strong> takes the familiar form
+\[
+a&#8656;b,
+\]
+or
+\[
+a:b
+\]
+where \$a\$ is <em>determined</em> by \$b\$ and \$a:b \cong a&#8656;b\$ is used to define new ctypes (i.e., a type definition that requires no instructions to perform that mapping). Analogous phrases are: \$a\$ is a <em>function</em> of \$b\$ or \$a\$ is <em>dependent</em> on \$b\$, and for the latter \$a:b\$ encoding, \$a\$ is <em>structurally equivalent</em> to \$b\$.</p>
 </div>
-<div class="sect4">
-<h5 id="_rewrites">Rewrites</h5>
+<div class="paragraph">
+<p>It is no coincidence that every mm-ADT program (type) has this form as every mm-ADT program is a type definition. For most of the documentation, the examples have been from within the <code>mm</code> model-ADT where there are 6 types: <code>bool</code>, <code>int</code>, <code>real</code>, <code>str</code>, <code>lst</code>, and <code>rec</code>. It is possible create new types that are ultimately <em>grounded</em> (Cayley rooted) in the <code>mm</code> model-ADT types. This is the purpose of the <code>[define]</code> instruction.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; [define,vertex:('id'-&gt;int),
+                     edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]
+             -&lt;edge:('outV'-&gt;-&lt;vertex:('id'-&gt;_),'inV'-&gt;-&lt;vertex:('id'-&gt;+1))
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;3))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The <code>[define]</code> instruction is placed at the start of the type (the start of the desired definition scope). Such prefixing can happen automatically by way of a <strong>type prefix</strong>. The type prefix is a generalization of an <code>import</code> or <code>module</code> <a href="https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries">library statement</a> found in other programming languages. The generalization is that a type prefix can be any type. It is simply concatenated to the program type prior to compilation (as ruled by the free <code>inst</code> monoid type composition algebra to be detailed soon).</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vertex:('id'-&gt;int),
+                           edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]               <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;_[define,vertex,edge]
+mmlang&gt; 1 =&gt; int-&lt;edge:('outV'-&gt;-&lt;vertex:('id'-&gt;_),
+                         'inV'-&gt;-&lt;vertex:('id'-&gt;+1))                          <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;3))
+mmlang&gt; 1 =&gt; int-&lt;edge:('outV'-&gt;-&lt;vertex:('bad_id'-&gt;_),
+                         'inV'-&gt;-&lt;vertex:('bad_id'-&gt;+1))                      <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;edge:('outV'-&gt;vertex:('bad_id'-&gt;1),'inV'-&gt;vertex:('bad_id'-&gt;3))
+mmlang&gt; 1 =&gt; int-&lt;edge:('outV'-&gt;-&lt;vertex:('id'-&gt;_),
+                         'inV'-&gt;-&lt;vertex:('id'-&gt;+1),'extra'-&gt;'data')          <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;3),'extra'-&gt;'data')</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>mm</code> model-ADT is extended with a <code>vertex</code> and an <code>edge</code> definition.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>vertex</code> and <code>edge</code> type definitions are automatically prepended to all subsequent programs.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>If there is no mappig from the start <code>obj</code> to the type definition, the <code>obj</code> is incorrectly typed.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>If an <code>obj</code> has extraneous data, it is still a valid type as it can be mapped to the type definition.</td>
+</tr>
+</table>
+</div>
+<div class="sect5">
+<h6 id="_rewrites">Rewrites</h6>
 <div class="paragraph">
 <p>Each step of that walk is an instruction forming an edge in the type graph.
 For instance, the type</p>
@@ -3648,6 +3727,7 @@ The isomorphism realizes <code>int</code> as a classic set without structure bec
 </div>
 <div class="paragraph">
 <p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
+</div>
 </div>
 </div>
 </div>
@@ -6861,7 +6941,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-08 23:50:17 -0600
+Last updated 2020-09-08 23:56:52 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
