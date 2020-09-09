@@ -1389,14 +1389,11 @@ The type <code>int{0,5}</code> denotes either 0, 1, 2, 3, 4, or 5 integers. In g
 <div class="content">
 <div class="title">Commuting Diagrams</div>
 <div class="paragraph">
-<p><a href="https://en.wikipedia.org/wiki/Category_theory">Category theory</a> is a branch of abstract algebra that studies algebraic structures via their homomorphic <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> in a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> monoid called a <strong>category</strong>.</p>
-</div>
-<div class="paragraph">
-<p>A category \$\mathcal{C}\$ is denoted
+<p><a href="https://en.wikipedia.org/wiki/Category_theory">Category theory</a> is a branch of abstract algebra that studies, among other things, arbitrary algebraic structures via their homomorphic <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> in a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> monoid called a <strong>category</strong>. A category \$\mathcal{C}\$ is denoted
 \[
 (\mathbf{C} ,\circ ,\mathbf{1}),
 \]
-where \$\mathbf{C}\$ is a <a href="https://en.wikipedia.org/wiki/Family_of_sets">set-family</a> of <em>morphisms</em>, \$\circ: \mathbf{C} \times \mathbf{C} \rightarrow \mathbf{C}\$ is an associative binary morphism <em>composition</em> operator, and for every <em>identity</em> morphism \$\mathbf{1}_A \in \mathbf{1}\$, \$\mathbf{1}_A \circ \mathbf{1}_A = \mathbf{1}_A\$ denotes an <em>object</em> that is more simply written \$A\$ such that \$A \mapsto \mathbf{1}_A\$. The family set \$mathbf{C}\$ indexes <a href="https://ncatlab.org/nlab/show/hom-set">hom-sets</a> with \$\mathbf{C}(A,B)\$ denoting the hom-set of all morphism between objects \$A\$ and \$B\$, where a morphism \$f:A\to B \in \mathbf{C}(A,B)\$ and \$id: A \rightarrow A \cong \mathbf{1}_A \cong A\$.</p>
+where \$\mathbf{C}\$ is a <a href="https://en.wikipedia.org/wiki/Family_of_sets">set-family</a> of <em>morphisms</em>, \$\circ: \mathbf{C} \times \mathbf{C} \rightarrow \mathbf{C}\$ is an associative binary morphism <em>composition</em> operator, and for every <em>identity</em> morphism \$\mathbf{1}_A \in \mathbf{1}\$, \$\mathbf{1}_A \circ \mathbf{1}_A = \mathbf{1}_A\$ denotes an <em>object</em> that is more simply written \$A\$ such that \$A \mapsto \mathbf{1}_A\$. The family set \$mathbf{C}\$ indexes <a href="https://ncatlab.org/nlab/show/hom-set">hom-sets</a> with \$\mathbf{C}(A,B)\$ denoting all morphism between objects \$A\$ and \$B\$, where \$f:A\to B \in \mathbf{C}(A,B)\$ and \$id: A \rightarrow A \cong \mathbf{1}_A \cong A\$.</p>
 </div>
 <div class="paragraph">
 <p>Unlike classical monoids, a category&#8217;s \$\circ\$ operator is generally not <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closed</a>. That is, there are compositions which may not be defined. It is this aspect of a category that makes it a <em>multi-sorted</em> (or typed) monoid.</p>
@@ -1411,7 +1408,7 @@ where \$\mathbf{C}\$ is a <a href="https://en.wikipedia.org/wiki/Family_of_sets"
 \[
 A \xrightarrow{f} B \xrightarrow{g} C,
 \]
-which, in Cayley graph notation, is denoted \$A \to_f B \to_g C\$. An important subset of diagrams are the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagrams</a>. In a commutative diagram every morphism path starting at the same source and ending at the same destination are considered equivalent (with respects to <em>equivalence</em> in the respective algebraic structure being modeled categorically). Thus, if \$g \circ f = i \circ h\$, then it is said that the above diagram <em>commutes</em>.</p>
+which, in Cayley graph notation, is denoted \$A \to_f B \to_g C\$. An important subset of diagrams are the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagrams</a>. In a commutative diagram every morphism path starting at the same source and ending at the same destination are considered <em>equivalent</em> (with respects to equivalence in the respective algebraic structure being modeled categorically). Thus, if \$g \circ f = i \circ h\$, then it is said that the above diagram <em>commutes</em>.</p>
 </div>
 </div>
 </div>
@@ -6817,7 +6814,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-07 17:58:28 -0600
+Last updated 2020-09-08 23:03:09 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
