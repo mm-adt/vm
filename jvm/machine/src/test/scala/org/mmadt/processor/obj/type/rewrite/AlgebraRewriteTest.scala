@@ -22,21 +22,24 @@
 
 package org.mmadt.processor.obj.`type`.rewrite
 
+import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.language.obj.`type`.__._
+import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class AlgebraRewriteTest extends FunSuite {
+class AlgebraRewriteTest extends BaseInstTest {
 
   test("int ring rewrites") {
     val intAlgebra = int
-      .rewrite((int`,`) <= (int.mult(1) `,`))
-      .rewrite((int`,`) <= (int.plus(0) `,`))
-      .rewrite((int.zero `,`) <= (int.mult(0) `,`))
-      .rewrite((int`,`) <= (int.neg.neg `,`))
-    //.rewrite((int.zero() `,`) <= (int.plus(int.neg()) `,`))
+      .define(
+        (int `,`) <= '^(int.mult(1) `,`),
+        (int `,`) <= '^(int.plus(0) `,`),
+        (int.zero `,`) <= '^(int.mult(0) `,`),
+        (int `,`) <= '^(int.neg.neg `,`))
+    //.rewrite((int.zero() `,`) <= '^(int.plus(int.neg()) `,`))
     println(intAlgebra.model)
     assertResult(int)(int ==> intAlgebra)
     assertResult(int)(int.mult(1) ==> intAlgebra)

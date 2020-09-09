@@ -54,7 +54,6 @@ object ModelOp extends Func[Obj, Obj] {
   type Model = Rec[StrValue, ModelMap]
   type ModelMap = Rec[Obj, Lst[Obj]]
   val TYPE:StrValue = str("type")
-  val PATH:StrValue = str("path")
   val VAR:StrValue = str("var")
   val NOROOT:Pairs[StrValue, ModelOp.ModelMap] = List.empty
   val NOMAP:Pairs[Obj, Lst[Obj]] = List.empty
@@ -77,7 +76,7 @@ object ModelOp extends Func[Obj, Obj] {
     }
 
   }
-  def isMetaModel(inst:Inst[_, _]):Boolean = inst.op.equals(Tokens.model) || inst.op.startsWith("rule:")
+  def isMetaModel(inst:Inst[_, _]):Boolean = inst.op.equals(Tokens.model) || inst.op.startsWith("rule:") || inst.op.equals(Tokens.define)
 
   @inline implicit def modelToRichModel(ground:Model):RichModel = new RichModel(ground)
   class RichModel(val model:Model) {
@@ -111,9 +110,9 @@ object ModelOp extends Func[Obj, Obj] {
             .map(x => x.update(model)))
     }
 
-    final def rewrites:List[Obj] = model.gmap.fetchOrElse(PATH, NOREC).gmap.values
+    final def rewrites:List[Obj] = model.gmap.fetchOrElse(TYPE, NOREC).gmap.values
       .flatMap(y => y.g._2)
-      .filter(y =>
+      .filter(y => y.domain.name.equals(Tokens.pow_op) &&
         y.isInstanceOf[Lst[Obj]]
           && y.domain.isInstanceOf[Lst[Obj]]
           && y.domain.asInstanceOf[Lst[Obj]].g._2.nonEmpty)
@@ -137,14 +136,6 @@ object ModelOp extends Func[Obj, Obj] {
       rec(model.name, g = (Tokens.`,`, map.replace(ModelOp.VAR -> rec(g = (Tokens.`,`, typesMap.replace(key -> lst(g = (Tokens.`,`, List(value.rangeObj)))))))))
     }
 
-    final def rewriting(rewrite:Lst[Obj]):Model = {
-      val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.fetchOrElse(ModelOp.PATH, NOREC).g._2).getOrElse(NOMAP)
-      val typeList = Option(typesMap.fetchOrElse(rewrite.domain.asInstanceOf[Lst[Obj]].g._2.head.domain, lst).g._2).getOrElse(Nil)
-      if (typeList.contains(rewrite)) model
-      else rec(model.name, g = (Tokens.`,`, map.replace(ModelOp.PATH -> rec(g = (Tokens.`,`, typesMap.replace(rewrite.domain.asInstanceOf[Lst[Obj]].g._2.head.domain -> lst(g = (Tokens.`,`, typeList :+ rewrite))))))))
-    }
-
     final def defining(definition:Obj):Model = {
       val map = Option(model.g._2).getOrElse(NOROOT)
       val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
@@ -161,7 +152,7 @@ object ModelOp extends Func[Obj, Obj] {
         flatMap(x => x._2.g._2).
         foldLeft(model)((a, b) => a.defining(b))
       x = other.g._2.fetchOrElse(ModelOp.VAR, rec(g = (Tokens.`,`, NOMAP))).gmap.foldLeft(x)((a, b) => a.varing(b._1.asInstanceOf[StrValue], b._2.asInstanceOf[Lst[Obj]].glist.head))
-      rec(name = model.name, g = (Tokens.`,`, x.g._2.replace(ModelOp.PATH -> other.g._2.fetchOrElse(ModelOp.PATH, NOREC))))
+      rec(name = model.name, g = (Tokens.`,`, x.g._2))
     }
   }
 }

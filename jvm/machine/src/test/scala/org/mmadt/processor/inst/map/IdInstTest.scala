@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Obj.tupleToRecYES
+import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.`type`.__.id
+import org.mmadt.language.obj.`type`.__.{id, _}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.processor.inst.BaseInstTest
@@ -37,7 +37,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object IdInstTest {
-  val IDRULE: Model = (ModelOp.PATH -> (__ -> lst(g = (",", List((__ `,`) <= (id `,`)))) `,`) `,`).asInstanceOf[Model]
+  val IDRULE:Model = (ModelOp.TYPE -> (lst(__) -> lst(g = (",", List((__ `,`) <= '^(id `,`)))) `,`) `,`).asInstanceOf[Model]
 }
 class IdInstTest extends BaseInstTest(
   testSet("[id] table test",
@@ -61,7 +61,7 @@ class IdInstTest extends BaseInstTest(
     testing(str.id, str.id, str.id.id, "str[id] => str[id]"),
     testing(str("a", "b", "c"), str.q(3).id, str("a", "b", "c"), "['a','b','c']=>str{3}[id]"),
   ),
-  testSet("[id] table test w/ id-rule", model("('path' -> (_ -> ((_)<=([id]))))"),
+  testSet("[id] table test w/ id-rule", model("('type' -> (_ -> ((_)<=^:([id]))))"),
     comment("monoid"),
     testing(int, id, int, "int[id]"),
     testing(int.q(-2), int.q(-2).id, int.q(-2), "int{-2}[id]"),

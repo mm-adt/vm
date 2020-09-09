@@ -1163,26 +1163,11 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("play") {
-    /* val x: Obj = engine.eval(
-       """int
-         |[rewrite,_<=([plus,0])]               // a+0 = a
-         |[rewrite,_<=([mult,1])]               // a*1 = a
-         |[rewrite,_<=([neg][neg])]             // --a = a
-         |[rewrite,(int[zero])<=([mult,0])]     // a*0 = 0
-         |[rewrite,([plus,0])<=([plus,[neg]])]  // a-a = 0
-         |  *1*0+36+0[plus,*0][plus,int[neg][plus,0][neg][neg]]""".stripMargin)
-     assertResult(int(0))(x)*/
-    // assertResult(int.plus(int).mult(int).plus(1))(x)
-    assertResult(int)(engine.eval("int[rewrite,(int)<=(int[mult,1])][mult,1]"))
+    assertResult(int)(engine.eval("int[define,(int)<=^:(int[mult,1])][mult,1]"))
     println(engine.eval("10[define,big<=int[plus,100]][plus,big]"))
     println(engine.eval("4[is>3 -> 1 , 4 -> 2]"))
     println(engine.eval("(3)"))
     println(engine.eval("(int;[plus,2];-<([mult,2],[plus,10])>-)<x>[map,5][split,x]"))
-    //println(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
-    //println(engine.eval("(1,(2,3))=(_,=(<y>,[id]))>-"))
     println(engine.eval("(1,2,(3,(4,5)))=(_,_,=(int,=(+20,+10)))"))
-    //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?|y?)"))
-    //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<(x?[map,'x:']+x[as,str]|y?[map,'y:']+y[as,str])"))
-    //println(engine.eval("(1,2,3)=(<y>,_,<x>)>--<('x' -> x?,'y' -> y?)"))
   }
 }

@@ -23,29 +23,29 @@
 package org.mmadt.processor.obj.`type`.rewrite
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.__.id
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__.{id, _}
 import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite, removeRules}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Lst, Obj, divQ}
-import org.mmadt.storage.StorageFactory.{qOne, qZero}
+import org.mmadt.storage.StorageFactory.qZero
 
 object TraceScanRewrite extends Rewrite {
 
-  private def getPolyOrObj(obj: Obj): Obj = obj.domain match {
-    case alst: Lst[_] => alst.glist.head
+  private def getPolyOrObj(obj:Obj):Obj = obj.domain match {
+    case alst:Lst[_] => alst.glist.head
     case _ => obj
   }
 
-  override def apply[A <: Obj](obj: A, writer: Writer): A = {
+  override def apply[A <: Obj](obj:A, writer:Writer):A = {
     val rewrites = OpInstResolver.applyRewrites(obj).model.rewrites.sortBy(x => -x.domainObj.trace.length)
-    var a: Obj = obj
-    var b: Obj = a
+    var a:Obj = obj
+    var b:Obj = a
     rewrites.foreach(rewrite => {
-      if (rewrite.equals((__ `,`) <= (id `,`))) {
+      if (rewrite.equals((__ `,`) <= '^(id `,`))) {
         b = removeRules(BranchRewrite.processType(BranchRewrite().exec(IdRewrite.processType(b))).asInstanceOf[A])
       } else {
         a = b
@@ -55,7 +55,7 @@ object TraceScanRewrite extends Rewrite {
         val domainTrace = domain.trace.map(x => x._2)
         val length = domainTrace.length
         while (!a.root) {
-          val aTrace: List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(x, writer)).take(length)
+          val aTrace:List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(x, writer)).take(length)
           if (aTrace.length == length) {
             val aTraceRewrite = aTrace.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
             if (aTraceRewrite.forall(x => x.alive)) { // the entire window matches, write the range instructions to the type
@@ -80,23 +80,23 @@ object TraceScanRewrite extends Rewrite {
     else b.asInstanceOf[A].q(divQ(obj.q, b.domainObj.q))
   }
 
-  private def rewriteInstArgs(inst: Inst[Obj, Obj], rewrite: Writer): Inst[Obj, Obj] = inst match {
-    case _: TraceInstruction => inst
-    case _: BranchInstruction => inst
+  private def rewriteInstArgs(inst:Inst[Obj, Obj], rewrite:Writer):Inst[Obj, Obj] = inst match {
+    case _:TraceInstruction => inst
+    case _:BranchInstruction => inst
     case _ => OpInstResolver.resolve(inst.op, inst.args.map {
-      case atype: Type[_] => TraceScanRewrite(atype, rewrite)
-      case avalue: Value[_] => avalue
+      case atype:Type[_] => TraceScanRewrite(atype, rewrite)
+      case avalue:Value[_] => avalue
     })
   }
-  private def mapInstructions(lhs: Inst[Obj, Obj], rhs: Inst[Obj, Obj]): Inst[Obj, Obj] = {
+  private def mapInstructions(lhs:Inst[Obj, Obj], rhs:Inst[Obj, Obj]):Inst[Obj, Obj] = {
     if (lhs.equals(rhs)) return lhs
     if (lhs.op != rhs.op || lhs.args.length != rhs.args.length) return lhs.q(qZero)
     val args = lhs.args.zip(rhs.args).map(x => if (x._1.equals(x._2)) x._2 else if (x._1.test(x._2)) x._1.compute(x._2) else x._2.q(qZero))
     if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
   }
 
-  def replaceRewrite(range: List[Inst[Obj, Obj]], trace: List[Inst[Obj, Obj]], query: Obj): Obj = {
-    var model: Model = query.model
+  def replaceRewrite(range:List[Inst[Obj, Obj]], trace:List[Inst[Obj, Obj]], query:Obj):Obj = {
+    var model:Model = query.model
     trace.foldLeft(query)((x, y) => {
       val middle = y.exec(x)
       model = mergeAllModels(middle, middle.model)
@@ -106,7 +106,7 @@ object TraceScanRewrite extends Rewrite {
     range.foldLeft(query)((x, y) => y.exec(x.model(model)))
   }
 
-  def mergeAllModels(obj: Obj, model: Model): Model = obj.trace.foldLeft(model)((m, x) => {
+  def mergeAllModels(obj:Obj, model:Model):Model = obj.trace.foldLeft(model)((m, x) => {
     x._2.args.foldLeft(m)((a, b) => b.model.update(a)) // TODO: access more paths than just inst args
   })
 }

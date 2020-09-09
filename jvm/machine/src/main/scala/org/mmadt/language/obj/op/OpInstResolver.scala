@@ -47,23 +47,23 @@ import scala.collection.JavaConverters.asScalaIterator
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object OpInstResolver {
-  private val providers: List[StorageProvider] = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toList
+  private val providers:List[StorageProvider] = asScalaIterator(ServiceLoader.load(classOf[StorageProvider]).iterator()).toList
 
-  private def service(op: String, args: List[Obj]): Option[Inst[Obj, Obj]] = providers.iterator
+  private def service(op:String, args:List[Obj]):Option[Inst[Obj, Obj]] = providers.iterator
     .map(_.resolveInstruction(op, JavaConverters.seqAsJavaList(args)))
     .find(_.isPresent)
     .map(_.get())
 
-  def rewrites: List[Inst[Obj, Obj]] = providers.flatMap(x => asScalaIterator(x.rewrites().iterator()))
+  def rewrites:List[Inst[Obj, Obj]] = providers.flatMap(x => asScalaIterator(x.rewrites().iterator()))
 
-  def applyRewrites[A <: Obj](obj: A): A = {
+  def applyRewrites[A <: Obj](obj:A):A = {
     if (obj.trace.map(x => x._2).exists(x => providers.map(y => "=" + y.name()).contains(x.op)))
       this.rewrites.foldLeft(obj.domainObj)((x, y) => y.exec(x)).compute(obj)
     else
       obj
   }
 
-  def resolve[S <: Obj, E <: Obj](op: String, args: List[Obj]): Inst[S, E] = {
+  def resolve[S <: Obj, E <: Obj](op:String, args:List[Obj]):Inst[S, E] = {
     (op match {
 
       case Tokens.rule_id => IdRewrite()
@@ -83,9 +83,9 @@ object OpInstResolver {
       case Tokens.path => args.headOption.map(x => PathOp(x.asInstanceOf[Lst[Obj]])).getOrElse(PathOp())
       //
       case Tokens.model => args.head match {
-        case model: Model => ModelOp(model)
-        case file: StrValue => ModelOp(file)
-        case token: __ => ModelOp(storage.model(token.name))
+        case model:Model => ModelOp(model)
+        case file:StrValue => ModelOp(file)
+        case token:__ => ModelOp(storage.model(token.name))
       }
       case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()
@@ -93,8 +93,8 @@ object OpInstResolver {
       case Tokens.is_a_op => IsOp(__.a(args.head))
       case Tokens.as | Tokens.as_op => AsOp(args.head)
       case Tokens.not | Tokens.not_op => NotOp(args.head)
-      case Tokens.and | Tokens.and_op => AndOp(args: _*)
-      case Tokens.or | Tokens.or_op => OrOp(args: _*)
+      case Tokens.and | Tokens.and_op => AndOp(args:_*)
+      case Tokens.or | Tokens.or_op => OrOp(args:_*)
       case Tokens.plus | Tokens.plus_op | Tokens.sum_op => PlusOp(args.head)
       case Tokens.mult | Tokens.mult_op | Tokens.product_op => MultOp(args.head)
       case Tokens.gt | Tokens.gt_op => GtOp(args.head)
@@ -104,8 +104,8 @@ object OpInstResolver {
       case Tokens.eqs | Tokens.eqs_op => EqsOp(args.head)
       case Tokens.is => IsOp(args.head)
       case Tokens.get => args match {
-        case List(key: Obj, typeHint: Type[Obj]) => GetOp(key, typeHint)
-        case List(key: Obj) => GetOp(key)
+        case List(key:Obj, typeHint:Type[Obj]) => GetOp(key, typeHint)
+        case List(key:Obj) => GetOp(key)
       }
 
       case Tokens.juxt | Tokens.juxt_op => JuxtOp(args.head)
@@ -122,14 +122,13 @@ object OpInstResolver {
         val label = args.head.asInstanceOf[StrValue]
         args.tail match {
           case Nil => FromOp(label)
-          case list: List[Obj] => FromOp(label, list.head)
+          case list:List[Obj] => FromOp(label, list.head)
           case _ => throw new IllegalStateException
         }
       case Tokens.fold => if (args.tail.isEmpty) FoldOp(args.head) else FoldOp(args.head, args.tail.head)
       case Tokens.error => ErrorOp(args.head.asInstanceOf[StrValue].g)
       case Tokens.defs => DefsOp()
-      case Tokens.define => DefineOp(args: _*)
-      case Tokens.rewrite => RewriteOp(args.head)
+      case Tokens.define => DefineOp(args:_*)
       case Tokens.to => ToOp(args.head.asInstanceOf[__])
       case Tokens.id => IdOp()
       case Tokens.q => QOp()

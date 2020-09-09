@@ -85,7 +85,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val obj:Parser[Obj] = objValue | objType | anonQuant
 
   // variable parsing
-  lazy val symbolName:Parser[String] = ("[a-zA-Z]+[a-zA-Z_0-9]*".r)
+  lazy val symbolName:Parser[String] = "^" | ("[a-zA-Z]+[a-zA-Z_0-9]*".r)
   lazy val typeNameNoColon:Parser[String] = symbolName.filter(x => !Tokens.reservedTokens.contains(x)) <~ not(":")
   lazy val typeNameColon:Parser[String] = symbolName.filter(x => !Tokens.reservedTokens.contains(x)) <~ ":"
 

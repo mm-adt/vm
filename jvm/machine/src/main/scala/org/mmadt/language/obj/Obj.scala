@@ -75,7 +75,6 @@ trait Obj
     with StartOp
     with SplitOp
     with LiftOp
-    with RewriteOp
     with RepeatOp
     with ExplainOp
     with TypeOp {
