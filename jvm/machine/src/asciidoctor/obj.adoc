@@ -303,21 +303,23 @@ int<=bool
 
 .Commuting Diagrams
 ****
-https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies algebraic structures via their homomorphic image within a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*.
-A category is defined as \[
-(\mathbf{A},\circ,\mathbf{1}_\mathbf{A}), \]
-where \$\mathbf{A}\$ is a set of _morphisms_, \$\mathbf{A}(A)\$ is an _object_ morphism simply denoted \$A\$, \$circ: \mathbf{A}(A,B) \times \mathbf{A}(B,C) \to \mathbf{A}(A,C) \$ is an associative, binary, morphism composition operator, and for every \$A\$, there is an identity morphism \$\mathbf{1}_A \in \mathbf{1}_\mathbf{A}\$ such that \$A \circ \mathbf{1}_A = A = \mathbf{1}_A \circ A\$.
-Unlike classical monoids, a category's \$\circ\$ operator is generally not https://en.wikipedia.org/wiki/Closure_(mathematics)[closed].
-That is, there are compositions which may not be defined.
-It is this aspect of a category that makes it a _multi-sorted_ (or typed) monoid.
+https://en.wikipedia.org/wiki/Category_theory[Category theory] is a branch of abstract algebra that studies algebraic structures via their homomorphic https://en.wikipedia.org/wiki/Embedding[embedding] in a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] monoid called a *category*.
+
+A category \$\mathcal{C}\$ is denoted
+\[
+(\mathbf{C} ,\circ ,\mathbf{1}),
+\]
+where \$\mathbf{C}\$ is a https://en.wikipedia.org/wiki/Family_of_sets[set-family] of _morphisms_, \$\circ: \mathbf{C} \times \mathbf{C} \rightarrow \mathbf{C}\$ is an associative binary morphism _composition_ operator, and for every _identity_ morphism \$\mathbf{1}_A \in \mathbf{1}\$, \$\mathbf{1}_A \circ \mathbf{1}_A = \mathbf{1}_A\$ denotes an _object_ that is more simply written \$A\$ such that \$A \mapsto \mathbf{1}_A\$. The family set \$mathbf{C}\$ indexes https://ncatlab.org/nlab/show/hom-set[hom-sets] with \$\mathbf{C}(A,B)\$ denoting the hom-set of all morphism between objects \$A\$ and \$B\$, where a morphism \$f:A\to B \in \mathbf{C}(A,B)\$ and \$id: A \rightarrow A \cong \mathbf{1}_A \cong A\$.
+
+Unlike classical monoids, a category's \$\circ\$ operator is generally not https://en.wikipedia.org/wiki/Closure_(mathematics)[closed]. That is, there are compositions which may not be defined. It is this aspect of a category that makes it a _multi-sorted_ (or typed) monoid.
 
 image::commuting-diagram.svg[float=right,width=150]
 
-In a manner analogous to Cayley graphs, category theory has https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagrams].
-If \$f:A \to B \in \mathbf{A}(A,B)\$ and \$g: B \to C \in \mathbf{A}(B,C)\$, then there exists the morphism path \[
-A \xrightarrow{f} B \xrightarrow{g} C. \]
-A https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] is one such that every morphism path starting at the same source and ending at the same destination is equal.
-Thus, if \$g \circ f = i \circ h\$, then it is said that the associated diagram _commutes_.
+The discipline of category theory makes extensive use of a https://en.wikipedia.org/wiki/Homomorphism[homomorphism] from a category to a https://en.wikipedia.org/wiki/Directed_graph[directed labeled graph] called a https://en.wikipedia.org/wiki/Diagram_(category_theory)[diagram]. These diagrams realize the same underlying unitary operation of the generators of a magma within a generalized https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]. If \$f:A \to B\$ and \$g: B \to C\$, then there exists the morphism path
+\[
+A \xrightarrow{f} B \xrightarrow{g} C,
+\]
+which, in Cayley graph notation, is denoted \$A \to_f B \to_g C\$. An important subset of diagrams are the https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagrams]. In a commutative diagram every morphism path starting at the same source and ending at the same destination are considered equivalent (with respects to _equivalence_ in the respective algebraic structure being modeled categorically). Thus, if \$g \circ f = i \circ h\$, then it is said that the above diagram _commutes_.
 ****
 
 Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]).
