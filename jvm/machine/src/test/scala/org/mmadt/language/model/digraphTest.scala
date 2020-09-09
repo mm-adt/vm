@@ -45,16 +45,16 @@ class digraphTest extends BaseInstTest(
     testing('nat(53), int, 53, "nat:53 => int"),
     testing(53, 'nat, 'nat(53), "53 => nat"),
     excepting(-51, 'nat, LanguageException.typingError(-51, 'nat), "-51 => nat"),
-    // testing((str("id") -> 'nat(45)), 'nat, 'nat(45), "('id'->nat:45) => nat"),
+    // testing('vertex(str("id") -> 'nat(45)), as(int), 45, "vertex:('id'->nat:45) => [as,int]"),
     comment("attr"),
     testing(("name" `;` "marko"), 'attr, 'attr(str("key") -> str("name") `_,` str("value") -> str("marko")), "('name';'marko') => attr"),
     testing(("age" `;` 29), 'attr, 'attr(str("key") -> str("age") `_,` str("value") -> int(29)), "('age';29) => attr"),
-    /*testing(__(
+    testing(__(
       ("name" `;` "marko"), ("age" `;` 29)), 'attr.q(2),
       strm(
         'attr(str("key") -> str("name") `_,` str("value") -> str("marko")),
         'attr(str("key") -> str("age") `_,` str("value") -> int(29))),
-      "[('name';'marko'),('age';29)] => attr{2}"),*/
+      "[('name';'marko'),('age';29)] => attr{2}"),
     excepting((20 `;` "marko"), 'attr, LanguageException.typingError((20 `;` "marko"), 'attr), "(20;'marko') => attr"),
     comment("vertex via int"),
     testing(23, 'vertex, 'vertex(str("id") -> 'nat(23) `,`), "23 => vertex"),
@@ -62,6 +62,7 @@ class digraphTest extends BaseInstTest(
     testing(-23, 'vertex, 'vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data"))), "-23 => vertex"),
     excepting(0, 'vertex, LanguageException.typingError((0 `;`("no" `;` "data")).q(qZero), (str("id") -> __("nat") `_,` str("attrs") -> 'attr.q(*)).asInstanceOf[Type[_]]), "0 => vertex"),
     comment("vertex via int/pair"),
+    testing((1 `;` 2), as('vertex `;` 'vertex), 'vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2)), "(1;2)=>[as,(vertex;vertex)]"), // shouldn't need [as]
     testing(
       (32 `;`("name" `;` "marko")),
       as(int `;` 'attr),
@@ -77,6 +78,11 @@ class digraphTest extends BaseInstTest(
       'vertex,
       'vertex(str("id") -> 'nat(32) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
       "(32;('name';'marko')) => vertex"),
+    testing(
+      ("40" `;`("name" `;` "marko")),
+      'vertex,
+      'vertex(str("id") -> 'nat(40) `_,` str("attrs") -> 'attr(str("key") -> str("namex") `_,` str("value") -> str("markoxx"))),
+      "('40';('name';'marko')) => vertex"),
     comment("edge"),
     testing((1 `;` 2), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>edge"),
     testing((1 `;` 2), ('vertex `;` 'vertex) `=>` 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>(vertex;vertex)=>edge"),

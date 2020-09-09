@@ -1,8 +1,9 @@
 digraph:(
 'type' -> (
-  // nat    -> (nat<=vertex.id),
+  // nat    -> (nat<=vertex.id), // TODO: having to do with base types and path resolution
   vertex -> (vertex:('id'->nat,'attrs'->attr{*}),
              vertex<=nat-<('id'->nat),
+             vertex<=(str;attr)=(int<=str;-<('key'->.key+'x','value'->.value+'xx')),
              vertex<=(nat;attr)-<('id'->.0,'attrs'->.1),
              vertex<=int[is<0]-<([neg];('no';'data'))),
   attr   -> (attr:('key'->_,'value'->_),

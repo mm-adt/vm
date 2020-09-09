@@ -33,7 +33,7 @@ import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Obj, asType}
 import org.mmadt.processor.inst.BaseInstTest._
-import org.mmadt.storage.StorageFactory.{int, oneObj}
+import org.mmadt.storage.StorageFactory.{int, oneObj, strm}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
 
@@ -70,8 +70,11 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
       ("eval-2", s => engine.eval(s"$s $middle", bindings(model))),
       ("eval-3", s => s ==> (middle.domain ==> middle)),
       ("eval-4", s => s ==> (middle.domain ==> middle) match {
-        case aobj:Obj if middle.via.exists(x => List(Tokens.split, Tokens.lift).contains(x._2.op)) => aobj
+        case aobj:Obj
+          if middle.via.exists(x => List(Tokens.split, Tokens.lift).contains(x._2.op)) ||
+            (aobj.isInstanceOf[Strm[_]] && aobj.toStrm.values.headOption.exists(y => y.via.exists(x => List(Tokens.get).contains(x._2.op)))) => aobj // nested poly have their quantifiers altered
         case atype:Type[_] => atype.domainObj ==> atype
+        case astrm:Strm[_] => strm(astrm.values.map(x => (x.domainObj ==> x.trace.reconstruct[Obj](x.domain, x.name)).hardQ(x.q)))
         case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
       }),
       ("eval-5", s => {

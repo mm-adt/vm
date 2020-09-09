@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Int, Obj, divQ, minusQ, multQ, plusQ}
+import org.mmadt.language.obj.{Inst, Int, Obj, divQ, minusQ, multQ, plusQ, withinQ}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -34,24 +34,25 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait QOp {
-  this: Obj =>
-  def quant(): Int = QOp().exec(this)
+  this:Obj =>
+  def quant():Int = QOp().exec(this)
 }
 
 object QOp extends Func[Obj, Int] {
-  def apply(): Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.q, Nil), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Int]): Int = (start match {
-    case _: Value[_] => start.q._1.q(qOne)
+  def apply():Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.q, Nil), func = this)
+  override def apply(start:Obj, inst:Inst[Obj, Int]):Int = (start match {
+    case _:Value[_] => start.q._1.q(qOne)
     case _ => int
   }).via(start, inst).asInstanceOf[Int]
 
-  @inline implicit def qToRichQ(baseQ: IntQ): RichQ = new RichQ(baseQ)
-  class RichQ(val richQ: IntQ) {
-    def plus(otherQ: IntQ): IntQ = plusQ(richQ, otherQ)
-    def mult(otherQ: IntQ): IntQ = multQ(richQ, otherQ)
-    def minus(otherQ: IntQ): IntQ = minusQ(richQ, otherQ)
-    def div(otherQ: IntQ): IntQ = divQ(richQ, otherQ)
-    def isZero: Boolean = richQ.equals(qZero)
-    def certain: Boolean = richQ._1.g == richQ._2.g
+  @inline implicit def qToRichQ(baseQ:IntQ):RichQ = new RichQ(baseQ)
+  class RichQ(val richQ:IntQ) {
+    def plus(otherQ:IntQ):IntQ = plusQ(richQ, otherQ)
+    def mult(otherQ:IntQ):IntQ = multQ(richQ, otherQ)
+    def minus(otherQ:IntQ):IntQ = minusQ(richQ, otherQ)
+    def div(otherQ:IntQ):IntQ = divQ(richQ, otherQ)
+    def isWithin(otherQ:IntQ):Boolean = withinQ(richQ, otherQ)
+    def isZero:Boolean = richQ.equals(qZero)
+    def certain:Boolean = richQ._1.g == richQ._2.g
   }
 }

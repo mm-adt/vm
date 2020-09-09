@@ -30,6 +30,7 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{lst, rec, str}
@@ -67,9 +68,14 @@ object ModelOp extends Func[Obj, Obj] {
     case _:Type[Obj] => start.via(start.update(storage.model(inst.arg0[Model])), inst)
   }
   def updateModel(amodel:Model, aobj:Obj):aobj.type = {
-    if (amodel.isEmpty) aobj
-    else if (aobj.root) aobj.clone(via = (aobj.model.merging(amodel), null))
-    else aobj.rangeObj.clone(via = (aobj.trace.dropRight(1).foldLeft(aobj.domainObj.clone(via = (aobj.model.merging(amodel), null)).asInstanceOf[Obj])((a, b) => b._1.via(a, b._2)), aobj.via._2))
+    aobj match {
+      case astrm:Strm[aobj.type] => astrm(x => updateModel(amodel, x))
+      case _ =>
+        if (amodel.isEmpty) aobj
+        else if (aobj.root) aobj.clone(via = (aobj.model.merging(amodel), null))
+        else aobj.rangeObj.clone(via = (aobj.trace.dropRight(1).foldLeft(aobj.domainObj.clone(via = (aobj.model.merging(amodel), null)).asInstanceOf[Obj])((a, b) => b._1.via(a, b._2)), aobj.via._2))
+    }
+
   }
   def isMetaModel(inst:Inst[_, _]):Boolean = inst.op.equals(Tokens.model) || inst.op.startsWith("rule:")
 
@@ -82,7 +88,7 @@ object ModelOp extends Func[Obj, Obj] {
         .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
         .map(x => if (__.isToken(x.domainObj) && !typeGrounded(model, x)) __.asInstanceOf[A] else x) // is the type is not grounded, anything matches
         .filter(x => if (__.isToken(x.domainObj))
-          model.search(source, x.domainObj).exists(y => source.update(model).test(y)) else
+          model.search(source, x.domainObj, baseName = false).exists(y => source.update(model).test(y)) else
           source.update(model).test(x.domainObj.hardQ(source.q)))
 
     final def typeExists(aobj:Obj):Boolean = model.definitions.isEmpty ||
@@ -95,14 +101,15 @@ object ModelOp extends Func[Obj, Obj] {
         .find(x => x._1.name == aobj.name).map(x => x._2.glist)
         .exists(x => x.exists(y => !baseName(y.domainObj).equals(Tokens.anon) || !Type.isIdentity(y)))
 
-    final def search[A <: Obj](source:Obj = __, target:A):List[A] =
+    final def search[A <: Obj](source:Obj = __, target:A, baseName:Boolean = true):List[A] = {
       model.vars[A](target.name)
         .map(x => if (x.isInstanceOf[Type[_]]) target.range.asInstanceOf[A] else x)
         .map(x => List(x))
         .getOrElse[List[A]](
           findType[A](model, source, target.name)
-            .map(y => toBaseName(y))
+            .map(y => if (baseName) toBaseName(y) else y)
             .map(x => x.update(model)))
+    }
 
     final def rewrites:List[Obj] = model.gmap.fetchOrElse(PATH, NOREC).gmap.values
       .flatMap(y => y.g._2)

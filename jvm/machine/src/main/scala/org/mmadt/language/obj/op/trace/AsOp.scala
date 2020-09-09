@@ -63,6 +63,14 @@ object AsOp extends Func[Obj, Obj] {
     }
   }
 
+  /*private def testNames(source:Obj, target:Obj):Boolean = source match {
+    case alst:Lst[_] => target match {
+      case blst:Lst[_] if !blst.ctype && !alst.ctype => source.name.equals(target.name) && alst.glist.map(x => x.name).toSet.equals(blst.glist.map(x => x.name).toSet)
+      case _ => source.name.equals(target.name)
+    }
+    case _ => source.name.equals(target.name)
+  }*/
+
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
     val asObj:Obj = if (__.isToken(target)) WalkOp.resolveTokenPath(source, target) else target
     val dObj:Obj = pickMapping(source, asObj).update(source.model)
