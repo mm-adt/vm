@@ -357,12 +357,7 @@ In theory, the complete history of an mm-ADT program (from compilation to execut
 However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
 This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
-NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid.
-However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type.
-With this convention, there is no loss of information.
-The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction).
-Furthermore, https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols[_hook-tailed_] arrows will replace `[type]`-labeled arrows as they denote a https://en.wikipedia.org/wiki/Monomorphism[monomorphic] https://en.wikipedia.org/wiki/Embedding[embedding].
-All subsequent diagrams will follow this convention.
+NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid. However, in order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols[_hook-tailed_] arrows will replace `[type]`-labeled arrows as they denote a https://en.wikipedia.org/wiki/Monomorphism[monomorphic] https://en.wikipedia.org/wiki/Embedding[embedding] known as an https://en.wikipedia.org/wiki/Inclusion_map[inclusion]. All subsequent diagrams will follow this convention.
 
 .The Obj Graph as a Cayley Graph and a Commutative Diagram
 ================================================================
@@ -482,7 +477,7 @@ int{+}
 {blank}
 |===
 
-Types use quantifiers in two separate contexts: *type signatures* and *type definitions*.
+Types use quantifiers in two separate, but related, contexts: *type signatures* and *type definitions*.
 
 [discrete]
 ====== Type Signature Quantification
@@ -516,14 +511,12 @@ During https://en.wikipedia.org/wiki/Type_inference[type inference], the quantif
 int{3}[[plus,1],[plus,1]]              //<1>
 int{3}[plus,1]{2}                      //<2>
 ----
-<1> Given `3` `ints`, `[plus,1]` will be evaluated (in parallel) `2` twice.
-The result is `6` `ints`.
+<1> Given `3` `ints`, `[plus,1]` will be evaluated (in parallel) twice. The result is `6` `ints`.
 <2> The instruction `[plus,1]{2}` is the merging of two `[plus,1]` _branches_.
 
-At https://en.wikipedia.org/wiki/Compiler#Middle_end[type compilation], the https://en.wikipedia.org/wiki/Branch_(computer_science)[branch] optimizer "collapses" _type object_ equivalent branches with no effect to the results.
+At https://en.wikipedia.org/wiki/Compiler#Middle_end[type compilation], the https://en.wikipedia.org/wiki/Branch_(computer_science)[branch] optimizer "collapses" _type object_ equivalent branches with no effect to the result.
 The branches' _type quantifiers_ are added using the quantifier ring's \$+\$-operator (the quantifier group).
-Once collapsed, quantifiers can be moved left-or-right using the quantifier ring's multiplicative \$\ast\$-operator due to the _commutativity of quantifiers theorem_ (the quantifier monoid).
-It is more efficient (especially as branches grow in complexity) to compute \$2b\$ than \$b + b\$.
+Once collapsed, quantifiers can be moved left-or-right using the quantifier ring's multiplicative \$\ast\$-operator due to the _commutativity of quantifiers theorem_ (the quantifier monoid). It is more efficient (especially as branches grow in complexity) to compute, for example, \$2b\$ than \$b + b\$. The example below demonstrates how type quantifiers are "collapsed" with \$ +\$ and "slid" left (or right) with \$\ast\$.
 
 [.center]
 [cols=".^1,5",width=65,frame=none,grid=none]
@@ -540,7 +533,7 @@ a(b+b)c &= a(2b)c \\
 | image:branch-q-addition.svg[align=center,width=500]
 |===
 
-The following two examples highlight the fact that type signature quantifiers are used for https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking] and type definition quantifiers are used for https://en.wikipedia.org/wiki/Type_inference[type inference].
+The following two examples highlight the fact that type signature quantifiers are used for https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking] and type definition quantifiers are used for https://en.wikipedia.org/wiki/Type_inference[type inference]. The algebra of quantification will be explained in much more detail later when discussing the ring algebra of mm-ADT.
 
 [.center]
 [cols="4,2",width=80]
@@ -871,7 +864,15 @@ Anonymous types are useful in other situations besides https://en.wikipedia.org/
 <2> When used in a `|-rec` `poly`, `_` is used to denote the https://en.wikipedia.org/wiki/Switch_statement[default case].
 <3> `5` is both an `int` and a `_`, but not a `str`.
 
-In general, anonymous types are https://en.wikipedia.org/wiki/Pattern_matching#Primitive_patterns[wildcards] because they https://en.wikipedia.org/wiki/Matching_wildcards[pattern match] to every `obj`. As will be demonstrated soon, when a *variable* is specified (e.g. `[plus,x]`) or a new type is specified (e.g. `x:42`), The `x` is a *named anonymous type*. The entailment of this is that types and variables are in the same https://en.wikipedia.org/wiki/Namespace[namespace].
+In general, anonymous types are https://en.wikipedia.org/wiki/Pattern_matching#Primitive_patterns[wildcards] because they https://en.wikipedia.org/wiki/Matching_wildcards[pattern match] to every `obj`. As will be demonstrated soon, when a *variable* is specified (e.g. `[plus,x]`) or a new type is specified (e.g. `x:42`), The `x` is a *named anonymous type*. The entailment of this is that types and variables are in the same https://en.wikipedia.org/wiki/Namespace[namespace]. Two presumably self-explanatory examples are provided below with a more detailed discussion of variables and named types forthcoming.
+
+[exec]
+----
+1 => int[plus,2][to,x][plus,3][mult,x]
+int[plus,2][to,x][plus,3][mult,x][explain]
+1 => int[define,x<=int[plus,100]][x]
+int[define,x<=int[plus,100]][x][explain]
+----
 
 ===== Mono Types
 
