@@ -8,7 +8,7 @@ mm:(
    rec    -> (rec),
    inst   -> (inst),
    (_)    -> ((_)<=^:([id])
-              /* ([branch,x])<=([split,<x>][merge]) */
+              /* ([branch,x])<=^:([split,<x>][merge]) */
               ),
    (int)  -> ((int)<=^:(int[neg][neg]),
               (int)<=^:(int[plus,0]),

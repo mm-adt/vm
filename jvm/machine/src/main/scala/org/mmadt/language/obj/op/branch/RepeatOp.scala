@@ -49,7 +49,7 @@ object RepeatOp extends Func[Obj, Obj] {
         case times:IntValue => 1L.to(times.g).foldLeft(start.q(q => q.mult(inst.q)).asInstanceOf[Obj])((aobj, _) => aobj `=>` body)
         case _:Obj =>
           def loop(incoming:Obj):Obj = {
-            strm(incoming.toStrm.values.map(x => {
+            strm(incoming.toStrm.drain.map(x => {
               val outgoing:Obj = x `=>` body
               if (!(outgoing ~~> until).alive) outgoing else loop(outgoing)
             }))

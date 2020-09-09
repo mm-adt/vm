@@ -52,7 +52,7 @@ class VIntTest extends FunSuite {
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).gt(int(2).q(34)).q(10))
     assertResult(btrue.q(40))(int(3).q(2) ==> int.q(2).plus(int(4)).q(2).a(int.q(0, 4)).q(10))
     //
-    println(int(1, 2, 3).map(int(2)).asInstanceOf[IntStrm].values.map(x => x.trace))
+    println(int(1, 2, 3).map(int(2)).asInstanceOf[IntStrm].drain.map(x => x.trace))
     assertResult(int(int(3).q(5), int(4).q(5)))(int(int(3).q(10), int(4).q(20)).q(5))
     assertResult(int(int(3).q(10), int(4).q(10)))(int(int(3).q(10), int(4).q(20)).q(5).q(10))
   }

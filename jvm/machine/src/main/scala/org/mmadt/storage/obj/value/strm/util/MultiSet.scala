@@ -34,14 +34,13 @@ import scala.collection.immutable.ListSet
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq[A] {
-  def get(a: A): Option[A] = baseSet.find(b => a match {
-    case _: Value[_] if b.isInstanceOf[Value[_]] => a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g)
-    case _: Value[_] => false
-    case _: Type[_] => a.equals(b)
+class MultiSet[A <: Obj](val baseSet:ListSet[A] = ListSet.empty[A]) extends Seq[A] {
+  def get(a:A):Option[A] = baseSet.find(b => a match {
+    case _:Value[_] => b.isInstanceOf[Value[_]] && a.asInstanceOf[Value[_]].g.equals(b.asInstanceOf[Value[_]].g)
+    case _:Type[_] => a.equals(b)
   })
-  def put(a: A): MultiSet[A] = {
-    val oldObj: Option[A] = this.get(a)
+  def put(a:A):MultiSet[A] = {
+    val oldObj:Option[A] = this.get(a)
     if (oldObj.isEmpty)
       new MultiSet[A](baseSet + a)
     else new MultiSet[A]({
@@ -50,25 +49,25 @@ class MultiSet[A <: Obj](val baseSet: ListSet[A] = ListSet.empty[A]) extends Seq
       if (o.alive) b + o else b
     })
   }
-  def objSize: Long = baseSet.size
-  def qSize: IntQ = baseSet.foldRight(qZero)((a, b) => plusQ(a.q, b))
-  override def length: scala.Int = objSize.toInt
-  override def apply(idx: scala.Int): A = this.baseSet.toSeq.apply(idx)
-  override def iterator: Iterator[A] = this.baseSet.iterator
-  override def toSeq: Seq[A] = baseSet.toSeq
+  def objSize:Long = baseSet.size
+  def qSize:IntQ = baseSet.foldRight(qZero)((a, b) => plusQ(a.q, b))
+  override def length:scala.Int = objSize.toInt
+  override def apply(idx:scala.Int):A = this.baseSet.toSeq.apply(idx)
+  override def iterator:Iterator[A] = this.baseSet.iterator
+  override def toSeq:Seq[A] = baseSet.toSeq
 
-  override def hashCode: scala.Int = baseSet.hashCode()
-  override def equals(other: Any): Boolean = other match {
-    case multiSet: MultiSet[_] => multiSet.baseSet == this.baseSet
+  override def hashCode:scala.Int = baseSet.hashCode
+  override def equals(other:Any):Boolean = other match {
+    case multiSet:MultiSet[_] => multiSet.baseSet == this.baseSet
     case _ => false
   }
 }
 
 object MultiSet {
-  def put[A <: Obj](objs: A*): MultiSet[A] = objs.foldLeft(new MultiSet[A])((a, b) => a.put(b))
-  def equals(a: Obj, b: Obj): Boolean = MultiSet(a.toStrm.values) == MultiSet(b.toStrm.values)
-  def apply[A <: Obj](objs: Seq[A]): MultiSet[A] = objs.flatMap {
-    case astrm: Strm[A] => astrm.values
+  def put[A <: Obj](objs:A*):MultiSet[A] = objs.foldLeft(new MultiSet[A])((a, b) => a.put(b))
+  def equals(a:Obj, b:Obj):Boolean = MultiSet(a.toStrm.drain) == MultiSet(b.toStrm.drain)
+  def apply[A <: Obj](objs:Seq[A]):MultiSet[A] = objs.flatMap {
+    case astrm:Strm[A] => astrm.drain
     case x => List(x)
   }.foldLeft(new MultiSet[A])((a, b) => a.put(b))
 }

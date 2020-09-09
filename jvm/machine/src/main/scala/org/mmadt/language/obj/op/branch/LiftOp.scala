@@ -44,9 +44,7 @@ trait LiftOp {
 object LiftOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
   def apply(atype: Obj): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.lift, List(atype)), func = this) with BranchInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    (start.clone(via = (start.rangeObj, inst.clone(_ => List(zeroObj)))) ==> inst.arg0[Obj].trace.reconstruct[Obj](start.range)).via(start, inst)
-  }
+  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = (start.clone(via = (start.rangeObj, inst.clone(_ => List(zeroObj)))) ==> inst.arg0[Obj].trace.reconstruct[Obj](start.range)).via(start, inst)
 
   def inLift(aobj: Obj, inst: Inst[_, _]): Boolean = !inst.op.equals(Tokens.lift) && aobj.via.exists(x => x._2.op.equals(Tokens.lift) && x._2.arg0[Obj].equals(zeroObj)) // TODO: this is costly
 }

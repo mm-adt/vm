@@ -85,7 +85,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val obj:Parser[Obj] = objValue | objType | anonQuant
 
   // variable parsing
-  lazy val symbolName:Parser[String] = "^" | ("[a-zA-Z]+[a-zA-Z_0-9]*".r)
+  lazy val symbolName:Parser[String] = Tokens.lift_op | ("[\\^]?[a-zA-Z]+[a-zA-Z_0-9]*".r)
   lazy val typeNameNoColon:Parser[String] = symbolName.filter(x => !Tokens.reservedTokens.contains(x)) <~ not(":")
   lazy val typeNameColon:Parser[String] = symbolName.filter(x => !Tokens.reservedTokens.contains(x)) <~ ":"
 
@@ -160,7 +160,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val toSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> symbolName <~ RANGLE ^^ (x => ToOp(__(x)))
   lazy val liftSugar:Parser[Inst[Obj, Obj]] = (LANGLE + LANGLE) ~> (objValue | objType) <~ (RANGLE + RANGLE) ^^ (x => LiftOp(x))
   lazy val fromSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
-  lazy val repeatSugar:Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.pow_op ~> LROUND ~> obj <~ RROUND) ^^ (x => RepeatOp(x._1, x._2))
+  lazy val repeatSugar:Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.lift_op ~> LROUND ~> obj <~ RROUND) ^^ (x => RepeatOp(x._1, x._2))
   lazy val sugarlessInst:Parser[Inst[Obj, Obj]] = LBRACKET ~> ((LROUND + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + RROUND + "|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
   lazy val branchSugar:Parser[Inst[Obj, Obj]] = ((LBRACKET ~> lstStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(lst(g = (x._1, x._2)))) | ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(rec(g = (x._1, x._2))))
   // quantifier parsing

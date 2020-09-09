@@ -127,7 +127,7 @@ object Tokens {
   val is_a_op = "?"
 
   val split_op = "-<"
-  val pow_op = "^"
+  val lift_op = "^" // -^ like -< but over and up. (^- ?)
   val combine_op = "="
   val merge_op = ">-"
   val as_op = "~"
@@ -143,7 +143,7 @@ object Tokens {
   val :=> = "=>"
   val :<= = "<="
 
-  def named(name:String):Boolean = !Set(bool, str, real, rec, int, inst, lst, anon).contains(name) // TODO: global immutable set
+  def named(name:String):Boolean = !Set(bool, str, real, rec, int, inst, lst, anon, lift_op).contains(name) // TODO: global immutable set
   def tryName[A <: Obj](fromObj:Obj, toObj:A):A = if (Tokens.named(fromObj.name)) toObj.named(fromObj.name) else toObj
 
   lazy val LANGLE = "<"

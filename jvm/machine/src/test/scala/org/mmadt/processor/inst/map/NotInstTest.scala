@@ -22,28 +22,24 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
-import org.mmadt.language.obj.Bool
+import org.mmadt.language.obj.Obj.{booleanToBool, intToInt}
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.map.NotOp
+import org.mmadt.language.obj.`type`.__._
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 
-class NotInstTest extends FunSuite with TableDrivenPropertyChecks {
+class NotInstTest extends BaseInstTest(
+  testSet("[not] table test",
+    testing(true, not(__), false, "true[not,_]"),
+    testing(true, not(bool), false, "true[not,bool]"),
+    testing(true.q(19), not(__), false.q(19), "true{19} => [not,_]"),
+    testing(false, not(__), true, "false[not,_]"),
+    testing(5, int.gt(10).not(bool), true, "5=>int>10[not,bool]"),
+    testing(5, int.gt(10).q(10).not(__), true.q(10), "5 => int[gt,10]{10}[not,_]"),
+    testing(int, gt(10).not(__), int.gt(10).not(bool), "int[gt,10][not,_]"),
+    testing(int, gt(10).q(0).not(__), bool.q(qZero), "int[gt,10]{0}[not,_]"),
+    testing(13.q(2), and(int.gt(10), int.lt(15)).q(10).not(__), false.q(20)),
+  ))
 
-  test("[not] value, type, strm, anon combinations") {
-    val starts: TableFor2[Bool, Bool] =
-      new TableFor2[Bool, Bool](("query", "result"),
-        (btrue, bfalse),
-        (btrue.q(19), bfalse.q(19)),
-        (bfalse, btrue),
-        (int(5).gt(10), btrue),
-        (int(5).gt(10).q(10), btrue.q(10)),
-        (int.gt(10), int.gt(10).not(bool)),
-        (int.gt(10).q(0), bool.q(qZero)),
-        (int(13).q(2).and(int.gt(10), int.lt(15)).q(10), bfalse.q(20)),
-      )
-    forEvery(starts) { (left, right) => TestUtil.evaluate(left, __.not(__), right, NotOp(__)) }
-  }
-}
+

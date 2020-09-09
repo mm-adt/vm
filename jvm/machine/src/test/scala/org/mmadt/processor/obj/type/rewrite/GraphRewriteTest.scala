@@ -57,13 +57,13 @@ class GraphRewriteTest extends FunSuite {
     val peter:Vertex = rec(str("id") -> int(6)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
     val graph:OStrm[Vertex] = strm[Vertex](marko, vadas, lop, josh, ripple, peter)
 
-    assertResult(6)(graph.values.length)
-    graph.values.foreach(v => assert(v.test(vertex)))
-    graph.values.foreach(v => assert(!v.test(edge)))
+    assertResult(6)(graph.drain.length)
+    graph.drain.foreach(v => assert(v.test(vertex)))
+    graph.drain.foreach(v => assert(!v.test(edge)))
 
-    assertResult(6)(graph.get("id").is(int.gt(0)).is(int.lt(7)).toStrm.values.length)
-    assertResult(5)(graph.get("id").is(int.gt(0)).is(int.lt(6)).toStrm.values.length)
-    assertResult(4)(graph.get("id").is(int.gt(1)).is(int.lt(6)).toStrm.values.length)
+    assertResult(6)(graph.get("id").is(int.gt(0)).is(int.lt(7)).toStrm.drain.length)
+    assertResult(5)(graph.get("id").is(int.gt(0)).is(int.lt(6)).toStrm.drain.length)
+    assertResult(4)(graph.get("id").is(int.gt(1)).is(int.lt(6)).toStrm.drain.length)
   }
 
   test("connected values") {

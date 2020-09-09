@@ -84,7 +84,7 @@ object mmlangPrinter {
     case _ => "{" + x._1.g + "," + x._2.g + "}"
   }
 
-  def strmString(strm:Strm[_]):String = if (!strm.alive) zeroObj.toString else strm.values.foldLeft(LBRACKET)((a, b) => a + b.toString + COMMA).dropRight(1) + RBRACKET
+  def strmString(strm:Strm[_]):String = if (!strm.alive) zeroObj.toString else strm.drain.foldLeft(LBRACKET)((a, b) => a + b.toString + COMMA).dropRight(1) + RBRACKET
 
   def typeString(atype:Type[_]):String = {
     val range = (atype match {

@@ -23,8 +23,8 @@
 package org.mmadt.processor.obj.`type`.rewrite
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.`type`.__.{id, _}
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite, removeRules}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
@@ -46,7 +46,7 @@ object TraceScanRewrite extends Rewrite {
     var b:Obj = a
     rewrites.foreach(rewrite => {
       if (rewrite.equals((__ `,`) <= '^(id `,`))) {
-        b = removeRules(BranchRewrite.processType(BranchRewrite().exec(IdRewrite.processType(b))).asInstanceOf[A])
+        b = removeRules(BranchRewrite.processType(BranchRewrite().exec(IdRewrite.processType(b))).asInstanceOf[A]) // a faster implementation of id rewrite removal
       } else {
         a = b
         b = b.domainObj
@@ -101,7 +101,6 @@ object TraceScanRewrite extends Rewrite {
       val middle = y.exec(x)
       model = mergeAllModels(middle, middle.model)
       middle
-
     })
     range.foldLeft(query)((x, y) => y.exec(x.model(model)))
   }

@@ -22,31 +22,23 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.op.trace.PathOp
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
-class PathInstTest extends FunSuite with TableDrivenPropertyChecks {
-  test("[path] value, type, strm") {
-    val starts: TableFor3[Obj, Obj, Obj] =
-      new TableFor3[Obj, Obj, Obj](("input", "type", "result"),
-        (str("a"), __.plus("b").plus("c").path(VERTICES), str("a") `;` "ab" `;` "abc"),
-        (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(VERTICES), str("a") `;` "ab" `;` "ababcd" `;` "ababcde"),
-        (str("a"), __.plus("b").plus(__.plus("c").plus("d")).plus("e").path(VERTICES).get(1).path(VERTICES), str("a") `;` "ab" `;` "ababcd" `;` "ababcde"),
-        (int(1, 2, 3), __.plus(1).path(VERTICES), strm(List(int(1) `;` 2, int(2) `;` 3, int(3) `;` 4))),
-        (int(1, 2, 3), __.plus(1).plus(2).path(VERTICES), strm(List(int(1) `;` 2 `;` 4, int(2) `;` 3 `;` 5, int(3) `;` 4 `;` 6))),
-      )
-    forEvery(starts) { (input, atype, result) => TestUtil.evaluate(input, atype, result, PathOp((__ `;` zeroObj)).q(atype.trace.head._2.q))
-    }
-  }
+class PathInstTest extends BaseInstTest(
+  testSet("[path] table test",
+    testing("a", plus("b").plus("c").path(VERTICES), "a" `;` "ab" `;` "abc", "'a'[plus,'b'][plus,'c'][path,(_;)]"),
+    testing("a", str.plus("b").plus(plus("c").plus("d")).plus("e").path(VERTICES), "a" `;` "ab" `;` "ababcd" `;` "ababcde", "'a'=>str[plus,'b'][plus,[plus,'c'][plus,'d']][plus,'e'][path,(_;)]"),
+    testing("a", plus("b").plus(plus("c").plus("d")).plus("e").path(VERTICES).get(1).path(VERTICES), str("a") `;` "ab" `;` "ababcd" `;` "ababcde", "'a'+'b'[++'c'+'d']+'e'[path,(_;)]"),
+    testing(int(1, 2, 3), plus(1).path(VERTICES), strm(List(1 `;` 2, 2 `;` 3, 3 `;` 4)), "[1,2,3][plus,1][path,(_;)]"),
+    testing(int(1, 2, 3), int.q(3).plus(1).plus(2).path(VERTICES), strm(List(1 `;` 2 `;` 4, 2 `;` 3 `;` 5, 3 `;` 4 `;` 6)), "[1,2,3]=>int{3}+1+2[path,(_;)]"),
+  )) {
   test("[path] w/ int value") {
-    assertResult(int(0) `;` 1 `;` 3 `;` 6 `;` 10)(int(0).plus(1).plus(2).plus(3).plus(4).path(VERTICES))
+    assertResult(0 `;` 1 `;` 3 `;` 6 `;` 10)(0.plus(1).plus(2).plus(3).plus(4).path(VERTICES))
   }
-
 }
 

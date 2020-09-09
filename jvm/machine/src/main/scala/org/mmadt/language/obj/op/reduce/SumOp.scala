@@ -50,7 +50,7 @@ object SumOp extends Func[Obj, Obj] {
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {
-      case strm: Strm[Int] => strm.values.foldLeft(int(0))((x, y) => x + int(y.g * y.q._1.g)).clone(q = qOne, via = (start, inst))
+      case strm: Strm[Int] => strm.drain.foldLeft(int(0))((x, y) => x + int(y.g * y.q._1.g)).clone(q = qOne, via = (start, inst))
       case avalue: IntValue => int(avalue.g * avalue.q._1.g).clone(q = qOne, via = (start, inst))
       case _: Type[_] => int.via(start, inst).hardQ(qOne)
     }

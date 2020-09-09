@@ -66,8 +66,8 @@ object GetOp extends Func[Obj, Obj] {
     }
     value match {
       case astrm: Strm[_] =>
-        if (astrm.values.isEmpty) if (start.isInstanceOf[Type[_]]) typeHint.via(start, newInst) else zeroObj
-        else if (1 == astrm.values.size) Poly.finalResult(astrm.values.head, start, newInst)
+        if (astrm.drain.isEmpty) if (start.isInstanceOf[Type[_]]) typeHint.via(start, newInst) else zeroObj
+        else if (1 == astrm.drain.size) Poly.finalResult(astrm.drain.head, start, newInst)
         else astrm(x => Poly.finalResult(x, start, newInst))
       case _ => Poly.finalResult(value, start, newInst)
     }

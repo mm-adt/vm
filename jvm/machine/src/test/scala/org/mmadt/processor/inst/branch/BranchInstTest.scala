@@ -212,14 +212,14 @@ class BranchInstTest extends BaseInstTest(
 ) {
 
   test("[branch] path testing") {
-    assertResult("(5;[plus,0];5;[plus,1];6;[plus,3];9)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path.toStrm.values.head.toString)
-    assertResult("(5;[plus,0];5;[plus,2];7;[plus,3];10)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path.toStrm.values(1).toString)
+    assertResult("(5;[plus,0];5;[plus,1];6;[plus,3];9)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path.toStrm.drain.head.toString)
+    assertResult("(5;[plus,0];5;[plus,2];7;[plus,3];10)")(int(5).plus(0).branch(int.plus(1) `,` int.plus(2)).plus(3).path.toStrm.drain(1).toString)
     //
-    assertResult("(5;[plus,1];6;[plus,11];17;[plus,3];20)")(int(5).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.values.head.toString)
-    assertResult("(5;[plus,2];7;[plus,3];10)")(int(5).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.values(1).toString)
+    assertResult("(5;[plus,1];6;[plus,11];17;[plus,3];20)")(int(5).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.drain.head.toString)
+    assertResult("(5;[plus,2];7;[plus,3];10)")(int(5).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.drain(1).toString)
     //
-    assertResult("(5;[plus,0];5;[plus,1];6;[plus,11];17;[plus,3];20)")(int(5).plus(0).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.values.head.toString)
-    assertResult("(5;[plus,0];5;[plus,2];7;[plus,3];10)")(int(5).plus(0).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.values(1).toString)
+    assertResult("(5;[plus,0];5;[plus,1];6;[plus,11];17;[plus,3];20)")(int(5).plus(0).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.drain.head.toString)
+    assertResult("(5;[plus,0];5;[plus,2];7;[plus,3];10)")(int(5).plus(0).branch(int.plus(1).plus(11) `,` int.plus(2)).plus(3).path.toStrm.drain(1).toString)
   }
 
   /*(int(1, 2), int.q(2).plus(0).branch[Int](plus(1) `,` plus(2)).path(), strm(List(

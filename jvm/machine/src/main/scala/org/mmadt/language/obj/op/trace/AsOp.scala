@@ -83,17 +83,19 @@ object AsOp extends Func[Obj, Obj] {
   private def pickMapping(start:Obj, asObj:Obj):Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
     else {
-      val defined = if (__.isToken(asObj)) start.model.search(start, asObj).headOption else None
-      (start match {
-        case _:Type[Obj] => asObj
-        case _ if defined.isDefined => pickMapping(start, defined.get)
-        case abool:Bool => boolConverter(abool, asObj)
-        case aint:Int => intConverter(aint, asObj)
-        case areal:Real => realConverter(areal, asObj)
-        case astr:Str => strConverter(astr, asObj)
-        case alst:Lst[Obj] => lstConverter(alst, asObj)
-        case arec:Rec[Obj, Obj] => recConverter(arec, asObj)
-      }).update(start.model)
+      if (start.isInstanceOf[Type[_]]) asObj
+      else {
+        val defined = if (__.isToken(asObj)) start.model.search(start, asObj).headOption else None
+        (start match {
+          case _ if defined.isDefined => pickMapping(start, defined.get)
+          case abool:Bool => boolConverter(abool, asObj)
+          case aint:Int => intConverter(aint, asObj)
+          case areal:Real => realConverter(areal, asObj)
+          case astr:Str => strConverter(astr, asObj)
+          case alst:Lst[Obj] => lstConverter(alst, asObj)
+          case arec:Rec[Obj, Obj] => recConverter(arec, asObj)
+        }).update(start.model)
+      }
     }
   }
   private def boolConverter(x:Bool, y:Obj):Obj =

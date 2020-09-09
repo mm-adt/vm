@@ -188,7 +188,7 @@ object Obj {
   }
 
   def iterator[A <: Obj](obj:A):Iterator[A] = obj match {
-    case _:Strm[_] => obj.toStrm.values.iterator
+    case _:Strm[_] => obj.toStrm.drain.iterator
     case _:Value[_] => Iterator(obj)
     case _:Type[_] => Iterator(obj)
   }
