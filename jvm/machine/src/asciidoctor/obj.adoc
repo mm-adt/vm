@@ -1516,42 +1516,41 @@ int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain
 
 ===== Definitions
 
-A *definition* takes the familiar form
+A *definition* takes one of the two familiar forms
 \[
-a<=b,
+a<=b
 \]
 or
 \[
 a:b
 \]
-where \$a\$ is _determined_ by \$b\$ and \$a:b \cong a<=b\$ is used to define new ctypes (i.e., a type definition that requires no instructions to perform that mapping). Analogous phrases are: \$a\$ is a _function_ of \$b\$ or \$a\$ is _dependent_ on \$b\$, and for the latter \$a:b\$ encoding, \$a\$ is _structurally equivalent_ to \$b\$.
+where, for the first, \$a\$ is _generated_ by \$b\$ and for the second, \$a\$ is _structured_ as \$b\$ and, when considering no extending instructions to the \$a<=b\$ form, \$a<=b \cong a:b\$ such that \$b\$ is _named_ \$a\$.
 
-It is no coincidence that every mm-ADT program (type) has this form as every mm-ADT program is a type definition. For most of the documentation, the examples have been from within the `mm` model-ADT where there are 6 types: `bool`, `int`, `real`, `str`, `lst`, and `rec`. It is possible create new types that are ultimately _grounded_ (Cayley rooted) in the `mm` model-ADT types. This is the purpose of the `[define]` instruction.
+For most of the documentation, the examples have been presented solely from within the `mm` model-ADT where there are 6 types: `bool`, `int`, `real`, `str`, `lst`, and `rec` along with their respective instructions. It is possible to extend `mm` with new types that are ultimately _grounded_ (Cayley rooted) in the `mm` model-ADT types. This is the purpose of the `[define]` instruction.
 
 [exec]
 ----
-1 => [define,vertex:('id'->int), %
-             edge:('outV'->vertex,'inV'->vertex)] %
-     -<edge:('outV'->-<vertex:('id'->_),'inV'->-<vertex:('id'->+1))
+1 => edge<=int[model,mm][define,vertex:('id'->int), edge:('outV'->vertex,'inV'->vertex)] %
+              -<('outV'->-<('id'->_),'inV'->-<('id'->+1))
 ----
 
-The `[define]` instruction is placed at the start of the type (the start of the desired definition scope). Such prefixing can happen automatically by way of a *type prefix*. The type prefix is a generalization of an `import` or `module` https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries[library statement] found in other programming languages. The generalization is that a type prefix can be any type. It is simply concatenated to the program type prior to compilation (as ruled by the free `inst` monoid type composition algebra to be detailed soon).
+The first line above reads: Given the value 1, generate an `edge` from that `int` according to the definitions of the model-ADT `mm` extended with two types `vertex` and `edge`. The two new types are defined _in situ_, where a `vertex` is a *refinement* on `rec` constraining `rec` to an `'id'` key with an `int` value and, similarly, `edge` constrains `rec` to keys `'outV'` (edge tail) and `'inV'` (edge head) with corresponding `vertex` values. The second line specifies how this mapping should be done. The incoming `int` is to be *split* (`-<`) across a two element `rec`, where their values are single element `recs` which again split the `int` to be the values for the `'id'` keys. Given `edge\<=int`, an `edge` is the desired output. The `mm` model (and extending definitions) determine the "best" way to construct an `edge` given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant `edge` structure.
+
+The `[define]` instruction is placed at the start of the program (the desired start of the scope of the definition(s)). To ease matters, definition placement can happen automatically by way of a *type prefix*. The type prefix is a generalization of a https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries[library statement] such as `import` or `module` found in other programming languages. The generalization is that a type prefix can be any type (not just `[model]` and `[define]` instructions). The type prefix is concatenated to the program type prior to compilation, where this operation is made sound by the free `inst` monoid.
+
+NOTE: A more sophisticated library infrastructure is provided by the `[model]` instruction (discussion forthcoming).
 
 [exec,exception=LanguageException]
 ----
-:[model,mm][define,vertex:('id'->int), %
-                   edge:('outV'->vertex,'inV'->vertex)]               //<1>
-1 => int-<edge:('outV'->-<vertex:('id'->_), %
-                 'inV'->-<vertex:('id'->+1))                          //<2>
-1 => int-<edge:('outV'->-<vertex:('bad_id'->_), %
-                 'inV'->-<vertex:('bad_id'->+1))                      //<3>
-1 => int-<edge:('outV'->-<vertex:('id'->_), %
-                 'inV'->-<vertex:('id'->+1),'extra'->'data')          //<4>
+:[model,mm][define,vertex:('id'->int),edge:('outV'->vertex,'inV'->vertex)]     //<1>
+1 => edge<=int-<('outV'->-<('id'->_),'inV'->-<('id'->+1))                      //<2>
+1 => edge<=int-<('outV'->-<('ID'->_),'inV'->-<('ID'->+1))                      //<3>
+1 => edge<=int-<('outV'->-<('id'->_),'inV'->-<('id'->+1),'extra'->'data')      //<4>
 ----
-<1> The `mm` model-ADT is extended with a `vertex` and an `edge` definition.
+<1> The type prefix extends the `mm` model-ADT with `vertex` and `edge` definitions.
 <2> The `vertex` and `edge` type definitions are automatically prepended to all subsequent programs.
-<3> If there is no mappig from the start `obj` to the type definition, the `obj` is incorrectly typed.
-<4> If an `obj` has extraneous data, it is still a valid type as it can be mapped to the type definition.
+<3> If there is no mapping (path) from input to output via the type definitions, the program fails.
+<4> Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.
 
 ====== Rewrites
 
