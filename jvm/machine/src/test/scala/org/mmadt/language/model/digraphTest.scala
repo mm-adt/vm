@@ -46,7 +46,7 @@ class digraphTest extends BaseInstTest(
     testing(53, 'nat, 'nat(53), "53 => nat"),
     excepting(-51, 'nat, LanguageException.typingError(-51, 'nat), "-51 => nat"),
     // testing('vertex(str("id") -> 'nat(45)), as(int), 45, "vertex:('id'->nat:45) => [as,int]"),
-    comment("attr"),
+  ), testSet("digraph model attr test", DIGRAPH,
     testing(("name" `;` "marko"), 'attr, 'attr(str("key") -> str("name") `_,` str("value") -> str("marko")), "('name';'marko') => attr"),
     testing(("age" `;` 29), 'attr, 'attr(str("key") -> str("age") `_,` str("value") -> int(29)), "('age';29) => attr"),
     testing(__(
@@ -56,6 +56,10 @@ class digraphTest extends BaseInstTest(
         'attr(str("key") -> str("age") `_,` str("value") -> int(29))),
       "[('name';'marko'),('age';29)] => attr{2}"),
     excepting((20 `;` "marko"), 'attr, LanguageException.typingError((20 `;` "marko"), 'attr), "(20;'marko') => attr"),
+  ), testSet("digraph model vertex test", DIGRAPH,
+    comment("vertex directly"),
+    //testing('vertex(str("id") -> int(12)), __, 'vertex(str("id") -> int(12)), "vertex:('id'->12)"),
+    //excepting('vertex(str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "vertex:('bad_id'->12) => vertex"),
     comment("vertex via int"),
     testing(23, 'vertex, 'vertex(str("id") -> 'nat(23)), "23 => vertex"),
     testing('nat(23), 'vertex, 'vertex(str("id") -> 'nat(23)), "nat:23 => vertex"),
@@ -83,7 +87,7 @@ class digraphTest extends BaseInstTest(
       'vertex,
       'vertex(str("id") -> 'nat(40) `_,` str("attrs") -> 'attr(str("key") -> str("namex") `_,` str("value") -> str("markoxx"))),
       "('40';('name';'marko')) => vertex"),
-    comment("edge"),
+  ), testSet("digraph model edge test", DIGRAPH,
     testing((1 `;` 2), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>edge"),
     testing((1 `;` 2), ('vertex `;` 'vertex) `=>` 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>(vertex;vertex)=>edge"),
   ))

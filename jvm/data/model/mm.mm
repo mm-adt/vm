@@ -7,6 +7,7 @@ mm:(
    lst    -> (lst),
    rec    -> (rec),
    inst   -> (inst),
+   poly   -> ([lst{?}|rec]),
    (_)    -> ((_)<=^:([id])
               /* ([branch,x])<=^:([split,<x>][merge]) */
               ),
