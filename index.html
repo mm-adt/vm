@@ -3628,6 +3628,18 @@ where, for the first, \$a\$ is <em>generated</em> by \$b\$ and for the second, \
 <div class="paragraph">
 <p>The first line above reads: Given the value 1, generate an <code>edge</code> from that <code>int</code> according to the definitions of the model-ADT <code>mm</code> extended with two types <code>vertex</code> and <code>edge</code>. The two new types are defined <em>in situ</em>, where a <code>vertex</code> is a <strong>refinement</strong> on <code>rec</code> constraining <code>rec</code> to an <code>'id'</code> key with an <code>int</code> value and, similarly, <code>edge</code> constrains <code>rec</code> to keys <code>'outV'</code> (edge tail) and <code>'inV'</code> (edge head) with corresponding <code>vertex</code> values. The second line specifies how this mapping should be done. The incoming <code>int</code> is to be <strong>split</strong> (<code>-&lt;</code>) across a two element <code>rec</code>, where their values are single element <code>recs</code> which again split the <code>int</code> to be the values for the <code>'id'</code> keys. Given <code>edge&lt;=int</code>, an <code>edge</code> is the desired output. The <code>mm</code> model (and extending definitions) determine the "best" way to construct an <code>edge</code> given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant <code>edge</code> structure.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+Type definitions (using <code>[define]</code> or <code>[model]</code>) denote canonical mappings within a domain of discourse (i.e., a model). Programs that maintain instructions after <code>b&lt;=a</code> serve to manipulate <code>a</code> just enough to get it to the head of a type definition path that will ultimately reach <code>b</code>. In a well constrained data environment, mm-ADT code has less intermediate instructions with a style of the form \$a \implies b \implies c \implies \ldots \implies z\$, relying on the type definitions to string together a well-reasoned path from source to sink.
+</td>
+</tr>
+</table>
+</div>
 <div class="paragraph">
 <p>The <code>[define]</code> instruction is placed at the start of the program (the desired start of the scope of the definition(s)). To ease matters, definition placement can happen automatically by way of a <strong>type prefix</strong>. The type prefix is a generalization of a <a href="https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries">library statement</a> such as <code>import</code> or <code>module</code> found in other programming languages. The generalization is that a type prefix can be any type (not just <code>[model]</code> and <code>[define]</code> instructions). The type prefix is concatenated to the program type prior to compilation, where this operation is made sound by the free <code>inst</code> monoid.</p>
 </div>
@@ -6951,7 +6963,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-09 14:58:21 -0600
+Last updated 2020-09-10 11:05:10 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
