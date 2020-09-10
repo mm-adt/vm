@@ -1318,9 +1318,9 @@ https://en.wikipedia.org/wiki/Refinement_type[Refinement types] extend a languag
 \]
 In mm-ADT, the above is denote `int[is>0]` which is the sugar form of `int{?}\<=int[is,[gt,0]]`. mm-ADT supports user defined types. In fact, mm-ADT's primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The `[define]` instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on _model-ADTs_, the more general `[model]` instruction will be presented.
 
-.mm-ADT Prefix Type
+.mm-ADT Type Prefix
 ================================================================
-All `mmlang` examples with a `:type` expression are defining a *prefix type*. This type is prefixed to all subsequent expressions. In many ways, a prefix type is like an https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler] https://en.wikipedia.org/wiki/Object_file[object file]. On the other hand, model-ADTs (of `[model]`) are similar to the `import` of https://en.wikipedia.org/wiki/Class_(computer_programming)[class files] in https://en.wikipedia.org/wiki/Object-oriented_programming[object-oriented languages].
+All `mmlang` examples that start with `:` are defining a *type prefix*. This type is prepended to all subsequent expressions. In many ways, a type prefix is like an https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler] https://en.wikipedia.org/wiki/Object_file[object file]. On the other hand, model-ADTs (of `[model]`) are similar to the `import` of https://en.wikipedia.org/wiki/Class_(computer_programming)[class files] in https://en.wikipedia.org/wiki/Object-oriented_programming[object-oriented languages].
 ================================================================
 
 [exec,none="",exception=LanguageException]
@@ -1422,14 +1422,13 @@ However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where elem
 |====
 | idiom                                                                      | inst           | description
 
-| https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]   | `[to]`         | `obj` reference
-| https://en.wikipedia.org/wiki/Data_type[type definitions]                  | `[define]`     | `type` reference
-| https://en.wikipedia.org/wiki/Rewriting[rewrite rules]                     | `[rewrite]`    | `path` equivalence
+| https://en.wikipedia.org/wiki/Variable_%28computer_science%29[variables]   | `[to]`         | `obj` references
+| https://en.wikipedia.org/wiki/Data_type[type definitions]                  | `[define]`     | `type` mappings
 | https://en.wikipedia.org/wiki/Category_(mathematics)[models]               | `[model]`      | domain of discourse
 | https://en.wikipedia.org/wiki/Reversible_computing[reversible computing]   | `[path]`       | computing history
 |====
 
-It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms in the associated table. The general approach: __state is stored along the path of the `obj`.__
+It is through *multiple distinct identities* in `inst` that mm-ADT supports the programming idioms in the associated table. The general approach is __state is stored along the path of the `obj`.__
 
 [exec]
 ----
@@ -1518,13 +1517,13 @@ int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain
 
 A *definition* takes one of the two familiar forms
 \[
-a<=b
+b<=a
 \]
 or
 \[
-a:b
+b:a
 \]
-where, for the first, \$a\$ is _generated_ by \$b\$ and for the second, \$a\$ is _structured_ as \$b\$ and, when considering no extending instructions to the \$a<=b\$ form, \$a<=b \cong a:b\$ such that \$b\$ is _named_ \$a\$.
+where, for the first, \$b\$ is _generated_ by \$a\$ and for the second, \$b\$ is _structured_ as \$a\$ and, when considering no extending instructions to the \$b<=a\$ form, \$b<=a \cong b:a\$ such that \$a\$ is _named_ \$b\$.
 
 For most of the documentation, the examples have been presented solely from within the `mm` model-ADT where there are 6 types: `bool`, `int`, `real`, `str`, `lst`, and `rec` along with their respective instructions. It is possible to extend `mm` with new types that are ultimately _grounded_ (Cayley rooted) in the `mm` model-ADT types. This is the purpose of the `[define]` instruction.
 
