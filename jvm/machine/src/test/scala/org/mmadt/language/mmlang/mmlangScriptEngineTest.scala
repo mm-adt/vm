@@ -790,26 +790,6 @@ class mmlangScriptEngineTest extends FunSuite {
     //assertResult("[int{?}<=int[plus,2][plus,5][is,bool<=int[gt,0]]]<=[int;[plus,2]][mult,[[plus,5];[is,[gt,0]]]]")(engine.eval("[int;[plus,2]][mult,[[plus,5];[is>0]]]").toString)
   }
 
-  test("choice type checking") {
-    assertResult(btrue)(engine.eval("'marko'[a,[str|int]]"))
-    assertResult(bfalse)(engine.eval("'marko'[a,[real|int]]"))
-    assertResult(str)(engine.eval("str-<(str|str|str)>-").range)
-    assertResult(str)(engine.eval("str-<(str|str|str)>-").domain)
-    assertResult(str)(engine.eval("str[str|str|str]").domain)
-    assertResult(str)(engine.eval("str[str|str|str]").range)
-    assertResult(str.q(3))(engine.eval("str[str,str,str]").range)
-    assertResult(str.q(6))(engine.eval("str[str[id]{1};str[id]{3};str[id]{2}]").range)
-    assertResult(str | str | str)(engine.eval("str-<(str|str|str)").range)
-    assertResult(str | str | str)(engine.eval("str-<(_|_|_)").range)
-    assertResult(str)(engine.eval("str[str[id]{2}|str[id]{5}|str[id]{3,7}]").domain)
-    assertResult(str.q(2))(engine.eval("str[str[id]{2}|str[id]{5}|str[id]{3,7}]").range)
-    assertResult(str)(engine.eval("str[str{2}|str{5}|str{3,7}]").domain)
-    // assertResult(str.q(2, 7))(engine.eval("str[str{2}|str{5}|str{3,7}]").range)
-    assertResult(str)(engine.eval("str-<(str[id]{2}|str[id]{5}|str[id]{3,7})>-").domain)
-    assertResult(str.q(2))(engine.eval("str-<(str[id]{2}|str[id]{5}|str[id]{3,7})>-").range)
-    assertResult(int(9, 7))(engine.eval("2[int+7, int+5]"))
-  }
-
   test("poly split/merge/get") {
     assertResult(int(7))(engine.eval("1[plus,1][plus,2][plus,3][path]>-"))
     //
@@ -893,31 +873,6 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(4).q(-1))(engine.eval("1[[plus,1];[mult,2]]{-1}"))
     assertResult(int(4))(engine.eval("1[[plus,1]{-1};[mult,2]{-1}]"))
     assertResult(int(4))(engine.eval("1[[plus,1];[mult,2]]"))
-  }
-
-
-  test("repeat parsing") {
-    assertResult(int(64))(engine.eval("20[plus,10][repeat,int[plus,1],34]"))
-    assertResult(int(64))(engine.eval("20[plus,10](int[plus,1])^(34)"))
-    assertResult(int(64))(engine.eval("20[plus,10]([plus,1])^(34)"))
-    assertResult(int(64))(engine.eval("20+10(+1)^(34)"))
-    assertResult(int(67, 64))(engine.eval("[23,20]+10(+1)^(34)"))
-    //assertResult(((1 `,` 1).q(2)`,`).q(2))(engine.eval("1(-<(_,_))^(3)"))
-    assertResult(int(11))(engine.eval("1(+2)^(is<10)"))
-    assertResult(int(11))(engine.eval("1(+1)^(10)"))
-  }
-
-  test("combine parsing") {
-    assertResult("(2{2},8)")(engine.eval("(1,2,3)=(+1,_,+5)").toString)
-    assertResult("(1;2;(3;(24;15)))")(engine.eval("(1;2;(3;(4;5)))=(_;_;=(int;=(+20;+10)))").toString)
-    assertResult("(8,10)")(engine.eval("(1)>--<(+1,+2)=(*4,+7)").toString)
-    assertResult("(8,10)")(engine.eval("1-<(+1,+2)=(*4,+7)").toString)
-    assertResult("(8,(3,10))")(engine.eval("1-<(+1,+2)=(*4,-<(_,+7))").toString)
-    assertResult("(8,10,(16,18))")(engine.eval("1-<(+1,+2,+3-<(+4,+5))=(+6,+7,=(+8,+9))").toString)
-    //assertResult("(8,(3,10))WRONG")(engine.eval("1-<(+1,+2)=(*4,-<(_,+7))=(_,_)").toString)
-    // assertResult(int(1, 2, 3, 4, 5, 6, 7))(engine.eval("(1,(2,(3,4,(5,6,7))))([lst{?} -> [merge] | _ -> int])^([is,[a,lst]])"))
-    //assertResult("((1,1),(1,1)),((3,3),(3,3)),(((1,2),(3,4)),((1,2),(3,4))){3}")(engine.eval("[1,3,((1,2),(3,4))](-<(_,_))^([a,(int,int)])").toString) // TODO: strm q
-    //assertResult(int(1, 2, 3))(engine.eval("1,2,[3,](-<(_,])^([a,[[[[int,],],],]][neg])=[=[=[=[<y>,],],],](>-)^([a,lst])[map,y?]"))
   }
 
   test("define parsing") {

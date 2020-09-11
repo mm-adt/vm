@@ -24,6 +24,7 @@ package org.mmadt.language.model
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.model.digraphTest.DIGRAPH
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.`type`.{Type, __}
@@ -59,13 +60,14 @@ class digraphTest extends BaseInstTest(
     excepting((20 `;` "marko"), 'attr, LanguageException.typingError((20 `;` "marko"), 'attr), "(20;'marko') => attr"),
   ), testSet("digraph model vertex test", DIGRAPH,
     comment("vertex directly"),
-    //testing('vertex(str("id") -> int(12)), __, 'vertex(str("id") -> int(12)), "vertex:('id'->12)"),
+    testing('vertex(str("id") -> int(12)), __, 'vertex(str("id") -> int(12)), "vertex:('id'->12)"),
     //excepting('vertex(str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "vertex:('bad_id'->12) => vertex"),
+    excepting((str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "('bad_id'->12) => vertex"),
     comment("vertex via int"),
     testing(23, 'vertex, 'vertex(str("id") -> 'nat(23)), "23 => vertex"),
     testing('nat(23), 'vertex, 'vertex(str("id") -> 'nat(23)), "nat:23 => vertex"),
     testing(-23, 'vertex, 'vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data"))), "-23 => vertex"),
-    excepting(0, 'vertex, LanguageException.typingError((0 `;`("no" `;` "data")).q(qZero), (str("id") -> __("nat") `_,` str("attrs") -> 'attr.q(*)).asInstanceOf[Type[_]]), "0 => vertex"),
+    excepting(0, 'vertex, LanguageException.typingError((0 `;`("no" `;` "data")).q(qZero), __ <=[Obj] (str("id") -> __("nat") `_,` str("attrs") -> 'attr.q(*)).asInstanceOf[Type[_]]), "0 => vertex"),
     comment("vertex via int/pair"),
     testing((1 `;` 2), as('vertex `;` 'vertex), 'vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2)), "(1;2)=>[as,(vertex;vertex)]"), // shouldn't need [as]
     testing(

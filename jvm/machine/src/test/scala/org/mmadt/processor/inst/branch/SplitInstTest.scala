@@ -23,7 +23,7 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.Obj.{symbolToToken, intToInt, tupleToRecYES}
+import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
@@ -32,7 +32,7 @@ import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory.{real, _}
 
 class SplitInstTest extends BaseInstTest(
-  testSet("[split] table test",
+  testSet("[split] |-lst table test",
     testing(lst, is(lst.eqs(lst.zero)), lst, "lst => [is,lst[eq,lst[zero]]]"),
     testing(lst, eqs(lst.zero), btrue, "lst => [eq,lst[zero]]"),
     testing(1, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"), // why 1 not work?
@@ -50,7 +50,7 @@ class SplitInstTest extends BaseInstTest(
     testing(int(1.q(5), 100), -<(int | int.plus(2).q(10)) >-, int(int(1).q(5), 100)),
     testing(int(1, 2), -<(int.q(?) | (int -< (int.q(?) | int))), __(int(1) `|`, int(2) `|`), "[1,2] => -<(int{?}|int-<(int{?}|int))"),
     testing(int(1, 2), -<(int | (int -< (int | int))), __(int(1) `|`, int(2) `|`), "[1,2]-<(int|int-<(int|int))"),
-    testing(int(1, 2), -<(int `,` (int -< (int | int))), __(int(1) `,` (int(1) |), 2 `,` (int(2) |))),
+    testing(int(1, 2), -<(int `,`(int -< (int | int))), __(int(1) `,`(int(1) |), 2 `,`(int(2) |))),
     testing(1, -<(str.q(?) | int), zeroObj | 1, "1-<(str{?}|int)"),
     testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
     testing(int(1, 2, 3), int.q(3).-<(int.q(3) `;` int.q(3)), strm(List(1 `;` 1, 2 `;` 2, 3 `;` 3)), "(1,2,3) => lst>--<(int{3};int{3})"),
@@ -59,7 +59,8 @@ class SplitInstTest extends BaseInstTest(
     testing(2.q(2), int.q(2).-<(int `;` int.is(gt(10))), (2 `;` zeroObj).q(2), "2{2} => int{2}-<(int;int[is>10])"),
     testing(2, int.-<(int `;` int.is(gt(10))), 2 `;` zeroObj, "2 => int-<(int;int[is>10])"),
     testing(2, int.-<((int | int.is(gt(11))) | int.is(gt(10))), (2 | zeroObj | zeroObj), "2 => int-<(int|int[is>11])"),
-    comment("[split] |-rec table test"),
+  ),
+  testSet("[split] |-rec table test",
     testing(0, plus(1).-<(
       int.is(int.gt(2)) -> int.mult(3) |
         int -> int.mult(4)) >-, 4, "0[plus,1]-<(int[is>2] -> int[mult,3] | int -> int[mult,4])>-"),
@@ -69,15 +70,15 @@ class SplitInstTest extends BaseInstTest(
         int.is(int.gt(20)) -> int.plus(3) |
         int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 42, "0 => int[plus,39]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
     IGNORING("eval-6")(0, int.plus(29).-<(
-      int.is(int.gt(40)) -> int.plus(1) |
-        int.is(int.gt(30)) -> int.plus(2) |
-        int.is(int.gt(20)) -> int.plus(3) |
+      int.is(int.gt(40)) -> int.plus(1) `_|`
+        int.is(int.gt(30)) -> int.plus(2) `_|`
+        int.is(int.gt(20)) -> int.plus(3) `_|`
         int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
     IGNORING("eval-6")(0, int.plus(29).-<(
-      int.is(gt(40)) -> int.plus(1) |
-        int.is(gt(30)) -> int.plus(2) |
-        int.is(gt(20)) -> int.plus(3) |
-        int.is(gt(10)) -> int.plus(4)).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
+      (is(gt(40)) -> int.plus(1)) |
+        (is(gt(30)) -> int.plus(2)) |
+        (is(gt(20)) -> int.plus(3)) |
+        (is(gt(10)) -> int.plus(4))).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
     IGNORING("eval-5", "query-2")(29, int.-<(
       int.is(int.gt(40)) -> plus(1) `_|`
         int.is(int.gt(30)) -> plus(2) `_|`
@@ -87,7 +88,8 @@ class SplitInstTest extends BaseInstTest(
       real.q(3).to('x).plus(1.0).to('y).-<(
         (is(eqs(1.0)) -> real.from('y)) |
           (is(eqs(2.0)) -> real.from('x))).>-.plus(real.from('y)), real(2.0, 3.0, 3.0)),
-    comment("[split] ,-rec table test"),
+  ),
+  testSet("[split] ,-rec table test",
     testing(0, plus(1).-<(int.is(int.gt(2)) -> int.mult(3) `_,` int -> int.mult(4)) >-, 4),
     testing(0, plus(4).-<(
       (int.is(int.gt(2)) -> int.mult(3)) `,`

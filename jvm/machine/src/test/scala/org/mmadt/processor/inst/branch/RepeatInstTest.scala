@@ -32,13 +32,15 @@ import org.mmadt.storage.StorageFactory.int
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class RepeatInstTest extends BaseInstTest(
-
   testSet("[repeat]",
     comment("times"),
+    testing(1, repeat(plus(1))(10), 11, "1(+1)^(10)"),
     testing(5, repeat(plus(1))(10), 15, "5[repeat,+1,10]"),
+    testing(5.q(2), repeat(plus(1).q(2))(4).plus(2), 11.q(32)), //"5{2}(+1{2})^(4)[plus,2]"),
     testing(int(5, 6), repeat(plus(1))(10), int(15, 16), "[5,6][repeat,+1,10]"),
     testing(0, int.repeat(plus(2).mult(5))(10), 24414060, "0 => int[repeat,[plus,2][mult,5],10]"),
     comment("checking"),
+    testing(1, repeat(plus(2))(is(lt(10))), 11, "1(+2)^(is<10)"),
     testing(5, repeat(plus(1))(is(lt(10))), 10, "5[repeat,+1,is<10]"),
     testing(int(5, 6), repeat(plus(1))(is(lt(10))), 10.q(2), "[5,6](+1)^(is<10)"),
     testing(int(5, 6), repeat(plus(2))(is(lt(10))), int(10, 11), "[5,6](+2)^(is<10)"),
@@ -53,6 +55,8 @@ class RepeatInstTest extends BaseInstTest(
     testing(7, int.to('x).repeat(int.to('y).plus(int.from('x)))(int.is(lt(10))).mult(from('x)), 98, "7 => int<x>[repeat,int<y>[plus,int<.x>],int[is<10]][mult,x]"),
     testing(8, to('x).repeat(to('y).plus(from('x)))(is(lt(10))).mult(from('x)), 128, "8<x>[repeat,<y>[plus,x],is<10][mult,x]"),
     testing(int(5, 6), to('x).repeat(to('y).plus(from('x)))(is(lt(10))).mult(from('x)), int(50, 72), "[5,6]<x>[repeat,<y>[plus,x],is<10][mult,x]"),
+    comment("splitting"),
+    // testing(1, lst<=int.repeat(-<(__))(3), lst(lst(lst(int(1)))), "1(-<(_))^(3)"),
     comment("branching"),
     testing(2, int.repeat(branch(plus(1) `,` mult(2)))(1).plus(10), int(13, 14), "2 => int([+1,*2])^(1)[plus,10]"),
     testing(2, int.repeat(branch(plus(1) `,` mult(2)))(2).plus(10), int(14, 16, 15, 18), "2 => int([+1,*2])^(2)[plus,10]"),
