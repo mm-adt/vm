@@ -111,7 +111,7 @@ public class Console {
         terminal.writer().println(HEADER);
         terminal.flush();
         // initial model is mm
-        engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.COLON(), __.apply(Tokens.anon()).model((Rec) engine.eval(Files.lines(Paths.get(MM_MODEL)).reduce("", (a, b) -> a + " " + b))));
+        engine.getContext().getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.COLON(), __.apply(Tokens.anon()).model((Rec) engine.eval(Files.lines(Paths.get(MM_MODEL)).reduce("", (a, b) -> a + b + "\n"))));
         while (true) {
             try {
                 String line = reader.readLine(engineName + "> ");
