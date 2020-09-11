@@ -22,61 +22,55 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.TestUtil
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.language.obj.`type`.__._
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class MapInstTest extends FunSuite with TableDrivenPropertyChecks {
-
-  test("[map] value, type, strm, anon combinations") {
-    val starts: TableFor3[Obj, Obj, String] =
-      new TableFor3[Obj, Obj, String](("query", "result", "type"),
-        //////// INT
-        (int(2).map(1), int(1), "value"), // value * value = value
-        (int(2).q(10).map(int(1)), int(1).q(10), "value"), // value * value = value
-        (int(2).q(10).map(int(1)).q(20), int(1).q(200), "value"), // value * value = value
-        (int(2).map(int(1).q(10)), int(1).q(10), "value"), // value * value = value
-        (int(2).map(int), int(2), "value"), // value * type = value
-        (int(2).q(3).map(int.id.q(5)), int(2).q(15), "value"), // value * type = value
-        (int(2).q(3).map(int.q(5)), int(2).q(15), "value"), // value * type = value
-        (int(2).q(3).map(__.-<(__ `,` __)) >-, int(2).q(6), "value"), // value * type = value
-        (int(2).q(3).map(__.id.q(10).-<(__ `,` __)) >-, int(2).q(60), "value"), // value * type = value
-        (int(2).map(__.mult(int)), int(4), "value"), // value * anon = value
-        (int.map(int(2)), int.map(int(2)), "type"), // type * value = type
-        (int.q(10).map(int(2)), int.q(10).map(int(2)), "type"), // type * value = type
-        (int.map(int), int.map(int), "type"), // type * type = type
-        (int(1, 2, 3).map(2), int(2, 2, 2), "strm"), // strm * value = strm
-        (int(1, 2, 3).map(int(2).q(10)), int(int(2).q(10), int(2).q(10), int(2).q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3) ==> __.map(int(2)).q(10), int(int(2).q(10), int(2).q(10), int(2).q(10)), "strm"), // strm * value = strm
-        (int(1, 2, 3).map(int), int(1, 2, 3), "strm"), // strm * type = strm
-        (int(1, 2, 3).map(int.mult(int)), int(1, 4, 9), "strm"), // strm * type = strm
-        (int(1, 2, 3).map(__.mult(int)), int(1, 4, 9), "strm"), // strm * anon = strm
-        (int(1, 2, 3).q(3).map(__.id.q(10).-<(int(7) `,` int(7))) >-, int(7).q(180), "value"), // strm * type = strm
-        (int(1, 2, 3).q(3).map(__.id.q(10).-<(int(7) `,` int(7)).q(10)) >-, int(7).q(1800), "value"), // strm * type = strm
-        //////// REAL
-        (real(2.0).map(real(1.0)), real(1.0), "value"), // value * value = value
-        (real(2.0).map(real), real(2.0), "value"), // value * type = value
-        (real(2.0).map(__.mult(real)), real(4.0), "value"), // value * anon = value
-        (real.map(real(2.0)), real.map(2.0), "type"), // type * value = type
-        (real.map(real), real.map(real), "type"), // type * type = type
-        (real(1.0, 2.0, 3.0).map(2.0), real(2.0, 2.0, 2.0), "strm"), // strm * value = strm
-        (real(1.0, 2.0, 3.0).map(real), real(1.0, 2.0, 3.0), "strm"), // strm * type = strm
-        (real(1.0, 2.0, 3.0).map(__.mult(real)), real(1.0, 4.0, 9.0), "strm"), // strm * anon = strm
-      )
-    forEvery(starts) { (query, result, kind) => TestUtil.evaluate(query, __, result, compile = false)
-    }
-  }
+class MapInstTest extends BaseInstTest(
+  testSet("[map] table testing",
+    comment("int"),
+    testing(2, map(1), 1, "2[map,1]"),
+    testing(2.q(10), int.q(10).map(1), 1.q(10), "2{10} => int{10}[map,1]"),
+    testing(2.q(10), int.q(10).map(int(1)).q(20), 1.q(200), "2{10}=>int{10}[map,1]{20}"),
+    testing(2, map(1.q(10)), 1.q(10)),
+    testing(2, map(int), 2),
+    //testing(2.q(3), int.q(3).map(int.id.q(5)), 2.q(15), "2{3} => int{3}[map,int[id]{5}]"),
+    //testing(2.q(3), map(int.id.q(5)), 2.q(15), "2{3}[map,int[id]{5}]"),
+    //testing(2.q(3), map(int.q(5)), 2.q(15), "2{3}[map,int{5}]"),
+    //testing(2.q(3), map(-<(__ `,` __)) >-, 2.q(6), "2{3}[map,-<(_,_)]>-"),
+    //testing(2.q(3), map(id.q(10).-<(__ `,` __)) >-, 2.q(60)),
+    testing(2, map(mult(int)), int(4)),
+    testing(int, map(2), int.map(2)),
+    testing(int.q(10), map(2), int.q(10).map(2)),
+    testing(int, map(int), int.map(int)),
+    testing(int(1, 2, 3), map(2), int(2, 2, 2)),
+    testing(int(1, 2, 3), map(2.q(10)), int(2.q(10), 2.q(10), 2.q(10))),
+    testing(int(1, 2, 3), int.q(3).map(int(2)).q(10), int(2.q(10), 2.q(10), 2.q(10)), "[1,2,3]=>int{3}[map,2]{10}"),
+    //testing(int(1, 2, 3), map(int), int(1, 2, 3)),
+    //testing(int(1, 2, 3), map(int.mult(int)), int(1, 4, 9)),
+    //testing(int(1, 2, 3), map(mult(int)), int(1, 4, 9)),
+    testing(int(1, 2, 3).q(3), map(id.q(10).-<(int(7) `,` int(7))) >-, int(7).q(180)),
+    testing(int(1, 2, 3).q(3), map(id.q(10).-<(int(7) `,` int(7)).q(10)) >-, int(7).q(1800)),
+    comment("real"),
+    testing(2.0, real.map(1.0), 1.0, "2.0 => real[map,1.0]"),
+    testing(2.0, map(real), 2.0, "2.0[map,real]"),
+    testing(2.0, map(mult(real)), 4.0, "2.0[map,[mult,real]]"),
+    testing(real, map(2.0), real.map(2.0), "real[map,2.0]"),
+    testing(real, map(real), real.map(real), "real[map,real]"),
+    testing(real(1.0, 2.0, 3.0), real.q(3).map(2.0), real(2.0, 2.0, 2.0), "[1.0,2.0,3.0]=>real{3}[map,2.0]"),
+    //testing(real(1.0, 2.0, 3.0), map(real), real(1.0, 2.0, 3.0), "[1.0,2.0,3.0][map,real]"),
+    //testing(real(1.0, 2.0, 3.0), real.q(3).map(mult(real)), real(1.0, 4.0, 9.0), "[1.0,2.0,3.0]=>real{3}[map,*real]"),
+  )) {
 
   test("[map] w/ values") {
-    assertResult(int(5))(int(1).plus(1).map(int(5)))
-    assertResult(int(2))(int(1).plus(1).map(int))
-    assertResult(int(20))(int(1).plus(1).map(int.mult(10)))
+    assertResult(int(5))(1.plus(1).map(int(5)))
+    assertResult(int(2))(1.plus(1).map(int))
+    assertResult(int(20))(1.plus(1).map(int.mult(10)))
   }
   test("[map] w/ types") {
     assertResult("int[plus,1][map,int]")(int.plus(1).map(int).toString)
@@ -85,6 +79,5 @@ class MapInstTest extends FunSuite with TableDrivenPropertyChecks {
     assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int.mult(10)).toString)
     //
     assertResult(int(60))(int(5) ==> int.plus(1).map(int.mult(10)))
-
   }
 }
