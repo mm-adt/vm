@@ -37,14 +37,14 @@ trait Lst[+A <: Obj] extends Poly[A]
   with PlusOp[Lst[Obj]]
   with MultOp[Lst[Obj]]
   with ZeroOp[Lst[Obj]] {
-  def g: LstTuple[A]
-  def gsep: String = g._1
-  lazy val glist: List[A] = if (null == g._2) List.empty[A] else g._2.map(x => x.update(this.model))
-  override def ctype: Boolean = null == g._2 // type token
-  override def scalarMult(start: Obj): this.type = this.clone(values => Lst.moduleStruct(gsep, values, start))
+  def g:LstTuple[A]
+  def gsep:String = g._1
+  lazy val glist:List[A] = if (null == g._2) List.empty[A] else g._2.map(x => x.update(this.model))
+  override def ctype:Boolean = null == g._2 // type token
+  override def scalarMult(start:Obj):this.type = this.clone(values => Lst.moduleStruct(gsep, values, start))
 
-  override def equals(other: Any): Boolean = other match {
-    case alst: Lst[_] => Poly.sameSep(this, alst) &&
+  override def equals(other:Any):Boolean = other match {
+    case alst:Lst[_] => Poly.sameSep(this, alst) &&
       this.name.equals(alst.name) &&
       eqQ(this, alst) &&
       //this.glist.size == alst.glist.size &&
@@ -52,15 +52,15 @@ trait Lst[+A <: Obj] extends Poly[A]
       else this.glist.zip(alst.glist).forall(b => b._1.equals(b._2))) // lst semantics for monoids
     case _ => true // MAIN EQUALS IS IN TYPE
   }
-  def clone(f: List[A] => List[_]): this.type = this.clone(g = (this.gsep, f(this.glist)))
-  final override def `,`: Lst[this.type] = lst(g = (Tokens.`,`, List(this)))
-  final override def `,`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`,`, next)
-  final override def `;`: Lst[this.type] = lst(g = (Tokens.`;`, List(this)))
-  final override def `;`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`;`, next)
-  final override def `|`: Lst[this.type] = lst(g = (Tokens.`|`, List(this)))
-  final override def `|`(next: Obj): Lst[next.type] = this.lstMaker(Tokens.`|`, next)
+  def clone(f:List[A] => List[_]):this.type = this.clone(g = (this.gsep, f(this.glist)))
+  final override def `,`:Lst[this.type] = lst(g = (Tokens.`,`, List(this)))
+  final override def `,`(next:Obj):Lst[next.type] = this.lstMaker(Tokens.`,`, next)
+  final override def `;`:Lst[this.type] = lst(g = (Tokens.`;`, List(this)))
+  final override def `;`(next:Obj):Lst[next.type] = this.lstMaker(Tokens.`;`, next)
+  final override def `|`:Lst[this.type] = lst(g = (Tokens.`|`, List(this)))
+  final override def `|`(next:Obj):Lst[next.type] = this.lstMaker(Tokens.`|`, next)
 
-  private final def lstMaker(sep: String, obj: Obj): Lst[obj.type] = {
+  private final def lstMaker(sep:String, obj:Obj):Lst[obj.type] = {
     obj match {
       case _ if sep != this.gsep => lst(g = (sep, List(this, obj).asInstanceOf[List[obj.type]]))
       case _ => this.clone(g = (sep, this.g._2 :+ obj)).asInstanceOf[Lst[obj.type]]
@@ -71,7 +71,7 @@ trait Lst[+A <: Obj] extends Poly[A]
 object Lst {
   type LstTuple[+A <: Obj] = (String, List[A])
 
-  def test[A <: Obj](alst: Lst[A], blst: Lst[A]): Boolean =
+  def test[A <: Obj](alst:Lst[A], blst:Lst[A]):Boolean =
     Poly.sameSep(alst, blst) &&
       withinQ(alst, blst) &&
       (blst.ctype || {
@@ -85,10 +85,10 @@ object Lst {
         else pair._1.test(pair._2))
     }
 
-  def moduleStruct[A <: Obj](gsep: String, values: List[A], start: Obj = null): List[A] = gsep match {
+  def moduleStruct[A <: Obj](gsep:String, values:List[A], start:Obj = null):List[A] = gsep match {
     /////////// ,-lst
     case Tokens.`,` =>
-      if (null == start) return Type.mergeObjs(values)
+      if (null == start) return Type.mergeObjs(values).filter(_.alive)
       Type.mergeObjs(Type.mergeObjs(values).map(v =>
         if (!__.isAnon(start) && v.isInstanceOf[Value[_]]) start `=>` v
         else start ~~> v)).filter(_.alive)
@@ -97,22 +97,22 @@ object Lst {
       if (null == start) return values
       var running = start
       values.map(v => {
-        running = if (running.isInstanceOf[Strm[_]]) strm[A](running.toStrm.drain.map(r => r ~~> v): _*)
+        running = if (running.isInstanceOf[Strm[_]]) strm[A](running.toStrm.drain.map(r => r ~~> v):_*)
         else running ~~> v match {
-          case x: Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
+          case x:Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
         }
         running.named(v.name, ignoreAnon = true)
       }).asInstanceOf[List[A]]
     /////////// |-lst
     case Tokens.`|` =>
-      val newStart: Obj = if (null == start) __ else start
-      var taken: Boolean = false
+      val newStart:Obj = if (null == start) __ else start
+      var taken:Boolean = false
       values.map(v => {
         (newStart ~~> v) match {
           // TODO: we need a concept of stable vs. non-stable quantifiers as
           //  you don't want types to alter values quantifiers if they are zeroable.
-          case avalue: OValue[A]
+          case avalue:OValue[A]
             if avalue.alive &&
               v.isInstanceOf[Type[_]] &&
               zeroable(v.q) => avalue.hardQ(newStart.q)

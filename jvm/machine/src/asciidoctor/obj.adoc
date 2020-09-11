@@ -929,14 +929,15 @@ Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `
 ----
 
 ===== Poly Types
-A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. A free object imposes the equations of the abstract algebraic structure it captures (e.g. an https://en.wikipedia.org/wiki/Abelian_group[abelian group] or a https://en.wikipedia.org/wiki/Monoid[monoid]), but not the equations of the elements of a concrete instance of that algebra (e.g. \$a \ast b = c\$ or \$a + a = a\$). From a https://en.wikipedia.org/wiki/Data_structure[data structure] perspective, a free object is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] with semantics strictly tied to the abstract algebra's operator. That is, free object *collection structures* respect identity, inverse, associativity, and commutativity. The entailment of the free object `poly` is that common collections such as https://en.wikipedia.org/wiki/List_(abstract_data_type)[lists] and https://en.wikipedia.org/wiki/Multiset[multisets] are possible in mm-ADT. Moreover, when the `poly` elements are not values, but types, common *control structures* are realized such as https://en.wikipedia.org/wiki/Switch_statement[switch] and https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]. This bounty of expressivity is made possible by exploiting the https://en.wikipedia.org/wiki/Duality_(mathematics)[duality] between types and values at the level of free objects called `poly`.
 
-[.discrete]
+A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. A free object imposes the equations of an abstract algebra (e.g. \$(a + b) + c = a + (b + c)\$ or \$a \cdot 1 = a\$), but not the equations of the elements of a concrete instance of that algebra (e.g. \$a + b = c\$ or \$a \cdot a = a\$). From a https://en.wikipedia.org/wiki/Data_structure[data structure] perspective, a free object is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] with semantics strictly tied to the operator(s) of the abstract algebra. That is, free object *collection structures* respect notions of identity, inverse, associativity, and commutativity. An entailment is that a free object `poly` behaves as a https://en.wikipedia.org/wiki/List_(abstract_data_type)[lists] or https://en.wikipedia.org/wiki/Multiset[multisets]. Furthermore, when `poly` elements are types, as opposed to values, common *control structures* are realized such as https://en.wikipedia.org/wiki/Switch_statement[switch] and https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]. This bounty of expressiveness is made possible by exploiting mm-ADT type/value-link:https://en.wikipedia.org/wiki/Duality_(mathematics)[duality] at the level of these free objects called `poly`.
+
+[discrete]
 ====== Poly Structures
 
-There are *value* `polys` and there are *type* `polys`. A value `poly` is composed of only value `objs` and is best understood as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type `poly` contains at least one type `obj` and is intuitively understood as a https://en.wikipedia.org/wiki/Control_flow[control flow] structure.
+There are *value* `polys` and there are *type* `polys`. A value `poly` is composed of only value `objs` and is best understood as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type `poly` contains at least one type `obj` and is intuitively understood as a https://en.wikipedia.org/wiki/Control_flow[flow control] structure.
 
-As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]), where theoretically, `rec` is simply a `lst` with some added conveniences that make common programming use cases easier to express. Finally, every `poly` is associated with one of three algebras: `,` (https://en.wikipedia.org/wiki/Abelian_group[abelian group]), `;` (https://en.wikipedia.org/wiki/Monoid[monoid]), or `|` (https://en.wikipedia.org/wiki/Near-ring[near-ring]). These algebras correspond to the magmas of the mm-ADT https://zenodo.org/record/2565243[stream ring algebra].
+As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]), where theoretically, `rec` is simply a `lst` with some added conveniences that make typical programming patterns easier to express. Finally, a `poly` is associated with one of three algebras: `,` (https://en.wikipedia.org/wiki/Abelian_group[abelian group]), `;` (https://en.wikipedia.org/wiki/Monoid[monoid]), or `|` (https://en.wikipedia.org/wiki/Near-ring[near-ring]). These algebras correspond to the magmas of the mm-ADT https://zenodo.org/record/2565243[stream ring algebra].
 
 \[
 \begin{split}
@@ -1039,26 +1040,88 @@ a|
 |===
 
 .,-poly Collections
-The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring,
+The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring.
+
+[.center]
+[cols="^1,^1,^1",width=60,frame=none,grid=none]
+|===
+| abstract magma | stream magma | free poly
+
+| \[(\tt{obj}, +, \mathbf{0})\]
+| \[(\texttt{obj},\texttt{[branch]},\{\mathbf{0}\})\]
+| \[(\texttt{obj},\texttt{(,)},\{\mathbf{0}\})\]
+|===
+
+The carrier set is `obj`, the https://en.wikipedia.org/wiki/Commutative_property[commutative] binary \$\+\$-operator is `,`, and the identity is `{0}`. With `obj` quantification, should two `,-poly` terms have equal _objects_, they can be merged using the mm-ADT `[branch]` `inst` equation:
 \[
-(\texttt{obj}, \+, \mathbf{0}),
-\]
-where the carrier set is `obj`, the https://en.wikipedia.org/wiki/Commutative_property[commutative] binary \$\+\$-operator is `,`, and the identity is `\_{0}`. Being commutative, the terms are unordered. Moreover, given quantification, should two `,-poly` terms have equal _objects_, they can be merged using the mm-ADT \$+\$-operator equation of
-\[
-a_{q_0} + b_{q_1} =
+[\texttt{branch},a_{q_0}, b_{q_1}] =
 \begin{cases}
-a_{q_0 + q_1}     & \text{if } a == b, \\
-a_{q_0} + b_{q_1} & \text{otherwise},
+a_{q_0 + q_1}                      & \text{if } a == b, \\
+[\texttt{branch},a_{q_0}, b_{q_1}] & \text{otherwise},
 \end{cases}
 \]
-such that when two term objects are not equal, the `poly` is https://en.wikipedia.org/wiki/Irreducible_representation[irreducible]. This is equivalent to the isomorphism between free abelian groups a https://en.wikipedia.org/wiki/Free_module[free module] over \$\mathbb{Z}\$. Given the lack of order along with quantifier "weighting," `,-lst` collections realize https://en.wikipedia.org/wiki/Multiset[multiset] semantics (also known as bags or weighted sets). `,-rec` collections realize https://en.wikipedia.org/wiki/Multimap[multimap] semantics which are https://en.wikipedia.org/wiki/Associative_array[associative arrays] that support multiple values for a single key.
+where \$+\$ is the quantifier ring's additive operator. As an abelian group, the operator is commutative which provides set-like semantics as the elements are unordered. However, with quantifier "weighting," `,-lst` collections realize https://en.wikipedia.org/wiki/Multiset[multiset] semantics (also known as bags or weighted sets). For `,-rec` collections, https://en.wikipedia.org/wiki/Multimap[multimap] semantics (https://en.wikipedia.org/wiki/Associative_array[associative arrays] with multiple values for a single key).
+
+A few self-explanatory `,-poly` examples are provided below.
+
+[cols="1,1"]
+|===
+^| ,-lst ^| ,-rec
+
+a|
+[exec]
+----
+(1,{0},1,2,3)
+('a'{7},'b','b'{0},'c','a'{2})
+('a',1.0,1,true)
+----
+{blank}
+a|
+[exec]
+----
+(1->2,{0}->2,1->3,1->2,3->1)
+('a'{7}->2,'a'->2{3},'b'->2)
+('a'->true,1.0->false,1->{0},true->'a')
+----
+|===
 
 .;-poly Collections
-The *;-polys* capture the non-commutative, multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] of the mm-ADT ring
-\[
-(\texttt{obj},\ast,\mathbf{1}),
-\]
-where the \$\ast\$-operator is `;` and multiplicative identity is `\_{1}`. Due to non-commutativity, the `;` delimited elements form an https://en.wikipedia.org/wiki/Sequence[ordered sequence]. In `lst`, the consequence is a collection data structure with https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-semantics. In `rec`, a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record] with ordered fields is realized.
+The *;-polys* capture the non-commutative, multiplicative https://en.wikipedia.org/wiki/Monoid[monoid] of the mm-ADT ring.
+
+[.center]
+[cols="^1,^1,^1",width=60,frame=none,grid=none]
+|===
+| abstract magma | stream magma | free poly
+
+| \[(\tt{obj}, \cdot, \mathbf{1})\]
+| \[(\texttt{obj},\texttt{[juxta]},\{\mathbf{1}\})\]
+| \[(\texttt{obj},\texttt{(;)},\{\mathbf{1}\})\]
+|===
+
+The carrier set is `obj`, the multiplicative operator is `;`, and multiplicative identity is `{1}`. Due to non-commutativity, the `;` delimited elements form an https://en.wikipedia.org/wiki/Sequence[ordered sequence]. In `lst`, the consequence is a collection data structure with https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-semantics.In `rec`, a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record] with ordered fields is realized.
+
+////
+[cols="1,1"]
+|===
+^| ;-lst ^| ;-rec
+
+a|
+[exec]
+----
+(1;{0};1;2;{1})
+('a'{7};'b';'b'{0};'c';'a'{2})
+('a';{1};1.0;1;true)
+----
+{blank}
+a|
+[exec]
+----
+(1->2;{1}->2;1->3;1->{1};3->1)
+('a'{7}->2;'a'->2{3};'b'->2)
+('a'->true;1.0->false;1->{0};true->'a')
+----
+|===
+////
 
 .|-poly Collections
 The *|-polys* capture the endomorphic, left-distributive, multiplicative, composition operator over a non-commutative additive group within the mm-ADT https://en.wikipedia.org/wiki/Near-ring[near-ring]
@@ -1068,7 +1131,6 @@ The *|-polys* capture the endomorphic, left-distributive, multiplicative, compos
 A forthcoming section detailing mm-ADT's ring algebra will discuss the _reduce near-ring_. For now, note that the `|-poly` collections yield singleton `lsts` and `recs`. As such, the `|-polys` are less useful as collections than as controls.
 
 NOTE: When each `poly` kind (`lst` or `rec`) is composed of 0 or 1 term, their behavior's are equivalent. It is only at 2+ terms that their respective algebras are discernible and instructions such as `[eq]` consider the `poly` term separator in their calculation.
-
 
 ====== Poly Controls
 

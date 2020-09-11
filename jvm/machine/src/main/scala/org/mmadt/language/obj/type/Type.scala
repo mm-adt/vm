@@ -72,7 +72,7 @@ object Type {
         newList = newList -= y
         merge(x, y)
       }).getOrElse(x))
-    newList.filter(_.alive).toList
+    newList.toList
   }
   private def merge[A <: Obj](objA:A, objB:A):A = if (qZero == plusQ(objA.q, objB.q)) zeroObj.asInstanceOf[A] else unity(objA).q(plusQ(pureQ(objA), pureQ(objB)))
   private def pureQ(obj:Obj):IntQ = if (obj.root || obj.isInstanceOf[Value[_]]) obj.q else obj.trace.foldLeft(qOne)((a, b) => multQ(a, b._2.q))
