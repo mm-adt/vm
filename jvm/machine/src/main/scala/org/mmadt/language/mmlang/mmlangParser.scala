@@ -46,7 +46,8 @@ import scala.util.parsing.combinator.JavaTokenParsers
  */
 class mmlangParser extends JavaTokenParsers {
 
-  override val whiteSpace:Regex = """[\s]*(?://.*[\s]*)?(/\*.*?\*/)?[\s]*""".r // includes support for single line // and /**/ comments
+  // TODO: can't make it stop at new line for single line comments so I have a weird 'catch all' pattern
+  override val whiteSpace:Regex = """[\s]*(?://.*[\s]*)?(//[a-zA-Z0-9\s]*)?(/\*.*?\*/)?[\s]*""".r // includes support for single line // and /**/ comments
   override def decimalNumber:Parser[String] = """-?\d+\.\d+""".r
 
   // all mm-ADT languages must be able to accept a string representation of an expression in the language and return an Obj

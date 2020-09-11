@@ -43,7 +43,7 @@ object LoadOp extends Func[Obj, Obj] {
   def loadObj[A <: Obj](file: String): A = {
     try {
       val source: BufferedSource = Source.fromFile(file.replace("'",""))
-      val obj = mmlangParser.parse[A](source.getLines().foldLeft(new mutable.StringBuilder())((x, y) => x.append(y)).toString())
+      val obj = mmlangParser.parse[A](source.getLines().foldLeft(new mutable.StringBuilder())((x, y) => x.append(y).append("\n")).toString())
       source.close()
       obj
     } catch {

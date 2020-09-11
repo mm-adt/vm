@@ -43,7 +43,7 @@ package object storage {
   def model(name:String):Model = {
     val source = Try[BufferedSource](Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)).getOrElse(Source.fromFile("data/model/" + name + ".mm"))
     try {
-      val rangeModel:Model = mmlang.parse(source.getLines().foldLeft(Tokens.blank)((x, y) => x + "\n" + y))
+      val rangeModel:Model = mmlang.parse(source.getLines().foldLeft(Tokens.blank)((x, y) => x + y + "\n"))
       model(rangeModel)
     }
     finally source.close();
