@@ -489,7 +489,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_mono_types">Mono Types</a></li>
 <li><a href="#_poly_types">Poly Types</a>
 <ul class="sectlevel5">
-<li><a href="#_poly_structures">Poly Structures</a></li>
 <li><a href="#_poly_collections">Poly Collections</a></li>
 <li><a href="#_poly_controls">Poly Controls</a></li>
 <li><a href="#_poly_lifting">Poly Lifting</a></li>
@@ -2544,15 +2543,14 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 <div class="sect4">
 <h5 id="_poly_types">Poly Types</h5>
 <div class="paragraph">
-<p>A <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Free_object">free object</a>. A free object imposes the equations of the abstract algebraic structure it captures (e.g. an <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> or a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>), but not the equations of the elements of a concrete instance of that algebra (e.g. \$a \ast b = c\$ or \$a + a = a\$). From a <a href="https://en.wikipedia.org/wiki/Data_structure">data structure</a> perspective, a free object is a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> with semantics strictly tied to the abstract algebra&#8217;s operator. That is, free object <strong>collection structures</strong> respect identity, inverse, associativity, and commutativity. The entailment of the free object <code>poly</code> is that common collections such as <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">lists</a> and <a href="https://en.wikipedia.org/wiki/Multiset">multisets</a> are possible in mm-ADT. Moreover, when the <code>poly</code> elements are not values, but types, common <strong>control structures</strong> are realized such as <a href="https://en.wikipedia.org/wiki/Switch_statement">switch</a> and <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">coalesce</a>. This bounty of expressivity is made possible by exploiting the <a href="https://en.wikipedia.org/wiki/Duality_(mathematics)">duality</a> between types and values at the level of free objects called <code>poly</code>.</p>
+<p>A <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Free_object">free object</a>. A free object imposes the equations of an abstract algebra (e.g. \$(a + b) + c = a + (b + c)\$ or \$a \cdot 1 = a\$), but not the equations of the elements of a concrete instance of that algebra (e.g. \$a + b = c\$ or \$a \cdot a = a\$). From a <a href="https://en.wikipedia.org/wiki/Data_structure">data structure</a> perspective, a free object is a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> with semantics strictly tied to the operator(s) of the abstract algebra. That is, free object <strong>collection structures</strong> respect notions of identity, inverse, associativity, and commutativity. An entailment is that a free object <code>poly</code> behaves as a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">lists</a> or <a href="https://en.wikipedia.org/wiki/Multiset">multisets</a>. Furthermore, when <code>poly</code> elements are types, as opposed to values, common <strong>control structures</strong> are realized such as <a href="https://en.wikipedia.org/wiki/Switch_statement">switch</a> and <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">coalesce</a>. This bounty of expressiveness is made possible by exploiting mm-ADT type/value-<a href="https://en.wikipedia.org/wiki/Duality_(mathematics)">duality</a> at the level of these free objects called <code>poly</code>.</p>
 </div>
-<div class="sect5 discrete">
-<h6 id="_poly_structures">Poly Structures</h6>
+<h6 id="_poly_structures" class="discrete">Poly Structures</h6>
 <div class="paragraph">
-<p>There are <strong>value</strong> <code>polys</code> and there are <strong>type</strong> <code>polys</code>. A value <code>poly</code> is composed of only value <code>objs</code> and is best understood as a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type <code>poly</code> contains at least one type <code>obj</code> and is intuitively understood as a <a href="https://en.wikipedia.org/wiki/Control_flow">control flow</a> structure.</p>
+<p>There are <strong>value</strong> <code>polys</code> and there are <strong>type</strong> <code>polys</code>. A value <code>poly</code> is composed of only value <code>objs</code> and is best understood as a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type <code>poly</code> contains at least one type <code>obj</code> and is intuitively understood as a <a href="https://en.wikipedia.org/wiki/Control_flow">flow control</a> structure.</p>
 </div>
 <div class="paragraph">
-<p>As a practical consideration, mm-ADT offers two kinds of <code>poly</code>: <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>), where theoretically, <code>rec</code> is simply a <code>lst</code> with some added conveniences that make common programming use cases easier to express. Finally, every <code>poly</code> is associated with one of three algebras: <code>,</code> (<a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>), <code>;</code> (<a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>), or <code>|</code> (<a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a>). These algebras correspond to the magmas of the mm-ADT <a href="https://zenodo.org/record/2565243">stream ring algebra</a>.</p>
+<p>As a practical consideration, mm-ADT offers two kinds of <code>poly</code>: <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>), where theoretically, <code>rec</code> is simply a <code>lst</code> with some added conveniences that make typical programming patterns easier to express. Finally, a <code>poly</code> is associated with one of three algebras: <code>,</code> (<a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>), <code>;</code> (<a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>), or <code>|</code> (<a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a>). These algebras correspond to the magmas of the mm-ADT <a href="https://zenodo.org/record/2565243">stream ring algebra</a>.</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2624,7 +2622,6 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 </tbody>
 </table>
 <hr>
-</div>
 <div class="sect5">
 <h6 id="_poly_collections">Poly Collections</h6>
 <div class="paragraph">
@@ -2747,27 +2744,109 @@ mm&gt; ('a'-&gt;1|'b'-&gt;2|'a'-&gt;3)&gt;-
 </table>
 <div class="paragraph">
 <div class="title">,-poly Collections</div>
-<p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring,
+<p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring.</p>
+</div>
+<table class="tableblock frame-none grid-none center" style="width: 60%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">abstract magma</th>
+<th class="tableblock halign-center valign-top">stream magma</th>
+<th class="tableblock halign-center valign-top">free poly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\tt{obj}, +, \mathbf{0})\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\texttt{obj},\texttt{[branch]},\{\mathbf{0}\})\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\texttt{obj},\texttt{(,)},\{\mathbf{0}\})\]</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The carrier set is <code>obj</code>, the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> binary \$+\$-operator is <code>,</code>, and the identity is <code>{0}</code>. With <code>obj</code> quantification, should two <code>,-poly</code> terms have equal <em>objects</em>, they can be merged using the mm-ADT <code>[branch]</code> <code>inst</code> equation:
 \[
-(\texttt{obj}, +, \mathbf{0}),
-\]
-where the carrier set is <code>obj</code>, the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> binary \$\+\$-operator is <code>,</code>, and the identity is <code>_{0}</code>. Being commutative, the terms are unordered. Moreover, given quantification, should two <code>,-poly</code> terms have equal _objects_, they can be merged using the mm-ADT \$+\$-operator equation of
-\[
-a_{q_0} + b_{q_1} =
+[\texttt{branch},a_{q_0}, b_{q_1}] =
 \begin{cases}
-a_{q_0 + q_1}     &amp; \text{if } a == b, \\
-a_{q_0} + b_{q_1} &amp; \text{otherwise},
+a_{q_0 + q_1}                      &amp; \text{if } a == b, \\
+[\texttt{branch},a_{q_0}, b_{q_1}] &amp; \text{otherwise},
 \end{cases}
 \]
-such that when two term objects are not equal, the <code>poly</code> is <a href="https://en.wikipedia.org/wiki/Irreducible_representation">irreducible</a>. This is equivalent to the isomorphism between free abelian groups a <a href="https://en.wikipedia.org/wiki/Free_module">free module</a> over \$\mathbb{Z}\$. Given the lack of order along with quantifier "weighting," <code>,-lst</code> collections realize <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a> semantics (also known as bags or weighted sets). <code>,-rec</code> collections realize <a href="https://en.wikipedia.org/wiki/Multimap">multimap</a> semantics which are <a href="https://en.wikipedia.org/wiki/Associative_array">associative arrays</a> that support multiple values for a single key.</p>
+where \$+\$ is the quantifier ring&#8217;s additive operator. As an abelian group, the operator is commutative which provides set-like semantics as the elements are unordered. However, with quantifier "weighting," <code>,-lst</code> collections realize <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a> semantics (also known as bags or weighted sets). For <code>,-rec</code> collections, <a href="https://en.wikipedia.org/wiki/Multimap">multimap</a> semantics (<a href="https://en.wikipedia.org/wiki/Associative_array">associative arrays</a> with multiple values for a single key).</p>
 </div>
 <div class="paragraph">
+<p>A few self-explanatory <code>,-poly</code> examples are provided below.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 50%;">
+<col style="width: 50%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">,-lst</th>
+<th class="tableblock halign-center valign-top">,-rec</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1,{0},1,2,3)
+==&gt;(1{2},2,3)
+mmlang&gt; ('a'{7},'b','b'{0},'c','a'{2})
+==&gt;('b','c','a'{9})
+mmlang&gt; ('a',1.0,1,true)
+==&gt;('a',1.0,1,true)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1-&gt;2,{0}-&gt;2,1-&gt;3,1-&gt;2,3-&gt;1)
+==&gt;(1-&gt;2{2},3-&gt;1)
+mmlang&gt; ('a'{7}-&gt;2,'a'-&gt;2{3},'b'-&gt;2)
+==&gt;('a'{7}-&gt;2,'a'-&gt;2{3},'b'-&gt;2)
+mmlang&gt; ('a'-&gt;true,1.0-&gt;false,1-&gt;{0},true-&gt;'a')
+==&gt;('a'-&gt;true,1.0-&gt;false,true-&gt;'a')</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
 <div class="title">;-poly Collections</div>
-<p>The <strong>;-polys</strong> capture the non-commutative, multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring
-\[
-(\texttt{obj},\ast,\mathbf{1}),
-\]
-where the \$\ast\$-operator is <code>;</code> and multiplicative identity is <code>_{1}</code>. Due to non-commutativity, the <code>;</code> delimited elements form an <a href="https://en.wikipedia.org/wiki/Sequence">ordered sequence</a>. In <code>lst</code>, the consequence is a collection data structure with <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-semantics. In <code>rec</code>, a <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a> with ordered fields is realized.</p>
+<p>The <strong>;-polys</strong> capture the non-commutative, multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring.</p>
+</div>
+<table class="tableblock frame-none grid-none center" style="width: 60%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">abstract magma</th>
+<th class="tableblock halign-center valign-top">stream magma</th>
+<th class="tableblock halign-center valign-top">free poly</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\tt{obj}, \cdot, \mathbf{1})\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\texttt{obj},\texttt{[juxta]},\{\mathbf{1}\})\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\texttt{obj},\texttt{(;)},\{\mathbf{1}\})\]</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The carrier set is <code>obj</code>, the multiplicative operator is <code>;</code>, and multiplicative identity is <code>{1}</code>. Due to non-commutativity, the <code>;</code> delimited elements form an <a href="https://en.wikipedia.org/wiki/Sequence">ordered sequence</a>. In <code>lst</code>, the consequence is a collection data structure with <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>-semantics.In <code>rec</code>, a <a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a> with ordered fields is realized.</p>
 </div>
 <div class="paragraph">
 <div class="title">|-poly Collections</div>
@@ -6960,7 +7039,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-11 13:33:33 -0600
+Last updated 2020-09-11 13:46:55 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
