@@ -3467,6 +3467,31 @@ where, for the first, \$b\$ is <em>generated</em> by \$a\$ and for the second, \
 <div class="paragraph">
 <p>For most of the documentation, the examples have been presented solely from within the <code>mm</code> model-ADT where there are 6 types: <code>bool</code>, <code>int</code>, <code>real</code>, <code>str</code>, <code>lst</code>, and <code>rec</code> along with their respective instructions. It is possible to extend <code>mm</code> with new types that are ultimately <em>grounded</em> (Cayley rooted) in the <code>mm</code> model-ADT types. This is the purpose of the <code>[define]</code> instruction.</p>
 </div>
+<div class="paragraph">
+<p>Assume the two type definitions below: <code>vertex</code> and <code>edge</code>. The associated diagram is not commutative and the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>, where <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
+</div>
+<table class="tableblock frame-none grid-none center" style="width: 85%;">
+<colgroup>
+<col style="width: 57.1428%;">
+<col style="width: 42.8572%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">[define,vertex:('id'-&gt;int)][define,edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/digraph-model-1.svg" alt="digraph model 1" width="600"></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <code>vertex</code> and <code>edge</code> definitions can be used within a larger mm-ADT program/type.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; edge&lt;=int[model,mm][define,vertex:('id'-&gt;int), edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]
@@ -3475,7 +3500,7 @@ where, for the first, \$b\$ is <em>generated</em> by \$a\$ and for the second, \
 </div>
 </div>
 <div class="paragraph">
-<p>The first line above reads: Given the value 1, generate an <code>edge</code> from that <code>int</code> according to the definitions of the model-ADT <code>mm</code> extended with two types <code>vertex</code> and <code>edge</code>. The two new types are defined <em>in situ</em>, where a <code>vertex</code> is a <strong>refinement</strong> on <code>rec</code> constraining <code>rec</code> to an <code>'id'</code> key with an <code>int</code> value and, similarly, <code>edge</code> constrains <code>rec</code> to keys <code>'outV'</code> (edge tail) and <code>'inV'</code> (edge head) with corresponding <code>vertex</code> values. The second line specifies how this mapping should be done. The incoming <code>int</code> is to be <strong>split</strong> (<code>-&lt;</code>) across a two element <code>rec</code>, where their values are single element <code>recs</code> which again split the <code>int</code> to be the values for the <code>'id'</code> keys. Given <code>edge&lt;=int</code>, an <code>edge</code> is the desired output. The <code>mm</code> model (and extending definitions) determine the "best" way to construct an <code>edge</code> given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant <code>edge</code> structure.</p>
+<p>The first line above reads: Given the value 1, generate an <code>edge</code> from that <code>int</code> according to the definitions of the <code>mm</code> model-ADT extended with two types <code>vertex</code> and <code>edge</code>. The two new types are defined <em>in situ</em>, where a <code>vertex</code> is a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement</a> on <code>rec</code> constraining <code>rec</code> to an <code>'id'</code> key with an <code>int</code> value and, similarly, <code>edge</code> constrains <code>rec</code> to keys <code>'outV'</code> (edge tail) and <code>'inV'</code> (edge head) with corresponding <code>vertex</code> values. The second line specifies how this mapping should be done. The incoming <code>int</code> is <strong>split</strong> (<code>-&lt;</code>) across a two element <code>rec</code>, where their values are single element <code>recs</code> which again split the <code>int</code> to be the values for the <code>'id'</code> keys. Given <code>edge&lt;=int</code>, an <code>edge</code> is the desired output. The <code>mm</code> model (and extending definitions) determine the "best" way to construct an <code>edge</code> given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant <code>edge</code> structure.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -7091,7 +7116,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-12 11:13:17 -0600
+Last updated 2020-09-12 11:17:29 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
