@@ -46,7 +46,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("poly play") {
     println(int(1, 2) ==> __.q(2).plus(10).plus(5).path)
     println(engine.eval("3[plus,10][plus,5][path]"))
-    println(engine.eval("(1;{1};2;{5})"))
+    println(engine.eval("(2->{0}|1->2{3}|2->4)"))
   }
 
   test("play2") {

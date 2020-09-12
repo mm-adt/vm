@@ -930,7 +930,7 @@ Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `
 
 ===== Poly Types
 
-A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objects are https://en.wikipedia.org/wiki/Universal_algebra[universal] structures in that they respect the equations of an abstract algebra, but not the equations of an instance of the abstract algebra. Hence the term _free_ as in "free" from constraint of the concrete--universal. Examples of these two classes of equations are provided in the table below. If the concrete algebra equations appear random, it is because they are. Each concrete algebra's operator(s) map elements-to-elements in a manner specific to an application domain and as such, are not _universal_ equations.
+A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objects are https://en.wikipedia.org/wiki/Universal_algebra[universal] structures in that they respect the equations of an abstract algebra, but not the equations of an instance of the abstract algebra. Hence the term _free_ as in "free" from constraint of the concrete--i.e., universal. Examples of these two classes of equations are provided in the table below. If the concrete algebra equations appear random, it is because they are. Each concrete algebra's operator(s) map elements-to-elements in a manner specific to an application domain and as such, are not _universal_ equations.
 
 [.center]
 [cols="1,^2,^2",width=75]
@@ -947,7 +947,7 @@ A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objec
 | \$a \cdot b = b \cdot a\$                      | \$a \cdot a = a\$
 |===
 
-In mm-ADT, a `poly` can be used as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[*collection*] data structure, where the collection's semantics are tied to the operator(s) of the free object's abstract algebra. Moreover, type-based `polys` offer data flow https://en.wikipedia.org/wiki/Control_flow[*control*] semantics. The mm-ADT `poly` is a versatile structure because it remains agnostic to the types and values contained therein while remaining consistent with the https://zenodo.org/record/2565243[stream ring algebra]'s operators' axioms and entailed theorems.
+In mm-ADT, a `poly` can be used as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[*collection*] data structure, where the collection's semantics are tied to the operator(s) of the free object's abstract algebra. Moreover, type-based `polys` offer data flow https://en.wikipedia.org/wiki/Control_flow[*control*] semantics. The mm-ADT `poly` is a versatile structure because it is agnostic to the types and values contained therein while remaining in https://en.wikipedia.org/wiki/Isomorphism[one-to-one correspondence] with the https://zenodo.org/record/2565243[stream ring algebra]'s operators' axioms and entailed theorems.
 
 [discrete]
 ====== Poly Structures
@@ -1190,7 +1190,7 @@ a|
 |===
 
 .|-poly Collections
-The *|-polys* capture the endomorphic, left-distributive, multiplicative, composition operator over a non-commutative additive group within the mm-ADT https://en.wikipedia.org/wiki/Near-ring[near-ring].
+The *|-polys* captures https://en.wikipedia.org/wiki/Endomorphism[endomorphic], left-link:https://en.wikipedia.org/wiki/Distributive_property[distributive], multiplicative, https://en.wikipedia.org/wiki/Function_composition[compositions] over the https://en.wikipedia.org/wiki/Near-ring[near-ring] subgroup of mm-ADT's additive abelian group.
 
 [.center]
 [cols="^1,^1,^1",width=80,frame=none,grid=none]
@@ -1202,7 +1202,7 @@ The *|-polys* capture the endomorphic, left-distributive, multiplicative, compos
 | \[(\texttt{obj},\texttt{(\|)},\{\mathbf{1}\},\{\mathbf{0}\})\]
 |===
 
-The `[barrier]` operator computes an output based on the entire input. This _blocking_ behavior is used for link:https://en.wikipedia.org/wiki/Reduction_Operator[reduce]/link:https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]-based computations. The \$1\$ subscript is a particular augmentation to the higher-order \$\oplus\$ operator, where \$\oplus_1\$ operator returns the first non-zero `obj` -- i.e., the head of the stream (a https://en.wikipedia.org/wiki/Lazy_evaluation[lazy computation]).
+The `[barrier]` \$n\$-ary operator's arguments are all the `objs` of the input stream. This yields a https://en.wikipedia.org/wiki/Blocking_%28computing%29[blocking] https://en.wikipedia.org/wiki/Synchronization_(computer_science)[synchronization] point necessary for link:https://en.wikipedia.org/wiki/Reduction_Operator[reduce]/link:https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]-based computations. The operator's \$1\$ subscript denotes a particular augmentation to the https://en.wikipedia.org/wiki/Higher-order_function[higher-order] \$\oplus\$ operator, where \$\oplus_1\$ returns the first non-zero `obj` argument -- i.e., the head of the stream (a https://en.wikipedia.org/wiki/Lazy_evaluation[lazy computation]).
 
 \[
 \begin{split}
@@ -1216,7 +1216,7 @@ b_r & \text{if } r > 0, \\
 \end{split}
 \]
 
-`|-poly` yields singleton `lsts` and `recs`. This seemingly odd behavior proves its importance when considered `|-polys` in the context of flow controls.
+`|-poly` yields singleton `lsts` and `recs`. The purpose of this seemingly odd behavior is more salient in `|-polys` flow controls (presented in the next section). A collection of self-explanatory examples are provided below.
 
 [.center]
 [cols="1,1",width=90]
@@ -1234,8 +1234,8 @@ a|
 a|
 [exec]
 ----
-(1->2\|{1}->2\|1->3\|1->{1}\|3->1)
-('a'{0}->2\|'b'->2{3}\|'b'->2)
+({1}->2\|6->2\|1->3\|1->{1}\|3->1)
+('a'{0}->2\|'b'->2{3}\|'c'->2)
 ('a'->{0}\|{0}->4\|1->true\|2->'a')
 ----
 {blank}
@@ -1362,7 +1362,7 @@ v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 |====
 
 .|-poly Controls
-The *|-polys* capture the non-commutative group of mm-ADT's _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] (explanation forthcoming), where the first non-\$\mathbf{0}\$ ("non-link:https://en.wikipedia.org/wiki/Null_pointer[null]") element is the output of the branch. As a control structure, `|-poly` is a https://en.wikipedia.org/wiki/Sequential_algorithm[sequential] branch that can be understood programmatically as a https://en.wikipedia.org/wiki/Short-circuit_evaluation[short-circuit] https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]. In `lst`, https://en.wikipedia.org/wiki/Null_coalescing_operator[non-null coalescing] is realized and in `rec` a https://en.wikipedia.org/wiki/Switch_statement[switch statement] is realized.
+The *|-polys* capture mm-ADT's _barrier_ https://en.wikipedia.org/wiki/Near-ring[near-ring], where the first non-\$\mathbf{0}\$ ("non-link:https://en.wikipedia.org/wiki/Null_pointer[null]") element is the output of the branch. As a control structure, `|-poly` is a https://en.wikipedia.org/wiki/Sequential_algorithm[sequential] branch that can be understood programmatically as a https://en.wikipedia.org/wiki/Short-circuit_evaluation[short-circuit] https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]. In `lst`, https://en.wikipedia.org/wiki/Null_coalescing_operator[non-null coalescing] is realized and in `rec` a https://en.wikipedia.org/wiki/Switch_statement[switch statement] is realized.
 
 [cols="^3,^4"]
 |====

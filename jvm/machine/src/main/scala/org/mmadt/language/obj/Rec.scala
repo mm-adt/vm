@@ -144,7 +144,7 @@ object Rec {
             true
           })
         .map(kv => if (nostart) kv else kv._1 -> ((start ~~> kv._2) match {
-          case x if kv._2.isInstanceOf[Value[_]] => x.hardQ(q => kv._2.q.mult(q)).asInstanceOf[B]
+          case x if kv._2.isInstanceOf[Value[_]] => x.hardQ(q => q.mult(kv._2.q)).asInstanceOf[B]
           case x => x
         }))
         .filter(kv => kv._1.alive && kv._2.alive)
