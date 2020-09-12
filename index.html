@@ -471,11 +471,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_the_obj">The Obj</a>
-<ul class="sectlevel2">
 <li><a href="#_the_type">The Type</a>
-<ul class="sectlevel3">
+<ul class="sectlevel2">
+<li><a href="#_types_and_values">Types and Values</a></li>
 <li><a href="#_type_structure">Type Structure</a>
+<ul class="sectlevel3">
+<li><a href="#_type_components">Type Components</a>
 <ul class="sectlevel4">
 <li><a href="#_type_signature">Type Signature</a></li>
 <li><a href="#_type_definition">Type Definition</a></li>
@@ -483,12 +484,14 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_type_evaluation">Type Evaluation</a></li>
 </ul>
 </li>
+</ul>
+</li>
 <li><a href="#_type_system">Type System</a>
-<ul class="sectlevel4">
+<ul class="sectlevel3">
 <li><a href="#_anonymous_types">Anonymous Types</a></li>
 <li><a href="#_mono_types">Mono Types</a></li>
 <li><a href="#_poly_types">Poly Types</a>
-<ul class="sectlevel5">
+<ul class="sectlevel4">
 <li><a href="#_poly_collections">Poly Collections</a></li>
 <li><a href="#_poly_controls">Poly Controls</a></li>
 <li><a href="#_poly_lifting">Poly Lifting</a></li>
@@ -499,12 +502,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_the_obj_graph">The Obj Graph</a>
-<ul class="sectlevel3">
+<ul class="sectlevel2">
 <li><a href="#_state">State</a>
-<ul class="sectlevel4">
+<ul class="sectlevel3">
 <li><a href="#_variables">Variables</a></li>
 <li><a href="#_definitions">Definitions</a>
-<ul class="sectlevel5">
+<ul class="sectlevel4">
 <li><a href="#_rewrites">Rewrites</a></li>
 </ul>
 </li>
@@ -512,12 +515,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_models">Models</a></li>
 <li><a href="#_type_patterns">Type Patterns</a>
-<ul class="sectlevel4">
+<ul class="sectlevel3">
 <li><a href="#_refinement_types">Refinement Types</a></li>
 <li><a href="#_dependent_types">Dependent Types</a></li>
 <li><a href="#_recursive_types">Recursive Types</a></li>
-</ul>
-</li>
 </ul>
 </li>
 </ul>
@@ -835,7 +836,7 @@ op    ::= <span style="background-color:hsla(0,100%,50%,0.05)"><span style="colo
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_obj">The Obj</h2>
+<h2 id="_the_type">The Type</h2>
 <div class="sectionbody">
 <div class="sidebarblock">
 <div class="content">
@@ -846,7 +847,7 @@ Two important category theoretic concepts dealing with substructures are <strong
 </div>
 <div class="imageblock left">
 <div class="content">
-<img src="./images/obj/product.svg" alt="product" width="225">
+<img src="./images/type/product.svg" alt="product" width="225">
 </div>
 </div>
 <div class="paragraph">
@@ -855,7 +856,7 @@ That is, from a single object, via \$\pi_n\$ projection morphisms, the product i
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/obj/coproduct.svg" alt="coproduct" width="225">
+<img src="./images/type/coproduct.svg" alt="coproduct" width="225">
 </div>
 </div>
 <div class="paragraph">
@@ -868,13 +869,15 @@ That is, product and coproduct equality are defined via component equality.</p>
 </div>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_types_and_values">Types and Values</h3>
 <div class="paragraph">
 <p>Everything that can be denoted in <code>mmlang</code> is an <code>obj</code>.
 Within the VM and outside the referential purview of an interfacing language, every <code>obj</code> is the product of</p>
 </div>
 <div class="imageblock left">
 <div class="content">
-<img src="./images/obj/obj-type-value-q.svg" alt="obj type value q" width="375">
+<img src="./images/type/obj-type-value-q.svg" alt="obj type value q" width="375">
 </div>
 </div>
 <div class="olist arabic">
@@ -898,7 +901,7 @@ Within the VM and outside the referential purview of an interfacing language, ev
 <hr>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/obj/obj-type-q-value-q.svg" alt="obj type q value q" width="375">
+<img src="./images/type/obj-type-q-value-q.svg" alt="obj type q value q" width="375">
 </div>
 </div>
 <div class="paragraph">
@@ -1067,14 +1070,15 @@ The particulars of the ideas in the table below will be discussed over the cours
 </tr>
 </tbody>
 </table>
+</div>
 <div class="sect2">
-<h3 id="_the_type">The Type</h3>
+<h3 id="_type_structure">Type Structure</h3>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Cayley Graphs</div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/obj/compass.svg" alt="compass" width="300">
+<img src="./images/type/compass.svg" alt="compass" width="300">
 </div>
 </div>
 <div class="paragraph">
@@ -1142,7 +1146,7 @@ There are five ctypes:</p>
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/obj/type-product.svg" alt="type product" width="295">
+<img src="./images/type/type-product.svg" alt="type product" width="295">
 </div>
 </div>
 <div class="paragraph">
@@ -1184,7 +1188,7 @@ The application of an <code>inst</code> to a type (ctype or dtype) yields a dtyp
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/ctype-dtype.svg" alt="ctype dtype" width="300">
+<img src="./images/type/ctype-dtype.svg" alt="ctype dtype" width="300">
 </div>
 </div>
 <div class="paragraph">
@@ -1195,7 +1199,7 @@ In terms of the "<em>range = domain and function</em>" reading, when an <code>in
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/int-isgt0.svg" alt="int isgt0" width="230">
+<img src="./images/type/int-isgt0.svg" alt="int isgt0" width="230">
 </div>
 </div>
 <div class="paragraph">
@@ -1213,7 +1217,7 @@ On the left are some example <code>mmlang</code> expressions.</p>
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/obj/obj-full.svg" alt="obj full" width="300">
+<img src="./images/type/obj-full.svg" alt="obj full" width="300">
 </div>
 </div>
 <div class="listingblock">
@@ -1249,7 +1253,7 @@ mmlang&gt; int{2}[is&gt;0][plus,[neg]]                                    <i cla
 </table>
 </div>
 <div class="sect3">
-<h4 id="_type_structure">Type Structure</h4>
+<h4 id="_type_components">Type Components</h4>
 <div class="paragraph">
 <p>The diagram below highlights the two primary components of a type, where an edge is denoted \$e=(a,i,b)\$.</p>
 </div>
@@ -1265,7 +1269,7 @@ mmlang&gt; int{2}[is&gt;0][plus,[neg]]                                    <i cla
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/type-signature-definition.svg" alt="type signature definition" width="650">
+<img src="./images/type/type-signature-definition.svg" alt="type signature definition" width="650">
 </div>
 </div>
 <div class="sect4">
@@ -1407,7 +1411,7 @@ where \$\mathbf{C}\$ is a <a href="https://en.wikipedia.org/wiki/Family_of_sets"
 </div>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/obj/commuting-diagram.svg" alt="commuting diagram" width="150">
+<img src="./images/type/commuting-diagram.svg" alt="commuting diagram" width="150">
 </div>
 </div>
 <div class="paragraph">
@@ -1472,7 +1476,7 @@ mmlang&gt; 2[plus,4][is&gt;0][type]
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/type-value-path.svg" alt="type value path"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/type-value-path.svg" alt="type value path"></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -1488,7 +1492,7 @@ This process is called <strong>path retraction</strong> and is the mm-ADT equiva
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-<span class="image right"><img src="./images/obj/type-value-path-short.svg" alt="type value path short" width="350"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). Furthermore, <a href="https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols"><em>hook-tailed</em></a> arrows will replace <code>[type]</code>-labeled arrows as they denote a <a href="https://en.wikipedia.org/wiki/Monomorphism">monomorphic</a> <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> known as an <a href="https://en.wikipedia.org/wiki/Inclusion_map">inclusion</a>. All subsequent diagrams will follow this convention.
+<span class="image right"><img src="./images/type/type-value-path-short.svg" alt="type value path short" width="350"></span> In the diagram above, the type vertices are elements of a <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> called the <code>inst</code> monoid. However, in order to present more complex <a href="https://en.wikipedia.org/wiki/Commutative_diagram">diagrams</a>, vertex labels will be shortened to the type&#8217;s canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current <em>range</em> vertex to the root <em>domain</em> vertex (i.e. the base canonical type of the type induction). Furthermore, <a href="https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols"><em>hook-tailed</em></a> arrows will replace <code>[type]</code>-labeled arrows as they denote a <a href="https://en.wikipedia.org/wiki/Monomorphism">monomorphic</a> <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> known as an <a href="https://en.wikipedia.org/wiki/Inclusion_map">inclusion</a>. All subsequent diagrams will follow this convention.
 </td>
 </tr>
 </table>
@@ -1539,7 +1543,7 @@ This is especially useful when considering <strong>streams</strong> (definition 
 <hr>
 <div class="imageblock left">
 <div class="content">
-<img src="./images/obj/initial.svg" alt="initial" width="125">
+<img src="./images/type/initial.svg" alt="initial" width="125">
 </div>
 </div>
 <div class="paragraph">
@@ -1551,7 +1555,7 @@ Thus, besides labels, two initials are isomorphic.</p>
 <hr>
 <div class="imageblock right">
 <div class="content">
-<img src="./images/obj/terminal.svg" alt="terminal" width="125">
+<img src="./images/type/terminal.svg" alt="terminal" width="125">
 </div>
 </div>
 <div class="paragraph">
@@ -1796,7 +1800,7 @@ a(b+b)c &amp;= a(2b)c \\
 &amp;= 2abc
 \end{split}
 \]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/branch-q-addition.svg" alt="branch q addition" width="500"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/branch-q-addition.svg" alt="branch q addition" width="500"></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -1918,13 +1922,14 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_type_system">Type System</h4>
+</div>
+<div class="sect2">
+<h3 id="_type_system">Type System</h3>
 <div class="paragraph">
 <p>mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Type_system">type system</a> is founded on 3 classes of ctypes: <strong>anonymous</strong>, <strong>mono</strong>, and <strong>poly</strong> types. Within the <code>mono</code> and <code>poly</code> types, further subdivisions exist. These foundational types are the building blocks by which all other types are constructed using the ring operators of mm-ADT&#8217;s <a href="https://zenodo.org/record/2565243">stream ring algebra</a>. At the limit, an mm-ADT program is simply a "complex" type.</p>
 </div>
-<div class="sect4">
-<h5 id="_anonymous_types">Anonymous Types</h5>
+<div class="sect3">
+<h4 id="_anonymous_types">Anonymous Types</h4>
 <div class="paragraph">
 <p>The type <code>bool&lt;=int[gt,10]</code> has a <strong>range</strong> of <code>bool</code> and a <strong>domain</strong> of <code>int</code>. When the type is written without it&#8217;s range as <code>int[gt,10]</code>, the range is deduced. The <code>int</code> domain ctype is applied to <code>[gt,10]</code> to yield a <code>bool</code>. A type with an unspecified range is called an an <strong>anonymous type</strong> and is denoted <code>_</code> in <code>mmlang</code> (or with no character in many situations). An anonymous range is the result of an anonymous domain.</p>
 </div>
@@ -2046,11 +2051,11 @@ inst           domain         range     state
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-middle"><p class="tableblock"><span class="image"><img src="./images/obj/anon-example.svg" alt="anon example" width="400"></span></p></td>
+<td class="tableblock halign-left valign-middle"><p class="tableblock"><span class="image"><img src="./images/type/anon-example.svg" alt="anon example" width="400"></span></p></td>
 </tr>
 </tbody>
 </table>
-<h6 id="_anonymous_type_uses" class="discrete">Anonymous Type Uses</h6>
+<h5 id="_anonymous_type_uses" class="discrete">Anonymous Type Uses</h5>
 <div class="paragraph">
 <p>Anonymous types are useful in other situations besides <a href="https://en.wikipedia.org/wiki/Type_inference">lazy typing</a> expressions.</p>
 </div>
@@ -2138,8 +2143,8 @@ inst                       domain      range state
 </tbody>
 </table>
 </div>
-<div class="sect4">
-<h5 id="_mono_types">Mono Types</h5>
+<div class="sect3">
+<h4 id="_mono_types">Mono Types</h4>
 <table class="tableblock frame-all grid-all right" style="width: 40%;">
 <colgroup>
 <col style="width: 14.2857%;">
@@ -2188,7 +2193,7 @@ inst                       domain      range state
 <div class="paragraph">
 <p>A few of the more interesting aspects of the mono types are detailed in the following subsections.</p>
 </div>
-<h6 id="_zero_and_one" class="discrete">Zero and One</h6>
+<h5 id="_zero_and_one" class="discrete">Zero and One</h5>
 <div class="paragraph">
 <p>The instructions <code>[zero]</code> and <code>[one]</code> are <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> polymorphic instructions. Each provides a unique singleton value associated with the type of the respective incoming <code>obj</code>.</p>
 </div>
@@ -2227,8 +2232,8 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_poly_types">Poly Types</h5>
+<div class="sect3">
+<h4 id="_poly_types">Poly Types</h4>
 <div class="paragraph">
 <p>A <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Free_object">free object</a>. Free objects are <a href="https://en.wikipedia.org/wiki/Universal_algebra">universal</a> structures in that they respect the equations of an abstract algebra, but not the equations of an instance of the abstract algebra. Hence the term <em>free</em> as in "free" from constraint of the concrete&#8212;&#8203;i.e., universal. Examples of these two classes of equations are provided in the table below. If the concrete algebra equations appear random, it is because they are. Each concrete algebra&#8217;s operator(s) map elements-to-elements in a manner specific to an application domain and as such, are not <em>universal</em> equations.</p>
 </div>
@@ -2271,7 +2276,7 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 <div class="paragraph">
 <p>In mm-ADT, a <code>poly</code> can be used as a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29"><strong>collection</strong></a> data structure, where the collection&#8217;s semantics are tied to the operator(s) of the free object&#8217;s abstract algebra. Moreover, type-based <code>polys</code> offer data flow <a href="https://en.wikipedia.org/wiki/Control_flow"><strong>control</strong></a> semantics. The mm-ADT <code>poly</code> is a versatile structure because it is agnostic to the types and values contained therein while remaining in <a href="https://en.wikipedia.org/wiki/Isomorphism">one-to-one correspondence</a> with the <a href="https://zenodo.org/record/2565243">stream ring algebra</a>'s operators' axioms and entailed theorems.</p>
 </div>
-<h6 id="_poly_structures" class="discrete">Poly Structures</h6>
+<h5 id="_poly_structures" class="discrete">Poly Structures</h5>
 <div class="paragraph">
 <p>There are <strong>value</strong> <code>polys</code> and there are <strong>type</strong> <code>polys</code>. A value <code>poly</code> is composed of only value <code>objs</code> and is best understood as a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type <code>poly</code> contains at least one type <code>obj</code> and is intuitively understood as a <a href="https://en.wikipedia.org/wiki/Control_flow">flow control</a> structure.</p>
 </div>
@@ -2287,7 +2292,7 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 </div>
 <hr>
 <div class="paragraph">
-<p><span class="image left"><img src="./images/obj/poly-kinds.svg" alt="poly kinds" width="350"></span></p>
+<p><span class="image left"><img src="./images/type/poly-kinds.svg" alt="poly kinds" width="350"></span></p>
 </div>
 <table class="tableblock frame-all grid-all right" style="width: 50%;">
 <colgroup>
@@ -2348,8 +2353,8 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 </tbody>
 </table>
 <hr>
-<div class="sect5">
-<h6 id="_poly_collections">Poly Collections</h6>
+<div class="sect4">
+<h5 id="_poly_collections">Poly Collections</h5>
 <div class="paragraph">
 <p>A <code>poly</code> can be used a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. There are a total of 6 sorts of collections as there are two kinds of <code>poly</code> (<code>lst</code> and <code>rec</code>) and each kind has 3 algebras (<code>,</code>,<code>;</code>,<code>|</code>).</p>
 </div>
@@ -2770,8 +2775,8 @@ When each <code>poly</code> contains 0 or 1 element, the respective algebras beh
 </table>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_poly_controls">Poly Controls</h6>
+<div class="sect4">
+<h5 id="_poly_controls">Poly Controls</h5>
 <div class="paragraph">
 <p>The mm-ADT ring&#8217;s additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> operator is accessible via the <code>[branch]</code> instruction. The <code>[branch]</code> instruction&#8217;s argument is a <code>poly</code>. Each term of the <code>poly</code> argument is an operand of the ring&#8217;s \$+\$-operator. In this way, each of the 6 <code>poly</code> forms represents a particular <a href="https://en.wikipedia.org/wiki/Control_flow">control structure</a>. Due to the prevalent use of <code>[branch]</code>, <code>mmlang</code> offers the sugar&#8217;d encoding of <code>[ ]</code>, where both the instruction opcode and the <code>poly</code> parentheses are not written. For example, <code>[branch,(+1,+2,+3)]</code> is equivalent to <code>[+1,+2,+3]</code>.</p>
 </div>
@@ -3005,17 +3010,17 @@ As previously stated for collection <code>polys</code>, control <code>poly</code
 </table>
 </div>
 </div>
-<div class="sect5">
-<h6 id="_poly_lifting">Poly Lifting</h6>
+<div class="sect4">
+<h5 id="_poly_lifting">Poly Lifting</h5>
 <div class="paragraph">
-<p><span class="image left"><img src="./images/obj/poly-lift.svg" alt="poly lift" width="250"></span> A consequence of the dual use of <code>poly</code> as both a data structure and a control structure is that <code>poly</code> supports a <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifted</a> encoding of mm-ADT itself. Each <code>poly</code> form captures a particular <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a> of the underlying mm-ADT stream ring algebra. As a collection, <code>poly</code> provides a programmatic way of writing mm-ADT programs (types) and as flow control, these <code>poly</code> encoded mm-ADT programs can be executed. The complete algebraic specification of <code>poly</code> lifting via an <code>obj</code>-<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> of the mm-ADT ring will be presented in a latter section. For now, the following <code>mmlang</code> examples demonstrate <code>poly</code> lifting in support of mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.</p>
+<p><span class="image left"><img src="./images/type/poly-lift.svg" alt="poly lift" width="250"></span> A consequence of the dual use of <code>poly</code> as both a data structure and a control structure is that <code>poly</code> supports a <a href="https://en.wikipedia.org/wiki/Lift_(mathematics)">lifted</a> encoding of mm-ADT itself. Each <code>poly</code> form captures a particular <a href="https://en.wikipedia.org/wiki/Magma_%28algebra%29">magma</a> of the underlying mm-ADT stream ring algebra. As a collection, <code>poly</code> provides a programmatic way of writing mm-ADT programs (types) and as flow control, these <code>poly</code> encoded mm-ADT programs can be executed. The complete algebraic specification of <code>poly</code> lifting via an <code>obj</code>-<a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> of the mm-ADT ring will be presented in a latter section. For now, the following <code>mmlang</code> examples demonstrate <code>poly</code> lifting in support of mm-ADT <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>.</p>
 </div>
 <div class="paragraph">
 <p>The mm-ADT type below contains both monoidal (serial composition) and group (parallel branching) components whose construction is captured by the bottom morphism of the diagram above. Note that the <code>[explain]</code> instruction is appended for educational purposes only&#8201;&#8212;&#8201;so as to detail the \$\Rightarrow\$ compositions.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/poly-embed-composition.svg" alt="poly embed composition" width="220">
+<img src="./images/type/poly-embed-composition.svg" alt="poly embed composition" width="220">
 </div>
 </div>
 <div class="listingblock">
@@ -3050,7 +3055,7 @@ inst                                           domain            range       sta
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/poly-embed-lifting.svg" alt="poly embed lifting" width="220">
+<img src="./images/type/poly-embed-lifting.svg" alt="poly embed lifting" width="220">
 </div>
 </div>
 <div class="listingblock">
@@ -3084,7 +3089,7 @@ where \$\tt{poly} \succ\$ is the expression <code>poly =&gt; [merge]</code>.</p>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/poly-embed-solve.svg" alt="poly embed solve" width="220">
+<img src="./images/type/poly-embed-solve.svg" alt="poly embed solve" width="220">
 </div>
 </div>
 <div class="listingblock">
@@ -3170,8 +3175,10 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 </div>
 </div>
 </div>
-<div class="sect2">
-<h3 id="_the_obj_graph">The Obj Graph</h3>
+</div>
+<div class="sect1">
+<h2 id="_the_obj_graph">The Obj Graph</h2>
+<div class="sectionbody">
 <div class="paragraph">
 <p>An mm-ADT program is a <strong>type</strong>. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. A type is inductively defined and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger <strong>type graph</strong>. The type&#8217;s path is a graphical encoding specifying a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in a <strong>value graph</strong>. Together, the type graph and the value graph form the <strong>obj graph</strong>.</p>
 </div>
@@ -3203,8 +3210,8 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 <div class="paragraph">
 <p>This section will discuss the particulars of the aforementioned uses of the <code>obj</code> graph.</p>
 </div>
-<div class="sect3">
-<h4 id="_state">State</h4>
+<div class="sect2">
+<h3 id="_state">State</h3>
 <div class="paragraph">
 <p>Let \$(M,\cdot,e)\$ be a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>, where \$e \in M\$ is the <a href="https://en.wikipedia.org/wiki/Identity_element">identity element</a> and there exists an element \$e' \in M\$ that also acts as an identity such that for every \$ x \in M \$, \$x \cdot e = x\$ and \$x \cdot e' = x\$, then because \$e \cdot e' = e\$ and \$e \cdot e' = e'\$, it is the case that \$e = e \cdot e' = e'\$ and \$e = e'\$.
 Thus, every monoid has a <strong>single unique identity</strong>.
@@ -3293,8 +3300,8 @@ mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]               
 <p>mm-ADT&#8217;s <strong>multiple identity instructions</strong> simply compute the identity function \$f(x) \mapsto x\$, but as edge labels in the <code>obj</code> graph, they store state information that can be later accessed via trace-based path analysis (i.e. via <code>[path]</code>).
 In effect, the execution context is transformed from a memory-less <a href="https://en.wikipedia.org/wiki/Finite-state_machine">finite state automata</a> to a <a href="https://en.wikipedia.org/wiki/Processor_register">register</a>-based <a href="https://en.wikipedia.org/wiki/Turing_machine">Turing machine</a>.</p>
 </div>
-<div class="sect4">
-<h5 id="_variables">Variables</h5>
+<div class="sect3">
+<h4 id="_variables">Variables</h4>
 <div class="paragraph">
 <p>The <code>[to]</code> instruction&#8217;s type definition is <code>a&lt;=a[to,_]</code>. The argument to <code>[to]</code> is a <strong>named anonymous type</strong>. For every incoming \$a \in \tt{obj}\$, there is an outgoing \$a\$ whose path has been extended with the <code>[to]</code> instruction. An example is provided below.</p>
 </div>
@@ -3444,8 +3451,8 @@ inst                                           domain      range state
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_definitions">Definitions</h5>
+<div class="sect3">
+<h4 id="_definitions">Definitions</h4>
 <div class="paragraph">
 <p>A <strong>definition</strong> takes one of the two familiar forms
 \[
@@ -3529,8 +3536,8 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 </tr>
 </table>
 </div>
-<div class="sect5">
-<h6 id="_rewrites">Rewrites</h6>
+<div class="sect4">
+<h5 id="_rewrites">Rewrites</h5>
 <div class="paragraph">
 <p>Each step of that walk is an instruction forming an edge in the type graph.
 For instance, the type</p>
@@ -3595,8 +3602,8 @@ The isomorphism realizes <code>int</code> as a classic set without structure bec
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_models">Models</h4>
+<div class="sect2">
+<h3 id="_models">Models</h3>
 <div class="paragraph">
 <p>mm-ADT organizes types into <strong>models</strong>.
 The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in a model called <code>mm</code> (the <em>mm</em> of mm-ADT).
@@ -3698,8 +3705,8 @@ language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
 </table>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_type_patterns">Type Patterns</h4>
+<div class="sect2">
+<h3 id="_type_patterns">Type Patterns</h3>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 7.1428%;">
@@ -3842,8 +3849,8 @@ language error: int for nat:29 is not a type in model social</code></pre>
 </tr>
 </tbody>
 </table>
-<div class="sect4">
-<h5 id="_refinement_types">Refinement Types</h5>
+<div class="sect3">
+<h4 id="_refinement_types">Refinement Types</h4>
 <div class="paragraph">
 <p><a href="https://en.wikipedia.org/wiki/Refinement_type">Refinement types</a> extend a language&#8217;s base types with <a href="https://en.wikipedia.org/wiki/Predicate_(mathematical_logic)">predicates</a> that further <em>refine</em> (constrain) the base type values. A classic example is the set of natural numbers (\$\mathbb{N}\$) as a refinement of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In <a href="https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate">set builder notation</a>, specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
 \[
@@ -3895,8 +3902,8 @@ mmlang&gt; (8;26)      =&gt; date
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_dependent_types">Dependent Types</h5>
+<div class="sect3">
+<h4 id="_dependent_types">Dependent Types</h4>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
@@ -3934,8 +3941,8 @@ mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                                     
 </table>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_recursive_types">Recursive Types</h5>
+<div class="sect3">
+<h4 id="_recursive_types">Recursive Types</h4>
 <div class="paragraph">
 <p>A recursive type&#8217;s definition contains a reference to itself. Recursive type definitions require a <em>base case</em> to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a <code>lst</code> containing only <code>ints</code>.</p>
 </div>
@@ -3974,7 +3981,6 @@ mmlang&gt; (1;'a';'c') =&gt; ylist
 ==&gt;ylist
 mmlang&gt; ('a';1;'b';2) =&gt; ylist[put,0,3]
 language error: (3;'a';1;'b';2) is not a ylist</code></pre>
-</div>
 </div>
 </div>
 </div>
@@ -7085,7 +7091,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-12 04:55:47 -0600
+Last updated 2020-09-12 11:13:17 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
