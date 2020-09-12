@@ -930,14 +930,31 @@ Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `
 
 ===== Poly Types
 
-A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. A free object imposes the equations of an abstract algebra (e.g. \$(a + b) + c = a + (b + c)\$ or \$a \cdot 1 = a\$), but not the equations of the elements of a concrete instance of that algebra (e.g. \$a + b = c\$ or \$a \cdot a = a\$). From a https://en.wikipedia.org/wiki/Data_structure[data structure] perspective, a free object is a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] with semantics strictly tied to the operator(s) of the abstract algebra. That is, free object *collection structures* respect notions of identity, inverse, associativity, and commutativity. An entailment is that a free object `poly` behaves as a https://en.wikipedia.org/wiki/List_(abstract_data_type)[lists] or https://en.wikipedia.org/wiki/Multiset[multisets]. Furthermore, when `poly` elements are types, as opposed to values, common *control structures* are realized such as https://en.wikipedia.org/wiki/Switch_statement[switch] and https://en.wikipedia.org/wiki/Null_coalescing_operator[coalesce]. This bounty of expressiveness is made possible by exploiting mm-ADT type/value-link:https://en.wikipedia.org/wiki/Duality_(mathematics)[duality] at the level of these free objects called `poly`.
+A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objects are https://en.wikipedia.org/wiki/Universal_algebra[universal] structures in that they respect the equations of an abstract algebraic structure. However, the term _free_ refers to the fact that these objects are "free" from the equational constraints of a concrete algebra. The following table presents examples of these two classes of equations. If the concrete algebra equations appear random, it is because they are. Each instance of an abstract algebra's operator(s) map elements to elements in a manner specific to the domain application.
+
+[.center]
+[cols="1,^2,^2",width=75]
+|===
+|               | abstract algebra equations                     | concrete algebra equations
+
+| https://en.wikipedia.org/wiki/Identity_element[identity]
+| \$a \cdot \mathbf{1} = a\$                     | \$a \cdot b = b\$
+| https://en.wikipedia.org/wiki/Inverse_element[inverses]
+|\$a \cdot a^{-1} = \mathbf{1}\$                 | \$a \cdot b^{-1} = \mathbf{1} \$
+| https://en.wikipedia.org/wiki/Associative_property[associativity]
+| \$a \cdot (b \cdot c) = (a \cdot b) \cdot c\$  | \$(a \cdot b) \cdot c = b \cdot c\$
+| https://en.wikipedia.org/wiki/Commutative_property[commutativity]
+| \$a \cdot b = b \cdot a\$                      | \$a \cdot a = a\$
+|===
+
+In mm-ADT, a `poly` can be used as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[*collection*] data structure, where the collection's semantics are tied to the operator(s) of the free object abstract algebra. Moreover, type-based `polys` are leveraged as https://en.wikipedia.org/wiki/Control_flow[*control*] structures. The mm-ADT `poly` is a versitile structure because it remains agnostic to the types and values contained therein while remaining consistent with the https://zenodo.org/record/2565243[stream ring algebra]'s operators' axioms and entailed theorems.
 
 [discrete]
 ====== Poly Structures
 
 There are *value* `polys` and there are *type* `polys`. A value `poly` is composed of only value `objs` and is best understood as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type `poly` contains at least one type `obj` and is intuitively understood as a https://en.wikipedia.org/wiki/Control_flow[flow control] structure.
 
-As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]), where theoretically, `rec` is simply a `lst` with some added conveniences that make typical programming patterns easier to express. Finally, a `poly` is associated with one of three algebras: `,` (https://en.wikipedia.org/wiki/Abelian_group[abelian group]), `;` (https://en.wikipedia.org/wiki/Monoid[monoid]), or `|` (https://en.wikipedia.org/wiki/Near-ring[near-ring]). These algebras correspond to the magmas of the mm-ADT https://zenodo.org/record/2565243[stream ring algebra].
+As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]), where theoretically, `rec` is simply a `lst` with some added conveniences that make typical programming patterns easier to express. Finally, a `poly` is associated with one of three algebras: `,` (https://en.wikipedia.org/wiki/Free_abelian_group[abelian group]), `;` (https://en.wikipedia.org/wiki/Free_monoid[monoid]), or `|` (https://en.wikipedia.org/wiki/Near-ring[near-ring]). These algebras correspond to the magmas of mm-ADT's https://zenodo.org/record/2565243[stream ring algebra].
 
 \[
 \begin{split}
@@ -1040,7 +1057,7 @@ a|
 |===
 
 .,-poly Collections
-The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring.
+The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT stream ring.
 
 [.center]
 [cols="^1,^1,^1",width=60,frame=none,grid=none]
@@ -1052,7 +1069,7 @@ The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[a
 | \[(\texttt{obj},\texttt{(,)},\{\mathbf{0}\})\]
 |===
 
-The carrier set is `obj`, the https://en.wikipedia.org/wiki/Commutative_property[commutative] binary \$\+\$-operator is `,`, and the identity is `{0}`. With `obj` quantification, should two `,-poly` terms have equal _objects_, they can be merged using the mm-ADT `[branch]` `inst` equation:
+A general `,-poly` has `obj` as its carrier set, `,` as its the https://en.wikipedia.org/wiki/Commutative_property[commutative] binary \$\+\$-operator, and `{0}` (`\_{0}`) as its identity element. With `obj` quantification, should two `,-poly` terms have equal __objects__, they can be merged according to the mm-ADT `[branch]` operator equation:
 \[
 [\texttt{branch},a_{q_0}, b_{q_1}] =
 \begin{cases}
@@ -1060,11 +1077,12 @@ a_{q_0 + q_1}                      & \text{if } a == b, \\
 [\texttt{branch},a_{q_0}, b_{q_1}] & \text{otherwise},
 \end{cases}
 \]
-where \$+\$ is the quantifier ring's additive operator. As an abelian group, the operator is commutative which provides set-like semantics as the elements are unordered. However, with quantifier "weighting," `,-lst` collections realize https://en.wikipedia.org/wiki/Multiset[multiset] semantics (also known as bags or weighted sets). For `,-rec` collections, https://en.wikipedia.org/wiki/Multimap[multimap] semantics (https://en.wikipedia.org/wiki/Associative_array[associative arrays] with multiple values for a single key).
+where \$+\$ is the quantifier ring's additive operator. The commutative aspect of the `,-poly` does not enforce an order upon its elements which yields https://en.wikipedia.org/wiki/Set_(mathematics)[set]-like semantics. However, given quantifier "weighting," `,-lst` collections realize https://en.wikipedia.org/wiki/Multiset[multiset] semantics (also known as bags or weighted sets) and `,-rec` collections realize https://en.wikipedia.org/wiki/Multimap[multimap] semantics (https://en.wikipedia.org/wiki/Associative_array[associative arrays] with multiple values for a single key).
 
 A few self-explanatory `,-poly` examples are provided below.
 
-[cols="1,1"]
+[.center]
+[cols="1,1",width=90]
 |===
 ^| ,-lst ^| ,-rec
 
@@ -1081,8 +1099,9 @@ a|
 ----
 (1->2,{0}->2,1->3,1->2,3->1)
 ('a'{7}->2,'a'->2{3},'b'->2)
-('a'->true,1.0->false,1->{0},true->'a')
+('a'->true,1.0->6,1->{0},'a'->'a')
 ----
+{blank}
 |===
 
 .;-poly Collections
@@ -1093,8 +1112,8 @@ The *;-polys* capture the non-commutative, multiplicative https://en.wikipedia.o
 |===
 | abstract magma | stream magma | free poly
 
-| \[(\tt{obj}, \cdot, \mathbf{1})\]
-| \[(\texttt{obj},\texttt{[juxta]},\{\mathbf{1}\})\]
+| \[(\tt{obj}, \ast, \mathbf{1})\]
+| \[(\texttt{obj},\texttt{[juxt]},\{\mathbf{1}\})\]
 | \[(\texttt{obj},\texttt{(;)},\{\mathbf{1}\})\]
 |===
 
