@@ -494,9 +494,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_poly_lifting">Poly Lifting</a></li>
 </ul>
 </li>
-<li><a href="#_refinement_types">Refinement Types</a></li>
-<li><a href="#_dependent_types">Dependent Types</a></li>
-<li><a href="#_recursive_types">Recursive Types</a></li>
 </ul>
 </li>
 </ul>
@@ -514,6 +511,13 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </ul>
 </li>
 <li><a href="#_models">Models</a></li>
+<li><a href="#_type_patterns">Type Patterns</a>
+<ul class="sectlevel4">
+<li><a href="#_refinement_types">Refinement Types</a></li>
+<li><a href="#_dependent_types">Dependent Types</a></li>
+<li><a href="#_recursive_types">Recursive Types</a></li>
+</ul>
+</li>
 </ul>
 </li>
 </ul>
@@ -1912,330 +1916,13 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 <div class="paragraph">
 <p>The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT instruction set architecture has three <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a> providing direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying algebra of the mm-ADT VM&#8201;&#8212;&#8201;<a href="https://zenodo.org/record/2565243">the stream ring</a>.</p>
 </div>
-<div class="paragraph">
-<p>The primary distinguising characteristic of the three aforementioned <strong>stream instructions</strong> is that they are no preserved in the <code>obj</code> graph. Their purpose is to compose instructions, not <em>be</em> instructions. However, it is for this reason that processing can be detached from the <code>obj</code> graph, working a level below the instruction set architecture and directly at the stream ring level.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 36.3636%;">
-<col style="width: 63.6364%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top"><code>=&gt;</code></th>
-<th class="tableblock halign-center valign-top"><code>[ ]</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6 =&gt; 8 =&gt; 10
-==&gt;10
-mmlang&gt; 6[map,8][map,10]
-==&gt;10
-mmlang&gt; 6 =&gt; 8 =&gt; 10 =&gt; [path]
-==&gt;(10)
-mmlang&gt; 6[map,8][map,10][path]
-==&gt;(6;[map,8];8;[map,10];10)
-   &lt;=6[map,8][map,10][path,(_[id];_[id])]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[+1,+2]+3
-==&gt;10
-==&gt;11
-mmlang&gt; 6-&lt;(+1,+2)&gt;-+3
-==&gt;10
-==&gt;11
-mmlang&gt; 6[+1,+2]+3[path]
-==&gt;(6;[plus,1];7;[plus,3];10)
-==&gt;(6;[plus,2];8;[plus,3];11)
-mmlang&gt; 6-&lt;(+1,+2)&gt;-+3[path]
-==&gt;(6;[split,(int[plus,1],int[plus,2])];6;[plus,1];7;[plus,3];10)
-==&gt;(6;[split,(int[plus,1],int[plus,2])];6;[plus,2];8;[plus,3];11)</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-none grid-none stretch right">
-<colgroup>
-<col style="width: 77.7777%;">
-<col style="width: 22.2223%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">mm-ADT instructions are curried <a href="https://en.wikipedia.org/wiki/Unary_function">unary functions</a>.
-For instance, the instruction <code>[neg]</code> takes an input <code>int</code> and outputs the inverse (or negative) <code>int</code>. Thus, <code>[neg]</code> behaves as its classic unary function counterpart
-\[
-\texttt{neg}(x) = -x,
-\]
-where <code>5=&gt;int[neg]</code> maps to <code>-5</code>.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5=&gt;int[neg]
-==&gt;-5
-mmlang&gt; 5=&gt;-5
-==&gt;-5
-mmlang&gt; -5
-==&gt;-5</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-none grid-none stretch right">
-<colgroup>
-<col style="width: 70%;">
-<col style="width: 30%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Next, suppose the <a href="https://en.wikipedia.org/wiki/Binary_function">binary function</a>
-\[
-\texttt{plus}(x,y) = x + y.
-\]
-In mm-ADT, a particular evaluation may be expressed as <code>6=&gt;[plus,2]</code>. Given that the instruction has a <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> value argument of \$2\$, <code>[plus,2]</code> acts in a manner analogous to a <a href="https://en.wikipedia.org/wiki/Currying">curried</a> unary function.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6=&gt;int[plus,2]
-==&gt;8
-mmlang&gt; 6=&gt;int[plus,[6=&gt;2]]
-==&gt;8
-mmlang&gt; 6=&gt;8
-==&gt;8
-mmlang&gt; 8
-==&gt;8</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-none grid-none stretch right">
-<colgroup>
-<col style="width: 58.3333%;">
-<col style="width: 41.6667%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If the argument to <code>[plus]</code> is a type (as opposed to a value), then the argument&#8217;s value resolution is <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> on the incoming <code>obj</code>. For instance, if <code>int[plus,[mult,2]]</code> has an incoming <code>int</code> of 6, the argument to <code>[plus]</code> is 12.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6=&gt;int[plus,[mult,2]]
-==&gt;18
-mmlang&gt; 6=&gt;int[plus,[6=&gt;[mult,2]]]
-==&gt;18
-mmlang&gt; 6=&gt;int[plus,[6=&gt;[mult,[6=&gt;2]]]]
-==&gt;18
-mmlang&gt; 6=&gt;int[plus,[6=&gt;[mult,2]]]
-==&gt;18
-mmlang&gt; 6=&gt;int[plus,12]
-==&gt;18
-mmlang&gt; 6=&gt;18
-==&gt;18
-mmlang&gt; 18
-==&gt;18</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-none grid-none stretch right">
-<colgroup>
-<col style="width: 58.3333%;">
-<col style="width: 41.6667%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">However, if the incoming <code>int</code> is 8, then the <code>[plus]</code> argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming <code>obj</code>.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 8=&gt;int[plus,[mult,2]]
-==&gt;24
-mmlang&gt; 8=&gt;int[plus,[8=&gt;[mult,2]]]
-==&gt;24
-mmlang&gt; 8=&gt;int[plus,[8=&gt;[mult,[8=&gt;2]]]]
-==&gt;24
-mmlang&gt; 8=&gt;int[plus,[8=&gt;[mult,2]]]
-==&gt;24
-mmlang&gt; 8=&gt;int[plus,16]
-==&gt;24
-mmlang&gt; 8=&gt;24
-==&gt;24
-mmlang&gt; 24
-==&gt;24</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<hr>
 </div>
 </div>
 <div class="sect3">
 <h4 id="_type_system">Type System</h4>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 7.1428%;">
-<col style="width: 28.5714%;">
-<col style="width: 64.2858%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">type</th>
-<th class="tableblock halign-left valign-top">description</th>
-<th class="tableblock halign-left valign-top">mmlang example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Anonymous_function">anonymous</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A type with an unspecified domain.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [plus,2]
-==&gt;7
-mmlang&gt; 5 =&gt; [plus,[plus,2]]
-==&gt;12</code></pre>
-</div>
-</div>
 <div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monomial">monomial</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A <a href="https://en.wikipedia.org/wiki/Primitive_data_type">primitive type</a> that is a single term and coefficient.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5   =&gt; int
-==&gt;5
-mmlang&gt; '5' =&gt; int
-language error: str is not an int
-mmlang&gt; 5   =&gt; int{10}
-language error: int is not an int{10}</code></pre>
+<p>mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Type_system">type system</a> is founded on 3 classes of ctypes: <strong>anonymous</strong>, <strong>mono</strong>, and <strong>poly</strong> types. Within the <code>mono</code> and <code>poly</code> types, further subdivisions exist. These foundational types are the building blocks by which all other types are constructed using the ring operators of mm-ADT&#8217;s <a href="https://zenodo.org/record/2565243">stream ring algebra</a>. At the limit, an mm-ADT program is simply a "complex" type.</p>
 </div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A <a href="https://en.wikipedia.org/wiki/Composite_data_type">composite type</a> containing a linearly combination of terms and their coefficients.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (+{2}3,+{3}4,+{4}5)
-==&gt;(_[plus,3]{2},_[plus,4]{3},_[plus,5]{4})
-mmlang&gt; 5-&lt;(+{2}3,+{3}4,+{4}5)
-==&gt;(8{2},9{3},10{4})
-mmlang&gt; 5-&lt;(+{2}3,+{3}4,+{4}5)&gt;-[sum]
-==&gt;83</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Refinement_type">refinement</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A subset of another type.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0]]
-==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
-mmlang&gt; 5 =&gt; nat
-==&gt;nat:5
-mmlang&gt; 0 =&gt; nat
-language error: 0 is not a nat</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A type with components of the same type.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,list&lt;=[(_){?}|(_,list)]]
-==&gt;_[define,list&lt;=_[(_){?}|(_,list)]]
-mmlang&gt; (1)             =&gt; list
-==&gt;list:(1)
-mmlang&gt; (1,(1))         =&gt; list
-==&gt;list:(1,(1))
-mmlang&gt; (1,(1,(1)))     =&gt; list
-==&gt;list:(1,(1,(1)))
-mmlang&gt; (1,(1,(1,(1)))) =&gt; list
-==&gt;list:(1,(1,(1,(1))))
-mmlang&gt; 1               =&gt; list
-language error: 1 is not a list
-mmlang&gt; (1,1)           =&gt; list
-language error: (1{2}) is not a list</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A type with a definition variable to the incoming <code>obj</code>.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [is&gt;int]
-mmlang&gt; 5 =&gt; [plus,int]
-==&gt;10</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Category_(mathematics)">model</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">A set of types and path equations.</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type'-&gt;
-          (person -&gt; (person:('name'-&gt;str,'age'-&gt;nat)),
-           nat    -&gt; (nat&lt;=int[is&gt;0])))]
-==&gt;_
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;0)                =&gt; person
-language error: ('name'-&gt;'marko','age'-&gt;0) is not a person
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
-language error: int for nat:29 is not a type in model social
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
-language error: int for nat:29 is not a type in model social</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
 <div class="sect4">
 <h5 id="_anonymous_types">Anonymous Types</h5>
 <div class="paragraph">
@@ -3481,141 +3168,6 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_refinement_types">Refinement Types</h5>
-<div class="paragraph">
-<p><a href="https://en.wikipedia.org/wiki/Refinement_type">Refinement types</a> extend a language&#8217;s base types with <a href="https://en.wikipedia.org/wiki/Predicate_(mathematical_logic)">predicates</a> that further <em>refine</em> (constrain) the base type values. A classic example is the set of natural numbers (\$\mathbb{N}\$) as a refinement of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In <a href="https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate">set builder notation</a>, specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
-\[
-\mathbb{N} = \{n \in \mathbb{Z} \;|\; n &gt; 0\}.
-\]
-In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form of <code>int{?}&lt;=int[is,[gt,0]]</code>. mm-ADT supports user defined types. In fact, mm-ADT&#8217;s primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The <code>[define]</code> instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on <em>model-ADTs</em>, the more general <code>[model]</code> instruction will be presented.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 2. mm-ADT Type Prefix</div>
-<div class="content">
-<div class="paragraph">
-<p>All <code>mmlang</code> examples that start with <code>:</code> are defining a <strong>type prefix</strong>. This type is prepended to all subsequent expressions. In many ways, a type prefix is like an <a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a> <a href="https://en.wikipedia.org/wiki/Object_file">object file</a>. On the other hand, model-ADTs (of <code>[model]</code>) are similar to the <code>import</code> of <a href="https://en.wikipedia.org/wiki/Class_(computer_programming)">class files</a> in <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object-oriented languages</a>.</p>
-</div>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0]]
-==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
-mmlang&gt; 10 =&gt; nat
-==&gt;nat:10
-mmlang&gt; -1 =&gt; nat
-language error: -1 is not a nat
-mmlang&gt; 10 =&gt; nat[plus,5]
-==&gt;nat:15
-mmlang&gt; 10 =&gt; nat[plus,5][plus,-15]
-language error: 0 is not a nat</code></pre>
-</div>
-</div>
-<h6 id="_poly_refinement" class="discrete">Poly Refinement</h6>
-<div class="paragraph">
-<p>There are two canonical <code>poly</code> types: <code>lst</code> and <code>rec</code>. Any restriction on their respective values is a <strong>refinement</strong>. The example below defines a <code>date</code> to be a <code>;-lst</code> with 2 or 3 <code>nats</code>. If the <code>;-lst</code> contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT&#8217;s type system. Variables, types, and rewrites are all <em>graph search processes</em>. A defined type (path) with a desired <strong>range</strong> is searched for in the <code>obj</code> graph and returned if and only if the morphing <code>obj</code> matches the defined type&#8217;s <strong>domain</strong>. Type definitions are simply other types that specify the means by which one type is translated into another type.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/obj/date-example.svg" alt="date example">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0],
-                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
-                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
-==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]],date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat),date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]])[put,2,2020]]
-mmlang&gt; (8;26;2020) =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)
-mmlang&gt; (8;26)      =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_dependent_types">Dependent Types</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
-                                  single&lt;=vec:(lst,is&lt;4).0[tail][head],
-                                  single&lt;=vec:(lst,is&gt;3).0[head]]
-==&gt;_[define,vec&lt;=lst[split,(lst,int&lt;=lst[combine,(_)][merge][count])],single&lt;=vec[get,0,_][tail][head],single&lt;=vec[get,0,_][head]]
-mmlang&gt; (1;2;3)   =&gt; vec                                               <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;vec:((1;2;3),3)
-mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;single:2
-mmlang&gt; (1;2;3;4) =&gt; vec                                               <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;vec:((1;2;3;4),4)
-mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                                     <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;single:1</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A <code>;-lst</code> of 3 terms is morphed into a <code>vec</code> using the <code>vec&lt;=lst</code> type.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>vec</code> is morphed into a <code>single</code> using the first <code>single&lt;=vec</code> type.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A <code>;-lst</code> of 4 terms is morphed into a <code>vec</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The <code>vec</code> is morphed into a <code>single</code> using the second <code>single&lt;=vec</code> type.</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_recursive_types">Recursive Types</h5>
-<div class="paragraph">
-<p>A recursive type&#8217;s definition contains a reference to itself. Recursive type definitions require a <em>base case</em> to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a <code>lst</code> containing only <code>ints</code>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,xlist&lt;=lst[[is,[empty]]|
-                                      [[is,[head][a,str]];
-                                       [is,[tail][a,xlist]]]]]
-==&gt;_[define,xlist&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[empty]]|lst{?}&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[head][a,str]];lst{?}[is,bool{?}&lt;=lst{?}[tail][a,xlist]]]]]
-mmlang&gt; ( ) =&gt; [a,xlist]
-==&gt;true
-mmlang&gt; ('a';'b';'c') =&gt; [a,xlist]
-==&gt;true
-mmlang&gt; ('a';'b';'c') =&gt; xlist
-==&gt;xlist:('a';'b';'c')
-mmlang&gt; (1;'a';'c') =&gt; xlist
-==&gt;xlist
-mmlang&gt; ('a';'b';'c') =&gt; xlist[put,0,3]
-language error: (3;'a';'b';'c') is not a xlist</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,ylist&lt;=lst[[is,[empty]]|
-                                      [[is,[head][a,str]];
-                                       [is,[tail][head][a,int]];
-                                       [is,[tail][tail][a,ylist]]]]]
-==&gt;_[define,ylist&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[empty]]|lst{?}&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[head][a,str]];lst{?}[is,bool{?}&lt;=lst{?}[tail][head][a,int]];lst{?}[is,bool{?}&lt;=lst{?}[tail][tail][a,ylist]]]]]
-mmlang&gt; ( ) =&gt; [a,ylist]
-==&gt;true
-mmlang&gt; ('a';1;'b';2) =&gt; [a,ylist]
-==&gt;true
-mmlang&gt; ('a';1;'b';2) =&gt; ylist
-==&gt;ylist:('a';1;'b';2)
-mmlang&gt; (1;'a';'c') =&gt; ylist
-==&gt;ylist
-mmlang&gt; ('a';1;'b';2) =&gt; ylist[put,0,3]
-language error: (3;'a';1;'b';2) is not a ylist</code></pre>
-</div>
-</div>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -4144,6 +3696,286 @@ language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
 <td>The <code>rec</code> does not have an <code>age</code> value that maps to <code>nat</code> so the <code>rec</code> is not a <code>person</code>.</td>
 </tr>
 </table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_type_patterns">Type Patterns</h4>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 7.1428%;">
+<col style="width: 28.5714%;">
+<col style="width: 64.2858%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">type</th>
+<th class="tableblock halign-left valign-top">description</th>
+<th class="tableblock halign-left valign-top">mmlang example</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Anonymous_function">anonymous</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A type with an unspecified domain.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [plus,2]
+==&gt;7
+mmlang&gt; 5 =&gt; [plus,[plus,2]]
+==&gt;12</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monomial">monomial</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <a href="https://en.wikipedia.org/wiki/Primitive_data_type">primitive type</a> that is a single term and coefficient.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5   =&gt; int
+==&gt;5
+mmlang&gt; '5' =&gt; int
+language error: str is not an int
+mmlang&gt; 5   =&gt; int{10}
+language error: int is not an int{10}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A <a href="https://en.wikipedia.org/wiki/Composite_data_type">composite type</a> containing a linearly combination of terms and their coefficients.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (+{2}3,+{3}4,+{4}5)
+==&gt;(_[plus,3]{2},_[plus,4]{3},_[plus,5]{4})
+mmlang&gt; 5-&lt;(+{2}3,+{3}4,+{4}5)
+==&gt;(8{2},9{3},10{4})
+mmlang&gt; 5-&lt;(+{2}3,+{3}4,+{4}5)&gt;-[sum]
+==&gt;83</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Refinement_type">refinement</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A subset of another type.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,nat&lt;=int[is&gt;0]]
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
+mmlang&gt; 5 =&gt; nat
+==&gt;nat:5
+mmlang&gt; 0 =&gt; nat
+language error: 0 is not a nat</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Recursive_data_type">recursive</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A type with components of the same type.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,list&lt;=[(_){?}|(_,list)]]
+==&gt;_[define,list&lt;=_[(_){?}|(_,list)]]
+mmlang&gt; (1)             =&gt; list
+==&gt;list:(1)
+mmlang&gt; (1,(1))         =&gt; list
+==&gt;list:(1,(1))
+mmlang&gt; (1,(1,(1)))     =&gt; list
+==&gt;list:(1,(1,(1)))
+mmlang&gt; (1,(1,(1,(1)))) =&gt; list
+==&gt;list:(1,(1,(1,(1))))
+mmlang&gt; 1               =&gt; list
+language error: 1 is not a list
+mmlang&gt; (1,1)           =&gt; list
+language error: (1{2}) is not a list</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A type with a definition variable to the incoming <code>obj</code>.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [is&gt;int]
+mmlang&gt; 5 =&gt; [plus,int]
+==&gt;10</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Category_(mathematics)">model</a></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">A set of types and path equations.</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type'-&gt;
+          (person -&gt; (person:('name'-&gt;str,'age'-&gt;nat)),
+           nat    -&gt; (nat&lt;=int[is&gt;0])))]
+==&gt;_
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;0)                =&gt; person
+language error: ('name'-&gt;'marko','age'-&gt;0) is not a person
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
+language error: int for nat:29 is not a type in model social
+mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
+language error: int for nat:29 is not a type in model social</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="_refinement_types">Refinement Types</h5>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Refinement_type">Refinement types</a> extend a language&#8217;s base types with <a href="https://en.wikipedia.org/wiki/Predicate_(mathematical_logic)">predicates</a> that further <em>refine</em> (constrain) the base type values. A classic example is the set of natural numbers (\$\mathbb{N}\$) as a refinement of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In <a href="https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate">set builder notation</a>, specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
+\[
+\mathbb{N} = \{n \in \mathbb{Z} \;|\; n &gt; 0\}.
+\]
+In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form of <code>int{?}&lt;=int[is,[gt,0]]</code>. mm-ADT supports user defined types. In fact, mm-ADT&#8217;s primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The <code>[define]</code> instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on <em>model-ADTs</em>, the more general <code>[model]</code> instruction will be presented.</p>
+</div>
+<div class="exampleblock">
+<div class="title">Deep Dive 2. mm-ADT Type Prefix</div>
+<div class="content">
+<div class="paragraph">
+<p>All <code>mmlang</code> examples that start with <code>:</code> are defining a <strong>type prefix</strong>. This type is prepended to all subsequent expressions. In many ways, a type prefix is like an <a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a> <a href="https://en.wikipedia.org/wiki/Object_file">object file</a>. On the other hand, model-ADTs (of <code>[model]</code>) are similar to the <code>import</code> of <a href="https://en.wikipedia.org/wiki/Class_(computer_programming)">class files</a> in <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object-oriented languages</a>.</p>
+</div>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0]]
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
+mmlang&gt; 10 =&gt; nat
+==&gt;nat:10
+mmlang&gt; -1 =&gt; nat
+language error: -1 is not a nat
+mmlang&gt; 10 =&gt; nat[plus,5]
+==&gt;nat:15
+mmlang&gt; 10 =&gt; nat[plus,5][plus,-15]
+language error: 0 is not a nat</code></pre>
+</div>
+</div>
+<h6 id="_poly_refinement" class="discrete">Poly Refinement</h6>
+<div class="paragraph">
+<p>There are two canonical <code>poly</code> types: <code>lst</code> and <code>rec</code>. Any restriction on their respective values is a <strong>refinement</strong>. The example below defines a <code>date</code> to be a <code>;-lst</code> with 2 or 3 <code>nats</code>. If the <code>;-lst</code> contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT&#8217;s type system. Variables, types, and rewrites are all <em>graph search processes</em>. A defined type (path) with a desired <strong>range</strong> is searched for in the <code>obj</code> graph and returned if and only if the morphing <code>obj</code> matches the defined type&#8217;s <strong>domain</strong>. Type definitions are simply other types that specify the means by which one type is translated into another type.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/obj/date-example.svg" alt="date example">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0],
+                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
+                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]],date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat),date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]])[put,2,2020]]
+mmlang&gt; (8;26;2020) =&gt; date
+==&gt;date:(nat:8;nat:26;nat:2020)
+mmlang&gt; (8;26)      =&gt; date
+==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
+</div>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_dependent_types">Dependent Types</h5>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
+                                  single&lt;=vec:(lst,is&lt;4).0[tail][head],
+                                  single&lt;=vec:(lst,is&gt;3).0[head]]
+==&gt;_[define,vec&lt;=lst[split,(lst,int&lt;=lst[combine,(_)][merge][count])],single&lt;=vec[get,0,_][tail][head],single&lt;=vec[get,0,_][head]]
+mmlang&gt; (1;2;3)   =&gt; vec                                               <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;vec:((1;2;3),3)
+mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                                     <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;single:2
+mmlang&gt; (1;2;3;4) =&gt; vec                                               <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;vec:((1;2;3;4),4)
+mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                                     <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;single:1</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>A <code>;-lst</code> of 3 terms is morphed into a <code>vec</code> using the <code>vec&lt;=lst</code> type.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>vec</code> is morphed into a <code>single</code> using the first <code>single&lt;=vec</code> type.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A <code>;-lst</code> of 4 terms is morphed into a <code>vec</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>The <code>vec</code> is morphed into a <code>single</code> using the second <code>single&lt;=vec</code> type.</td>
+</tr>
+</table>
+</div>
+</div>
+<div class="sect4">
+<h5 id="_recursive_types">Recursive Types</h5>
+<div class="paragraph">
+<p>A recursive type&#8217;s definition contains a reference to itself. Recursive type definitions require a <em>base case</em> to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a <code>lst</code> containing only <code>ints</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,xlist&lt;=lst[[is,[empty]]|
+                                      [[is,[head][a,str]];
+                                       [is,[tail][a,xlist]]]]]
+==&gt;_[define,xlist&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[empty]]|lst{?}&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[head][a,str]];lst{?}[is,bool{?}&lt;=lst{?}[tail][a,xlist]]]]]
+mmlang&gt; ( ) =&gt; [a,xlist]
+==&gt;true
+mmlang&gt; ('a';'b';'c') =&gt; [a,xlist]
+==&gt;true
+mmlang&gt; ('a';'b';'c') =&gt; xlist
+==&gt;xlist:('a';'b';'c')
+mmlang&gt; (1;'a';'c') =&gt; xlist
+==&gt;xlist
+mmlang&gt; ('a';'b';'c') =&gt; xlist[put,0,3]
+language error: (3;'a';'b';'c') is not a xlist</code></pre>
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,ylist&lt;=lst[[is,[empty]]|
+                                      [[is,[head][a,str]];
+                                       [is,[tail][head][a,int]];
+                                       [is,[tail][tail][a,ylist]]]]]
+==&gt;_[define,ylist&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[empty]]|lst{?}&lt;=lst[lst{?}&lt;=lst[is,bool&lt;=lst[head][a,str]];lst{?}[is,bool{?}&lt;=lst{?}[tail][head][a,int]];lst{?}[is,bool{?}&lt;=lst{?}[tail][tail][a,ylist]]]]]
+mmlang&gt; ( ) =&gt; [a,ylist]
+==&gt;true
+mmlang&gt; ('a';1;'b';2) =&gt; [a,ylist]
+==&gt;true
+mmlang&gt; ('a';1;'b';2) =&gt; ylist
+==&gt;ylist:('a';1;'b';2)
+mmlang&gt; (1;'a';'c') =&gt; ylist
+==&gt;ylist
+mmlang&gt; ('a';1;'b';2) =&gt; ylist[put,0,3]
+language error: (3;'a';1;'b';2) is not a ylist</code></pre>
+</div>
+</div>
 </div>
 </div>
 </div>
@@ -7253,7 +7085,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-12 03:45:20 -0600
+Last updated 2020-09-12 04:55:47 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
