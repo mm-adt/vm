@@ -136,14 +136,14 @@ For most of the documentation, the examples have been presented solely from with
 Assume the two type definitions below: `vertex` and `edge`. The associated diagram is not commutative and the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]`, where `.outV` is sugar for `[get,'outV']`.
 
 [.center]
-[cols="4,3",width=85,grid=none,frame=none]
+[cols="7,5",width=85,grid=none,frame=none]
 |====
 
 a|
 [exec,prompt="",eval=false]
 ----
-[define,vertex:('id'->int)]
-[define,edge:('outV'->vertex,'inV'->vertex)]
+[define,vertex:('id'->int)] %
+[define,  edge:('outV'->vertex,'inV'->vertex)]
 ----
 {blank}
 | image:digraph-model-1.svg[align=center,width=600]
