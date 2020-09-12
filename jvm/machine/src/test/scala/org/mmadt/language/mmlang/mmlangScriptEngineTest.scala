@@ -31,7 +31,6 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -45,14 +44,14 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("poly play") {
-    println(int(1,2) ==> __.q(2).plus(10).plus(5).path)
+    println(int(1, 2) ==> __.q(2).plus(10).plus(5).path)
     println(engine.eval("3[plus,10][plus,5][path]"))
     println(engine.eval("(1;{1};2;{5})"))
   }
 
   test("play2") {
     println(engine.eval(":[model,mm]"))
-  println(engine.eval("('plus',1)[as,inst]"))
+    println(engine.eval("('plus',1)[as,inst]"))
     println(engine.eval(
       """:[model,mm]
         |[define,node:('name'->str)]
@@ -509,9 +508,12 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(int(10))(engine.eval("10-<(bool{?} -> true | int -> int)>-"))
     assertResult(int(13))(engine.eval("10-<(int{?} -> int[plus,2] ; _ -> int[plus,1])>-"))
     assertResult(int(11, 51, 61))(engine.eval("(10,50,60)>--<(int ->int ; _ -> int[plus,1])>-"))
-    assertResult(zeroObj)(engine.eval("(10,50,60)>--<(bool{?} -> true ; int -> int[plus,1])>-"))
+    assertResult(zeroObj)(engine.eval("10-<(bool{?} -> true ; int -> int[plus,1])>-"))
+    assertResult(zeroObj)(engine.eval("[10,50,60]-<(bool{?} -> true ; int -> int[plus,1])>-"))
+    // assertResult(zeroObj)(engine.eval("(10,50,60)>--<(bool{?} -> true ; int -> int[plus,1])>-"))
     assertResult(int(11, 51, 51, 61))(engine.eval("(10,50{2},60)>--<(int -> int ; int+1 -> int[plus,1])>-"))
-    assertResult(zeroObj)(engine.eval("(10,10)>--<(bool{?} -> true ; int -> int[plus,1])>-"))
+    assertResult(zeroObj)(engine.eval("[10,10]-<(bool{?} -> true ; int -> int[plus,1])>-"))
+    // assertResult(zeroObj)(engine.eval("(10,10)>--<(bool{?} -> true ; int -> int[plus,1])>-"))
     assertResult(int(11).q(2))(engine.eval("10{2}-<(int+1 ->int ; int -> int[plus,1])>-"))
     assertResult(int(302, 42))(engine.eval(
       """ (0,1,2,3)>-
@@ -833,7 +835,7 @@ class mmlangScriptEngineTest extends FunSuite {
     //
     assertResult("int[plus,100][plus,200][split,(int;int[plus,2])][merge][plus,20]")(engine.eval("int[plus,100][plus,200]-<(int;int[plus,2])>-[plus,20]").toString)
     assertResult("int[plus,100][plus,200][split,(int)][merge][plus,20]")(engine.eval("int[plus,100][plus,200]-<(int|int[plus,2])>-[plus,20]").toString)
-    assertResult("(10;10;11)")(engine.eval("10[split,(bool,int)][merge][plus,1][path,([id];)]").toString)
+    assertResult("(10;10;11)")(engine.eval("10[split,(bool,int)][merge][plus,1][path,([id];[start,_])]").toString)
     assertResult("[12,14]")(engine.eval("1[plus,1][split,(int,int[plus,2])]>-[plus,10]").toString)
     //
     // assertResult("bool<=int[plus,10][lt,50]")(engine.eval("(int;[plus,10];int;[lt,50];bool)>-").toString)

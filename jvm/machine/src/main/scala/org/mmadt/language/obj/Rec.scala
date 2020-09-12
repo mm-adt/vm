@@ -98,7 +98,7 @@ object Rec {
   def test[A <: Obj, B <: Obj](arec:Rec[A, B], brec:Rec[A, B]):Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
-  private def semi[A <: Obj,B<:Obj](objs:Pairs[A,B]):Pairs[A,B] = /*if (objs.exists(x => !x._1.alive && !x._2.alive)) List(zeroObj->zeroObj).asInstanceOf[Pairs[A,B]] else*/ objs.filter(kv => !__.isAnonRootAlive(kv._2))
+  private def semi[A <: Obj,B<:Obj](objs:Pairs[A,B]):Pairs[A,B] = if (objs.exists(x => !x._1.alive || !x._2.alive)) List(zeroObj->zeroObj).asInstanceOf[Pairs[A,B]] else objs.filter(kv => !__.isAnonRootAlive(kv._2))
   def moduleStruct[A <: Obj, B <: Obj](gsep:String, pairs:Pairs[A, B], start:Obj = null):Pairs[A, B] = gsep match {
     /////////// ,-rec
     case Tokens.`,` =>

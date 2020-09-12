@@ -29,7 +29,6 @@ import org.mmadt.language.obj.Lst.LstTuple
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.Rec.RecTuple
 import org.mmadt.language.obj.`type`.{BoolType, _}
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.value.strm._
 import org.mmadt.language.obj.{Lst, _}
@@ -82,7 +81,7 @@ object StorageFactory {
   /////////TYPES/////////
   def deadObj[O <: Obj]:O = zeroObj.asInstanceOf[O]
   lazy val zeroObj:__ = __.q(qZero)
-  lazy val oneObj:__ = __.via(__,StartOp(__))
+  lazy val oneObj:__ = __.q(qOne)
   lazy val bool:BoolType = tbool()
   lazy val int:IntType = tint()
   lazy val real:RealType = treal()

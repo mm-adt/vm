@@ -1131,9 +1131,9 @@ The `;-poly` carrier set is `obj`, the multiplicative operator is `;`, the multi
 a|
 [exec]
 ----
-(1;{0};1;2;{1})
+(1;6;1;2;{1})
 ('a'{7};'b';'b'{0};'c';'a'{2})
-('a';{1};1.0;1;true)
+('a';{1};1.0;1;true;{1})
 ----
 {blank}
 a|
