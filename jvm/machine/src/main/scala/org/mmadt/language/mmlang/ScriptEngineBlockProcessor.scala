@@ -57,25 +57,27 @@ class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Ob
   override def process(parent:StructuralNode, reader:Reader, attributes:java.util.Map[String, Object]):Object = {
     val builder:StringBuilder = new StringBuilder
     val query:StringBuilder = new StringBuilder
+    var result:Boolean = true
     val eval = java.lang.Boolean.valueOf(attributes.getOrDefault(EVAL, Tokens.btrue).toString)
     val prompt = attributes.getOrDefault(PROMPT, engine.getFactory.getLanguageName + "> ").toString
     val none = attributes.getOrDefault(NONE, prompt + "\n").toString
     val exception = attributes.getOrDefault(EXCEPTION, Tokens.blank).toString
     val linebreak = attributes.getOrDefault(LINE_BREAK, "%").toString
-    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.::,__.model(MM))
+    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.::, __.model(MM))
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
       if (w.trim.isBlank)
         builder.append("\n")
       else {
-        if (w.stripTrailing().endsWith(linebreak)) {
-          val line = w.substring(0, w.stripTrailing().length - (linebreak.length + 1))
-          query.append(line).append("\n").append(IntStream.range(0, prompt.length).mapToObj(_ => Tokens.space).collect(Collectors.joining))
+        if (w.stripTrailing().contains(linebreak)) {
+          val line = w.stripTrailing()
+          if (line.contains("%%")) result = false;
+          query.append(line.replace(linebreak, Tokens.space)).append("\n").append(IntStream.range(0, prompt.length).mapToObj(_ => Tokens.space).collect(Collectors.joining))
         } else {
           query.append(w)
           if (eval)
             builder.append(prompt).append(query).append("\n")
           Try[Obj] {
-            engine.eval(query.toString().replaceAll("\n", Tokens.blank).replace(linebreak, Tokens.blank))
+            engine.eval(query.toString().replaceAll("\n", Tokens.blank).replaceAll("(//<[0-9]>)", Tokens.blank))
           } match {
             case Failure(e) if e.getClass.getSimpleName.equals(exception) =>
               if (eval) {
@@ -89,7 +91,7 @@ class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Ob
             case Success(value) =>
               if (eval) {
                 val results = Obj.iterator(value)
-                if (results.isEmpty) builder.append(none)
+                if (results.isEmpty || !result) builder.append(none)
                 else results.foreach(a => {
                   builder.append(Tokens.RRDARROW).append(a).append("\n")
                 })
@@ -97,6 +99,7 @@ class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Ob
                 builder.append(query)
               }
           }
+          result = true
           query.clear()
         }
       }
