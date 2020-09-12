@@ -601,7 +601,7 @@ The mm-ADT virtual machine has two layers of logic: the https://en.wikipedia.org
 
 | `\=>`  | \$\ast\$      | `[juxta]`
 | `[ ]`  | \$ +\$        | `[branch]`
-| `=\|`  | \$ \oplus\$   | `[barrier]`
+| `=]`  | \$ \oplus\$   | `[barrier]`
 |====
 
 The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT instruction set architecture has three https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions] providing direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying algebra of the mm-ADT VM -- https://zenodo.org/record/2565243[the stream ring].
@@ -930,7 +930,7 @@ Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `
 
 ===== Poly Types
 
-A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objects are https://en.wikipedia.org/wiki/Universal_algebra[universal] structures in that they respect the equations of an abstract algebraic structure. However, the term _free_ refers to the fact that these objects are "free" from the equational constraints of a concrete algebra. The following table presents examples of these two classes of equations. If the concrete algebra equations appear random, it is because they are. Each instance of an abstract algebra's operator(s) map elements to elements in a manner specific to the domain application.
+A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objects are https://en.wikipedia.org/wiki/Universal_algebra[universal] structures in that they respect the equations of an abstract algebra, but not the equations of an instance of the abstract algebra. Hence the term _free_ as in "free" from constraint of the concrete--universal. Examples of these two classes of equations are provided in the table below. If the concrete algebra equations appear random, it is because they are. Each concrete algebra's operator(s) map elements-to-elements in a manner specific to an application domain and as such, are not _universal_ equations.
 
 [.center]
 [cols="1,^2,^2",width=75]
@@ -947,7 +947,7 @@ A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objec
 | \$a \cdot b = b \cdot a\$                      | \$a \cdot a = a\$
 |===
 
-In mm-ADT, a `poly` can be used as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[*collection*] data structure, where the collection's semantics are tied to the operator(s) of the free object abstract algebra. Moreover, type-based `polys` are leveraged as https://en.wikipedia.org/wiki/Control_flow[*control*] structures. The mm-ADT `poly` is a versitile structure because it remains agnostic to the types and values contained therein while remaining consistent with the https://zenodo.org/record/2565243[stream ring algebra]'s operators' axioms and entailed theorems.
+In mm-ADT, a `poly` can be used as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[*collection*] data structure, where the collection's semantics are tied to the operator(s) of the free object's abstract algebra. Moreover, type-based `polys` offer data flow https://en.wikipedia.org/wiki/Control_flow[*control*] semantics. The mm-ADT `poly` is a versatile structure because it remains agnostic to the types and values contained therein while remaining consistent with the https://zenodo.org/record/2565243[stream ring algebra]'s operators' axioms and entailed theorems.
 
 [discrete]
 ====== Poly Structures
@@ -1071,13 +1071,20 @@ The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[a
 
 A general `,-poly` has `obj` as its carrier set, `,` as its the https://en.wikipedia.org/wiki/Commutative_property[commutative] binary \$\+\$-operator, and `{0}` (`\_{0}`) as its identity element. With `obj` quantification, should two `,-poly` terms have equal __objects__, they can be merged according to the mm-ADT `[branch]` operator equation:
 \[
-[\texttt{branch},a_{q_0}, b_{q_1}] =
+\begin{split}
+[\texttt{branch},a_q, b_r] &=
 \begin{cases}
-a_{q_0 + q_1}                      & \text{if } a == b, \\
-[\texttt{branch},a_{q_0}, b_{q_1}] & \text{otherwise},
-\end{cases}
+a_{q + r}                      & \text{if } a == b, \\
+[\texttt{branch},a_q, b_r] & \text{otherwise},
+\end{cases} \\
+[a_q, b_r] &=
+\end{split}
 \]
-where \$+\$ is the quantifier ring's additive operator. The commutative aspect of the `,-poly` does not enforce an order upon its elements which yields https://en.wikipedia.org/wiki/Set_(mathematics)[set]-like semantics. However, given quantifier "weighting," `,-lst` collections realize https://en.wikipedia.org/wiki/Multiset[multiset] semantics (also known as bags or weighted sets) and `,-rec` collections realize https://en.wikipedia.org/wiki/Multimap[multimap] semantics (https://en.wikipedia.org/wiki/Associative_array[associative arrays] with multiple values for a single key).
+where \$+\$ is the quantifier ring's additive operator and
+\[
+[a_q,\{\mathbf{0}\}] = a_q.
+\]
+The commutative aspect of the `,-poly` does not enforce an order upon its elements which yields https://en.wikipedia.org/wiki/Set_(mathematics)[set]-like semantics. However, given quantifier "weighting," `,-lst` collections realize https://en.wikipedia.org/wiki/Multiset[multiset] semantics (also known as bags or weighted sets) and `,-rec` collections realize https://en.wikipedia.org/wiki/Multimap[multimap] semantics (https://en.wikipedia.org/wiki/Associative_array[associative arrays] with multiple values for a single key).
 
 A few self-explanatory `,-poly` examples are provided below.
 
@@ -1117,11 +1124,47 @@ The *;-polys* capture the non-commutative, multiplicative https://en.wikipedia.o
 | \[(\texttt{obj},\texttt{(;)},\{\mathbf{1}\},\{\mathbf{0}\})\]
 |===
 
-The `;-poly` carrier set is `obj`, the multiplicative operator is `;`, the multiplicative identity is `{1}`, and due to the larger ring in which this magma is embedded, `{0}` is the https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator]. Due to non-commutativity, the `;` delimited elements form an https://en.wikipedia.org/wiki/Sequence[ordered sequence]. In `lst`, the consequence is a collection data structure with https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-semantics. In `rec`, a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record] with ordered fields is realized. Both support duplicates so the `rec` form is less like an associative array and more _list of pairs/fields_.
+The `;-poly` carrier set is `obj`, the multiplicative operator is `;`, the multiplicative identity is `{1}`, and due to the larger ring in which this magma is embedded, `{0}` is the https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator]. Due to non-commutativity, the `;` delimited elements form an https://en.wikipedia.org/wiki/Sequence[ordered sequence]. In `lst`, the consequence is a collection data structure with https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-semantics. In `rec`, a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record] with ordered fields is realized. Both support duplicates so the `rec` form is less like an associative array and more like a _list of pairs/fields_.
+
+The `[juxt]` operator is mm-ADT's multiplicative monoid operator and is only applied in `;-poly` for the universal elements \$\mathbf{1}\$ and \$\mathbf{0}\$. Given the equation
 
 \[
-[\texttt{juxt},a_{q_0}, b_{q_1}] = b_{q_0 \ast q_1}
+\begin{split}
+a_q[\texttt{juxt}, b_r] &=
+\begin{cases}
+b_{q \ast r} & \text{if } b \text{ is a value}, \\
+b(a)_{q \ast r}         & \text{otherwise,}
+\end{cases} \\
+a_q \Rightarrow b_r     &=
+\end{split}
 \]
+
+`;-poly` only computes the identity and the annihilator
+
+[.center]
+[cols="1,1",frame=none,grid=none,width=60]
+|===
+
+|
+\[
+\begin{split}
+a_q \Rightarrow \{\mathbf{1}\} &= \\
+\{\mathbf{1}\}_1(a_q)          &= \\
+a_{q \ast 1}                   &= a_q
+\end{split}
+\]
+
+|
+\[
+\begin{split}
+a_q \Rightarrow \{\mathbf{0}\} &= \\
+\{\mathbf{0}\}_0(a_q)          &= \\
+a_{q \ast 0}                   &= \{\mathbf{0}\}.
+\end{split}
+\]
+|===
+
+Examples are presented below that contain both \$\{\mathbf{0}\}\$ and \$\{\mathbf{1}\}\$ elements.
 
 [.center]
 [cols="1,1",width=90]
@@ -1143,16 +1186,62 @@ a|
 ('a'{7}->2;'a'->2{3};'b'->2)
 ('a'->true;1.0->4;1->{0};{1}->'a')
 ----
+{blank}
 |===
 
 .|-poly Collections
-The *|-polys* capture the endomorphic, left-distributive, multiplicative, composition operator over a non-commutative additive group within the mm-ADT https://en.wikipedia.org/wiki/Near-ring[near-ring]
-\[
-(\texttt{obj},\oplus,\mathbf{0}/\mathbf{1}).
-\]
-A forthcoming section detailing mm-ADT's ring algebra will discuss the _reduce near-ring_. For now, note that the `|-poly` collections yield singleton `lsts` and `recs`. As such, the `|-polys` are less useful as collections than as controls.
+The *|-polys* capture the endomorphic, left-distributive, multiplicative, composition operator over a non-commutative additive group within the mm-ADT https://en.wikipedia.org/wiki/Near-ring[near-ring].
 
-NOTE: When each `poly` kind (`lst` or `rec`) is composed of 0 or 1 term, their behavior's are equivalent. It is only at 2+ terms that their respective algebras are discernible and instructions such as `[eq]` consider the `poly` term separator in their calculation.
+[.center]
+[cols="^1,^1,^1",width=80,frame=none,grid=none]
+|===
+| abstract magma | stream magma | free poly
+
+| \[(\texttt{obj},\oplus_1,\mathbf{0}/\mathbf{1})\]
+| \[(\texttt{obj},\texttt{[barrier,[head]]},\{\mathbf{1}\},\{\mathbf{0}\})\]
+| \[(\texttt{obj},\texttt{(\|)},\{\mathbf{1}\},\{\mathbf{0}\})\]
+|===
+
+The `[barrier]` operator computes an output based on the entire input. This _blocking_ behavior is used for link:https://en.wikipedia.org/wiki/Reduction_Operator[reduce]/link:https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]-based computations. The \$1\$ subscript is a particular augmentation to the higher-order \$\oplus\$ operator, where \$\oplus_1\$ operator returns the first non-zero `obj` -- i.e., the head of the stream (a https://en.wikipedia.org/wiki/Lazy_evaluation[lazy computation]).
+
+\[
+\begin{split}
+[a_q,\ldots,b_r]\texttt{[barrier,[head]]} &=
+\begin{cases}
+a_q & \text{if } q > 0, \\
+\ldots \\
+b_r & \text{if } r > 0, \\
+\{\mathbf{0}\} & \text{otherwise,}
+\end{cases}
+\end{split}
+\]
+
+`|-poly` yields singleton `lsts` and `recs`. This seemingly odd behavior proves its importance when considered `|-polys` in the context of flow controls.
+
+[.center]
+[cols="1,1",width=90]
+|===
+^| \|-lst ^| \|-rec
+
+a|
+[exec]
+----
+(1\|6\|1\|2\|{1})
+('a'{0}\|'b'{0}\|'c'\|'a'{2})
+('a'{?}\|{1}\|1.0\|true)
+----
+{blank}
+a|
+[exec]
+----
+(1->2\|{1}->2\|1->3\|1->{1}\|3->1)
+('a'{0}->2\|'b'->2{3}\|'b'->2)
+('a'->{0}\|{0}->4\|1->true\|2->'a')
+----
+{blank}
+|===
+
+NOTE: When each `poly` contains 0 or 1 element, the respective algebras behave equivalently. It is only at 2+ terms that the `poly` algebras become discernible and instructions such as `[eq]` consider the `poly` element separator in their calculation.
 
 ====== Poly Controls
 

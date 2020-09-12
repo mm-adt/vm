@@ -27,6 +27,7 @@ import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -98,7 +99,7 @@ object Rec {
   def test[A <: Obj, B <: Obj](arec:Rec[A, B], brec:Rec[A, B]):Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
-  private def semi[A <: Obj,B<:Obj](objs:Pairs[A,B]):Pairs[A,B] = if (objs.exists(x => !x._1.alive || !x._2.alive)) List(zeroObj->zeroObj).asInstanceOf[Pairs[A,B]] else objs.filter(kv => !__.isAnonRootAlive(kv._2))
+  private def semi[A <: Obj, B <: Obj](objs:Pairs[A, B]):Pairs[A, B] = if (objs.exists(x => !x._1.alive || !x._2.alive)) List(zeroObj -> zeroObj).asInstanceOf[Pairs[A, B]] else objs.filter(kv => !__.isAnonRootAlive(kv._2))
   def moduleStruct[A <: Obj, B <: Obj](gsep:String, pairs:Pairs[A, B], start:Obj = null):Pairs[A, B] = gsep match {
     /////////// ,-rec
     case Tokens.`,` =>
@@ -131,7 +132,9 @@ object Rec {
       val nostart:Boolean = null == start
       val newStart:Obj = if (nostart) __ else start
       var taken:Boolean = false
-      pairs.map(kv => (newStart ~~> kv._1) -> kv._2)
+      pairs
+        .filter(kv => kv._1.alive && kv._2.alive)
+        .map(kv => (newStart ~~> kv._1) -> kv._2)
         .filter(kv => kv._1.alive)
         .filter(kv =>
           if (taken) false
@@ -140,6 +143,10 @@ object Rec {
             taken = true;
             true
           })
-        .map(kv => if (nostart) kv else kv._1 -> (start ~~> kv._2))
+        .map(kv => if (nostart) kv else kv._1 -> ((start ~~> kv._2) match {
+          case x if kv._2.isInstanceOf[Value[_]] => x.hardQ(q => kv._2.q.mult(q)).asInstanceOf[B]
+          case x => x
+        }))
+        .filter(kv => kv._1.alive && kv._2.alive)
   }
 }
