@@ -605,6 +605,7 @@ The mm-ADT virtual machine has two layers of logic: the https://en.wikipedia.org
 
 The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT instruction set architecture has three https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions] providing direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying algebra of the mm-ADT VM -- https://zenodo.org/record/2565243[the stream ring].
 
+////
 The primary distinguising characteristic of the three aforementioned *stream instructions* is that they are no preserved in the `obj` graph. Their purpose is to compose instructions, not _be_ instructions. However, it is for this reason that processing can be detached from the `obj` graph, working a level below the instruction set architecture and directly at the stream ring level.
 
 [cols="4,7"]
@@ -714,83 +715,11 @@ a|[exec]
 
 '''
 
+////
+
 ==== Type System
 
-[cols="^1,4,9"]
-|===
-| type      | description | mmlang example
-
-| https://en.wikipedia.org/wiki/Anonymous_function[anonymous] | A type with an unspecified domain.
-a|
-[exec]
-----
-5 => [plus,2]
-5 => [plus,[plus,2]]
-----
-{blank}
-
-| https://en.wikipedia.org/wiki/Monomial[monomial] | A https://en.wikipedia.org/wiki/Primitive_data_type[primitive type] that is a single term and coefficient.
-a|
-[exec,exception=LanguageException]
-----
-5   => int
-'5' => int
-5   => int{10}
-----
-{blank}
-| https://en.wikipedia.org/wiki/Polynomial[polynomial] | A https://en.wikipedia.org/wiki/Composite_data_type[composite type] containing a linearly combination of terms and their coefficients.
-a|
-[exec,exception=LanguageException]
-----
-(+{2}3,+{3}4,+{4}5)
-5-<(+{2}3,+{3}4,+{4}5)
-5-<(+{2}3,+{3}4,+{4}5)>-[sum]
-----
-{blank}
-| https://en.wikipedia.org/wiki/Refinement_type[refinement] | A subset of another type.
-a|
-[exec,exception=LanguageException,none=""]
-----
-:[define,nat<=int[is>0]]
-5 => nat
-0 => nat
-----
-{blank}
-| https://en.wikipedia.org/wiki/Recursive_data_type[recursive] | A type with components of the same type.
-a|
-[exec,exception=LanguageException,none=""]
-----
-:[define,list<=[(_){?}\|(_,list)]]
-(1)             => list
-(1,(1))         => list
-(1,(1,(1)))     => list
-(1,(1,(1,(1)))) => list
-1               => list
-(1,1)           => list
-----
-{blank}
-| https://en.wikipedia.org/wiki/Dependent_type[dependent] | A type with a definition variable to the incoming `obj`.
-a|
-[exec,none=""]
-----
-5 => [is>int]
-5 => [plus,int]
-----
-{blank}
-| https://en.wikipedia.org/wiki/Category_(mathematics)[model] | A set of types and path equations.
-a|
-[exec,exception=LanguageException,none=""]
-----
-:[model,social:('type'->  %
-  (person -> (person:('name'->str,'age'->nat)), %
-   nat    -> (nat<=int[is>0])))]
-('name'->'marko','age'->0)                => person
-('name'->'marko','age'->29)               => person
-('name'->'marko','age'->29,'alive'->true) => person
-
-----
-{blank}
-|===
+mm-ADT's https://en.wikipedia.org/wiki/Type_system[type system] is founded on 3 classes of ctypes: *anonymous*, *mono*, and *poly* types. Within the `mono` and `poly` types, further subdivisions exist. These foundational types are the building blocks by which all other types are constructed using the ring operators of mm-ADT's https://zenodo.org/record/2565243[stream ring algebra]. At the limit, an mm-ADT program is simply a "complex" type.
 
 ===== Anonymous Types
 
@@ -1482,91 +1411,6 @@ The reason for using `-<( )>-` versus `[ ]` is that when `[split]` and `[merge]`
 
 In summary, mm-ADT can be https://en.wikipedia.org/wiki/Embedding[embedded] in `poly` itself. The formal proof of this fact demonstrates that the mm-ADT https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture], the two https://en.wikipedia.org/wiki/Ring_%28mathematics%29[ring] operators (\$+\$ and \$*\$), and the _reduce_ https://en.wikipedia.org/wiki/Near-ring[near-ring] operator (\$\oplus\$) are sufficiently expressive to yield a https://en.wikipedia.org/wiki/Turing_completeness[Turing Complete] computing machine.
 
-===== Refinement Types
-
-https://en.wikipedia.org/wiki/Refinement_type[Refinement types] extend a language's base types with https://en.wikipedia.org/wiki/Predicate_(mathematical_logic)[predicates] that further _refine_ (constrain) the base type values. A classic example is the set of natural numbers (\$\mathbb{N}\$) as a refinement of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate[set builder notation], specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
-\[
-\mathbb{N} = \{n \in \mathbb{Z} \;|\; n > 0\}.
-\]
-In mm-ADT, the above is denote `int[is>0]` which is the sugar form of `int{?}\<=int[is,[gt,0]]`. mm-ADT supports user defined types. In fact, mm-ADT's primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The `[define]` instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on _model-ADTs_, the more general `[model]` instruction will be presented.
-
-.mm-ADT Type Prefix
-================================================================
-All `mmlang` examples that start with `:` are defining a *type prefix*. This type is prepended to all subsequent expressions. In many ways, a type prefix is like an https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler] https://en.wikipedia.org/wiki/Object_file[object file]. On the other hand, model-ADTs (of `[model]`) are similar to the `import` of https://en.wikipedia.org/wiki/Class_(computer_programming)[class files] in https://en.wikipedia.org/wiki/Object-oriented_programming[object-oriented languages].
-================================================================
-
-[exec,none="",exception=LanguageException]
-----
-:[model,mm][define,nat<=int[is>0]]
-10 => nat
--1 => nat
-10 => nat[plus,5]
-10 => nat[plus,5][plus,-15]
-----
-
-[discrete]
-====== Poly Refinement
-
-There are two canonical `poly` types: `lst` and `rec`. Any restriction on their respective values is a *refinement*. The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all _graph search processes_. A defined type (path) with a desired *range* is searched for in the `obj` graph and returned if and only if the morphing `obj` matches the defined type's *domain*. Type definitions are simply other types that specify the means by which one type is translated into another type.
-
-image::date-example.svg[]
-
-[exec,none="",exception=LanguageException]
-----
-:[model,mm][define,nat<=int[is>0],                              %
-                   date<=(nat[is=<12];nat[is=<31];nat),         %
-                   date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
-(8;26;2020) => date
-(8;26)      => date
-----
-
-===== Dependent Types
-
-[exec,none=""]
-----
-:[model,mm][define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),       %
-                          single<=vec:(lst,is<4).0[tail][head], %
-                          single<=vec:(lst,is>3).0[head]]
-(1;2;3)   => vec                                               //<1>
-(1;2;3)   => vec => single                                     //<2>
-(1;2;3;4) => vec                                               //<3>
-(1;2;3;4) => vec => single                                     //<4>
-----
-<1> A `;-lst` of 3 terms is morphed into a `vec` using the `vec\<=lst` type.
-<2> The `vec` is morphed into a `single` using the first `single\<=vec` type.
-<3> A `;-lst` of 4 terms is morphed into a `vec`.
-<4> The `vec` is morphed into a `single` using the second `single\<=vec` type.
-
-===== Recursive Types
-
-A recursive type's definition contains a reference to itself. Recursive type definitions require a _base case_ to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a `lst` containing only `ints`.
-
-
-[exec,exception=LanguageException]
-----
-:[model,mm][define,xlist<=lst[[is,[empty]]|                  %
-                              [[is,[head][a,str]];           %
-                               [is,[tail][a,xlist]]]]]
-( ) => [a,xlist]
-('a';'b';'c') => [a,xlist]
-('a';'b';'c') => xlist
-(1;'a';'c') => xlist
-('a';'b';'c') => xlist[put,0,3]
-----
-
-[exec,exception=LanguageException]
-----
-:[model,mm][define,ylist<=lst[[is,[empty]]|                  %
-                              [[is,[head][a,str]];           %
-                               [is,[tail][head][a,int]];     %
-                               [is,[tail][tail][a,ylist]]]]]
-( ) => [a,ylist]
-('a';1;'b';2) => [a,ylist]
-('a';1;'b';2) => ylist
-(1;'a';'c') => ylist
-('a';1;'b';2) => ylist[put,0,3]
-----
-
 === The Obj Graph
 
 An mm-ADT program is a *type*. The `mmlang` parser converts a textual representation of a type into a type `obj`. A type is inductively defined and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger *type graph*. The type's path is a graphical encoding specifying a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in a *value graph*. Together, the type graph and the value graph form the *obj graph*.
@@ -1827,3 +1671,166 @@ image::nat-model.svg[width=450,align=center]
 <2> The `[model]` instruction is the first `inst` off the root of the `obj` graph.
 <3> The `rec` is mapped to a `person` with the `age` value being mapped accordingly.
 <4> The `rec` does not have an `age` value that maps to `nat` so the `rec` is not a `person`.
+
+==== Type Patterns
+
+[cols="^1,4,9"]
+|===
+| type      | description | mmlang example
+
+| https://en.wikipedia.org/wiki/Anonymous_function[anonymous] | A type with an unspecified domain.
+a|
+[exec]
+----
+5 => [plus,2]
+5 => [plus,[plus,2]]
+----
+{blank}
+
+| https://en.wikipedia.org/wiki/Monomial[monomial] | A https://en.wikipedia.org/wiki/Primitive_data_type[primitive type] that is a single term and coefficient.
+a|
+[exec,exception=LanguageException]
+----
+5   => int
+'5' => int
+5   => int{10}
+----
+{blank}
+| https://en.wikipedia.org/wiki/Polynomial[polynomial] | A https://en.wikipedia.org/wiki/Composite_data_type[composite type] containing a linearly combination of terms and their coefficients.
+a|
+[exec,exception=LanguageException]
+----
+(+{2}3,+{3}4,+{4}5)
+5-<(+{2}3,+{3}4,+{4}5)
+5-<(+{2}3,+{3}4,+{4}5)>-[sum]
+----
+{blank}
+| https://en.wikipedia.org/wiki/Refinement_type[refinement] | A subset of another type.
+a|
+[exec,exception=LanguageException,none=""]
+----
+:[define,nat<=int[is>0]]
+5 => nat
+0 => nat
+----
+{blank}
+| https://en.wikipedia.org/wiki/Recursive_data_type[recursive] | A type with components of the same type.
+a|
+[exec,exception=LanguageException,none=""]
+----
+:[define,list<=[(_){?}\|(_,list)]]
+(1)             => list
+(1,(1))         => list
+(1,(1,(1)))     => list
+(1,(1,(1,(1)))) => list
+1               => list
+(1,1)           => list
+----
+{blank}
+| https://en.wikipedia.org/wiki/Dependent_type[dependent] | A type with a definition variable to the incoming `obj`.
+a|
+[exec,none=""]
+----
+5 => [is>int]
+5 => [plus,int]
+----
+{blank}
+| https://en.wikipedia.org/wiki/Category_(mathematics)[model] | A set of types and path equations.
+a|
+[exec,exception=LanguageException,none=""]
+----
+:[model,social:('type'->  %
+  (person -> (person:('name'->str,'age'->nat)), %
+   nat    -> (nat<=int[is>0])))]
+('name'->'marko','age'->0)                => person
+('name'->'marko','age'->29)               => person
+('name'->'marko','age'->29,'alive'->true) => person
+
+----
+{blank}
+|===
+
+===== Refinement Types
+
+https://en.wikipedia.org/wiki/Refinement_type[Refinement types] extend a language's base types with https://en.wikipedia.org/wiki/Predicate_(mathematical_logic)[predicates] that further _refine_ (constrain) the base type values. A classic example is the set of natural numbers (\$\mathbb{N}\$) as a refinement of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate[set builder notation], specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
+\[
+\mathbb{N} = \{n \in \mathbb{Z} \;|\; n > 0\}.
+\]
+In mm-ADT, the above is denote `int[is>0]` which is the sugar form of `int{?}\<=int[is,[gt,0]]`. mm-ADT supports user defined types. In fact, mm-ADT's primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The `[define]` instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on _model-ADTs_, the more general `[model]` instruction will be presented.
+
+.mm-ADT Type Prefix
+================================================================
+All `mmlang` examples that start with `:` are defining a *type prefix*. This type is prepended to all subsequent expressions. In many ways, a type prefix is like an https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler] https://en.wikipedia.org/wiki/Object_file[object file]. On the other hand, model-ADTs (of `[model]`) are similar to the `import` of https://en.wikipedia.org/wiki/Class_(computer_programming)[class files] in https://en.wikipedia.org/wiki/Object-oriented_programming[object-oriented languages].
+================================================================
+
+[exec,none="",exception=LanguageException]
+----
+:[model,mm][define,nat<=int[is>0]]
+10 => nat
+-1 => nat
+10 => nat[plus,5]
+10 => nat[plus,5][plus,-15]
+----
+
+[discrete]
+====== Poly Refinement
+
+There are two canonical `poly` types: `lst` and `rec`. Any restriction on their respective values is a *refinement*. The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all _graph search processes_. A defined type (path) with a desired *range* is searched for in the `obj` graph and returned if and only if the morphing `obj` matches the defined type's *domain*. Type definitions are simply other types that specify the means by which one type is translated into another type.
+
+image::date-example.svg[]
+
+[exec,none="",exception=LanguageException]
+----
+:[model,mm][define,nat<=int[is>0],                              %
+                   date<=(nat[is=<12];nat[is=<31];nat),         %
+                   date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
+(8;26;2020) => date
+(8;26)      => date
+----
+
+===== Dependent Types
+
+[exec,none=""]
+----
+:[model,mm][define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),       %
+                          single<=vec:(lst,is<4).0[tail][head], %
+                          single<=vec:(lst,is>3).0[head]]
+(1;2;3)   => vec                                               //<1>
+(1;2;3)   => vec => single                                     //<2>
+(1;2;3;4) => vec                                               //<3>
+(1;2;3;4) => vec => single                                     //<4>
+----
+<1> A `;-lst` of 3 terms is morphed into a `vec` using the `vec\<=lst` type.
+<2> The `vec` is morphed into a `single` using the first `single\<=vec` type.
+<3> A `;-lst` of 4 terms is morphed into a `vec`.
+<4> The `vec` is morphed into a `single` using the second `single\<=vec` type.
+
+===== Recursive Types
+
+A recursive type's definition contains a reference to itself. Recursive type definitions require a _base case_ to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a `lst` containing only `ints`.
+
+
+[exec,exception=LanguageException]
+----
+:[model,mm][define,xlist<=lst[[is,[empty]]|                  %
+                              [[is,[head][a,str]];           %
+                               [is,[tail][a,xlist]]]]]
+( ) => [a,xlist]
+('a';'b';'c') => [a,xlist]
+('a';'b';'c') => xlist
+(1;'a';'c') => xlist
+('a';'b';'c') => xlist[put,0,3]
+----
+
+[exec,exception=LanguageException]
+----
+:[model,mm][define,ylist<=lst[[is,[empty]]|                  %
+                              [[is,[head][a,str]];           %
+                               [is,[tail][head][a,int]];     %
+                               [is,[tail][tail][a,ylist]]]]]
+( ) => [a,ylist]
+('a';1;'b';2) => [a,ylist]
+('a';1;'b';2) => ylist
+(1;'a';'c') => ylist
+('a';1;'b';2) => ylist[put,0,3]
+----
