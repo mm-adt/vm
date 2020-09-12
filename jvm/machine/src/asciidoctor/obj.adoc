@@ -1,5 +1,4 @@
 :imagesdir: ./images/obj
-:subs: non
 
 == The Obj
 
@@ -599,9 +598,9 @@ The mm-ADT virtual machine has two layers of logic: the https://en.wikipedia.org
 |====
 | sugar  | op            | inst
 
-| `\=>`  | \$\ast\$      | `[juxta]`
+| `\=>`  | \$\ast\$      | `[juxt]`
 | `[ ]`  | \$ +\$        | `[branch]`
-| `=]`  | \$ \oplus\$   | `[barrier]`
+| `=]`  | \$ \oplus\$    | `[barrier]`
 |====
 
 The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT instruction set architecture has three https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions] providing direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying algebra of the mm-ADT VM -- https://zenodo.org/record/2565243[the stream ring].

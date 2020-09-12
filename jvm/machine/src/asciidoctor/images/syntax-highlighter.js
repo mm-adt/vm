@@ -14,6 +14,10 @@ $(document).ready(function(){
   $("span[style='color:#010']").attr("style","color:#710")
   $("span[style='background-color:hsla(0,100%,50%,0.05)']").attr("style",bcolor)
   $("span[style='color:#F00;background-color:#FAA']").attr("style","color:#710;" + bcolor)
+  // str dark red
+  $("code:contains(\"'\")").html(function(_, html) {
+    return html.replace(new RegExp("'(.*?)'","gi"),"<span style='color:#D20'>'$1'</span>");
+  });
   // END: general random tweaks to convert python highlighting to mmlang
   var rewrites = {"special": ["",       ospan + "#710" + cspan],            // dark red
                   // "str":     ["'",  "\'"+ospan + "#D20" + cspan],            // dark red
@@ -26,8 +30,8 @@ $(document).ready(function(){
                   "plain":   ["",       ospan + "#000" + cspan]};           // normal black text
   var items =    {"op":      ["state","range","domain",
                               "and","or","combine","branch","neg","get","gte","lte","gt","lt","mult","plus","start",
-                              "one","zero","noop","eq","is","id","db","explain","count","fold","map","juxta","barrier",
-                              "split","merge","last","head","tail","minus","put","repeat","type",
+                              "one","zero","noop","eq","is","id","db","explain","count","fold","map","juxt","barrier",
+                              "split","merge","last","head","tail","put","repeat","type",
                               "define","to","from","sum","model","as","a","q","path","empty","lift","swap"],
                   "type":    ["_","real","rec","lst","inst","obj","int","str","bool","poly",
                               "nat","person","vertex","edge"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
