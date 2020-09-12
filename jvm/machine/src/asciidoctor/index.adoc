@@ -19,6 +19,8 @@ Ryan Wisnesky [advisor] (Conexus)
 
 include::introduction.adoc[]
 
+include::type.adoc[]
+
 include::obj.adoc[]
 
 include::algebra.adoc[]
