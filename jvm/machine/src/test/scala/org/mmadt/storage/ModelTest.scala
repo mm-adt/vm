@@ -95,7 +95,7 @@ class ModelTest extends FunSuite {
     val store:Lst[Rec[StrValue, Obj]] = record1a `;` edge1
     val s:Obj = store ==> kv `=>` 'store
     println(s)
-    assertResult(btrue)(s ==> kv `=>` combine(__`;`).a('store))
+    assertResult(btrue)(s ==> kv `=>` combine(id`;`).a('store))
     val g:Obj = s ==> tp3_kv `=>` 'graph
     println(g)
     assertResult(btrue)(g ==> tp3 `=>` a('graph))

@@ -44,6 +44,12 @@ class mmlangScriptEngineTest extends FunSuite {
 
   lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
+  test("poly play") {
+    println(int(1,2) ==> __.q(2).plus(10).plus(5).path)
+    println(engine.eval("3[plus,10][plus,5][path]"))
+    println(engine.eval("(1;{1};2;{5})"))
+  }
+
   test("play2") {
     println(engine.eval(":[model,mm]"))
   println(engine.eval("('plus',1)[as,inst]"))
@@ -51,7 +57,7 @@ class mmlangScriptEngineTest extends FunSuite {
       """:[model,mm]
         |[define,node:('name'->str)]
         |[define,edge:('dom'->node,'cod'->node)]
-        |[define,edge<=(_;_)-<('dom'->.0,'cod'->.1)]""".stripMargin))
+        |[define,edge<=(node;node)-<('dom'->.0,'cod'->.1)]""".stripMargin))
     println(engine.eval("(('name'->'marko');('name'->'jen')) => edge"))
     engine.eval(":{1}")
   }
@@ -141,7 +147,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(__.q(+))(engine.eval("_{+}"))
     assertResult(__.q(2).id)(engine.eval("_{2}[id]"))
     assertResult(zeroObj)(engine.eval("{0}"))
-    assertResult(oneObj)(engine.eval("{1}"))
+    assertResult(__)(engine.eval("{1}"))
     assertResult(zeroObj)(engine.eval("1=>{0}"))
   }
 
@@ -745,7 +751,7 @@ class mmlangScriptEngineTest extends FunSuite {
   test("lst values w/ [mult], [plus], and [zero]") {
     assertResult(lst)(engine.eval("()"))
     assertResult(int(1) `,`)(engine.eval("(1)"))
-    assertResult("('a';'a')")(engine.eval("'a'-<(_;_)").toString)
+    assertResult("('a';'a')")(engine.eval("'a'-<(str;str)").toString)
     assertResult("('b','a')")(engine.eval("('a';'b')-<(.1,.0)").toString)
     //assertResult("('aZ';'bz')")(engine.eval("('a';'b')<w>-<(.1+'z'<x>;<.w>.0+'Z'<y>)>--<(y;x)").toString) // TODO
     assertResult(zeroObj |)(engine.eval("(|)")) // TODO: this might be bad
@@ -810,7 +816,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("2")(engine.eval("(1;(2|3))[get,1][get,0]").toString)
     assertResult("6")(engine.eval("(1;(2;(3;(4;5;6)))).1.1.1.2").toString)
     //////
-    assertResult("(str;{0};{0})\n   <=str[split,(str;{0};{0})]")(engine.eval("str-<(str;int;int[plus,2])").toString)
+    assertResult("({0})")(engine.eval("str-<(str;int;int[plus,2])").toString)
     assertResult("int{8}<=(int{2};int{4}<=int[plus,2]{4})[merge][is,true][id]")(engine.eval("(int{2};int[plus,2]{4})>-[is,true][id]").toString)
     assertResult("(str)\n   <=str[split,(str)]")(engine.eval("str-<(int{?}|bool{?}|str)").toString)
     assertResult("str[split,(str)][merge][plus,'hello']")(engine.eval("str-<(str,,)>-[plus,'hello']").toString)
@@ -827,7 +833,7 @@ class mmlangScriptEngineTest extends FunSuite {
     //
     assertResult("int[plus,100][plus,200][split,(int;int[plus,2])][merge][plus,20]")(engine.eval("int[plus,100][plus,200]-<(int;int[plus,2])>-[plus,20]").toString)
     assertResult("int[plus,100][plus,200][split,(int)][merge][plus,20]")(engine.eval("int[plus,100][plus,200]-<(int|int[plus,2])>-[plus,20]").toString)
-    assertResult("(10;10;11)")(engine.eval("10[split,(bool,int)][merge][plus,1][path,(_;)]").toString)
+    assertResult("(10;10;11)")(engine.eval("10[split,(bool,int)][merge][plus,1][path,([id];)]").toString)
     assertResult("[12,14]")(engine.eval("1[plus,1][split,(int,int[plus,2])]>-[plus,10]").toString)
     //
     // assertResult("bool<=int[plus,10][lt,50]")(engine.eval("(int;[plus,10];int;[lt,50];bool)>-").toString)

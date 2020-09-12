@@ -70,6 +70,7 @@ object __ extends __(Tokens.anon, qOne, rootVia) {
   }
   final def apply(aobj:Obj, bobj:Obj, objs:Obj*):Obj = strm[Obj](aobj +: bobj +: objs.toList)
   def apply(name:String):__ = __.named(name)
+  def isAnonRootAlive(aobj:Obj):Boolean = aobj.root && aobj.isInstanceOf[__] && aobj.name.equals(Tokens.anon) && aobj.alive
   def isAnon(aobj:Obj):Boolean = aobj.isInstanceOf[__] && aobj.name.equals(Tokens.anon)
   def isToken(aobj:Obj):Boolean = aobj.isInstanceOf[__] && !aobj.name.equals(Tokens.anon)
   def isAnonToken(aobj:Obj):Boolean = __.isAnon(aobj) || __.isToken(aobj)

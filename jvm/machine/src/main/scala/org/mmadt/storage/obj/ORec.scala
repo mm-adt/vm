@@ -34,20 +34,17 @@ import org.mmadt.storage.obj.value.VRec
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class ORec[A <: Obj, B <: Obj](val name: String = Tokens.rec, val g: RecTuple[A, B] = (Tokens.`,`, Nil), val q: IntQ = qOne, val via: ViaTuple = rootVia) extends Rec[A, B] {
-  override def clone(name: String = this.name,
-                     g: Any = this.g,
-                     q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = ORec.makeRec(name, g.asInstanceOf[RecTuple[A, B]], q, via).asInstanceOf[this.type]
+abstract class ORec[A <: Obj, B <: Obj](val name:String = Tokens.rec, val g:RecTuple[A, B] = (Tokens.`,`, Nil), val q:IntQ = qOne, val via:ViaTuple = rootVia) extends Rec[A, B] {
+  override def clone(name:String = this.name,
+                     g:Any = this.g,
+                     q:IntQ = this.q,
+                     via:ViaTuple = this.via):this.type = ORec.makeRec(name, g.asInstanceOf[RecTuple[A, B]], q, via).asInstanceOf[this.type]
 }
 object ORec {
-  def makeRec[A <: Obj, B <: Obj](name: String = Tokens.rec, g: RecTuple[A, B] = (Tokens.`,`, Nil), q: IntQ = qOne, via: ViaTuple = rootVia): Rec[A, B] = {
-    val map: Pairs[A, B] = Option(g._2).map(x => Rec.moduleStruct(g._1, x)).orNull
-    if (null != map && (map.isEmpty || !map.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])))
-      new VRec[A, B](name, g = (g._1, map), q, via)
-    else
-      new TRec[A, B](name, g = (g._1, map), q, via)
+  def makeRec[A <: Obj, B <: Obj](name:String = Tokens.rec, g:RecTuple[A, B] = (Tokens.`,`, Nil), q:IntQ = qOne, via:ViaTuple = rootVia):Rec[A, B] = {
+    val map:Pairs[A, B] = Option(g._2).map(x => Rec.moduleStruct(g._1, x)).orNull
+    if (null == map || map.filter(x => x._1.alive && x._2.alive).exists(x => x._1.isInstanceOf[Type[_]] || x._2.isInstanceOf[Type[_]])) new TRec[A, B](name, g = (g._1, map), q, via)
+    else new VRec[A, B](name, g = (g._1, map), q, via)
   }
-  def emptyType[A <: Obj, B <: Obj]: RecType[A, B] = new TRec[A, B](g = (Tokens.`,`, null))
-
+  def emptyType[A <: Obj, B <: Obj]:RecType[A, B] = new TRec[A, B](g = (Tokens.`,`, null))
 }

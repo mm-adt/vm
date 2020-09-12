@@ -7,7 +7,7 @@ digraph:(
              vertex<=(nat;attr)-<('id'->.0,'attrs'->.1),
              vertex<=int[is<0]-<([neg];('no';'data'))),
   attr   -> (attr<=('key'->_,'value'->_),
-             attr<=(str;_)-<('key'->.0,'value'->.1)),
+             attr<=(str;[id])-<('key'->.0,'value'->.1)),
   edge   -> (edge<=('outV'->vertex,'inV'->vertex),
              edge<=(nat;nat)=(vertex;vertex)-<('outV'->.0,'inV'->.1)) // TODO: (vertex;vertex) as the domain
 )) <= numbers

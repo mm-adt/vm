@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.trace
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.{Inst, Lst, Obj}
@@ -32,18 +33,21 @@ import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
 trait PathOp {
-  this: Obj =>
-  def path: Lst[Obj] = PathOp().exec(this)
-  def path(pattern: Lst[_ <: Obj]): Lst[_ <: Obj] = PathOp(pattern).exec(this)
+  this:Obj =>
+  def path:Lst[Obj] = PathOp().exec(this)
+  def path(pattern:Lst[_ <: Obj]):Lst[_ <: Obj] = PathOp(pattern).exec(this)
 }
 
 object PathOp extends Func[Obj, Lst[Obj]] {
-  override val preArgs: Boolean = false
-  val VERTICES: Lst[Obj] = (__ `;` zeroObj).asInstanceOf[Lst[Obj]]
-  def apply(): Inst[Obj, Lst[Obj]] = PathOp.apply((__ `;` __).asInstanceOf[Lst[Obj]])
-  def apply(pattern: Lst[_ <: Obj]): Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, List(pattern)), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Lst[Obj]]): Lst[Obj] = lst(g = (inst.arg0[Lst[Obj]].gsep,
-    CombineOp.combineAlgorithm(lst(g = (
-      inst.arg0[Lst[Obj]].gsep,
-      start.trace.foldLeft(List.empty[Obj])((a, b) => a :+ b._1 :+ b._2) :+ start)), inst.arg0[Lst[Obj]]).glist.filter(_.alive).toList)).via(start, inst)
+  override val preArgs:Boolean = false
+  val VERTICES:Lst[Obj] = (id `;` oneObj).asInstanceOf[Lst[Obj]]
+  def apply():Inst[Obj, Lst[Obj]] = PathOp.apply((id `;` id).asInstanceOf[Lst[Obj]])
+  def apply(pattern:Lst[_ <: Obj]):Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, List(pattern)), func = this) with TraceInstruction
+  override def apply(start:Obj, inst:Inst[Obj, Lst[Obj]]):Lst[Obj] = {
+    if (start.isInstanceOf[__]) return lst.via(start, inst)
+    lst(g = (inst.arg0[Lst[Obj]].gsep,
+      CombineOp.combineAlgorithm(lst(g = (
+        inst.arg0[Lst[Obj]].gsep,
+        start.trace.foldLeft(List.empty[Obj])((a, b) => a :+ b._1 :+ b._2) :+ start)), inst.arg0[Lst[Obj]]).glist.toList)).via(start, inst)
+  }
 }

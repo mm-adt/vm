@@ -31,6 +31,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch._
+import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
 import org.mmadt.language.obj.value.{strm => _, _}
@@ -72,7 +73,7 @@ class mmlangParser extends JavaTokenParsers {
         case atype:Type[Obj] => source.update(atype.model) ==>[Obj] atype
       })((a, b) => a `=>` b)
     case Some(source) ~ _ ~ Some(target:Value[Obj]) ~ aobjs => aobjs.foldLeft((source ==> target).asInstanceOf[Obj])((a, b) => a `=>` b)
-    case None ~ None ~ Some(target) ~ aobjs => target.domainObj ==> compile(prefix, target.domain, aobjs.foldLeft(target)((a, b) => a `=>` b))
+    case None ~ None ~ Some(target) ~ aobjs => target.domainObj ==> compile(prefix, target.domainObj, aobjs.foldLeft(target)((a, b) => a `=>` b))
     case Some(source) ~ None ~ None ~ _ => source.asInstanceOf[Obj]
     case None ~ None ~ None ~ _ => zeroObj
   }
@@ -96,8 +97,13 @@ class mmlangParser extends JavaTokenParsers {
   lazy val recObj:Parser[Rec[Obj, Obj]] = recValue | recType
   lazy val polyObj:Parser[Poly[Obj]] = lstObj | recObj
 
+  private def emptyTerm(sep:String):Obj = sep match {
+    case Tokens.`,` => zeroObj
+    case Tokens.`;` => oneObj
+    case Tokens.`|` => zeroObj
+  }
   def lstStruct(parser:Parser[Obj]):Parser[LstTuple[Obj]] =
-    (opt(parser) ~ polySep) ~ repsep(opt(parser), polySep) ^^ (x => (Some(x._1._2).map(y => if (y == juxt_op) Tokens.`;` else y).get, x._1._1.getOrElse(zeroObj) +: x._2.map(y => y.getOrElse(zeroObj)))) |
+    (opt(parser) ~ polySep) ~ repsep(opt(parser), polySep) ^^ (x => (Some(x._1._2).map(y => if (y == juxt_op) Tokens.`;` else y).get, x._1._1.getOrElse(emptyTerm(x._1._2)) +: x._2.map(y => y.getOrElse(emptyTerm(x._1._2))))) |
       parser ^^ (x => (Tokens.`,`, List(x))) |
       Tokens.blank ^^ (_ => (Tokens.`,`, List.empty[Obj]))
 

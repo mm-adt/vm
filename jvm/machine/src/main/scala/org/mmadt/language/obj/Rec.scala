@@ -98,6 +98,7 @@ object Rec {
   def test[A <: Obj, B <: Obj](arec:Rec[A, B], brec:Rec[A, B]):Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
+  private def semi[A <: Obj,B<:Obj](objs:Pairs[A,B]):Pairs[A,B] = /*if (objs.exists(x => !x._1.alive && !x._2.alive)) List(zeroObj->zeroObj).asInstanceOf[Pairs[A,B]] else*/ objs.filter(kv => !__.isAnonRootAlive(kv._2))
   def moduleStruct[A <: Obj, B <: Obj](gsep:String, pairs:Pairs[A, B], start:Obj = null):Pairs[A, B] = gsep match {
     /////////// ,-rec
     case Tokens.`,` =>
@@ -115,16 +116,16 @@ object Rec {
         }).toList
     /////////// ;-rec
     case Tokens.`;` =>
-      if (null == start) return pairs
+      if (null == start) return semi(pairs)
       var running = start
-      pairs.map(kv => {
+      semi(pairs.map(kv => {
         val key = running ~~> kv._1
         val keyValue = (
           if (!key.alive) (key -> zeroObj)
           else (key -> (running ~~> kv._2))).asInstanceOf[Tuple2[A, A]]
         running = keyValue._2
         keyValue
-      }).asInstanceOf[Pairs[A, B]]
+      }).asInstanceOf[Pairs[A, B]])
     /////////// |-rec
     case Tokens.`|` =>
       val nostart:Boolean = null == start

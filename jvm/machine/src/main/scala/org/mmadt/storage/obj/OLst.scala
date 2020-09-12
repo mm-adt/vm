@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{LstType, Type, __}
+import org.mmadt.language.obj.`type`.{LstType, Type}
 import org.mmadt.storage.StorageFactory.qOne
 import org.mmadt.storage.obj.`type`.TLst
 import org.mmadt.storage.obj.value.VLst
@@ -34,19 +34,19 @@ import org.mmadt.storage.obj.value.VLst
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class OLst[A <: Obj](val name: String = Tokens.lst, val g: LstTuple[A] = (Tokens.`,`, List.empty[A]), val q: IntQ = qOne, val via: ViaTuple = rootVia) extends Lst[A] {
-  override def clone(name: String = this.name,
-                     g: Any = this.g,
-                     q: IntQ = this.q,
-                     via: ViaTuple = this.via): this.type = OLst.makeLst(name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]
+abstract class OLst[A <: Obj](val name:String = Tokens.lst, val g:LstTuple[A] = (Tokens.`,`, List.empty[A]), val q:IntQ = qOne, val via:ViaTuple = rootVia) extends Lst[A] {
+  override def clone(name:String = this.name,
+                     g:Any = this.g,
+                     q:IntQ = this.q,
+                     via:ViaTuple = this.via):this.type = OLst.makeLst(name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]
 
 }
 object OLst {
-  def makeLst[A <: Obj](name: String = Tokens.lst, g: LstTuple[A] = (Tokens.`,`, Nil), q: IntQ = qOne, via: ViaTuple = rootVia): Lst[A] = {
-    val list: List[A] = Option(g._2).map(x => Lst.moduleStruct[A](g._1, x)).orNull
-    if (null != list && (list.isEmpty || !list.filter(_.alive).exists(x => x.isInstanceOf[Type[_]]))) new VLst[A](name, g = (g._1, list), q, via)
-    else new TLst[A](name, g = (g._1, list), q, via)
+  def makeLst[A <: Obj](name:String = Tokens.lst, g:LstTuple[A] = (Tokens.`,`, Nil), q:IntQ = qOne, via:ViaTuple = rootVia):Lst[A] = {
+    val list:List[A] = Option(g._2).map(x => Lst.moduleStruct[A](g._1, x)).orNull
+    if (null == list || list.filter(x => x.alive).exists(x => x.isInstanceOf[Type[_]])) new TLst[A](name, g = (g._1, list), q, via)
+    else new VLst[A](name, g = (g._1, list), q, via)
   }
-  def emptyType[A <: Obj]: LstType[A] = new TLst[A](g = (Tokens.`,`, null))
+  def emptyType[A <: Obj]:LstType[A] = new TLst[A](g = (Tokens.`,`, null))
 }
 

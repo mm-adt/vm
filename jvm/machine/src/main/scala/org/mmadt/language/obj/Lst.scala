@@ -85,6 +85,7 @@ object Lst {
         else pair._1.test(pair._2))
     }
 
+  private def semi[A <: Obj](objs:List[A]):List[A] = if (objs.exists(x => !x.alive)) List(zeroObj.asInstanceOf[A]) else objs.filter(v => !__.isAnonRootAlive(v))
   def moduleStruct[A <: Obj](gsep:String, values:List[A], start:Obj = null):List[A] = gsep match {
     /////////// ,-lst
     case Tokens.`,` =>
@@ -94,16 +95,16 @@ object Lst {
         else start ~~> v)).filter(_.alive)
     /////////// ;-lst
     case Tokens.`;` =>
-      if (null == start) return values
+      if (null == start) return semi(values)
       var running = start
-      values.map(v => {
+      semi(values.map(v => {
         running = if (running.isInstanceOf[Strm[_]]) strm[A](running.toStrm.drain.map(r => r ~~> v):_*)
         else running ~~> v match {
           case x:Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
         }
         running.named(v.name, ignoreAnon = true)
-      }).asInstanceOf[List[A]]
+      }).asInstanceOf[List[A]])
     /////////// |-lst
     case Tokens.`|` =>
       val newStart:Obj = if (null == start) __ else start

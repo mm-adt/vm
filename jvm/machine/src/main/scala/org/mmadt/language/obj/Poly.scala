@@ -23,8 +23,10 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map.{EmptyOp, HeadOp, LastOp, TailOp}
+import org.mmadt.storage.StorageFactory.zeroObj
 
 trait Poly[+A <: Obj] extends Obj
   with CombineOp[A]
@@ -33,21 +35,21 @@ trait Poly[+A <: Obj] extends Obj
   with TailOp[A]
   with LastOp[A]
   with MergeOp[A] {
-  def gsep: String
-  def glist: Seq[A]
-  def isSerial: Boolean = this.gsep == Tokens.`;`
-  def isParallel: Boolean = this.gsep == Tokens.`,`
-  def isChoice: Boolean = this.gsep == Tokens.|
-  def isPlus: Boolean = this.isParallel | this.isChoice
-  def isEmpty: Boolean = this.glist.isEmpty
-  def size: scala.Int = this.glist.size
-  def ctype: Boolean
-  def scalarMult(start: Obj): this.type
+  def gsep:String
+  def glist:Seq[A]
+  def isSerial:Boolean = this.gsep == Tokens.`;`
+  def isParallel:Boolean = this.gsep == Tokens.`,`
+  def isChoice:Boolean = this.gsep == Tokens.|
+  def isPlus:Boolean = this.isParallel | this.isChoice
+  def isEmpty:Boolean = this.glist.isEmpty
+  def size:scala.Int = this.glist.size
+  def ctype:Boolean
+  def scalarMult(start:Obj):this.type
 }
 
 object Poly {
-  def sameSep(apoly: Poly[_], bpoly: Poly[_]): Boolean = (apoly.size < 2 || bpoly.size < 2) ||
+  def sameSep(apoly:Poly[_], bpoly:Poly[_]):Boolean = (apoly.size < 2 || bpoly.size < 2) ||
     (apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial)
 
-  def finalResult[A <: Obj](obj: A, start: Obj, inst: Inst[Obj, Obj]): A = obj.clone(q = obj.q.mult(start.q).mult(inst.q), via = (start, inst))
+  def finalResult[A <: Obj](obj:A, start:Obj, inst:Inst[Obj, Obj]):A = obj.clone(q = obj.q.mult(start.q).mult(inst.q), via = (start, inst))
 }
