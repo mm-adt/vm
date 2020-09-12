@@ -178,34 +178,7 @@ NOTE: A more sophisticated library infrastructure is provided by the `[model]` i
 <3> If there is no mapping (path) from input to output via the type definitions, the program fails.
 <4> Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.
 
-===== Type Paths
-
-A type is a *path* through the `obj` graph via type vertices and `inst` edges. A *type path* is a path through the `obj` graph via type subgraphs.
-
-[exec]
-----
-:[model,mm]                                               %%
- [define,vertex:('id'->int),                              %                      //<1>
-         edge:('outV'->vertex,'inV'->vertex),             %                      //<2>
-         vertex<=int-<('id'->_),                          %                      //<3>
-         loop<=vertex-<([id];[id]),                       %                      //<4>
-         edge<=(vertex;vertex)-<('outV'->.0,'inV'->.1)]                          //<5>
-5
-5 => vertex
-5 => vertex => loop
-5 => vertex => loop => edge                                                      //<6>
-5 => loop => edge                                                                //<7>
-----
-image::digraph-type-path-1.svg[width=400,align=center]
-<1> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
-<2> The `mm` specification of a canonical `edge` (an `inst`-less ctype).
-<3> A path from an `int` to a `vertex`.
-<4> A path from a `vertex` to a 2-tuple `;-lst` named `loop`.
-<5> A path from a 2-tuple `vertex` `;-lst` to a `edge.
-<6> A fine-grained *type path* start at an `int` and ending at the `edge` materialization of the `int`.
-<7> A course-grained *type path* from `int` to `edge` via `loop`.
-
-===== Rewrites
+==== Rewrites
 
 Each step of that walk is an instruction forming an edge in the type graph.
 For instance, the type
@@ -308,7 +281,45 @@ image::nat-model.svg[width=450,align=center]
 <3> The `rec` is mapped to a `person` with the `age` value being mapped accordingly.
 <4> The `rec` does not have an `age` value that maps to `nat` so the `rec` is not a `person`.
 
-=== Type Patterns
+==== Type Paths
+
+A type is a *path* through the `obj` graph via type vertices and `inst` edges. A *type path* is a path through the `obj` graph via type subgraphs.
+
+[exec]
+----
+:[model,mm]                                               %%
+ [define,vertex:('id'->int),                              %                      //<1>
+         edge:('outV'->vertex,'inV'->vertex),             %                      //<2>
+         vertex<=int-<('id'->_),                          %                      //<3>
+         loop<=vertex-<([id];[id]),                       %                      //<4>
+         edge<=(vertex;vertex)-<('outV'->.0,'inV'->.1)]                          //<5>
+5
+5 => vertex
+5 => vertex => loop
+5 => vertex => loop => edge                                                      //<6>
+5 => loop => edge                                                                //<7>
+----
+image::digraph-type-path-1.svg[width=400,align=center]
+<1> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
+<2> The `mm` specification of a canonical `edge` (an `inst`-less ctype).
+<3> A path from an `int` to a `vertex`.
+<4> A path from a `vertex` to a 2-tuple `;-lst` named `loop`.
+<5> A path from a 2-tuple `vertex` `;-lst` to a `edge.
+<6> A fine-grained *type path* start at an `int` and ending at the `edge` materialization of the `int`.
+<7> A course-grained *type path* from `int` to `edge` via `loop`.
+
+.model-ADT Application Programming Interfaces
+================================================================
+The software development pattern espoused by mm-ADT is one in which software libraries (https://en.wikipedia.org/wiki/API[APIs]) are large https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagrams] constructed via domain/range concatenation of \$b<=a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a _look-and-feel_ similar in form to
+\[
+a \Rightarrow b \Rightarrow c \Rightarrow d[x][y][z] \Rightarrow e \Rightarrow \ldots \Rightarrow z,
+\]
+where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$.
+
+These commuting diagrams are called *models* and are stored in model-ADT files analogous to `mm.mm` and `digraph.mm`. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with `[branch]`, serve as https://en.wikipedia.org/wiki/Lookup_table[lookup tables] for type path resolution.
+================================================================
+
+==== Type Patterns
 
 [cols="^1,4,9"]
 |===
@@ -386,7 +397,7 @@ a|
 {blank}
 |===
 
-==== Refinement Types
+===== Refinement Types
 
 https://en.wikipedia.org/wiki/Refinement_type[Refinement types] extend a language's base types with https://en.wikipedia.org/wiki/Predicate_(mathematical_logic)[predicates] that further _refine_ (constrain) the base type values. A classic example is the set of natural numbers (\$\mathbb{N}\$) as a refinement of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate[set builder notation], specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
 \[
@@ -424,7 +435,7 @@ image::date-example.svg[]
 (8;26)      => date
 ----
 
-==== Dependent Types
+===== Dependent Types
 
 [exec,none=""]
 ----
@@ -441,7 +452,7 @@ image::date-example.svg[]
 <3> A `;-lst` of 4 terms is morphed into a `vec`.
 <4> The `vec` is morphed into a `single` using the second `single\<=vec` type.
 
-==== Recursive Types
+===== Recursive Types
 
 A recursive type's definition contains a reference to itself. Recursive type definitions require a _base case_ to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a `lst` containing only `ints`.
 
