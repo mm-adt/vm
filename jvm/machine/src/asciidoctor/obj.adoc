@@ -133,13 +133,32 @@ where, for the first, \$b\$ is _generated_ by \$a\$ and for the second, \$b\$ is
 
 For most of the documentation, the examples have been presented solely from within the `mm` model-ADT where there are 6 types: `bool`, `int`, `real`, `str`, `lst`, and `rec` along with their respective instructions. It is possible to extend `mm` with new types that are ultimately _grounded_ (Cayley rooted) in the `mm` model-ADT types. This is the purpose of the `[define]` instruction.
 
+Assume the two type definitions below: `vertex` and `edge`. The associated diagram is not commutative and the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]`, where `.outV` is sugar for `[get,'outV']`.
+
+[.center]
+[cols="4,3",width=85,grid=none,frame=none]
+|====
+
+a|
+[exec,prompt="",eval=false]
+----
+[define,vertex:('id'->int)]
+[define,edge:('outV'->vertex,'inV'->vertex)]
+----
+{blank}
+| image:digraph-model-1.svg[align=center,width=600]
+
+|====
+
+The `vertex` and `edge` definitions can be used within a larger mm-ADT program/type.
+
 [exec]
 ----
 1 => edge<=int[model,mm][define,vertex:('id'->int), edge:('outV'->vertex,'inV'->vertex)] %
               -<('outV'->-<('id'->_),'inV'->-<('id'->+1))
 ----
 
-The first line above reads: Given the value 1, generate an `edge` from that `int` according to the definitions of the model-ADT `mm` extended with two types `vertex` and `edge`. The two new types are defined _in situ_, where a `vertex` is a *refinement* on `rec` constraining `rec` to an `'id'` key with an `int` value and, similarly, `edge` constrains `rec` to keys `'outV'` (edge tail) and `'inV'` (edge head) with corresponding `vertex` values. The second line specifies how this mapping should be done. The incoming `int` is to be *split* (`-<`) across a two element `rec`, where their values are single element `recs` which again split the `int` to be the values for the `'id'` keys. Given `edge\<=int`, an `edge` is the desired output. The `mm` model (and extending definitions) determine the "best" way to construct an `edge` given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant `edge` structure.
+The first line above reads: Given the value 1, generate an `edge` from that `int` according to the definitions of the `mm` model-ADT extended with two types `vertex` and `edge`. The two new types are defined _in situ_, where a `vertex` is a https://en.wikipedia.org/wiki/Refinement_type[refinement] on `rec` constraining `rec` to an `'id'` key with an `int` value and, similarly, `edge` constrains `rec` to keys `'outV'` (edge tail) and `'inV'` (edge head) with corresponding `vertex` values. The second line specifies how this mapping should be done. The incoming `int` is *split* (`-<`) across a two element `rec`, where their values are single element `recs` which again split the `int` to be the values for the `'id'` keys. Given `edge\<=int`, an `edge` is the desired output. The `mm` model (and extending definitions) determine the "best" way to construct an `edge` given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant `edge` structure.
 
 NOTE: Type definitions (using `[define]` or `[model]`) denote canonical mappings within a domain of discourse (i.e., a model). Programs that maintain instructions after `b\<=a` serve to manipulate `a` just enough to get it to the head of a type definition path that will ultimately reach `b`. In a well constrained data environment, mm-ADT code has less intermediate instructions with a style of the form \$a \implies b \implies c \implies \ldots \implies z\$, relying on the type definitions to string together a well-reasoned path from source to sink.
 
