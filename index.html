@@ -508,6 +508,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_variables">Variables</a></li>
 <li><a href="#_definitions">Definitions</a>
 <ul class="sectlevel4">
+<li><a href="#_type_paths">Type Paths</a></li>
 <li><a href="#_rewrites">Rewrites</a></li>
 </ul>
 </li>
@@ -3561,6 +3562,70 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 <td>Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.</td>
 </tr>
 </table>
+</div>
+<div class="sect4">
+<h5 id="_type_paths">Type Paths</h5>
+<div class="paragraph">
+<p>A type is a <strong>path</strong> through the <code>obj</code> graph via type vertices and <code>inst</code> edges. A <strong>type path</strong> is a path through the <code>obj</code> graph via type subgraphs.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm]
+         [define,vertex:('id'-&gt;int),                                                     <i class="conum" data-value="1"></i><b>(1)</b>
+                 edge:('outV'-&gt;vertex,'inV'-&gt;vertex),                                    <i class="conum" data-value="2"></i><b>(2)</b>
+                 vertex&lt;=int-&lt;('id'-&gt;_),                                                 <i class="conum" data-value="3"></i><b>(3)</b>
+                 loop&lt;=vertex-&lt;([id];[id]),                                              <i class="conum" data-value="4"></i><b>(4)</b>
+                 edge&lt;=(vertex;vertex)-&lt;('outV'-&gt;.0,'inV'-&gt;.1)]                          <i class="conum" data-value="5"></i><b>(5)</b>
+mmlang&gt;
+mmlang&gt; 5
+==&gt;5
+mmlang&gt; 5 =&gt; vertex
+==&gt;vertex:('id'-&gt;5)
+mmlang&gt; 5 =&gt; vertex =&gt; loop
+==&gt;loop:(vertex:('id'-&gt;5);vertex:('id'-&gt;5))
+mmlang&gt; 5 =&gt; vertex =&gt; loop =&gt; edge                                                      <i class="conum" data-value="6"></i><b>(6)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))
+mmlang&gt; 5 =&gt; loop =&gt; edge                                                                <i class="conum" data-value="7"></i><b>(7)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))</code></pre>
+</div>
+</div>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/obj/digraph-type-path-1.svg" alt="digraph type path 1" width="400">
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The <code>mm</code> specification of a canonical <code>vertex</code> (an <code>inst</code>-less ctype).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>mm</code> specification of a canonical <code>edge</code> (an <code>inst</code>-less ctype).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>A path from an <code>int</code> to a <code>vertex</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>A path from a <code>vertex</code> to a 2-tuple <code>;-lst</code> named <code>loop</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>A path from a 2-tuple <code>vertex</code> <code>;-lst</code> to a `edge.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td>A fine-grained <strong>type path</strong> start at an <code>int</code> and ending at the <code>edge</code> materialization of the <code>int</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td>A course-grained <strong>type path</strong> from <code>int</code> to <code>edge</code> via <code>loop</code>.</td>
+</tr>
+</table>
+</div>
 </div>
 <div class="sect4">
 <h5 id="_rewrites">Rewrites</h5>
@@ -7117,7 +7182,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-12 11:35:09 -0600
+Last updated 2020-09-12 11:41:16 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
