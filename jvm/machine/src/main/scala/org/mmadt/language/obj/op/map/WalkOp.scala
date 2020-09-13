@@ -57,15 +57,16 @@ object WalkOp extends Func[Obj, Obj] {
   val rangeDomainTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => nameTest(source, target) && Type.trueRange(source).rangeObj.test(target.domainObj)
   val objObjTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => nameTest(source, target) && source.test(target)
 
-  private def resolvePaths[A <: Obj, B <: Obj](source:List[A], target:B, checked:List[Obj] = Nil, composeTest:(Obj, Obj) => Boolean = rangeDomainTest):List[List[B]] = {
+  def resolvePaths[A <: Obj, B <: Obj](source:List[A], target:B, checked:List[Obj] = Nil, composeTest:(Obj, Obj) => Boolean = rangeDomainTest):List[List[B]] = {
     //.map(t => {println(toBaseName(Type.trueRange(source.last).rangeObj) + "===TESTING==>" + toBaseName(t.domainObj) + " ::: " + Type.trueRange(source.last).rangeObj.test(t.domainObj));t})
     val tail:A = source.last
     if (tail.rangeObj.name == target.rangeObj.name) return if (tail.test(tail.model.findCtype(tail.name).getOrElse(target))) List(List(target)) else Nil
     tail.model.definitions // TODO: index by name
+      .filter(t => !t.root) // ignores 'allowed types' specified as ctypes
       .filter(t => !checked.contains(t))
       .filter(t => composeTest(tail, t))
       .flatMap(t => {
-        val nextT = tail ~~> t // asType(source.last)
+        val nextT = tail `=>` t // asType(source.last)
         if (nextT.rangeObj.name == target.rangeObj.name) List(source :+ nextT)
         else if (!tail.root || (tail != nextT)) resolvePaths(source :+ t, target, checked :+ t)
         else Nil
@@ -75,20 +76,21 @@ object WalkOp extends Func[Obj, Obj] {
   }
 
   def walkSourceToTarget[A <: Obj](source:Obj, target:A):A = walkSourceToTarget(source, target, rangeDomainTest)
-  def walkSourceToTarget[A <: Obj](source:Obj, target:A, composeTest:(Obj, Obj) => Boolean = rangeDomainTest):A = {
-    source match {
-      case astrm:Strm[Obj] => astrm(x => walkSourceToTarget[A](x, target))
+  def walkSourceToTarget[A <: Obj](source:Obj, target:A, composeTest:(Obj, Obj) => Boolean = rangeDomainTest, targetName:Boolean = false):A = {
+    val result:A = source match {
+      case astrm:Strm[Obj] => astrm(x => walkSourceToTarget[A](x, target, composeTest))
+      case _ if !Tokens.named(target.name) => target // NEED A PATH RESOLVER FOR BASE TYPES TO AVOID STACK ISSUES
       case _ => Obj.resolveTokenOption(source, target).getOrElse({
         if (source.isInstanceOf[Type[_]] || !__.isToken(target)) return target
         WalkOp.resolvePaths[Obj, A](List(source), target, composeTest = composeTest)
           .headOption
           .map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
           .getOrElse {
-            if (!Tokens.named(target.name)) target
-            else if (source.model.search[A](target = target).nonEmpty) throw LanguageException.typingError(source, asType(target))
+            if (source.model.search[A](target = target).nonEmpty) throw LanguageException.typingError(source, asType(target))
             else throw LanguageException.labelNotFound(source, target.name)
           }.asInstanceOf[A]
       })
     }
+    if (targetName) result.named(target.name) else result
   }
 }

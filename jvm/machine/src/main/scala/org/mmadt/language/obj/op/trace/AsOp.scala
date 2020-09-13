@@ -80,12 +80,12 @@ object AsOp extends Func[Obj, Obj] {
     result.update(source.model)
   }
 
-  private def pickMapping(start:Obj, asObj:Obj):Obj = {
+  private def pickMapping(start:Obj, asObj:Obj, checkDepth:Boolean = false):Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
     else {
       if (start.isInstanceOf[Type[_]]) asObj
       else {
-        val defined = if (__.isToken(asObj)) start.model.search(start, asObj).headOption else None
+        val defined = if (checkDepth || __.isToken(asObj)) start.model.search(start, asObj).find(x => !Tokens.named(x.name) || !x.root) else None
         (start match {
           case _ if defined.isDefined => pickMapping(start, defined.get)
           case abool:Bool => boolConverter(abool, asObj)
