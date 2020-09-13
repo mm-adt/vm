@@ -25,10 +25,10 @@ package org.mmadt.language.mmlang
 import javax.script.ScriptContext
 import org.mmadt.language.LanguageException.typingError
 import org.mmadt.language.jsr223.mmADTScriptEngine
-import org.mmadt.language.obj.Obj.{booleanToBool, intToInt, stringToStr, tupleToRecYES}
+import org.mmadt.language.obj.Obj.{booleanToBool, intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
+import org.mmadt.language.obj.op.map.{MultOp, PlusOp, WalkOp}
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
@@ -44,9 +44,15 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("poly play") {
-    println(int(1, 2) ==> __.q(2).plus(10).plus(5).path)
-    println(engine.eval("3[plus,10][plus,5][path]"))
-    println(engine.eval("(2->{0}|1->2{3}|2->4)"))
+
+
+    val source:Obj = int(45).model('play)
+    val target:Obj = 'pair //lst(str.plus("a")`;`str.plus("b"))
+
+   val result = WalkOp.resolvePaths[Obj, Obj](source.model, List(source), target)
+      //.headOption
+      //.map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
+    println(result)
   }
 
   test("play2") {

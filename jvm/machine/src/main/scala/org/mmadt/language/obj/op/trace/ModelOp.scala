@@ -108,6 +108,11 @@ object ModelOp extends Func[Obj, Obj] {
             .map(x => x.update(model)))
     }
 
+    final def findCtype[A <: Obj](name:String):Option[A] =
+      model.gmap.fetchOrElse(TYPE, NOREC).gmap
+        .filter(x => x._1.name == name)
+        .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2).find(x => x.root)
+
     final def rewrites:List[Obj] = model.gmap.fetchOrElse(TYPE, NOREC).gmap.values.flatMap(x => x.g._2).filter(x => x.domainObj.name.equals(Tokens.lift_op))
 
     final def definitions:List[Obj] = {
