@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
-import org.mmadt.language.obj.op.map.WalkOp.resolveTokenPath
+import org.mmadt.language.obj.op.map.WalkOp.walkSourceToTarget
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp}
@@ -226,7 +226,7 @@ object Obj {
 
   private def resolveArg[S <: Obj, E <: Obj](obj:S, arg:E):E = {
     if (!obj.alive || !arg.alive) return arg.hardQ(qZero)
-    resolveTokenPath(obj, arg) match {
+    walkSourceToTarget(obj, arg, WalkOp.nameTest) match {
       case anon:__ if __.isToken(anon) => anon.asInstanceOf[E]
       case valueArg:OValue[E] => valueArg
       case typeArg:OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>

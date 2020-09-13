@@ -49,10 +49,10 @@ class mmlangScriptEngineTest extends FunSuite {
     val source:Obj = int(45).model('play)
     val target:Obj = 'pair //lst(str.plus("a")`;`str.plus("b"))
 
-   val result = WalkOp.resolvePaths[Obj, Obj](source.model, List(source), target)
+   val result = WalkOp.walkSourceToTarget[Obj](source,target)
       //.headOption
       //.map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
-    println(result)
+   println(result)
   }
 
   test("play2") {

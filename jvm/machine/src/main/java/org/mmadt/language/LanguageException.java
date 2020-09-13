@@ -104,7 +104,7 @@ public class LanguageException extends VmException {
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
         if(__.isToken(type))
-            WalkOp.resolveTokenPath(obj,type);
+            WalkOp.walkSourceToTarget(obj,type);
         else if (!obj.range().test(type.domain()))
             throw LanguageException.typingError(obj, type);
     }

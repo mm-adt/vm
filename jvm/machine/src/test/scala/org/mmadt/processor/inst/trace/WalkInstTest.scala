@@ -70,7 +70,7 @@ object WalkInstTest {
     .defining('A <= __("C"))
 }
 class WalkInstTest extends BaseInstTest(
-  testSet("[walk] table test", MODEL,
+  /*testSet("[walk] table test", MODEL,
     comment("int~>int"),
     testing(int, int.walk(int), lst <= int.walk(int), "int => int[walk,int]"),
     comment("int~>nat"),
@@ -126,7 +126,8 @@ class WalkInstTest extends BaseInstTest(
     testing('A, __, 'A, "A"),
     testing('B, __, 'B, "B"),
     testing('C, __, 'C, "C"),
-  )) {
+    )*/
+  ) {
   test("walk play") {
     // assertResult(MODEL)(PARSE_MODEL)
     println(MODEL)

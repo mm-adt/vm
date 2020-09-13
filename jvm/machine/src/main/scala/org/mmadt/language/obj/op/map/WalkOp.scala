@@ -25,14 +25,11 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{lst, qOne}
 import org.mmadt.storage.obj.value.VInst
-
-import scala.util.{Failure, Success, Try}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -49,54 +46,49 @@ object WalkOp extends Func[Obj, Obj] {
     Poly.finalResult(start match {
       case _:Type[_] => lst
       case _:Value[_] => lst(g = (Tokens.`,`,
-        WalkOp.resolvePaths(start.model, List(asType(start).rangeObj.hardQ(qOne)), inst.arg0[Obj])
+        WalkOp.resolvePaths(List(asType(start).rangeObj.hardQ(qOne)), inst.arg0[Obj])
           .map(list => lst(g = (Tokens.`;`, list.map(step => step.rangeObj))))))
     }, start, inst)
 
   /////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////
 
-  val nameTest:(Obj,Obj) => Boolean = (source:Obj, target:Obj) => source.rangeObj.name == target.domainObj.name || __.isAnon(target.domainObj)
-  val rangeDomainTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => nameTest(source,target) && Type.trueRange(source).rangeObj.test(target.domainObj)
+  val nameTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => source.rangeObj.name == target.domainObj.name || __.isAnon(target.domainObj)
+  val rangeDomainTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => nameTest(source, target) && Type.trueRange(source).rangeObj.test(target.domainObj)
   val objObjTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => nameTest(source, target) && source.test(target)
 
-  def resolvePaths[A <: Obj, B <: Obj](model:Model, source:List[A], target:B, checked:List[Obj] = Nil, composeTest:(Obj, Obj) => Boolean = rangeDomainTest):List[List[B]] = {
-    if (source.last.rangeObj.name == target.rangeObj.name) return if (source.last.test(model.findCtype(source.last.name).getOrElse(target))) List(List(target)) else Nil
-    model.definitions
+  private def resolvePaths[A <: Obj, B <: Obj](source:List[A], target:B, checked:List[Obj] = Nil, composeTest:(Obj, Obj) => Boolean = rangeDomainTest):List[List[B]] = {
+    //.map(t => {println(toBaseName(Type.trueRange(source.last).rangeObj) + "===TESTING==>" + toBaseName(t.domainObj) + " ::: " + Type.trueRange(source.last).rangeObj.test(t.domainObj));t})
+    val tail:A = source.last
+    if (tail.rangeObj.name == target.rangeObj.name) return if (tail.test(tail.model.findCtype(tail.name).getOrElse(target))) List(List(target)) else Nil
+    tail.model.definitions // TODO: index by name
       .filter(t => !checked.contains(t))
-      //.map(t => {println(toBaseName(Type.trueRange(source.last).rangeObj) + "===TESTING==>" + toBaseName(t.domainObj) + " ::: " + Type.trueRange(source.last).rangeObj.test(t.domainObj));t})
-      .filter(t => composeTest(source.last, t))
+      .filter(t => composeTest(tail, t))
       .flatMap(t => {
-        val nextT = source.last ~~> t  // asType(source.last)
-        if (nextT.rangeObj.name == target.rangeObj.name)
-          List(source :+ nextT)
-        else if (!source.last.root || (source.last != nextT))
-          resolvePaths(model, source :+ t, target, checked :+ t)
+        val nextT = tail ~~> t // asType(source.last)
+        if (nextT.rangeObj.name == target.rangeObj.name) List(source :+ nextT)
+        else if (!tail.root || (tail != nextT)) resolvePaths(source :+ t, target, checked :+ t)
         else Nil
       })
       .filter(list => list.nonEmpty)
       .asInstanceOf[List[List[B]]]
   }
 
-  def resolveTokenPath[A <: Obj](obj:Obj, arg:A):A = {
-    obj match {
-      case astrm:Strm[A] => astrm(x => resolveTokenPath(x, arg))
-      case _ => if (!__.isToken(arg)) return arg
-        Obj.resolveTokenOption(obj, arg).getOrElse({
-          if (obj.isInstanceOf[Type[_]]) return arg
-          Try[Obj]({
-            WalkOp
-              .resolvePaths[Obj, Obj](obj.model, List(obj), arg)
-              .headOption
-              .map(path => path.foldLeft(obj)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true))).get
-          }) match {
-            case y:Success[A] => y.value
-            case _:Failure[Obj] => if (obj.model.search[A](target = arg).nonEmpty)
-              throw LanguageException.typingError(obj, asType(arg))
-            else
-              throw LanguageException.labelNotFound(obj, arg.name)
-          }
-        })
+  def walkSourceToTarget[A <: Obj](source:Obj, target:A):A = walkSourceToTarget(source, target, rangeDomainTest)
+  def walkSourceToTarget[A <: Obj](source:Obj, target:A, composeTest:(Obj, Obj) => Boolean = rangeDomainTest):A = {
+    source match {
+      case astrm:Strm[Obj] => astrm(x => walkSourceToTarget[A](x, target))
+      case _ => Obj.resolveTokenOption(source, target).getOrElse({
+        if (source.isInstanceOf[Type[_]] || !__.isToken(target)) return target
+        WalkOp.resolvePaths[Obj, A](List(source), target, composeTest = composeTest)
+          .headOption
+          .map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
+          .getOrElse {
+            if (!Tokens.named(target.name)) target
+            else if (source.model.search[A](target = target).nonEmpty) throw LanguageException.typingError(source, asType(target))
+            else throw LanguageException.labelNotFound(source, target.name)
+          }.asInstanceOf[A]
+      })
     }
   }
 }
