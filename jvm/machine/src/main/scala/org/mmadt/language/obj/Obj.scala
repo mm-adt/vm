@@ -138,7 +138,7 @@ trait Obj
   def toStrm:Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   // evaluation methods
-  final def compute[E <: Obj](rangeType:E):E = AsOp.autoAsType[E](this, x => Obj.resolveInternal[E](x, rangeType), rangeType)
+  final def compute[E <: Obj](target:E):E = AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target)
   final def ~~>[E <: Obj](target:E):E = Obj.resolveArg[this.type, E](this, target)
   final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
 

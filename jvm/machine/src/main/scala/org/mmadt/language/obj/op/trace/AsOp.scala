@@ -58,8 +58,7 @@ object AsOp extends Func[Obj, Obj] {
     source match {
       case astrm:Strm[Obj] => astrm(x => AsOp.autoAsType(x, target, domain))
       case _:Value[_] => internalConvertAs(source, target).hardQ(source.q)
-      case _:Type[_] if domain => target.update(source.model)
-      case _:Type[_] => target <= source
+      case _:Type[_] => if (domain) target.update(source.model) else target <= source
     }
   }
 
