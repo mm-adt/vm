@@ -33,7 +33,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor3}
 
 class LteInstTest extends FunSuite with TableDrivenPropertyChecks {
 
-  test("[lt] value, type, strm, anon combinations") {
+  test("[lte] value, type, strm, anon combinations") {
     val starts: TableFor3[Obj, Obj, String] =
       new TableFor3[Obj, Obj, String](("query", "result", "type"),
         //////// INT

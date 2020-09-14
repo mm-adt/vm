@@ -46,7 +46,7 @@ trait MultOp[O <: Obj] {
 object MultOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.mult, List(obj.asInstanceOf[O])), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Try[Obj](start match {
-    case _: Type[_] => start
+    case _: Type[_] if !start.isInstanceOf[Lst[_]] => start
     case abool: Bool => abool.clone(g = abool.g && inst.arg0[Bool].g)
     case aint: Int => start.clone(g = aint.g * inst.arg0[Int].g)
     case areal: Real => start.clone(g = areal.g * inst.arg0[Real].g)

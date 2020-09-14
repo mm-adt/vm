@@ -28,7 +28,7 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj.{booleanToBool, intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.op.map.{MultOp, PlusOp, WalkOp}
+import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
@@ -48,11 +48,14 @@ class mmlangScriptEngineTest extends FunSuite {
 
     val source:Obj = int(45).model('play)
     val target:Obj = 'boom //lst(str.plus("a")`;`str.plus("b"))
-
-   val result =  source `=>` 'pair `=>` 'boom `=>` 'bow
-      //.headOption
-      //.map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
-   println(result)
+    val temp = (1 `;` 2).model('digraph)
+    //println(temp ==> ('vertex`;`'vertex))
+    engine.eval(":[model,digraph]")
+    println(engine.eval("(1;2)=>(vertex;vertex)=>edge"))
+    //val result = source `=>` 'pair `=>` lst[Obj] `=>`('bow `;` 'bow)
+    //.headOption
+    //.map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
+    //println(result)
   }
 
   test("play2") {
@@ -1000,6 +1003,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("recursive definition parsing") {
+    engine.eval(":[model,mm]")
     assertResult(bfalse)(engine.eval("(1,(2,'3'))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(2,('3',4)))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(2,(3,'4')))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
@@ -1032,6 +1036,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("1[define,xyz<=xyz][a,xyz]"))
     //assertThrows[StackOverflowError] { // TODO: ungrounded types should not bind?
     assertResult(btrue)(engine.eval("1[define,wxy<=xyz][define,xyz<=wxy][a,xyz]"))
+    engine.eval(":{1}")
     //}
   }
 

@@ -24,7 +24,7 @@ package org.mmadt.processor.obj.`type`
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.processor.Processor
 import org.mmadt.processor.obj.`type`.rewrite.TraceScanRewrite
 
@@ -32,8 +32,11 @@ import org.mmadt.processor.obj.`type`.rewrite.TraceScanRewrite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class CompilingProcessor() extends Processor {
-  override def apply[S <: Obj, E <: Obj](domainObj: S, rangeType: Type[E]): E = {
+  override def apply[S <: Obj, E <: Obj](domainObj:S, rangeType:Type[E]):E = {
     LanguageException.testTypeCheck(domainObj, rangeType.domain)
-    TraceScanRewrite.apply(domainObj.compute(rangeType).asInstanceOf[E], TraceScanRewrite.replaceRewrite)
+    if (!__.isAnon(rangeType) && rangeType.root)
+      rangeType.update(domainObj.model).asInstanceOf[E]
+    else
+      TraceScanRewrite.apply(domainObj.compute(rangeType).asInstanceOf[E], TraceScanRewrite.replaceRewrite)
   }
 }

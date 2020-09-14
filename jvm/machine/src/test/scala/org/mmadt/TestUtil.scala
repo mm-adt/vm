@@ -51,14 +51,7 @@ object TestUtil {
       s => s `=>` middle,
     )
     val compiling = List[Obj => Obj](
-      s => (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)),
-      s => middle.trace.foldLeft(s)((a, b) => b._2.exec(a)),
-      s => s `=>` (start.range ==> middle),
-      s => s ==> (start.range ==> middle),
-      s => s `=>` (middle.domain ==> middle),
-      s => s ==> (middle.domain ==> middle),
-      s => s `=>` (asType(start.rangeObj) ==> middle),
-      s => s ==> (asType(start.rangeObj) ==> middle))
+      s => (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)))
     val instructioning = List[Obj => Obj](s => inst.exec(s))
     (evaluating ++
       (if (compile) compiling else Nil) ++

@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -53,7 +53,17 @@ object AsOp extends Func[Obj, Obj] {
   private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
     if (!target.alive) return zeroObj
     if (!source.alive) return source
-    if (source.name.equals(target.name) || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
+    if (__.isAnon(target) || source.model.vars(target.name).isDefined) return source
+    if (source.name.equals(target.name)) {
+      if (source.named || target.isInstanceOf[__]) return source
+      source match {
+        case slst:LstValue[_] if
+        target.asInstanceOf[Lst[Obj]].gsep != Tokens.`,` &&
+          target.asInstanceOf[Lst[Obj]].size == slst.size && // |-branching (easy win)
+          target.asInstanceOf[Lst[Obj]].glist.forall(x => x.root) => slst
+        case x => return x
+      }
+    }
     if ((!__.isAnon(source)) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
     source match {
       case astrm:Strm[Obj] => astrm(src => AsOp.autoAsType(src, target, domain))
@@ -61,14 +71,6 @@ object AsOp extends Func[Obj, Obj] {
       case _:Type[_] => if (domain) target.update(source.model) else target <= source
     }
   }
-
-  /*private def testNames(source:Obj, target:Obj):Boolean = source match {
-    case alst:Lst[_] => target match {
-      case blst:Lst[_] if !blst.ctype && !alst.ctype => source.name.equals(target.name) && alst.glist.map(x => x.name).toSet.equals(blst.glist.map(x => x.name).toSet)
-      case _ => source.name.equals(target.name)
-    }
-    case _ => source.name.equals(target.name)
-  }*/
 
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
     val asObj:Obj = if (__.isToken(target)) WalkOp.walkSourceToTarget(source, target, targetName = true) else target
@@ -78,6 +80,7 @@ object AsOp extends Func[Obj, Obj] {
         pickMapping(dObj, Tokens.tryName(target, asObj.range))
       else dObj
     if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
+
     Tokens.tryName(asObj, rObj)
   }
 
@@ -143,7 +146,9 @@ object AsOp extends Func[Obj, Obj] {
       case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
       case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
       case alst:LstType[Obj] if alst.ctype => x.named(alst.name)
-      case alst:LstType[Obj] if x.glist.size == alst.glist.size => lst(g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))), via = x.via)
+      case alst:LstType[Obj] if x.glist.size == alst.glist.size =>
+        lst(g = (alst.gsep, x.glist.zip(alst.glist)
+          .map(a => if (__.isToken(a._2)) AsOp.autoAsType(a._1, a._2, domain = true) else a._1.as(a._2))), via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     })
 
@@ -156,6 +161,7 @@ object AsOp extends Func[Obj, Obj] {
         x.gmap.flatMap(a => arec.gmap
           .filter(b => a._1.test(b._1))
           .map(b => (a._1.as(b._1), a._2.as(b._2))))), via = x.via)
+        //.map(b => (AsOp.autoAsType(a._1, b._1, domain = true), AsOp.autoAsType(a._2, b._2, domain = true))))), via = x.via)
         if (z.gmap.size < arec.gmap.count(x => x._2.q._1.g > 0)) throw LanguageException.typingError(x, asType(y)) else z
       case _ => throw LanguageException.typingError(x, asType(y))
     })

@@ -36,36 +36,36 @@ import scala.util.{Failure, Success, Try}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait PlusOp[O <: Obj] {
-  this: O =>
-  def plus(arg: O): this.type = PlusOp(arg).exec(this)
-  def plus(arg: __): this.type = PlusOp(arg).exec(this)
-  final def +(arg: O): this.type = this.plus(arg)
-  final def +(arg: __): this.type = this.plus(arg)
-  final def ⨁(arg: O): this.type = this.plus(arg)
-  final def ⨁(arg: __): this.type = this.plus(arg)
+  this:O =>
+  def plus(arg:O):this.type = PlusOp(arg).exec(this)
+  def plus(arg:__):this.type = PlusOp(arg).exec(this)
+  final def +(arg:O):this.type = this.plus(arg)
+  final def +(arg:__):this.type = this.plus(arg)
+  final def ⨁(arg:O):this.type = this.plus(arg)
+  final def ⨁(arg:__):this.type = this.plus(arg)
 }
 
 object PlusOp extends Func[Obj, Obj] {
-  def apply[O <: Obj](obj: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj.asInstanceOf[O])), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = Try[Obj](start match {
-    case _: Type[_] => start
-    case abool: Bool => abool.clone(g = abool.g || inst.arg0[Bool].g)
-    case aint: Int => aint.clone(g = aint.g + inst.arg0[Int].g)
-    case areal: Real => areal.clone(g = areal.g + inst.arg0[Real].g)
-    case astr: Str => astr.clone(g = astr.g + inst.arg0[Str].g)
-    case arec: Rec[Obj, Obj] => arec.clone(_.replace(inst.arg0[Rec[Obj, Obj]].gmap))
+  def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj.asInstanceOf[O])), func = this)
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = Try[Obj](start match {
+    case _:Type[_] if !start.isInstanceOf[Lst[_]] => start
+    case abool:Bool => abool.clone(g = abool.g || inst.arg0[Bool].g)
+    case aint:Int => aint.clone(g = aint.g + inst.arg0[Int].g)
+    case areal:Real => areal.clone(g = areal.g + inst.arg0[Real].g)
+    case astr:Str => astr.clone(g = astr.g + inst.arg0[Str].g)
+    case arec:Rec[Obj, Obj] => arec.clone(_.replace(inst.arg0[Rec[Obj, Obj]].gmap))
     // poly plus
-    case multA: Lst[Obj] if multA.isSerial => inst.arg0[Lst[Obj]] match {
-      case multB: Lst[Obj] if multB.isSerial => multA `,` multB
-      case plusB: Lst[Obj] if plusB.isPlus => lst(plusB.gsep, multA, plusB)
+    case multA:Lst[Obj] if multA.isSerial => inst.arg0[Lst[Obj]] match {
+      case multB:Lst[Obj] if multB.isSerial => multA `,` multB
+      case plusB:Lst[Obj] if plusB.isPlus => lst(plusB.gsep, multA, plusB)
     }
-    case plusA: Lst[Obj] if plusA.isPlus => inst.arg0[Lst[Obj]] match {
-      case multB: Lst[Obj] if multB.isSerial => if (multB.isEmpty) plusA else lst(plusA.gsep, plusA, multB)
-      case plusB: Lst[Obj] if plusB.isPlus => plusA.clone(g = (plusA.gsep, plusA.glist ++ plusB.glist))
+    case plusA:Lst[Obj] if plusA.isPlus => inst.arg0[Lst[Obj]] match {
+      case multB:Lst[Obj] if multB.isSerial => if (multB.isEmpty) plusA else lst(plusA.gsep, plusA, multB)
+      case plusB:Lst[Obj] if plusB.isPlus => plusA.clone(g = (plusA.gsep, plusA.glist ++ plusB.glist))
     }
   }) match {
-    case x: Failure[_] if x.exception.isInstanceOf[LanguageException] => throw x.exception
-    case _: Failure[_] => throw LanguageException.typingError(start, asType(inst.arg0[Obj]))
-    case x: Success[Obj] => x.value.via(start, inst)
+    case x:Failure[_] if x.exception.isInstanceOf[LanguageException] => throw x.exception
+    case _:Failure[_] => throw LanguageException.typingError(start, asType(inst.arg0[Obj]))
+    case x:Success[Obj] => x.value.via(start, inst)
   }
 }

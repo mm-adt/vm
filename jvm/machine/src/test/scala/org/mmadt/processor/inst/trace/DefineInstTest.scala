@@ -61,7 +61,7 @@ class DefineInstTest extends BaseInstTest(
     testing(1 `,`(1 `,` 2), a('mylist), false),
     testing(1 `,`(2 `,` 1), a('mylist), false),
     testing(1 `,`(1 `,` 2), a('mylist), false),
-    excepting(1 `;`(1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;`(1 `;` 1)), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
+    excepting(1 `;`(1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` 'mylist(1 `;` 'mylist(1))), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
     comment("ilist"),
     testing(lst(), a('ilist), true, "()[a,ilist]"),
     testing(1 `;`, a('ilist), true, "(1)[a,ilist]"),
@@ -93,7 +93,7 @@ class DefineInstTest extends BaseInstTest(
     println(int(-10).define('nat <= int.is(int.gt(0))).a('nat.plus(100)))
     println('nat.plus(100).domain)
     println(int(-10).compute(int.define('nat <= int.is(int.gt(0))).a('nat).asInstanceOf[Type[Bool]]))
-//    println(int.define(int.plus(10).mult(20)).plus(2) -< ('x.plus(100) `,` 'x) >-)
+    //    println(int.define(int.plus(10).mult(20)).plus(2) -< ('x.plus(100) `,` 'x) >-)
     println(new mmlangScriptEngineFactory().getScriptEngine.eval("1[a,[real|str]]"))
     println(str.a(__.-<(real `|` int) >-)) // TODO
   }
