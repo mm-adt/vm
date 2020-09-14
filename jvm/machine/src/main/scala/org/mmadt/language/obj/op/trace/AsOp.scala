@@ -56,7 +56,7 @@ object AsOp extends Func[Obj, Obj] {
     if (source.name.equals(target.name) || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
     if ((!__.isAnon(source)) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
     source match {
-      case astrm:Strm[Obj] => astrm(x => AsOp.autoAsType(x, target, domain))
+      case astrm:Strm[Obj] => astrm(src => AsOp.autoAsType(src, target, domain))
       case _:Value[_] => internalConvertAs(source, target).hardQ(source.q)
       case _:Type[_] => if (domain) target.update(source.model) else target <= source
     }
@@ -71,12 +71,14 @@ object AsOp extends Func[Obj, Obj] {
   }*/
 
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
-    val asObj:Obj = if (__.isToken(target)) WalkOp.walkSourceToTarget(source, target) else target
-    val dObj:Obj = pickMapping(source, asObj).update(source.model)
-    val rObj:Obj = if (asObj.domain != asObj.range) pickMapping(dObj, Tokens.tryName(target, asObj.range)) else dObj
-    val result = Tokens.tryName(target, rObj)
-    if (!result.alive) throw LanguageException.typingError(source, asType(asObj.named(target.name)))
-    result.update(source.model)
+    val asObj:Obj = if (__.isToken(target)) WalkOp.walkSourceToTarget(source, target, targetName = true) else target
+    val dObj:Obj = Tokens.tryName(asObj, pickMapping(source, asObj))
+    val rObj:Obj =
+      if (__.isToken(asObj.range) && asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined)
+        pickMapping(dObj, Tokens.tryName(target, asObj.range))
+      else dObj
+    if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
+    Tokens.tryName(asObj, rObj)
   }
 
   private def pickMapping(start:Obj, asObj:Obj, checkDepth:Boolean = false):Obj = {
@@ -97,6 +99,7 @@ object AsOp extends Func[Obj, Obj] {
       }
     }
   }
+
   private def boolConverter(x:Bool, y:Obj):Obj =
     y.trace.reconstruct(y.domain match {
       case _:__ => x
@@ -105,7 +108,7 @@ object AsOp extends Func[Obj, Obj] {
       case _ => throw LanguageException.typingError(x, asType(y))
     })
 
-  private def intConverter(x:Int, y:Obj):Obj =
+  private def intConverter(x:Int, y:Obj):Obj = {
     y.trace.reconstruct(Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
       case _:__ => x
       case aint:IntType => int(name = aint.name, g = x.g, via = x.via)
@@ -113,6 +116,7 @@ object AsOp extends Func[Obj, Obj] {
       case astr:StrType => str(name = astr.name, g = x.g.toString, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     })
+  }
 
   private def realConverter(x:Real, y:Obj):Obj =
     y.trace.reconstruct(y.domain match {

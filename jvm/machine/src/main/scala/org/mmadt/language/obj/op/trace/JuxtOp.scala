@@ -32,19 +32,20 @@ import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
 trait JuxtOp {
-  this: Obj =>
-  def juxta[A <: Obj](right: A): A = JuxtOp(right).exec(this)
-  final def `=>`[A <: Obj](right: A): A = this.juxta(right)
+  this:Obj =>
+  def juxta[A <: Obj](right:A):A = JuxtOp(right).exec(this)
+  final def `=>`[A <: Obj](right:A):A = this.juxta(right)
+  final def `=>`(right:Symbol):Obj = this.juxta(__(right.name))
 }
 
 object JuxtOp extends Func[Obj, Obj] {
-  override val preArgs: Boolean = false
-  override val preStrm: Boolean = false
+  override val preArgs:Boolean = false
+  override val preStrm:Boolean = false
 
-  def apply[A <: Obj](right: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.juxt, List(right)), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = inst.arg0[Obj] match {
-    case aobj: Obj if !aobj.alive => zeroObj
-    case avalue: Value[_] => start.compute(avalue).hardQ(multQ(start.q, avalue.q))
-    case atype: Type[_] => start.compute(atype).hardQ(multQ(start.q, atype.pureQ))
+  def apply[A <: Obj](right:A):Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.juxt, List(right)), func = this) with TraceInstruction
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = inst.arg0[Obj] match {
+    case aobj:Obj if !aobj.alive => zeroObj
+    case avalue:Value[_] => start.compute(avalue).hardQ(multQ(start.q, avalue.q))
+    case atype:Type[_] => start.compute(atype).hardQ(multQ(start.q, atype.pureQ))
   }
 }

@@ -33,21 +33,21 @@ import scala.collection.mutable
 import scala.io.{BufferedSource, Source}
 
 trait LoadOp {
-  this: Obj =>
-  def load(file: StrValue): this.type = LoadOp(file).exec(this).asInstanceOf[this.type]
+  this:Obj =>
+  def load(file:StrValue):this.type = LoadOp(file).exec(this).asInstanceOf[this.type]
 }
 
 object LoadOp extends Func[Obj, Obj] {
-  def apply(file: Obj): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.load, List(file)), func = this)
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = start `=>` loadObj(Inst.oldInst(inst).arg0[Obj].toString)
-  def loadObj[A <: Obj](file: String): A = {
+  def apply(file:Obj):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.load, List(file)), func = this)
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start `=>` loadObj[Obj](Inst.oldInst(inst).arg0[Obj].toString)
+  def loadObj[A <: Obj](file:String):A = {
     try {
-      val source: BufferedSource = Source.fromFile(file.replace("'",""))
+      val source:BufferedSource = Source.fromFile(file.replace("'", ""))
       val obj = mmlangParser.parse[A](source.getLines().foldLeft(new mutable.StringBuilder())((x, y) => x.append(y).append("\n")).toString())
       source.close()
       obj
     } catch {
-      case e: Exception => throw new RuntimeException(e.getMessage, e)
+      case e:Exception => throw new RuntimeException(e.getMessage, e)
     }
   }
 }

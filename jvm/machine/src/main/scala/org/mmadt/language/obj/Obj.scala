@@ -87,6 +87,7 @@ trait Obj
   //////////////////////////////////////////////////////////////
 
   // type methods
+  def named:Boolean = Tokens.named(this.name)
   def named(name:String, ignoreAnon:Boolean = false):this.type = {
     if (ignoreAnon && !this.isInstanceOf[__] && name.equals(Tokens.anon)) return this
     LanguageException.checkTypeNaming(this, name)
@@ -96,6 +97,7 @@ trait Obj
     LanguageException.checkRootRange(this, domainType)
     if (domainType.rangeObj.equals(this)) domainType.asInstanceOf[this.type]
     else if (domainType.root) this.clone(via = (domainType, NoOp()))
+    // else if(domainType.root && !domainType.named && __.isToken(this)) domainType.named(range.name) // related to b:a vs b<=a (they should resolve to the same obj)
     // this is a total hack -- I'm encoding the range of the type in the via of the last instruction
     // the fix is to make it so <= doesn't rinvert and instead extends via a [noop] of some sort
     else this.clone(via = (domainType.rinvert, domainType.via._2.clone(via = (domainType.rangeObj.named(this.name, ignoreAnon = true).q(this.q), IdOp())).asInstanceOf[Inst[Obj, Obj]]))
@@ -138,6 +140,7 @@ trait Obj
   def toStrm:Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   // evaluation methods
+  final def compute[E <: Obj](target:E, withAs:Boolean):E = if (withAs) this.compute(target) else Obj.resolveInternal[E](this, target) // Scala isn't grabbing default value ?
   final def compute[E <: Obj](target:E):E = AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target)
   final def ~~>[E <: Obj](target:E):E = Obj.resolveArg[this.type, E](this, target)
   final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
