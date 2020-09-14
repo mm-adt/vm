@@ -71,7 +71,7 @@ class GetInstTest extends BaseInstTest(
     testing("a".q(10) `|` "b".q(0) `|` "c", get(0).q(4), "a".q(40), "('a'{10}|'b'{0}|'c').0{4}"), // TODO: should we follow the infix convention of .{4}0 ?
     testing("a".q(0) `|` "b" `|` "c", get(0), "b", "('a'{0}|'b'|'c').0"),
     comment("|-lst exceptions"),
-    excepting("a" `|` "b" `|` "c", get(1), LanguageException.Poly.noIndexValue("a" `|` "b" `|` "c", 1), "('a'|'b'|'c')[get,1]"),
+    excepting("a" `|` "b".q(0) `|` "c".q(0), get(1), LanguageException.Poly.noIndexValue("a" `|`, 1), "('a'|'b'{0}|'c'{0})[get,1]"),
     excepting("a".q(0) `|` "b".q(0), get(0), LanguageException.Poly.noIndexValue("a".q(0) `|` "b".q(0), 0), "('a'{0}|'b'{0}).0"),
   ),
   testSet("[get] ,-rec test",

@@ -27,7 +27,7 @@ import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken}
 import org.mmadt.language.obj.`type`.LstTypeTest._
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
@@ -54,7 +54,19 @@ class LstTypeTest extends BaseInstTest(
     testing((str("a") `,` "b"), a(lst.q(10)), false, "('a','b')[a,lst{10}]"),
     testing((str("a") `,` "b"), a(lst.q(0, 10)), true, "('a','b')[a,lst{0,10}]"),
     testing((str("a") `;` "b"), a(str `;` str), true, "('a';'b')[a,(str;str)]"),
-    // testing((str("a") `,` "b"), a(str `,` str), true, "('a','b')[a,(str,str)]"), TODO: this is a big issue
+    testing((str("a") `,` "b"), a(str `,` str), true, "('a','b')[a,(str,str)]"),
+  ), testSet(",-lst basics", MM,
+    testing(1 `,` 2, a(int `,` int), true, "(1,2)[a,(int,int)]"),
+    testing(1 `,` 2, a(lst(int.q(2))), true, "(1,2)[a,(int{2})]"),
+    testing(1 `,` 2 `,` 3, a(int `,` int), false, "(1,2,3)[a,(int,int)]"),
+  ), testSet("|-lst basics", MM,
+    testing(1 `,`, a(int `|` str), true, "(1)[a,(int|str)]"),
+    testing(int(1).q(2) `|` 2, a(str.q(2) `|` int.q(2)), true, "(1{2}|2)[a,(str{2}|int{2})]"),
+    testing(int(1) `|` 2, a(str.q(0,5) `|` int.q(0, 100)), true, "(1|2)[a,(str{0,5}|int{0,100})]"),
+    testing(int(1) `|` 2, a(str.q(0,2) `|` int.q(2)), false, "(1|2)[a,(str{0,2}|int{2})]"),
+    testing(int(1).q(2) `,`, a(int | int.q(0,100)), true, "(1{2})[a,(int|int{0,100})]"),
+    // TODO: testing(int(1).q(2) `,` int(2).q(2), a(str.q(0, 2) `|` int.q(0, 2)), true, "(1{2},2{2})[a,(str{+}|int{+})]"),
+    testing(1 `,` 2 `,` 3, a(int `,` int), false, "(1,2,3)[a,(int,int)]"),
   ), testSet(";-lst int array type", INT_ARRAY_MODEL,
     comment("int array mmlang/mmscala"),
     // testing(intArrayObj, __, intArrayObj, intArrayStr),
@@ -113,8 +125,8 @@ class LstTypeTest extends BaseInstTest(
 
   test("parallel [split] quantification") {
     assertResult(int)(int.mult(8).split(id | plus(8).mult(2) | int(56)).merge.id.rangeObj)
-    assertResult(int.q(10, 20))(int.mult(8).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
-    assertResult(int.q(20, 40))(int.q(2).mult(8).q(1).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
+    assertResult(int.q(1, 20))(int.mult(8).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
+    assertResult(int.q(2, 40))(int.q(2).mult(8).q(1).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
     assertResult(zeroObj)(int.q(2).mult(8).q(0).split(id.q(10, 20) | plus(8).mult(2).q(2) | int(56)).merge.id.rangeObj)
   }
 }

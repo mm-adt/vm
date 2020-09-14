@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
+import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -57,10 +57,8 @@ object AsOp extends Func[Obj, Obj] {
     if (source.name.equals(target.name)) {
       if (source.named || target.isInstanceOf[__]) return source
       source match {
-        case slst:LstValue[_] if
-        target.asInstanceOf[Lst[Obj]].gsep != Tokens.`,` &&
-          target.asInstanceOf[Lst[Obj]].size == slst.size && // |-branching (easy win)
-          target.asInstanceOf[Lst[Obj]].glist.forall(x => x.root) => slst
+        case slst:LstValue[_] if target.isInstanceOf[Lst[_]] && !Lst.test(slst, target.asInstanceOf[Lst[Obj]]) => slst
+        // case srec:RecValue[_,_] if target.isInstanceOf[Rec[_,_]] && !Rec.test(srec, target.asInstanceOf[Rec[Obj,Obj]]) => srec
         case x => return x
       }
     }
@@ -80,7 +78,6 @@ object AsOp extends Func[Obj, Obj] {
         pickMapping(dObj, Tokens.tryName(target, asObj.range))
       else dObj
     if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
-
     Tokens.tryName(asObj, rObj)
   }
 
@@ -149,6 +146,7 @@ object AsOp extends Func[Obj, Obj] {
       case alst:LstType[Obj] if x.glist.size == alst.glist.size =>
         lst(g = (alst.gsep, x.glist.zip(alst.glist)
           .map(a => if (__.isToken(a._2)) AsOp.autoAsType(a._1, a._2, domain = true) else a._1.as(a._2))), via = x.via)
+      case _:LstType[Obj] => x
       case _ => throw LanguageException.typingError(x, asType(y))
     })
 
