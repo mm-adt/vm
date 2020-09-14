@@ -23,7 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.TestUtil
-import org.mmadt.language.obj.Obj.{intToInt, stringToStr,symbolToToken}
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken}
 import org.mmadt.language.obj.`type`.LstTypeTest._
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
@@ -37,11 +37,11 @@ import org.scalatest.prop.TableFor3
 object LstTypeTest {
   private val intArrayObj:Type[_] = 'tarr_i <= lst.branch(lst.is(merge.count.eqs(0)) `|` lst.branch(is(head.a(int)) `;` is(tail.a('tarr_i))))
   private val intArrayStr:String = "tarr_i<=lst[[is>-[count]==0]|[[is,[head][a,int]];[is,[tail][a,tarr_i]]]]"
-  private val INT_ARRAY_MODEL:Model = ModelOp.EMPTY.defining(intArrayObj)
+  private val INT_ARRAY_MODEL:Model = ModelOp.MM.defining(intArrayObj)
   ///////////
   private val intStrArrayObj:Type[_] = 'tarr_is <= lst.branch(is(merge.count.eqs(0)) `|` branch(is(head.a(int)) `;` is(tail.head.a(str)) `;` is(tail.tail.a('tarr_is))))
   private val intStrArrayStr:String = "tarr_is<=lst[[is>-[count]==0]|[[is,[head][a,int]];[is,[tail][head][a,str]];[is,[tail][tail][a,tarr_is]]]]"
-  private val INT_STR_ARRAY_MODEL:Model = ModelOp.EMPTY.defining(intStrArrayObj)
+  private val INT_STR_ARRAY_MODEL:Model = ModelOp.MM.defining(intStrArrayObj)
 
 }
 class LstTypeTest extends BaseInstTest(

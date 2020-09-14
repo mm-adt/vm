@@ -49,14 +49,14 @@ object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
 
-  def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E = autoAsType(f(autoAsType(source, target.domain, target, domain = true)), target.range, target, domain = false).asInstanceOf[E]
-  private def autoAsType(source:Obj, target:Obj, rangeType:Obj, domain:Boolean):Obj = {
+  def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E = autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
+  private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
     if (!target.alive) return zeroObj
     if (!source.alive) return source
-    if (source.isInstanceOf[Strm[Obj]]) return source.toStrm(x => AsOp.autoAsType(x, target, rangeType, domain))
     if (source.name.equals(target.name) || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
     if ((!__.isAnon(source)) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
     source match {
+      case astrm:Strm[Obj] => astrm(x => AsOp.autoAsType(x, target, domain))
       case _:Value[_] => internalConvertAs(source, target).hardQ(source.q)
       case _:Type[_] if domain => target.update(source.model)
       case _:Type[_] => target <= source
