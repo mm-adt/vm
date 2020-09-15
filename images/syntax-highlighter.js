@@ -38,7 +38,7 @@ $(document).ready(function(){
                   "special": ["mmlang","language error","mm",
                               "social"],        // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
                   "tokens":  ["{","}","(",")"],
-                  "infix":   ["|","&&",",","+","*","=>","^"],
+                  "infix":   ["|","&&",",","+","*","=>","^","π"],
                   "value":   ["true","false"],
                   "plain":   ["is not"]};
   $.each(items, function(key, values) {

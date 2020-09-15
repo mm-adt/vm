@@ -2449,7 +2449,7 @@ mm&gt; ('a'-&gt;1;'b'-&gt;2;'a'-&gt;3)&gt;-
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ('a'|'b'|'a'|'b')
-==&gt;('a')
+==&gt;('a'|'b')
 mm&gt; ('a'|'b'|'a'|'b')&gt;-
 ==&gt;'a'</code></pre>
 </div>
@@ -2737,9 +2737,9 @@ b_r &amp; \text{if } r &gt; 0, \\
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1|6|1|2|{1})
-==&gt;(1)
+==&gt;(1|6|2)
 mmlang&gt; ('a'{0}|'b'{0}|'c'|'a'{2})
-==&gt;('c')
+==&gt;('c'|'a'{2})
 mmlang&gt; ('a'{?}|{1}|1.0|true)
 ==&gt;('a'{?}|_)</code></pre>
 </div>
@@ -3742,24 +3742,23 @@ language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
          [define,vertex:('id'-&gt;int),                                                     <i class="conum" data-value="1"></i><b>(1)</b>
                  edge:('outV'-&gt;vertex,'inV'-&gt;vertex),                                    <i class="conum" data-value="2"></i><b>(2)</b>
                  vertex&lt;=int-&lt;('id'-&gt;_),                                                 <i class="conum" data-value="3"></i><b>(3)</b>
-                 loop&lt;=vertex-&lt;([id];[id]),                                              <i class="conum" data-value="4"></i><b>(4)</b>
-                 edge&lt;=(vertex;vertex)-&lt;('outV'-&gt;.0,'inV'-&gt;.1)]                          <i class="conum" data-value="5"></i><b>(5)</b>
+                 edge&lt;=(vertex;vertex)-&lt;('outV'-&gt;.0,'inV'-&gt;.1)]                          <i class="conum" data-value="4"></i><b>(4)</b>
 mmlang&gt;
 mmlang&gt; 5
 ==&gt;5
-mmlang&gt; 5 =&gt; vertex
+mmlang&gt; 5 =&gt; vertex                                                                      <i class="conum" data-value="5"></i><b>(5)</b>
 ==&gt;vertex:('id'-&gt;5)
-mmlang&gt; 5 =&gt; vertex =&gt; loop
-==&gt;loop:(vertex:('id'-&gt;5);vertex:('id'-&gt;5))
-mmlang&gt; 5 =&gt; vertex =&gt; loop =&gt; edge                                                      <i class="conum" data-value="6"></i><b>(6)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))
-mmlang&gt; 5 =&gt; loop =&gt; edge                                                                <i class="conum" data-value="7"></i><b>(7)</b>
+mmlang&gt; (5;6) =&gt; (vertex;vertex) =&gt; edge                                                 <i class="conum" data-value="6"></i><b>(6)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+mmlang&gt; (5;6) =&gt; edge                                                                    <i class="conum" data-value="7"></i><b>(7)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                                         <i class="conum" data-value="8"></i><b>(8)</b>
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))</code></pre>
 </div>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/digraph-type-path-1.svg" alt="digraph type path 1" width="400">
+<img src="./images/obj/digraph-type-path-1.svg" alt="digraph type path 1" width="600">
 </div>
 </div>
 <div class="colist arabic">
@@ -3778,21 +3777,34 @@ mmlang&gt; 5 =&gt; loop =&gt; edge                                              
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>A path from a <code>vertex</code> to a 2-tuple <code>;-lst</code> named <code>loop</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>A path from a 2-tuple <code>vertex</code> <code>;-lst</code> to a `edge.</td>
 </tr>
 <tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>An <code>int</code> value morphed into a <code>vertex</code>.</td>
+</tr>
+<tr>
 <td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>A fine-grained <strong>type path</strong> start at an <code>int</code> and ending at the <code>edge</code> materialization of the <code>int</code>.</td>
+<td>An <code>int</code> value pair morphed into a <code>vertex</code> pair and then into an edge (a fine-grained <strong>type path</strong>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="7"></i><b>7</b></td>
-<td>A course-grained <strong>type path</strong> from <code>int</code> to <code>edge</code> via <code>loop</code>.</td>
+<td>An <code>int</code> value pair morphed into an edge (a course-grained <strong>type path</strong>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td>An <code>int</code> value split into <code>vertex</code> clone pairs and then morphed into a self-loop edge.</td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<p>The above example demonstrates the use of <code>;-lst</code> as both a <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> and a <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>--a <a href="https://en.wikipedia.org/wiki/Biproduct">biproduct</a>. The <code>(vertex;vertex)</code> pair is created via a split <code>-&lt;</code> which serves as the two injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the <code>edge</code> definition projects out each component of the coproduct via <code>.0</code> (<code>[get,0]</code>) and <code>.1</code> (<code>[get,1]</code>). Thus, the coproduct is also a product. The <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> π is another <code>mmlang</code> sugar for <code>[get]</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1;2)-&lt;('ι0'-&gt;π0,'ι1'-&gt;π1)
+==&gt;('ι0'-&gt;1,'ι1'-&gt;2)</code></pre>
+</div>
 </div>
 <div class="exampleblock">
 <div class="title">Deep Dive 2. model-ADT Application Programming Interfaces</div>
@@ -4003,7 +4015,7 @@ language error: 0 is not a nat</code></pre>
 mmlang&gt; (8;26;2020) =&gt; date
 ==&gt;date:(nat:8;nat:26;nat:2020)
 mmlang&gt; (8;26)      =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
+==&gt;date:(nat:8;nat:26;2020)</code></pre>
 </div>
 </div>
 </div>
@@ -4064,7 +4076,7 @@ mmlang&gt; ('a';'b';'c') =&gt; [a,xlist]
 mmlang&gt; ('a';'b';'c') =&gt; xlist
 ==&gt;xlist:('a';'b';'c')
 mmlang&gt; (1;'a';'c') =&gt; xlist
-==&gt;xlist
+language error: (1;'a';'c') is not a xlist
 mmlang&gt; ('a';'b';'c') =&gt; xlist[put,0,3]
 language error: (3;'a';'b';'c') is not a xlist</code></pre>
 </div>
@@ -4083,7 +4095,7 @@ mmlang&gt; ('a';1;'b';2) =&gt; [a,ylist]
 mmlang&gt; ('a';1;'b';2) =&gt; ylist
 ==&gt;ylist:('a';1;'b';2)
 mmlang&gt; (1;'a';'c') =&gt; ylist
-==&gt;ylist
+language error: (1;'a';'c') is not a ylist
 mmlang&gt; ('a';1;'b';2) =&gt; ylist[put,0,3]
 language error: (3;'a';1;'b';2) is not a ylist</code></pre>
 </div>
@@ -7197,7 +7209,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-12 15:07:02 -0600
+Last updated 2020-09-12 15:33:42 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
