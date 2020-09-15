@@ -302,13 +302,13 @@ image::digraph-type-path-1.svg[width=600,align=center]
 <1> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
 <2> The `mm` specification of a canonical `edge` (an `inst`-less ctype).
 <3> A path from an `int` to a `vertex`.
-<4> A path from a 2-tuple `vertex` `;-lst` to a `edge.
+<4> A path from a 2-tuple `vertex` `;-lst` to a `edge`.
 <5> An `int` value morphed into a `vertex`.
 <6> An `int` value pair morphed into a `vertex` pair and then into an edge (a fine-grained *type path*).
 <7> An `int` value pair morphed into an edge (a course-grained *type path*).
 <8> An `int` value split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
 
-The above example demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product]--a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the two injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of the coproduct via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. The https://en.wikipedia.org/wiki/Unicode[Unicode] π is another `mmlang` sugar for `[get]`.
+The above example demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product] -- i.e., a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. For this reason, the https://en.wikipedia.org/wiki/Unicode[Unicode] character for https://en.wikipedia.org/wiki/Pi[pi] (π), the conventional symbol for product https://en.wikipedia.org/wiki/Projection_(mathematics)[projection] serves as another `mmlang` sugar for `[get]`.
 
 [exec]
 ----
