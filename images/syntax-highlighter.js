@@ -34,8 +34,8 @@ $(document).ready(function(){
                               "split","merge","last","head","tail","put","repeat","type",
                               "define","to","from","sum","model","as","a","q","path","empty","lift","swap"],
                   "type":    ["_","real","rec","lst","inst","obj","int","str","bool","poly",
-                              "nat","person","vertex","edge"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
-                  "special": ["mmlang","language error","mm",
+                              "nat","person","vertex","edge","graph"],  // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
+                  "special": ["mmlang","language error","mm","pg",
                               "social"],        // CUSTOM TO DOCS (NOT GENERAL TO mm-ADT)
                   "tokens":  ["{","}","(",")"],
                   "infix":   ["|","&&",",","+","*","=>","^","π"],

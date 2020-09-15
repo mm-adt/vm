@@ -512,7 +512,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_models">Models</a>
 <ul class="sectlevel3">
+<li><a href="#_model_building">Model Building</a>
+<ul class="sectlevel4">
 <li><a href="#_type_paths">Type Paths</a></li>
+<li><a href="#_model_paths">Model Paths</a></li>
+</ul>
+</li>
 <li><a href="#_type_patterns">Type Patterns</a>
 <ul class="sectlevel4">
 <li><a href="#_refinement_types">Refinement Types</a></li>
@@ -3566,210 +3571,74 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 </div>
 <div class="sect3">
 <h4 id="_rewrites">Rewrites</h4>
-<div class="paragraph">
-<p>Each step of that walk is an instruction forming an edge in the type graph.
-For instance, the type</p>
-</div>
-<div class="paragraph text-center">
-<p><code>int[is,[eq,int]]</code></p>
-</div>
-<div class="paragraph">
-<p>describes a <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexive graph</a> with vertices are in <code>int</code> and edges labeled <code>[is,[eq,int]]</code>.
-There are other mm-ADT types (an infinite amount in fact) that are related to <code>int[is,[eq,int]]</code> by a <a href="https://en.wikipedia.org/wiki/Graph_homomorphism">graph homomorphism</a>.
-A few such types are itemized below.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python"><span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">0</span>]
-<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">1</span>]
-<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">1</span>][plus,-<span style="color:#00D">1</span>]
-<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">2</span>][plus,-<span style="color:#00D">2</span>]
-<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">3</span>][plus,-<span style="color:#00D">3</span>]
-...</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Note a common pattern.
-The type <code>int[plus,x:int][plus,x:int[neg]]</code> captures an infinite number of more specific types that are homomorphic to <code>int[is,[eq,int]]</code>. <a href="https://en.wikipedia.org/wiki/Higher-order_function">Higher order type</a> are defined using mm-ADT <code>polys</code>.</p>
-</div>
-<div class="paragraph text-center">
-<p><code>(int[is,[eq,int]])&lt;=(int[plus,x:int][plus,x:int[neg]])</code></p>
-</div>
-<div class="paragraph">
-<p>In category theory, a <em>type-to-type</em> mapping that <a href="https://en.wikipedia.org/wiki/Morphism">preserves structure</a> is called a <a href="https://en.wikipedia.org/wiki/Functor">functor</a>.
-From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range <code>&lt;=</code>-relation within a higher-order <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a> with respective signature.
-The identity is apparent in that there are no instructions required to coerce an <code>obj</code> of the domain to an <code>obj</code> of the range.
-This is analogous to <code>int&lt;=int</code>, save that the mapping is not predicated on <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphism</a>, but on a broader relationship called a <a href="https://en.wikipedia.org/wiki/Surjective_function">surjective</a> homomorphism (a  <a href="https://en.wikipedia.org/wiki/Rewriting">reduction</a>).
-Any type containing only a type signature <code>()&lt;=()</code> says that the domain type is equal to the range type such that the domain can be <a href="https://en.wikipedia.org/wiki/Abstract_rewriting_system">substituted</a> for the range.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">[define,(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])&lt;=(<span style="color:#369;font-weight:bold">int</span>[plus,x][plus,x[neg]])][<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">10</span>][plus,-<span style="color:#00D">10</span>]</code></pre>
-</div>
-</div>
 <div class="imageblock text-center">
 <div class="content">
 <img src="./images/obj/type-to-type-type.png" alt="type to type type" width="700">
 </div>
-</div>
-<div class="paragraph">
-<p>The type <code>int[is,[eq,int]]</code> has an <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> image in <code>int</code>, where the reflexive self-loop paths in <code>int[is,[eq,int]]</code> are contracted to 0-length paths.
-The isomorphism realizes <code>int</code> as a classic set without structure because the type <code>int</code> has no instructions and thus, no type graph edges.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">mmlang&gt; [define,<span style="color:#369;font-weight:bold">int</span>&lt;=(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])]
-        [define,(<span style="color:#369;font-weight:bold">int</span>[<span style="color:#080;font-weight:bold">is</span>,[eq,<span style="color:#369;font-weight:bold">int</span>]])&lt;=(<span style="color:#369;font-weight:bold">int</span>[plus,x:<span style="color:#369;font-weight:bold">int</span>][plus,x:<span style="color:#369;font-weight:bold">int</span>[neg]])]
-        [<span style="color:#369;font-weight:bold">int</span>][plus,<span style="color:#00D">10</span>][plus,-<span style="color:#00D">10</span>]
-==&gt;<span style="color:#369;font-weight:bold">int</span></code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The composition of two structure preserving type morphisms yields a new type&#8212;&#8203;namely, <code>int&lt;=(int[plus,x:int][plus,x:int[neg]])</code>.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_models">Models</h3>
 <div class="paragraph">
-<p>mm-ADT organizes types into <strong>models</strong>.
-The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in a model called <code>mm</code> (the <em>mm</em> of mm-ADT).
-The <code>mm</code> <strong>model-ADT</strong> is the canonical model by which all other models are derived.
-Much like ctypes and dtypes, <code>mm</code> can be understood as a "cmodel" and all derived models as "dmodels" (though these terms are not used beyond this section).
-While model-ADT design and development will be discussed in a latter section, this section introduces the <code>[define]</code> instruction and it&#8217;s use as an identity type.</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>[define]</code>: Associates a type with a range composed of an object <em>token</em> and a quantifier.</p>
-</li>
-<li>
-<p><code>[as]</code>: Locates the first type definition capable of mapping the incoming <code>obj</code> to the token argument.</p>
-</li>
-</ul>
+<p>mm-ADT organizes types into <strong>models</strong>. The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in a model called <code>mm</code> (the <em>mm</em> of mm-ADT). When the instruction <code>[model,mm]</code> is evaluated, the file below is loaded.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [define,nat&lt;=int[is&gt;0]]                            <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
-mmlang&gt; int =&gt; [define,nat&lt;=int[is&gt;0]]                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;int[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
-mmlang&gt;  6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]             <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;nat:6
-mmlang&gt; -6  =&gt; [define,nat&lt;=int[is&gt;0]][as,nat]             <i class="conum" data-value="4"></i><b>(4)</b>
-language error: -6 is not a nat</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>An identity <code>inst</code> that associates the token <code>nat</code> as the unit (<code>{1}</code>) range of <code>int[is&lt;0]]</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>mmlang</code> does not display <code>[define]</code> instructions in a type&#8217;s <code>inst</code> <code>obj</code> graph path.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td><code>[as]</code> searches the <code>obj</code> graph for a <code>nat&#8656;int</code> type definition and evaluates the mapping.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The definition requires <code>nat</code> be <code>_{1}</code> but <code>-6</code> is <code>_{0}</code>.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>With a large number of definitions, expression such as the following become untenable from a usability perspective.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">('name'-&gt;'marko','age'-&gt;29)  =&gt; [define,nat&lt;=int[is&gt;0],person&lt;=('name'-&gt;str,'age'-&gt;nat)][as,person]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">mm:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt;
+  (<span style="color:#369;font-weight:bold">bool</span>   -&gt;  (<span style="color:#369;font-weight:bold">bool</span>),
+   <span style="color:#369;font-weight:bold">int</span>    -&gt;  (<span style="color:#369;font-weight:bold">int</span>),
+   real   -&gt;  (real),
+   <span style="color:#369;font-weight:bold">str</span>    -&gt;  (<span style="color:#369;font-weight:bold">str</span>),
+   lst    -&gt;  (lst),
+   rec    -&gt;  (rec),
+   inst   -&gt;  (inst),
+   poly   -&gt;  (poly&lt;=[lst{<span style="color:#F00;background-color:#FAA">?</span>}|rec]),
+   (_)    -&gt;  ((_)&lt;=^:([<span style="color:#369;font-weight:bold">id</span>])
+               /* ([branch,x])&lt;=^:([split,&lt;x&gt;][merge]) */
+               ),
+   (<span style="color:#369;font-weight:bold">int</span>)  -&gt;  ((<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[neg][neg]),
+               (<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">0</span>]),
+               (<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">1</span>])),
+   ([<span style="color:#00D">1</span>])  -&gt;  (([<span style="color:#00D">1</span>])&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[one])),
+   ([<span style="color:#00D">0</span>])  -&gt;  (([<span style="color:#00D">0</span>])&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[zero]),
+               ([<span style="color:#00D">0</span>])&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">0</span>])),
+   ([<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>]) -&gt; (([<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>])&lt;=^:(<span style="color:#369;font-weight:bold">str</span>[zero]),
+               (<span style="color:#369;font-weight:bold">str</span>)&lt;=^:(<span style="color:#369;font-weight:bold">str</span>[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>]))))</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>For this reason, there is the <code>[model]</code> instruction which can be globally defined as the first instruction of ctype and thus, rooted in the <code>obj</code> Cayley graph.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/obj/nat-model.svg" alt="nat model" width="450">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type' -&gt; (nat    -&gt; (nat&lt;=int[is&gt;0]),
-                                   person -&gt; (person:('name'-&gt;str,'age'-&gt;nat))))&lt;=mm] <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;_
-mmlang&gt; 53 =&gt; [as,nat]                                                                <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;nat:53
-mmlang&gt; 0  =&gt; [as,nat]
-language error: 0 is not a nat
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)  =&gt; [as,person]                                   <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;-29) =&gt; [as,person]                                   <i class="conum" data-value="4"></i><b>(4)</b>
-language error: ('name'-&gt;'marko','age'-&gt;-29) is not a person</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>a <code>social</code> model-ADT has <code>nat</code> and <code>person</code> type definition and a domain of <code>mm</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>[model]</code> instruction is the first <code>inst</code> off the root of the <code>obj</code> graph.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The <code>rec</code> is mapped to a <code>person</code> with the <code>age</code> value being mapped accordingly.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The <code>rec</code> does not have an <code>age</code> value that maps to <code>nat</code> so the <code>rec</code> is not a <code>person</code>.</td>
-</tr>
-</table>
+<p>A model-ADT can be specified in <code>rec</code>. The <code>mm</code> model-ADT&#8217;s <code>rec</code> type is <code>mm</code> and it contains a <code>str</code> key of <code>'type'</code> containing a dictionary of <strong>type-to-type definitions</strong>. As the base types of mm-ADT are ground, they are defined in terms of themselves. For example. <code>bool -&gt; (bool)</code> states that <code>bool</code> has one definition stating that <code>bool&lt;=bool</code> or simply <code>bool</code>. Other model-ADTs require definitions that map from the model types to, via some path of type definitions, one or more of the ground types in <code>mm</code>.</p>
 </div>
 <div class="sect3">
-<h4 id="_type_paths">Type Paths</h4>
+<h4 id="_model_building">Model Building</h4>
 <div class="paragraph">
-<p>A type is a <strong>path</strong> through the <code>obj</code> graph via type vertices and <code>inst</code> edges. A <strong>type path</strong> is a path through the <code>obj</code> graph via type subgraphs.</p>
+<p>The <code>mm</code> model-ADT is simple. This section introduces the <code>pg</code> model-ADT defining the category of <em>property graphs</em>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm]
-         [define,vertex:('id'-&gt;int),                                                     <i class="conum" data-value="1"></i><b>(1)</b>
-                 edge:('outV'-&gt;vertex,'inV'-&gt;vertex),                                    <i class="conum" data-value="2"></i><b>(2)</b>
-                 vertex&lt;=int-&lt;('id'-&gt;_),                                                 <i class="conum" data-value="3"></i><b>(3)</b>
-                 edge&lt;=(vertex;vertex)-&lt;('outV'-&gt;.0,'inV'-&gt;.1)]                          <i class="conum" data-value="4"></i><b>(4)</b>
-mmlang&gt;
-mmlang&gt; 5
-==&gt;5
-mmlang&gt; 5 =&gt; vertex                                                                      <i class="conum" data-value="5"></i><b>(5)</b>
-==&gt;vertex:('id'-&gt;5)
-mmlang&gt; (5;6) =&gt; (vertex;vertex) =&gt; edge                                                 <i class="conum" data-value="6"></i><b>(6)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
-mmlang&gt; (5;6) =&gt; edge                                                                    <i class="conum" data-value="7"></i><b>(7)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
-mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                                         <i class="conum" data-value="8"></i><b>(8)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))</code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                                       <i class="conum" data-value="1"></i><b>(1)</b>
+  graph  -&gt; (graph:(edge{*})),                                          <i class="conum" data-value="2"></i><b>(2)</b>
+  vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>),                                        <i class="conum" data-value="3"></i><b>(3)</b>
+             vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_)),                                   <i class="conum" data-value="4"></i><b>(4)</b>
+  edge   -&gt; (edge:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),                       <i class="conum" data-value="5"></i><b>(5)</b>
+             edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>)))) &lt;= mm     <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
 </div>
 </div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/digraph-type-path-1.svg" alt="digraph type path 1" width="600">
+<img src="./images/obj/digraph-type-path-1.svg" alt="digraph type path 1" width="625">
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>mm</code> specification of a canonical <code>vertex</code> (an <code>inst</code>-less ctype).</td>
+<td>A <code>graph</code> is a <code>lst</code> containing 0 or more <code>edges</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>mm</code> specification of a canonical <code>edge</code> (an <code>inst</code>-less ctype).</td>
+<td>The <code>mm</code> specification of a canonical <code>vertex</code> (an <code>inst</code>-less ctype).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -3777,22 +3646,81 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                       
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>A path from a 2-tuple <code>vertex</code> <code>;-lst</code> to a <code>edge</code>.</td>
+<td>The <code>mm</code> specification of a canonical <code>edge</code> (an <code>inst</code>-less ctype).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
+<td>A path from a 2-tuple <code>vertex</code> <code>;-lst</code> to a <code>edge</code>.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Note that every type is associated with a <code>lst</code> of type definition whose <strong>range</strong> is the type. Diagrammatically, every type is associated with all it&#8217;s incoming <code>obj</code> graph paths called <em>type paths</em>.</p>
+</div>
+<div class="sect4">
+<h5 id="_type_paths">Type Paths</h5>
+<div class="paragraph">
+<p>A type is a <strong>path</strong> through the <code>obj</code> graph via type vertices and <code>inst</code> edges. A <strong>type path</strong> is a path through the <code>obj</code> graph via type subgraphs. A type path is specified via a type definition. In general, every model type definition is a mapping of the form:</p>
+</div>
+<table class="tableblock frame-non grid-none center" style="width: 45%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">a -&gt; (a:poly,a&lt;=b,a&lt;=c,a&lt;=d)</code></pre>
+</div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Thus, there are two sorts definitions.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><strong>model ctypes</strong>: a model typically specifies a set of <em>canonical types</em>, or ctypes for short. This is analogous to <code>bool</code>, <code>int</code>, etc. being ctypes in <code>mm</code>. Thus, <code>vertex</code>, <code>edge</code>, etc. are the ctypes of <code>pg</code>. The canonical type of <code>vertex</code> is <code>vertex:('id'-&gt;int)</code></p>
+</li>
+<li>
+<p><strong>model dtypes</strong>: a model&#8217;s ctypes must be defined in terms of types that are ultimately are grounded in <code>mm</code>. Moreover, intra-model type morphisms specify how to move between types within a model. Such types are <em>derived types</em> and are defined inductively via a path through the type graph of the <code>obj</code> graph.</p>
+</li>
+</ol>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1]
+==&gt;_
+mmlang&gt; 5
+==&gt;5
+mmlang&gt; 5 =&gt; vertex                                                                <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;vertex:('id'-&gt;5)
+mmlang&gt; (5;6) =&gt; (vertex;vertex) =&gt; edge                                           <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+mmlang&gt; (5;6) =&gt; edge                                                              <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                                   <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
 <td>An <code>int</code> value morphed into a <code>vertex</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>An <code>int</code> value pair morphed into a <code>vertex</code> pair and then into an edge (a fine-grained <strong>type path</strong>).</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="7"></i><b>7</b></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>An <code>int</code> value pair morphed into an edge (a course-grained <strong>type path</strong>).</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="8"></i><b>8</b></td>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>An <code>int</code> value split into <code>vertex</code> clone pairs and then morphed into a <a href="https://en.wikipedia.org/wiki/Loop_(graph_theory)">self-loop</a> edge.</td>
 </tr>
 </table>
@@ -3806,6 +3734,30 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                       
 ==&gt;('ι0'-&gt;1,'ι1'-&gt;2)</code></pre>
 </div>
 </div>
+</div>
+<div class="sect4">
+<h5 id="_model_paths">Model Paths</h5>
+<div class="paragraph">
+<p>The <code>pg_1</code> model extends <code>mm</code> via <code>pg_1&lt;=mm</code>. Note that it is possible for a model to define types that have no incoming paths from <code>mm</code>. For example:</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,ex:('type'-&gt;(A-&gt;(A&lt;=B),B-&gt;(B&lt;=C),C-&gt;(C&lt;=A)))]
+==&gt;_
+mmlang&gt; 6 + 12
+==&gt;18
+mmlang&gt; A =&gt; D
+language error: D for A is not a type in model ex
+mmlang&gt; A =&gt; B =&gt; C
+==&gt;C</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>This is not typical. In practice, every model-ADT will extend <code>mm</code> or some other model, where there exists a path of model extensions to <code>mm</code>. This is the concept of a <strong>model path</strong> which is analogous to a <strong>type path</strong> but instead of mapping <em>types-to-types</em>, a model path maps sets of types to sets of types&#8212;&#8203;or <em>models-to-models</em>.</p>
+</div>
+<div class="paragraph">
+<p>That is, a type is associated with a list of type definitions for which the type is the range. These type definitions can be understood as single-step paths through the <code>obj</code> graph, such that the composition of these types is the diagram of the model.</p>
+</div>
 <div class="exampleblock">
 <div class="title">Deep Dive 2. model-ADT Application Programming Interfaces</div>
 <div class="content">
@@ -3818,6 +3770,7 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 </div>
 <div class="paragraph">
 <p>These commuting diagrams are called <strong>models</strong> and are stored in model-ADT files analogous to <code>mm.mm</code> and <code>digraph.mm</code>. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with <code>[branch]</code>, serve as <a href="https://en.wikipedia.org/wiki/Lookup_table">lookup tables</a> for type path resolution.</p>
+</div>
 </div>
 </div>
 </div>
@@ -7209,7 +7162,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-15 12:55:04 -0600
+Last updated 2020-09-15 13:09:54 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
