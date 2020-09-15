@@ -3777,7 +3777,7 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                       
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>A path from a 2-tuple <code>vertex</code> <code>;-lst</code> to a `edge.</td>
+<td>A path from a 2-tuple <code>vertex</code> <code>;-lst</code> to a <code>edge</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="5"></i><b>5</b></td>
@@ -3793,12 +3793,12 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                       
 </tr>
 <tr>
 <td><i class="conum" data-value="8"></i><b>8</b></td>
-<td>An <code>int</code> value split into <code>vertex</code> clone pairs and then morphed into a self-loop edge.</td>
+<td>An <code>int</code> value split into <code>vertex</code> clone pairs and then morphed into a <a href="https://en.wikipedia.org/wiki/Loop_(graph_theory)">self-loop</a> edge.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>The above example demonstrates the use of <code>;-lst</code> as both a <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> and a <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>--a <a href="https://en.wikipedia.org/wiki/Biproduct">biproduct</a>. The <code>(vertex;vertex)</code> pair is created via a split <code>-&lt;</code> which serves as the two injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the <code>edge</code> definition projects out each component of the coproduct via <code>.0</code> (<code>[get,0]</code>) and <code>.1</code> (<code>[get,1]</code>). Thus, the coproduct is also a product. The <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> π is another <code>mmlang</code> sugar for <code>[get]</code>.</p>
+<p>The above example demonstrates the use of <code>;-lst</code> as both a <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> and a <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>&#8201;&#8212;&#8201;i.e., a <a href="https://en.wikipedia.org/wiki/Biproduct">biproduct</a>. The <code>(vertex;vertex)</code> pair is created via a split <code>-&lt;</code> which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the <code>edge</code> definition projects out each component of via <code>.0</code> (<code>[get,0]</code>) and <code>.1</code> (<code>[get,1]</code>). Thus, the coproduct is also a product. For this reason, the <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> character for <a href="https://en.wikipedia.org/wiki/Pi">pi</a> (π), the conventional symbol for product <a href="https://en.wikipedia.org/wiki/Projection_(mathematics)">projection</a> serves as another <code>mmlang</code> sugar for <code>[get]</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7209,7 +7209,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-12 15:33:42 -0600
+Last updated 2020-09-15 12:55:04 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
