@@ -96,7 +96,7 @@ object Rec {
       else list :+ other
   }
 
-  def test[A <: Obj, B <: Obj](arec:Rec[A, B], brec:Rec[A, B]):Boolean = Poly.sameSep(arec, brec) && withinQ(arec, brec) &&
+  def test[A <: Obj, B <: Obj](arec:Rec[A, B], brec:Rec[A, B]):Boolean = Poly.sameSep(arec, brec) && arec.q.within(brec.q) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
 
   private def semi[A <: Obj, B <: Obj](objs:Pairs[A, B]):Pairs[A, B] = if (objs.exists(x => !x._1.alive || !x._2.alive)) List(zeroObj -> zeroObj).asInstanceOf[Pairs[A, B]] else objs.filter(kv => !__.isAnonRootAlive(kv._2))
@@ -138,7 +138,7 @@ object Rec {
         .filter(kv => kv._1.alive)
         .filter(kv =>
           if (taken) false
-          else if (zeroable(kv._1.q)) true
+          else if (kv._1.q.zeroable) true
           else {
             taken = true;
             true

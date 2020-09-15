@@ -54,7 +54,13 @@ object WalkOp extends Func[Obj, Obj] {
   /////////////////////////////////////////////////////////////////////////
 
   val nameTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => source.rangeObj.name == target.domainObj.name || __.isAnon(target.domainObj)
-  val rangeDomainTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => nameTest(source, target) && Type.trueRange(source).rangeObj.test(target.domainObj)
+  val rangeDomainTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => {
+    (nameTest(source, target) && Type.trueRange(source).rangeObj.test(target.domainObj)) || {
+      (source.rangeObj.isInstanceOf[Lst[_]] && target.domainObj.isInstanceOf[Lst[_]] &&
+        source.rangeObj.asInstanceOf[Lst[Obj]].size == target.domainObj.asInstanceOf[Lst[Obj]].size &&
+        source.rangeObj.asInstanceOf[Lst[Obj]].glist.zip(target.domainObj.asInstanceOf[Lst[Obj]].glist).forall(pair => WalkOp.resolvePaths(List(pair._1), pair._2).nonEmpty))
+    }
+  }
   val objObjTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => nameTest(source, target) && source.test(target)
 
   def resolvePaths[A <: Obj, B <: Obj](source:List[A], target:B, checked:List[Obj] = Nil, composeTest:(Obj, Obj) => Boolean = rangeDomainTest):List[List[B]] = {
@@ -75,6 +81,7 @@ object WalkOp extends Func[Obj, Obj] {
       .asInstanceOf[List[List[B]]]
   }
 
+  def testSourceToTarget(source:Obj, target:Obj):Boolean =  WalkOp.resolvePaths(List(source), target).exists(_ => (source `=>` target).alive)
   def walkSourceToTarget[A <: Obj](source:Obj, target:A):A = walkSourceToTarget(source, target, rangeDomainTest)
   def walkSourceToTarget[A <: Obj](source:Obj, target:A, composeTest:(Obj, Obj) => Boolean = rangeDomainTest, targetName:Boolean = false):A = {
     val result:A = source match {
@@ -83,8 +90,9 @@ object WalkOp extends Func[Obj, Obj] {
       case _ => Obj.resolveTokenOption(source, target).getOrElse({
         if (source.isInstanceOf[Type[_]] || !__.isToken(target)) return target
         WalkOp.resolvePaths[Obj, A](List(source), target, composeTest = composeTest)
-          .headOption
+          .filter(x => source.model.search[A](target = target).nonEmpty)
           .map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
+          .headOption
           .getOrElse {
             if (source.model.search[A](target = target).nonEmpty) throw LanguageException.typingError(source, asType(target))
             else throw LanguageException.labelNotFound(source, target.name)

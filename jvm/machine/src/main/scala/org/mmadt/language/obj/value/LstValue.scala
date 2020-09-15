@@ -23,26 +23,26 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.{Lst, Obj, withinQ}
+import org.mmadt.language.obj.{Lst, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
-  override def test(other: Obj): Boolean = other match {
-    case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isToken(other) => Obj.resolveTokenOption(this, other).exists(x => this.test(x))
-    case alst: LstValue[A] => Lst.test(this, alst)
-    case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
-      case alst: Lst[A] => Lst.test(this, alst)
+  override def test(other:Obj):Boolean = other match {
+    case _:Obj if !other.alive => !this.alive
+    case _:__ if __.isToken(other) => Obj.resolveTokenOption(this, other).exists(x => this.test(x))
+    case alst:LstValue[A] => Lst.test(this, alst)
+    case _:Type[_] => this.q.within(other.domain.q) && (other.domain match {
+      case alst:Lst[A] => Lst.test(this, alst)
       case x => __.isAnon(x)
     }) && this.compute(other).alive
     case _ => false
   }
 
-  override def equals(other: Any): Boolean = other match {
-    case alst: Lst[_] if alst.isEmpty && this.isEmpty => super[Lst].equals(other)
-    case _: LstValue[_] => super[Lst].equals(other) && super[PolyValue].equals(other)
+  override def equals(other:Any):Boolean = other match {
+    case alst:Lst[_] if alst.isEmpty && this.isEmpty => super[Lst].equals(other)
+    case _:LstValue[_] => super[Lst].equals(other) && super[PolyValue].equals(other)
     case _ => false
   }
 }

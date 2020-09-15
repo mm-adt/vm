@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -137,18 +137,20 @@ object AsOp extends Func[Obj, Obj] {
       case _ => throw LanguageException.typingError(x, asType(y))
     })
 
-  private def lstConverter(x:Lst[Obj], y:Obj):Obj =
+  private def lstConverter(x:Lst[Obj], y:Obj):Obj = {
     y.trace.reconstruct(Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
       case _:__ => x
       case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
       case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
       case alst:LstType[Obj] if alst.ctype => x.named(alst.name)
-      case alst:LstType[Obj] if x.glist.size == alst.glist.size =>
+      case alst:LstType[Obj] if Poly.sameSep(x, alst) &&
+        (Lst.test(x, alst) || x.size == alst.size && alst.glist.zip(alst.glist).forall(pair => pair._1.test(pair._2) || WalkOp.testSourceToTarget(pair._1, pair._2))) =>
         lst(g = (alst.gsep, x.glist.zip(alst.glist)
           .map(a => if (__.isToken(a._2)) AsOp.autoAsType(a._1, a._2, domain = true) else a._1.as(a._2))), via = x.via)
-      case _:LstType[Obj] => x
+      case _:Lst[Obj] => x
       case _ => throw LanguageException.typingError(x, asType(y))
     })
+  }
 
   private def recConverter(x:Rec[Obj, Obj], y:Obj):Obj =
     y.trace.reconstruct(Obj.resolveTokenOption(x, y).getOrElse(y).domain match {

@@ -73,25 +73,26 @@ object Lst {
   type LstTuple[+A <: Obj] = (String, List[A])
 
   def test[A <: Obj](alst:Lst[A], blst:Lst[A]):Boolean =
-    Poly.sameSep(alst, blst) &&
-      withinQ(alst, blst) &&
+    alst.q.within(blst.q) &&
       (blst.ctype || {
-        if (alst.isInstanceOf[Inst[Obj, Obj]])
-          alst.glist.zip(blst.glist).forall(pair => pair._1.rangeObj.test(pair._2.rangeObj))
+        val eqsep:Boolean = alst.gsep == blst.gsep
+        if (alst.isInstanceOf[Inst[Obj, Obj]]) alst.glist.zip(blst.glist).forall(pair => pair._1.rangeObj.test(pair._2.rangeObj))
         else alst.gsep match {
-          case Tokens.`,` if blst.gsep.equals(Tokens.`,`) =>
-            (alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2))) ||
-              (alst.gstrm.q._1.g >= blst.gstrm.q._1.g && alst.gstrm.q._2.g <= blst.gstrm.q._2.g &&
-                alst.gstrm.drain.forall(x => blst.gstrm.drain.exists(y => x.test(asType(y).rangeObj.hardQ(q => minZero(q))))))
-          case Tokens.`;` if blst.gsep.equals(Tokens.`;`) => alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2))
-          case Tokens.`|` if blst.gsep.equals(Tokens.`|`) => alst.glist.exists(a => blst.glist.exists(b => a.test(b)))
-          case _  => alst.glist.forall(a => blst.glist.exists(b => a.test(b)))
+          // ,-lst
+          case Tokens.`,` if eqsep => (alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2))) ||
+            alst.gstrm.q.within(blst.gstrm.q) && alst.glist.forall(x => blst.glist.exists(y => x.hardQ(qOne).test(y.hardQ(qOne))))
+          // ;-lst
+          case Tokens.`;` if eqsep => alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2))
+          // |-lst
+          case Tokens.`|` if eqsep => alst.glist.exists(a => blst.glist.exists(b => a.test(b)))
+          case _ => alst.glist.forall(a => blst.glist.exists(b => a.test(b)))
         }
       })
 
   private def semi[A <: Obj](objs:List[A]):List[A] = if (objs.exists(x => !x.alive)) List(zeroObj.asInstanceOf[A]) else objs.filter(v => !__.isAnonRootAlive(v))
   def moduleStruct[A <: Obj](gsep:String, values:List[A], start:Obj = null):List[A] = gsep match {
     /////////// ,-lst
+
     case Tokens.`,` =>
       if (null == start) return Type.mergeObjs(values).filter(_.alive)
       Type.mergeObjs(Type.mergeObjs(values).map(v =>
@@ -120,12 +121,12 @@ object Lst {
           case avalue:OValue[A]
             if avalue.alive &&
               v.isInstanceOf[Type[_]] &&
-              zeroable(v.q) => avalue.hardQ(newStart.q)
+              v.q.zeroable => avalue.hardQ(newStart.q)
           case x => x
         }
       }).filter(_.alive)
         .filter(v => {
-          if (taken.exists(x => !x.q.zeroish && !__.isToken(x) && v.domainObj.test(x.domainObj) && v.rangeObj.test(x.rangeObj))) false
+          if (taken.exists(x => !x.q.zeroable && !__.isToken(x) && v.domainObj.test(x.domainObj) && v.rangeObj.test(x.rangeObj))) false
           else {
             taken += v
             true

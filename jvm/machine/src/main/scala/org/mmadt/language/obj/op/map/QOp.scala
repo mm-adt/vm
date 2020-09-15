@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Int, Obj, divQ, minusQ, multQ, plusQ, withinQ, zeroable}
+import org.mmadt.language.obj.{Inst, Int, Obj, divQ, minusQ, multQ, plusQ}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
 
@@ -51,9 +51,8 @@ object QOp extends Func[Obj, Int] {
     def mult(otherQ:IntQ):IntQ = multQ(richQ, otherQ)
     def minus(otherQ:IntQ):IntQ = minusQ(richQ, otherQ)
     def div(otherQ:IntQ):IntQ = divQ(richQ, otherQ)
-    def isWithin(otherQ:IntQ):Boolean = withinQ(richQ, otherQ)
-    def isZero:Boolean = richQ.equals(qZero)
+    def within(otherQ:IntQ):Boolean = richQ._1.g >= otherQ._1.g && richQ._2.g <= otherQ._2.g
     def certain:Boolean = richQ._1.g == richQ._2.g
-    def zeroish:Boolean = zeroable(richQ)
+    def zeroable:Boolean = richQ._1.g <= 0 && richQ._2.g >= 0
   }
 }

@@ -23,25 +23,25 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.{Obj, Rec, withinQ}
+import org.mmadt.language.obj.{Obj, Rec}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait RecValue[A <: Obj, B <: Obj] extends PolyValue[B, Rec[A, B]] with Rec[A, B] {
-  override def test(other: Obj): Boolean = other match {
-    case _: Obj if !other.alive => !this.alive
-    case _: __ if __.isToken(other) => Obj.resolveTokenOption(this, other).exists(x => this.test(x))
-    case arec: RecValue[A, B] => Rec.test(this, arec)
-    case _: Type[_] => withinQ(this, other.domain) && (other.domain match {
-      case arec: Rec[A, B] => Rec.test(this, arec)
+  override def test(other:Obj):Boolean = other match {
+    case _:Obj if !other.alive => !this.alive
+    case _:__ if __.isToken(other) => Obj.resolveTokenOption(this, other).exists(x => this.test(x))
+    case arec:RecValue[A, B] => Rec.test(this, arec)
+    case _:Type[_] => this.q.within(other.domain.q) && (other.domain match {
+      case arec:Rec[A, B] => Rec.test(this, arec)
       case x => __.isAnon(x)
     }) && this.compute(other).alive
     case _ => false
   }
-  override def equals(other: Any): Boolean = other match {
-    case alst: Rec[_, _] if alst.isEmpty && this.isEmpty => super[Rec].equals(other)
-    case _: RecValue[_, _] => super[Rec].equals(other) && super[PolyValue].equals(other)
+  override def equals(other:Any):Boolean = other match {
+    case alst:Rec[_, _] if alst.isEmpty && this.isEmpty => super[Rec].equals(other)
+    case _:RecValue[_, _] => super[Rec].equals(other) && super[PolyValue].equals(other)
     case _ => false
   }
 }

@@ -47,7 +47,7 @@ trait Strm[+O <: Obj] extends Value[O] {
   // standard Java implementations
   override def toString:String = LanguageFactory.printStrm(this)
   override lazy val hashCode:scala.Int = this.name.hashCode ^ this.drain.hashCode()
-  override def test(other:Obj):Boolean = withinQ(this, other) && this.drain.head.test(other)
+  override def test(other:Obj):Boolean = this.q.within(other.q) && this.drain.head.test(other)
   override def equals(other:Any):Boolean = other match {
     case obj:Obj if !this.alive => !obj.alive
     case avalue:Value[O] => MultiSet.equals(this, avalue.toStrm)

@@ -9,6 +9,5 @@ digraph:(
   attr   -> (attr<=('key'->_,'value'->_),
              attr<=(str;[id])-<('key'->.0,'value'->.1)),
   edge   -> (edge:('outV'->vertex,'inV'->vertex),
-             edge<=(vertex;vertex)-<('outV'->.0,'inV'->.1),
-             edge<=(nat;nat)=(vertex;vertex)-<('outV'->.0,'inV'->.1)) // TODO: get rid of this one
+             edge<=(vertex;vertex)-<('outV'->.0,'inV'->.1))
 )) <= num

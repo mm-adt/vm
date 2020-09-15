@@ -43,7 +43,6 @@ package object obj {
     case x:IntQ if qOne.equals(x) => qA
     case _ => (qA._1.g * qB._1.g, qA._2.g * qB._2.g)
   }
-  def zeroable(quantifier:IntQ):Boolean = quantifier._1.g <= 0 && quantifier._2.g >= 0
 
   def plusQ(qA:IntQ, qB:IntQ):IntQ = qB match {
     case _ if equals(qZero) => qA
@@ -57,10 +56,6 @@ package object obj {
     case _ if equals(qZero) => qA
     case _:IntQ if (qB._1.g == 0) => (0, qA._2.g / qB._2.g)
     case _:IntQ => (qA._1.g / qB._1.g, qA._2.g / qB._2.g)
-  }
-  def withinQ(objA:Obj, objB:Obj):Boolean = {
-    objA.q._1.g >= objB.q._1.g &&
-      objA.q._2.g <= objB.q._2.g
   }
   def eqQ(objA:Obj, objB:Obj):Boolean = {
     (objA.q, objB.q) match {
