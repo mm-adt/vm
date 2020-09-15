@@ -31,6 +31,8 @@ import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{lst, qOne}
 import org.mmadt.storage.obj.value.VInst
 
+import scala.util.Try
+
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -81,16 +83,16 @@ object WalkOp extends Func[Obj, Obj] {
       .asInstanceOf[List[List[B]]]
   }
 
-  def testSourceToTarget(source:Obj, target:Obj):Boolean =  WalkOp.resolvePaths(List(source), target).exists(_ => (source `=>` target).alive)
+  def testSourceToTarget(source:Obj, target:Obj):Boolean = Try[Boolean](WalkOp.resolvePaths(List(source), target).exists(_ => (source `=>` target).alive)).getOrElse(false)
   def walkSourceToTarget[A <: Obj](source:Obj, target:A):A = walkSourceToTarget(source, target, rangeDomainTest)
   def walkSourceToTarget[A <: Obj](source:Obj, target:A, composeTest:(Obj, Obj) => Boolean = rangeDomainTest, targetName:Boolean = false):A = {
     val result:A = source match {
       case astrm:Strm[Obj] => astrm(x => walkSourceToTarget[A](x, target, composeTest))
-      case _ if !Tokens.named(target.name) => target // NEED A PATH RESOLVER FOR BASE TYPES TO AVOID STACK ISSUES
+      case _ if !target.named => target // NEED A PATH RESOLVER FOR BASE TYPES TO AVOID STACK ISSUES
       case _ => Obj.resolveTokenOption(source, target).getOrElse({
         if (source.isInstanceOf[Type[_]] || !__.isToken(target)) return target
         WalkOp.resolvePaths[Obj, A](List(source), target, composeTest = composeTest)
-          .filter(x => source.model.search[A](target = target).nonEmpty)
+          .filter(_ => source.model.search[A](target = target).nonEmpty)
           .map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
           .headOption
           .getOrElse {

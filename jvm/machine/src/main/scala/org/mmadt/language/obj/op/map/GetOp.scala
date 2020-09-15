@@ -38,6 +38,7 @@ trait GetOp[A <: Obj, +B <: Obj] {
   this: Obj =>
   def get(key: A): B = GetOp(key, __.asInstanceOf[B]).exec(this)
   def get[BB <: Obj](key: A, btype: BB): BB = GetOp[A, BB](key, btype).exec(this)
+  def π(key:A):B = this.get(key)
 }
 object GetOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](key: A, typeHint: B = __.asInstanceOf[B]): Inst[Obj, B] = new VInst[Obj, B](g = (Tokens.get, List(key, typeHint)), func = this)

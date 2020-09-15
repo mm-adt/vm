@@ -31,7 +31,6 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch._
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map.GetOp
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
 import org.mmadt.language.obj.value.{strm => _, _}
@@ -162,8 +161,8 @@ class mmlangParser extends JavaTokenParsers {
     (x => SplitOp(x))
   lazy val mergeSugar:Parser[Inst[Obj, Obj]] = Tokens.merge_op ^^ (_ => MergeOp().asInstanceOf[Inst[Obj, Obj]])
   lazy val swapSugar:Parser[Inst[Obj, Obj]] = Tokens.swap_op ~> obj <~ Tokens.swap_op ^^ (x => SwapOp(x))
-  lazy val getStrSugar:Parser[Inst[Obj, Obj]] = Tokens.get_op ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
-  lazy val getIntSugar:Parser[Inst[Obj, Obj]] = Tokens.get_op ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
+  lazy val getStrSugar:Parser[Inst[Obj, Obj]] = (Tokens.get_op | Tokens.pi_op) ~> symbolName ^^ (x => GetOp[Obj, Obj](str(x)))
+  lazy val getIntSugar:Parser[Inst[Obj, Obj]] = (Tokens.get_op | Tokens.pi_op) ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
   lazy val toSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> symbolName <~ RANGLE ^^ (x => ToOp(__(x)))
   lazy val liftSugar:Parser[Inst[Obj, Obj]] = (LANGLE + LANGLE) ~> (objValue | objType) <~ (RANGLE + RANGLE) ^^ (x => LiftOp(x))
   lazy val fromSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))

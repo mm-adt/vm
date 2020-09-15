@@ -42,7 +42,7 @@ object WalkInstTest {
   private val dateType:Lst[__] = 'date(('nat <= 'nat.is(lte(12))) `;`('nat <= 'nat.is(lte(31))) `;` 'nat)
   private val noYearDateType:__ = 'date <= 'moday(('nat <= 'nat.is(lte(12))) `;`('nat <= 'nat.is(lte(31)))).put(2, 2009)
   private val modayType:Obj = 'moday <= (int -< (int `;` int))
-  private val sdateType:Obj = 'sdate <= 'moday(int `;` int).:=(str `;` str)
+  //private val sdateType:Obj = 'sdate <= 'moday(int `;` int).:=(str `;` str)
   private val MODEL:Model = ModelOp.EMPTY
     .defining(natType)
     .defining(dateType)

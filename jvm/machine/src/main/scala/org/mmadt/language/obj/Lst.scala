@@ -72,6 +72,7 @@ trait Lst[+A <: Obj] extends Poly[A]
 object Lst {
   type LstTuple[+A <: Obj] = (String, List[A])
 
+  def shapeTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => WalkOp.testSourceToTarget(pair._1, pair._2))
   def test[A <: Obj](alst:Lst[A], blst:Lst[A]):Boolean =
     alst.q.within(blst.q) &&
       (blst.ctype || {
@@ -79,8 +80,8 @@ object Lst {
         if (alst.isInstanceOf[Inst[Obj, Obj]]) alst.glist.zip(blst.glist).forall(pair => pair._1.rangeObj.test(pair._2.rangeObj))
         else alst.gsep match {
           // ,-lst
-          case Tokens.`,` if eqsep => (alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2))) ||
-            alst.gstrm.q.within(blst.gstrm.q) && alst.glist.forall(x => blst.glist.exists(y => x.hardQ(qOne).test(y.hardQ(qOne))))
+          case Tokens.`,` if eqsep => alst.gstrm.q.within(blst.gstrm.q) && alst.glist.forall(x => blst.glist.exists(y => x.hardQ(qOne).test(y.hardQ(qOne)))) ||
+            (alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2)))
           // ;-lst
           case Tokens.`;` if eqsep => alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2))
           // |-lst

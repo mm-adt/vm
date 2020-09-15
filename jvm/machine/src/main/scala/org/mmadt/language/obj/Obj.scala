@@ -210,7 +210,7 @@ object Obj {
         LanguageException.testTypeCheck(objA, objB.domain)
         objA match {
           case _:Value[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.iterator(x, rangeType), rangeType)
-          case _:Type[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.compiler(x, rangeType.asInstanceOf[Type[E]]), rangeType)
+          case _:Type[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.compiler(x, rangeType), rangeType)
         }
     }
   }

@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
+import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -55,11 +55,11 @@ object AsOp extends Func[Obj, Obj] {
     if (!source.alive) return source
     if (__.isAnon(target) || source.model.vars(target.name).isDefined) return source
     if (source.name.equals(target.name)) {
-      if (source.named || target.isInstanceOf[__]) return source
+      if (target.isInstanceOf[__]) return source
       source match {
-        case slst:LstValue[_] if target.isInstanceOf[Lst[_]] && !Lst.test(slst, target.asInstanceOf[Lst[Obj]]) => slst
-        // case srec:RecValue[_,_] if target.isInstanceOf[Rec[_,_]] && !Rec.test(srec, target.asInstanceOf[Rec[Obj,Obj]]) => srec
-        case x => return x
+        case slst:LstValue[Obj] if !Lst.test(slst, target.asInstanceOf[Lst[Obj]]) =>
+        //case srec:RecValue[Obj, Obj] if !Rec.test(srec, target.asInstanceOf[Rec[Obj, Obj]]) =>
+        case _ => return source
       }
     }
     if ((!__.isAnon(source)) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
@@ -143,10 +143,7 @@ object AsOp extends Func[Obj, Obj] {
       case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
       case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
       case alst:LstType[Obj] if alst.ctype => x.named(alst.name)
-      case alst:LstType[Obj] if Poly.sameSep(x, alst) &&
-        (Lst.test(x, alst) || x.size == alst.size && alst.glist.zip(alst.glist).forall(pair => pair._1.test(pair._2) || WalkOp.testSourceToTarget(pair._1, pair._2))) =>
-        lst(g = (alst.gsep, x.glist.zip(alst.glist)
-          .map(a => if (__.isToken(a._2)) AsOp.autoAsType(a._1, a._2, domain = true) else a._1.as(a._2))), via = x.via)
+      case alst:LstType[Obj] if Lst.shapeTest(x, alst) => lst(g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))), via = x.via)
       case _:Lst[Obj] => x
       case _ => throw LanguageException.typingError(x, asType(y))
     })
@@ -161,7 +158,6 @@ object AsOp extends Func[Obj, Obj] {
         x.gmap.flatMap(a => arec.gmap
           .filter(b => a._1.test(b._1))
           .map(b => (a._1.as(b._1), a._2.as(b._2))))), via = x.via)
-        //.map(b => (AsOp.autoAsType(a._1, b._1, domain = true), AsOp.autoAsType(a._2, b._2, domain = true))))), via = x.via)
         if (z.gmap.size < arec.gmap.count(x => x._2.q._1.g > 0)) throw LanguageException.typingError(x, asType(y)) else z
       case _ => throw LanguageException.typingError(x, asType(y))
     })

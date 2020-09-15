@@ -53,6 +53,7 @@ class mmlangScriptEngineTest extends FunSuite {
     engine.eval(":[model,digraph]")
     println(engine.eval("(1;2)=>edge"))
     println(engine.eval("(1;2)=>(vertex;vertex)"))
+    println(engine.eval("2-<(vertex;vertex)=>edge"))
     //val result = source `=>` 'pair `=>` lst[Obj] `=>`('bow `;` 'bow)
     //.headOption
     //.map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
