@@ -41,7 +41,10 @@ package object storage {
   private lazy val mmlang:LanguageProvider = LanguageFactory.getLanguage("mmlang")
 
   def model(name:String):Model = {
-    val source = Try[BufferedSource](Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath)).getOrElse(Source.fromFile("data/model/" + name + ".mm"))
+    val source = Try[BufferedSource](Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath))
+      .orElse(Try(Source.fromFile(getClass.getResource("data/model/" + name + ".mm").getPath)))
+      .orElse(Try(Source.fromFile(getClass.getResource("/model/examples/" + name + ".mm").getPath)))
+      .getOrElse(Source.fromFile(getClass.getResource("data/model/examples/" + name + ".mm").getPath))
     try {
       val rangeModel:Model = mmlang.parse(source.getLines().foldLeft(Tokens.blank)((x, y) => x + y + "\n"))
       model(rangeModel)

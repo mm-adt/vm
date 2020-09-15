@@ -115,13 +115,13 @@ class mmkvInstTest extends FunSuite {
     // assertResult("vertex:('name'->'ryan','friends'->person:('name'->'stephen','age'->32,'knows'->4))")(engine.eval(s"1[load,'${source4}'][=mmkv,'${file4}'][is.k==1].v[as,vertex].friends[as,vertex]").toString)
   }
 
-  test("mmkv file-5 parsing") {
+  /*test("mmkv file-5 parsing") {
     assertResult(s"mmkv{*}<=_[=mmkv,'${file5}']")(engine.eval(s"[=mmkv,'${file5}']").toString)
     assertResult("vertex:('id'->1,'name'->'marko','outE'->[edge:('outV'->1,'label'->'knows','inV'->2),edge:('outV'->1,'label'->'knows','inV'->3)])")(
       engine.eval(s"1[load,'${source5}'][=mmkv,'${file5}'][is.k==1][as,vertex]").toString)
     //    assertResult("vertex{2}")(
     //    engine.eval(s"1[load,'${source5}'][rewrite,(.outE.inV[as,vertex])<=(.out)][=mmkv,'${file5}'][is.k==1][as,vertex].outE[as,edge].inV[as,vertex]").toString)
-  }
+  }*/
 
   /*test("mmkv tp3") {
     println(file6)

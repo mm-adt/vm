@@ -180,6 +180,7 @@ NOTE: A more sophisticated library infrastructure is provided by the `[model]` i
 
 ==== Rewrites
 
+////
 Each step of that walk is an instruction forming an edge in the type graph.
 For instance, the type
 
@@ -216,9 +217,11 @@ Any type containing only a type signature `()\<=()` says that the domain type is
 ----
 [define,(int[is,[eq,int]])<=(int[plus,x][plus,x[neg]])][int][plus,10][plus,-10]
 ----
+////
 
 image::type-to-type-type.png[width=700,align=center]
 
+////
 The type `int[is,[eq,int]]` has an https://en.wikipedia.org/wiki/Isomorphism[isomorphic] image in `int`, where the reflexive self-loop paths in `int[is,[eq,int]]` are contracted to 0-length paths.
 The isomorphism realizes `int` as a classic set without structure because the type `int` has no instructions and thus, no type graph edges.
 
@@ -231,82 +234,69 @@ mmlang> [define,int<=(int[is,[eq,int]])]
 ----
 
 The composition of two structure preserving type morphisms yields a new type--namely, `int\<=(int[plus,x:int][plus,x:int[neg]])`.
+////
 
 === Models
 
-mm-ADT organizes types into *models*.
-The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT).
-The `mm` *model-ADT* is the canonical model by which all other models are derived.
-Much like ctypes and dtypes, `mm` can be understood as a "cmodel" and all derived models as "dmodels" (though these terms are not used beyond this section).
-While model-ADT design and development will be discussed in a latter section, this section introduces the `[define]` instruction and it's use as an identity type.
+mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT). When the instruction `[model,mm]` is evaluated, the file below is loaded.
 
-* `[define]`: Associates a type with a range composed of an object _token_ and a quantifier.
-* `[as]`: Locates the first type definition capable of mapping the incoming `obj` to the token argument.
-
-[exec,none="",exception=LanguageException]
+[source]
 ----
-[define,nat<=int[is>0]]                            //<1>
-int => [define,nat<=int[is>0]]                     //<2>
- 6  => [define,nat<=int[is>0]][as,nat]             //<3>
--6  => [define,nat<=int[is>0]][as,nat]             //<4>
-----
-<1> An identity `inst` that associates the token `nat` as the unit (`{1}`) range of `int[is<0]]`.
-<2> `mmlang` does not display `[define]` instructions in a type's `inst` `obj` graph path.
-<3> `[as]` searches the `obj` graph for a `nat<=int` type definition and evaluates the mapping.
-<4> The definition requires `nat` be `\_{1}` but `-6` is `_{0}`.
-
-With a large number of definitions, expression such as the following become untenable from a usability perspective.
-
-[exec,eval=false]
-----
-('name'->'marko','age'->29)  => [define,nat<=int[is>0],person<=('name'->str,'age'->nat)][as,person]
+include::../../src/main/resources/model/mm.mm[]
 ----
 
-For this reason, there is the `[model]` instruction which can be globally defined as the first instruction of ctype and thus, rooted in the `obj` Cayley graph.
+A model-ADT can be specified in `rec`. The `mm` model-ADT's `rec` type is `mm` and it contains a `str` key of `'type'` containing a dictionary of *type-to-type definitions*. As the base types of mm-ADT are ground, they are defined in terms of themselves. For example. `bool \-> (bool)` states that `bool` has one definition stating that `bool\<=bool` or simply `bool`. Other model-ADTs require definitions that map from the model types to, via some path of type definitions, one or more of the ground types in `mm`.
 
+==== Model Building
 
-image::nat-model.svg[width=450,align=center]
+The `mm` model-ADT is simple. This section introduces the `pg` model-ADT defining the category of _property graphs_.
 
-[exec,none="",exception=LanguageException]
+[source]
 ----
-:[model,social:('type' -> (nat    -> (nat<=int[is>0]), %
-                           person -> (person:('name'->str,'age'->nat))))<=mm] //<1>
-53 => [as,nat]                                                                //<2>
-0  => [as,nat]
-('name'->'marko','age'->29)  => [as,person]                                   //<3>
-('name'->'marko','age'->-29) => [as,person]                                   //<4>
+include::../../src/main/resources/model/examples/pg_1.mm[]
 ----
-<1> a `social` model-ADT has `nat` and `person` type definition and a domain of `mm`.
-<2> The `[model]` instruction is the first `inst` off the root of the `obj` graph.
-<3> The `rec` is mapped to a `person` with the `age` value being mapped accordingly.
-<4> The `rec` does not have an `age` value that maps to `nat` so the `rec` is not a `person`.
+image::digraph-type-path-1.svg[width=625,align=center]
+<1> A `graph` is a `lst` containing 0 or more `edges`.
+<2> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
+<3> A path from an `int` to a `vertex`.
+<4> The `mm` specification of a canonical `edge` (an `inst`-less ctype).
+<5> A path from a 2-tuple `vertex` `;-lst` to a `edge`.
 
-==== Type Paths
+Note that every type is associated with a `lst` of type definition whose *range* is the type. Diagrammatically, every type is associated with all it's incoming `obj` graph paths called _type paths_.
 
-A type is a *path* through the `obj` graph via type vertices and `inst` edges. A *type path* is a path through the `obj` graph via type subgraphs.
+===== Type Paths
+
+A type is a *path* through the `obj` graph via type vertices and `inst` edges. A *type path* is a path through the `obj` graph via type subgraphs. A type path is specified via a type definition. In general, every model type definition is a mapping of the form:
+
+[.center]
+[cols=^1,width=45,grid=none,frame=non]
+|====
+
+a|
+[exec,eval=false,exception=LanguageException]
+----
+a -> (a:poly,a<=b,a<=c,a<=d)
+----
+|====
+
+Thus, there are two sorts definitions.
+
+. *model ctypes*: a model typically specifies a set of _canonical types_, or ctypes for short. This is analogous to `bool`, `int`, etc. being ctypes in `mm`. Thus, `vertex`, `edge`, etc. are the ctypes of `pg`. The canonical type of `vertex` is `vertex:('id'\->int)`
+. *model dtypes*: a model's ctypes must be defined in terms of types that are ultimately are grounded in `mm`. Moreover, intra-model type morphisms specify how to move between types within a model. Such types are _derived types_ and are defined inductively via a path through the type graph of the `obj` graph.
 
 [exec]
 ----
-:[model,mm]                                               %%
- [define,vertex:('id'->int),                              %                      //<1>
-         edge:('outV'->vertex,'inV'->vertex),             %                      //<2>
-         vertex<=int-<('id'->_),                          %                      //<3>
-         edge<=(vertex;vertex)-<('outV'->.0,'inV'->.1)]                          //<4>
+:[model,pg_1]
 5
-5 => vertex                                                                      //<5>
-(5;6) => (vertex;vertex) => edge                                                 //<6>
-(5;6) => edge                                                                    //<7>
-5-<(vertex;vertex)=>edge                                                         //<8>
+5 => vertex                                                                //<1>
+(5;6) => (vertex;vertex) => edge                                           //<2>
+(5;6) => edge                                                              //<3>
+5-<(vertex;vertex)=>edge                                                   //<4>
 ----
-image::digraph-type-path-1.svg[width=600,align=center]
-<1> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
-<2> The `mm` specification of a canonical `edge` (an `inst`-less ctype).
-<3> A path from an `int` to a `vertex`.
-<4> A path from a 2-tuple `vertex` `;-lst` to a `edge`.
-<5> An `int` value morphed into a `vertex`.
-<6> An `int` value pair morphed into a `vertex` pair and then into an edge (a fine-grained *type path*).
-<7> An `int` value pair morphed into an edge (a course-grained *type path*).
-<8> An `int` value split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
+<1> An `int` value morphed into a `vertex`.
+<2> An `int` value pair morphed into a `vertex` pair and then into an edge (a fine-grained *type path*).
+<3> An `int` value pair morphed into an edge (a course-grained *type path*).
+<4> An `int` value split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
 
 The above example demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product] -- i.e., a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. For this reason, the https://en.wikipedia.org/wiki/Unicode[Unicode] character for https://en.wikipedia.org/wiki/Pi[pi] (π), the conventional symbol for product https://en.wikipedia.org/wiki/Projection_(mathematics)[projection] serves as another `mmlang` sugar for `[get]`.
 
@@ -314,6 +304,22 @@ The above example demonstrates the use of `;-lst` as both a https://en.wikipedia
 ----
 (1;2)-<('ι0'->π0,'ι1'->π1)
 ----
+
+===== Model Paths
+
+The `pg_1` model extends `mm` via `pg_1\<=mm`. Note that it is possible for a model to define types that have no incoming paths from `mm`. For example:
+
+[exec,exception=LanguageException]
+----
+:[model,ex:('type'->(A->(A<=B),B->(B<=C),C->(C<=A)))]
+6 + 12
+A => D
+A => B => C
+----
+
+This is not typical. In practice, every model-ADT will extend `mm` or some other model, where there exists a path of model extensions to `mm`. This is the concept of a *model path* which is analogous to a *type path* but instead of mapping _types-to-types_, a model path maps sets of types to sets of types--or _models-to-models_.
+
+That is, a type is associated with a list of type definitions for which the type is the range. These type definitions can be understood as single-step paths through the `obj` graph, such that the composition of these types is the diagram of the model.
 
 .model-ADT Application Programming Interfaces
 ================================================================

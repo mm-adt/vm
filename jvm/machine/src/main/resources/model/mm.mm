@@ -1,5 +1,4 @@
-mm:(
-'type' ->
+mm:('type' ->
   (bool   ->  (bool),
    int    ->  (int),
    real   ->  (real),
@@ -7,7 +6,7 @@ mm:(
    lst    ->  (lst),
    rec    ->  (rec),
    inst   ->  (inst),
-   poly   ->  (poly<=[lst{?}|rec]), // poly is either a lst or a rec
+   poly   ->  (poly<=[lst{?}|rec]),
    (_)    ->  ((_)<=^:([id])
                /* ([branch,x])<=^:([split,<x>][merge]) */
                ),

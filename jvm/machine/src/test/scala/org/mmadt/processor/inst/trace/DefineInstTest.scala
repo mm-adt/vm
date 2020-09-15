@@ -80,19 +80,19 @@ class DefineInstTest extends BaseInstTest(
   ), testSet("[define] table test w/ mm", MM,
     comment("midway-define]"),
     testing(2, define('x <= int.plus(1)), 2, "2[define,x<=int+1]"),
-    testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
-    testing(int(2, 3, 4.q(2)), define('x <= int.plus(1)).plus('x), int(5, 7, 9.q(2)), "[2,3,4{2}][define,x<=int+1][plus,x]"),
-    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x]"),
-    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x<=x]"),
+//    testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
+//    testing(int(2, 3, 4.q(2)), define('x <= int.plus(1)).plus('x), int(5, 7, 9.q(2)), "[2,3,4{2}][define,x<=int+1][plus,x]"),
+//    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x]"),
+//    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x<=x]"),
     // testing(int(-2,2.q(5)), int.q(6).define('y<=int.plus(-1000),'x <=int.plus(1).as('y)).branch('x`,`), int(-998,1002.q(5)), "[-2,2{5}] => int{6}[define,y<=int+-1000,x<=int+1[as,y]][x]"),
   )
 ) {
   println('silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist)))))
   test("[define] play tests") {
     println(int.define(int.is(int.gt(0))).a('nat))
-    println(int(-10).define('nat <= int.is(int.gt(0))).a('nat.plus(100)))
+    println(int(-10).model('mm).define('nat <= int.is(int.gt(0))).a('nat.plus(100)))
     println('nat.plus(100).domain)
-    println(int(-10).compute(int.define('nat <= int.is(int.gt(0))).a('nat).asInstanceOf[Type[Bool]]))
+    println(int(-10).model('mm).compute(int.define('nat <= int.is(int.gt(0))).a('nat).asInstanceOf[Type[Bool]]))
     //    println(int.define(int.plus(10).mult(20)).plus(2) -< ('x.plus(100) `,` 'x) >-)
     println(new mmlangScriptEngineFactory().getScriptEngine.eval("1[a,[real|str]]"))
     println(str.a(__.-<(real `|` int) >-)) // TODO

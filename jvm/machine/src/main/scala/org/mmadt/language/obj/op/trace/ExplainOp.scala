@@ -50,7 +50,7 @@ object ExplainOp extends Func[Obj, Str] {
   override def apply(start:Obj, inst:Inst[Obj, Str]):Str = str(printableTable(start))
   private type Row = (Int, Inst[Obj, Obj], Obj, Obj, mutable.LinkedHashMap[String, Obj], String)
   private def explain(atype:Obj, state:mutable.LinkedHashMap[String, Obj], depth:Int = 0, prefix:String = Tokens.blank):List[Row] = {
-    atype.model.definitions.foldLeft(state)((c, d) => c += (d.name -> d))
+    atype.trace.filter(x => x._2.op.equals(Tokens.define)).flatMap(x => x._2.args).foldLeft(state)((c, d) => c += (d.name -> d))
     val report = atype.trace.foldLeft(List[Row]())((a, b) => {
       if (List(Tokens.from, Tokens.to).contains(b._2.op)) state += b._2.arg0[Obj].toString -> b._2.exec(b._1).rangeObj
       val outer =
