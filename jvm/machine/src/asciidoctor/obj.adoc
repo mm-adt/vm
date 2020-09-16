@@ -243,8 +243,25 @@ mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`s
 include::../../src/main/resources/model/mm.mm[]
 ----
 
-A model-ADT can be specified using a `rec`, where the `rec` type is the name of the model-ADT. In `mm`, the `'type'` field indexes a https://en.wikipedia.org/wiki/Lookup_table[dictionary] of *type-to-type mappings*. The mm-ADT https://en.wikipedia.org/wiki/Primitive_data_type[base types] are _ground_ in that they are defined in terms of themselves. For example, `bool \-> (bool)` states that `bool` has one definition: `bool\<=bool` or simply `bool`. That is the definition of `bool` is the identity on `bool`. Other model-ADTs require definitions that map from the model's types to the ground types in `mm`.
+A model-ADT can be defined in a `rec`, where the keys are canonical types (*ctypes*) and the values are `lsts` of derived types (*dtypes*). Every model \$\mathbf{m}\$ is can be defined by the equation
+\[
+\texttt{model}_\mathbf{m} \subseteq \texttt{ctype}_\mathbf{m} \times \texttt{dtype}_\mathbf{m}^n.
+\]
+Thus far, the only ctypes discussed have been the mm-ADT https://en.wikipedia.org/wiki/Primitive_data_type[base types] of model `mm`. A ctype in one model can be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}}^n \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` mm-ADT types are _universally grounded_ such that
+\[
+\begin{split}
+\textbf{mm} &= \texttt{ctype}_\mathbf{mm} \times \texttt{dtype}_\mathbf{mm}^0 \\
+            &= \texttt{ctype}_\mathbf{mm} \times \mathbf{1}_\mathbf{mm}
+\end{split}
+\]
 
+That is, every `mm` ctype is derived from the respective https://en.wikipedia.org/wiki/Identity_function[identity type]. For example, the field `bool \-> (bool)` in the `mm` `rec` above denotes \$\tt{bo\ol} \times \mathbf{1}_\tt{bo\ol}\$. The `bool` ctype has one dtype definition: `bool` which is short hand for `bool\<=bool`, which is shorthand for `bool{1}\<=bool{1}`. The definition of `bool` is it's reflexive identity `bool`.
+\[
+\texttt{bool}\Leftarrow\texttt{bool} \equiv \texttt{bool} \times \mathbf{1}_\texttt{bool}.
+\]
+
+.Model-ADT Subgraphs of the `obj` Graph
+================================================================
 image::model-adt.svg[width=450,float=right]
 
 The illustration on the right shows 3 different models and their respective types. Every edge is a type definition of the form:
@@ -265,6 +282,8 @@ A type definition's instructions specify the specific, https://en.wikipedia.org/
 * `xtype\<=int[f]` (**intra-model**): In `xmodel`, `xtype` is grounded at `int` in `mm`.
 * `ytype\<=xtype[g]` (**inter-model**): In `xmodel`, `ytype` can be reached via `xtype`.
 * `atype\<=rec[h][i]` (**trans-model**): In `amodel`, `atype` is grounded at `rec` in `mm` via `ytype` in `xmodel`.
+================================================================
+
 
 ==== Model Building
 
