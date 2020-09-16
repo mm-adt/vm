@@ -95,8 +95,6 @@ image::linear-variable-example-2.svg[align=center,width=350,float=right]
 
 The primary idea concerning variable state is that when `[mult,x]` is reached by the `int` value 12 via instruction application, the anonymous type `x`  must be *resolved* before `[mult]` can evaluate. To do so, the instruction `[to,x]` is searched for in the path history of 12. When that instruction is found, the range (or domain as it's an identity) replaces `x` and `[mult,10]` is evaluated and the edge \[12 \rightarrow_{\texttt{[mult,10]}} 120 \] extends the value graph. The intuition for this process is illustrated on the right.
 
-'''
-
 [exec]
 ----
 9 => int[plus,1]<x>[plus,2][mult,x][path]                                                 //<1>
@@ -146,7 +144,7 @@ a|
 [define,  edge:('outV'->vertex,'inV'->vertex)]
 ----
 {blank}
-| image:digraph-model-1.svg[align=center,width=600]
+| image:digraph-model-1.svg[align=center]
 
 |====
 
@@ -160,11 +158,11 @@ The `vertex` and `edge` definitions can be used within a larger mm-ADT program/t
 
 The first line above reads: Given the value 1, generate an `edge` from that `int` according to the definitions of the `mm` model-ADT extended with two types `vertex` and `edge`. The two new types are defined _in situ_, where a `vertex` is a https://en.wikipedia.org/wiki/Refinement_type[refinement] on `rec` constraining `rec` to an `'id'` key with an `int` value and, similarly, `edge` constrains `rec` to keys `'outV'` (edge tail) and `'inV'` (edge head) with corresponding `vertex` values. The second line specifies how this mapping should be done. The incoming `int` is *split* (`-<`) across a two element `rec`, where their values are single element `recs` which again split the `int` to be the values for the `'id'` keys. Given `edge\<=int`, an `edge` is the desired output. The `mm` model (and extending definitions) determine the "best" way to construct an `edge` given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant `edge` structure.
 
-NOTE: Type definitions (using `[define]` or `[model]`) denote canonical mappings within a domain of discourse (i.e., a model). Programs that maintain instructions after `b\<=a` serve to manipulate `a` just enough to get it to the head of a type definition path that will ultimately reach `b`. In a well constrained data environment, mm-ADT code has less intermediate instructions with a style of the form \$a \implies b \implies c \implies \ldots \implies z\$, relying on the type definitions to string together a well-reasoned path from source to sink.
+NOTE: Type definitions (using `[define]` or `[model]`) denote canonical mappings within a https://en.wikipedia.org/wiki/Domain_of_discourse[domain of discourse] (i.e., a *model*). Programs that maintain instructions after `b\<=a` serve to manipulate `a` just enough to get it to the head of a type definition path that will ultimately reach `b`. In a well constrained data environment, mm-ADT code has less intermediate instructions with a style of the form \$a \implies b \implies c \implies \ldots \implies z\$, relying on the type definitions to string together a well-reasoned path from source to sink.
 
 The `[define]` instruction is placed at the start of the program (the desired start of the scope of the definition(s)). To ease matters, definition placement can happen automatically by way of a *type prefix*. The type prefix is a generalization of a https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries[library statement] such as `import` or `module` found in other programming languages. The generalization is that a type prefix can be any type (not just `[model]` and `[define]` instructions). The type prefix is concatenated to the program type prior to compilation, where this operation is made sound by the free `inst` monoid.
 
-NOTE: A more sophisticated library infrastructure is provided by the `[model]` instruction (discussion forthcoming).
+NOTE: A more sophisticated library infrastructure is provided by the `[model]` instruction with a complete treatment forthcoming.
 
 [exec,exception=LanguageException]
 ----
@@ -238,18 +236,39 @@ The composition of two structure preserving type morphisms yields a new type--na
 
 === Models
 
-mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT). When the instruction `[model,mm]` is evaluated, the file below is loaded.
+mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT). When the instruction `[model,mm]` is evaluated, the `mmlang` file below is loaded (`mm.mm`).
 
 [source]
 ----
 include::../../src/main/resources/model/mm.mm[]
 ----
 
-A model-ADT can be specified in `rec`. The `mm` model-ADT's `rec` type is `mm` and it contains a `str` key of `'type'` containing a dictionary of *type-to-type definitions*. As the base types of mm-ADT are ground, they are defined in terms of themselves. For example. `bool \-> (bool)` states that `bool` has one definition stating that `bool\<=bool` or simply `bool`. Other model-ADTs require definitions that map from the model types to, via some path of type definitions, one or more of the ground types in `mm`.
+A model-ADT can be specified using a `rec`, where the `rec` type is the name of the model-ADT. In `mm`, the `'type'` field indexes a https://en.wikipedia.org/wiki/Lookup_table[dictionary] of *type-to-type mappings*. The mm-ADT https://en.wikipedia.org/wiki/Primitive_data_type[base types] are _ground_ in that they are defined in terms of themselves. For example, `bool \-> (bool)` states that `bool` has one definition: `bool\<=bool` or simply `bool`. That is the definition of `bool` is the identity on `bool`. Other model-ADTs require definitions that map from the model's types to the ground types in `mm`.
+
+image::model-adt.svg[width=450,float=right]
+
+The illustration on the right shows 3 different models and their respective types. Every edge is a type definition of the form:
+
+[.center]
+[cols=^1,frame=none,grid=none,width=20]
+|===
+a|
+[source]
+----
+b<=a[inst{*}]
+----
+{blank}
+|===
+
+A type definition's instructions specify the specific, https://en.wikipedia.org/wiki/Discrete_system[discrete] computational steps (`inst`) necessary to transform `a` (domain) into `b` (range). These instructions are the steps of the https://en.wikipedia.org/wiki/Inductive_type[type induction] which form the edges of the `obj` graph (i.e., the morphisms in the `obj` https://en.wikipedia.org/wiki/Diagram_(category_theory)[category diagram] and the edges in the `obj` https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]). In the illustration, three sorts of type definitions are highlighted:
+
+* `xtype\<=int[f]` (**intra-model**): In `xmodel`, `xtype` is grounded at `int` in `mm`.
+* `ytype\<=xtype[g]` (**inter-model**): In `xmodel`, `ytype` can be reached via `xtype`.
+* `atype\<=rec[h][i]` (**trans-model**): In `amodel`, `atype` is grounded at `rec` in `mm` via `ytype` in `xmodel`.
 
 ==== Model Building
 
-The `mm` model-ADT is simple. This section introduces the `pg` model-ADT defining the category of _property graphs_.
+The `mm` model-ADT is too simple to be educational. The following section build a model-ADT in stages. The final model is `pg` and denotes the category of *property graphs*. Before reaching `pg`, smaller tutorial models will be presented starting at `pg_1`, then `pg_2`, and so forth.
 
 [source]
 ----
