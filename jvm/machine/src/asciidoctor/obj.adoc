@@ -243,15 +243,18 @@ mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`s
 include::../../src/main/resources/model/mm.mm[]
 ----
 
-A model-ADT can be defined in a `rec`, where the keys are canonical types (*ctypes*) and the values are `lsts` of derived types (*dtypes*). This encoding denotes a product such that any model \$\mathbf{m}\$ is defined
-\[
-\texttt{model}_\mathbf{m} = \texttt{ctype}_\mathbf{m} + \texttt{dtype}_\mathbf{m}^n.
-\]
-There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}}^n \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` mm-ADT types are _universally grounded_ such that
+A model-ADT can be defined in a `rec`, where the keys are canonical types (*ctypes*) and the values are `lsts` of derived types (*dtypes*). This encoding denotes the coproduct of a ctype and a product of derivations to that type such that any model \$\mathbf{m}\$ is defined
 \[
 \begin{split}
-\textbf{mm} &= \texttt{ctype}_\mathbf{mm} + \texttt{dtype}_\mathbf{mm}^0 \\
-            &= \texttt{ctype}_\mathbf{mm} + \mathbf{1}_\mathbf{mm}
+\texttt{model}_\mathbf{m} &= \prod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 \times \texttt{dtype}_i^1 \times \ldots \times \texttt{dtype}_i^n) \\
+                          &= \prod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \texttt{dtype}_i^n.
+\end{split}
+\]
+There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` types are _universally grounded_ and
+\[
+\begin{split}
+\textbf{mm} &= \prod_{i=0}^6 \texttt{ctype}_i + \texttt{dtype}_i^0 \\
+            &= \texttt{ctype}_i + \mathbf{1}_i
 \end{split}
 \]
 
