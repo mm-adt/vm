@@ -3607,8 +3607,27 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 </div>
 </div>
 <div class="paragraph">
-<p>A model-ADT can be specified using a <code>rec</code>, where the <code>rec</code> type is the name of the model-ADT. In <code>mm</code>, the <code>'type'</code> field indexes a <a href="https://en.wikipedia.org/wiki/Lookup_table">dictionary</a> of <strong>type-to-type mappings</strong>. The mm-ADT <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> are <em>ground</em> in that they are defined in terms of themselves. For example, <code>bool -&gt; (bool)</code> states that <code>bool</code> has one definition: <code>bool&lt;=bool</code> or simply <code>bool</code>. That is the definition of <code>bool</code> is the identity on <code>bool</code>. Other model-ADTs require definitions that map from the model&#8217;s types to the ground types in <code>mm</code>.</p>
+<p>A model-ADT can be defined in a <code>rec</code>, where the keys are canonical types (<strong>ctypes</strong>) and the values are <code>lsts</code> of derived types (<strong>dtypes</strong>). Every model \$\mathbf{m}\$ is can be defined by the equation
+\[
+\texttt{model}_\mathbf{m} \subseteq \texttt{ctype}_\mathbf{m} \times \texttt{dtype}_\mathbf{m}^n.
+\]
+Thus far, the only ctypes discussed have been the mm-ADT <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> of model <code>mm</code>. A ctype in one model can be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}}^n \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> mm-ADT types are <em>universally grounded</em> such that
+\[
+\begin{split}
+\textbf{mm} &amp;= \texttt{ctype}_\mathbf{mm} \times \texttt{dtype}_\mathbf{mm}^0 \\
+            &amp;= \texttt{ctype}_\mathbf{mm} \times \mathbf{1}_\mathbf{mm}
+\end{split}
+\]</p>
 </div>
+<div class="paragraph">
+<p>That is, every <code>mm</code> ctype is derived from the respective <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a>. For example, the field <code>bool -&gt; (bool)</code> in the <code>mm</code> <code>rec</code> above denotes \$\tt{bo\ol} \times \mathbf{1}_\tt{bo\ol}\$. The <code>bool</code> ctype has one dtype definition: <code>bool</code> which is short hand for <code>bool&lt;=bool</code>, which is shorthand for <code>bool{1}&lt;=bool{1}</code>. The definition of <code>bool</code> is it&#8217;s reflexive identity <code>bool</code>.
+\[
+\texttt{bool}\Leftarrow\texttt{bool} \equiv \texttt{bool} \times \mathbf{1}_\texttt{bool}.
+\]</p>
+</div>
+<div class="exampleblock">
+<div class="title">Deep Dive 2. Model-ADT Subgraphs of the <code>obj</code> Graph</div>
+<div class="content">
 <div class="imageblock right">
 <div class="content">
 <img src="./images/obj/model-adt.svg" alt="model adt" width="450">
@@ -3649,6 +3668,8 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 <p><code>atype&lt;=rec[h][i]</code> (<strong>trans-model</strong>): In <code>amodel</code>, <code>atype</code> is grounded at <code>rec</code> in <code>mm</code> via <code>ytype</code> in <code>xmodel</code>.</p>
 </li>
 </ul>
+</div>
+</div>
 </div>
 <div class="sect3">
 <h4 id="_model_building">Model Building</h4>
@@ -3799,7 +3820,7 @@ mmlang&gt; A =&gt; B =&gt; C
 <p>That is, a type is associated with a list of type definitions for which the type is the range. These type definitions can be understood as single-step paths through the <code>obj</code> graph, such that the composition of these types is the diagram of the model.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. model-ADT Application Programming Interfaces</div>
+<div class="title">Deep Dive 3. model-ADT Application Programming Interfaces</div>
 <div class="content">
 <div class="paragraph">
 <p>The software development pattern espoused by mm-ADT is one in which software libraries (<a href="https://en.wikipedia.org/wiki/API">APIs</a>) are large <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagrams</a> constructed via domain/range concatenation of \$b&#8656;a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a <em>look-and-feel</em> similar in form to
@@ -3969,7 +3990,7 @@ language error: int for nat:29 is not a type in model social</code></pre>
 In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form of <code>int{?}&lt;=int[is,[gt,0]]</code>. mm-ADT supports user defined types. In fact, mm-ADT&#8217;s primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The <code>[define]</code> instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on <em>model-ADTs</em>, the more general <code>[model]</code> instruction will be presented.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 3. mm-ADT Type Prefix</div>
+<div class="title">Deep Dive 4. mm-ADT Type Prefix</div>
 <div class="content">
 <div class="paragraph">
 <p>All <code>mmlang</code> examples that start with <code>:</code> are defining a <strong>type prefix</strong>. This type is prepended to all subsequent expressions. In many ways, a type prefix is like an <a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a> <a href="https://en.wikipedia.org/wiki/Object_file">object file</a>. On the other hand, model-ADTs (of <code>[model]</code>) are similar to the <code>import</code> of <a href="https://en.wikipedia.org/wiki/Class_(computer_programming)">class files</a> in <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object-oriented languages</a>.</p>
@@ -5253,7 +5274,7 @@ The significance of branching being fundamental in mm-ADT is that individual bra
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 4. Process Architectures Sympathetic to the Type Ringoid</div>
+<div class="title">Deep Dive 5. Process Architectures Sympathetic to the Type Ringoid</div>
 <div class="content">
 <div class="paragraph">
 <p>An <code>mmlang</code> expression denotes a <strong>type</strong> (program) that is executed by a processor.
@@ -5415,7 +5436,7 @@ The axioms for both left and right modules are provided below, where if \$A\$ is
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 5. Poly Constructs in mmlang</div>
+<div class="title">Deep Dive 6. Poly Constructs in mmlang</div>
 <div class="content">
 <table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
@@ -7202,7 +7223,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-15 17:43:28 -0600
+Last updated 2020-09-15 22:28:41 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
