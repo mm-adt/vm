@@ -3580,25 +3580,18 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 <div class="sect2">
 <h3 id="_models">Models</h3>
 <div class="paragraph">
-<p>mm-ADT organizes types into <strong>models</strong>. The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in a model called <code>mm</code> (the <em>mm</em> of mm-ADT). When the instruction <code>[model,mm]</code> is evaluated, the <code>mmlang</code> file below is loaded (<code>mm.mm</code>).</p>
+<p>Types can be organized into <strong>models</strong> or <strong>model-ADTs</strong>. The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in a model called <code>mm</code> (the <em>mm</em> of <em>mm</em>-ADT). The instruction <code>[model,mm]</code> generates a <code>rec</code> from the <code>mmlang</code> file <code>mm.mm</code> and makes it accessible as the <code>[model]</code> argument in the type&#8217;s path definition.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mm:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt;
-  (<span style="color:#369;font-weight:bold">bool</span>   -&gt;  ( ),
-   <span style="color:#369;font-weight:bold">int</span>    -&gt;  ( ),
-   real   -&gt;  ( ),
-   <span style="color:#369;font-weight:bold">str</span>    -&gt;  ( ),
-   lst    -&gt;  ( ),
-   rec    -&gt;  ( ),
-   inst   -&gt;  ( ),
-
-   // considering extended <span style="color:#369;font-weight:bold">type</span> names <span style="color:#080;font-weight:bold">and</span> rewrites <span style="color:#080;font-weight:bold">in</span> a mm_ext model
-   poly   -&gt;  (poly&lt;=[lst{<span style="color:#F00;background-color:#FAA">?</span>}|rec]),
+  (<span style="color:#369;font-weight:bold">bool</span> -&gt;  ( ), <span style="color:#369;font-weight:bold">int</span> -&gt;  ( ), real -&gt;  ( ), <span style="color:#369;font-weight:bold">str</span>  -&gt;  ( ),
+   lst  -&gt;  ( ), rec -&gt;  ( ), inst -&gt;  ( ), poly -&gt;  (poly&lt;=[lst|rec]),
+   // consider rewrites <span style="color:#080;font-weight:bold">in</span> a mm_poly1.mm model.
+   // a model that processes models <span style="color:#080;font-weight:bold">with</span> poly lifted reification
    (_)    -&gt;  ((_)&lt;=^:([<span style="color:#369;font-weight:bold">id</span>])
                /* ([branch,x])&lt;=^:([split,&lt;x&gt;][merge]) */
                ),
-   // rewrites <span style="color:#080;font-weight:bold">in</span> mm_ext <span style="color:#080;font-weight:bold">as</span> well. it<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">s a model that processes a model via poly lifted reification */</span></span>
    (<span style="color:#369;font-weight:bold">int</span>)  -&gt;  ((<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[neg][neg]),
                (<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">0</span>]),
                (<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">1</span>])),
@@ -3610,26 +3603,26 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 </div>
 </div>
 <div class="paragraph">
-<p>A model-ADT can be defined in a <code>rec</code>, where the keys are canonical types (<strong>ctypes</strong>) and the values are <code>lsts</code> of derived types (<strong>dtypes</strong>). This encoding denotes the coproduct of a ctype and a product of derivations to that type such that any model \$\mathbf{m}\$ is defined
+<p>The <code>rec</code> encoding of a model-ADT has the model&#8217;s canonical types (<strong>ctypes</strong>) as keys and <code>lsts</code> of derived types (<strong>dtypes</strong>) as values. This encoding captures the the definition of a model as coproduct of products, where any model \$\mathbf{m}\$ is defined
 \[
 \begin{split}
-\texttt{model}_\mathbf{m} &amp;= \prod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 \times \texttt{dtype}_i^1 \times \ldots \times \texttt{dtype}_i^n) \\
-                          &amp;= \prod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \texttt{dtype}_i^n.
+\texttt{model}_\mathbf{m} &amp;= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 + \texttt{dtype}_i^1 + \ldots + \texttt{dtype}_i^n) \\
+                          &amp;= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \coprod_{j=0}^{|\texttt{dtype}_i|} \texttt{dtype}_i^j.
 \end{split}
 \]
-There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> types are <em>universally grounded</em> and
+There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. Generally, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> types are <em>universally grounded</em> and
 \[
 \begin{split}
-\textbf{mm} &amp;= \prod_{i=0}^6 \texttt{ctype}_i + (\;) \\
-            &amp;= \prod_{i=0}^6 \texttt{ctype}_i + \texttt{Unit}_i \\
-            &amp;= \prod_{i=0}^6 \texttt{ctype}_i + \mathbf{1}_i
+\textbf{mm} &amp;= \coprod_{i=0}^6 \texttt{ctype}_i + (\mathbf{0}_i^0 + \mathbf{0}_i^1 + \ldots + \mathbf{0}_i^n\;) \\
+            &amp;= \coprod_{i=0}^6 \texttt{ctype}_i + \mathbf{0} \\
+            &amp;= \coprod_{i=0}^6 \texttt{ctype}_i
 \end{split}
 \]</p>
 </div>
 <div class="paragraph">
-<p>That is, every <code>mm</code> ctype is derived from the <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a>. For example, the field <code>bool -&gt; ( )</code> in the <code>mm</code> <code>rec</code> above denotes \$\tt{bo\ol} \+ \mathbf{1}_\tt{bo\ol}\$. The <code>bool</code> ctype has one dtype definition: <code>bool</code> which is short hand for <code>bool&lt;=bool</code>, which, when considering the quantifier ring, is shorthand for <code>bool{1}&lt;=bool{1}</code>. The definition of <code>bool</code> is it&#8217;s <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexive</a> identity: <code>bool</code>.
+<p>That is, <code>mm</code> is composed of 6 ctypes: <code>bool</code>, <code>int</code>, <code>real</code>, <code>str</code>, <code>lst</code>, and <code>rec</code>. Within <code>mm</code>, these ctypes are the <a href="https://en.wikipedia.org/wiki/Identity_function">identity types</a> or, \$\mathbf{0}\$ in the additive group and \$\mathbf{1}\$ in the multiplicative monoid of the underlying ring. For example, the field <code>bool -&gt; ( )</code> in the <code>mm</code> <code>rec</code> above denotes \$\tt{bo\ol} \+ \mathbf{0}\$ or simply \$\tt{bo\ol}\$. The <code>bool</code> ctype is shorthand for <code>bool&lt;=bool</code>, which, when considering the quantifier ring, is shorthand for <code>bool{1}&lt;=bool{1}</code>. An instruction less type is a <a href="https://en.wikipedia.org/wiki/NOP_(code)"><code>noop</code></a>, capturing the <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexivity</a> of identity:
 \[
-\texttt{bool}\Leftarrow\texttt{bool} \equiv \texttt{bool} + \mathbf{1}_\texttt{bool}.
+\texttt{bool}\Leftarrow\texttt{bool} \;\equiv\; \texttt{bool} + \mathbf{0} \;\equiv\; \texttt{bool}.
 \]</p>
 </div>
 <div class="exampleblock">
@@ -3641,7 +3634,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 </div>
 </div>
 <div class="paragraph">
-<p>The illustration on the right shows 3 different models and their respective types. Every edge is a type definition of the form:</p>
+<p>The associated illustration presents 3 models, their respective ctypes, and various dtypes between them. Every directed labeled binary edge in the diagram is a type of the form:</p>
 </div>
 <table class="tableblock frame-none grid-none center" style="width: 20%;">
 <colgroup>
@@ -3661,7 +3654,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 </tbody>
 </table>
 <div class="paragraph">
-<p>A type definition&#8217;s instructions specify the specific, <a href="https://en.wikipedia.org/wiki/Discrete_system">discrete</a> computational steps (<code>inst</code>) necessary to transform <code>a</code> (domain) into <code>b</code> (range). These instructions are the steps of the <a href="https://en.wikipedia.org/wiki/Inductive_type">type induction</a> which form the edges of the <code>obj</code> graph (i.e., the morphisms in the <code>obj</code> <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">category diagram</a> and the edges in the <code>obj</code> <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a>). In the illustration, three sorts of type definitions are highlighted:</p>
+<p>A type definition&#8217;s instructions specify the specific, <a href="https://en.wikipedia.org/wiki/Discrete_system">discrete</a> computational steps (<code>inst</code>) necessary to transform <code>a</code> (domain) into <code>b</code> (range). A series of instructions are constructed with <a href="https://en.wikipedia.org/wiki/Inductive_type">type induction</a> (composition), destructed with <a href="https://en.wikipedia.org/wiki/Type_inference">type deduction</a> (compilation or evaluation), and are captured as paths in the type subgraph of the <code>obj</code> graph. Thse paths are equivalent to the morphisms of the <code>obj</code> <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">category diagram</a> and the edges in the <code>obj</code> <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a>. The illustration highlights three sorts of types:</p>
 </div>
 <div class="ulist">
 <ul>
@@ -7230,7 +7223,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-16 02:26:31 -0600
+Last updated 2020-09-16 03:08:45 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
