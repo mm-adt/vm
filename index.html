@@ -3585,17 +3585,20 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mm:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt;
-  (<span style="color:#369;font-weight:bold">bool</span>   -&gt;  (<span style="color:#369;font-weight:bold">bool</span>),
-   <span style="color:#369;font-weight:bold">int</span>    -&gt;  (<span style="color:#369;font-weight:bold">int</span>),
-   real   -&gt;  (real),
-   <span style="color:#369;font-weight:bold">str</span>    -&gt;  (<span style="color:#369;font-weight:bold">str</span>),
-   lst    -&gt;  (lst),
-   rec    -&gt;  (rec),
-   inst   -&gt;  (inst),
+  (<span style="color:#369;font-weight:bold">bool</span>   -&gt;  ( ),
+   <span style="color:#369;font-weight:bold">int</span>    -&gt;  ( ),
+   real   -&gt;  ( ),
+   <span style="color:#369;font-weight:bold">str</span>    -&gt;  ( ),
+   lst    -&gt;  ( ),
+   rec    -&gt;  ( ),
+   inst   -&gt;  ( ),
+
+   // considering extended <span style="color:#369;font-weight:bold">type</span> names <span style="color:#080;font-weight:bold">and</span> rewrites <span style="color:#080;font-weight:bold">in</span> a mm_ext model
    poly   -&gt;  (poly&lt;=[lst{<span style="color:#F00;background-color:#FAA">?</span>}|rec]),
    (_)    -&gt;  ((_)&lt;=^:([<span style="color:#369;font-weight:bold">id</span>])
                /* ([branch,x])&lt;=^:([split,&lt;x&gt;][merge]) */
                ),
+   // rewrites <span style="color:#080;font-weight:bold">in</span> mm_ext <span style="color:#080;font-weight:bold">as</span> well. it<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">s a model that processes a model via poly lifted reification */</span></span>
    (<span style="color:#369;font-weight:bold">int</span>)  -&gt;  ((<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[neg][neg]),
                (<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">0</span>]),
                (<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">1</span>])),
@@ -3617,13 +3620,14 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> types are <em>universally grounded</em> and
 \[
 \begin{split}
-\textbf{mm} &amp;= \prod_{i=0}^6 \texttt{ctype}_i + \texttt{dtype}_i^0 \\
-            &amp;= \texttt{ctype}_i + \mathbf{1}_i
+\textbf{mm} &amp;= \prod_{i=0}^6 \texttt{ctype}_i + (\;) \\
+            &amp;= \prod_{i=0}^6 \texttt{ctype}_i + \texttt{Unit}_i \\
+            &amp;= \prod_{i=0}^6 \texttt{ctype}_i + \mathbf{1}_i
 \end{split}
 \]</p>
 </div>
 <div class="paragraph">
-<p>That is, every <code>mm</code> ctype is derived from the <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a>. For example, the field <code>bool -&gt; (bool)</code> in the <code>mm</code> <code>rec</code> above denotes \$\tt{bo\ol} \+ \mathbf{1}_\tt{bo\ol}\$. The <code>bool</code> ctype has one dtype definition: <code>bool</code> which is short hand for <code>bool&lt;=bool</code>, which, when considering the quantifier ring, is shorthand for <code>bool{1}&lt;=bool{1}</code>. The definition of <code>bool</code> is it&#8217;s <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexive</a> identity: <code>bool</code>.
+<p>That is, every <code>mm</code> ctype is derived from the <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a>. For example, the field <code>bool -&gt; ( )</code> in the <code>mm</code> <code>rec</code> above denotes \$\tt{bo\ol} \+ \mathbf{1}_\tt{bo\ol}\$. The <code>bool</code> ctype has one dtype definition: <code>bool</code> which is short hand for <code>bool&lt;=bool</code>, which, when considering the quantifier ring, is shorthand for <code>bool{1}&lt;=bool{1}</code>. The definition of <code>bool</code> is it&#8217;s <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexive</a> identity: <code>bool</code>.
 \[
 \texttt{bool}\Leftarrow\texttt{bool} \equiv \texttt{bool} + \mathbf{1}_\texttt{bool}.
 \]</p>
@@ -7226,7 +7230,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-16 02:13:26 -0600
+Last updated 2020-09-16 02:26:31 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
