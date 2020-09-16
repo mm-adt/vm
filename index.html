@@ -3607,22 +3607,22 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 </div>
 </div>
 <div class="paragraph">
-<p>A model-ADT can be defined in a <code>rec</code>, where the keys are canonical types (<strong>ctypes</strong>) and the values are <code>lsts</code> of derived types (<strong>dtypes</strong>). Every model \$\mathbf{m}\$ is can be defined by the equation
+<p>A model-ADT can be defined in a <code>rec</code>, where the keys are canonical types (<strong>ctypes</strong>) and the values are <code>lsts</code> of derived types (<strong>dtypes</strong>). This encoding denotes a product such that any model \$\mathbf{m}\$ is defined
 \[
-\texttt{model}_\mathbf{m} \subseteq \texttt{ctype}_\mathbf{m} \times \texttt{dtype}_\mathbf{m}^n.
+\texttt{model}_\mathbf{m} = \texttt{ctype}_\mathbf{m} + \texttt{dtype}_\mathbf{m}^n.
 \]
-Thus far, the only ctypes discussed have been the mm-ADT <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> of model <code>mm</code>. A ctype in one model can be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}}^n \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> mm-ADT types are <em>universally grounded</em> such that
+There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}}^n \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> mm-ADT types are <em>universally grounded</em> such that
 \[
 \begin{split}
-\textbf{mm} &amp;= \texttt{ctype}_\mathbf{mm} \times \texttt{dtype}_\mathbf{mm}^0 \\
-            &amp;= \texttt{ctype}_\mathbf{mm} \times \mathbf{1}_\mathbf{mm}
+\textbf{mm} &amp;= \texttt{ctype}_\mathbf{mm} + \texttt{dtype}_\mathbf{mm}^0 \\
+            &amp;= \texttt{ctype}_\mathbf{mm} + \mathbf{1}_\mathbf{mm}
 \end{split}
 \]</p>
 </div>
 <div class="paragraph">
-<p>That is, every <code>mm</code> ctype is derived from the respective <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a>. For example, the field <code>bool -&gt; (bool)</code> in the <code>mm</code> <code>rec</code> above denotes \$\tt{bo\ol} \times \mathbf{1}_\tt{bo\ol}\$. The <code>bool</code> ctype has one dtype definition: <code>bool</code> which is short hand for <code>bool&lt;=bool</code>, which is shorthand for <code>bool{1}&lt;=bool{1}</code>. The definition of <code>bool</code> is it&#8217;s reflexive identity <code>bool</code>.
+<p>That is, every <code>mm</code> ctype is derived from the <a href="https://en.wikipedia.org/wiki/Identity_function">identity type</a>. For example, the field <code>bool -&gt; (bool)</code> in the <code>mm</code> <code>rec</code> above denotes \$\tt{bo\ol} \+ \mathbf{1}_\tt{bo\ol}\$. The <code>bool</code> ctype has one dtype definition: <code>bool</code> which is short hand for <code>bool&lt;=bool</code>, which, when considering the quantifier ring, is shorthand for <code>bool{1}&lt;=bool{1}</code>. The definition of <code>bool</code> is it&#8217;s <a href="https://en.wikipedia.org/wiki/Reflexive_relation">reflexive</a> identity: <code>bool</code>.
 \[
-\texttt{bool}\Leftarrow\texttt{bool} \equiv \texttt{bool} \times \mathbf{1}_\texttt{bool}.
+\texttt{bool}\Leftarrow\texttt{bool} \equiv \texttt{bool} + \mathbf{1}_\texttt{bool}.
 \]</p>
 </div>
 <div class="exampleblock">
@@ -7223,7 +7223,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-15 22:28:41 -0600
+Last updated 2020-09-16 02:01:23 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
