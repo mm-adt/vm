@@ -3607,15 +3607,18 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 </div>
 </div>
 <div class="paragraph">
-<p>A model-ADT can be defined in a <code>rec</code>, where the keys are canonical types (<strong>ctypes</strong>) and the values are <code>lsts</code> of derived types (<strong>dtypes</strong>). This encoding denotes a product such that any model \$\mathbf{m}\$ is defined
-\[
-\texttt{model}_\mathbf{m} = \texttt{ctype}_\mathbf{m} + \texttt{dtype}_\mathbf{m}^n.
-\]
-There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}}^n \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> mm-ADT types are <em>universally grounded</em> such that
+<p>A model-ADT can be defined in a <code>rec</code>, where the keys are canonical types (<strong>ctypes</strong>) and the values are <code>lsts</code> of derived types (<strong>dtypes</strong>). This encoding denotes the coproduct of a ctype and a product of derivations to that type such that any model \$\mathbf{m}\$ is defined
 \[
 \begin{split}
-\textbf{mm} &amp;= \texttt{ctype}_\mathbf{mm} + \texttt{dtype}_\mathbf{mm}^0 \\
-            &amp;= \texttt{ctype}_\mathbf{mm} + \mathbf{1}_\mathbf{mm}
+\texttt{model}_\mathbf{m} &amp;= \prod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 \times \texttt{dtype}_i^1 \times \ldots \times \texttt{dtype}_i^n) \\
+                          &amp;= \prod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \texttt{dtype}_i^n.
+\end{split}
+\]
+There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> types are <em>universally grounded</em> and
+\[
+\begin{split}
+\textbf{mm} &amp;= \prod_{i=0}^6 \texttt{ctype}_i + \texttt{dtype}_i^0 \\
+            &amp;= \texttt{ctype}_i + \mathbf{1}_i
 \end{split}
 \]</p>
 </div>
@@ -7223,7 +7226,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-16 02:01:23 -0600
+Last updated 2020-09-16 02:13:26 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
