@@ -236,39 +236,39 @@ The composition of two structure preserving type morphisms yields a new type--na
 
 === Models
 
-mm-ADT organizes types into *models*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of mm-ADT). When the instruction `[model,mm]` is evaluated, the `mmlang` file below is loaded (`mm.mm`).
+Types can be organized into *models* or *model-ADTs*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of _mm_-ADT). The instruction `[model,mm]` generates a `rec` from the `mmlang` file `mm.mm` and makes it accessible as the `[model]` argument in the type's path definition.
 
 [source]
 ----
 include::../../src/main/resources/model/mm.mm[]
 ----
 
-A model-ADT can be defined in a `rec`, where the keys are canonical types (*ctypes*) and the values are `lsts` of derived types (*dtypes*). This encoding denotes the coproduct of a ctype and a product of derivations to that type such that any model \$\mathbf{m}\$ is defined
+The `rec` encoding of a model-ADT has the model's canonical types (*ctypes*) as keys and `lsts` of derived types (*dtypes*) as values. This encoding captures the the definition of a model as coproduct of products, where any model \$\mathbf{m}\$ is defined
 \[
 \begin{split}
-\texttt{model}_\mathbf{m} &= \prod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 \times \texttt{dtype}_i^1 \times \ldots \times \texttt{dtype}_i^n) \\
-                          &= \prod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \texttt{dtype}_i^n.
+\texttt{model}_\mathbf{m} &= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 + \texttt{dtype}_i^1 + \ldots + \texttt{dtype}_i^n) \\
+                          &= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \coprod_{j=0}^{|\texttt{dtype}_i|} \texttt{dtype}_i^j.
 \end{split}
 \]
-There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` types are _universally grounded_ and
+There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. Generally, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` types are _universally grounded_ and
 \[
 \begin{split}
-\textbf{mm} &= \prod_{i=0}^6 \texttt{ctype}_i + (\;) \\
-            &= \prod_{i=0}^6 \texttt{ctype}_i + \texttt{Unit}_i \\
-            &= \prod_{i=0}^6 \texttt{ctype}_i + \mathbf{1}_i
+\textbf{mm} &= \coprod_{i=0}^6 \texttt{ctype}_i + (\mathbf{0}_i^0 + \mathbf{0}_i^1 + \ldots + \mathbf{0}_i^n\;) \\
+            &= \coprod_{i=0}^6 \texttt{ctype}_i + \mathbf{0} \\
+            &= \coprod_{i=0}^6 \texttt{ctype}_i
 \end{split}
 \]
 
-That is, every `mm` ctype is derived from the https://en.wikipedia.org/wiki/Identity_function[identity type]. For example, the field `bool \-> ( )` in the `mm` `rec` above denotes \$\tt{bo\ol} \+ \mathbf{1}_\tt{bo\ol}\$. The `bool` ctype has one dtype definition: `bool` which is short hand for `bool\<=bool`, which, when considering the quantifier ring, is shorthand for `bool{1}\<=bool{1}`. The definition of `bool` is it's https://en.wikipedia.org/wiki/Reflexive_relation[reflexive] identity: `bool`.
+That is, `mm` is composed of 6 ctypes: `bool`, `int`, `real`, `str`, `lst`, and `rec`. Within `mm`, these ctypes are the https://en.wikipedia.org/wiki/Identity_function[identity types] or, \$\mathbf{0}\$ in the additive group and \$\mathbf{1}\$ in the multiplicative monoid of the underlying ring. For example, the field `bool \-> ( )` in the `mm` `rec` above denotes \$\tt{bo\ol} \+ \mathbf{0}\$ or simply \$\tt{bo\ol}\$. The `bool` ctype is shorthand for `bool\<=bool`, which, when considering the quantifier ring, is shorthand for `bool{1}\<=bool{1}`. An instruction less type is a https://en.wikipedia.org/wiki/NOP_(code)[`noop`], capturing the https://en.wikipedia.org/wiki/Reflexive_relation[reflexivity] of identity:
 \[
-\texttt{bool}\Leftarrow\texttt{bool} \equiv \texttt{bool} + \mathbf{1}_\texttt{bool}.
+\texttt{bool}\Leftarrow\texttt{bool} \;\equiv\; \texttt{bool} + \mathbf{0} \;\equiv\; \texttt{bool}.
 \]
 
 .Model-ADT Subgraphs of the `obj` Graph
 ================================================================
 image::model-adt.svg[width=450,float=right]
 
-The illustration on the right shows 3 different models and their respective types. Every edge is a type definition of the form:
+The associated illustration presents 3 models, their respective ctypes, and various dtypes between them. Every directed labeled binary edge in the diagram is a type of the form:
 
 [.center]
 [cols=^1,frame=none,grid=none,width=20]
@@ -281,7 +281,7 @@ b<=a[inst{*}]
 {blank}
 |===
 
-A type definition's instructions specify the specific, https://en.wikipedia.org/wiki/Discrete_system[discrete] computational steps (`inst`) necessary to transform `a` (domain) into `b` (range). These instructions are the steps of the https://en.wikipedia.org/wiki/Inductive_type[type induction] which form the edges of the `obj` graph (i.e., the morphisms in the `obj` https://en.wikipedia.org/wiki/Diagram_(category_theory)[category diagram] and the edges in the `obj` https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]). In the illustration, three sorts of type definitions are highlighted:
+A type definition's instructions specify the specific, https://en.wikipedia.org/wiki/Discrete_system[discrete] computational steps (`inst`) necessary to transform `a` (domain) into `b` (range). A series of instructions are constructed with https://en.wikipedia.org/wiki/Inductive_type[type induction] (composition), destructed with https://en.wikipedia.org/wiki/Type_inference[type deduction] (compilation or evaluation), and are captured as paths in the type subgraph of the `obj` graph. Thse paths are equivalent to the morphisms of the `obj` https://en.wikipedia.org/wiki/Diagram_(category_theory)[category diagram] and the edges in the `obj` https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph]. The illustration highlights three sorts of types:
 
 * `xtype\<=int[f]` (**intra-model**): In `xmodel`, `xtype` is grounded at `int` in `mm`.
 * `ytype\<=xtype[g]` (**inter-model**): In `xmodel`, `ytype` can be reached via `xtype`.
