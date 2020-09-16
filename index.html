@@ -3378,7 +3378,6 @@ mmlang&gt; 9   =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]
 <div class="paragraph">
 <p>The primary idea concerning variable state is that when <code>[mult,x]</code> is reached by the <code>int</code> value 12 via instruction application, the anonymous type <code>x</code>  must be <strong>resolved</strong> before <code>[mult]</code> can evaluate. To do so, the instruction <code>[to,x]</code> is searched for in the path history of 12. When that instruction is found, the range (or domain as it&#8217;s an identity) replaces <code>x</code> and <code>[mult,10]</code> is evaluated and the edge \[12 \rightarrow_{\texttt{[mult,10]}} 120 \] extends the value graph. The intuition for this process is illustrated on the right.</p>
 </div>
-<hr>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]                                                 <i class="conum" data-value="1"></i><b>(1)</b>
@@ -3492,7 +3491,7 @@ where, for the first, \$b\$ is <em>generated</em> by \$a\$ and for the second, \
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/digraph-model-1.svg" alt="digraph model 1" width="600"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/digraph-model-1.svg" alt="digraph model 1"></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -3516,7 +3515,7 @@ where, for the first, \$b\$ is <em>generated</em> by \$a\$ and for the second, \
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-Type definitions (using <code>[define]</code> or <code>[model]</code>) denote canonical mappings within a domain of discourse (i.e., a model). Programs that maintain instructions after <code>b&lt;=a</code> serve to manipulate <code>a</code> just enough to get it to the head of a type definition path that will ultimately reach <code>b</code>. In a well constrained data environment, mm-ADT code has less intermediate instructions with a style of the form \$a \implies b \implies c \implies \ldots \implies z\$, relying on the type definitions to string together a well-reasoned path from source to sink.
+Type definitions (using <code>[define]</code> or <code>[model]</code>) denote canonical mappings within a <a href="https://en.wikipedia.org/wiki/Domain_of_discourse">domain of discourse</a> (i.e., a <strong>model</strong>). Programs that maintain instructions after <code>b&lt;=a</code> serve to manipulate <code>a</code> just enough to get it to the head of a type definition path that will ultimately reach <code>b</code>. In a well constrained data environment, mm-ADT code has less intermediate instructions with a style of the form \$a \implies b \implies c \implies \ldots \implies z\$, relying on the type definitions to string together a well-reasoned path from source to sink.
 </td>
 </tr>
 </table>
@@ -3531,7 +3530,7 @@ Type definitions (using <code>[define]</code> or <code>[model]</code>) denote ca
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-A more sophisticated library infrastructure is provided by the <code>[model]</code> instruction (discussion forthcoming).
+A more sophisticated library infrastructure is provided by the <code>[model]</code> instruction with a complete treatment forthcoming.
 </td>
 </tr>
 </table>
@@ -3581,7 +3580,7 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 <div class="sect2">
 <h3 id="_models">Models</h3>
 <div class="paragraph">
-<p>mm-ADT organizes types into <strong>models</strong>. The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in a model called <code>mm</code> (the <em>mm</em> of mm-ADT). When the instruction <code>[model,mm]</code> is evaluated, the file below is loaded.</p>
+<p>mm-ADT organizes types into <strong>models</strong>. The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in a model called <code>mm</code> (the <em>mm</em> of mm-ADT). When the instruction <code>[model,mm]</code> is evaluated, the <code>mmlang</code> file below is loaded (<code>mm.mm</code>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -3608,12 +3607,53 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 </div>
 </div>
 <div class="paragraph">
-<p>A model-ADT can be specified in <code>rec</code>. The <code>mm</code> model-ADT&#8217;s <code>rec</code> type is <code>mm</code> and it contains a <code>str</code> key of <code>'type'</code> containing a dictionary of <strong>type-to-type definitions</strong>. As the base types of mm-ADT are ground, they are defined in terms of themselves. For example. <code>bool -&gt; (bool)</code> states that <code>bool</code> has one definition stating that <code>bool&lt;=bool</code> or simply <code>bool</code>. Other model-ADTs require definitions that map from the model types to, via some path of type definitions, one or more of the ground types in <code>mm</code>.</p>
+<p>A model-ADT can be specified using a <code>rec</code>, where the <code>rec</code> type is the name of the model-ADT. In <code>mm</code>, the <code>'type'</code> field indexes a <a href="https://en.wikipedia.org/wiki/Lookup_table">dictionary</a> of <strong>type-to-type mappings</strong>. The mm-ADT <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> are <em>ground</em> in that they are defined in terms of themselves. For example, <code>bool -&gt; (bool)</code> states that <code>bool</code> has one definition: <code>bool&lt;=bool</code> or simply <code>bool</code>. That is the definition of <code>bool</code> is the identity on <code>bool</code>. Other model-ADTs require definitions that map from the model&#8217;s types to the ground types in <code>mm</code>.</p>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/obj/model-adt.svg" alt="model adt" width="450">
+</div>
+</div>
+<div class="paragraph">
+<p>The illustration on the right shows 3 different models and their respective types. Every edge is a type definition of the form:</p>
+</div>
+<table class="tableblock frame-none grid-none center" style="width: 20%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">b&lt;=a[inst{*}]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>A type definition&#8217;s instructions specify the specific, <a href="https://en.wikipedia.org/wiki/Discrete_system">discrete</a> computational steps (<code>inst</code>) necessary to transform <code>a</code> (domain) into <code>b</code> (range). These instructions are the steps of the <a href="https://en.wikipedia.org/wiki/Inductive_type">type induction</a> which form the edges of the <code>obj</code> graph (i.e., the morphisms in the <code>obj</code> <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">category diagram</a> and the edges in the <code>obj</code> <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a>). In the illustration, three sorts of type definitions are highlighted:</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><code>xtype&lt;=int[f]</code> (<strong>intra-model</strong>): In <code>xmodel</code>, <code>xtype</code> is grounded at <code>int</code> in <code>mm</code>.</p>
+</li>
+<li>
+<p><code>ytype&lt;=xtype[g]</code> (<strong>inter-model</strong>): In <code>xmodel</code>, <code>ytype</code> can be reached via <code>xtype</code>.</p>
+</li>
+<li>
+<p><code>atype&lt;=rec[h][i]</code> (<strong>trans-model</strong>): In <code>amodel</code>, <code>atype</code> is grounded at <code>rec</code> in <code>mm</code> via <code>ytype</code> in <code>xmodel</code>.</p>
+</li>
+</ul>
 </div>
 <div class="sect3">
 <h4 id="_model_building">Model Building</h4>
 <div class="paragraph">
-<p>The <code>mm</code> model-ADT is simple. This section introduces the <code>pg</code> model-ADT defining the category of <em>property graphs</em>.</p>
+<p>The <code>mm</code> model-ADT is too simple to be educational. The following section build a model-ADT in stages. The final model is <code>pg</code> and denotes the category of <strong>property graphs</strong>. Before reaching <code>pg</code>, smaller tutorial models will be presented starting at <code>pg_1</code>, then <code>pg_2</code>, and so forth.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -7162,7 +7202,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-15 13:09:54 -0600
+Last updated 2020-09-15 17:43:28 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
