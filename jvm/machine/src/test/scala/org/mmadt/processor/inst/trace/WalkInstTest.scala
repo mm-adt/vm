@@ -131,7 +131,7 @@ class WalkInstTest extends BaseInstTest(
   test("walk play") {
     // assertResult(MODEL)(PARSE_MODEL)
     println(MODEL)
-    println(PARSE_MODEL.domainObj.asInstanceOf[Model].definitions)
+    println(PARSE_MODEL.domainObj.asInstanceOf[Model].dtypes)
     println(CHAIN_MODEL)
     println(CAT3_MODEL)
   }

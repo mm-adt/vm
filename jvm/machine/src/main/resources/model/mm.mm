@@ -1,15 +1,18 @@
 mm:('type' ->
-  (bool   ->  (bool),
-   int    ->  (int),
-   real   ->  (real),
-   str    ->  (str),
-   lst    ->  (lst),
-   rec    ->  (rec),
-   inst   ->  (inst),
+  (bool   ->  ( ),
+   int    ->  ( ),
+   real   ->  ( ),
+   str    ->  ( ),
+   lst    ->  ( ),
+   rec    ->  ( ),
+   inst   ->  ( ),
+
+   // considering extended type names and rewrites in a mm_ext model
    poly   ->  (poly<=[lst{?}|rec]),
    (_)    ->  ((_)<=^:([id])
                /* ([branch,x])<=^:([split,<x>][merge]) */
                ),
+   // rewrites in mm_ext as well. it's a model that processes a model via poly lifted reification */
    (int)  ->  ((int)<=^:(int[neg][neg]),
                (int)<=^:(int[plus,0]),
                (int)<=^:(int[mult,1])),

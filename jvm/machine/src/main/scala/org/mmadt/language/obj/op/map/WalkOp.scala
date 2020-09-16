@@ -69,12 +69,12 @@ object WalkOp extends Func[Obj, Obj] {
     //.map(t => {println(toBaseName(Type.trueRange(source.last).rangeObj) + "===TESTING==>" + toBaseName(t.domainObj) + " ::: " + Type.trueRange(source.last).rangeObj.test(t.domainObj));t})
     val tail:A = source.last
     if (tail.rangeObj.name == target.rangeObj.name) return if (tail.test(tail.model.findCtype(tail.name).getOrElse(target))) List(List(target)) else Nil
-    tail.model.definitions // TODO: index by name
+    tail.model.dtypes // TODO: index by name
       .filter(t => !t.root) // ignores 'allowed types' specified as ctypes
       .filter(t => !checked.contains(t))
       .filter(t => composeTest(tail, t))
       .flatMap(t => {
-        val nextT = tail `=>` t // asType(source.last)
+        val nextT:Obj = tail `=>` t // asType(source.last)
         if (nextT.rangeObj.name == target.rangeObj.name) List(source :+ nextT)
         else if (!tail.root || (tail != nextT)) resolvePaths(source :+ t, target, checked :+ t)
         else Nil

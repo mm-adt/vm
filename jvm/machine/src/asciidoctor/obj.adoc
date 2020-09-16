@@ -253,12 +253,13 @@ A model-ADT can be defined in a `rec`, where the keys are canonical types (*ctyp
 There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. In general, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` types are _universally grounded_ and
 \[
 \begin{split}
-\textbf{mm} &= \prod_{i=0}^6 \texttt{ctype}_i + \texttt{dtype}_i^0 \\
-            &= \texttt{ctype}_i + \mathbf{1}_i
+\textbf{mm} &= \prod_{i=0}^6 \texttt{ctype}_i + (\;) \\
+            &= \prod_{i=0}^6 \texttt{ctype}_i + \texttt{Unit}_i \\
+            &= \prod_{i=0}^6 \texttt{ctype}_i + \mathbf{1}_i
 \end{split}
 \]
 
-That is, every `mm` ctype is derived from the https://en.wikipedia.org/wiki/Identity_function[identity type]. For example, the field `bool \-> (bool)` in the `mm` `rec` above denotes \$\tt{bo\ol} \+ \mathbf{1}_\tt{bo\ol}\$. The `bool` ctype has one dtype definition: `bool` which is short hand for `bool\<=bool`, which, when considering the quantifier ring, is shorthand for `bool{1}\<=bool{1}`. The definition of `bool` is it's https://en.wikipedia.org/wiki/Reflexive_relation[reflexive] identity: `bool`.
+That is, every `mm` ctype is derived from the https://en.wikipedia.org/wiki/Identity_function[identity type]. For example, the field `bool \-> ( )` in the `mm` `rec` above denotes \$\tt{bo\ol} \+ \mathbf{1}_\tt{bo\ol}\$. The `bool` ctype has one dtype definition: `bool` which is short hand for `bool\<=bool`, which, when considering the quantifier ring, is shorthand for `bool{1}\<=bool{1}`. The definition of `bool` is it's https://en.wikipedia.org/wiki/Reflexive_relation[reflexive] identity: `bool`.
 \[
 \texttt{bool}\Leftarrow\texttt{bool} \equiv \texttt{bool} + \mathbf{1}_\texttt{bool}.
 \]

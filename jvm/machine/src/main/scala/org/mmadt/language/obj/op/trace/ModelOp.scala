@@ -96,7 +96,7 @@ object ModelOp extends Func[Obj, Obj] {
         .find(x => x._1.name == aobj.name).map(x => x._2.glist)
         .exists(x => x.exists(y => !baseName(y.domainObj).equals(Tokens.anon) || !Type.isIdentity(y)))
 
-    final def typeExists(aobj:Obj):Boolean = __.isAnon(aobj) || model.vars(str(aobj.name)).isDefined || model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap.exists(x => x._1.name == aobj.name) || model.definitions.isEmpty
+    final def typeExists(aobj:Obj):Boolean = __.isAnon(aobj) || model.vars(str(aobj.name)).isDefined || model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap.exists(x => x._1.name == aobj.name) || model.dtypes.isEmpty
 
     final def search[A <: Obj](source:Obj = __, target:A, baseName:Boolean = true):List[A] = {
       model.vars[A](target.name)
@@ -115,10 +115,16 @@ object ModelOp extends Func[Obj, Obj] {
 
     final def rewrites:List[Obj] = model.gmap.fetchOrElse(TYPE, NOREC).gmap.values.flatMap(x => x.g._2).filter(x => x.domainObj.name.equals(Tokens.lift_op))
 
-    final def definitions:List[Obj] = {
+    final def ctypes:List[Type[Obj]] = {
       val map = Option(model.g._2).getOrElse(NOROOT)
       val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
-      typesMap.flatMap(x => x._2.glist).filter(x => x.domainObj.name != Tokens.lift_op) // little optimization hack that will go away as model becomes more cleverly organized
+      typesMap.filter(x => !x._2.glist.exists(y => y.domainObj.name != Tokens.lift_op)).map(x => x._1.asInstanceOf[Type[Obj]])
+    }
+
+    final def dtypes:List[Type[Obj]] = {
+      val map = Option(model.g._2).getOrElse(NOROOT)
+      val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
+      typesMap.flatMap(x => x._2.glist).filter(x => x.domainObj.name != Tokens.lift_op).asInstanceOf[List[Type[Obj]]] // little optimization hack that will go away as model becomes more cleverly organized
     }
 
     final def vars[A <: Obj](key:StrValue):Option[A] = {
@@ -149,6 +155,7 @@ object ModelOp extends Func[Obj, Obj] {
         fetchOrElse(ModelOp.TYPE, rec(g = (Tokens.`,`, NOMAP))).g._2.
         flatMap(x => x._2.g._2).
         foldLeft(model)((a, b) => a.defining(b))
+      x = other.ctypes.foldLeft(x)((a,b) => a.defining(b))
       x = other.g._2.fetchOrElse(ModelOp.VAR, rec(g = (Tokens.`,`, NOMAP))).gmap.foldLeft(x)((a, b) => a.vars(b._1.asInstanceOf[StrValue], b._2.asInstanceOf[Lst[Obj]].glist.head))
       rec(name = model.name, g = (Tokens.`,`, x.g._2))
     }
