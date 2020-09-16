@@ -18,6 +18,14 @@ $(document).ready(function(){
   $("code:contains(\"'\")").html(function(_, html) {
     return html.replace(new RegExp("'(.*?)'","gi"),"<span style='color:#D20'>'$1'</span>");
   });
+  // comment light gray
+  $("code:contains(\"//\")").html(function(_, html) {
+    return html.replace(new RegExp("//(.*)","gi"),"<span style='color:#777'>//$1</span>");
+  });
+  // comment light gray
+  /*$("code:contains(\"/*\")").html(function(_, html) {
+    return html.replace(new RegExp("/\*(.*?)\*/","gi"),"<span style='color:#777'>/*$1*/</span>");
+  });*/
   // END: general random tweaks to convert python highlighting to mmlang
   var rewrites = {"special": ["",       ospan + "#710" + cspan],            // dark red
                   // "str":     ["'",  "\'"+ospan + "#D20" + cspan],            // dark red
