@@ -55,9 +55,9 @@ object AsOp extends Func[Obj, Obj] {
     if (!source.alive) return source
     if (__.isAnon(target) || source.model.vars(target.name).isDefined) return source
     if (source.name.equals(target.name)) {
-      if (target.isInstanceOf[__]) return source
       source match {
-        case slst:LstValue[Obj] if !Lst.exactTest(slst, target.asInstanceOf[Lst[Obj]]) =>
+        case alst:LstValue[Obj] if !Lst.exactTest(alst, target) =>
+        //case alst:LstType[Obj] if !Obj.isRecursive(alst) =>
         //case srec:RecValue[Obj, Obj] if !Rec.test(srec, target.asInstanceOf[Rec[Obj, Obj]]) =>
         case _ => return source
       }
@@ -109,7 +109,7 @@ object AsOp extends Func[Obj, Obj] {
     })
 
   private def intConverter(x:Int, y:Obj):Obj = {
-    y.trace.reconstruct(Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
+    y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
       case _:__ => x
       case aint:IntType => int(name = aint.name, g = x.g, via = x.via)
       case areal:RealType => real(name = areal.name, g = x.g, via = x.via)
@@ -128,7 +128,7 @@ object AsOp extends Func[Obj, Obj] {
     })
 
   private def strConverter(x:Str, y:Obj):Obj =
-    y.trace.reconstruct(Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
+    y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
       case _:__ => x
       case abool:BoolType => bool(name = abool.name, g = JBoolean.valueOf(x.g), via = x.via)
       case aint:IntType => int(name = aint.name, g = JLong.valueOf(x.g), via = x.via)
@@ -138,7 +138,7 @@ object AsOp extends Func[Obj, Obj] {
     })
 
   private def lstConverter(x:Lst[Obj], y:Obj):Obj = {
-    y.trace.reconstruct(Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
+    y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
       case _:__ => x
       case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
       case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
@@ -150,7 +150,7 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def recConverter(x:Rec[Obj, Obj], y:Obj):Obj =
-    y.trace.reconstruct(Obj.resolveTokenOption(x, y).getOrElse(y).domain match {
+    y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
       case _:__ => x
       case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
       case arec:RecType[Obj, Obj] if arec.ctype => x.named(arec.name)

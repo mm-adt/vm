@@ -44,7 +44,7 @@ object BranchOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     (Inst.oldInst(inst).arg0[Obj] match {
       case apoly: Poly[_] => apoly
-      case _ => Obj.resolveTokenOption(start, inst.arg0[Poly[Obj]].rangeObj).getOrElse(inst.arg0[Poly[Obj]].rangeObj)
+      case _ => Obj.resolveToken(start, inst.arg0[Poly[Obj]].rangeObj)
     }).scalarMult(start) match {
       case bpoly if bpoly.isEmpty => zeroObj.via(start, inst)
       case bpoly: Value[_] => BranchInstruction.mergeBranches(bpoly, inst)

@@ -252,4 +252,10 @@ object Obj {
     }
     source
   }
+
+  // TODO: this will come in handy when types are automatically unrolled to their coercion
+  /*def isRecursive(aobj:Obj):Boolean = {
+    if(!aobj.named) return false
+    aobj.trace.nexists(x => x._2.args.exists(y => __.isToken(y) && y.name.equals(aobj.name)))
+  }*/
 }

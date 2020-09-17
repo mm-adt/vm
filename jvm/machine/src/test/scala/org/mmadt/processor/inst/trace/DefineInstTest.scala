@@ -31,7 +31,6 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.language.obj.{Bool, Int}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.BaseInstTest.engine
 import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.processor.inst.trace.DefineInstTest.{MODEL, myListType, natType}
 import org.mmadt.storage.StorageFactory._
@@ -41,8 +40,8 @@ object DefineInstTest {
   private val myListType:Type[__] = 'mylist <= __.-<(is(eqs(1)) `|`(1 `;` 'mylist)) >-
   private val iListType:Type[__] = 'ilist <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a('ilist))))
   private val siListType:Type[__] = 'silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist))))
-  private val vecType:Type[__] = 'vec <= __.split(id `;` lst.combine(id `,`).merge.count)
-  private val MODEL:Model = ModelOp.MM.defining(natType).defining(myListType).defining(iListType).defining(siListType).defining(vecType)
+  //private val vecType:Type[__] = 'vec <= __.split(id `;` lst.combine(id `,`).merge.count)
+  private val MODEL:Model = ModelOp.MM.defining(natType).defining(myListType).defining(iListType).defining(siListType) //.defining(vecType)
   //     testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
   //    testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
 
@@ -61,7 +60,7 @@ class DefineInstTest extends BaseInstTest(
     testing(1 `,`(1 `,` 2), a('mylist), false),
     testing(1 `,`(2 `,` 1), a('mylist), false),
     testing(1 `,`(1 `,` 2), a('mylist), false),
-    excepting(1 `;`(1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` 'mylist(1 `;`'mylist(1))), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
+    excepting(1 `;`(1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` 'mylist(1 `;` 'mylist(1))), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
     comment("ilist"),
     testing(lst(), a('ilist), true, "()[a,ilist]"),
     testing(1 `;`, a('ilist), true, "(1)[a,ilist]"),
@@ -74,16 +73,16 @@ class DefineInstTest extends BaseInstTest(
     testing(1 `;` "a" `;` 1, lst.a('silist), false, "(1;'a';1) => lst[a,silist]"),
     testing("a" `;` 1 `;` 2, lst.a('silist), false, "('a';1;2) => lst[a,silist]"),
     comment("vec"),
-    testing(lst(), a('vec), true, "()[a,vec]"),
-    testing(lst(), as('vec), (lst() `;` 0).named("vec"), "()[as,vec]"),
-    testing(1 `;` 2, as('vec), (((1 `;` 2) `;`) `;` 2).named("vec"), "(1;2)[as,vec]"),
+    //    testing(lst(), a('vec), true, "()[a,vec]"),
+    //    testing(lst(), as('vec), (lst() `;` 0).named("vec"), "()[as,vec]"),
+    //    testing(1 `;` 2, as('vec), (((1 `;` 2) `;`) `;` 2).named("vec"), "(1;2)[as,vec]"),
   ), testSet("[define] table test w/ mm", MM,
     comment("midway-define]"),
     testing(2, define('x <= int.plus(1)), 2, "2[define,x<=int+1]"),
-//    testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
-//    testing(int(2, 3, 4.q(2)), define('x <= int.plus(1)).plus('x), int(5, 7, 9.q(2)), "[2,3,4{2}][define,x<=int+1][plus,x]"),
-//    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x]"),
-//    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x<=x]"),
+    testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
+    testing(int(2, 3, 4.q(2)), define('x <= int.plus(1)).plus('x), int(5, 7, 9.q(2)), "[2,3,4{2}][define,x<=int+1][plus,x]"),
+    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x]"),
+    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x<=x]"),
     // testing(int(-2,2.q(5)), int.q(6).define('y<=int.plus(-1000),'x <=int.plus(1).as('y)).branch('x`,`), int(-998,1002.q(5)), "[-2,2{5}] => int{6}[define,y<=int+-1000,x<=int+1[as,y]][x]"),
   )
 ) {
@@ -97,7 +96,7 @@ class DefineInstTest extends BaseInstTest(
     println(new mmlangScriptEngineFactory().getScriptEngine.eval("1[a,[real|str]]"))
     println(str.a(__.-<(real `|` int) >-)) // TODO
   }
-  test("vec documentation example") {
+  /*test("vec documentation example") {
     engine.eval(
       """:[model,mm][define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),
         |                single<=vec:(lst,is<4).0[tail][head],
@@ -106,6 +105,5 @@ class DefineInstTest extends BaseInstTest(
     assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3)[as,vec]"))
     assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3) => vec<=lst"))
     assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3) => vec"))
-  }
-
+  }*/
 }

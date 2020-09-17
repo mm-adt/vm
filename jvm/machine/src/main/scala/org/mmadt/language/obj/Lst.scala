@@ -73,7 +73,11 @@ object Lst {
   type LstTuple[+A <: Obj] = (String, List[A])
 
   def shapeTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => WalkOp.testSourceToTarget(pair._1, pair._2))
-  def exactTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name) && p._1.test(Obj.resolveToken(p._1, p._2,baseName = false))))
+  def exactTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
+    case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
+      alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name) && p._1.test(Obj.resolveToken(p._1, p._2, baseName = false)))))
+    case _ => false
+  }
   def test[A <: Obj](alst:Lst[A], blst:Lst[A]):Boolean = {
     alst.q.within(blst.q) &&
       (blst.ctype || {
