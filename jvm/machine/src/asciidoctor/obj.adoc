@@ -236,7 +236,7 @@ The composition of two structure preserving type morphisms yields a new type--na
 
 === Models
 
-Types can be organized into *models* or *model-ADTs*. The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in a model called `mm` (the _mm_ of _mm_-ADT). The instruction `[model,mm]` generates a `rec` from the `mmlang` file `mm.mm` and makes it accessible as the `[model]` argument in the type's path definition.
+Types can be organized into *model-ADTs* (simply called *models*). The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in the `mm` model-ADT (the _mm_ of _mm_-ADT). The instruction `[model,mm]` generates a `rec` from the `mmlang` file `mm.mm`. Using the same multiplicity of identities principle, the `rec` is accessible in the type's path definition via the `[model]` argument.
 
 [source]
 ----
@@ -253,13 +253,13 @@ The `rec` encoding of a model-ADT has the model's canonical types (*ctypes*) as 
 There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. Generally, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` types are _universally grounded_ and
 \[
 \begin{split}
-\textbf{mm} &= \coprod_{i=0}^6 \texttt{ctype}_i + (\mathbf{0}_i^0 + \mathbf{0}_i^1 + \ldots + \mathbf{0}_i^n\;) \\
-            &= \coprod_{i=0}^6 \texttt{ctype}_i + \mathbf{0} \\
-            &= \coprod_{i=0}^6 \texttt{ctype}_i
+\textbf{mm} &= \coprod_{i=0}^6 \texttt{ctype}_i + \mathbf{0}_i \\
+            &= \coprod_{i=0}^6 \texttt{ctype}_i \\
+            &= (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{lst} + \texttt{rec})
 \end{split}
 \]
 
-That is, `mm` is composed of 6 ctypes: `bool`, `int`, `real`, `str`, `lst`, and `rec`. Within `mm`, these ctypes are the https://en.wikipedia.org/wiki/Identity_function[identity types] or, \$\mathbf{0}\$ in the additive group and \$\mathbf{1}\$ in the multiplicative monoid of the underlying ring. For example, the field `bool \-> ( )` in the `mm` `rec` above denotes \$\tt{bo\ol} \+ \mathbf{0}\$ or simply \$\tt{bo\ol}\$. The `bool` ctype is shorthand for `bool\<=bool`, which, when considering the quantifier ring, is shorthand for `bool{1}\<=bool{1}`. An instruction less type is a https://en.wikipedia.org/wiki/NOP_(code)[`noop`], capturing the https://en.wikipedia.org/wiki/Reflexive_relation[reflexivity] of identity:
+That is, `mm` is the sum of 6 ctypes -- the mm-ADT base types. Within `mm`, these ctypes are https://en.wikipedia.org/wiki/Identity_function[identity types]. For example, in the `mm` model `rec` at the beginning of this section, the field `bool \-> ( )` denotes \$\tt{bo\ol} \+ \mathbf{0}\$ or simply \$\tt{bo\ol}\$. The `bool` ctype is shorthand for `bool\<=bool`, which, when considering the quantifier ring, is shorthand for `bool{1}\<=bool{1}`. An instruction less type is a https://en.wikipedia.org/wiki/NOP_(code)[`noop`] and thus, `bool` captures the https://en.wikipedia.org/wiki/Reflexive_relation[reflexivity] of identity:
 \[
 \texttt{bool}\Leftarrow\texttt{bool} \;\equiv\; \texttt{bool} + \mathbf{0} \;\equiv\; \texttt{bool}.
 \]

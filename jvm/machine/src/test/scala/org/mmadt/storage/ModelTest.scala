@@ -27,6 +27,8 @@ import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.trace.ModelOp
+import org.mmadt.language.obj.op.trace.ModelOp.EMPTY
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
@@ -39,6 +41,20 @@ class ModelTest extends FunSuite {
   val tp3_kv:Type[Obj] = __.model(model('tpkv))
   val kv:Type[Obj] = __.model(model('kv))
   val tp3:Type[Obj] = __.model(model('tp))
+
+  test("model naming") {
+    assertResult("mm")(model('mm).name)
+    assertResult("mm")(model('mm).merging(model('mm)).name)
+    assertResult("mm")(model('mm).merging(EMPTY).name)
+    val name1 = model('mm).merging(model('kv)).name
+    assert(name1.contains(ModelOp.MODEL_EDIT))
+    assert(name1.startsWith("mm" + ModelOp.MODEL_EDIT))
+    Integer.valueOf(name1.substring(name1.indexOf(ModelOp.MODEL_EDIT) + 1, name1.length - 1))
+    val name2 = model('kv).merging(model('mm)).name
+    assert(name2.contains(ModelOp.MODEL_EDIT))
+    assert(name2.startsWith("kv" + ModelOp.MODEL_EDIT))
+    Integer.valueOf(name2.substring(name2.indexOf(ModelOp.MODEL_EDIT) + 2, name1.length - 1))
+  }
 
   test("[tp3] model") {
     val record1a = rec(
@@ -95,7 +111,7 @@ class ModelTest extends FunSuite {
     val store:Lst[Rec[StrValue, Obj]] = record1a `;` edge1
     val s:Obj = store ==> kv `=>` 'store
     println(s)
-    assertResult(btrue)(s ==> kv `=>` combine(id`;`).a('store))
+    assertResult(btrue)(s ==> kv `=>` combine(id `;`).a('store))
     val g:Obj = s ==> tp3_kv `=>` 'graph
     println(g)
     assertResult(btrue)(g ==> tp3 `=>` a('graph))

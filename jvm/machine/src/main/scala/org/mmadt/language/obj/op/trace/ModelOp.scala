@@ -55,6 +55,7 @@ object ModelOp extends Func[Obj, Obj] {
   type ModelMap = Rec[Obj, Lst[Obj]]
   val TYPE:StrValue = str("type")
   val VAR:StrValue = str("var")
+  val MODEL_EDIT:String = "#"
   val NOROOT:Pairs[StrValue, ModelOp.ModelMap] = List.empty
   val NOMAP:Pairs[Obj, Lst[Obj]] = List.empty
   val NOREC:ModelMap = rec[Obj, Lst[Obj]]
@@ -70,12 +71,17 @@ object ModelOp extends Func[Obj, Obj] {
     aobj match {
       case astrm:Strm[aobj.type] => astrm(x => mergeModel(amodel, x))
       case _ =>
-        if (amodel.isEmpty) aobj
+        if (amodel.name == aobj.model.name) aobj
+        else if (amodel.isEmpty) aobj
         else if (aobj.root) aobj.clone(via = (aobj.model.merging(amodel), null))
         else aobj.rangeObj.clone(via = (aobj.trace.dropRight(1).foldLeft(aobj.domainObj.clone(via = (aobj.model.merging(amodel), null)).asInstanceOf[Obj])((a, b) => b._1.via(a, b._2)), aobj.via._2))
     }
-
   }
+  private def nameModel(amodel:Model):Model = amodel.named((
+    if (amodel.name.indexOf(MODEL_EDIT) == -1) amodel.name + MODEL_EDIT
+    else amodel.name.substring(0, amodel.name.indexOf(MODEL_EDIT) + 1)) +
+    Math.abs(amodel.toString.hashCode))
+
   def isMetaModel(inst:Inst[_, _]):Boolean = inst.op.equals(Tokens.model) || inst.op.startsWith("rule:") || inst.op.equals(Tokens.define)
 
   @inline implicit def modelToRichModel(ground:Model):RichModel = new RichModel(ground)
@@ -115,7 +121,7 @@ object ModelOp extends Func[Obj, Obj] {
 
     final def rewrites:List[Obj] = model.gmap.fetchOrElse(TYPE, NOREC).gmap.values.flatMap(x => x.g._2).filter(x => x.domainObj.name.equals(Tokens.lift_op))
 
-    final def ctypes:List[Type[Obj]] = {
+    final def ctypes:List[Obj] = {
       val map = Option(model.g._2).getOrElse(NOROOT)
       val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
       typesMap.filter(x => !x._2.glist.exists(y => y.domainObj.name != Tokens.lift_op)).map(x => x._1.asInstanceOf[Type[Obj]])
@@ -137,27 +143,29 @@ object ModelOp extends Func[Obj, Obj] {
       if (model.vars(key).isDefined && value.isInstanceOf[Type[_]]) return model
       val map = Option(model.g._2).getOrElse(NOROOT)
       val typesMap = Option(map.fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
-      rec(model.name, g = (Tokens.`,`, map.replace(ModelOp.VAR -> rec(g = (Tokens.`,`, typesMap.replace(key -> lst(g = (Tokens.`,`, List(value.rangeObj)))))))))
+      nameModel(rec(model.name, g = (Tokens.`,`, map.replace(ModelOp.VAR -> rec(g = (Tokens.`,`, typesMap.replace(key -> lst(g = (Tokens.`,`, List(value.rangeObj))))))))))
     }
 
     final def defining(definition:Obj):Model = {
       val map = Option(model.g._2).getOrElse(NOROOT)
       val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
       val typeList = Option(typesMap.fetchOrElse(definition.range, lst).g._2).getOrElse(Nil)
-      if (typeList.contains(definition)) model
-      else rec(model.name, g = (Tokens.`,`, map.replace(ModelOp.TYPE -> rec(g = (Tokens.`,`, typesMap.replace(definition.range -> lst(g = (Tokens.`,`, typeList :+ definition))))))))
+      nameModel(if (typeList.contains(definition)) model
+      else rec(model.name, g = (Tokens.`,`, map.replace(ModelOp.TYPE -> rec(g = (Tokens.`,`, typesMap.replace(definition.range -> lst(g = (Tokens.`,`, typeList :+ definition)))))))))
     }
 
     final def merging(other:Model):Model = {
-      if (other.isEmpty) return model
+      if (other.name == model.name) return model
+      else if (other.isEmpty) return model
       else if (model.isEmpty) return other
+      ///
       var x:Model = other.g._2.
         fetchOrElse(ModelOp.TYPE, rec(g = (Tokens.`,`, NOMAP))).g._2.
         flatMap(x => x._2.g._2).
         foldLeft(model)((a, b) => a.defining(b))
-      x = other.ctypes.foldLeft(x)((a,b) => a.defining(b))
+      x = other.ctypes.foldLeft(x)((a, b) => a.defining(b))
       x = other.g._2.fetchOrElse(ModelOp.VAR, rec(g = (Tokens.`,`, NOMAP))).gmap.foldLeft(x)((a, b) => a.vars(b._1.asInstanceOf[StrValue], b._2.asInstanceOf[Lst[Obj]].glist.head))
-      rec(name = model.name, g = (Tokens.`,`, x.g._2))
+      nameModel(x)
     }
   }
 }

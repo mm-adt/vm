@@ -23,6 +23,7 @@
 package org.mmadt
 
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
 
