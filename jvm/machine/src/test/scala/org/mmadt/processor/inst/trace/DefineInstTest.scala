@@ -61,7 +61,7 @@ class DefineInstTest extends BaseInstTest(
     testing(1 `,`(1 `,` 2), a('mylist), false),
     testing(1 `,`(2 `,` 1), a('mylist), false),
     testing(1 `,`(1 `,` 2), a('mylist), false),
-    excepting(1 `;`(1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` (1 `;`1)), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
+    excepting(1 `;`(1 `;` 1), as('mylist).put(0, 34), LanguageException.typingError('mylist(34 `;` 1 `;` 'mylist(1 `;`'mylist(1))), myListType), "(1;(1;1))[as,mylist][put,0,34]"),
     comment("ilist"),
     testing(lst(), a('ilist), true, "()[a,ilist]"),
     testing(1 `;`, a('ilist), true, "(1)[a,ilist]"),

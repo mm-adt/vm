@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -57,7 +57,7 @@ object AsOp extends Func[Obj, Obj] {
     if (source.name.equals(target.name)) {
       if (target.isInstanceOf[__]) return source
       source match {
-        case slst:LstValue[Obj] if !Lst.test(slst, target.asInstanceOf[Lst[Obj]]) =>
+        case slst:LstValue[Obj] if !Lst.exactTest(slst, target.asInstanceOf[Lst[Obj]]) =>
         //case srec:RecValue[Obj, Obj] if !Rec.test(srec, target.asInstanceOf[Rec[Obj, Obj]]) =>
         case _ => return source
       }

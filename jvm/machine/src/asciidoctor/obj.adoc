@@ -331,14 +331,16 @@ Thus, there are two sorts definitions.
 :[model,pg_1]
 5
 5 => vertex                                                                //<1>
-(5;6) => (vertex;vertex) => edge                                           //<2>
-(5;6) => edge                                                              //<3>
-5-<(vertex;vertex)=>edge                                                   //<4>
+(5;6) => (vertex;vertex)                                                   //<2>
+(5;6) => (vertex;vertex) => edge                                           //<3>
+(5;6) => edge                                                              //<4>
+5-<(vertex;vertex)=>edge                                                   //<5>
 ----
 <1> An `int` value morphed into a `vertex`.
-<2> An `int` value pair morphed into a `vertex` pair and then into an edge (a fine-grained *type path*).
-<3> An `int` value pair morphed into an edge (a course-grained *type path*).
-<4> An `int` value split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
+<2> An `int` value pair morphed into a `vertex` pair (a *type edge*).
+<3> An `int` value pair morphed into a `vertex` pair and then into an edge (two *type edges* composed to a *type path*).
+<4> An `int` value pair morphed into an edge (a *type path*).
+<5> An `int` value split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
 
 The above example demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product] -- i.e., a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. For this reason, the https://en.wikipedia.org/wiki/Unicode[Unicode] character for https://en.wikipedia.org/wiki/Pi[pi] (π), the conventional symbol for product https://en.wikipedia.org/wiki/Projection_(mathematics)[projection] serves as another `mmlang` sugar for `[get]`.
 

@@ -62,7 +62,7 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
         case x:Strm[_] => x // TODO: reconstruct type from a stream
         case x:Value[_] if query.contains(">-") || query.contains("[merge") => x // TODO: not rebuild type up correctly
         case atype:Type[_] => atype.domainObj ==> atype
-        case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
+        case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
       })
     )
     val evaluating = List[(String, Obj => Obj)](
@@ -74,8 +74,8 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
           if middle.via.exists(x => List(Tokens.split, Tokens.lift).contains(x._2.op)) ||
             (aobj.isInstanceOf[Strm[_]] && aobj.toStrm.drain.headOption.exists(y => y.via.exists(x => List(Tokens.get).contains(x._2.op)))) => aobj // nested poly have their quantifiers altered
         case atype:Type[_] => atype.domainObj ==> atype
-        case astrm:Strm[_] => strm(astrm.drain.map(x => (x.domainObj ==> x.trace.reconstruct[Obj](x.domain, x.name)).hardQ(x.q)))
-        case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domain, avalue.name)).hardQ(avalue.q)
+        case astrm:Strm[_] => strm(astrm.drain.map(x => (x.domainObj ==> x.trace.reconstruct[Obj](x.domainObj, x.name)).hardQ(x.q)))
+        case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
       }),
       ("eval-5", s => {
         val result = s ==> (middle.domain ==> middle)

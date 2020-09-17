@@ -45,20 +45,8 @@ class mmlangScriptEngineTest extends FunSuite {
   lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
   test("poly play") {
-
-
-    val source:Obj = int(45).model('play)
-    val target:Obj = 'boom //lst(str.plus("a")`;`str.plus("b"))
-    val temp = (1 `;` 2).model('digraph)
-    //println(temp ==> ('vertex`;`'vertex))
-    engine.eval(":[model,digraph]")
-    println(engine.eval("(1;2)=>edge"))
-    println(engine.eval("(1;2)=>(vertex;vertex)"))
-    println(engine.eval("2-<(vertex;vertex)=>edge"))
-    //val result = source `=>` 'pair `=>` lst[Obj] `=>`('bow `;` 'bow)
-    //.headOption
-    //.map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))
-    //println(result)
+    engine.eval(":[model,pg_1]")
+    //println(engine.eval("1 => (vertex;vertex)"))
   }
 
   test("play2") {
@@ -1001,7 +989,7 @@ class mmlangScriptEngineTest extends FunSuite {
     engine.eval(":{1}")
   }
 
-  test("recursive definition parsing") {
+  /*test("recursive definition parsing") {
     engine.eval(":[model,mm]")
     assertResult(bfalse)(engine.eval("(1,(2,'3'))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
     assertResult(bfalse)(engine.eval("(1,(2,('3',4)))[define,xyz<=_[[is,[a,int]]|[is,[a,(int,xyz)]]]][a,xyz]"))
@@ -1037,7 +1025,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("1[define,wxy<=xyz][define,xyz<=wxy][a,xyz]"))
     engine.eval(":{1}")
     //}
-  }
+  }*/
 
   test("loading definitions parser") {
     val file1:String = "'" + getClass.getResource("/load/source-1.mm").getPath + "'"

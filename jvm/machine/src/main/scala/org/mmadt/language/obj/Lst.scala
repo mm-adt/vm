@@ -73,7 +73,8 @@ object Lst {
   type LstTuple[+A <: Obj] = (String, List[A])
 
   def shapeTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => WalkOp.testSourceToTarget(pair._1, pair._2))
-  def test[A <: Obj](alst:Lst[A], blst:Lst[A]):Boolean =
+  def exactTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name) && p._1.test(Obj.resolveToken(p._1, p._2,baseName = false))))
+  def test[A <: Obj](alst:Lst[A], blst:Lst[A]):Boolean = {
     alst.q.within(blst.q) &&
       (blst.ctype || {
         val eqsep:Boolean = alst.gsep == blst.gsep
@@ -89,6 +90,7 @@ object Lst {
           case _ => alst.glist.forall(a => blst.glist.exists(b => a.test(b)))
         }
       })
+  }
 
   private def semi[A <: Obj](objs:List[A]):List[A] = if (objs.exists(x => !x.alive)) List(zeroObj.asInstanceOf[A]) else objs.filter(v => !__.isAnonRootAlive(v))
   def moduleStruct[A <: Obj](gsep:String, values:List[A], start:Obj = null):List[A] = gsep match {
