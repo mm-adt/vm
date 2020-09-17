@@ -507,7 +507,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#_variables">Variables</a></li>
 <li><a href="#_definitions">Definitions</a></li>
-<li><a href="#_rewrites">Rewrites</a></li>
 </ul>
 </li>
 <li><a href="#_models">Models</a>
@@ -518,6 +517,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_model_paths">Model Paths</a></li>
 </ul>
 </li>
+<li><a href="#_rewrites">Rewrites</a></li>
 <li><a href="#_type_patterns">Type Patterns</a>
 <ul class="sectlevel4">
 <li><a href="#_refinement_types">Refinement Types</a></li>
@@ -3186,7 +3186,7 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 <h2 id="_the_obj_graph">The Obj Graph</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>An mm-ADT program is a <strong>type</strong>. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. A type is inductively defined and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within a larger <strong>type graph</strong>. The type&#8217;s path is a graphical encoding specifying a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in a <strong>value graph</strong>. Together, the type graph and the value graph form the <strong>obj graph</strong>.</p>
+<p>An mm-ADT program is a <strong>type</strong>. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. A type is inductively defined and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within the larger <strong>type graph</strong>. The type&#8217;s path is a graphical encoding specifying a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in the <strong>value graph</strong>. Together, the type graph and the value graph form the <strong>obj graph</strong>.</p>
 </div>
 <div class="paragraph">
 <p>Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the <code>obj</code> graph. The following itemizations summarizes the various roles that the <code>obj</code> graph throughout a computation.</p>
@@ -3459,7 +3459,7 @@ inst                                           domain      range state
 <div class="sect3">
 <h4 id="_definitions">Definitions</h4>
 <div class="paragraph">
-<p>A <strong>definition</strong> takes one of the two familiar forms
+<p>A <strong>type definition</strong> takes one of the two familiar forms
 \[
 b&#8656;a
 \]
@@ -3467,118 +3467,129 @@ or
 \[
 b:a
 \]
-where, for the first, \$b\$ is <em>generated</em> by \$a\$ and for the second, \$b\$ is <em>structured</em> as \$a\$ and, when considering no extending instructions to the \$b&#8656;a\$ form, \$b&#8656;a \cong b:a\$ such that \$a\$ is <em>named</em> \$b\$.</p>
+where, for the first, \$b\$ is <em>generated</em> by \$a\$ and for the second, \$b\$ is <em>structured</em> as \$a\$ and, when considering no extending instructions to the \$b&#8656;a\$ form, \$b&#8656;a \cong b:a\$ such that \$a\$ is <em>named</em> \$b\$. For most of the documentation, the examples have been presented solely from within the <code>mm</code> model-ADT where there are 6 types: <code>bool</code>, <code>int</code>, <code>real</code>, <code>str</code>, <code>lst</code>, and <code>rec</code> along with their respective instructions. It is possible to extend <code>mm</code> with new types that are ultimately <em>grounded</em> (Cayley rooted) in the <code>mm</code> model-ADT types. This is the purpose of the <code>[define]</code> instruction which will now be explained by way of example.</p>
 </div>
 <div class="paragraph">
-<p>For most of the documentation, the examples have been presented solely from within the <code>mm</code> model-ADT where there are 6 types: <code>bool</code>, <code>int</code>, <code>real</code>, <code>str</code>, <code>lst</code>, and <code>rec</code> along with their respective instructions. It is possible to extend <code>mm</code> with new types that are ultimately <em>grounded</em> (Cayley rooted) in the <code>mm</code> model-ADT types. This is the purpose of the <code>[define]</code> instruction.</p>
+<p>The natural numbers (\$\mathbb{N}\$) are a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement</a> of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In <a href="https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate">set builder notation</a>, specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
+\[
+\mathbb{N} = \{n \in \mathbb{Z} \;|\; n &gt; 0\}.
+\]
+In mm-ADT, <code>int</code> is a <code>nat</code> (\$\mathbb{N}\$) if there is a <strong>path</strong> through the type graph from the <code>int</code> to <code>nat</code>. These paths are <strong>type definitions</strong>. In the example below, <code>[define]</code> creates a path from at <code>int</code> to <code>nat</code> via the instruction <code>[is&gt;0]</code>.</p>
 </div>
-<div class="paragraph">
-<p>Assume the two type definitions below: <code>vertex</code> and <code>edge</code>. The associated diagram is not commutative and the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>, where <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
-</div>
-<table class="tableblock frame-none grid-none center" style="width: 85%;">
+<table class="tableblock frame-none grid-none center" style="width: 25%;">
 <colgroup>
-<col style="width: 58.3333%;">
-<col style="width: 41.6667%;">
+<col style="width: 100%;">
 </colgroup>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<td class="tableblock halign-center valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">[define,vertex:('id'-&gt;int)]
-[define,  edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">[define,nat&lt;=int[is&gt;0]]</code></pre>
 </div>
 </div>
 <div class="paragraph">
 <p></p>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/digraph-model-1.svg" alt="digraph model 1"></span></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The <code>vertex</code> and <code>edge</code> definitions can be used within a larger mm-ADT program/type.</p>
+<p>A <code>nat</code> is any <code>int</code> that arrives at <code>nat</code> via <code>nat&lt;=int[is&gt;0]</code>. Given this definition (and this definition only), <code>nat</code> is a <em>refinement</em> of <code>int</code> because only 50% of <code>ints</code> successfully reach <code>nat</code>. However, there may be other paths to <code>nat</code> from other types and as such, <a href="https://en.wikipedia.org/wiki/Refinement_type">type refinement</a> is a relative concept in mm-ADT. In isolation, <code>nat</code> is only a character label (called a <strong>name</strong>) attached to a vertex in the <code>obj</code> graph. There is no other structure to a isolated type. The nature of a type is completely determined by the paths incoming and outgoing from it. In this <a href="https://en.wikipedia.org/wiki/Graph_theory">graph-based interpretation</a> of types, a type can be the source or target of any number of paths and it is through navigating these paths that values at a type are morphed into values at other types, where mm-ADT instructions (<code>inst</code>) specify, step-by-step, the way in which the morphing process is to be carried out.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; edge&lt;=int[model,mm][define,vertex:('id'-&gt;int), edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]
-                      -&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt;('id'-&gt;+1))
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The first line above reads: Given the value 1, generate an <code>edge</code> from that <code>int</code> according to the definitions of the <code>mm</code> model-ADT extended with two types <code>vertex</code> and <code>edge</code>. The two new types are defined <em>in situ</em>, where a <code>vertex</code> is a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement</a> on <code>rec</code> constraining <code>rec</code> to an <code>'id'</code> key with an <code>int</code> value and, similarly, <code>edge</code> constrains <code>rec</code> to keys <code>'outV'</code> (edge tail) and <code>'inV'</code> (edge head) with corresponding <code>vertex</code> values. The second line specifies how this mapping should be done. The incoming <code>int</code> is <strong>split</strong> (<code>-&lt;</code>) across a two element <code>rec</code>, where their values are single element <code>recs</code> which again split the <code>int</code> to be the values for the <code>'id'</code> keys. Given <code>edge&lt;=int</code>, an <code>edge</code> is the desired output. The <code>mm</code> model (and extending definitions) determine the "best" way to construct an <code>edge</code> given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant <code>edge</code> structure.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Type definitions (using <code>[define]</code> or <code>[model]</code>) denote canonical mappings within a <a href="https://en.wikipedia.org/wiki/Domain_of_discourse">domain of discourse</a> (i.e., a <strong>model</strong>). Programs that maintain instructions after <code>b&lt;=a</code> serve to manipulate <code>a</code> just enough to get it to the head of a type definition path that will ultimately reach <code>b</code>. In a well constrained data environment, mm-ADT code has less intermediate instructions with a style of the form \$a \implies b \implies c \implies \ldots \implies z\$, relying on the type definitions to string together a well-reasoned path from source to sink.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The <code>[define]</code> instruction is placed at the start of the program (the desired start of the scope of the definition(s)). To ease matters, definition placement can happen automatically by way of a <strong>type prefix</strong>. The type prefix is a generalization of a <a href="https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries">library statement</a> such as <code>import</code> or <code>module</code> found in other programming languages. The generalization is that a type prefix can be any type (not just <code>[model]</code> and <code>[define]</code> instructions). The type prefix is concatenated to the program type prior to compilation, where this operation is made sound by the free <code>inst</code> monoid.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-A more sophisticated library infrastructure is provided by the <code>[model]</code> instruction with a complete treatment forthcoming.
-</td>
-</tr>
-</table>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vertex:('id'-&gt;int),edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]     <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;_[define,vertex,edge]
-mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt;('id'-&gt;+1))                      <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))
-mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('ID'-&gt;_),'inV'-&gt;-&lt;('ID'-&gt;+1))                      <i class="conum" data-value="3"></i><b>(3)</b>
-language error: ('outV'-&gt;('ID'-&gt;1),'inV'-&gt;('ID'-&gt;2)) is not an edge
-mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt;('id'-&gt;+1),'extra'-&gt;'data')      <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 36 =&gt; int[define,nat&lt;=int[is&gt;0]]                   <i class="conum" data-value="1"></i><b>(1)</b>
+language error: end of input expected at 1:54
+       <i class="conum" data-value="1"></i><b>(1)</b>
+         ^ near here
+mmlang&gt; 36 =&gt; nat&lt;=int[define,nat&lt;=int[is&gt;0]]              <i class="conum" data-value="2"></i><b>(2)</b>
+language error: false is not a nat
+mmlang&gt; 36 =&gt; nat&lt;=int[define,nat&lt;=int[is&gt;0]][mult,-1]     <i class="conum" data-value="3"></i><b>(3)</b>
+language error: true is not a nat</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The type prefix extends the <code>mm</code> model-ADT with <code>vertex</code> and <code>edge</code> definitions.</td>
+<td>A <code>nat</code> is defined, but never applied. Thus, logically, this is equivalent to <code>36 =&gt; int</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>vertex</code> and <code>edge</code> type definitions are automatically prepended to all subsequent programs.</td>
+<td>A type can be used anytime after its definition in the path. Thus, <code>nat</code> is a viable range type.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>If there is no mapping (path) from input to output via the type definitions, the program fails.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.</td>
+<td>If the <code>obj</code> is not a <code>nat</code>, then the larger <code>nat&lt;=int</code> is invalid.</td>
 </tr>
 </table>
 </div>
-</div>
-<div class="sect3">
-<h4 id="_rewrites">Rewrites</h4>
-<div class="imageblock text-center">
+<div class="exampleblock">
+<div class="title">Deep Dive 2. mm-ADT Type Prefix</div>
 <div class="content">
-<img src="./images/obj/type-to-type-type.png" alt="type to type type" width="700">
+<table class="tableblock frame-all grid-all right" style="width: 50%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0]]
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]]]
+mmlang&gt; 10 =&gt; nat
+==&gt;nat:10
+mmlang&gt; -1 =&gt; nat
+language error: -1 is not a nat
+mmlang&gt; 10 =&gt; nat[plus,5]
+==&gt;nat:15
+mmlang&gt; 10 =&gt; nat[plus,5][plus,-15]
+language error: 0 is not a nat</code></pre>
 </div>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Prepending type definitions to every program reduces legibility and complicates program development. For this reason, mm-ADT provides a <strong>type prefix</strong>. All <code>mmlang</code> examples that start with <code>:</code> are defining <em>the</em> type prefix that will be used for all subsequent programs. The type prefix is a generalization of a <a href="https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries">library statement</a> such as <code>import</code> or <code>module</code> found in other programming languages. The generalization is that a type prefix can be any type, not just those containing only <code>[define]</code>). The type prefix is prepended to the program type prior to compilation, where this operation is made sound by the free <code>inst</code> monoid.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The example below defines a <code>date</code> to be a <code>;-lst</code> with 2 or 3 <code>nats</code>. If the <code>;-lst</code> contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT&#8217;s type system. Variables, types, and rewrites are all <em>graph search processes</em>. A defined type (path) with a desired <strong>range</strong> is searched for in the <code>obj</code> graph and returned if and only if the morphing <code>obj</code> matches the defined type&#8217;s <strong>domain</strong>. Type definitions are simply other types that specify the means by which one type is translated into another type.</p>
+</div>
+<div class="imageblock">
+<div class="content">
+<img src="./images/obj/date-example.svg" alt="date example">
+</div>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0],
+                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
+                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
+==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]],date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat),date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]])[put,2,2020]]
+mmlang&gt; (8;26;2020) =&gt; date
+==&gt;date:(nat:8;nat:26;nat:2020)
+mmlang&gt; (8;26)      =&gt; date
+==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>Defining types with <code>[define]</code> is useful for <em>in situ</em> definitions that are only require through the scope of the definition (typically within nested types). For reusing types across mm-ADT programs, mm-ADT offers <em>models</em> and the <code>[model]</code> instruction.</p>
 </div>
 </div>
 </div>
 <div class="sect2">
 <h3 id="_models">Models</h3>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Homotopy Type Theory</div>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Homotopy_type_theory">Homotopy type theory</a> understands types as coexisting with other types in a <a href="https://en.wikipedia.org/wiki/Topology">topological</a> space. A spatial embedding implies that a type can be reached from another type by moving through space. The way in which the space is navigated is via paths. A path is a continuous deformations of one type into another type.</p>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>Types can be organized into <strong>model-ADTs</strong> (simply called <strong>models</strong>). The 4 <em>mono</em> types (<code>bool</code>,<code>int</code>,<code>real</code>,<code>str</code>) and the 2 <em>poly</em> types (<code>lst</code>, <code>rec</code>) are defined in the <code>mm</code> model-ADT (the <em>mm</em> of <em>mm</em>-ADT). The instruction <code>[model,mm]</code> generates a <code>rec</code> from the <code>mmlang</code> file <code>mm.mm</code>. Using the same multiplicity of identities principle, the <code>rec</code> is accessible in the type&#8217;s path definition via the <code>[model]</code> argument.</p>
 </div>
@@ -3607,15 +3618,15 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 \[
 \begin{split}
 \texttt{model}_\mathbf{m} &amp;= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 + \texttt{dtype}_i^1 + \ldots + \texttt{dtype}_i^n) \\
-                          &amp;= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \coprod_{j=0}^{|\texttt{dtype}_i|} \texttt{dtype}_i^j.
+&amp;= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \coprod_{j=0}^{|\texttt{dtype}_i|} \texttt{dtype}_i^j.
 \end{split}
 \]
 There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. Generally, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> types are <em>universally grounded</em> and
 \[
 \begin{split}
 \textbf{mm} &amp;= \coprod_{i=0}^6 \texttt{ctype}_i + \mathbf{0}_i \\
-            &amp;= \coprod_{i=0}^6 \texttt{ctype}_i \\
-            &amp;= (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{lst} + \texttt{rec})
+&amp;= \coprod_{i=0}^6 \texttt{ctype}_i \\
+&amp;= (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{lst} + \texttt{rec})
 \end{split}
 \]</p>
 </div>
@@ -3626,7 +3637,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 \]</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. Model-ADT Subgraphs of the <code>obj</code> Graph</div>
+<div class="title">Deep Dive 3. Model-ADT Subgraphs of the <code>obj</code> Graph</div>
 <div class="content">
 <div class="imageblock right">
 <div class="content">
@@ -3676,6 +3687,66 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 <div class="paragraph">
 <p>The <code>mm</code> model-ADT is too simple to be educational. The following section build a model-ADT in stages. The final model is <code>pg</code> and denotes the category of <strong>property graphs</strong>. Before reaching <code>pg</code>, smaller tutorial models will be presented starting at <code>pg_1</code>, then <code>pg_2</code>, and so forth.</p>
 </div>
+<h5 id="_property_graph_model_1" class="discrete">Property Graph Model 1</h5>
+<div class="paragraph">
+<p>Assume the two type definitions below: <code>vertex</code> and <code>edge</code>. The associated diagram is not commutative and the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>, where <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
+</div>
+<table class="tableblock frame-none grid-none center" style="width: 85%;">
+<colgroup>
+<col style="width: 58.3333%;">
+<col style="width: 41.6667%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">[define,vertex:('id'-&gt;int)]
+[define,  edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/digraph-model-1.svg" alt="digraph model 1"></span></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The first line above reads: Given the value 1, generate an <code>edge</code> from that <code>int</code> according to the definitions of the <code>mm</code> model-ADT extended with two types <code>vertex</code> and <code>edge</code>. The two new types are defined <em>in situ</em>, where a <code>vertex</code> is a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement</a> on <code>rec</code> constraining <code>rec</code> to an <code>'id'</code> key with an <code>int</code> value and, similarly, <code>edge</code> constrains <code>rec</code> to keys <code>'outV'</code> (edge tail) and <code>'inV'</code> (edge head) with corresponding <code>vertex</code> values. The second line specifies how this mapping should be done. The incoming <code>int</code> is <strong>split</strong> (<code>-&lt;</code>) across a two element <code>rec</code>, where their values are single element <code>recs</code> which again split the <code>int</code> to be the values for the <code>'id'</code> keys. Given <code>edge&lt;=int</code>, an <code>edge</code> is the desired output. The <code>mm</code> model (and extending definitions) determine the "best" way to construct an <code>edge</code> given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant <code>edge</code> structure.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vertex:('id'-&gt;int),edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]     <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;_[define,vertex,edge]
+mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt;('id'-&gt;+1))                      <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))
+mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('ID'-&gt;_),'inV'-&gt;-&lt;('ID'-&gt;+1))                      <i class="conum" data-value="3"></i><b>(3)</b>
+language error: ('outV'-&gt;('ID'-&gt;1),'inV'-&gt;('ID'-&gt;2)) is not an edge
+mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt;('id'-&gt;+1),'extra'-&gt;'data')      <i class="conum" data-value="4"></i><b>(4)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>The type prefix extends the <code>mm</code> model-ADT with <code>vertex</code> and <code>edge</code> definitions.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>The <code>vertex</code> and <code>edge</code> type definitions are automatically prepended to all subsequent programs.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>If there is no mapping (path) from input to output via the type definitions, the program fails.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.</td>
+</tr>
+</table>
+</div>
+<h5 id="_property_graph_model_2" class="discrete">Property Graph Model 2</h5>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                                       <i class="conum" data-value="1"></i><b>(1)</b>
@@ -3826,7 +3897,7 @@ mmlang&gt; A =&gt; B =&gt; C
 <p>That is, a type is associated with a list of type definitions for which the type is the range. These type definitions can be understood as single-step paths through the <code>obj</code> graph, such that the composition of these types is the diagram of the model.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 3. model-ADT Application Programming Interfaces</div>
+<div class="title">Deep Dive 4. model-ADT Application Programming Interfaces</div>
 <div class="content">
 <div class="paragraph">
 <p>The software development pattern espoused by mm-ADT is one in which software libraries (<a href="https://en.wikipedia.org/wiki/API">APIs</a>) are large <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagrams</a> constructed via domain/range concatenation of \$b&#8656;a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a <em>look-and-feel</em> similar in form to
@@ -3839,6 +3910,14 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 <p>These commuting diagrams are called <strong>models</strong> and are stored in model-ADT files analogous to <code>mm.mm</code> and <code>digraph.mm</code>. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with <code>[branch]</code>, serve as <a href="https://en.wikipedia.org/wiki/Lookup_table">lookup tables</a> for type path resolution.</p>
 </div>
 </div>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_rewrites">Rewrites</h4>
+<div class="imageblock text-center">
+<div class="content">
+<img src="./images/obj/type-to-type-type.png" alt="type to type type" width="700">
 </div>
 </div>
 </div>
@@ -3993,15 +4072,7 @@ mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
 \[
 \mathbb{N} = \{n \in \mathbb{Z} \;|\; n &gt; 0\}.
 \]
-In mm-ADT, the above is denote <code>int[is&gt;0]</code> which is the sugar form of <code>int{?}&lt;=int[is,[gt,0]]</code>. mm-ADT supports user defined types. In fact, mm-ADT&#8217;s primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The <code>[define]</code> instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on <em>model-ADTs</em>, the more general <code>[model]</code> instruction will be presented.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 4. mm-ADT Type Prefix</div>
-<div class="content">
-<div class="paragraph">
-<p>All <code>mmlang</code> examples that start with <code>:</code> are defining a <strong>type prefix</strong>. This type is prepended to all subsequent expressions. In many ways, a type prefix is like an <a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a> <a href="https://en.wikipedia.org/wiki/Object_file">object file</a>. On the other hand, model-ADTs (of <code>[model]</code>) are similar to the <code>import</code> of <a href="https://en.wikipedia.org/wiki/Class_(computer_programming)">class files</a> in <a href="https://en.wikipedia.org/wiki/Object-oriented_programming">object-oriented languages</a>.</p>
-</div>
-</div>
+In mm-ADT, the above is written <code>int[is&gt;0]</code> which is the sugar form of <code>int{?}&lt;=int[is,[gt,0]]</code>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4017,27 +4088,6 @@ mmlang&gt; 10 =&gt; nat[plus,5][plus,-15]
 language error: 0 is not a nat</code></pre>
 </div>
 </div>
-<h6 id="_poly_refinement" class="discrete">Poly Refinement</h6>
-<div class="paragraph">
-<p>There are two canonical <code>poly</code> types: <code>lst</code> and <code>rec</code>. Any restriction on their respective values is a <strong>refinement</strong>. The example below defines a <code>date</code> to be a <code>;-lst</code> with 2 or 3 <code>nats</code>. If the <code>;-lst</code> contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT&#8217;s type system. Variables, types, and rewrites are all <em>graph search processes</em>. A defined type (path) with a desired <strong>range</strong> is searched for in the <code>obj</code> graph and returned if and only if the morphing <code>obj</code> matches the defined type&#8217;s <strong>domain</strong>. Type definitions are simply other types that specify the means by which one type is translated into another type.</p>
-</div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/obj/date-example.svg" alt="date example">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0],
-                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
-                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
-==&gt;_[define,nat&lt;=int[is,bool&lt;=int[gt,0]],date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat),date&lt;=(nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]])[put,2,2020]]
-mmlang&gt; (8;26;2020) =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)
-mmlang&gt; (8;26)      =&gt; date
-==&gt;date:(nat:8;nat:26;2020)</code></pre>
-</div>
-</div>
 </div>
 <div class="sect4">
 <h5 id="_dependent_types">Dependent Types</h5>
@@ -4048,13 +4098,13 @@ mmlang&gt; (8;26)      =&gt; date
                                   single&lt;=vec:(lst,is&gt;3).0[head]]
 ==&gt;_[define,vec&lt;=lst[split,(lst,int&lt;=lst[combine,(_)][merge][count])],single&lt;=vec[get,0,_][tail][head],single&lt;=vec[get,0,_][head]]
 mmlang&gt; (1;2;3)   =&gt; vec                                               <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;vec:((1;2;3),3)
+==&gt;vec:(((1;2;3),3),2)
 mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;single:2
+==&gt;single:3
 mmlang&gt; (1;2;3;4) =&gt; vec                                               <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;vec:((1;2;3;4),4)
+==&gt;vec:(((1;2;3;4),4),2)
 mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                                     <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;single:1</code></pre>
+==&gt;single:4</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -7229,7 +7279,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-16 23:31:05 -0600
+Last updated 2020-09-17 05:17:39 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
