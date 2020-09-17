@@ -1,9 +1,8 @@
 :imagesdir: ./images/obj
 
-
 == The Obj Graph
 
-An mm-ADT program is a *type*. The `mmlang` parser converts a textual representation of a type into a type `obj`. A type is inductively defined and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within a larger *type graph*. The type's path is a graphical encoding specifying a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in a *value graph*. Together, the type graph and the value graph form the *obj graph*.
+An mm-ADT program is a *type*. The `mmlang` parser converts a textual representation of a type into a type `obj`. A type is inductively defined and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within the larger *type graph*. The type's path is a graphical encoding specifying a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in the *value graph*. Together, the type graph and the value graph form the *obj graph*.
 
 Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the `obj` graph. The following itemizations summarizes the various roles that the `obj` graph throughout a computation.
 
@@ -22,9 +21,8 @@ Let \$(M,\cdot,e)\$ be a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e
 Thus, every monoid has a *single unique identity*.
 However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
 
-
 [.small]
-[cols="2,1,2" width=42, float=right]
+[cols="2,1,2" width=42,float=right]
 |====
 | idiom                                                                      | inst           | description
 
@@ -119,7 +117,7 @@ int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain
 
 ==== Definitions
 
-A *definition* takes one of the two familiar forms
+A *type definition* takes one of the two familiar forms
 \[
 b<=a
 \]
@@ -127,114 +125,77 @@ or
 \[
 b:a
 \]
-where, for the first, \$b\$ is _generated_ by \$a\$ and for the second, \$b\$ is _structured_ as \$a\$ and, when considering no extending instructions to the \$b<=a\$ form, \$b<=a \cong b:a\$ such that \$a\$ is _named_ \$b\$.
+where, for the first, \$b\$ is _generated_ by \$a\$ and for the second, \$b\$ is _structured_ as \$a\$ and, when considering no extending instructions to the \$b<=a\$ form, \$b<=a \cong b:a\$ such that \$a\$ is _named_ \$b\$. For most of the documentation, the examples have been presented solely from within the `mm` model-ADT where there are 6 types: `bool`, `int`, `real`, `str`, `lst`, and `rec` along with their respective instructions. It is possible to extend `mm` with new types that are ultimately _grounded_ (Cayley rooted) in the `mm` model-ADT types. This is the purpose of the `[define]` instruction which will now be explained by way of example.
 
-For most of the documentation, the examples have been presented solely from within the `mm` model-ADT where there are 6 types: `bool`, `int`, `real`, `str`, `lst`, and `rec` along with their respective instructions. It is possible to extend `mm` with new types that are ultimately _grounded_ (Cayley rooted) in the `mm` model-ADT types. This is the purpose of the `[define]` instruction.
 
-Assume the two type definitions below: `vertex` and `edge`. The associated diagram is not commutative and the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]`, where `.outV` is sugar for `[get,'outV']`.
+The natural numbers (\$\mathbb{N}\$) are a https://en.wikipedia.org/wiki/Refinement_type[refinement] of the set of integers (\$\mathbb{Z}\$), where \$\mathbb{N} \subset \mathbb{Z}\$. In https://en.wikipedia.org/wiki/Set-builder_notation#Sets_defined_by_a_predicate[set builder notation], specifying the set of integers and a predicate to limit the set to only those integers greater than 0 is denoted
+\[
+\mathbb{N} = \{n \in \mathbb{Z} \;|\; n > 0\}.
+\]
+In mm-ADT, `int` is a `nat` (\$\mathbb{N}\$) if there is a *path* through the type graph from the `int` to `nat`. These paths are *type definitions*. In the example below, `[define]` creates a path from at `int` to `nat` via the instruction `[is>0]`.
 
 [.center]
-[cols="7,5",width=85,grid=none,frame=none]
-|====
-
+[cols=^1,width=25,frame=none,grid=none]
+|===
 a|
 [exec,prompt="",eval=false]
 ----
-[define,vertex:('id'->int)] %
-[define,  edge:('outV'->vertex,'inV'->vertex)]
+[define,nat<=int[is>0]]
 ----
 {blank}
-| image:digraph-model-1.svg[align=center]
+|===
 
-|====
-
-The `vertex` and `edge` definitions can be used within a larger mm-ADT program/type.
-
-[exec]
-----
-1 => edge<=int[model,mm][define,vertex:('id'->int), edge:('outV'->vertex,'inV'->vertex)] %
-              -<('outV'->-<('id'->_),'inV'->-<('id'->+1))
-----
-
-The first line above reads: Given the value 1, generate an `edge` from that `int` according to the definitions of the `mm` model-ADT extended with two types `vertex` and `edge`. The two new types are defined _in situ_, where a `vertex` is a https://en.wikipedia.org/wiki/Refinement_type[refinement] on `rec` constraining `rec` to an `'id'` key with an `int` value and, similarly, `edge` constrains `rec` to keys `'outV'` (edge tail) and `'inV'` (edge head) with corresponding `vertex` values. The second line specifies how this mapping should be done. The incoming `int` is *split* (`-<`) across a two element `rec`, where their values are single element `recs` which again split the `int` to be the values for the `'id'` keys. Given `edge\<=int`, an `edge` is the desired output. The `mm` model (and extending definitions) determine the "best" way to construct an `edge` given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant `edge` structure.
-
-NOTE: Type definitions (using `[define]` or `[model]`) denote canonical mappings within a https://en.wikipedia.org/wiki/Domain_of_discourse[domain of discourse] (i.e., a *model*). Programs that maintain instructions after `b\<=a` serve to manipulate `a` just enough to get it to the head of a type definition path that will ultimately reach `b`. In a well constrained data environment, mm-ADT code has less intermediate instructions with a style of the form \$a \implies b \implies c \implies \ldots \implies z\$, relying on the type definitions to string together a well-reasoned path from source to sink.
-
-The `[define]` instruction is placed at the start of the program (the desired start of the scope of the definition(s)). To ease matters, definition placement can happen automatically by way of a *type prefix*. The type prefix is a generalization of a https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries[library statement] such as `import` or `module` found in other programming languages. The generalization is that a type prefix can be any type (not just `[model]` and `[define]` instructions). The type prefix is concatenated to the program type prior to compilation, where this operation is made sound by the free `inst` monoid.
-
-NOTE: A more sophisticated library infrastructure is provided by the `[model]` instruction with a complete treatment forthcoming.
+A `nat` is any `int` that arrives at `nat` via `nat\<=int[is>0]`. Given this definition (and this definition only), `nat` is a _refinement_ of `int` because only 50% of `ints` successfully reach `nat`. However, there may be other paths to `nat` from other types and as such, https://en.wikipedia.org/wiki/Refinement_type[type refinement] is a relative concept in mm-ADT. In isolation, `nat` is only a character label (called a *name*) attached to a vertex in the `obj` graph. There is no other structure to a isolated type. The nature of a type is completely determined by the paths incoming and outgoing from it. In this https://en.wikipedia.org/wiki/Graph_theory[graph-based interpretation] of types, a type can be the source or target of any number of paths and it is through navigating these paths that values at a type are morphed into values at other types, where mm-ADT instructions (`inst`) specify, step-by-step, the way in which the morphing process is to be carried out.
 
 [exec,exception=LanguageException]
 ----
-:[model,mm][define,vertex:('id'->int),edge:('outV'->vertex,'inV'->vertex)]     //<1>
-1 => edge<=int-<('outV'->-<('id'->_),'inV'->-<('id'->+1))                      //<2>
-1 => edge<=int-<('outV'->-<('ID'->_),'inV'->-<('ID'->+1))                      //<3>
-1 => edge<=int-<('outV'->-<('id'->_),'inV'->-<('id'->+1),'extra'->'data')      //<4>
+36 => int[define,nat<=int[is>0]]                   <1>
+36 => nat<=int[define,nat<=int[is>0]]              <2>
+36 => nat<=int[define,nat<=int[is>0]][mult,-1]     <3>
 ----
-<1> The type prefix extends the `mm` model-ADT with `vertex` and `edge` definitions.
-<2> The `vertex` and `edge` type definitions are automatically prepended to all subsequent programs.
-<3> If there is no mapping (path) from input to output via the type definitions, the program fails.
-<4> Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.
+<1> A `nat` is defined, but never applied. Thus, logically, this is equivalent to `36 \=> int`.
+<2> A type can be used anytime after its definition in the path. Thus, `nat` is a viable range type.
+<3> If the `obj` is not a `nat`, then the larger `nat\<=int` is invalid.
 
-==== Rewrites
-
-////
-Each step of that walk is an instruction forming an edge in the type graph.
-For instance, the type
-
-[.text-center]
-`int[is,[eq,int]]`
-
-describes a https://en.wikipedia.org/wiki/Reflexive_relation[reflexive graph] with vertices are in `int` and edges labeled `[is,[eq,int]]`.
-There are other mm-ADT types (an infinite amount in fact) that are related to `int[is,[eq,int]]` by a https://en.wikipedia.org/wiki/Graph_homomorphism[graph homomorphism].
-A few such types are itemized below.
-
-[source]
+.mm-ADT Type Prefix
+================================================================
+[cols=1,width=50,float=right]
+|====
+a|
+[exec,none="",exception=LanguageException]
 ----
-int[plus,0]
-int[mult,1]
-int[plus,1][plus,-1]
-int[plus,2][plus,-2]
-int[plus,3][plus,-3]
-...
+:[model,mm][define,nat<=int[is>0]]
+10 => nat
+-1 => nat
+10 => nat[plus,5]
+10 => nat[plus,5][plus,-15]
 ----
+|====
 
-Note a common pattern.
-The type `int[plus,x:int][plus,x:int[neg]]` captures an infinite number of more specific types that are homomorphic to `int[is,[eq,int]]`. https://en.wikipedia.org/wiki/Higher-order_function[Higher order type] are defined using mm-ADT `polys`.
+Prepending type definitions to every program reduces legibility and complicates program development. For this reason, mm-ADT provides a *type prefix*. All `mmlang` examples that start with `:` are defining _the_ type prefix that will be used for all subsequent programs. The type prefix is a generalization of a https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries[library statement] such as `import` or `module` found in other programming languages. The generalization is that a type prefix can be any type, not just those containing only `[define]`). The type prefix is prepended to the program type prior to compilation, where this operation is made sound by the free `inst` monoid.
+================================================================
 
-[.text-center]
-`(int[is,[eq,int]])\<=(int[plus,x:int][plus,x:int[neg]])`
+The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all _graph search processes_. A defined type (path) with a desired *range* is searched for in the `obj` graph and returned if and only if the morphing `obj` matches the defined type's *domain*. Type definitions are simply other types that specify the means by which one type is translated into another type.
 
-In category theory, a _type-to-type_ mapping that https://en.wikipedia.org/wiki/Morphism[preserves structure] is called a https://en.wikipedia.org/wiki/Functor[functor].
-From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range `\<=`-relation within a higher-order https://en.wikipedia.org/wiki/Identity_function[identity type] with respective signature.
-The identity is apparent in that there are no instructions required to coerce an `obj` of the domain to an `obj` of the range.
-This is analogous to `int\<=int`, save that the mapping is not predicated on https://en.wikipedia.org/wiki/Isomorphism[isomorphism], but on a broader relationship called a https://en.wikipedia.org/wiki/Surjective_function[surjective] homomorphism (a  https://en.wikipedia.org/wiki/Rewriting[reduction]).
-Any type containing only a type signature `()\<=()` says that the domain type is equal to the range type such that the domain can be https://en.wikipedia.org/wiki/Abstract_rewriting_system[substituted] for the range.
+image::date-example.svg[]
 
-[source]
+[exec,none="",exception=LanguageException]
 ----
-[define,(int[is,[eq,int]])<=(int[plus,x][plus,x[neg]])][int][plus,10][plus,-10]
-----
-////
-
-image::type-to-type-type.png[width=700,align=center]
-
-////
-The type `int[is,[eq,int]]` has an https://en.wikipedia.org/wiki/Isomorphism[isomorphic] image in `int`, where the reflexive self-loop paths in `int[is,[eq,int]]` are contracted to 0-length paths.
-The isomorphism realizes `int` as a classic set without structure because the type `int` has no instructions and thus, no type graph edges.
-
-[source]
-----
-mmlang> [define,int<=(int[is,[eq,int]])]
-        [define,(int[is,[eq,int]])<=(int[plus,x:int][plus,x:int[neg]])]
-        [int][plus,10][plus,-10]
-==>int
+:[model,mm][define,nat<=int[is>0],                              %
+                   date<=(nat[is=<12];nat[is=<31];nat),         %
+                   date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
+(8;26;2020) => date
+(8;26)      => date
 ----
 
-The composition of two structure preserving type morphisms yields a new type--namely, `int\<=(int[plus,x:int][plus,x:int[neg]])`.
-////
+Defining types with `[define]` is useful for _in situ_ definitions that are only require through the scope of the definition (typically within nested types). For reusing types across mm-ADT programs, mm-ADT offers _models_ and the `[model]` instruction.
 
 === Models
+
+.Homotopy Type Theory
+****
+https://en.wikipedia.org/wiki/Homotopy_type_theory[Homotopy type theory] understands types as coexisting with other types in a https://en.wikipedia.org/wiki/Topology[topological] space. A spatial embedding implies that a type can be reached from another type by moving through space. The way in which the space is navigated is via paths. A path is a continuous deformations of one type into another type.
+****
 
 Types can be organized into *model-ADTs* (simply called *models*). The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in the `mm` model-ADT (the _mm_ of _mm_-ADT). The instruction `[model,mm]` generates a `rec` from the `mmlang` file `mm.mm`. Using the same multiplicity of identities principle, the `rec` is accessible in the type's path definition via the `[model]` argument.
 
@@ -247,15 +208,15 @@ The `rec` encoding of a model-ADT has the model's canonical types (*ctypes*) as 
 \[
 \begin{split}
 \texttt{model}_\mathbf{m} &= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 + \texttt{dtype}_i^1 + \ldots + \texttt{dtype}_i^n) \\
-                          &= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \coprod_{j=0}^{|\texttt{dtype}_i|} \texttt{dtype}_i^j.
+&= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \coprod_{j=0}^{|\texttt{dtype}_i|} \texttt{dtype}_i^j.
 \end{split}
 \]
 There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. Generally, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` types are _universally grounded_ and
 \[
 \begin{split}
 \textbf{mm} &= \coprod_{i=0}^6 \texttt{ctype}_i + \mathbf{0}_i \\
-            &= \coprod_{i=0}^6 \texttt{ctype}_i \\
-            &= (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{lst} + \texttt{rec})
+&= \coprod_{i=0}^6 \texttt{ctype}_i \\
+&= (\texttt{bool} + \texttt{int} + \texttt{real} + \texttt{str} + \texttt{lst} + \texttt{rec})
 \end{split}
 \]
 
@@ -288,15 +249,52 @@ A type definition's instructions specify the specific, https://en.wikipedia.org/
 * `atype\<=rec[h][i]` (**trans-model**): In `amodel`, `atype` is grounded at `rec` in `mm` via `ytype` in `xmodel`.
 ================================================================
 
-
 ==== Model Building
 
 The `mm` model-ADT is too simple to be educational. The following section build a model-ADT in stages. The final model is `pg` and denotes the category of *property graphs*. Before reaching `pg`, smaller tutorial models will be presented starting at `pg_1`, then `pg_2`, and so forth.
+
+[discrete]
+===== Property Graph Model 1
+
+Assume the two type definitions below: `vertex` and `edge`. The associated diagram is not commutative and the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]`, where `.outV` is sugar for `[get,'outV']`.
+
+[.center]
+[cols="7,5",width=85,grid=none,frame=none]
+|====
+
+a|
+[exec,prompt="",eval=false]
+----
+[define,vertex:('id'->int)] %
+[define,  edge:('outV'->vertex,'inV'->vertex)]
+----
+{blank}
+| image:digraph-model-1.svg[align=center]
+
+|====
+
+The first line above reads: Given the value 1, generate an `edge` from that `int` according to the definitions of the `mm` model-ADT extended with two types `vertex` and `edge`. The two new types are defined _in situ_, where a `vertex` is a https://en.wikipedia.org/wiki/Refinement_type[refinement] on `rec` constraining `rec` to an `'id'` key with an `int` value and, similarly, `edge` constrains `rec` to keys `'outV'` (edge tail) and `'inV'` (edge head) with corresponding `vertex` values. The second line specifies how this mapping should be done. The incoming `int` is *split* (`-<`) across a two element `rec`, where their values are single element `recs` which again split the `int` to be the values for the `'id'` keys. Given `edge\<=int`, an `edge` is the desired output. The `mm` model (and extending definitions) determine the "best" way to construct an `edge` given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant `edge` structure.
+
+[exec,exception=LanguageException]
+----
+:[model,mm][define,vertex:('id'->int),edge:('outV'->vertex,'inV'->vertex)]     //<1>
+1 => edge<=int-<('outV'->-<('id'->_),'inV'->-<('id'->+1))                      //<2>
+1 => edge<=int-<('outV'->-<('ID'->_),'inV'->-<('ID'->+1))                      //<3>
+1 => edge<=int-<('outV'->-<('id'->_),'inV'->-<('id'->+1),'extra'->'data')      //<4>
+----
+<1> The type prefix extends the `mm` model-ADT with `vertex` and `edge` definitions.
+<2> The `vertex` and `edge` type definitions are automatically prepended to all subsequent programs.
+<3> If there is no mapping (path) from input to output via the type definitions, the program fails.
+<4> Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.
+
+[discrete]
+===== Property Graph Model 2
 
 [source]
 ----
 include::../../src/main/resources/model/examples/pg_1.mm[]
 ----
+
 image::digraph-type-path-1.svg[width=625,align=center]
 <1> A `graph` is a `lst` containing 0 or more `edges`.
 <2> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
@@ -375,6 +373,66 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 
 These commuting diagrams are called *models* and are stored in model-ADT files analogous to `mm.mm` and `digraph.mm`. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with `[branch]`, serve as https://en.wikipedia.org/wiki/Lookup_table[lookup tables] for type path resolution.
 ================================================================
+
+
+==== Rewrites
+
+////
+Each step of that walk is an instruction forming an edge in the type graph.
+For instance, the type
+
+[.text-center]
+`int[is,[eq,int]]`
+
+describes a https://en.wikipedia.org/wiki/Reflexive_relation[reflexive graph] with vertices are in `int` and edges labeled `[is,[eq,int]]`.
+There are other mm-ADT types (an infinite amount in fact) that are related to `int[is,[eq,int]]` by a https://en.wikipedia.org/wiki/Graph_homomorphism[graph homomorphism].
+A few such types are itemized below.
+
+[source]
+----
+int[plus,0]
+int[mult,1]
+int[plus,1][plus,-1]
+int[plus,2][plus,-2]
+int[plus,3][plus,-3]
+...
+----
+
+Note a common pattern.
+The type `int[plus,x:int][plus,x:int[neg]]` captures an infinite number of more specific types that are homomorphic to `int[is,[eq,int]]`. https://en.wikipedia.org/wiki/Higher-order_function[Higher order type] are defined using mm-ADT `polys`.
+
+[.text-center]
+`(int[is,[eq,int]])\<=(int[plus,x:int][plus,x:int[neg]])`
+
+In category theory, a _type-to-type_ mapping that https://en.wikipedia.org/wiki/Morphism[preserves structure] is called a https://en.wikipedia.org/wiki/Functor[functor].
+From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range `\<=`-relation within a higher-order https://en.wikipedia.org/wiki/Identity_function[identity type] with respective signature.
+The identity is apparent in that there are no instructions required to coerce an `obj` of the domain to an `obj` of the range.
+This is analogous to `int\<=int`, save that the mapping is not predicated on https://en.wikipedia.org/wiki/Isomorphism[isomorphism], but on a broader relationship called a https://en.wikipedia.org/wiki/Surjective_function[surjective] homomorphism (a  https://en.wikipedia.org/wiki/Rewriting[reduction]).
+Any type containing only a type signature `()\<=()` says that the domain type is equal to the range type such that the domain can be https://en.wikipedia.org/wiki/Abstract_rewriting_system[substituted] for the range.
+
+[source]
+----
+[define,(int[is,[eq,int]])<=(int[plus,x][plus,x[neg]])][int][plus,10][plus,-10]
+----
+////
+
+image::type-to-type-type.png[width=700,align=center]
+
+////
+The type `int[is,[eq,int]]` has an https://en.wikipedia.org/wiki/Isomorphism[isomorphic] image in `int`, where the reflexive self-loop paths in `int[is,[eq,int]]` are contracted to 0-length paths.
+The isomorphism realizes `int` as a classic set without structure because the type `int` has no instructions and thus, no type graph edges.
+
+[source]
+----
+mmlang> [define,int<=(int[is,[eq,int]])]
+        [define,(int[is,[eq,int]])<=(int[plus,x:int][plus,x:int[neg]])]
+        [int][plus,10][plus,-10]
+==>int
+----
+
+The composition of two structure preserving type morphisms yields a new type--namely, `int\<=(int[plus,x:int][plus,x:int[neg]])`.
+////
+
 
 ==== Type Patterns
 
@@ -460,12 +518,7 @@ https://en.wikipedia.org/wiki/Refinement_type[Refinement types] extend a languag
 \[
 \mathbb{N} = \{n \in \mathbb{Z} \;|\; n > 0\}.
 \]
-In mm-ADT, the above is denote `int[is>0]` which is the sugar form of `int{?}\<=int[is,[gt,0]]`. mm-ADT supports user defined types. In fact, mm-ADT's primary goal is a way to elegantly express types, mappings between them such that data structures can be viewed from different algebraic and domain perspectives. The `[define]` instruction defines a type within the current context (i.e. the current type nest level). In a forthcoming section on _model-ADTs_, the more general `[model]` instruction will be presented.
-
-.mm-ADT Type Prefix
-================================================================
-All `mmlang` examples that start with `:` are defining a *type prefix*. This type is prepended to all subsequent expressions. In many ways, a type prefix is like an https://en.wikipedia.org/wiki/Assembly_language#Assembler[assembler] https://en.wikipedia.org/wiki/Object_file[object file]. On the other hand, model-ADTs (of `[model]`) are similar to the `import` of https://en.wikipedia.org/wiki/Class_(computer_programming)[class files] in https://en.wikipedia.org/wiki/Object-oriented_programming[object-oriented languages].
-================================================================
+In mm-ADT, the above is written `int[is>0]` which is the sugar form of `int{?}\<=int[is,[gt,0]]`.
 
 [exec,none="",exception=LanguageException]
 ----
@@ -474,22 +527,6 @@ All `mmlang` examples that start with `:` are defining a *type prefix*. This typ
 -1 => nat
 10 => nat[plus,5]
 10 => nat[plus,5][plus,-15]
-----
-
-[discrete]
-====== Poly Refinement
-
-There are two canonical `poly` types: `lst` and `rec`. Any restriction on their respective values is a *refinement*. The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all _graph search processes_. A defined type (path) with a desired *range* is searched for in the `obj` graph and returned if and only if the morphing `obj` matches the defined type's *domain*. Type definitions are simply other types that specify the means by which one type is translated into another type.
-
-image::date-example.svg[]
-
-[exec,none="",exception=LanguageException]
-----
-:[model,mm][define,nat<=int[is>0],                              %
-                   date<=(nat[is=<12];nat[is=<31];nat),         %
-                   date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
-(8;26;2020) => date
-(8;26)      => date
 ----
 
 ===== Dependent Types
@@ -512,7 +549,6 @@ image::date-example.svg[]
 ===== Recursive Types
 
 A recursive type's definition contains a reference to itself. Recursive type definitions require a _base case_ to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a `lst` containing only `ints`.
-
 
 [exec,exception=LanguageException]
 ----
