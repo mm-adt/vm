@@ -36,9 +36,9 @@ import org.scalatest.FunSuite
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ModelTest extends FunSuite {
-  val tp3_kv:Type[Obj] = __.model(model(TPKV))
-  val kv:Type[Obj] = __.model(model(KV))
-  val tp3:Type[Obj] = __.model(model(TP))
+  val tp3_kv:Type[Obj] = __.model(model('tpkv))
+  val kv:Type[Obj] = __.model(model('kv))
+  val tp3:Type[Obj] = __.model(model('tp))
 
   test("[tp3] model") {
     val record1a = rec(

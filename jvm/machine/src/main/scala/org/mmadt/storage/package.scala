@@ -34,17 +34,19 @@ import scala.util.Try
  */
 package object storage {
 
-  val TP:String = "tp"
-  val KV:String = "kv"
-  val TPKV:String = "tpkv"
+  val DATA_DIR = "data/model/"
+  val MODEL_DIR = "/model/"
+  val EXAMPLES = "examples/"
+  val MM_FILE = ".mm"
 
   private lazy val mmlang:LanguageProvider = LanguageFactory.getLanguage("mmlang")
 
+  def model(token:Symbol):Model = this.model(token.name)
   def model(name:String):Model = {
-    val source:BufferedSource = Try[BufferedSource](Source.fromFile(getClass.getResource("/model/" + name + ".mm").getPath))
-      .orElse(Try(Source.fromFile("data/model/" + name + ".mm")))
-      .orElse(Try(Source.fromFile("/model/examples/" + name + ".mm")))
-      .getOrElse(Source.fromFile("data/model/examples/" + name + ".mm"))
+    val source:BufferedSource = Try[BufferedSource](Source.fromFile(getClass.getResource(MODEL_DIR + name + MM_FILE).getPath))
+      .orElse(Try(Source.fromFile(DATA_DIR + name + MM_FILE)))
+      .orElse(Try(Source.fromFile(MODEL_DIR + EXAMPLES + name + MM_FILE)))
+      .getOrElse(Source.fromFile(DATA_DIR + EXAMPLES + name + MM_FILE))
     try {
       val rangeModel:Model = mmlang.parse(source.getLines().foldLeft(Tokens.blank)((x, y) => x + y + "\n"))
       model(rangeModel)
