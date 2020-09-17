@@ -3758,11 +3758,13 @@ mmlang&gt; 5
 ==&gt;5
 mmlang&gt; 5 =&gt; vertex                                                                <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;vertex:('id'-&gt;5)
-mmlang&gt; (5;6) =&gt; (vertex;vertex) =&gt; edge                                           <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; (5;6) =&gt; (vertex;vertex)                                                   <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;(vertex:('id'-&gt;5);vertex:('id'-&gt;6))
+mmlang&gt; (5;6) =&gt; (vertex;vertex) =&gt; edge                                           <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
-mmlang&gt; (5;6) =&gt; edge                                                              <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; (5;6) =&gt; edge                                                              <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
-mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                                   <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                                   <i class="conum" data-value="5"></i><b>(5)</b>
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))</code></pre>
 </div>
 </div>
@@ -3774,14 +3776,18 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                       
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>An <code>int</code> value pair morphed into a <code>vertex</code> pair and then into an edge (a fine-grained <strong>type path</strong>).</td>
+<td>An <code>int</code> value pair morphed into a <code>vertex</code> pair (a <strong>type edge</strong>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>An <code>int</code> value pair morphed into an edge (a course-grained <strong>type path</strong>).</td>
+<td>An <code>int</code> value pair morphed into a <code>vertex</code> pair and then into an edge (two <strong>type edges</strong> composed to a <strong>type path</strong>).</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
+<td>An <code>int</code> value pair morphed into an edge (a <strong>type path</strong>).</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="5"></i><b>5</b></td>
 <td>An <code>int</code> value split into <code>vertex</code> clone pairs and then morphed into a <a href="https://en.wikipedia.org/wiki/Loop_(graph_theory)">self-loop</a> edge.</td>
 </tr>
 </table>
@@ -3926,13 +3932,13 @@ language error: 0 is not a nat</code></pre>
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,list&lt;=[(_){?}|(_,list)]]
 ==&gt;_[define,list&lt;=_[(_){?}|(_,list)]]
 mmlang&gt; (1)             =&gt; list
-==&gt;list:(1)
+language error: lst for (1) is not a type in model rec#1727547267
 mmlang&gt; (1,(1))         =&gt; list
-==&gt;list:(1,(1))
+language error: lst for (1) is not a type in model rec#1727547267
 mmlang&gt; (1,(1,(1)))     =&gt; list
-==&gt;list:(1,(1,(1)))
+language error: lst for (1) is not a type in model rec#1727547267
 mmlang&gt; (1,(1,(1,(1)))) =&gt; list
-==&gt;list:(1,(1,(1,(1))))
+language error: lst for (1) is not a type in model rec#1727547267
 mmlang&gt; 1               =&gt; list
 language error: 1 is not a list
 mmlang&gt; (1,1)           =&gt; list
@@ -3969,9 +3975,9 @@ mmlang&gt; 5 =&gt; [plus,int]
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;0)                =&gt; person
 language error: ('name'-&gt;'marko','age'-&gt;0) is not a person
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
-language error: int for nat:29 is not a type in model social
+==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
-language error: int for nat:29 is not a type in model social</code></pre>
+==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7223,7 +7229,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-16 12:15:41 -0600
+Last updated 2020-09-16 23:31:05 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
