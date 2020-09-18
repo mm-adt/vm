@@ -511,13 +511,10 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 <li><a href="#_models">Models</a>
 <ul class="sectlevel3">
-<li><a href="#_model_building">Model Building</a>
-<ul class="sectlevel4">
+<li><a href="#_types">Types</a></li>
 <li><a href="#_type_paths">Type Paths</a></li>
 <li><a href="#_model_paths">Model Paths</a></li>
-</ul>
-</li>
-<li><a href="#_rewrites">Rewrites</a></li>
+<li><a href="#_higher_order_paths">Higher Order Paths</a></li>
 <li><a href="#_type_patterns">Type Patterns</a>
 <ul class="sectlevel4">
 <li><a href="#_refinement_types">Refinement Types</a></li>
@@ -3598,30 +3595,21 @@ mmlang&gt; (8;26)      =&gt; date
 <pre class="CodeRay highlight"><code data-lang="python">mm:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt;
   (<span style="color:#369;font-weight:bold">bool</span> -&gt;  ( ), <span style="color:#369;font-weight:bold">int</span> -&gt;  ( ), real -&gt;  ( ), <span style="color:#369;font-weight:bold">str</span>  -&gt;  ( ),
    lst  -&gt;  ( ), rec -&gt;  ( ), inst -&gt;  ( ), poly -&gt;  (poly&lt;=[lst|rec]),
-   // consider rewrites <span style="color:#080;font-weight:bold">in</span> a mm_poly1.mm model.
-   // a model that processes models <span style="color:#080;font-weight:bold">with</span> poly lifted reification
-   (_)    -&gt;  ((_)&lt;=^:([<span style="color:#369;font-weight:bold">id</span>])
-               /* ([branch,x])&lt;=^:([split,&lt;x&gt;][merge]) */
-               ),
-   (<span style="color:#369;font-weight:bold">int</span>)  -&gt;  ((<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[neg][neg]),
-               (<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[plus,<span style="color:#00D">0</span>]),
-               (<span style="color:#369;font-weight:bold">int</span>)&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">1</span>])),
-   ([<span style="color:#00D">1</span>])  -&gt;  (([<span style="color:#00D">1</span>])&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[one])),
-   ([<span style="color:#00D">0</span>])  -&gt;  (([<span style="color:#00D">0</span>])&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[zero]),
-               ([<span style="color:#00D">0</span>])&lt;=^:(<span style="color:#369;font-weight:bold">int</span>[mult,<span style="color:#00D">0</span>])),
-   ([<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>]) -&gt; (([<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>])&lt;=^:(<span style="color:#369;font-weight:bold">str</span>[zero]),
-               (<span style="color:#369;font-weight:bold">str</span>)&lt;=^:(<span style="color:#369;font-weight:bold">str</span>[plus,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#710">'</span></span>]))))</code></pre>
+))</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>The <code>rec</code> encoding of a model-ADT has the model&#8217;s canonical types (<strong>ctypes</strong>) as keys and <code>lsts</code> of derived types (<strong>dtypes</strong>) as values. This encoding captures the the definition of a model as coproduct of products, where any model \$\mathbf{m}\$ is defined
+<p>The <code>rec</code> encoding of a model-ADT has the model&#8217;s canonical types (<strong>ctypes</strong>) as keys and <code>lsts</code> of derived types (<strong>dtypes</strong>) as values. The encoding is a serialization of a graph where the ctypes are vertices and the incoming paths to a ctype vertex are the edges. Unfortunately, the <code>mm</code> model is too basic to demonstrate this point clearly. What <code>mm</code> does capture is the set nature of the base types in that there are vertices and no edges (save <code>poly</code> which is the sum <code>|</code> of <code>lst</code> and <code>rec</code>).</p>
+</div>
+<div class="paragraph">
+<p>In general, any model \$\mathbf{m}\$ is defined
 \[
 \begin{split}
 \texttt{model}_\mathbf{m} &amp;= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 + \texttt{dtype}_i^1 + \ldots + \texttt{dtype}_i^n) \\
 &amp;= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \coprod_{j=0}^{|\texttt{dtype}_i|} \texttt{dtype}_i^j.
 \end{split}
 \]
-There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. Generally, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> types are <em>universally grounded</em> and
+There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitive_data_type">base types</a> specified in <code>mm</code>. Typically, a ctype in one model is a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, <code>mm</code> is unique in that the <code>mm</code> types are <em>universally grounded</em> and
 \[
 \begin{split}
 \textbf{mm} &amp;= \coprod_{i=0}^6 \texttt{ctype}_i + \mathbf{0}_i \\
@@ -3682,74 +3670,89 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 </div>
 </div>
 </div>
-<div class="sect3">
-<h4 id="_model_building">Model Building</h4>
 <div class="paragraph">
-<p>The <code>mm</code> model-ADT is too simple to be educational. The following section build a model-ADT in stages. The final model is <code>pg</code> and denotes the category of <strong>property graphs</strong>. Before reaching <code>pg</code>, smaller tutorial models will be presented starting at <code>pg_1</code>, then <code>pg_2</code>, and so forth.</p>
+<p>The <code>mm</code> model-ADT is too simple to be informative. The complexity of its types exist outside the virtual machine. In order to provide a comprehensive understanding of mm-ADT models, the following sections will build a <strong>property graph</strong> model-ADT (<code>pg</code>) in stages starting with <code>pg_1</code>, then <code>pg_2</code>, so forth before reaching the final complete encoding of <code>pg</code>.</p>
 </div>
+<div class="sect3">
+<h4 id="_types">Types</h4>
 <h5 id="_property_graph_model_1" class="discrete">Property Graph Model 1</h5>
 <div class="paragraph">
-<p>Assume the two type definitions below: <code>vertex</code> and <code>edge</code>. The associated diagram is not commutative and the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>, where <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
+<p>A property graph, like all graphs, are composed of vertices and edges. Both vertices and edges have key/value pair attributes called <em>properties</em>. In the <code>pg_1</code> model below, a vertex has an <code>id</code> property with an <code>int</code> value. An edge is directed and binary. It has an outgoing/start vertex (<code>outV</code>) and an incoming/end vertex (<code>inV</code>). The <code>pg_1</code> model&#8217;s associated diagram is not a commuting diagram and the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>, where <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
 </div>
-<table class="tableblock frame-none grid-none center" style="width: 85%;">
+<table class="tableblock frame-none grid-none stretch center">
 <colgroup>
-<col style="width: 58.3333%;">
-<col style="width: 41.6667%;">
+<col style="width: 64.2857%;">
+<col style="width: 35.7143%;">
 </colgroup>
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">[define,vertex:('id'-&gt;int)]
-[define,  edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]</code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                           <i class="conum" data-value="1"></i><b>(1)</b>
+  vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>)),                           <i class="conum" data-value="2"></i><b>(2)</b>
+  edge   -&gt; (edge:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex))  &lt;= mm    <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p></p>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/digraph-model-1.svg" alt="digraph model 1"></span></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The first line above reads: Given the value 1, generate an <code>edge</code> from that <code>int</code> according to the definitions of the <code>mm</code> model-ADT extended with two types <code>vertex</code> and <code>edge</code>. The two new types are defined <em>in situ</em>, where a <code>vertex</code> is a <a href="https://en.wikipedia.org/wiki/Refinement_type">refinement</a> on <code>rec</code> constraining <code>rec</code> to an <code>'id'</code> key with an <code>int</code> value and, similarly, <code>edge</code> constrains <code>rec</code> to keys <code>'outV'</code> (edge tail) and <code>'inV'</code> (edge head) with corresponding <code>vertex</code> values. The second line specifies how this mapping should be done. The incoming <code>int</code> is <strong>split</strong> (<code>-&lt;</code>) across a two element <code>rec</code>, where their values are single element <code>recs</code> which again split the <code>int</code> to be the values for the <code>'id'</code> keys. Given <code>edge&lt;=int</code>, an <code>edge</code> is the desired output. The <code>mm</code> model (and extending definitions) determine the "best" way to construct an <code>edge</code> given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant <code>edge</code> structure.</p>
+<p>A few examples of the <code>pg_1</code> are presented below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vertex:('id'-&gt;int),edge:('outV'-&gt;vertex,'inV'-&gt;vertex)]     <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;_[define,vertex,edge]
-mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt;('id'-&gt;+1))                      <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))
-mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('ID'-&gt;_),'inV'-&gt;-&lt;('ID'-&gt;+1))                      <i class="conum" data-value="3"></i><b>(3)</b>
-language error: ('outV'-&gt;('ID'-&gt;1),'inV'-&gt;('ID'-&gt;2)) is not an edge
-mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt;('id'-&gt;+1),'extra'-&gt;'data')      <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1]                                <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;_
+mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('id'-&gt;_)                  <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;vertex:('id'-&gt;1)
+mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('id'-&gt;_,'age'-&gt;+28)       <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;vertex:('id'-&gt;1)
+mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('ID'-&gt;_)                  <i class="conum" data-value="4"></i><b>(4)</b>
+language error: ('ID'-&gt;1) is not a vertex</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The type prefix extends the <code>mm</code> model-ADT with <code>vertex</code> and <code>edge</code> definitions.</td>
+<td>The defined type prefix uses <code>[model]</code> to load the <code>pg_1</code> model into the <code>obj</code> graph.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The <code>vertex</code> and <code>edge</code> type definitions are automatically prepended to all subsequent programs.</td>
+<td>A <code>vertex</code> is constructed by copying an <code>int</code> to the value of the <code>id</code> field.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>If there is no mapping (path) from input to output via the type definitions, the program fails.</td>
+<td>Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.</td>
+<td>If the mapping yields a structure that can not be coerced into a <code>vertex</code>, then the program type is ill defined.</td>
 </tr>
 </table>
 </div>
+<div class="paragraph">
+<p>An edge can be constructed in any number of ways. The example below takes the <code>int</code> product <code>(int;int)</code>(\$\mathbb{Z} \times \mathbb{Z}\$) to <code>edge</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1]
+==&gt;_
+mmlang&gt; (1;2) =&gt; edge&lt;=(int;int)-&lt;('outV'-&gt;-&lt;('id'-&gt;.0),'inV'-&gt;-&lt;('id'-&gt;.1))
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The line above reads: Given the <code>;-lst</code> product pair <code>(1;2)</code>, <strong>split</strong> (<code>-&lt;</code>) the pair across a two element <code>rec</code>, where their values are single element <code>recs</code> which again split the pair across the two fields (<code>outV</code> and <code>inV</code>) and project out a unique <code>int</code> id to each field value. Finally, given <code>edge&lt;=(int;int)</code> a final coecion to <code>edge</code> is required. It is the role of the mm-ADT VM to compute the most efficiet way to accomplish this. For this example, simply labeling <code>rec</code> pair elements <code>vertex</code> and the outer <code>rec</code> <code>edge</code> is sufficient to complete the transformation from <code>(int;int)</code> to <code>edge</code> given <code>pg_1</code>.</p>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_type_paths">Type Paths</h4>
 <h5 id="_property_graph_model_2" class="discrete">Property Graph Model 2</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                                       <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="python">pg_2:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                                       <i class="conum" data-value="1"></i><b>(1)</b>
   graph  -&gt; (graph:(edge{*})),                                          <i class="conum" data-value="2"></i><b>(2)</b>
   vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>),                                        <i class="conum" data-value="3"></i><b>(3)</b>
              vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_)),                                   <i class="conum" data-value="4"></i><b>(4)</b>
@@ -3789,8 +3792,6 @@ mmlang&gt; 1 =&gt; edge&lt;=int-&lt;('outV'-&gt;-&lt;('id'-&gt;_),'inV'-&gt;-&lt
 <div class="paragraph">
 <p>Note that every type is associated with a <code>lst</code> of type definition whose <strong>range</strong> is the type. Diagrammatically, every type is associated with all it&#8217;s incoming <code>obj</code> graph paths called <em>type paths</em>.</p>
 </div>
-<div class="sect4">
-<h5 id="_type_paths">Type Paths</h5>
 <div class="paragraph">
 <p>A type is a <strong>path</strong> through the <code>obj</code> graph via type vertices and <code>inst</code> edges. A <strong>type path</strong> is a path through the <code>obj</code> graph via type subgraphs. A type path is specified via a type definition. In general, every model type definition is a mapping of the form:</p>
 </div>
@@ -3873,8 +3874,8 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge                                       
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_model_paths">Model Paths</h5>
+<div class="sect3">
+<h4 id="_model_paths">Model Paths</h4>
 <div class="paragraph">
 <p>The <code>pg_1</code> model extends <code>mm</code> via <code>pg_1&lt;=mm</code>. Note that it is possible for a model to define types that have no incoming paths from <code>mm</code>. For example:</p>
 </div>
@@ -3912,9 +3913,8 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 </div>
 </div>
 </div>
-</div>
 <div class="sect3">
-<h4 id="_rewrites">Rewrites</h4>
+<h4 id="_higher_order_paths">Higher Order Paths</h4>
 <div class="imageblock text-center">
 <div class="content">
 <img src="./images/obj/type-to-type-type.png" alt="type to type type" width="700">
@@ -7279,7 +7279,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-17 05:17:39 -0600
+Last updated 2020-09-17 17:34:31 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
