@@ -1,6 +1,3 @@
-pg_1:('type' -> (                                                       //<1>
-  graph  -> (graph:(edge{*})),                                          //<2>
-  vertex -> (vertex:('id'->int),                                        //<3>
-             vertex<=int-<('id'->_)),                                   //<4>
-  edge   -> (edge:('outV'->vertex,'inV'->vertex),                       //<5>
-             edge<=(vertex;vertex)-<('outV'->.0,'inV'->.1)))) <= mm     //<6>
+pg_1:('type' -> (                                           //<1>
+  vertex -> (vertex:('id'->int)),                           //<2>
+  edge   -> (edge:('outV'->vertex,'inV'->vertex))  <= mm    //<3>

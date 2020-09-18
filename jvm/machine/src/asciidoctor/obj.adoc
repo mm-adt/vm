@@ -201,17 +201,20 @@ Types can be organized into *model-ADTs* (simply called *models*). The 4 _mono_ 
 
 [source]
 ----
-include::../../src/main/resources/model/mm.mm[]
+include::../../src/main/resources/model/mm.mm[lines="1..3"]
+))
 ----
 
-The `rec` encoding of a model-ADT has the model's canonical types (*ctypes*) as keys and `lsts` of derived types (*dtypes*) as values. This encoding captures the the definition of a model as coproduct of products, where any model \$\mathbf{m}\$ is defined
+The `rec` encoding of a model-ADT has the model's canonical types (*ctypes*) as keys and `lsts` of derived types (*dtypes*) as values. The encoding is a serialization of a graph where the ctypes are vertices and the incoming paths to a ctype vertex are the edges. Unfortunately, the `mm` model is too basic to demonstrate this point clearly. What `mm` does capture is the set nature of the base types in that there are vertices and no edges (save `poly` which is the sum `|` of `lst` and `rec`).
+
+In general, any model \$\mathbf{m}\$ is defined
 \[
 \begin{split}
 \texttt{model}_\mathbf{m} &= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + (\texttt{dtype}_i^0 + \texttt{dtype}_i^1 + \ldots + \texttt{dtype}_i^n) \\
 &= \coprod_{i=0}^{|\mathbf{m}|} \texttt{ctype}_i + \coprod_{j=0}^{|\texttt{dtype}_i|} \texttt{dtype}_i^j.
 \end{split}
 \]
-There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. Generally, a ctype in one model may be a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` types are _universally grounded_ and
+There are more ctypes than the 6 https://en.wikipedia.org/wiki/Primitive_data_type[base types] specified in `mm`. Typically, a ctype in one model is a dtype in another. If model \$\mathbf{m}\$ has \$\tt{ctypes}_\mathbf{m}\$ derived from types in model \$\mathbf{n}\$, then \$\tt{dtypes}_{\mathbf{n}} \subseteq \tt{ctypes}_{\mathbf{m}}\$. However, `mm` is unique in that the `mm` types are _universally grounded_ and
 \[
 \begin{split}
 \textbf{mm} &= \coprod_{i=0}^6 \texttt{ctype}_i + \mathbf{0}_i \\
@@ -249,50 +252,58 @@ A type definition's instructions specify the specific, https://en.wikipedia.org/
 * `atype\<=rec[h][i]` (**trans-model**): In `amodel`, `atype` is grounded at `rec` in `mm` via `ytype` in `xmodel`.
 ================================================================
 
-==== Model Building
+The `mm` model-ADT is too simple to be informative. The complexity of its types exist outside the virtual machine. In order to provide a comprehensive understanding of mm-ADT models, the following sections will build a *property graph* model-ADT (`pg`) in stages starting with `pg_1`, then `pg_2`, so forth before reaching the final complete encoding of `pg`.
 
-The `mm` model-ADT is too simple to be educational. The following section build a model-ADT in stages. The final model is `pg` and denotes the category of *property graphs*. Before reaching `pg`, smaller tutorial models will be presented starting at `pg_1`, then `pg_2`, and so forth.
-
+==== Types
 [discrete]
 ===== Property Graph Model 1
 
-Assume the two type definitions below: `vertex` and `edge`. The associated diagram is not commutative and the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]`, where `.outV` is sugar for `[get,'outV']`.
+A property graph, like all graphs, are composed of vertices and edges. Both vertices and edges have key/value pair attributes called _properties_. In the `pg_1` model below, a vertex has an `id` property with an `int` value. An edge is directed and binary. It has an outgoing/start vertex (`outV`) and an incoming/end vertex (`inV`). The `pg_1` model's associated diagram is not a commuting diagram and the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]`, where `.outV` is sugar for `[get,'outV']`.
 
 [.center]
-[cols="7,5",width=85,grid=none,frame=none]
+[cols="9,5",width=100,grid=none,frame=none]
 |====
-
 a|
-[exec,prompt="",eval=false]
+[source]
 ----
-[define,vertex:('id'->int)] %
-[define,  edge:('outV'->vertex,'inV'->vertex)]
+include::../../src/main/resources/model/examples/pg_1.mm[]
 ----
-{blank}
 | image:digraph-model-1.svg[align=center]
 
 |====
 
-The first line above reads: Given the value 1, generate an `edge` from that `int` according to the definitions of the `mm` model-ADT extended with two types `vertex` and `edge`. The two new types are defined _in situ_, where a `vertex` is a https://en.wikipedia.org/wiki/Refinement_type[refinement] on `rec` constraining `rec` to an `'id'` key with an `int` value and, similarly, `edge` constrains `rec` to keys `'outV'` (edge tail) and `'inV'` (edge head) with corresponding `vertex` values. The second line specifies how this mapping should be done. The incoming `int` is *split* (`-<`) across a two element `rec`, where their values are single element `recs` which again split the `int` to be the values for the `'id'` keys. Given `edge\<=int`, an `edge` is the desired output. The `mm` model (and extending definitions) determine the "best" way to construct an `edge` given the structure thus far. The answer being simply to label the corresponding components accordingly and thus, the output of the program is the resultant `edge` structure.
+A few examples of the `pg_1` are presented below.
 
 [exec,exception=LanguageException]
 ----
-:[model,mm][define,vertex:('id'->int),edge:('outV'->vertex,'inV'->vertex)]     //<1>
-1 => edge<=int-<('outV'->-<('id'->_),'inV'->-<('id'->+1))                      //<2>
-1 => edge<=int-<('outV'->-<('ID'->_),'inV'->-<('ID'->+1))                      //<3>
-1 => edge<=int-<('outV'->-<('id'->_),'inV'->-<('id'->+1),'extra'->'data')      //<4>
+:[model,pg_1]                                //<1>
+1 => vertex<=int-<('id'->_)                  //<2>
+1 => vertex<=int-<('id'->_,'age'->+28)       //<3>
+1 => vertex<=int-<('ID'->_)                  //<4>
 ----
-<1> The type prefix extends the `mm` model-ADT with `vertex` and `edge` definitions.
-<2> The `vertex` and `edge` type definitions are automatically prepended to all subsequent programs.
-<3> If there is no mapping (path) from input to output via the type definitions, the program fails.
-<4> Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$ ensuring a proper type transformation.
+<1> The defined type prefix uses `[model]` to load the `pg_1` model into the `obj` graph.
+<2> A `vertex` is constructed by copying an `int` to the value of the `id` field.
+<3> Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$.
+<4> If the mapping yields a structure that can not be coerced into a `vertex`, then the program type is ill defined.
 
+An edge can be constructed in any number of ways. The example below takes the `int` product `(int;int)`(\$\mathbb{Z} \times \mathbb{Z}\$) to `edge`.
+
+[exec]
+----
+:[model,pg_1]
+(1;2) => edge<=(int;int)-<('outV'->-<('id'->.0),'inV'->-<('id'->.1))
+----
+
+The line above reads: Given the `;-lst` product pair `(1;2)`, *split* (`-<`) the pair across a two element `rec`, where their values are single element `recs` which again split the pair across the two fields (`outV` and `inV`) and project out a unique `int` id to each field value. Finally, given `edge\<=(int;int)` a final coecion to `edge` is required. It is the role of the mm-ADT VM to compute the most efficiet way to accomplish this. For this example, simply labeling `rec` pair elements `vertex` and the outer `rec` `edge` is sufficient to complete the transformation from `(int;int)` to `edge` given `pg_1`.
+
+
+==== Type Paths
 [discrete]
 ===== Property Graph Model 2
 
 [source]
 ----
-include::../../src/main/resources/model/examples/pg_1.mm[]
+include::../../src/main/resources/model/examples/pg_2.mm[]
 ----
 
 image::digraph-type-path-1.svg[width=625,align=center]
@@ -303,8 +314,6 @@ image::digraph-type-path-1.svg[width=625,align=center]
 <5> A path from a 2-tuple `vertex` `;-lst` to a `edge`.
 
 Note that every type is associated with a `lst` of type definition whose *range* is the type. Diagrammatically, every type is associated with all it's incoming `obj` graph paths called _type paths_.
-
-===== Type Paths
 
 A type is a *path* through the `obj` graph via type vertices and `inst` edges. A *type path* is a path through the `obj` graph via type subgraphs. A type path is specified via a type definition. In general, every model type definition is a mapping of the form:
 
@@ -347,7 +356,7 @@ The above example demonstrates the use of `;-lst` as both a https://en.wikipedia
 (1;2)-<('ι0'->π0,'ι1'->π1)
 ----
 
-===== Model Paths
+==== Model Paths
 
 The `pg_1` model extends `mm` via `pg_1\<=mm`. Note that it is possible for a model to define types that have no incoming paths from `mm`. For example:
 
@@ -375,64 +384,9 @@ These commuting diagrams are called *models* and are stored in model-ADT files a
 ================================================================
 
 
-==== Rewrites
-
-////
-Each step of that walk is an instruction forming an edge in the type graph.
-For instance, the type
-
-[.text-center]
-`int[is,[eq,int]]`
-
-describes a https://en.wikipedia.org/wiki/Reflexive_relation[reflexive graph] with vertices are in `int` and edges labeled `[is,[eq,int]]`.
-There are other mm-ADT types (an infinite amount in fact) that are related to `int[is,[eq,int]]` by a https://en.wikipedia.org/wiki/Graph_homomorphism[graph homomorphism].
-A few such types are itemized below.
-
-[source]
-----
-int[plus,0]
-int[mult,1]
-int[plus,1][plus,-1]
-int[plus,2][plus,-2]
-int[plus,3][plus,-3]
-...
-----
-
-Note a common pattern.
-The type `int[plus,x:int][plus,x:int[neg]]` captures an infinite number of more specific types that are homomorphic to `int[is,[eq,int]]`. https://en.wikipedia.org/wiki/Higher-order_function[Higher order type] are defined using mm-ADT `polys`.
-
-[.text-center]
-`(int[is,[eq,int]])\<=(int[plus,x:int][plus,x:int[neg]])`
-
-In category theory, a _type-to-type_ mapping that https://en.wikipedia.org/wiki/Morphism[preserves structure] is called a https://en.wikipedia.org/wiki/Functor[functor].
-From the perspective of mm-ADT, two new "ctypes" are linked in a domain/range `\<=`-relation within a higher-order https://en.wikipedia.org/wiki/Identity_function[identity type] with respective signature.
-The identity is apparent in that there are no instructions required to coerce an `obj` of the domain to an `obj` of the range.
-This is analogous to `int\<=int`, save that the mapping is not predicated on https://en.wikipedia.org/wiki/Isomorphism[isomorphism], but on a broader relationship called a https://en.wikipedia.org/wiki/Surjective_function[surjective] homomorphism (a  https://en.wikipedia.org/wiki/Rewriting[reduction]).
-Any type containing only a type signature `()\<=()` says that the domain type is equal to the range type such that the domain can be https://en.wikipedia.org/wiki/Abstract_rewriting_system[substituted] for the range.
-
-[source]
-----
-[define,(int[is,[eq,int]])<=(int[plus,x][plus,x[neg]])][int][plus,10][plus,-10]
-----
-////
+==== Higher Order Paths
 
 image::type-to-type-type.png[width=700,align=center]
-
-////
-The type `int[is,[eq,int]]` has an https://en.wikipedia.org/wiki/Isomorphism[isomorphic] image in `int`, where the reflexive self-loop paths in `int[is,[eq,int]]` are contracted to 0-length paths.
-The isomorphism realizes `int` as a classic set without structure because the type `int` has no instructions and thus, no type graph edges.
-
-[source]
-----
-mmlang> [define,int<=(int[is,[eq,int]])]
-        [define,(int[is,[eq,int]])<=(int[plus,x:int][plus,x:int[neg]])]
-        [int][plus,10][plus,-10]
-==>int
-----
-
-The composition of two structure preserving type morphisms yields a new type--namely, `int\<=(int[plus,x:int][plus,x:int[neg]])`.
-////
-
 
 ==== Type Patterns
 
