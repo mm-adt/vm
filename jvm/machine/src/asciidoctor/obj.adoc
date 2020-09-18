@@ -181,7 +181,7 @@ image::date-example.svg[]
 
 [exec,none="",exception=LanguageException]
 ----
-:[model,mm][define,nat<=int[is>0],                              %
+:[model,mm][define,nat<=int[is>0],                              %%
                    date<=(nat[is=<12];nat[is=<31];nat),         %
                    date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
 (8;26;2020) => date
@@ -199,13 +199,22 @@ https://en.wikipedia.org/wiki/Homotopy_type_theory[Homotopy type theory] underst
 
 Types can be organized into *model-ADTs* (simply called *models*). The 4 _mono_ types (`bool`,`int`,`real`,`str`) and the 2 _poly_ types (`lst`, `rec`) are defined in the `mm` model-ADT (the _mm_ of _mm_-ADT). The instruction `[model,mm]` generates a `rec` from the `mmlang` file `mm.mm`. Using the same multiplicity of identities principle, the `rec` is accessible in the type's path definition via the `[model]` argument.
 
+[.center]
+[cols="6,^6",width=90,separator=¦]
+|====
+a¦
 [source]
 ----
-include::../../src/main/resources/model/mm.mm[lines="1..3"]
+include::../../src/main/resources/model/mm.mm[lines="1..4"]
 ))
 ----
+{blank}
+¦
+image:mm-model.svg[width=340,align=center]
+|====
 
-The `rec` encoding of a model-ADT has the model's canonical types (*ctypes*) as keys and `lsts` of derived types (*dtypes*) as values. The encoding is a serialization of a graph where the ctypes are vertices and the incoming paths to a ctype vertex are the edges. Unfortunately, the `mm` model is too basic to demonstrate this point clearly. What `mm` does capture is the set nature of the base types in that there are vertices and no edges (save `poly` which is the sum `|` of `lst` and `rec`).
+
+The `rec` encoding of a model-ADT has the model's canonical types (*ctypes*) as keys and `lsts` of derived types (*dtypes*) as values. The encoding is a serialization of a graph where the ctypes are vertices and the incoming paths to a ctype vertex are the edges. Unfortunately, the `mm` model is too basic to demonstrate this point clearly. What `mm` does capture is the set nature of the base types in that there are vertices and no edges (save `poly` which is the https://en.wikipedia.org/wiki/Coproduct[coproduct] of `lst` and `rec`).
 
 In general, any model \$\mathbf{m}\$ is defined
 \[
@@ -252,16 +261,16 @@ A type definition's instructions specify the specific, https://en.wikipedia.org/
 * `atype\<=rec[h][i]` (**trans-model**): In `amodel`, `atype` is grounded at `rec` in `mm` via `ytype` in `xmodel`.
 ================================================================
 
-The `mm` model-ADT is too simple to be informative. The complexity of its types exist outside the virtual machine. In order to provide a comprehensive understanding of mm-ADT models, the following sections will build a *property graph* model-ADT (`pg`) in stages starting with `pg_1`, then `pg_2`, so forth before reaching the final complete encoding of `pg`.
+The `mm` model-ADT is too simple to be informative. The complexity of its types exist outside the virtual machine. In order to provide a comprehensive understanding of mm-ADT models, the following sections will build a *property graph* model-ADT (`pg`) in stages starting with `pg_1`, then `pg_2`, so forth before reaching the final complete encoding in `pg`.
 
-==== Types
+==== Type Constructors
 [discrete]
 ===== Property Graph Model 1
 
-A property graph, like all graphs, are composed of vertices and edges. Both vertices and edges have key/value pair attributes called _properties_. In the `pg_1` model below, a vertex has an `id` property with an `int` value. An edge is directed and binary. It has an outgoing/start vertex (`outV`) and an incoming/end vertex (`inV`). The `pg_1` model's associated diagram is not a commuting diagram and the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]`, where `.outV` is sugar for `[get,'outV']`.
+https://en.wikipedia.org/wiki/Graph_theory[Graph theory] acknowledges a variety of graph structures. One such structure is the *property graph*. The more descriptive, yet significantly longer name is the _https://en.wikipedia.org/wiki/Directed_graph:[directed], attributed, https://en.wikipedia.org/wiki/Multigraph[multi-relational] binary graph_. The breadth of features will ultimately be captured in `pg`. The reduced `pg_1` model only defines a _directed binary graph_. In `pg_1`, a `vertex` can be derived from a `rec` with an `'id'\->int` field. An edge can be derived from a `rec` with an outgoing/start `vertex` (`outV`) and an incoming/end `vertex` (`inV`). The associated non-commuting diagram graphically captures the `pg_1` structure, where the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]` -- e.g., `.outV` is sugar for `[get,'outV']`.
 
 [.center]
-[cols="9,5",width=100,grid=none,frame=none]
+[cols="9,4",grid=none,frame=none]
 |====
 a|
 [source]
@@ -272,7 +281,13 @@ include::../../src/main/resources/model/examples/pg_1.mm[]
 
 |====
 
-A few examples of the `pg_1` are presented below.
+NOTE: A type definition with no instructions serves as both a model constructor and canonical type (a ctype). As a canonical type, the path from source to target does nothing. A value that matches the left-hand side is simply named with the label on the right-hand side.
+\[
+\tt{(id->int)}\;\;\tt{\textrm{—[noop]}{\longrightarrow}}\;\;\tt{vertex}.
+\]
+
+
+Three vertex https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)[constructors] are presented below.
 
 [exec,exception=LanguageException]
 ----
@@ -281,21 +296,62 @@ A few examples of the `pg_1` are presented below.
 1 => vertex<=int-<('id'->_,'age'->+28)       //<3>
 1 => vertex<=int-<('ID'->_)                  //<4>
 ----
-<1> The defined type prefix uses `[model]` to load the `pg_1` model into the `obj` graph.
+<1> The type prefix loads the `pg_1` model into the `obj` graph.
 <2> A `vertex` is constructed by copying an `int` to the value of the `id` field.
-<3> Extraneous (non-ambiguous) data is mapped to the terminal \$\mathbf{0}\$.
-<4> If the mapping yields a structure that can not be coerced into a `vertex`, then the program type is ill defined.
+<3> Extraneous (non-ambiguous) in the `vertex` instance is mapped to the terminal \$\mathbf{0}\$.
+<4> Coercion to a `vertex` is not possible given.
 
-An edge can be constructed in any number of ways. The example below takes the `int` product `(int;int)`(\$\mathbb{Z} \times \mathbb{Z}\$) to `edge`.
+If a `vertex\<=int` constructor will be used repeatedly, it can either be added to the model or specified in the type prefix. The example below appends a constructor to the type prefix. All subsequent programs will now operate this extended `pg_1` model.
+
+[exec]
+----
+:[model,pg_1][define,vertex<=int-<('id'->_)]                               //<1>
+5 => vertex                                                                //<2>
+(5;6) => (vertex;vertex)                                                   //<3>
+----
+<1> The `pg_1` model-ADT is extended with a `vertex` constructor.
+<2> A `vertex` is constructed from an `int`.
+<3> A `vertex` pair is constructed from an `int` pair.
+
+An edge can be constructed in a number ways. The constructor below maps an `int` pair (\$\mathbb{Z} \times \mathbb{Z}\$) to an `edge` by propagating the pair into the edge product and then constructing vertices for the `outV` and `inV` fields. This structure has sufficient information for rendering the final `edge`. The mm-ADT VM simply names the `rec` pair elements `vertex` and the outer `rec` `edge` thus completing the transformation of an `(int;int)` to `edge` given `pg_1`.
 
 [exec]
 ----
 :[model,pg_1]
-(1;2) => edge<=(int;int)-<('outV'->-<('id'->.0),'inV'->-<('id'->.1))
+(5;6) => edge<=(int;int)-<('outV'->-<('id'->.0),'inV'->-<('id'->.1))
 ----
 
-The line above reads: Given the `;-lst` product pair `(1;2)`, *split* (`-<`) the pair across a two element `rec`, where their values are single element `recs` which again split the pair across the two fields (`outV` and `inV`) and project out a unique `int` id to each field value. Finally, given `edge\<=(int;int)` a final coecion to `edge` is required. It is the role of the mm-ADT VM to compute the most efficiet way to accomplish this. For this example, simply labeling `rec` pair elements `vertex` and the outer `rec` `edge` is sufficient to complete the transformation from `(int;int)` to `edge` given `pg_1`.
+[cols=1,float=right,width=35,frame=none,grid=none]
+|====
+a|
+[exec,prompt="mm> "]
+----
+(5;6)-<('ι0'->π0,'ι1'->π1)
+----
+{blank}
+|====
 
+The above example demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product] -- i.e., a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. For this reason, the https://en.wikipedia.org/wiki/Unicode[Unicode] character for https://en.wikipedia.org/wiki/Pi[pi] (π) (the conventional symbol for product https://en.wikipedia.org/wiki/Projection_(mathematics)[projection]) serves as another `mmlang` sugar for `[get]`.
+
+
+
+The final example extends the `pg_1` model with the `vertex` and `edge` constructors. It also makes salient the topic of the next section: *type paths*.
+
+[exec]
+----
+:[model,pg_1]                     %%
+ [define,vertex<=int-<('id'->_),   %
+           edge<=(vertex;vertex)-<('outV'->-<('id'->.0),'inV'->-<('id'->.1))]       //<1>
+(5;6) => (vertex;vertex)=>edge                                                      //<2>
+(5;6) => edge<=(vertex;vertex)
+(5;6) => edge                                                                       //<3>
+5 => int-<(vertex;vertex) => edge                                                   //<4>
+5-<(vertex;vertex)=>edge
+----
+<1> The `pg_1` model is extended with a vertex constructor and an edge constructor.
+<2> An `int` pair morphed into a `vertex` pair and then into an `edge`.
+<3> An `int` pair morphed into an `edge`.
+<4> An `int` split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
 
 ==== Type Paths
 [discrete]
@@ -317,44 +373,7 @@ Note that every type is associated with a `lst` of type definition whose *range*
 
 A type is a *path* through the `obj` graph via type vertices and `inst` edges. A *type path* is a path through the `obj` graph via type subgraphs. A type path is specified via a type definition. In general, every model type definition is a mapping of the form:
 
-[.center]
-[cols=^1,width=45,grid=none,frame=non]
-|====
 
-a|
-[exec,eval=false,exception=LanguageException]
-----
-a -> (a:poly,a<=b,a<=c,a<=d)
-----
-|====
-
-Thus, there are two sorts definitions.
-
-. *model ctypes*: a model typically specifies a set of _canonical types_, or ctypes for short. This is analogous to `bool`, `int`, etc. being ctypes in `mm`. Thus, `vertex`, `edge`, etc. are the ctypes of `pg`. The canonical type of `vertex` is `vertex:('id'\->int)`
-. *model dtypes*: a model's ctypes must be defined in terms of types that are ultimately are grounded in `mm`. Moreover, intra-model type morphisms specify how to move between types within a model. Such types are _derived types_ and are defined inductively via a path through the type graph of the `obj` graph.
-
-[exec]
-----
-:[model,pg_1]
-5
-5 => vertex                                                                //<1>
-(5;6) => (vertex;vertex)                                                   //<2>
-(5;6) => (vertex;vertex) => edge                                           //<3>
-(5;6) => edge                                                              //<4>
-5-<(vertex;vertex)=>edge                                                   //<5>
-----
-<1> An `int` value morphed into a `vertex`.
-<2> An `int` value pair morphed into a `vertex` pair (a *type edge*).
-<3> An `int` value pair morphed into a `vertex` pair and then into an edge (two *type edges* composed to a *type path*).
-<4> An `int` value pair morphed into an edge (a *type path*).
-<5> An `int` value split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
-
-The above example demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product] -- i.e., a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. For this reason, the https://en.wikipedia.org/wiki/Unicode[Unicode] character for https://en.wikipedia.org/wiki/Pi[pi] (π), the conventional symbol for product https://en.wikipedia.org/wiki/Projection_(mathematics)[projection] serves as another `mmlang` sugar for `[get]`.
-
-[exec]
-----
-(1;2)-<('ι0'->π0,'ι1'->π1)
-----
 
 ==== Model Paths
 

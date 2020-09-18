@@ -1,6 +1,8 @@
 mm:('type' ->
-  (bool ->  ( ), int ->  ( ), real ->  ( ), str  ->  ( ),
-   lst  ->  ( ), rec ->  ( ), inst ->  ( ), poly ->  (poly<=[lst|rec]),
+  (bool ->  ( ), int ->  ( ), real ->  ( ),
+   str  ->  ( ), lst  ->  ( ), rec ->  ( ),
+   poly ->  (poly<=[lst|rec]),
+   inst ->  ( ),
    // consider rewrites in a mm_poly1.mm model.
    // a model that processes models with poly lifted reification
    (_)    ->  ((_)<=^:([id])
