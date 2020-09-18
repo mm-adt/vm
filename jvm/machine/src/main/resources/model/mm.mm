@@ -1,6 +1,6 @@
 mm:('type' ->
-  (bool ->  ( ), int ->  ( ), real ->  ( ),
-   str  ->  ( ), lst  ->  ( ), rec ->  ( ),
+  (bool ->  ( ), int ->  ( ), real -> ( ),
+   str  ->  ( ), lst  -> ( ), rec ->  ( ),
    poly ->  (poly<=[lst|rec]),
    inst ->  ( ),
    // consider rewrites in a mm_poly1.mm model.

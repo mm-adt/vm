@@ -35,7 +35,8 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class pg1Test extends BaseInstTest(
-  testSet("digraph model table test", storage.model('pg_1),
+  testSet("pg_1 model table test", storage.model('pg_1),
+  ), testSet("pg_2 model table test", storage.model('pg_2),
     comment("int=>vertex"),
     testing(5, 'vertex, 'vertex(str("id") -> int(5)), "5 => vertex"),
     excepting("6", 'vertex, LanguageException.typingError("6", 'vertex), "'6' => vertex"),
@@ -48,6 +49,6 @@ class pg1Test extends BaseInstTest(
   )) {
 
   test("play") {
-    println((5 `;` 6).model('pg_1) `=>`('vertex `;` 'vertex))
+    println((5 `;` 6).model('pg_2) `=>`('vertex `;` 'vertex))
   }
 }
