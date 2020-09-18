@@ -371,7 +371,16 @@ image::digraph-type-path-1.svg[width=625,align=center]
 
 Note that every type is associated with a `lst` of type definition whose *range* is the type. Diagrammatically, every type is associated with all it's incoming `obj` graph paths called _type paths_.
 
-A type is a *path* through the `obj` graph via type vertices and `inst` edges. A *type path* is a path through the `obj` graph via type subgraphs. A type path is specified via a type definition. In general, every model type definition is a mapping of the form:
+.model-ADT Application Programming Interfaces
+================================================================
+The software development pattern espoused by mm-ADT is one in which software libraries (https://en.wikipedia.org/wiki/API[APIs]) are large https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagrams] constructed via domain/range concatenation of \$b<=a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a _look-and-feel_ similar in form to
+\[
+a \Rightarrow b \Rightarrow c \Rightarrow d[x][y][z] \Rightarrow e \Rightarrow \ldots \Rightarrow z,
+\]
+where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$.
+
+These commuting diagrams are called *models* and are stored in model-ADT files analogous to `mm.mm` and `digraph.mm`. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with `[branch]`, serve as https://en.wikipedia.org/wiki/Lookup_table[lookup tables] for type path resolution.
+================================================================
 
 
 
@@ -391,16 +400,7 @@ This is not typical. In practice, every model-ADT will extend `mm` or some other
 
 That is, a type is associated with a list of type definitions for which the type is the range. These type definitions can be understood as single-step paths through the `obj` graph, such that the composition of these types is the diagram of the model.
 
-.model-ADT Application Programming Interfaces
-================================================================
-The software development pattern espoused by mm-ADT is one in which software libraries (https://en.wikipedia.org/wiki/API[APIs]) are large https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagrams] constructed via domain/range concatenation of \$b<=a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a _look-and-feel_ similar in form to
-\[
-a \Rightarrow b \Rightarrow c \Rightarrow d[x][y][z] \Rightarrow e \Rightarrow \ldots \Rightarrow z,
-\]
-where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$.
 
-These commuting diagrams are called *models* and are stored in model-ADT files analogous to `mm.mm` and `digraph.mm`. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with `[branch]`, serve as https://en.wikipedia.org/wiki/Lookup_table[lookup tables] for type path resolution.
-================================================================
 
 
 ==== Higher Order Paths
