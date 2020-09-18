@@ -3909,8 +3909,20 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge
 <div class="paragraph">
 <p>Note that every type is associated with a <code>lst</code> of type definition whose <strong>range</strong> is the type. Diagrammatically, every type is associated with all it&#8217;s incoming <code>obj</code> graph paths called <em>type paths</em>.</p>
 </div>
+<div class="exampleblock">
+<div class="title">Deep Dive 4. model-ADT Application Programming Interfaces</div>
+<div class="content">
 <div class="paragraph">
-<p>A type is a <strong>path</strong> through the <code>obj</code> graph via type vertices and <code>inst</code> edges. A <strong>type path</strong> is a path through the <code>obj</code> graph via type subgraphs. A type path is specified via a type definition. In general, every model type definition is a mapping of the form:</p>
+<p>The software development pattern espoused by mm-ADT is one in which software libraries (<a href="https://en.wikipedia.org/wiki/API">APIs</a>) are large <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagrams</a> constructed via domain/range concatenation of \$b&#8656;a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a <em>look-and-feel</em> similar in form to
+\[
+a \Rightarrow b \Rightarrow c \Rightarrow d[x][y][z] \Rightarrow e \Rightarrow \ldots \Rightarrow z,
+\]
+where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$.</p>
+</div>
+<div class="paragraph">
+<p>These commuting diagrams are called <strong>models</strong> and are stored in model-ADT files analogous to <code>mm.mm</code> and <code>digraph.mm</code>. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with <code>[branch]</code>, serve as <a href="https://en.wikipedia.org/wiki/Lookup_table">lookup tables</a> for type path resolution.</p>
+</div>
+</div>
 </div>
 </div>
 <div class="sect3">
@@ -3935,21 +3947,6 @@ mmlang&gt; A =&gt; B =&gt; C
 </div>
 <div class="paragraph">
 <p>That is, a type is associated with a list of type definitions for which the type is the range. These type definitions can be understood as single-step paths through the <code>obj</code> graph, such that the composition of these types is the diagram of the model.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 4. model-ADT Application Programming Interfaces</div>
-<div class="content">
-<div class="paragraph">
-<p>The software development pattern espoused by mm-ADT is one in which software libraries (<a href="https://en.wikipedia.org/wiki/API">APIs</a>) are large <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagrams</a> constructed via domain/range concatenation of \$b&#8656;a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a <em>look-and-feel</em> similar in form to
-\[
-a \Rightarrow b \Rightarrow c \Rightarrow d[x][y][z] \Rightarrow e \Rightarrow \ldots \Rightarrow z,
-\]
-where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$.</p>
-</div>
-<div class="paragraph">
-<p>These commuting diagrams are called <strong>models</strong> and are stored in model-ADT files analogous to <code>mm.mm</code> and <code>digraph.mm</code>. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with <code>[branch]</code>, serve as <a href="https://en.wikipedia.org/wiki/Lookup_table">lookup tables</a> for type path resolution.</p>
-</div>
-</div>
 </div>
 </div>
 <div class="sect3">
@@ -7318,7 +7315,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-18 01:13:34 -0600
+Last updated 2020-09-18 02:05:12 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
