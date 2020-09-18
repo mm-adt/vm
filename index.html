@@ -3599,8 +3599,8 @@ mmlang&gt; (8;26)      =&gt; date
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mm:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt;
-  (<span style="color:#369;font-weight:bold">bool</span> -&gt;  ( ), <span style="color:#369;font-weight:bold">int</span> -&gt;  ( ), real -&gt;  ( ),
-   <span style="color:#369;font-weight:bold">str</span>  -&gt;  ( ), lst  -&gt;  ( ), rec -&gt;  ( ),
+  (<span style="color:#369;font-weight:bold">bool</span> -&gt;  ( ), <span style="color:#369;font-weight:bold">int</span> -&gt;  ( ), real -&gt; ( ),
+   <span style="color:#369;font-weight:bold">str</span>  -&gt;  ( ), lst  -&gt; ( ), rec -&gt;  ( ),
    poly -&gt;  (poly&lt;=[lst|rec]),
 ))</code></pre>
 </div>
@@ -3702,9 +3702,9 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                            <i class="conum" data-value="1"></i><b>(1)</b>
-  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>)),                           <i class="conum" data-value="2"></i><b>(2)</b>
-  edge   -&gt; ( edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex))  &lt;= mm   <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                             <i class="conum" data-value="1"></i><b>(1)</b>
+  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>)),                            <i class="conum" data-value="2"></i><b>(2)</b>
+  edge   -&gt; ( edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex)))) &lt;= mm   <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/digraph-model-1.svg" alt="digraph model 1"></span></p></td>
@@ -3832,15 +3832,15 @@ mmlang&gt; (5;6) =&gt; edge&lt;=(int;int)-&lt;('outV'-&gt;-&lt;('id'-&gt;.0),'in
                    edge&lt;=(vertex;vertex)-&lt;('outV'-&gt;-&lt;('id'-&gt;.0),'inV'-&gt;-&lt;('id'-&gt;.1))]       <i class="conum" data-value="1"></i><b>(1)</b>
 mmlang&gt;
 mmlang&gt; (5;6) =&gt; (vertex;vertex)=&gt;edge                                                      <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;6)))
 mmlang&gt; (5;6) =&gt; edge&lt;=(vertex;vertex)
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;6)))
 mmlang&gt; (5;6) =&gt; edge                                                                       <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;6)))
 mmlang&gt; 5 =&gt; int-&lt;(vertex;vertex) =&gt; edge                                                   <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))
+==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;5)))
 mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))</code></pre>
+==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;5)))</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -7318,7 +7318,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-18 01:08:02 -0600
+Last updated 2020-09-18 01:13:34 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
