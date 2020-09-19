@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{LstType, Type, __}
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -48,8 +48,7 @@ trait PlusOp[O <: Obj] {
 object PlusOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.plus, List(obj.asInstanceOf[O])), func = this)
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = Try[Obj](start match {
-    case _:LstType[_] => lst
-    case _:Type[_] => start
+    case _: Type[_] if !(start.isInstanceOf[Lst[_]] && inst.arg0.isInstanceOf[Lst[_]]) => start
     case abool:Bool => abool.clone(g = abool.g || inst.arg0[Bool].g)
     case aint:Int => aint.clone(g = aint.g + inst.arg0[Int].g)
     case areal:Real => areal.clone(g = areal.g + inst.arg0[Real].g)

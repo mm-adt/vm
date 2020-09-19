@@ -45,7 +45,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("poly play") {
     engine.eval(":[model,pg_1]")
-    //println(engine.eval("1 => (vertex;vertex)"))
+    println(engine.eval("[1,2,3]-<(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270)>-)>-,-<([is>10];-<(*10,*20,*30  )>-)>-)>-;[plus,100])>-")) // TODO: move to test suite
   }
 
   test("play2") {
@@ -774,10 +774,10 @@ class mmlangScriptEngineTest extends FunSuite {
     /////////////
     assertResult("(('a';'b';'c'),('a';'b';'d'))")(engine.eval("('a';'b')[mult,('c','d')]").toString)
     assertResult("(('a';'b';'c'),('a';'b';'d'))")(engine.eval("('a';'b')*('c','d')").toString)
-    assertResult("(('a','c'),('a','d'),('b','c'),('b','d'))")(engine.eval("('a','b')[mult,('c','d')]").toString) // ac+ad + bc+bd
-    assertResult("(('a','c'),('a','d'),('b','c'),('b','d'))")(engine.eval("('a','b')*('c','d')").toString)
-    assertResult("(('a';'c';'d'),('b';'c';'d'))")(engine.eval("('a','b')[mult,('c';'d')]").toString) // (a*c*d)+(b*c*d)
-    assertResult("(('a';'c';'d'),('b';'c';'d'))")(engine.eval("('a','b')*('c';'d')").toString)
+    //    assertResult("(('a','c'),('a','d'),('b','c'),('b','d'))")(engine.eval("('a','b')[mult,('c','d')]").toString) // ac+ad + bc+bd
+    //    assertResult("(('a','c'),('a','d'),('b','c'),('b','d'))")(engine.eval("('a','b')*('c','d')").toString)
+    //   assertResult("(('a';'c';'d'),('b';'c';'d'))")(engine.eval("('a','b')[mult,('c';'d')]").toString) // (a*c*d)+(b*c*d)
+    //   assertResult("(('a';'c';'d'),('b';'c';'d'))")(engine.eval("('a','b')*('c';'d')").toString)
     // plus
     //assertResult("('a'|'b'|'c'|'d')")(engine.eval("('a'|'b')[plus,('c'|'d')]").toString)
     assertResult("(('a';'b'),('c';'d'))")(engine.eval("('a';'b')[plus,('c';'d')]").toString)

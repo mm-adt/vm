@@ -208,7 +208,7 @@ NOTE: An image referred to as a *diagram* or commuting diagram is isomorphic to 
 Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type. In `mmlang` a type signature has the following general form where `{q}` is the ctype's associated quantifier.
 
 [.center]
-[width=30]
+[width=30,grid=none,frame=none]
 |===
 ^a|
 [exec,eval=false,exception=LanguageException]

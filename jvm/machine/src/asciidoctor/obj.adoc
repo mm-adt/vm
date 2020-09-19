@@ -149,9 +149,9 @@ A `nat` is any `int` that arrives at `nat` via `nat\<=int[is>0]`. Given this def
 
 [exec,exception=LanguageException]
 ----
-36 => int[define,nat<=int[is>0]]                   <1>
-36 => nat<=int[define,nat<=int[is>0]]              <2>
-36 => nat<=int[define,nat<=int[is>0]][mult,-1]     <3>
+36 => int[define,nat<=int[is>0]]                   //<1>
+36 => nat<=int[define,nat<=int[is>0]]              //<2>
+36 => nat<=int[define,nat<=int[is>0]][mult,-1]     //<3>
 ----
 <1> A `nat` is defined, but never applied. Thus, logically, this is equivalent to `36 \=> int`.
 <2> A type can be used anytime after its definition in the path. Thus, `nat` is a viable range type.
