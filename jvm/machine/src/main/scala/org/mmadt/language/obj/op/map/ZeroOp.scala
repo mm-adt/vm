@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.`type`.LstType
 import org.mmadt.language.obj.value._
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -45,6 +46,7 @@ object ZeroOp extends Func[Obj, Obj] {
     case _: StrValue => str(Tokens.blank)
     case arec: RecValue[Obj, Obj] => arec.clone(_ => Nil)
     case alst: LstValue[Obj] => alst.clone(_ => Nil)
+    case alst: LstType[Obj] => alst.clone(_ => Nil)
     case _ => start
   }).via(start, inst)
 }

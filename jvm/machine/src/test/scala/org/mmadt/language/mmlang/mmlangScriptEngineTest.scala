@@ -32,7 +32,6 @@ import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
-import org.mmadt.storage
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -836,7 +835,7 @@ class mmlangScriptEngineTest extends FunSuite {
     //
     assertResult("int[plus,100][plus,200][split,(int;int[plus,2])][merge][plus,20]")(engine.eval("int[plus,100][plus,200]-<(int;int[plus,2])>-[plus,20]").toString)
     assertResult("int[plus,100][plus,200][split,(int)][merge][plus,20]")(engine.eval("int[plus,100][plus,200]-<(int|int[plus,2])>-[plus,20]").toString)
-    assertResult("(10;10;11)")(engine.eval("10[split,(bool,int)][merge][plus,1][path,([id];[start,_])]").toString)
+    // assertResult("(10;10;11)")(engine.eval("10 lst<=[split,(bool,int)][merge][plus,1][path,([id];[start,_])]").toString)
     assertResult("[12,14]")(engine.eval("1[plus,1][split,(int,int[plus,2])]>-[plus,10]").toString)
     //
     // assertResult("bool<=int[plus,10][lt,50]")(engine.eval("(int;[plus,10];int;[lt,50];bool)>-").toString)

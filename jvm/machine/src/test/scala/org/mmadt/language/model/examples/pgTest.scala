@@ -25,6 +25,7 @@ package org.mmadt.language.model.examples
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.asType
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage
@@ -34,8 +35,18 @@ import org.mmadt.storage.StorageFactory._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class pg1Test extends BaseInstTest(
+class pgTest extends BaseInstTest(
   testSet("pg_1 model table test", storage.model('pg_1),
+    comment("vertex"),
+    testing((str("id") -> int(1)), 'vertex, 'vertex(str("id") -> int(1)), "('id'->1) => vertex"),
+    comment("edge"),
+    //excepting(rec(str("id") -> int(1)) `;` rec(str("id") -> int(2)), ('vertex `;` 'vertex) `=>` 'edge, LanguageException.typingError('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(2)), 'edge), "(('id'->1);('id'->2))=>(vertex;vertex)=>edge"),
+    excepting(rec(str("id") -> int(1)) `;` rec(str("id") -> int(2)), 'edge, LanguageException.typingError(rec(str("id") -> int(1)) `;` rec(str("id") -> int(2)), 'edge), "(('id'->1);('id'->2))=>edge"),
+    comment("exceptions"),
+    excepting(6, 'vertex, LanguageException.typingError(6, 'vertex), "6 => vertex"),
+    excepting(7, 'edge, LanguageException.typingError(7, 'edge), "7 => edge"),
+    excepting((8 `;` 9), 'edge, LanguageException.typingError((8 `;` 9), 'edge), "(8;9) => edge"),
+    excepting((1 `;` 2), ('vertex `;` 'vertex), LanguageException.typingError(1 `;` 2, asType('vertex `;` 'vertex)), "(1;2) => (vertex;vertex)"),
   ), testSet("pg_2 model table test", storage.model('pg_2),
     comment("int=>vertex"),
     testing(5, 'vertex, 'vertex(str("id") -> int(5)), "5 => vertex"),

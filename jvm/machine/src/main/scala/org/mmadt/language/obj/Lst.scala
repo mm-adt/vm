@@ -85,10 +85,10 @@ object Lst {
         if (alst.isInstanceOf[Inst[Obj, Obj]]) alst.glist.zip(blst.glist).forall(pair => pair._1.rangeObj.test(pair._2.rangeObj))
         else alst.gsep match {
           // ,-lst
-          case Tokens.`,` if eqsep => alst.gstrm.q.within(blst.gstrm.q) && alst.glist.forall(x => blst.glist.exists(y => x.hardQ(qOne).test(y.hardQ(qOne)))) ||
+          case Tokens.`,` if eqsep => alst.gstrm.q.within(blst.gstrm.q) && alst.glist.forall(x => blst.glist.exists(y => x.rangeObj.hardQ(qOne).test(y.rangeObj.hardQ(qOne)))) ||
             (alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2)))
           // ;-lst
-          case Tokens.`;` if eqsep => alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2))
+          case Tokens.`;` if eqsep => alst.glist.zip(blst.glist).forall(pair => pair._1.test(pair._2)) // TODO: are we guaranteed the last check given it's a monoid?
           // |-lst
           case Tokens.`|` if eqsep => alst.glist.exists(a => blst.glist.exists(b => a.test(b)))
           case _ => alst.glist.forall(a => blst.glist.exists(b => a.test(b)))
