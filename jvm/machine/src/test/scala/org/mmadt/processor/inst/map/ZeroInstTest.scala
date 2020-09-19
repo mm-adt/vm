@@ -22,10 +22,11 @@
 
 package org.mmadt.processor.inst.map
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{doubleToReal, intToInt, stringToStr, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -68,5 +69,5 @@ class ZeroInstTest extends BaseInstTest(
     testing(str("a") -> int(1) `_,` str("b") -> int(2), zero, rec(), "('a'->1,'b'->2,'c'->3)[zero]"),
     testing(str("a") -> int(1) `_,` str("b") -> int(2) `_,` str("c") -> int(3), rec.zero, rec(), "('a'->1,'b'->2,'c'->3) => rec[zero]"),
     comment("exceptions"),
-     //excepting('C,zero,LanguageException.unsupportedInstType('C,zero.inst),"C[zero]")
+    // excepting('C,zero,LanguageException.unsupportedInstType('C,zero.inst),"C[zero]"),
   ))

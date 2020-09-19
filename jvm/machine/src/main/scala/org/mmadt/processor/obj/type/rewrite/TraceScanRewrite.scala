@@ -23,6 +23,8 @@
 package org.mmadt.processor.obj.`type`.rewrite
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.Trace
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__.{id, _}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite, removeRules}
@@ -30,7 +32,6 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Lst, Obj, divQ}
 import org.mmadt.storage.StorageFactory.qZero
 
 object TraceScanRewrite extends Rewrite {
@@ -52,21 +53,21 @@ object TraceScanRewrite extends Rewrite {
         b = b.domainObj
         val range = getPolyOrObj(rewrite.range)
         val domain = getPolyOrObj(rewrite)
-        val domainTrace = domain.trace.map(x => x._2)
+        val domainTrace = domain.trace
         val length = domainTrace.length
         while (!a.root) {
-          val aTrace:List[Inst[Obj, Obj]] = a.trace.map(x => x._2).map(x => rewriteInstArgs(x, writer)).take(length)
+          val aTrace:Trace = a.trace.map(x => (x._1, rewriteInstArgs(x._2, writer))).take(length)
           if (aTrace.length == length) {
-            val aTraceRewrite = aTrace.zip(domainTrace).map(x => mapInstructions(x._1, x._2))
-            if (aTraceRewrite.forall(x => x.alive)) { // the entire window matches, write the range instructions to the type
-              b = writer(range.trace.map(x => x._2), aTraceRewrite, b)
+            val aTraceRewrite = aTrace.zip(domainTrace).map(pair => mapInstructions(pair._1, pair._2))
+            if (aTraceRewrite.forall(x => x.isDefined)) { // the entire window matches, write the range instructions to the type
+              b = writer(range.trace.map(x => x._2), aTraceRewrite.map(x => x.get._2), b)
               for (_ <- 1 to length) a = a.linvert
             } else { // the window doesn't match, write only the next instruction to the type and try the window shifted over one
-              b = aTrace.headOption.map(x => x.exec(b)).get
+              b = aTrace.headOption.map(x => x._2.exec(b)).get
               a = a.linvert
             }
           } else {
-            b = aTrace.foldLeft(b)((x, y) => y.exec(x)) // the window has gone over the instruction length, write unmatched instructions to type
+            b = aTrace.foldLeft(b)((x, y) => y._2.exec(x)) // the window has gone over the instruction length, write unmatched instructions to type
             a = a.domain
           }
         }
@@ -88,12 +89,15 @@ object TraceScanRewrite extends Rewrite {
       case avalue:Value[_] => avalue
     })
   }
-  private def mapInstructions(lhs:Inst[Obj, Obj], rhs:Inst[Obj, Obj]):Inst[Obj, Obj] = {
-    if (lhs.equals(rhs)) return lhs
-    if (lhs.op != rhs.op || lhs.args.length != rhs.args.length) return lhs.q(qZero)
-    val args = lhs.args.zip(rhs.args).map(x => if (x._1.equals(x._2)) x._2 else if (x._1.test(x._2)) x._1.compute(x._2) else x._2.q(qZero))
-    if (args.forall(_.alive)) OpInstResolver.resolve(lhs.op, args) else lhs.q(qZero)
+  private def mapInstructions(lhs:(Obj, Inst[Obj, Obj]), rhs:(Obj, Inst[Obj, Obj])):Option[(Obj, Inst[Obj, Obj])] = {
+    if (lhs.equals(rhs)) return Some(lhs)
+    if (lhs._2.op != rhs._2.op || lhs._2.args.length != rhs._2.args.length || !instDomainTyping(lhs._1, rhs._1)) return None
+    val args = lhs._2.args.zip(rhs._2.args).map(x => if (x._1.equals(x._2)) x._2 else if (x._1.test(x._2)) x._1.compute(x._2) else x._2.q(qZero))
+    if (args.forall(_.alive)) Some(lhs._1, OpInstResolver.resolve(lhs._2.op, args)) else None
   }
+
+  // make sure the domain of the inst is the same in type and in rewrite
+  private def instDomainTyping(lhs:Obj, rhs:Obj):Boolean = rhs.name.equals(Tokens.anon) || lhs.name.equals(rhs.name) // TODO: should this check quantifiers?
 
   def replaceRewrite(range:List[Inst[Obj, Obj]], trace:List[Inst[Obj, Obj]], query:Obj):Obj = {
     var model:Model = query.model
