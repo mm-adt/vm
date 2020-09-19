@@ -170,6 +170,7 @@ a|
 10 => nat[plus,5]
 10 => nat[plus,5][plus,-15]
 ----
+{blank}
 |====
 
 Prepending type definitions to every program reduces legibility and complicates program development. For this reason, mm-ADT provides a *type prefix*. All `mmlang` examples that start with `:` are defining _the_ type prefix that will be used for all subsequent programs. The type prefix is a generalization of a https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries[library statement] such as `import` or `module` found in other programming languages. The generalization is that a type prefix can be any type, not just those containing only `[define]`). The type prefix is prepended to the program type prior to compilation, where this operation is made sound by the free `inst` monoid.

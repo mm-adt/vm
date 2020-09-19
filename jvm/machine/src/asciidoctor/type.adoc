@@ -21,7 +21,6 @@ Along with these decomposition (and composition) morphisms, there exists an http
 That is, product and coproduct equality are defined via component equality.
 ****
 
-
 === Types and Values
 
 Everything that can be denoted in `mmlang` is an `obj`.
@@ -45,15 +44,14 @@ image::obj-type-q-value-q.svg[float=right,width=375]
 
 This internal structure is well-defined as an https://en.wikipedia.org/wiki/Ring_(mathematics)[algebraic ring].
 The ring axioms specify how the internals of an `obj` are related via two binary operators: \$\times\$ and \$\+\$ . One particular axiom states that products both left and right https://en.wikipedia.org/wiki/Product_(category_theory)#Distributivity[distribute] over coproducts.
-Thus, the previous formula is https://en.wikipedia.org/wiki/Isomorphism[isomorphic] to
+Thus, the previous formula is equivalent to
 
 
 \[
 \texttt{obj} = (\texttt{type object} \times \texttt{q}) + (\texttt{value object} \times \texttt{q}).
 \]
 
-There are two distinct kinds of mm-ADT `objs`: _quantified type objects_ and _quantified value objects_.
-These products of the `obj` coproduct are called by simpler names: *type* and *value*.
+There are two distinct kinds of mm-ADT `objs`: _quantified type objects_ and _quantified value objects_. These products of the `obj` coproduct are called by simpler names: *type* and *value*.
 That is the *obj meta-model*.
 
 \[
@@ -100,7 +98,6 @@ The particulars of the ideas in the table below will be discussed over the cours
 
 |type        | program    | a program is a "complicated" type.
 |compilation | evaluation | compilations are https://en.wikipedia.org/wiki/Abstract_interpretation[type evaluations], where a compilation error is a "type runtime" error.
-|type        | value      | quantifiers expand the cardinality of values and constrain the cardinality of types.
 |type        | variable   | types refer to values across contexts and variables refer to values within a context.
 |type        | https://en.wikipedia.org/wiki/Abstract_syntax_tree[AST]        | a single https://en.wikipedia.org/wiki/Intermediate_representation[intermediate representation] is used in compilation, optimization, and evaluation.
 |type        | function   | functions are (https://en.wikipedia.org/wiki/Dependent_type[dependent]) types with values generated at evaluation.
@@ -115,20 +112,9 @@ The particulars of the ideas in the table below will be discussed over the cours
 
 image::compass.svg[width=300,float=right]
 
-A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group].
-If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group.
-The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$.
-Thus, \$a \to_i b\$ captures the group operation \$a \cdot i = b\$.
+A https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] is a graphical encoding of a https://en.wikipedia.org/wiki/Group_(mathematics)[group]. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] \$I \subseteq A\$ then the https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph] \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the group operation \$a \cdot i = b\$.
 
-//In the illustrative example on the right, the group is defined \[
-//\begin{split}
-//A &= \{\uparrow,\nearrow,\to,\searrow,\downarrow,\swarrow,\leftarrow,\nwarrow \} \\ I &= \{ \nearrow \} \\ e &= 0^\circ \\ \cdot &: A \times A \rightarrow A \end{split}
-//\]
-
-When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible \$I\$-transitions between elements.
-When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming \$I\$-edge from the previous element.
-A Cayley graph captures both the https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group.
-The non-free aspect is realized by any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\ast)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.
+When constructed in https://en.wikipedia.org/wiki/Eager_evaluation[full], a Cayley graph's vertices are the group elements and its edges represent the set of all possible \$I\$-transitions between elements. When https://en.wikipedia.org/wiki/Lazy_evaluation[lazily] constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming \$I\$-edge from the previous element. A Cayley graph captures both a proto-https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group. The non-free aspect is realized by any edge \$(a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\ast)\$ can be constructed by concatenating the edge labels of a path \$\prod_{x \in (a,i,b)^\ast} \pi_1(x)\$.
 
 A _generalized_ Cayley graph does not require that every \$i \in I\$ have a corresponding \$i^{-1} \in I\$ such that \$i \cdot i^{-1} = \mathbf{1}\$ (i.e., multiplicative inverses).
 By lifting this constraint, the Cayley graphical structure can be used to encode other https://en.wikipedia.org/wiki/Magma_(algebra)[magmas] such as https://en.wikipedia.org/wiki/Monoid[monoids] and https://en.wikipedia.org/wiki/Semigroup[semigroups].
@@ -154,13 +140,11 @@ There are five ctypes:
 . *int*: denotes the set of integers -- \$ \mathbb{Z} \$.
 . *real*: denotes the set of reals -- \$ \mathbb{R} \$.
 . *str*: denotes the set of character strings -- \$ \Sigma^\ast \$.
-. *poly*: denotes the set of polynomials (composites) -- \$ \tt{obj}^n \$.
+. *poly*: denotes the set of free objects -- \$ \tt{obj}^\ast \$.
 
 image::type-product.svg[float=right,width=295]
 
-The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types.
-In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of the type `objs`.
-Formally, the type coproduct is defined as
+The dtypes are https://en.wikipedia.org/wiki/Structural_type_system[structural types] whose https://en.wikipedia.org/wiki/Recursive_data_type[recursive definition]'s base case is a ctype realized via a chain of instructions (`inst`) that operate on types to yield types. In other words, instructions are the https://en.wikipedia.org/wiki/Generating_set_of_a_group[generating set] of a type monoid. Formally, the type coproduct is defined as
 
 \[
 \begin{split}
@@ -179,28 +163,18 @@ The *type projection* denotes the https://en.wikipedia.org/wiki/Domain_of_a_func
 \tt{type} &=\;& (\tt{type} &\;\times\;& \tt{inst}) &\;+\;& \tt{ctype} \\ \text{“range} &=\;& (\text{domain} &\;\text{and}\;& \text{function}) &\;\text{or}\;& \text{base"} \end{split}
 \]
 
-The implication of the dtype product is that mm-ADT types are generated https://en.wikipedia.org/wiki/Inductive_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`).
-The application of an `inst` to a type (ctype or dtype) yields a dtype that is a structural expansion of the previous type.
+The implication of the dtype product is that mm-ADT types are generated https://en.wikipedia.org/wiki/Inductive_type[inductively] by applying instructions from the mm-ADT VM's https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] (`inst`). The application of an `inst` to a type (ctype or dtype) yields a dtype that is a structural expansion of the previous type.
 
 image::ctype-dtype.svg[align=center,width=300]
 
-For example, `int` is a ctype denoting a single `int` value from the set of all integers.
-When `int` is applied to the instruction `[is>0]`, the dtype `int{?}\<=int[is>0]` is formed, where `[is>0]` is https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugar] for `[is,[gt,0]]`.
-This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$.
-In terms of the "__range = domain and function__" reading, when an `int` (*domain*) is applied to `[is>0]` (*function*), the result is either an `int` greater than zero or no `int` at all (*range*).
+For example, `int` is a ctype. When `int` is applied to the instruction `[is>0]`, the dtype `int{?}\<=int[is>0]` is formed, where `[is>0]` is https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugar] for `[is,[gt,0]]`. This dtype is a https://en.wikipedia.org/wiki/Refinement_type[refinement type] that restricts `int` to only those `int` values greater than zero -- i.e., a natural number \$\mathbb{N}^+\$.
+In terms of the "__range = domain and function__" reading, when an `int` (*domain*) is applied to `[is>0]` (*function*), the result is either an `int` greater than zero or no `int` at all `{?}` (*range*).
 
 image::int-isgt0.svg[align=center,width=230]
 
-The diagram above is generally known as the *obj graph*.
-The `obj` graph is a fundamental structure in mm-ADT that is used in https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more.
-This structure is called the *obj graph*.
-The subgraph concerned with type definitions is called the *type graph*.
-The subgraph considered with mutation history (https://en.wikipedia.org/wiki/State_(computer_science)[state]) is called the *value graph*.
-The `obj` graph is a ringoid-link:https://en.wikipedia.org/wiki/Embedding[embedded] https://en.wikipedia.org/wiki/Monoidal_category[monoidal] https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph].
-This graph will be the subject of study throughout the documentation.
+The diagram above captures a fundamental structure in mm-ADT called the *obj graph*. The `obj graph` is used for https://en.wikipedia.org/wiki/Type_system#Type_checking[type checking], https://en.wikipedia.org/wiki/Type_inference[type inference], https://en.wikipedia.org/wiki/Optimizing_compiler[compiler optimization], https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection], and more. The subgraph concerned with type definitions is called the *type graph*. The subgraph considered with mutation history (https://en.wikipedia.org/wiki/State_(computer_science)[state]) is called the *value graph*. The `obj` graph is the codomain of the link:https://en.wikipedia.org/wiki/Embedding[embedded] image of an `obj` ringoid called the *stream ring*. Both the `obj` graph and stream ringoid form the primary topics of study throughout the documentation.
 
-The full `obj` structure thus far is diagrammed on the right.
-On the left are some example `mmlang` expressions.
+The `obj` meta-model structure thus far is diagrammed on the right (with quantifiers attached to each component). On the left are some example `mmlang` expressions.
 
 image::obj-full.svg[float=right,width=300]
 
@@ -210,26 +184,28 @@ int                                                         //<1>
 int{2}                                                      //<2>
 int{2}[is>0]                                                //<3>
 int{2}[is>0][plus,[neg]]                                    //<4>
+5{2} => int{2}[is>0][plus,[neg]]                            //<5>
 ----
 <1> A ctype denoting a single integer.
 <2> A ctype denoting two integers.
 <3> A dtype denoting zero, one, or two integers greater than 0.
 <4> A dtype extending the previous type with negative integer addition.
+<5> A value of two fives applied to the previous type with the result being two 0s.
 
 ==== Type Components
 
-The diagram below highlights the two primary components of a type, where an edge is denoted \$e=(a,i,b)\$.
+The illustration below highlights the two primary components of a type, where an edge of the Cayley graph is the triple \$e=(a,i,b) \in (\tt{type} \times \tt{i\nst} \times \tt{type})\$.
 
 . *Type signature*: the ctype specification of a type's domain and range.
 . *Type definition*: a domain rooted instruction sequence terminating at the range.
 
-image::type-signature-definition.svg[align=center,width=650]
+image::type-signature-definition.svg[align=center,width=675]
+
+NOTE: An image referred to as a *diagram* or commuting diagram is isomorphic to the system of equations it captures and thus, respects the axioms of the algebraic structure being diagrammed. An image referred to as an *illustration* is intended to elicit a realization of the associated topic via intuition and should not be considered a faithful encoding of an underlying mathematics.
 
 ===== Type Signature
 
-Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type.
-A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type.
-In `mmlang` a type signature has the following general pattern where `{q}` is the ctype's associated quantifier.
+Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki/Function_(mathematics)[function] that maps an `obj` of one type to an `obj` of another type. A *type signature* specifies the source and target of this mapping, where the *domain* is the source type, and the *range* is the target type. In `mmlang` a type signature has the following general pattern where `{q}` is the ctype's associated quantifier.
 
 [.center]
 [width=30]
@@ -758,7 +734,6 @@ int[is,[gt,10]]                      //<4>
 <4> An `mmlang` sugar where if no domain is specified, `_` is assumed.
 |===
 
-
 [cols="8,.^8",grid=none,frame=none]
 |===
 
@@ -778,7 +753,6 @@ int{2}[plus,1]{3}[gt,0][explain]
 |
 image:anon-example.svg[width=400,align=center]
 |===
-
 
 [discrete]
 ===== Anonymous Type Uses
@@ -1176,6 +1150,7 @@ NOTE: When each `poly` contains 0 or 1 element, the respective algebras behave e
 
 The mm-ADT ring's additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] operator is accessible via the `[branch]` instruction. The `[branch]` instruction's argument is a `poly`. Each term of the `poly` argument is an operand of the ring's \$+\$-operator. In this way, each of the 6 `poly` forms represents a particular https://en.wikipedia.org/wiki/Control_flow[control structure]. Due to the prevalent use of `[branch]`, `mmlang` offers the sugar'd encoding of `[ ]`, where both the instruction opcode and the `poly` parentheses are not written. For example, `[branch,(+1,+2,+3)]` is equivalent to `[+1,+2,+3]`.
 
+
 [cols="^1h,3,9,^1h,3,9"]
 |===
 | lst | control | mmlang example | rec | control | mmlang example
@@ -1238,13 +1213,13 @@ a|
 ----
 {blank}
 |===
+
 '''
 
 .,-poly Controls
 The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring. The https://en.wikipedia.org/wiki/Associative_property[associativity] and https://en.wikipedia.org/wiki/Commutative_property[commutativity] of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a `,-poly` are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes https://en.wikipedia.org/wiki/Parallel_computing[parallelism]. The `,-poly` algebra realizes https://en.wikipedia.org/wiki/Method_cascading[cascading] https://en.wikipedia.org/wiki/Union_(set_theory)[union] in `lst` and https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional] cascading in `rec`.
 
 Note that in all subsequent `[branch,poly]` equations to follow, \$x \in \tt{obj}\$ is an incoming `obj` to the respective `[branch]` instruction.
-
 
 [cols="^3,^4"]
 |====
@@ -1337,7 +1312,6 @@ image::poly-embed-composition.svg[width=220,align=center]
 int{3}[mult,10][is>20 -> [+70,+170,+270], %
                 is>10 ->   [*10,*20,*30]][plus,100][explain]
 ----
-
 
 The above type can be expressed in a pure `poly` form, where `;` is serial composition and `,` is parallel branching. This construction is captured by the slanted morphism in the diagram above.
 
