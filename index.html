@@ -1082,7 +1082,7 @@ The particulars of the ideas in the table below will be discussed over the cours
 <p>A <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> is a graphical encoding of a <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>. If \$(A, \cdot, I)\$ is a group with carrier set \$A\$, binary operator \$\cdot : (A \times A) \to A\$, and <a href="https://en.wikipedia.org/wiki/Generating_set_of_a_group">generating set</a> \$I \subseteq A\$ then the <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a> \$G = (V,E)\$ with vertices \$V = A\$ and labeled edges \$E = A \times I \times A\$ is the Cayley graph of the group. The directed edge \$(a,i,b) \in E\$ written \$a \to_i b\$ states that the vertices \$a,b \in A\$ are connected by an edge labeled with the element \$i \in I\$. Thus, \$a \to_i b\$ captures the group operation \$a \cdot i = b\$.</p>
 </div>
 <div class="paragraph">
-<p>When constructed in <a href="https://en.wikipedia.org/wiki/Eager_evaluation">full</a>, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of all possible \$I\$-transitions between elements. When <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">lazily</a> constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming \$I\$-edge from the previous element. A Cayley graph captures both a proto-https://en.wikipedia.org/wiki/Free_group[free] and non-free aspects of a group. The non-free aspect is realized by any edge \$e = (a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\ast)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
+<p>When constructed in <a href="https://en.wikipedia.org/wiki/Eager_evaluation">full</a>, a Cayley graph&#8217;s vertices are the group elements and its edges represent the set of all possible \$I\$-transitions between elements. When <a href="https://en.wikipedia.org/wiki/Lazy_evaluation">lazily</a> constructed, a Cayley graph encodes the history of a group computation, where the current element has an incoming \$I\$-edge from the previous element. A Cayley graph captures both the proto-<a href="https://en.wikipedia.org/wiki/Free_group">free</a> and non-free aspects of a group. The non-free aspect is realized by any edge \$e = (a,i,b)\$ such that \$ai \mapsto b\$ and an element of the corresponding free algebra \$(A^\ast,\ast)\$ can be constructed by concatenating the edge labels of a path \$\prod_{e \in (a,i,b)^\ast} \pi_1(e)\$.</p>
 </div>
 <div class="paragraph">
 <p>A <em>generalized</em> Cayley graph does not require that every \$i \in I\$ have a corresponding \$i^{-1} \in I\$ such that \$i \cdot i^{-1} = \mathbf{1}\$ (i.e., multiplicative inverses).
@@ -1274,7 +1274,7 @@ An image referred to as a <strong>diagram</strong> or commuting diagram is isomo
 <div class="paragraph">
 <p>Every mm-ADT type can be generally understood as a <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">function</a> that maps an <code>obj</code> of one type to an <code>obj</code> of another type. A <strong>type signature</strong> specifies the source and target of this mapping, where the <strong>domain</strong> is the source type, and the <strong>range</strong> is the target type. In <code>mmlang</code> a type signature has the following general form where <code>{q}</code> is the ctype&#8217;s associated quantifier.</p>
 </div>
-<table class="tableblock frame-all grid-all center" style="width: 30%;">
+<table class="tableblock frame-none grid-none center" style="width: 30%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -2257,7 +2257,7 @@ mmlang&gt; (bool[one],int[one],real[one])
 mmlang&gt; (true,6,5.5)=([one],[one],[one])
 ==&gt;(true{3},1{3},1.0{3})
 mmlang&gt; 'ryan'[one]
-==&gt;1</code></pre>
+language error: 'ryan' is not supported by [one]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3542,13 +3542,11 @@ In mm-ADT, <code>int</code> is a <code>nat</code> (\$\mathbb{N}\$) if there is a
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 36 =&gt; int[define,nat&lt;=int[is&gt;0]]                   <i class="conum" data-value="1"></i><b>(1)</b>
-language error: end of input expected at 1:54
-       <i class="conum" data-value="1"></i><b>(1)</b>
-         ^ near here
+==&gt;36
 mmlang&gt; 36 =&gt; nat&lt;=int[define,nat&lt;=int[is&gt;0]]              <i class="conum" data-value="2"></i><b>(2)</b>
-language error: false is not a nat
+==&gt;nat:36
 mmlang&gt; 36 =&gt; nat&lt;=int[define,nat&lt;=int[is&gt;0]][mult,-1]     <i class="conum" data-value="3"></i><b>(3)</b>
-language error: true is not a nat</code></pre>
+language error: -36 is not a nat</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -3615,9 +3613,9 @@ language error: 0 is not a nat</code></pre>
                            date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
                            date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
 mmlang&gt; (8;26;2020) =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)
+language error: (nat:8{?};nat:26{?};nat:2020) is not a (nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat)
 mmlang&gt; (8;26)      =&gt; date
-==&gt;date:(nat:8;nat:26;nat:2020)</code></pre>
+language error: (nat:8{?};nat:26{?}) is not a (nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]])</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -7364,7 +7362,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-18 18:29:35 -0600
+Last updated 2020-09-19 00:32:05 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
