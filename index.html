@@ -3568,7 +3568,7 @@ language error: -36 is not a nat</code></pre>
 <div class="exampleblock">
 <div class="title">Deep Dive 2. mm-ADT Type Prefix</div>
 <div class="content">
-<table class="tableblock frame-all grid-all right" style="width: 50%;">
+<table class="tableblock frame-none grid-none right" style="width: 50%;">
 <colgroup>
 <col style="width: 100%;">
 </colgroup>
@@ -3612,6 +3612,7 @@ language error: 0 is not a nat</code></pre>
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0],
                            date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
                            date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
+mmlang&gt;
 mmlang&gt; (8;26;2020) =&gt; date
 language error: (nat:8{?};nat:26{?};nat:2020) is not a (nat{?}&lt;=nat[is,bool&lt;=nat[lte,12]];nat{?}&lt;=nat[is,bool&lt;=nat[lte,31]];nat)
 mmlang&gt; (8;26)      =&gt; date
@@ -3738,7 +3739,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 <h4 id="_constructors">Constructors</h4>
 <h5 id="_property_graph_model_1" class="discrete">Property Graph Model 1</h5>
 <div class="paragraph">
-<p><a href="https://en.wikipedia.org/wiki/Graph_theory">Graph theory</a> acknowledges a variety of graph structures. One such structure is the <strong>property graph</strong>. The more descriptive, yet significantly longer name is the <em><a href="https://en.wikipedia.org/wiki/Directed_graph:">directed</a>, attributed, <a href="https://en.wikipedia.org/wiki/Multigraph">multi-relational</a> binary graph</em>. The breadth of features will ultimately be captured in <code>pg</code>. The reduced <code>pg_1</code> model only defines a <em>directed binary graph</em>. In <code>pg_1</code>, a <code>vertex</code> can be derived from a <code>rec</code> with an <code>'id'-&gt;int</code> field. An edge can be derived from a <code>rec</code> with an outgoing/start <code>vertex</code> (<code>outV</code>) and an incoming/end <code>vertex</code> (<code>inV</code>). The associated non-commuting diagram graphically captures the <code>pg_1</code> structure, where the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>&#8201;&#8212;&#8201;e.g., <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
+<p><a href="https://en.wikipedia.org/wiki/Graph_theory">Graph theory</a> acknowledges a variety of graph structures. One such structure is the <strong>property graph</strong>. The more descriptive, yet significantly longer name is the <em><a href="https://en.wikipedia.org/wiki/Directed_graph">directed</a>, attributed, <a href="https://en.wikipedia.org/wiki/Multigraph">multi-relational</a> binary graph</em>. The breadth of features will ultimately be captured in <code>pg</code>. The reduced <code>pg_1</code> model only defines a <em>directed binary graph</em>. In <code>pg_1</code>, a <code>vertex</code> can be derived from a <code>rec</code> with an <code>'id'-&gt;int</code> field. An edge can be derived from a <code>rec</code> with an outgoing/start <code>vertex</code> (<code>outV</code>) and an incoming/end <code>vertex</code> (<code>inV</code>). The associated non-commuting diagram graphically captures the <code>pg_1</code> structure, where the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>&#8201;&#8212;&#8201;e.g., <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
 </div>
 <table class="tableblock frame-none grid-none stretch center">
 <colgroup>
@@ -3813,11 +3814,11 @@ language error: ('ID'-&gt;1) is not a vertex</code></pre>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1][define,vertex&lt;=int-&lt;('id'-&gt;_)]                               <i class="conum" data-value="1"></i><b>(1)</b>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1][define,vertex&lt;=int-&lt;('id'-&gt;_)]    <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;_[define,vertex&lt;=int[split,('id'-&gt;int)]]
-mmlang&gt; 5 =&gt; vertex                                                                <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; 5 =&gt; vertex                                     <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;vertex:('id'-&gt;5)
-mmlang&gt; (5;6) =&gt; (vertex;vertex)                                                   <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; (5;6) =&gt; (vertex;vertex)                        <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;(vertex:('id'-&gt;5);vertex:('id'-&gt;6))</code></pre>
 </div>
 </div>
@@ -4091,16 +4092,16 @@ language error: 0 is not a nat</code></pre>
 <td class="tableblock halign-left valign-top"><p class="tableblock">A type with components of the same type.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[define,list&lt;=[(_){?}|(_,list)]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,list&lt;=[(_){?}|(_,list)]]
 ==&gt;_[define,list&lt;=_[(_){?}|(_,list)]]
 mmlang&gt; (1)             =&gt; list
-language error: lst for (1) is not a type in model rec#1727547267
+==&gt;list:(1)
 mmlang&gt; (1,(1))         =&gt; list
-language error: lst for (1) is not a type in model rec#1727547267
+==&gt;list:(1,list:(1))
 mmlang&gt; (1,(1,(1)))     =&gt; list
-language error: lst for (1) is not a type in model rec#1727547267
+==&gt;list:(1,list:(1,list:(1)))
 mmlang&gt; (1,(1,(1,(1)))) =&gt; list
-language error: lst for (1) is not a type in model rec#1727547267
+==&gt;list:(1,list:(1,list:(1,list:(1))))
 mmlang&gt; 1               =&gt; list
 language error: 1 is not a list
 mmlang&gt; (1,1)           =&gt; list
@@ -7362,7 +7363,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-19 00:32:05 -0600
+Last updated 2020-09-19 05:52:11 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
