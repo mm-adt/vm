@@ -211,9 +211,9 @@ Every mm-ADT type can be generally understood as a https://en.wikipedia.org/wiki
 [width=30,grid=none,frame=none]
 |===
 ^a|
-[exec,eval=false,exception=LanguageException]
+[exec,eval=false]
 ----
-range{q}<=domain{q}
+range{q}<=domain{q} ## LanguageException
 ----
 {blank}
 |===
@@ -267,10 +267,10 @@ int{0,5}<=int{0,5}
 The type `int{0,5}` denotes the inclusive range of 0, 1, 2, 3, 4, or 5 integers. In practice, the \$(\mathbb{Z} \times \mathbb{Z})\$ quantifier ring represents uncertainty as to the number of elements being referred to.
 
 <.^a|
-[exec,exception=LanguageException]
+[exec]
 ----
 int<=bool
-true => int<=bool
+true => int<=bool ## LanguageException
 ----
 {blank}
 |Types that are fully specified by their type signature are canonical types (ctypes). Therefore, `bool\<=int` is meaningless as there are no instructions to map an `int` to a `bool`. This example is in the `mm` model-ADT, where given another model, it is possible for `bool\<=int` to yield a result.
@@ -491,12 +491,12 @@ Types use quantifiers in two separate, but related, contexts: *type signatures* 
 A type signature's *domain* specifies the type and quantity of the `obj` required for evaluation. The *range* denotes what can be expected in return. `int{6}\<=int{3}` states that given `3` `ints`, the type will return `6` `ints`.
 Quantifiers in a type signature are descriptive, used in https://en.wikipedia.org/wiki/Type_system#Static_type_checking[type checking].
 
-[exec,exception=LanguageException]
+[exec]
 ----
-4 => int{6}<=int{3}[[plus,1],[plus,1]]
-4{3} => int{6}<=int{3}[[plus,1],[plus,1]]
+4 => int{6}<=int{3}[[plus,1],[plus,1]]                   ## LanguageException
+4{3} => int{6}<=int{3}[[plus,1],[plus,1]]                ## 5{6}
 [4,5,6] => int{6}<=int{3}[[plus,1],[plus,1]]
-[4{2},5{1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]
+[4{2},5{1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]    ## LanguageException
 [4{2},5{-1},6{2}] => int{6}<=int{3}[[plus,1],[plus,1]]
 ----
 
@@ -543,11 +543,11 @@ The following two examples highlight the fact that type signature quantifiers ar
 [cols="4,2",width=80]
 |===
 a|
-[exec,exception=LanguageException]
+[exec]
 ----
-4{3} => [[plus,1],[plus,1]]
-4{3} => int{6}<=int{3}[[plus,1],[plus,1]]
-4{2} => int{6}<=int{3}[[plus,1],[plus,1]]
+4{3} => [[plus,1],[plus,1]]                ## 5{6}
+4{3} => int{6}<=int{3}[[plus,1],[plus,1]]  ## 5{6}
+4{2} => int{6}<=int{3}[[plus,1],[plus,1]]  ## LanguageException
 ----
 {blank}
 <|
@@ -562,11 +562,11 @@ a|
 \]
 
 a|
-[exec,exception=LanguageException]
+[exec]
 ----
-4{3} => [plus,1]{2}
-4{3} => int{6}<=int{3}[plus,1]{2}
-4{2} => int{6}<=int{3}[plus,1]{2}
+4{3} => [plus,1]{2}                 ## 5{6}
+4{3} => int{6}<=int{3}[plus,1]{2}   ## 5{6}
+4{2} => int{6}<=int{3}[plus,1]{2}   ## LanguageException
 ----
 {blank}
 <|
@@ -839,13 +839,13 @@ A few of the more interesting aspects of the mono types are detailed in the foll
 
 The instructions `[zero]` and `[one]` are https://en.wikipedia.org/wiki/Constant_function[constant] polymorphic instructions. Each provides a unique singleton value associated with the type of the respective incoming `obj`.
 
-[exec,exception=LanguageException]
+[exec]
 ----
 (bool[zero],int[zero],real[zero],str[zero])
 (true,6,5.5,'ryan')=([zero],[zero],[zero],[zero])
 (bool[one],int[one],real[one])
 (true,6,5.5)=([one],[one],[one])
-'ryan'[one]
+'ryan'[one]                                          ## LanguageException
 ----
 
 Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `[mult]` instruction identities, respectively. Furthermore, for those types that form a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity], the `[zero]` is their respective multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator].

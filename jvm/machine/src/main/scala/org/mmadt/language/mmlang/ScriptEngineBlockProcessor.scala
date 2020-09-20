@@ -48,38 +48,37 @@ class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Ob
   val LANGUAGE = "mmlang"
   lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage(LANGUAGE).getEngine.get()
   //////////////////////////////////////
-  val PROMPT = "prompt" // String
-  val EVAL = "eval" // Boolean
-  val NONE = "none" // String
-  val EXCEPTION = "exception" // String
-  val LINE_BREAK = "linebreak" // String
+  val EXPECTED_RESULT = "#"
 
   override def process(parent:StructuralNode, reader:Reader, attributes:java.util.Map[String, Object]):Object = {
     val builder:StringBuilder = new StringBuilder
     val query:StringBuilder = new StringBuilder
     var result:Boolean = true
-    val eval = java.lang.Boolean.valueOf(attributes.getOrDefault(EVAL, Tokens.btrue).toString)
-    val prompt = attributes.getOrDefault(PROMPT, engine.getFactory.getLanguageName + "> ").toString
-    val none = attributes.getOrDefault(NONE, prompt + "\n").toString
-    val exception = attributes.getOrDefault(EXCEPTION, Tokens.blank).toString
-    val linebreak = attributes.getOrDefault(LINE_BREAK, "%").toString
+    val eval = java.lang.Boolean.valueOf(attributes.getOrDefault("eval", Tokens.btrue).toString)
+    val prompt = attributes.getOrDefault("prompt", engine.getFactory.getLanguageName + "> ").toString
+    val none = attributes.getOrDefault("none", prompt + "\n").toString
+    val exception = attributes.getOrDefault("exception", Tokens.blank).toString
+    val LINEBREAK = attributes.getOrDefault("linebreak", "%").toString
     engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(Tokens.::, __.model(MM))
     JavaConverters.collectionAsScalaIterable(reader.readLines()).foreach(w => {
-      if (w.trim.isBlank)
+      val line:Tuple2[String, String] =
+        if (w.contains("##"))
+          (w.split("##")(0) + "(//<[0-9]>)".r.findFirstIn(w).getOrElse(""), w.split("##")(1).replaceAll("(//<[0-9]>)", Tokens.blank).trim)
+        else (w.stripTrailing(), "")
+      if (line._1.trim.isBlank)
         builder.append("\n")
       else {
-        if (w.stripTrailing().contains(linebreak)) {
-          val line = w.stripTrailing()
-          if (line.contains("%%")) result = false;
-          query.append(line.replace(linebreak, Tokens.space)).append("\n").append(IntStream.range(0, prompt.length).mapToObj(_ => Tokens.space).collect(Collectors.joining))
+        if (line._1.contains(LINEBREAK)) {
+          if (line._1.contains("%%")) result = false;
+          query.append(line._1.replace(LINEBREAK, Tokens.space)).append("\n").append(IntStream.range(0, prompt.length).mapToObj(_ => Tokens.space).collect(Collectors.joining))
         } else {
-          query.append(w)
+          query.append(line._1)
           if (eval)
             builder.append(prompt).append(query).append("\n")
           Try[Obj] {
             engine.eval(query.toString().replaceAll("\n", Tokens.blank).replaceAll("(//<[0-9]>)", Tokens.blank))
           } match {
-            case Failure(e) if e.getClass.getSimpleName.equals(exception) =>
+            case Failure(e) if e.getClass.getSimpleName.equals(line._2) =>
               if (eval) {
                 (e match {
                   case _:LanguageException => builder.append("language error: ")
@@ -89,7 +88,11 @@ class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Ob
                 builder.append(query)
             case Failure(e) => throw new Exception(e.getMessage + ":::" + builder, e)
             case Success(value) =>
+
               if (eval) {
+                val expectedResults = if (!line._2.isEmpty) engine.eval(line._2) else null
+                if (null != expectedResults && value != expectedResults)
+                  throw new Exception("Unexpected result: " + value + " [expected] " + expectedResults)
                 val results = Obj.iterator(value)
                 if (results.isEmpty || !result) builder.append(none)
                 else results.foreach(a => {

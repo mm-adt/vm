@@ -80,9 +80,9 @@ NOTE: In `mmlang`, the `[to]` instruction's sugar is `< >`. It is the only instr
 a|
 [exec]
 ----
-_   => [plus,1]<x>[plus,2][mult,x]
-int => _[plus,1]<x>[plus,2][mult,x]
-9   => int[plus,1]<x>[plus,2][mult,x]
+_   => [plus,1]<x>[plus,2][mult,x]     ## _[plus,1]<x>[plus,2][mult,x]
+int => _[plus,1]<x>[plus,2][mult,x]    ## int[plus,1]<x>[plus,2][mult,x]
+9   => int[plus,1]<x>[plus,2][mult,x]  ## 120
 ----
 {blank}
 |====
@@ -103,10 +103,10 @@ int[plus,1]<x>[plus,2][mult,x][explain]                                         
 
 The variable's https://en.wikipedia.org/wiki/Scope_(computer_science)[scope] starts at `[to]` and ends when there is no longer a path to `[to]`. If an `inst` argument is a type (e.g. `[mult,[plus,x]]`), then the *child type* (`[plus,x]`) path extends the *parent type* (`[mult]`) path. As such, the child type has access to the variables declared in the parent composition up to the `inst` containing the child type (`[mult]`). Finally, if `[to,x]` is evaluated and later along that path `[to,x]` is evaluated again, all subsequent types will resolve `x` at the latter `[to,x]` instruction. That is, the graph search halts at the first encounter of `[to,x]` -- the https://en.wikipedia.org/wiki/Shortest_path_problem[shortest path] to a declaration.
 
-[exec,exception=LanguageException]
+[exec]
 ----
-2 => int<x>[plus,<y>][plus,y]                                                             //<1>
-2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x]                                             //<2>
+2 => int<x>[plus,<y>][plus,y]                                                             ## LanguageException //<1>
+2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x]                                             ## 12                //<2>
 2 => int<x>[plus,[plus,x]<x>[plus,x]][plus,x][path]                                       //<3>
 int<x>[plus,int<y>[plus,int<z>[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]         //<4>
 ----
@@ -147,11 +147,11 @@ a|
 
 A `nat` is any `int` that arrives at `nat` via `nat\<=int[is>0]`. Given this definition (and this definition only), `nat` is a _refinement_ of `int` because only 50% of `ints` successfully reach `nat`. However, there may be other paths to `nat` from other types and as such, https://en.wikipedia.org/wiki/Refinement_type[type refinement] is a relative concept in mm-ADT. In isolation, `nat` is only a character label (called a *name*) attached to a vertex in the `obj` graph. There is no other structure to a isolated type. The nature of a type is completely determined by the paths incoming and outgoing from it. In this https://en.wikipedia.org/wiki/Graph_theory[graph-based interpretation] of types, a type can be the source or target of any number of paths and it is through navigating these paths that values at a type are morphed into values at other types, where mm-ADT instructions (`inst`) specify, step-by-step, the way in which the morphing process is to be carried out.
 
-[exec,exception=LanguageException]
+[exec]
 ----
-36 => int[define,nat<=int[is>0]]                   //<1>
-36 => nat<=int[define,nat<=int[is>0]]              //<2>
-36 => nat<=int[define,nat<=int[is>0]][mult,-1]     //<3>
+36 => int[define,nat<=int[is>0]]                   ## 36                //<1>
+36 => nat<=int[define,nat<=int[is>0]]              ## nat:36            //<2>
+36 => nat<=int[define,nat<=int[is>0]][mult,-1]     ## LanguageException //<3>
 ----
 <1> A `nat` is defined, but never applied. Thus, logically, this is equivalent to `36 \=> int`.
 <2> A type can be used anytime after its definition in the path. Thus, `nat` is a viable range type.
@@ -159,16 +159,16 @@ A `nat` is any `int` that arrives at `nat` via `nat\<=int[is>0]`. Given this def
 
 .mm-ADT Type Prefix
 ================================================================
-[cols=1,width=50,float=right]
+[cols=1,width=50,float=right,grid=none,frame=none]
 |====
 a|
-[exec,none="",exception=LanguageException]
+[exec,none=""]
 ----
 :[model,mm][define,nat<=int[is>0]]
-10 => nat
--1 => nat
-10 => nat[plus,5]
-10 => nat[plus,5][plus,-15]
+10 => nat                          ## nat:10
+-1 => nat                          ## LanguageException
+10 => nat[plus,5]                  ## nat:15
+10 => nat[plus,5][plus,-15]        ## LanguageException
 ----
 {blank}
 |====
@@ -180,13 +180,13 @@ The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;
 
 image::date-example.svg[]
 
-[exec,none="",exception=LanguageException]
+[exec]
 ----
 :[model,mm][define,nat<=int[is>0],                              %%
                    date<=(nat[is=<12];nat[is=<31];nat),         %
                    date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
-(8;26;2020) => date
-(8;26)      => date
+(8;26;2020) => date ## LanguageException
+(8;26)      => date ## LanguageException
 ----
 
 Defining types with `[define]` is useful for _in situ_ definitions that are only require through the scope of the definition (typically within nested types). For reusing types across mm-ADT programs, mm-ADT offers _models_ and the `[model]` instruction.
@@ -268,7 +268,7 @@ The `mm` model-ADT is too simple to be informative. The complexity of its types 
 [discrete]
 ===== Property Graph Model 1
 
-https://en.wikipedia.org/wiki/Graph_theory[Graph theory] acknowledges a variety of graph structures. One such structure is the *property graph*. The more descriptive, yet significantly longer name is the _https://en.wikipedia.org/wiki/Directed_graph:[directed], attributed, https://en.wikipedia.org/wiki/Multigraph[multi-relational] binary graph_. The breadth of features will ultimately be captured in `pg`. The reduced `pg_1` model only defines a _directed binary graph_. In `pg_1`, a `vertex` can be derived from a `rec` with an `'id'\->int` field. An edge can be derived from a `rec` with an outgoing/start `vertex` (`outV`) and an incoming/end `vertex` (`inV`). The associated non-commuting diagram graphically captures the `pg_1` structure, where the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]` -- e.g., `.outV` is sugar for `[get,'outV']`.
+https://en.wikipedia.org/wiki/Graph_theory[Graph theory] acknowledges a variety of graph structures. One such structure is the *property graph*. The more descriptive, yet significantly longer name is the _link:https://en.wikipedia.org/wiki/Directed_graph[directed], attributed, https://en.wikipedia.org/wiki/Multigraph[multi-relational] binary graph_. The breadth of features will ultimately be captured in `pg`. The reduced `pg_1` model only defines a _directed binary graph_. In `pg_1`, a `vertex` can be derived from a `rec` with an `'id'\->int` field. An edge can be derived from a `rec` with an outgoing/start `vertex` (`outV`) and an incoming/end `vertex` (`inV`). The associated non-commuting diagram graphically captures the `pg_1` structure, where the `.` prefixes on the `inst` morphisms denote the `mmlang` sugar notation for `[get]` -- e.g., `.outV` is sugar for `[get,'outV']`.
 
 [.center]
 [cols="11,6",grid=none,frame=none]
@@ -290,12 +290,12 @@ NOTE: A type definition with no instructions serves as both a model constructor 
 
 Three vertex https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)[constructors] are presented below.
 
-[exec,exception=LanguageException]
+[exec]
 ----
 :[model,pg_1]                                //<1>
-1 => vertex<=int-<('id'->_)                  //<2>
-1 => vertex<=int-<('id'->_,'age'->+28)       //<3>
-1 => vertex<=int-<('ID'->_)                  //<4>
+1 => vertex<=int-<('id'->_)                  ## vertex:('id'->1)  //<2>
+1 => vertex<=int-<('id'->_,'age'->+28)       ## vertex:('id'->1)  //<3>
+1 => vertex<=int-<('ID'->_)                  ## LanguageException //<4>
 ----
 <1> The type prefix loads the `pg_1` model into the `obj` graph.
 <2> A `vertex` is constructed by copying an `int` to the value of the `id` field.
@@ -306,9 +306,9 @@ If a `vertex\<=int` constructor will be used repeatedly, it can either be added 
 
 [exec]
 ----
-:[model,pg_1][define,vertex<=int-<('id'->_)]                               //<1>
-5 => vertex                                                                //<2>
-(5;6) => (vertex;vertex)                                                   //<3>
+:[model,pg_1][define,vertex<=int-<('id'->_)]    //<1>
+5 => vertex                                     ## vertex:('id'->5)                    //<2>
+(5;6) => (vertex;vertex)                        ## (vertex:('id'->5);vertex:('id'->6)) //<3>
 ----
 <1> The `pg_1` model-ADT is extended with a `vertex` constructor.
 <2> A `vertex` is constructed from an `int`.
@@ -389,11 +389,11 @@ These commuting diagrams are called *models* and are stored in model-ADT files a
 
 The `pg_1` model extends `mm` via `pg_1\<=mm`. Note that it is possible for a model to define types that have no incoming paths from `mm`. For example:
 
-[exec,exception=LanguageException]
+[exec]
 ----
 :[model,ex:('type'->(A->(A<=B),B->(B<=C),C->(C<=A)))]
 6 + 12
-A => D
+A => D               ## LanguageException
 A => B => C
 ----
 
@@ -418,18 +418,18 @@ image::type-to-type-type.png[width=700,align=center]
 a|
 [exec]
 ----
-5 => [plus,2]
-5 => [plus,[plus,2]]
+5 => [plus,2]         ## 7
+5 => [plus,[plus,2]]  ## 12
 ----
 {blank}
 
 | https://en.wikipedia.org/wiki/Monomial[monomial] | A https://en.wikipedia.org/wiki/Primitive_data_type[primitive type] that is a single term and coefficient.
 a|
-[exec,exception=LanguageException]
+[exec]
 ----
-5   => int
-'5' => int
-5   => int{10}
+5   => int      ## 5
+'5' => int      ## LanguageException
+5   => int{10}  ## LanguageException
 ----
 {blank}
 | https://en.wikipedia.org/wiki/Polynomial[polynomial] | A https://en.wikipedia.org/wiki/Composite_data_type[composite type] containing a linearly combination of terms and their coefficients.
@@ -446,41 +446,41 @@ a|
 [exec,exception=LanguageException,none=""]
 ----
 :[define,nat<=int[is>0]]
-5 => nat
-0 => nat
+5 => nat                  ## nat:5
+0 => nat                  ## LanguageException
 ----
 {blank}
 | https://en.wikipedia.org/wiki/Recursive_data_type[recursive] | A type with components of the same type.
 a|
 [exec,exception=LanguageException,none=""]
 ----
-:[define,list<=[(_){?}\|(_,list)]]
+:[model,mm][define,list<=[(_){?}\|(_,list)]]
 (1)             => list
 (1,(1))         => list
 (1,(1,(1)))     => list
 (1,(1,(1,(1)))) => list
-1               => list
-(1,1)           => list
+1               => list      ## LanguageException
+(1,1)           => list      ## LanguageException
 ----
 {blank}
 | https://en.wikipedia.org/wiki/Dependent_type[dependent] | A type with a definition variable to the incoming `obj`.
 a|
 [exec,none=""]
 ----
-5 => [is>int]
-5 => [plus,int]
+5 => [is>int]    ## {0}
+5 => [plus,int]  ## 10
 ----
 {blank}
 | https://en.wikipedia.org/wiki/Category_(mathematics)[model] | A set of types and path equations.
 a|
-[exec,exception=LanguageException,none=""]
+[exec,none=""]
 ----
 :[model,social:('type'->  %
   (person -> (person:('name'->str,'age'->nat)), %
    nat    -> (nat<=int[is>0])))]
-('name'->'marko','age'->0)                => person
-('name'->'marko','age'->29)               => person
-('name'->'marko','age'->29,'alive'->true) => person
+('name'->'marko','age'->0)                => person  ## LanguageException
+('name'->'marko','age'->29)               => person  ## person:('name'->'marko','age'->nat:29)
+('name'->'marko','age'->29,'alive'->true) => person  ## person:('name'->'marko','age'->nat:29)
 
 ----
 {blank}
@@ -494,13 +494,13 @@ https://en.wikipedia.org/wiki/Refinement_type[Refinement types] extend a languag
 \]
 In mm-ADT, the above is written `int[is>0]` which is the sugar form of `int{?}\<=int[is,[gt,0]]`.
 
-[exec,none="",exception=LanguageException]
+[exec,none=""]
 ----
 :[model,mm][define,nat<=int[is>0]]
 10 => nat
--1 => nat
+-1 => nat                           ## LanguageException
 10 => nat[plus,5]
-10 => nat[plus,5][plus,-15]
+10 => nat[plus,5][plus,-15]         ## LanguageException
 ----
 
 ===== Dependent Types
@@ -524,7 +524,7 @@ In mm-ADT, the above is written `int[is>0]` which is the sugar form of `int{?}\<
 
 A recursive type's definition contains a reference to itself. Recursive type definitions require a _base case_ to prevent an infinte recursion. Modern programming languages support generic collections, where a list can be defined to contain a particular type. For example, a `lst` containing only `ints`.
 
-[exec,exception=LanguageException]
+[exec]
 ----
 :[model,mm][define,xlist<=lst[[is,[empty]]|                  %
                               [[is,[head][a,str]];           %
@@ -532,11 +532,11 @@ A recursive type's definition contains a reference to itself. Recursive type def
 ( ) => [a,xlist]
 ('a';'b';'c') => [a,xlist]
 ('a';'b';'c') => xlist
-(1;'a';'c') => xlist
-('a';'b';'c') => xlist[put,0,3]
+(1;'a';'c') => xlist              ## LanguageException
+('a';'b';'c') => xlist[put,0,3]   ## LanguageException
 ----
 
-[exec,exception=LanguageException]
+[exec]
 ----
 :[model,mm][define,ylist<=lst[[is,[empty]]|                  %
                               [[is,[head][a,str]];           %
@@ -545,6 +545,6 @@ A recursive type's definition contains a reference to itself. Recursive type def
 ( ) => [a,ylist]
 ('a';1;'b';2) => [a,ylist]
 ('a';1;'b';2) => ylist
-(1;'a';'c') => ylist
-('a';1;'b';2) => ylist[put,0,3]
+(1;'a';'c') => ylist              ## LanguageException
+('a';1;'b';2) => ylist[put,0,3]   ## LanguageException
 ----
