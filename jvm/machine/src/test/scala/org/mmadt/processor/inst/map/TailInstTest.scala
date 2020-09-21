@@ -25,12 +25,13 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__.tail
+import org.mmadt.language.obj.op.trace.ModelOp._
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class TailInstTest extends BaseInstTest(
-  testSet("[tail] table test",
+  testSet("[tail] table test",List(NONE,MM),
     comment(";-lst"),
     testing(1 `;`, tail, lst(), "(1)[tail]"),
     testing(1 `;`, lst.tail, lst(), "(1) => lst[tail]"),

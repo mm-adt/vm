@@ -25,27 +25,27 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{doubleToReal, intToInt}
 import org.mmadt.language.obj.`type`.__.{id, one}
-import org.mmadt.language.obj.op.trace.ModelOp.MM
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class OneInstTest extends BaseInstTest(
-  testSet("[one] table test",
+  testSet("[one] table test",List(NONE,MM),
     comment("int"),
     testing(2, one, 1),
     testing(2, one.q(10), 1.q(10)),
-    testing(2.q(10), one, 1.q(10)),
+    IGNORING(MM)(2.q(10), one, 1.q(10),"2{10}[one]"),
     testing(2.q(10), one.q(20), 1.q(200)),
     testing(-2, one, 1),
-    testing(int, one, int.one),
-    testing(int, one.q(10), int.one.q(10)),
-    testing(int.q(10), one, int.q(10).one),
-    testing(int.q(10), one.q(20), int.q(10).one.q(20)),
-    testing(int(1, 2, 3), one, 1.q(3)),
+    IGNORING(MM)(int, one, int.one,"int => [one]"),
+    IGNORING(MM)(int, one.q(10), int.one.q(10),"int => [one]{10}"),
+    IGNORING(MM)(int.q(10), one, int.q(10).one,"int{10}[one]"),
+    IGNORING(MM)(int.q(10), one.q(20), int.q(10).one.q(20),"int{10} => [one]{20}"),
+    IGNORING(MM)(int(1, 2, 3), one, 1.q(3),"[1,2,3][one]"),
     comment("real"),
     testing(2.0, one, 1.0, "2.0[one]"),
     testing(-2.0, one, 1.0, "-2.0[one]"),

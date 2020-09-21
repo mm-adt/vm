@@ -22,20 +22,20 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
-import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.language.obj.op.trace.ModelOp.NONE
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
-import org.mmadt.storage.StorageFactory._
+import org.mmadt.processor.inst.TestSetUtil.testSet
+
 
 class PathInstTest extends BaseInstTest(
-  testSet("[path] table test",
-    /*testing("a", plus("b").plus("c").path(VERTICES), "a" `;` "ab" `;` "abc", "'a'[plus,'b'][plus,'c'][path,([id];)]"),
-    testing("a", str.plus("b").plus(plus("c").plus("d")).plus("e").path(VERTICES), "a" `;` "ab" `;` "ababcd" `;` "ababcde", "'a'=>str[plus,'b'][plus,[plus,'c'][plus,'d']][plus,'e'][path,([id];)]"),
-    testing("a", plus("b").plus(plus("c").plus("d")).plus("e").path(VERTICES).get(1).path(VERTICES), str("a") `;` "ab" `;` "ababcd" `;` "ababcde", "'a'+'b'[++'c'+'d']+'e'[path,([id];)]"),
-    testing(int(1, 2, 3), plus(1).path(VERTICES), strm(List(1 `;` 2, 2 `;` 3, 3 `;` 4)), "[1,2,3][plus,1][path,([id];)]"),
-    testing(int(1, 2, 3), int.q(3).plus(1).plus(2).path(VERTICES), strm(List(1 `;` 2 `;` 4, 2 `;` 3 `;` 5, 3 `;` 4 `;` 6)), "[1,2,3]=>int{3}+1+2[path,([id];)]"),*/
+  testSet("[path] table test", List(NONE),
+    //  testing("a", plus("b").plus("c").path(VERTICES), "a" `;` "ab" `;` "abc", "'a'[plus,'b'][plus,'c'][path,(_;{0})]"),
+    //  testing("a", str.plus("b").plus(plus("c").plus("d")).plus("e").path(VERTICES), "a" `;` "ab" `;` "ababcd" `;` "ababcde", "'a'=>str[plus,'b'][plus,[plus,'c'][plus,'d']][plus,'e'][path,(_;{0})]"),
+    //  testing("a", plus("b").plus(plus("c").plus("d")).plus("e").path(VERTICES).get(1).path(VERTICES), str("a") `;` "ab" `;` "ababcd" `;` "ababcde", "'a'+'b'[++'c'+'d']+'e'[path,(_;{0})]"),
+    //  testing(int(1, 2, 3), plus(1).path(VERTICES), strm(List(1 `;` 2, 2 `;` 3, 3 `;` 4)), "[1,2,3][plus,1][path,(_;{0})]"),
+    //  testing(int(1, 2, 3), int.q(3).plus(1).plus(2).path(VERTICES), strm(1 `;` 2 `;` 4, 2 `;` 3 `;` 5, 3 `;` 4 `;` 6), "[1,2,3]=>int{3}+1+2[path,(_;{0})]"),
   )) {
   test("[path] w/ int value") {
     assertResult(0 `;` 1 `;` 3 `;` 6 `;` 10)(0.plus(1).plus(2).plus(3).plus(4).path(VERTICES))

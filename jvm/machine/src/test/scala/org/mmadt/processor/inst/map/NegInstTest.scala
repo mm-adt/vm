@@ -26,20 +26,20 @@ import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{doubleToReal, intToInt}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.NegOp
-import org.mmadt.language.obj.op.trace.ModelOp.MM
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, excepting, testSet, testing}
 import org.mmadt.storage.StorageFactory.{int, real}
 
 class NegInstTest extends BaseInstTest(
-  testSet("[neg] table test",
+  testSet("[neg] table test",List(NONE,MM),
     comment("int"),
     testing(2, int.neg, -2, "2 => int[neg]"),
     testing(2.q(2), int.q(2).neg, -2.q(2), "2{2} => int{2}[neg]"),
     testing(-2, neg, 2, "-2[neg]"),
     testing(-2, neg.q(4).neg.q(2), -2.q(8), "-2[neg]{4}[neg]{2}"),
-    testing(int.neg, int.neg, int.neg.neg, "int[neg] => int[neg]"),
-    testing(int, int.neg.neg, int.neg.neg, "int => int[neg][neg]"),
+    IGNORING(MM)(int.neg, int.neg, int.neg.neg, "int[neg] => int[neg]"),
+    IGNORING(MM)(int, int.neg.neg, int.neg.neg, "int => int[neg][neg]"),
     testing(int(-1, -2, -3), int.q(3).neg, int(1, 2, 3), "[-1,-2,-3] => int{3}[neg]"),
     comment("real"),
     testing(2.0, real.neg, -2.0, "2.0 => real[neg]"),

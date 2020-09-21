@@ -25,8 +25,9 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, excepting, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 /**
@@ -36,7 +37,7 @@ class GetInstTest extends BaseInstTest(
   testSet("[get] ,-lst test",
     comment(",-lst type index"),
   ),
-  testSet("[get] ;-lst test",
+  testSet("[get] ;-lst test",List(NONE,MM),
     comment(";-lst int index"),
     testing(lst, get(0, int), lst.get(0, int), "lst => [get,0,int]"),
     testing(1 `;` 2 `;` 3, get(0), 1, "(1;2;3)[get,0]"),
@@ -44,16 +45,16 @@ class GetInstTest extends BaseInstTest(
     testing(1 `;` 2 `;` 3, get(2, int), 3, "(1;2;3)[get,2,int]"),
     testing(1 `;` 2 `;` 3.q(5), get(2, int), 3.q(5), "(1;2;3{5})[get,2,int]"),
     testing(1 `;` (2 `;` 3) `;` 4, get(1), (2 `;` 3), "(1;(2;3);4).1"),
-    testing(1 `;` (2 `;` 3).q(10) `;` 4, get(1).q(2), (2 `;` 3).q(20), "(1;(2;3){10};4).1{2}"),
-    testing((1 `;` (2 `;` 3).q(10) `;` 4).q(5), get(1).q(2), (2 `;` 3).q(100), "(1;(2;3){10};4){5}.1{2}"),
-    testing((int `;` (int `;` int).q(10) `;` int).q(5), get(1).q(2), (int `;` int).q(100) <= (int `;` (int `;` int).q(10) `;` int).q(5).get(1).q(2), "(int;(int;int){10};int){5}.1{2}"),
+    IGNORING(MM)(1 `;` (2 `;` 3).q(10) `;` 4, get(1).q(2), (2 `;` 3).q(20), "(1;(2;3){10};4).1{2}"),
+    IGNORING(MM)((1 `;` (2 `;` 3).q(10) `;` 4).q(5), get(1).q(2), (2 `;` 3).q(100), "(1;(2;3){10};4){5}.1{2}"),
+    IGNORING(MM)((int `;` (int `;` int).q(10) `;` int).q(5), get(1).q(2), (int `;` int).q(100) <= (int `;` (int `;` int).q(10) `;` int).q(5).get(1).q(2), "(int;(int;int){10};int){5}.1{2}"),
     // testing(1 `;` 2 `;` 3, get(2, str), "3", "(1;2;3)[get,2,str]"),
     comment(";-lst type index"),
     testing(1 `;` 2 `;` 3, lst.get(int.is(gt(0))), int(2, 3), "(1;2;3) => lst[get,int[is>0]]"),
     // testing(1 `;` 2 `;` 3, lst.get(is(gt(0))), int(2, 3), "(1;2;3) => lst[get,[is>0]]"),
     testing(1 `;` 2.q(10) `;` 3, get(int.is(gt(0))), int(2.q(10), 3), "(1;2{10};3)[get,int[is>0]]"),
     testing(1 `;` 2.q(10) `;` 2.q(20), get(int.is(gt(0))), 2.q(30), "(1;2{10};2{20})[get,int[is>0]]"),
-    testing(1 `;` 2.q(10) `;` 2.q(20), get(int.is(gt(0))).q(100), 2.q(3000), "(1;2{10};2{20})[get,int[is>0]]{100}"),
+    IGNORING(MM)(1 `;` 2.q(10) `;` 2.q(20), get(int.is(gt(0))).q(100), 2.q(3000), "(1;2{10};2{20})[get,int[is>0]]{100}"),
     testing(1 `;` 2 `;` 3, get(get(0)), 2, "(1;2;3) => [get,.0]"),
     testing(1 `;` 2 `;` 3, lst.get(get(0, int)), 2, "(1;2;3) => lst[get,.0,int]"),
     testing(1 `;` 2 `;` 3, (int `;` int `;` int).get(get(0).plus(1)), 3, "(1;2;3) => (int;int;int)[get,.0+1]"),

@@ -24,6 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj.{booleanToBool, intToInt}
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp._
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory.{int, lst, rec, str, _}
@@ -32,7 +33,7 @@ import org.mmadt.storage.StorageFactory.{int, lst, rec, str, _}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class EmptyInstTest extends BaseInstTest(
-  testSet("[empty] table test",
+  testSet("[empty] table test", List(NONE, MM),
     comment("lst"),
     testing(lst.q(20), lst.q(20).empty.q(5), lst.q(20).empty.q(5), "lst{20} => lst{20}[empty]{5}"),
     testing(lst(), empty, true, "()[empty]"),

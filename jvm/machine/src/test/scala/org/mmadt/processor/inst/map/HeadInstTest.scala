@@ -25,22 +25,23 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class HeadInstTest extends BaseInstTest(
-  testSet("[head] table test",
+  testSet("[head] table test",List(NONE,MM),
     comment(";-lst"),
     testing(1 `;` 2 `;` 3, lst.head, 1, "(1;2;3) => lst[head]"),
     testing(1 `;` 2 `;` 3, head, 1, "(1;2;3)[head]"),
     testing((((1 `;` 2) `;`) `;` 3), head, (1 `;` 2), "((1;2);3)[head]"),
     testing(1.q(5) `;` 2.q(4) `;` 3, lst.head, 1.q(5), "(1{5};2{4};3) => lst[head]"),
-    testing(1.q(5) `;` 2.q(4) `;` 3, lst[Int].head.q(2), 1.q(10), "(1{5};2{4};3)[head]{2}"),
-    testing((1.q(5) `;` 2.q(4) `;` 3).q(6), lst[Int].q(6).head.q(2), 1.q(60), "(1{5};2{4};3){6}[head]{2}"),
+    IGNORING(MM)(1.q(5) `;` 2.q(4) `;` 3, lst[Int].head.q(2), 1.q(10), "(1{5};2{4};3)[head]{2}"),
+    IGNORING(MM)((1.q(5) `;` 2.q(4) `;` 3).q(6), lst[Int].q(6).head.q(2), 1.q(60), "(1{5};2{4};3){6}[head]{2}"),
     comment("|-lst"),
-    testing((1.q(5) `|` 2.q(4) `|` 3).q(6), lst[Int].q(6).head.q(2), 1.q(60), "(1{5}|2{4}|3){6}[head]{2}"),
-    testing((1.q(0) `|` 2.q(4) `|` 3).q(6), lst[Int].q(6).head.q(2), 2.q(48), "(1{0}|2{4}|3){6}[head]{2}"),
+    IGNORING(MM)((1.q(5) `|` 2.q(4) `|` 3).q(6), lst[Int].q(6).head.q(2), 1.q(60), "(1{5}|2{4}|3){6}[head]{2}"),
+    IGNORING(MM)((1.q(0) `|` 2.q(4) `|` 3).q(6), lst[Int].q(6).head.q(2), 2.q(48), "(1{0}|2{4}|3){6}[head]{2}"),
     comment(";-rec"),
     testing(str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3), rec.head, 1, "('a'->1;'b'->2;'c'->3) => rec[head]"),
     testing(str("a") -> int(1) `_;` str("b") -> int(2) `_;` str("c") -> int(3), head, 1, "('a'->1;'b'->2;'c'->3)[head]"),
