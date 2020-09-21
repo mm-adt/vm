@@ -23,6 +23,7 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.`type`.__.plus
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
 import org.mmadt.storage.StorageFactory.str
@@ -31,7 +32,7 @@ import org.mmadt.storage.StorageFactory.str
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class SwapInstTest extends BaseInstTest(
-  testSet("[swap] [plus]",
+  testSet("[swap] [plus]",List(NONE,MM),
     testing("rodriguez", str.swap(plus("marko")), "markorodriguez", "'rodriguez' => str[swap,[plus,'marko']]"),
     //testing("roro", str.swap(plus("maro")), "marororo", "'roro' => ^:[plus,'maro']:"),
     testing("roro", str.swap(plus("maro")), "marororo", "'roro' => /[plus,'maro']/"),

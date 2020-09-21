@@ -32,7 +32,7 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.{BranchInstruction, OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.storage.StorageFactory.qZero
+import org.mmadt.storage.StorageFactory.{lst, qZero}
 
 object TraceScanRewrite extends Rewrite {
 
@@ -46,7 +46,7 @@ object TraceScanRewrite extends Rewrite {
     var a:Obj = obj
     var b:Obj = a
     rewrites.foreach(rewrite => {
-      if (rewrite.equals((__ `,`) <= '^(id `,`))) {
+      if (rewrite.equals(lst(__) <= '^(lst(id)))) {
         b = removeRules(BranchRewrite.processType(BranchRewrite().exec(IdRewrite.processType(b))).asInstanceOf[A]) // a faster implementation of id rewrite removal
       } else {
         a = b
@@ -91,9 +91,15 @@ object TraceScanRewrite extends Rewrite {
   }
   private def mapInstructions(lhs:(Obj, Inst[Obj, Obj]), rhs:(Obj, Inst[Obj, Obj])):Option[(Obj, Inst[Obj, Obj])] = {
     if (lhs.equals(rhs)) return Some(lhs)
-    if (lhs._2.op != rhs._2.op || lhs._2.args.length != rhs._2.args.length || !instDomainTyping(lhs._1, rhs._1)) return None
+    if (lhs._2.op != rhs._2.op || lhs._2.args.length != rhs._2.args.length || !instDomainTyping(lhs._1, rhs._1) || containsVariables(lhs._2)) return None
     val args = lhs._2.args.zip(rhs._2.args).map(x => if (x._1.equals(x._2)) x._2 else if (x._1.test(x._2)) x._1.compute(x._2) else x._2.q(qZero))
     if (args.forall(_.alive)) Some(lhs._1, OpInstResolver.resolve(lhs._2.op, args)) else None
+  }
+
+  // if an instruction accesses a variable, don't rewrite it
+  private def containsVariables(ainst:Inst[Obj, Obj]):Boolean = ainst.args.exists {
+    case atype:Type[_] => atype.trace.exists(y => y._2.op.equals(Tokens.from))
+    case _ => false
   }
 
   // make sure the domain of the inst is the same in type and in rewrite

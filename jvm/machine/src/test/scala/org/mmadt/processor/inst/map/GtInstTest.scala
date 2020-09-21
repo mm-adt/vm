@@ -26,6 +26,7 @@ import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{booleanToBool, intToInt, stringToStr}
 import org.mmadt.language.obj.`type`.__.{gt, id, mult}
 import org.mmadt.language.obj.op.map.GtOp
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
@@ -34,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class GtInstTest extends BaseInstTest(
-  testSet("[gt] table test",
+  testSet("[gt] table test", List(NONE, MM),
     comment("int"),
     testing(2, gt(1), true, "2 => [gt,1]"),
     testing(2.q(10), gt(1), true.q(10), "2{10}[gt,1]"),
@@ -49,10 +50,10 @@ class GtInstTest extends BaseInstTest(
     testing(int(1, 2, 3), gt(2.q(10)), bool(false, false, true), "[1,2,3]>2{10}"),
     testing(int(1, 2, 3), gt(2).q(10), bool(false.q(10), false.q(10), true.q(10)), "[1,2,3]>{10}2"),
     testing(int(1, 2, 3), gt(2).q(10), bool(false.q(20), true.q(10))),
-    testing(int(1, 2, 3), gt(2).q(10).id, bool(false.q(10), false.q(10), true.q(10))),
-    testing(int(1, 2, 3), gt(2).q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50))),
-    testing(int(1, 2, 3), id.gt(2).q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50))),
-    testing(int(1, 2, 3), gt(2).id.q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50))),
+    IGNORING(MM)(int(1, 2, 3), gt(2).q(10).id, bool(false.q(10), false.q(10), true.q(10)), "[1,2,3]>{10}2[id]"),
+    IGNORING(MM)(int(1, 2, 3), gt(2).q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50)), "[1,2,3][gt,2]{10}[id]{5}"),
+    IGNORING(MM)(int(1, 2, 3), id.gt(2).q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50)), "[1,2,3][id][gt,2]{10}[id]{5}"),
+    IGNORING(MM)(int(1, 2, 3), gt(2).id.q(10).id.q(5), bool(false.q(50), false.q(50), true.q(50)), "[1,2,3][gt,2][id]{10}[id]{5}"),
     testing(int(1, 2, 3), gt(int), bool(false, false, false), "[1,2,3][gt,int]"),
     testing(int(1, 2, 3), gt(mult(int)), bool(false, false, false), "[1,2,3][gt,[mult,int]]"),
     comment("real"),
@@ -62,7 +63,7 @@ class GtInstTest extends BaseInstTest(
     testing(real, gt(real(2.0)), real.gt(2.0)),
     testing(real, gt(real), real.gt(real)),
     testing(real(1.0, 2.0, 3.0), gt(2.0).q(3), bool(false.q(6), true.q(3))),
-    testing(real(1.0, 2.0, 3.0), gt(2.0).id.q(3), bool(false.q(6), true.q(3))),
+    IGNORING(MM)(real(1.0, 2.0, 3.0), gt(2.0).id.q(3), bool(false.q(6), true.q(3)), "[1.0,2.0,3.0][gt,2.0][id]{3}"),
     testing(real(1.0, 2.0, 3.0), gt(2.0), bool(false, false, true)),
     testing(real(1.0, 2.0, 3.0), gt(real), bool(false, false, false)),
     testing(real(1.0, 2.0, 3.0), gt(mult(real)), bool(false, false, false)),

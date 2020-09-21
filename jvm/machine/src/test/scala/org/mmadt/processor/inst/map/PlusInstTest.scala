@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class PlusInstTest extends BaseInstTest(
@@ -61,7 +61,7 @@ class PlusInstTest extends BaseInstTest(
     testing(real(1.0, 2.0, 3.0), real.q(3).plus(plus(__)), real(3.0, 6.0, 9.0), "[1.0,2.0,3.0] => real{3}[plus,[plus,_]]"),
     comment("str"),
     testing("rodriguez", plus("marko"), "rodriguezmarko", "'rodriguez'[plus,'marko']"),
-    IGNORING(MM)("rodriguez", to('x).map[Str]("marko").plus(from('x)), "markorodriguez", "'rodriguez'<x>[map,'marko'][plus,x]")
+    testing("rodriguez", to('x).map[Str]("marko").plus(from('x)), "markorodriguez", "'rodriguez'<x>[map,'marko'][plus,x]")
   ),
   testSet("[plus] table test w/ mm", MM,
     comment("int"),

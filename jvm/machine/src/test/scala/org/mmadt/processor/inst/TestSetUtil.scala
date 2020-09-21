@@ -55,6 +55,7 @@ object TestSetUtil {
   def testing(lhs:Obj, rhs:Obj, result:Obj):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), null, Nil)
   def testing(lhs:Obj, rhs:Obj, result:Obj, query:String):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), query, Nil)
   def excepting(lhs:Obj, rhs:Obj, result:VmException, query:String = null):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Right(result), query, Nil)
+  //def IGNORING(ignore:Model)(lhs:Obj, rhs:Obj, result:VmException, query:String = null):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Right(result), query, List((ignore,null)))
   def IGNORING(ignore:Model)(lhs:Obj, rhs:Obj, result:Obj, query:String):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), query, List((ignore, null)))
   def IGNORING(ignore:List[(Model, String)])(lhs:Obj, rhs:Obj, result:Obj, query:String):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), query, ignore)
   def IGNORING(ignore:String*)(lhs:Obj, rhs:Obj, result:Obj, query:String = null):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), query, ignore.toList.map(x => (null, x)))
