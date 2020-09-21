@@ -41,8 +41,8 @@ trait PathOp {
 
 object PathOp extends Func[Obj, Lst[Obj]] {
   override val preArgs:Boolean = false
-  val VERTICES:Lst[Obj] = (id `;` __.via(__, StartOp(__))).asInstanceOf[Lst[Obj]]
-  def apply():Inst[Obj, Lst[Obj]] = PathOp.apply((id `;` id).asInstanceOf[Lst[Obj]])
+  val VERTICES:Lst[Obj] = (__ `;` zeroObj).asInstanceOf[Lst[Obj]]
+  def apply():Inst[Obj, Lst[Obj]] = PathOp.apply((__ `;` __).asInstanceOf[Lst[Obj]])
   def apply(pattern:Lst[_ <: Obj]):Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, List(pattern)), func = this) with TraceInstruction
   override def apply(start:Obj, inst:Inst[Obj, Lst[Obj]]):Lst[Obj] = {
     if (start.isInstanceOf[__]) return lst.via(start, inst)

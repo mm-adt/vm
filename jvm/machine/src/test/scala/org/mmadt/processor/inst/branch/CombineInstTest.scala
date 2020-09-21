@@ -39,7 +39,7 @@ class CombineInstTest extends BaseInstTest(
     testing(1 `;` 2 `;` 3, lst.combine(int.plus(1) `,` __ `,` int.plus(5)), 2.q(2) `,` 8, "(1;2;3)=(+1,_,+5)"),
     testing(1 `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2) `;` int.plus(3)), 2 `;` 4 `;` 6, "(1;2;3)=(int+1;int+2;int+3)"),
     testing(1 `;` 2 `;` 3, lst.combine(int.plus(1) `;` int.plus(2)), 2 `;` 4 `;` 4, "(1;2;3)=> lst[combine,(int+1;int+2)]"),
-    testing(1 `;` 2 `;` 3, lst.combine(plus(1) `,`), 2 `,` 3 `,` 4, "(1;2;3) => lst[combine,(+1)]"),
+    testing(1 `;` 2 `;` 3, lst.combine(plus(1) `;`), 2 `;` 3 `;` 4, "(1;2;3) => lst[combine,(+1)]"),
     testing(1 `;` 2 `;` 3, lst.combine(lst), lst, "(1;2;3)=lst"),
     testing(1 `;` 2 `;` 3, lst.combine(id `;` id `;` id), 1 `;` 2 `;` 3, "(1;2;3)=([id];[id];[id])"),
     // TODO:  testing(1 `;`(2 `,` 3) `;` 4, combine(int.plus(1) `;` >-.count `;` int.plus(10)), 2 `;` 2 `;` 14, "(1;(2,3);4)=(int[plus,1];>-[count];int[plus,10])"),

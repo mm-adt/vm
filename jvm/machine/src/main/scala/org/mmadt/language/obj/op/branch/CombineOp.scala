@@ -65,14 +65,14 @@ object CombineOp extends Func[Obj, Obj] {
         val argSize = argList.size
         var i = 0
         var newList: List[Obj] = List.empty[Obj]
-        val newSep: String = /*if (argSize < 2) apoly.gsep else*/ bpoly.gsep
+        val newSep: String = if (argSize < 2) apoly.gsep else bpoly.gsep
         if (argSize > 0) {
           for (x <- alst.glist) {
             newList = newList :+ (x ~~> argList(i))
             i = (i + 1) % argSize
           }
         }
-        alst.clone(g = (newSep, newList))
+        alst.clone(g = (newSep, newList.filter(_.alive)))
     }
 
 

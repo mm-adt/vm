@@ -99,10 +99,9 @@ object Lst {
       })
   }
 
-  private def semi[A <: Obj](objs:List[A]):List[A] = if (objs.exists(x => !x.alive)) List(zeroObj.asInstanceOf[A]) else objs.filter(v => !__.isAnonRootAlive(v))
+  //private def semi[A <: Obj](objs:List[A]):List[A] = if (objs.exists(x => !x.alive)) List(zeroObj.asInstanceOf[A]) else objs.filter(v => !__.isAnonRootAlive(v))
   def moduleStruct[A <: Obj](gsep:String, values:List[A], start:Obj = null):List[A] = gsep match {
     /////////// ,-lst
-
     case Tokens.`,` =>
       if (null == start) return Type.mergeObjs(values).filter(_.alive)
       Type.mergeObjs(Type.mergeObjs(values).map(v =>
@@ -110,16 +109,16 @@ object Lst {
         else start ~~> v)).filter(_.alive)
     /////////// ;-lst
     case Tokens.`;` =>
-      if (null == start) return semi(values)
+      if (null == start) return values
       var running = start
-      semi(values.map(v => {
+      values.map(v => {
         running = if (running.isInstanceOf[Strm[_]]) strm[A](running.toStrm.drain.map(r => r ~~> v):_*)
         else running ~~> v match {
           case x:Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
         }
         running.named(v.name, ignoreAnon = true)
-      }).asInstanceOf[List[A]])
+      }).asInstanceOf[List[A]]
     /////////// |-lst
     case Tokens.`|` =>
       val newStart:Obj = if (null == start) __ else start
