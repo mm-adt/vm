@@ -75,7 +75,7 @@ object Lst {
   def shapeTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => WalkOp.testSourceToTarget(pair._1, pair._2))
   def exactTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
     case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
-      alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name) && p._1.test(Obj.resolveToken(p._1, p._2, baseName = false)))))
+      alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name) && p._1.test(Obj.resolveToken(p._1, p._2)))))
     case _ => false
   }
   def test[A <: Obj](alst:Lst[A], blst:Lst[A]):Boolean = {
@@ -88,8 +88,10 @@ object Lst {
           case Tokens.`,` if eqsep => alst.gstrm.q.within(blst.gstrm.q) && alst.glist.forall(x => blst.glist.exists(y => x.rangeObj.hardQ(qOne).test(y.rangeObj.hardQ(qOne)))) ||
             (alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.rangeObj.test(pair._2.rangeObj)))
           // ;-lst
-          case Tokens.`;` if eqsep => alst.glist.zip(blst.glist)
-            .forall(pair => pair._1.rangeObj.test(pair._2.rangeObj) || pair._1.test(pair._2)) // TODO: are we guaranteed the last check given it's a monoid?
+          case Tokens.`;` if eqsep =>
+            (alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.rangeObj.test(pair._2.rangeObj) || pair._1.test(pair._2))) ||
+              (alst.glist.contains(zeroObj) && blst.glist.exists(z => z.q.zeroable))
+          // TODO: are we guaranteed the last check given it's a monoid?
           // |-lst
           case Tokens.`|` if eqsep => alst.glist.exists(a => blst.glist.exists(b => a.test(b)))
           case _ => alst.glist.forall(a => blst.glist.exists(b => a.test(b)))

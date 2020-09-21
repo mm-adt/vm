@@ -32,7 +32,12 @@ import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory.{real, _}
 
 class SplitInstTest extends BaseInstTest(
-  testSet("[split] |-lst table test",
+  testSet("[split] lst table test",
+    testing(lst, is(lst.eqs(lst.zero)), lst, "lst => [is,lst[eq,lst[zero]]]"),
+    testing(lst, eqs(lst.zero), btrue, "lst => [eq,lst[zero]]"),
+    testing(1, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"), // why 1 not work?
+    testing(lst, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"),
+  ), testSet("[split] ,-lst table test",
     testing(lst, is(lst.eqs(lst.zero)), lst, "lst => [is,lst[eq,lst[zero]]]"),
     testing(lst, eqs(lst.zero), btrue, "lst => [eq,lst[zero]]"),
     testing(1, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"), // why 1 not work?
@@ -42,6 +47,11 @@ class SplitInstTest extends BaseInstTest(
     testing(1, -<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10), "1-<(int,int+{10}2)"),
     // TODO: !! testing(1.q(5), -<(int `,` int.plus(2).q(10)), (1 `,` 3.q(10)).q(5), "1{5}-<(int,int+{10}2)"),  // can't run two ranges on a mutation
     testing(1.q(5), -<(int `,` int.plus(2).q(10)) >-, int(1.q(5), 3.q(50))),
+  ), testSet("[split] ;-lst table test",
+    testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
+    testing(2.q(2), int.q(2).-<(int `;` int.is(gt(10))), (2 `;` zeroObj).q(2), "2{2} => int{2}-<(int;int[is>10])"),
+    testing(2, int.-<(int `;` int.is(gt(10))), 2 `;` zeroObj, "2 => int-<(int;int[is>10])"),
+  ), testSet("[split] |-lst table test",
     testing(int(1, 100), -<(int | int) >-, int(int(1), int(100)), "[1,100]-<(int|int)>-"),
     testing(int(1, 100), -<(int.q(?) | int) >-, int(int(1), int(100)), "[1,100]-<(int{?}|int)>-"),
     testing(int(1, 100), -<(int `,` int) >-, int(1, 1, 100, 100), "[1,100]-<(int,int)>-"),
@@ -52,12 +62,10 @@ class SplitInstTest extends BaseInstTest(
     testing(int(1, 2), -<(int | (int -< (int | int))), __(int(1) `|`, int(2) `|`), "[1,2]-<(int|int-<(int|int))"),
     testing(int(1, 2), -<(int `,`(int -< (int | int))), __(int(1) `,`(int(1) |), 2 `,`(int(2) |))),
     testing(1, -<(str.q(?) | int), zeroObj | 1, "1-<(str{?}|int)"),
-    testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
+
     testing(int(1, 2, 3), int.q(3).-<(int.q(3) `;` int.q(3)), strm(List(1 `;` 1, 2 `;` 2, 3 `;` 3)), "(1,2,3) => lst>--<(int{3};int{3})"),
     testing(2, -<(int.q(?) | str), int(2) | __.q(qZero), "2-<(int{?}|str)"),
     testing(4.q(2), int.q(2).-<(int | int.is(gt(10))), (4 | zeroObj).q(2), "4{2} => int{2}-<(int|int[is>10])"),
-    testing(2.q(2), int.q(2).-<(int `;` int.is(gt(10))), (2 `;` zeroObj).q(2), "2{2} => int{2}-<(int;int[is>10])"),
-    testing(2, int.-<(int `;` int.is(gt(10))), 2 `;` zeroObj, "2 => int-<(int;int[is>10])"),
     testing(2, int.-<((int | int.is(gt(11))) | int.is(gt(10))), (2 | zeroObj | zeroObj), "2 => int-<(int|int[is>11])"),
   ),
   testSet("[split] |-rec table test",

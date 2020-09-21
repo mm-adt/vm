@@ -185,8 +185,8 @@ image::date-example.svg[]
 :[model,mm][define,nat<=int[is>0],                              %%
                    date<=(nat[is=<12];nat[is=<31];nat),         %
                    date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
-(8;26;2020) => date ## LanguageException
-(8;26)      => date ## LanguageException
+(8;26;2020) => date ## date:(nat:8;nat:26;nat:2020)
+(8;26)      => date ## date:(nat:8;nat:26;nat:2020)
 ----
 
 Defining types with `[define]` is useful for _in situ_ definitions that are only require through the scope of the definition (typically within nested types). For reusing types across mm-ADT programs, mm-ADT offers _models_ and the `[model]` instruction.

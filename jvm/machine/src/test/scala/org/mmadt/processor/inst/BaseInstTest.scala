@@ -29,8 +29,8 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.value.{LstValue, Value}
 import org.mmadt.language.obj.{Obj, asType}
 import org.mmadt.processor.inst.BaseInstTest._
 import org.mmadt.storage.StorageFactory.{int, oneObj, strm}
@@ -62,6 +62,7 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
         case x:Strm[_] => x // TODO: reconstruct type from a stream
         case x:Value[_] if query.contains(">-") || query.contains("[merge") => x // TODO: not rebuild type up correctly
         case atype:Type[_] => atype.domainObj ==> atype
+        case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
         case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
       })
     )
@@ -75,6 +76,7 @@ abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result,
             (aobj.isInstanceOf[Strm[_]] && aobj.toStrm.drain.headOption.exists(y => y.via.exists(x => List(Tokens.get).contains(x._2.op)))) => aobj // nested poly have their quantifiers altered
         case atype:Type[_] => atype.domainObj ==> atype
         case astrm:Strm[_] => strm(astrm.drain.map(x => (x.domainObj ==> x.trace.reconstruct[Obj](x.domainObj, x.name)).hardQ(x.q)))
+        case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
         case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
       }),
       ("eval-5", s => {

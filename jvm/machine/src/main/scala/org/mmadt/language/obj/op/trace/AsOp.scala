@@ -142,7 +142,8 @@ object AsOp extends Func[Obj, Obj] {
       case _:__ => x
       case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
       case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
-      case alst:LstType[Obj] if Lst.shapeTest(x, alst) => lst(name = alst.name, g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1 `=>` a._2)), via = x.via)
+      case alst:LstType[Obj] if alst.ctype => x.named(alst.name)
+      case alst:LstType[Obj] if Lst.shapeTest(x, alst) => lst(name = alst.name, g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))), via = x.via)
       case alst:LstType[Obj] if Lst.test(x, alst) => x.named(alst.name)
       case _ => throw LanguageException.typingError(x, asType(y))
     })
