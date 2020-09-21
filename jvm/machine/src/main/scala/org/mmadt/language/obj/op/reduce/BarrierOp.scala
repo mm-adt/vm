@@ -20,20 +20,39 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.storage.obj.value.strm
+package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
-import org.mmadt.language.obj.value.LstValue
-import org.mmadt.language.obj.value.strm.LstStrm
+import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.op.ReduceInstruction
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.StorageFactory.strm
+import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VLstStrm[A <: Obj](val name:String = Tokens.lst, val values:Seq[LstValue[A]], val via:ViaTuple = rootVia) extends LstStrm[A] {
-  override def clone(name:String = this.name,
-                     g:Any = this.g,
-                     q:IntQ = this.q,
-                     via:ViaTuple = this.via):this.type = new VLstStrm[A](name, values = values, via).asInstanceOf[this.type]
+trait BarrierOp {
+  this:Obj =>
+  def barrier:Obj = BarrierOp().exec(this)
+}
+object BarrierOp extends Func[Obj, Obj] {
+  override val preArgs:Boolean = false
+  override val preStrm:Boolean = false
+
+  def apply():Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.barrier, Nil), func = this) with ReduceInstruction[Obj] {
+    val seed:Obj = strm()
+    val reducer:Obj = strm()
+  }
+
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
+    start match {
+      case strm:Strm[_] => strm
+      case avalue:Value[_] => avalue
+      case _:Type[_] => start.via(start, inst)
+    }
+  }
 }

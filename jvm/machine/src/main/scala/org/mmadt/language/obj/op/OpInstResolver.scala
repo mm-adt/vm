@@ -29,7 +29,7 @@ import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
+import org.mmadt.language.obj.op.reduce.{BarrierOp, CountOp, FoldOp, SumOp}
 import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp, PutOp}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
@@ -69,6 +69,7 @@ object OpInstResolver {
       case Tokens.rule_id => IdRewrite()
       case Tokens.rule_unity => BranchRewrite()
 
+      case Tokens.barrier => BarrierOp()
       case Tokens.lift => LiftOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.`walk` | Tokens.`walk_op` => WalkOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.head => HeadOp()

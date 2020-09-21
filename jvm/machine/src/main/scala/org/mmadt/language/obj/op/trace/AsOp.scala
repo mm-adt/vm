@@ -51,9 +51,6 @@ object AsOp extends Func[Obj, Obj] {
 
   def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E = autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
   private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
-    if (!target.alive) return zeroObj
-    if (!source.alive) return source
-    if (__.isAnon(target) || source.model.vars(target.name).isDefined) return source
     if (source.name.equals(target.name)) {
       source match {
         case alst:LstValue[Obj] if !Lst.exactTest(alst, target) =>
@@ -62,6 +59,8 @@ object AsOp extends Func[Obj, Obj] {
         case _ => return source
       }
     }
+    if (!target.alive) return zeroObj
+    if (!source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
     if ((!__.isAnon(source)) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
     source match {
       case astrm:Strm[Obj] => astrm(src => AsOp.autoAsType(src, target, domain))

@@ -30,7 +30,7 @@ import org.mmadt.language.obj.Obj
 object Tokens {
 
   lazy val reservedOps:List[String] = List(
-    Tokens.define, Tokens.neg, Tokens.branch,
+    Tokens.define, Tokens.neg, Tokens.branch, Tokens.barrier,
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.defs, Tokens.load,
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last, Tokens.empty, Tokens.swap,
@@ -57,6 +57,7 @@ object Tokens {
   val walk = "walk"
   val model = "model"
   val branch = "branch"
+  val barrier = "barrier"
   val load = "load"
   val defs = "defs"
   val define = "define"
