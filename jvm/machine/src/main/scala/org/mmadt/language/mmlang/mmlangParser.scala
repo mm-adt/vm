@@ -32,6 +32,7 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.map.GetOp
+import org.mmadt.language.obj.op.reduce.BarrierOp
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -146,14 +147,15 @@ class mmlangParser extends JavaTokenParsers {
 
   // instruction parsing
   lazy val inst:Parser[Inst[Obj, Obj]] = (
-    liftSugar | sugarlessInst | fromSugar | toSugar | splitSugar | swapSugar |
-      combineSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar | branchSugar) ~ opt(quantifier) ^^
+    liftSugar | sugarlessInst | fromSugar | toSugar | splitSugar | swapSugar | barrierSugar | branchSugar |
+      combineSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar) ~ opt(quantifier) ^^
     (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
   lazy val infixSugar:Parser[Inst[Obj, Obj]] = not(Tokens.:<=) ~> (
     Tokens.walk_op | Tokens.swap_op | Tokens.as_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.lte_op | (Tokens.gt_op <~ not(Tokens.gt_op) ^^ { x => x }) |
       Tokens.lt_op | Tokens.eqs_op | Tokens.and_op | Tokens.or_op | Tokens.product_op | Tokens.sum_op |
       Tokens.is_a_op | Tokens.is | Tokens.not_op) ~ opt(quantifier) ~ obj ^^ (x => x._1._2.map(q => OpInstResolver.resolve[Obj, Obj](x._1._1, List(x._2)).hardQ(q)).getOrElse(OpInstResolver.resolve(x._1._1, List(x._2))))
   lazy val infixArg:Parser[Obj] = Tokens.:: ~> obj <~ Tokens.:: ^^ (x => x)
+  lazy val barrierSugar:Parser[Inst[Obj, Obj]] = Tokens.barrier_op ~> typeNameNoColon ^^ (x => BarrierOp(__(x)))
   lazy val combineSugar:Parser[Inst[Obj, Obj]] = Tokens.combine_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => CombineOp(x._1.q(q))).getOrElse(CombineOp(x._1)))
   lazy val splitSugar:Parser[Inst[Obj, Obj]] = Tokens.split_op ~> polyObj ~ opt(quantifier) ^^
     (x => x._2.map(q => SplitOp(x._1.q(q))).getOrElse(SplitOp(x._1)).asInstanceOf[Inst[Obj, Obj]]) | Tokens.split_op ~> infixArg ^^
@@ -167,7 +169,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val fromSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ symbolName <~ RANGLE ^^ (x => FromOp(x._2))
   lazy val repeatSugar:Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.lift_op ~> LROUND ~> obj <~ RROUND) ^^ (x => RepeatOp(x._1, x._2))
   lazy val sugarlessInst:Parser[Inst[Obj, Obj]] = LBRACKET ~> ((LROUND + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + RROUND + "|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
-  lazy val branchSugar:Parser[Inst[Obj, Obj]] = ((LBRACKET ~> lstStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(lst(g = (x._1, x._2)))) | ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(rec(g = (x._1, x._2))))
+  lazy val branchSugar:Parser[Inst[Obj, Obj]] = opt(Tokens.combine_op) ~> ((LBRACKET ~> lstStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(lst(g = (x._1, x._2)))) | ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(rec(g = (x._1, x._2))))
   // quantifier parsing
   lazy val quantifier:Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1, x._2.getOrElse(x._1)))
   lazy val quantifierType:Parser[IntQ] = (Tokens.q_star | Tokens.q_mark | Tokens.q_plus) ^^ {

@@ -24,11 +24,16 @@ package org.mmadt.storage.obj.value.strm
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj
-import org.mmadt.language.obj.Obj.{ViaTuple, rootVia}
+import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj.value.RecValue
 import org.mmadt.language.obj.value.strm.RecStrm
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class VRecStrm[A <: Obj, B <: Obj](val name: String = Tokens.rec, val values: Seq[RecValue[A, B]], val via: ViaTuple = rootVia) extends RecStrm[A, B]
+class VRecStrm[A <: Obj, B <: Obj](val name:String = Tokens.rec, val values:Seq[RecValue[A, B]], val via:ViaTuple = rootVia) extends RecStrm[A, B] {
+  override def clone(name:String = this.name,
+                     g:Any = this.g,
+                     q:IntQ = this.q,
+                     via:ViaTuple = this.via):this.type = new VRecStrm[A, B](name, values = values, via).asInstanceOf[this.type]
+}

@@ -45,8 +45,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("test check") {
     engine.eval(":[model,pg_2]")
-    println("DONE")
-    println(engine.eval("[(1;2),(3;4),(1;3)] => (vertex;vertex) => edge => [barrier] => graph{*}"))
+    println(engine.eval("[(1;2),(3;4),(1;3)] => (vertex;vertex) => edge =| graph"))
   }
 
   test("poly play") {

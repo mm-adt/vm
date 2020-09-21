@@ -25,6 +25,8 @@ package org.mmadt.language.obj.value.strm
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.op.trace.ModelOp
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.strm.util.MultiSet
@@ -37,13 +39,13 @@ trait Strm[+O <: Obj] extends Value[O] {
 
   def drain:Seq[O] = values // TODO: staged separate from values now so any build up of operations on a strm can be applied at time of merge
   def apply[P <: Obj](f:O => P):P = strm[P](this.drain.map(x => f(x)))
+  override def model:Model = this.values.headOption.map(v => v.model).getOrElse(ModelOp.NONE)
   override def via(obj:Obj, inst:Inst[_ <: Obj, _ <: Obj]):this.type = strm(this.drain.map(x => inst.asInstanceOf[Inst[Obj, Obj]].exec(x)).filter(_.alive)).asInstanceOf[this.type]
   override def q(q:IntQ):this.type = strm(this.drain.map(x => x.q(q)).filter(_.alive)).asInstanceOf[this.type]
   override lazy val q:IntQ = this.drain.foldLeft(qZero)((a, b) => a.plus(b.q))
   // utility methods
   override def toStrm:Strm[this.type] = this.asInstanceOf[Strm[this.type]]
   override def clone(name:String = this.name, g:Any = null, q:IntQ = this.q, via:ViaTuple = rootVia):this.type = strm(this.drain).asInstanceOf[this.type]
-
   // standard Java implementations
   override def toString:String = LanguageFactory.printStrm(this)
   override lazy val hashCode:scala.Int = this.name.hashCode ^ this.drain.hashCode()

@@ -24,12 +24,11 @@ package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.ReduceInstruction
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.StorageFactory.strm
+import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -37,22 +36,23 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait BarrierOp {
   this:Obj =>
-  def barrier:Obj = BarrierOp().exec(this)
+  def barrier(atype:Type[Obj]):atype.type = BarrierOp(atype).exec(this).asInstanceOf[atype.type]
+  def =|(atype:Type[Obj]):atype.type = barrier(atype)
 }
 object BarrierOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
   override val preStrm:Boolean = false
 
-  def apply():Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.barrier, Nil), func = this) with ReduceInstruction[Obj] {
-    val seed:Obj = strm()
-    val reducer:Obj = strm()
+  def apply(atype:Type[Obj]):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.barrier, List(atype)), func = this) with ReduceInstruction[Obj] {
+    val seed:Obj = zeroObj
+    val reducer:Obj = __.id
   }
 
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
     start match {
-      case strm:Strm[_] => strm
-      case avalue:Value[_] => avalue
-      case _:Type[_] => start.via(start, inst)
+      case astrm:Strm[_] => astrm.named(inst.arg0[Obj].name)
+      // case avalue:Value[_] => avalue // should throw exception
+      case _:Type[_] => inst.arg0[Obj].via(start, inst)
     }
   }
 }
