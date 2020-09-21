@@ -1461,7 +1461,7 @@ In practice, the string representation of a value is its <em>ground</em> and the
 ==&gt;6
 mmlang&gt; 2[plus,4][is&gt;0][path]
 ==&gt;(2;[plus,4];6;[is,true];6)
-   &lt;=2[plus,4][is,true][path,(_[id];_[id])]
+   &lt;=2[plus,4][is,true][path,(_;_)]
 mmlang&gt; 2[plus,4][is&gt;0][type]
 ==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]]</code></pre>
 </div>
@@ -2248,14 +2248,10 @@ inst                       domain      range state
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (bool[zero],int[zero],real[zero],str[zero])
-==&gt;(bool[zero],int[zero],real[zero],str[zero])
-mmlang&gt; (true,6,5.5,'ryan')=([zero],[zero],[zero],[zero])
-==&gt;(false{4},0{4},0.0{4},''{4})
-mmlang&gt; (bool[one],int[one],real[one])
-==&gt;(bool[one],int[one],real[one])
-mmlang&gt; (true,6,5.5)=([one],[one],[one])
-==&gt;(true{3},1{3},1.0{3})
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (true;6;5.5;'ryan')=([zero];[zero];[zero];[zero])
+==&gt;(false;0;0.0;'')
+mmlang&gt; (true;6;5.5)=([one];[one];[one])
+==&gt;(true;1;1.0)
 mmlang&gt; 'ryan'[one]
 language error: 'ryan' is not supported by [one]</code></pre>
 </div>
@@ -2699,11 +2695,11 @@ a_{q \ast 0}                   &amp;= \{\mathbf{0}\}.
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1;6;1;2;{1})
-==&gt;(1;6;1;2)
+==&gt;(1;6;1;2;_)
 mmlang&gt; ('a'{7};'b';'b'{0};'c';'a'{2})
-==&gt;({0})
+==&gt;('a'{7};'b';{0};'c';'a'{2})
 mmlang&gt; ('a';{1};1.0;1;true;{1})
-==&gt;('a';1.0;1;true)</code></pre>
+==&gt;('a';_;1.0;1;true;_)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3194,17 +3190,17 @@ x \prec &amp;\; (v_0|v_1|\ldots|v_n) \succ \;\;&amp;=\;\; x \Rightarrow \big[v_0
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270))))
-==&gt;(1;10;(({0})))
-==&gt;(2;20;(({0})))
+==&gt;(1;10;(({0};{0})))
+==&gt;(2;20;(({0};{0})))
 ==&gt;(3;30;((30;(100,200,300))))
 mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)),
                                       -&lt;([is&gt;10];-&lt;(*10,*20,*30  ))))
-==&gt;(1;10;(({0}){2}))
-==&gt;(2;20;(({0}),(20;(200,400,600))))
+==&gt;(1;10;(({0};{0}),({0};{0})))
+==&gt;(2;20;(({0};{0}),(20;(200,400,600))))
 ==&gt;(3;30;((30;(100,200,300)),(30;(300,600,900))))
 mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
                                       -&lt;([is&gt;10];-&lt;(*10,*20,*30  )&gt;-)&gt;-)&gt;-;[plus,100])
-==&gt;({0})
+==&gt;(1;10;{0};{0})
 ==&gt;(2;20;[200,400,600];[300,500,700])
 ==&gt;(3;30;[100,200,300{2},600,900];[200,300,400{2},700,1000])
 mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+270)&gt;-)&gt;-,
@@ -3309,10 +3305,10 @@ However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6 =&gt; int[plus,[mult,2]][path]
 ==&gt;(6;[plus,12];18)
-   &lt;=6[plus,12][path,(_[id];_[id])]
+   &lt;=6[plus,12][path,(_;_)]
 mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
 ==&gt;(8;[plus,16];24)
-   &lt;=8[plus,16][path,(_[id];_[id])]</code></pre>
+   &lt;=8[plus,16][path,(_;_)]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3324,7 +3320,7 @@ mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
 ==&gt;true
 mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path]                                                     <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;(8;[plus,1];9;[mult,2];18;[lt,63];true)
-   &lt;=8[plus,1][mult,2][lt,63][path,(_[id];_[id])]
+   &lt;=8[plus,1][mult,2][lt,63][path,(_;_)]
 mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]                                       <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;63</code></pre>
 </div>
@@ -3425,7 +3421,7 @@ mmlang&gt; 9   =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]                                                 <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10];120)
-   &lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path,(_[id];_[id])]
+   &lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path,(_;_)]
 mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]                                                   <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'
 int[plus,1]&lt;x&gt;[plus,2][mult,x]
@@ -3461,7 +3457,7 @@ mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x]         
 ==&gt;12
 mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]                                       <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)
-   &lt;=2&lt;x&gt;[plus,8][plus,2][path,(_[id];_[id])]
+   &lt;=2&lt;x&gt;[plus,8][plus,2][path,(_;_)]
 mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]         <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;'
 int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x]
@@ -4182,13 +4178,13 @@ language error: 0 is not a nat</code></pre>
                                   single&lt;=vec:(lst,is&gt;3).0[head]]
 ==&gt;_[define,vec&lt;=lst[split,(lst,int&lt;=lst[combine,(_)][merge][count])],single&lt;=vec[get,0,_][tail][head],single&lt;=vec[get,0,_][head]]
 mmlang&gt; (1;2;3)   =&gt; vec                                               <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;vec:(((1;2;3),3),2)
+==&gt;vec:(((1;2;3),1),2)
 mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;single:3
+==&gt;single:1
 mmlang&gt; (1;2;3;4) =&gt; vec                                               <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;vec:(((1;2;3;4),4),2)
+==&gt;vec:(((1;2;3;4),1),2)
 mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                                     <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;single:4</code></pre>
+==&gt;single:1</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -6964,13 +6960,13 @@ y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;int[plus,1][plus,2][plus,3]
 mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(int[id];;int[id];[plus,1];int[id];[plus,2];int[id];[plus,3];int[id])
-   &lt;=int[plus,1][plus,2][plus,3][path,(_[id];_[id])]
+==&gt;(int;;int;[plus,1];int;[plus,2];int;[plus,3];int)
+   &lt;=int[plus,1][plus,2][plus,3][path,(_;_)]
 mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;7
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;(1;[plus,1];2;[plus,2];4;[plus,3];7)
-   &lt;=1[plus,1][plus,2][plus,3][path,(_[id];_[id])]
+   &lt;=1[plus,1][plus,2][plus,3][path,(_;_)]
 mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
 ==&gt;7</code></pre>
 </div>
@@ -7363,7 +7359,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-20 11:47:11 -0600
+Last updated 2020-09-20 20:02:19 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
