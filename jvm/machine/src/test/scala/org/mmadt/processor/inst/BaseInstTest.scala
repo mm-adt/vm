@@ -41,81 +41,82 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
  * @author Stephen Mallette (http://stephen.genoprime.com)
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class BaseInstTest(testSets:(String, Model, TableFor5[Obj, Obj, Result, String, List[String]])*) extends FunSuite with TableDrivenPropertyChecks {
+abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, Result, String, List[(Model,String)]])*) extends FunSuite with TableDrivenPropertyChecks {
   testSets.foreach(testSet => {
     test(testSet._1) {
-      val model = testSet._2
+      val models = testSet._2
       var lastComment:String = Tokens.blank
       forEvery(testSet._3) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
         case (null, null, comment, null, Nil) => lastComment = comment.toString
-        case (lhs, rhs, result:Result, query, ignore) => evaluate(lastComment, lhs, rhs, result, query = query, model = model, ignore = ignore)
+        case (lhs, rhs, result:Result, query, ignore) => evaluate(lastComment, lhs, rhs, result, query = query, models = models, ignore = ignore)
       }
     }
   })
 
-  private def evaluate(lastComment:String = "", start:Obj, middle:Obj, end:Result, query:String = null, model:Model = null, ignore:List[String]):Unit = {
-    val querying = List[(String, Obj => Obj)](
-      ("query-1", _ => engine.eval(query, bindings(model))),
-      ("query-2", _ => engine.eval(query, bindings(model)) match {
-        case x:Strm[_] => x // TODO: reconstruct type from a stream
-        case x:Value[_] if query.contains(">-") || query.contains("[merge") => x // TODO: not rebuild type up correctly
-        case atype:Type[_] => atype.domainObj ==> atype
-        case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
-        case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
-      })
-    )
-    val evaluating = List[(String, Obj => Obj)](
-      ("eval-1", s => engine.eval(s"$s => $middle", bindings(model))),
-      ("eval-2", s => engine.eval(s"$s $middle", bindings(model))),
-      ("eval-3", s => s ==> (middle.domain ==> middle)),
-      ("eval-4", s => s ==> (middle.domain ==> middle) match {
-        case aobj:Obj
-          if middle.via.exists(x => List(Tokens.split, Tokens.lift).contains(x._2.op)) ||
-            (aobj.isInstanceOf[Strm[_]] && aobj.toStrm.drain.headOption.exists(y => y.via.exists(x => List(Tokens.get).contains(x._2.op)))) => aobj // nested poly have their quantifiers altered
-        case atype:Type[_] => atype.domainObj ==> atype
-        case astrm:Strm[_] => strm(astrm.drain.map(x => (x.domainObj ==> x.trace.reconstruct[Obj](x.domainObj, x.name)).hardQ(x.q)))
-        case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
-        case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
-      }),
-      ("eval-5", s => {
-        val result = s ==> (middle.domain ==> middle)
-        if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg, Tokens.repeat).contains(x._2.op) ||
-          (x._2.op.equals(Tokens.lift) || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
-          result.trace.modeless.zip((asType(s) ==> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
-            assert(asType(x._1._1).test(x._2._1.rangeObj), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
-            assertResult(x._1._2.op)(x._2._2.op) // test via tuples' inst opcode
-            if (!List(Tokens.split, Tokens.combine).contains(x._1._2.op))
-              assert(x._1._2.test(x._2._2), s"\n\t${x._1._2} -- ${x._2._2}\n\t\t==>${x}") // test via tuples' inst
-          })
-        result
-      }),
-      ("eval-6", s => {
-        val print:Boolean = false
-        end match {
-          case Left(value) => Some(middle.trace.reconstruct[Obj](s).explain).filter(_ => print).foreach(x => println(x)); value
-          case Right(value) => throw value
-        }
-      }),
-      // ("eval-6", s => s ==> (s.range ==> middle)),
-      // ("eval-7", s => s ==> (s.range ==> (middle.domain ==> middle))),
-    )
-    (evaluating ++
-      (if (null != query) querying else Nil))
-      .foreach(example => {
-        if (ignore.contains(example._1))
-          println(s"IGNORING[${example._1}]: $start => $middle")
-        else
+  private def evaluate(lastComment:String = "", start:Obj, middle:Obj, end:Result, query:String = null, models:List[Model] = Nil, ignore:List[(Model,String)]):Unit = {
+    models.foreach(model => {
+      val querying = List[(String, Obj => Obj)](
+        ("query-1", _ => engine.eval(query, bindings(model))),
+        ("query-2", _ => engine.eval(query, bindings(model)) match {
+          case x:Strm[_] => x // TODO: reconstruct type from a stream
+          case x:Value[_] if query.contains(">-") || query.contains("[merge") => x // TODO: not rebuild type up correctly
+          case atype:Type[_] => atype.domainObj ==> atype
+          case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
+          case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
+        })
+      )
+      val evaluating = List[(String, Obj => Obj)](
+        ("eval-1", s => engine.eval(s"$s => $middle", bindings(model))),
+        ("eval-2", s => engine.eval(s"$s $middle", bindings(model))),
+        ("eval-3", s => s ==> (middle.domain ==> middle)),
+        ("eval-4", s => s ==> (middle.domain ==> middle) match {
+          case aobj:Obj
+            if middle.via.exists(x => List(Tokens.split, Tokens.lift).contains(x._2.op)) ||
+              (aobj.isInstanceOf[Strm[_]] && aobj.toStrm.drain.headOption.exists(y => y.via.exists(x => List(Tokens.get).contains(x._2.op)))) => aobj // nested poly have their quantifiers altered
+          case atype:Type[_] => atype.domainObj ==> atype
+          case astrm:Strm[_] => strm(astrm.drain.map(x => (x.domainObj ==> x.trace.reconstruct[Obj](x.domainObj, x.name)).hardQ(x.q)))
+          case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
+          case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
+        }),
+        ("eval-5", s => {
+          val result = s ==> (middle.domain ==> middle)
+          if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg, Tokens.repeat).contains(x._2.op) ||
+            (x._2.op.equals(Tokens.lift) || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
+            result.trace.modeless.zip((asType(s) ==> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
+              assert(asType(x._1._1).test(x._2._1.rangeObj), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
+              assertResult(x._1._2.op)(x._2._2.op) // test via tuples' inst opcode
+              if (!List(Tokens.split, Tokens.combine).contains(x._1._2.op))
+                assert(x._1._2.test(x._2._2), s"\n\t${x._1._2} -- ${x._2._2}\n\t\t==>${x}") // test via tuples' inst
+            })
+          result
+        }),
+        ("eval-6", s => {
+          val print:Boolean = false
           end match {
-            case Left(result:Obj) =>
-              assertResult(result, s"[${example._1}] $lastComment")(example._2(prepModel(start, model)))
-            case Right(exception:VmException) =>
-              assertResult(exception, s"[${example._1}] $lastComment")(intercept[VmException](example._2(prepModel(start, model))))
+            case Left(value) => Some(middle.trace.reconstruct[Obj](s).explain).filter(_ => print).foreach(x => println(x)); value
+            case Right(value) => throw value
           }
-      })
+        }),
+        // ("eval-6", s => s ==> (s.range ==> middle)),
+        // ("eval-7", s => s ==> (s.range ==> (middle.domain ==> middle))),
+      )
+      (evaluating ++
+        (if (null != query) querying else Nil))
+        .foreach(example => {
+          if (ignore.exists(i => (i._1 == null || i._1 == model) && (i._2 == null || i._2 == example._1)))
+            println(s"IGNORING[${example._1}][${model.name}]: $start => $middle")
+          else
+            end match {
+              case Left(result:Obj) =>
+                assertResult(result, s"[${example._1}][${model.name}] $lastComment")(example._2(prepModel(start, model)))
+              case Right(exception:VmException) =>
+                assertResult(exception, s"[${example._1}][${model.name}] $lastComment")(intercept[VmException](example._2(prepModel(start, model))))
+            }
+        })
+    })
   }
-
 }
 object BaseInstTest {
   type Result = Either[Obj, VmException]

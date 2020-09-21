@@ -22,26 +22,25 @@
 
 package org.mmadt.language.model.examples
 
+import org.mmadt.language.model.examples.timeTest.TIME
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.storage.StorageFactory.int
 import org.mmadt.storage.model
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object timeTest {
-  val TIME:Model = MM.define(
-    'nat <= int.is(gt(0)),
-    'date <= ('nat.is(lte(12)) `;` 'nat.is(lte(31)) `;` 'nat),
-    'date <= ('nat.is(lt(12)) `;` 'nat.is(lte(31))).put(2, 2020))
+  val TIME:Model = MM
+    .defining('date <= ('nat.is(lte(12)) `;` 'nat.is(lte(31)) `;` 'nat))
+    .defining('date <= ('nat.is(lt(12)) `;` 'nat.is(lte(31))).put(2, 2020)).merging(model('num)).named("time")
 }
 
 class timeTest extends BaseInstTest(
-  testSet("time model table test", model('time),
+  testSet("time model table test", List(TIME, model('time)),
     comment("date"),
     testing(8 `;` 26 `;` 2020, 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26;2020) => date"),
     testing(8 `;` 26, 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26) => date"),

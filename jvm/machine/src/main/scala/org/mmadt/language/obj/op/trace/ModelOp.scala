@@ -50,16 +50,17 @@ trait ModelOp {
 
 object ModelOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
-  lazy val MM:Model = model("mm")
+  lazy val NONE:Model = model('none)
+  lazy val MM:Model = model('mm)
   type Model = Rec[StrValue, ModelMap]
   type ModelMap = Rec[Obj, Lst[Obj]]
   val TYPE:StrValue = str("type")
   val VAR:StrValue = str("var")
-  val MODEL_EDIT:String = "#"
+  val MODEL_EXTENSION:String = "#"
   val NOROOT:Pairs[StrValue, ModelOp.ModelMap] = List.empty
   val NOMAP:Pairs[Obj, Lst[Obj]] = List.empty
   val NOREC:ModelMap = rec[Obj, Lst[Obj]]
-  val EMPTY:Model = rec[StrValue, ModelOp.ModelMap]
+
 
   def apply[O <: Obj](file:StrValue):Inst[O, O] = this.apply(storage.model(LoadOp.loadObj[Model](file.g)))
   def apply[O <: Obj](model:Model):Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(storage.model(model)).asInstanceOf[List[O]]), func = this) with TraceInstruction
@@ -78,8 +79,8 @@ object ModelOp extends Func[Obj, Obj] {
     }
   }
   private def nameModel(amodel:Model):Model = amodel.named((
-    if (amodel.name.indexOf(MODEL_EDIT) == -1) amodel.name + MODEL_EDIT
-    else amodel.name.substring(0, amodel.name.indexOf(MODEL_EDIT) + 1)) +
+    if (amodel.name.indexOf(MODEL_EXTENSION) == -1) amodel.name + MODEL_EXTENSION
+    else amodel.name.substring(0, amodel.name.indexOf(MODEL_EXTENSION) + 1)) +
     Math.abs(amodel.toString.hashCode))
 
   def isMetaModel(inst:Inst[_, _]):Boolean = inst.op.equals(Tokens.model) || inst.op.startsWith("rule:") || inst.op.equals(Tokens.define)

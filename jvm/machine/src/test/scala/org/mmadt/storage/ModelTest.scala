@@ -28,7 +28,7 @@ import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.op.trace.ModelOp.EMPTY
+import org.mmadt.language.obj.op.trace.ModelOp.NONE
 import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Lst, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
@@ -45,15 +45,15 @@ class ModelTest extends FunSuite {
   test("model naming") {
     assertResult("mm")(model('mm).name)
     assertResult("mm")(model('mm).merging(model('mm)).name)
-    assertResult("mm")(model('mm).merging(EMPTY).name)
+    assertResult("mm")(model('mm).merging(NONE).name)
     val name1 = model('mm).merging(model('kv)).name
-    assert(name1.contains(ModelOp.MODEL_EDIT))
-    assert(name1.startsWith("mm" + ModelOp.MODEL_EDIT))
-    Integer.valueOf(name1.substring(name1.indexOf(ModelOp.MODEL_EDIT) + 1, name1.length - 1))
+    assert(name1.contains(ModelOp.MODEL_EXTENSION))
+    assert(name1.startsWith("mm" + ModelOp.MODEL_EXTENSION))
+    Integer.valueOf(name1.substring(name1.indexOf(ModelOp.MODEL_EXTENSION) + 1, name1.length - 1))
     val name2 = model('kv).merging(model('mm)).name
-    assert(name2.contains(ModelOp.MODEL_EDIT))
-    assert(name2.startsWith("kv" + ModelOp.MODEL_EDIT))
-    Integer.valueOf(name2.substring(name2.indexOf(ModelOp.MODEL_EDIT) + 2, name1.length - 1))
+    assert(name2.contains(ModelOp.MODEL_EXTENSION))
+    assert(name2.startsWith("kv" + ModelOp.MODEL_EXTENSION))
+    Integer.valueOf(name2.substring(name2.indexOf(ModelOp.MODEL_EXTENSION) + 2, name1.length - 1))
   }
 
   test("[tp3] model") {

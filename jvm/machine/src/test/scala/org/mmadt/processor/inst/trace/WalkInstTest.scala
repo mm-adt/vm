@@ -43,7 +43,7 @@ object WalkInstTest {
   private val noYearDateType:__ = 'date <= 'moday(('nat <= 'nat.is(lte(12))) `;`('nat <= 'nat.is(lte(31)))).put(2, 2009)
   private val modayType:Obj = 'moday <= (int -< (int `;` int))
   //private val sdateType:Obj = 'sdate <= 'moday(int `;` int).:=(str `;` str)
-  private val MODEL:Model = ModelOp.EMPTY
+  private val MODEL:Model = ModelOp.NONE
     .defining(natType)
     .defining(dateType)
     .defining(noYearDateType)
@@ -63,7 +63,7 @@ object WalkInstTest {
     .defining('wtype <= 'ytype.id)
     .defining('vtype <= 'wtype.id)
     .defining('vtype <= 'ztype.id)
-  private val CAT3_MODEL:Model = ModelOp.EMPTY
+  private val CAT3_MODEL:Model = ModelOp.NONE
     .defining('A <= int)
     .defining('B <= __("A"))
     .defining('C <= __("B"))

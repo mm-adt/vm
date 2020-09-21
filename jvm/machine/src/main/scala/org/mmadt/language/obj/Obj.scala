@@ -103,7 +103,7 @@ trait Obj
     else this.clone(via = (domainType.rinvert, domainType.via._2.clone(via = (domainType.rangeObj.named(this.name, ignoreAnon = true).q(this.q), IdOp())).asInstanceOf[Inst[Obj, Obj]]))
   }
   // obj path methods
-  def model:Model = Option(this.domainObj.via._1).getOrElse(ModelOp.EMPTY).asInstanceOf[Model]
+  def model:Model = Option(this.domainObj.via._1).getOrElse(ModelOp.NONE).asInstanceOf[Model]
   lazy val rangeObj:this.type = this.clone(q = this.q, via = this.domainObj.via)
   lazy val domainObj:Obj = if (this.root) this else this.via._1.domainObj
   lazy val trace:Trace = if (this.root) Nil else this.via._1.trace :+ this.via.asInstanceOf[(Obj, Inst[Obj, Obj])]

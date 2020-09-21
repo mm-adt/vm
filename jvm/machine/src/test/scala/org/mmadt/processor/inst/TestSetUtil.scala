@@ -37,25 +37,29 @@ import org.scalatest.prop.TableFor5
  */
 object TestSetUtil {
 
-  val marko: Rec[StrValue, Obj] = (str("name") -> str("marko")) `,` (str("age") -> int(29))
-  val vadas: Rec[StrValue, Obj] = (str("name") -> str("vadas")) `,` (str("age") -> int(27))
-  val person: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("age") -> int)
-  val oldPerson: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("age") -> int.is(int.gt(28)))
-  val youngPerson: Rec[StrValue, Obj] = str("name") -> str `_,` str("age") -> __.is(__.lt(28))
-  val car: Rec[StrValue, Obj] = (str("name") -> str) `,` (str("year") -> int)
-  val alst: Lst[StrValue] = str("a") `,` "b"
+  val marko:Rec[StrValue, Obj] = (str("name") -> str("marko")) `,`(str("age") -> int(29))
+  val vadas:Rec[StrValue, Obj] = (str("name") -> str("vadas")) `,`(str("age") -> int(27))
+  val person:Rec[StrValue, Obj] = (str("name") -> str) `,`(str("age") -> int)
+  val oldPerson:Rec[StrValue, Obj] = (str("name") -> str) `,`(str("age") -> int.is(int.gt(28)))
+  val youngPerson:Rec[StrValue, Obj] = str("name") -> str `_,` str("age") -> __.is(__.lt(28))
+  val car:Rec[StrValue, Obj] = (str("name") -> str) `,`(str("year") -> int)
+  val alst:Lst[StrValue] = str("a") `,` "b"
 
-  def testSet(testName: String, model: Model, data: (Obj, Obj, Result, String, List[String])*): (String, Model, TableFor5[Obj, Obj, Result, String, List[String]]) =
-    (testName, model, new TableFor5[Obj, Obj, Result, String, List[String]](("lhs", "rhs", "result", "query", "ignore"), data: _*))
-  def testSet(testName: String, data: (Obj, Obj, Result, String, List[String])*): (String, Model, TableFor5[Obj, Obj, Result, String, List[String]]) =
-    (testName, null, new TableFor5[Obj, Obj, Result, String, List[String]](("lhs", "rhs", "result", "query", "ignore"), data: _*))
+  def testSet(testName:String, models:List[Model], data:(Obj, Obj, Result, String, List[(Model, String)])*):(String, List[Model], TableFor5[Obj, Obj, Result, String, List[(Model, String)]]) =
+    (testName, models, new TableFor5[Obj, Obj, Result, String, List[(Model, String)]](("lhs", "rhs", "result", "query", "ignore"), data:_*))
+  def testSet(testName:String, model:Model, data:(Obj, Obj, Result, String, List[(Model, String)])*):(String, List[Model], TableFor5[Obj, Obj, Result, String, List[(Model, String)]]) =
+    (testName, List(model), new TableFor5[Obj, Obj, Result, String, List[(Model, String)]](("lhs", "rhs", "result", "query", "ignore"), data:_*))
+  def testSet(testName:String, data:(Obj, Obj, Result, String, List[(Model, String)])*):(String, List[Model], TableFor5[Obj, Obj, Result, String, List[(Model, String)]]) =
+    (testName, Nil, new TableFor5[Obj, Obj, Result, String, List[(Model, String)]](("lhs", "rhs", "result", "query", "ignore"), data:_*))
 
-  def testing(lhs: Obj, rhs: Obj, result: Obj): (Obj, Obj, Result, String, List[String]) = (lhs, rhs, Left(result), null, Nil)
-  def testing(lhs: Obj, rhs: Obj, result: Obj, query: String): (Obj, Obj, Result, String, List[String]) = (lhs, rhs, Left(result), query, Nil)
-  def excepting(lhs: Obj, rhs: Obj, result: VmException, query: String = null): (Obj, Obj, Result, String, List[String]) = (lhs, rhs, Right(result), query, Nil)
-  def IGNORING(ignore:String*)(lhs: Obj, rhs: Obj, result: Obj, query: String=null): (Obj, Obj, Result, String, List[String]) = (lhs, rhs, Left(result), query, ignore.toList)
+  def testing(lhs:Obj, rhs:Obj, result:Obj):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), null, Nil)
+  def testing(lhs:Obj, rhs:Obj, result:Obj, query:String):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), query, Nil)
+  def excepting(lhs:Obj, rhs:Obj, result:VmException, query:String = null):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Right(result), query, Nil)
+  def IGNORING(ignore:Model)(lhs:Obj, rhs:Obj, result:Obj, query:String):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), query, List((ignore, null)))
+  def IGNORING(ignore:List[(Model, String)])(lhs:Obj, rhs:Obj, result:Obj, query:String):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), query, ignore)
+  def IGNORING(ignore:String*)(lhs:Obj, rhs:Obj, result:Obj, query:String = null):(Obj, Obj, Result, String, List[(Model, String)]) = (lhs, rhs, Left(result), query, ignore.toList.map(x => (null, x)))
 
-  def comment(comment: String): (Obj, Obj, Result, String, List[String]) = (null, null, Left(str(comment)), null, Nil)
+  def comment(comment:String):(Obj, Obj, Result, String, List[(Model, String)]) = (null, null, Left(str(comment)), null, Nil)
 }
 
 
