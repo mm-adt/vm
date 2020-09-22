@@ -3746,12 +3746,12 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                             <i class="conum" data-value="1"></i><b>(1)</b>
-  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>)),                            <i class="conum" data-value="2"></i><b>(2)</b>
-  edge   -&gt; ( edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex)))) &lt;= mm   <i class="conum" data-value="3"></i><b>(3)</b></code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (
+  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>)),
+  edge   -&gt; ( edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex)))) &lt;= mm</code></pre>
 </div>
 </div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/digraph-model-1.svg" alt="digraph model 1"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/pg_1-model.svg" alt="pg 1 model"></span></p></td>
 </tr>
 </tbody>
 </table>
@@ -3762,7 +3762,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-A type definition with no instructions serves as both a model constructor and canonical type (a ctype). As a canonical type, the path from source to target does nothing. A value that matches the left-hand side is simply named with the label on the right-hand side.
+A type definition with no instructions serves as both a model constructor and canonical type (a ctype). As a canonical type, the path from source to target does nothing. An <code>obj</code> that matches the left-hand side is simply labeled with the name of the <code>obj</code> on right-hand side.
 \[
 \tt{(id&#8594;int)}\;\;\tt{\textrm{—[noop]}{\longrightarrow}}\;\;\tt{vertex}.
 \]
@@ -3771,17 +3771,17 @@ A type definition with no instructions serves as both a model constructor and ca
 </table>
 </div>
 <div class="paragraph">
-<p>Three vertex <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructors</a> are presented below.</p>
+<p>Three examples of <a href="https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)">constructing</a> a <code>vertex</code> are presented below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1]                                <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;_
-mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('id'-&gt;_)                  <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; ('id'-&gt;1) =&gt; vertex                          <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;vertex:('id'-&gt;1)
-mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('id'-&gt;_,'age'-&gt;+28)       <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; ('id'-&gt;1,'age'-&gt;28) =&gt; vertex                <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;vertex:('id'-&gt;1)
-mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('ID'-&gt;_)                  <i class="conum" data-value="4"></i><b>(4)</b>
+mmlang&gt; ('ID'-&gt;1) =&gt; vertex                          <i class="conum" data-value="4"></i><b>(4)</b>
 language error: ('ID'-&gt;1) is not a vertex</code></pre>
 </div>
 </div>
@@ -3793,7 +3793,7 @@ language error: ('ID'-&gt;1) is not a vertex</code></pre>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>A <code>vertex</code> is constructed by copying an <code>int</code> to the value of the <code>id</code> field.</td>
+<td>A <code>vertex</code> from a <code>rec</code> with the requisite <code>'id'</code> field.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
@@ -3801,60 +3801,93 @@ language error: ('ID'-&gt;1) is not a vertex</code></pre>
 </tr>
 <tr>
 <td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>Coercion to a <code>vertex</code> is not possible given.</td>
+<td>Coercion to a <code>vertex</code> is not possible given as <code>'ID'</code> is not <code>'id'</code>.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>If a <code>vertex&lt;=int</code> constructor will be used repeatedly, it can either be added to the model or specified in the type prefix. The example below appends a constructor to the type prefix. All subsequent programs will now operate this extended <code>pg_1</code> model.</p>
+<p>Three <code>edge</code> construction examples are presented below.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1][define,vertex&lt;=int-&lt;('id'-&gt;_)]    <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;_[define,vertex&lt;=int[split,('id'-&gt;int)]]
-mmlang&gt; 5 =&gt; vertex                                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;vertex:('id'-&gt;5)
-mmlang&gt; (5;6) =&gt; (vertex;vertex)                        <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(vertex:('id'-&gt;5);vertex:('id'-&gt;6))</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1]
+==&gt;_
+mmlang&gt; ('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2)) =&gt; edge     <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))
+mmlang&gt; ('outV'-&gt;('id'-&gt;1),'inV'-&gt;('id'-&gt;2)) =&gt; edge                   <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;1),'inV'-&gt;vertex:('id'-&gt;2))
+mmlang&gt; (vertex:('id'-&gt;1);vertex:('id'-&gt;2)) =&gt; edge                    <i class="conum" data-value="3"></i><b>(3)</b>
+language error: (vertex:('id'-&gt;1);vertex:('id'-&gt;2)) is not an edge</code></pre>
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>pg_1</code> model-ADT is extended with a <code>vertex</code> constructor.</td>
+<td>An <code>edge</code> is the <code>rec</code> product of two <code>vertices</code>.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>A <code>vertex</code> is constructed from an <code>int</code>.</td>
+<td>If the components of the product can be coerced into vertices, they are automatically done so.</td>
 </tr>
 <tr>
 <td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A <code>vertex</code> pair is constructed from an <code>int</code> pair.</td>
+<td>A <code>lst</code> product is not the same as a <code>rec</code> product given that <code>recs</code> are products of key/value pairs.</td>
 </tr>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_type_paths">Type Paths</h4>
+<h5 id="_property_graph_model_2" class="discrete">Property Graph Model 2</h5>
 <div class="paragraph">
-<p>An edge can be constructed in a number ways. The constructor below maps an <code>int</code> pair (\$\mathbb{Z} \times \mathbb{Z}\$) to an <code>edge</code> by propagating the pair into the edge product and then constructing vertices for the <code>outV</code> and <code>inV</code> fields. This structure has sufficient information for rendering the final <code>edge</code>. The mm-ADT VM simply names the <code>rec</code> pair elements <code>vertex</code> and the outer <code>rec</code> <code>edge</code> thus completing the transformation of an <code>(int;int)</code> to <code>edge</code> given <code>pg_1</code>.</p>
+<p>In the previous <code>pg_1</code> model, a <code>vertex</code> (<code>edge</code>) was constructed using a <code>rec</code> with the requisite component structure. After validating the structural type of <code>rec</code>, the <code>rec</code> is labeled <code>vertex</code> (<code>edge</code>). There are situations in which the <em>source</em> <code>obj</code> has a significantly different absolute structure than the <em>target</em> <code>obj</code>. The ways in which an <code>obj</code> can be constructed are categorized in the table below where <strong>inline</strong> is for one time use, <strong>define</strong> for repeated use in a program, and <strong>model</strong> for reuse across programs.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1]
-==&gt;_
-mmlang&gt; (5;6) =&gt; edge&lt;=(int;int)-&lt;('outV'-&gt;-&lt;('id'-&gt;.0),'inV'-&gt;-&lt;('id'-&gt;.1))
-==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))</code></pre>
-</div>
-</div>
-<table class="tableblock frame-none grid-none right" style="width: 35%;">
+<table class="tableblock frame-all grid-all stretch">
 <colgroup>
-<col style="width: 100%;">
+<col style="width: 10%;">
+<col style="width: 90%;">
 </colgroup>
 <tbody>
 <tr>
+<th class="tableblock halign-center valign-middle"><p class="tableblock">inline</p></th>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; (5;6)-&lt;('ι0'-&gt;π0,'ι1'-&gt;π1)
-==&gt;('ι0'-&gt;5,'ι1'-&gt;6)</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1]
+==&gt;_
+mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('id'-&gt;_)
+==&gt;vertex:('id'-&gt;1)</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<th class="tableblock halign-center valign-middle"><p class="tableblock">define</p></th>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1][define,vertex&lt;=int-&lt;('id'-&gt;_)]
+==&gt;_[define,vertex&lt;=int[split,('id'-&gt;int)]]
+mmlang&gt; 5 =&gt; vertex
+==&gt;vertex:('id'-&gt;5)
+mmlang&gt; (5;6) =&gt; (vertex;vertex)
+==&gt;(vertex:('id'-&gt;5);vertex:('id'-&gt;6))</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<th class="tableblock halign-center valign-middle"><p class="tableblock">model</p></th>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="python">pg_2:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (
+  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>),                                       <i class="conum" data-value="1"></i><b>(1)</b>
+             vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_)),                                   <i class="conum" data-value="2"></i><b>(2)</b>
+  edge   -&gt; (edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),                      <i class="conum" data-value="3"></i><b>(3)</b>
+             edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>)))) &lt;= mm     <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3863,95 +3896,68 @@ mmlang&gt; (5;6) =&gt; edge&lt;=(int;int)-&lt;('outV'-&gt;-&lt;('id'-&gt;.0),'in
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>The above example demonstrates the use of <code>;-lst</code> as both a <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> and a <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>&#8201;&#8212;&#8201;i.e., a <a href="https://en.wikipedia.org/wiki/Biproduct">biproduct</a>. The <code>(vertex;vertex)</code> pair is created via a split <code>-&lt;</code> which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the <code>edge</code> definition projects out each component of via <code>.0</code> (<code>[get,0]</code>) and <code>.1</code> (<code>[get,1]</code>). Thus, the coproduct is also a product. For this reason, the <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> character for <a href="https://en.wikipedia.org/wiki/Pi">pi</a> (π) (the conventional symbol for product <a href="https://en.wikipedia.org/wiki/Projection_(mathematics)">projection</a>) serves as another <code>mmlang</code> sugar for <code>[get]</code>.</p>
-</div>
-<div class="paragraph">
-<p>The final example extends the <code>pg_1</code> model with the <code>vertex</code> and <code>edge</code> constructors. It also makes salient the topic of the next section: <strong>type paths</strong>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1]
-         [define,vertex&lt;=int-&lt;('id'-&gt;_),
-                   edge&lt;=(vertex;vertex)-&lt;('outV'-&gt;-&lt;('id'-&gt;.0),'inV'-&gt;-&lt;('id'-&gt;.1))]       <i class="conum" data-value="1"></i><b>(1)</b>
-mmlang&gt;
-mmlang&gt; (5;6) =&gt; (vertex;vertex)=&gt;edge                                                      <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;6)))
-mmlang&gt; (5;6) =&gt; edge&lt;=(vertex;vertex)
-==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;6)))
-mmlang&gt; (5;6) =&gt; edge                                                                       <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;6)))
-mmlang&gt; 5 =&gt; int-&lt;(vertex;vertex) =&gt; edge                                                   <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;5)))
-mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge
-==&gt;edge:('outV'-&gt;('id'-&gt;vertex:('id'-&gt;5)),'inV'-&gt;('id'-&gt;vertex:('id'-&gt;5)))</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>pg_1</code> model is extended with a vertex constructor and an edge constructor.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>An <code>int</code> pair morphed into a <code>vertex</code> pair and then into an <code>edge</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>An <code>int</code> pair morphed into an <code>edge</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>An <code>int</code> split into <code>vertex</code> clone pairs and then morphed into a <a href="https://en.wikipedia.org/wiki/Loop_(graph_theory)">self-loop</a> edge.</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_type_paths">Type Paths</h4>
-<h5 id="_property_graph_model_2" class="discrete">Property Graph Model 2</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">pg_2:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (                                                       <i class="conum" data-value="1"></i><b>(1)</b>
-  graph  -&gt; (graph&lt;=edge{*}),                                           <i class="conum" data-value="2"></i><b>(2)</b>
-  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>),                                       <i class="conum" data-value="3"></i><b>(3)</b>
-             vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_)),                                   <i class="conum" data-value="4"></i><b>(4)</b>
-  edge   -&gt; (edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),                      <i class="conum" data-value="5"></i><b>(5)</b>
-             edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>)))) &lt;= mm     <i class="conum" data-value="6"></i><b>(6)</b></code></pre>
-</div>
-</div>
 <div class="imageblock text-center">
 <div class="content">
-<img src="./images/obj/digraph-type-path-1.svg" alt="digraph type path 1" width="625">
+<img src="./images/obj/pg_2-model.svg" alt="pg 2 model" width="625">
 </div>
 </div>
 <div class="colist arabic">
 <table>
 <tr>
 <td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>A <code>graph</code> is a <code>lst</code> containing 0 or more <code>edges</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>The <code>mm</code> specification of a canonical <code>vertex</code> (an <code>inst</code>-less ctype).</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
 <td>A path from an <code>int</code> to a <code>vertex</code>.</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
 <td>The <code>mm</code> specification of a canonical <code>edge</code> (an <code>inst</code>-less ctype).</td>
 </tr>
 <tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
+<td><i class="conum" data-value="4"></i><b>4</b></td>
 <td>A path from a 2-tuple <code>vertex</code> <code>;-lst</code> to a <code>edge</code>.</td>
 </tr>
 </table>
 </div>
 <div class="paragraph">
-<p>Note that every type is associated with a <code>lst</code> of type definition whose <strong>range</strong> is the type. Diagrammatically, every type is associated with all it&#8217;s incoming <code>obj</code> graph paths called <em>type paths</em>.</p>
+<p>An edge can be constructed in a number ways. The constructor below maps an <code>int</code> pair (\$\mathbb{Z} \times \mathbb{Z}\$) to an <code>edge</code> by propagating the pair into the edge product and then constructing vertices for the <code>outV</code> and <code>inV</code> fields. This structure has sufficient information for rendering the final <code>edge</code>. The mm-ADT VM simply names the <code>rec</code> pair elements <code>vertex</code> and the outer <code>rec</code> <code>edge</code> thus completing the transformation of an <code>(int;int)</code> to <code>edge</code> given <code>pg_1</code>.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_2]
+==&gt;_
+mmlang&gt; (5;6) =&gt; (vertex;vertex)=&gt;edge                                              <i class="conum" data-value="1"></i><b>(1)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+mmlang&gt; (5;6) =&gt; edge&lt;=(vertex;vertex)
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+mmlang&gt; (5;6) =&gt; edge                                                               <i class="conum" data-value="2"></i><b>(2)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
+mmlang&gt; 5 =&gt; int-&lt;(vertex;vertex) =&gt; edge                                           <i class="conum" data-value="3"></i><b>(3)</b>
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))
+mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge
+==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))</code></pre>
+</div>
+</div>
+<div class="colist arabic">
+<table>
+<tr>
+<td><i class="conum" data-value="1"></i><b>1</b></td>
+<td>An <code>int</code> pair morphed into a <code>vertex</code> pair and then into an <code>edge</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="2"></i><b>2</b></td>
+<td>An <code>int</code> pair morphed into an <code>edge</code>.</td>
+</tr>
+<tr>
+<td><i class="conum" data-value="3"></i><b>3</b></td>
+<td>An <code>int</code> split into <code>vertex</code> clone pairs and then morphed into a <a href="https://en.wikipedia.org/wiki/Loop_(graph_theory)">self-loop</a> edge.</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>The final example above demonstrates the use of <code>;-lst</code> as both a <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> and a <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>&#8201;&#8212;&#8201;i.e., a <a href="https://en.wikipedia.org/wiki/Biproduct">biproduct</a>. The <code>(vertex;vertex)</code> pair is created via a split <code>-&lt;</code> which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the <code>edge</code> definition projects out each component of via <code>.0</code> (<code>[get,0]</code>) and <code>.1</code> (<code>[get,1]</code>). Thus, the coproduct is also a product. For this reason, the <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> character for <a href="https://en.wikipedia.org/wiki/Pi">pi</a> (π) (the conventional symbol for product <a href="https://en.wikipedia.org/wiki/Projection_(mathematics)">projection</a>) serves as another <code>mmlang</code> sugar for <code>[get]</code>.</p>
 </div>
 <div class="exampleblock">
 <div class="title">Deep Dive 4. model-ADT Application Programming Interfaces</div>
@@ -7359,7 +7365,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-20 20:02:19 -0600
+Last updated 2020-09-20 23:19:17 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
