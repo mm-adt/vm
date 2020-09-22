@@ -48,6 +48,11 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("[(1;2),(3;4),(1;3)] => (vertex;vertex) => edge =| graph"))
   }
 
+  test("num") {
+    engine.eval(":[model,num]")
+    println(engine.eval("(5.0;-1.0) => cmplx"))
+  }
+
   test("poly play") {
     engine.eval(":[model,pg_1]")
     println(engine.eval("[1,2,3]-<(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270)>-)>-,-<([is>10];-<(*10,*20,*30  )>-)>-)>-;[plus,100])>-")) // TODO: move to test suite

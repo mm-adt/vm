@@ -50,6 +50,7 @@ class PlusInstTest extends BaseInstTest(
     testing(int(1, 2, 3), plus(2).q(10), int(3.q(10), 4.q(10), 5.q(10)), "[1,2,3][plus,2]{10}"),
     testing(int(1, 2, 3), plus(int), int(2, 4, 6), "[1,2,3][plus,int]"),
     testing(int(1, 2, 3), plus(plus(int)), int(3, 6, 9), "[1,2,3][plus,[plus,int]]"),
+    testing(1, int.to('x).plus(10).to('y).from('x).mult(from('y)).plus(from('x).mult(from('y))), 22, "1 => int<x>+10<y>[<.x>*y]+[<.x>*y]"), // TODO: parser work to get rid of the <.> requirement
     comment("real"),
     testing(2.0, plus(2.0), 4.0, "2.0[plus,2.0]"),
     testing(2.0, plus(real), 4.0),
