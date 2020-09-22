@@ -3963,14 +3963,24 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge
 <div class="title">Deep Dive 4. model-ADT Application Programming Interfaces</div>
 <div class="content">
 <div class="paragraph">
-<p>The software development pattern espoused by mm-ADT is one in which software libraries (<a href="https://en.wikipedia.org/wiki/API">APIs</a>) are large <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagrams</a> constructed via domain/range concatenation of \$b&#8656;a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a <em>look-and-feel</em> similar in form to
+<p>The software development pattern espoused by mm-ADT is one in which software libraries (<a href="https://en.wikipedia.org/wiki/API">APIs</a>) are large <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagrams</a> constructed via domain/range concatenation of \$b&#8656;a\$ types. The diagrams are called <strong>models</strong> and are stored in model-ADT files analogous to <code>mm.mm</code>. With a diagram rich in paths, mm-ADT application code will tend towards a <em>look-and-feel</em> similar in form to
 \[
-a \Rightarrow b \Rightarrow c \Rightarrow d[x][y][z] \Rightarrow e \Rightarrow \ldots \Rightarrow z,
+a\;{=[} b \Rightarrow c, \; d[x][y][z] \Rightarrow e \Rightarrow f ]\Rightarrow \ldots \dashv z.
 \]
-where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$.</p>
+where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$ (i.e., an inline type path) and the connectives that reflect the core operators of the underlying stream ring are:</p>
 </div>
-<div class="paragraph">
-<p>These commuting diagrams are called <strong>models</strong> and are stored in model-ADT files analogous to <code>mm.mm</code> and <code>digraph.mm</code>. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with <code>[branch]</code>, serve as <a href="https://en.wikipedia.org/wiki/Lookup_table">lookup tables</a> for type path resolution.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><code>=&gt;</code>  : multiplicative monoid for serial composition</p>
+</li>
+<li>
+<p><code>=[,]</code> : additive group for parallel alignment</p>
+</li>
+<li>
+<p><code>=|</code>   : non-commutative group for barrier aggregation</p>
+</li>
+</ul>
 </div>
 </div>
 </div>
@@ -7365,7 +7375,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-20 23:19:17 -0600
+Last updated 2020-09-22 00:35:49 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
