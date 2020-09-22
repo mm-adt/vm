@@ -278,99 +278,96 @@ a|
 ----
 include::../../src/main/resources/model/examples/pg_1.mm[]
 ----
-| image:digraph-model-1.svg[align=center]
+| image:pg_1-model.svg[align=center]
 
 |====
 
-NOTE: A type definition with no instructions serves as both a model constructor and canonical type (a ctype). As a canonical type, the path from source to target does nothing. A value that matches the left-hand side is simply named with the label on the right-hand side.
+NOTE: A type definition with no instructions serves as both a model constructor and canonical type (a ctype). As a canonical type, the path from source to target does nothing. An `obj` that matches the left-hand side is simply labeled with the name of the `obj` on right-hand side.
 \[
 \tt{(id->int)}\;\;\tt{\textrm{—[noop]}{\longrightarrow}}\;\;\tt{vertex}.
 \]
 
-
-Three vertex https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)[constructors] are presented below.
+Three examples of https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)[constructing] a `vertex` are presented below.
 
 [exec]
 ----
 :[model,pg_1]                                //<1>
-1 => vertex<=int-<('id'->_)                  ## vertex:('id'->1)  //<2>
-1 => vertex<=int-<('id'->_,'age'->+28)       ## vertex:('id'->1)  //<3>
-1 => vertex<=int-<('ID'->_)                  ## LanguageException //<4>
+('id'->1) => vertex                          ## vertex:('id'->1)  //<2>
+('id'->1,'age'->28) => vertex                ## vertex:('id'->1)  //<3>
+('ID'->1) => vertex                          ## LanguageException //<4>
 ----
 <1> The type prefix loads the `pg_1` model into the `obj` graph.
-<2> A `vertex` is constructed by copying an `int` to the value of the `id` field.
+<2> A `vertex` from a `rec` with the requisite `'id'` field.
 <3> Extraneous (non-ambiguous) in the `vertex` instance is mapped to the terminal \$\mathbf{0}\$.
-<4> Coercion to a `vertex` is not possible given.
+<4> Coercion to a `vertex` is not possible given as `'ID'` is not `'id'`.
 
-If a `vertex\<=int` constructor will be used repeatedly, it can either be added to the model or specified in the type prefix. The example below appends a constructor to the type prefix. All subsequent programs will now operate this extended `pg_1` model.
-
-[exec]
-----
-:[model,pg_1][define,vertex<=int-<('id'->_)]    //<1>
-5 => vertex                                     ## vertex:('id'->5)                    //<2>
-(5;6) => (vertex;vertex)                        ## (vertex:('id'->5);vertex:('id'->6)) //<3>
-----
-<1> The `pg_1` model-ADT is extended with a `vertex` constructor.
-<2> A `vertex` is constructed from an `int`.
-<3> A `vertex` pair is constructed from an `int` pair.
-
-An edge can be constructed in a number ways. The constructor below maps an `int` pair (\$\mathbb{Z} \times \mathbb{Z}\$) to an `edge` by propagating the pair into the edge product and then constructing vertices for the `outV` and `inV` fields. This structure has sufficient information for rendering the final `edge`. The mm-ADT VM simply names the `rec` pair elements `vertex` and the outer `rec` `edge` thus completing the transformation of an `(int;int)` to `edge` given `pg_1`.
+Three `edge` construction examples are presented below.
 
 [exec]
 ----
 :[model,pg_1]
-(5;6) => edge<=(int;int)-<('outV'->-<('id'->.0),'inV'->-<('id'->.1))
+('outV'->vertex:('id'->1),'inV'->vertex:('id'->2)) => edge     ## edge:('outV'->vertex:('id'->1),'inV'->vertex:('id'->2))  //<1>
+('outV'->('id'->1),'inV'->('id'->2)) => edge                   ## edge:('outV'->vertex:('id'->1),'inV'->vertex:('id'->2))  //<2>
+(vertex:('id'->1);vertex:('id'->2)) => edge                    ## LanguageException //<3>
 ----
-
-[cols=1,float=right,width=35,frame=none,grid=none]
-|====
-a|
-[exec,prompt="mm> "]
-----
-(5;6)-<('ι0'->π0,'ι1'->π1)
-----
-{blank}
-|====
-
-The above example demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product] -- i.e., a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. For this reason, the https://en.wikipedia.org/wiki/Unicode[Unicode] character for https://en.wikipedia.org/wiki/Pi[pi] (π) (the conventional symbol for product https://en.wikipedia.org/wiki/Projection_(mathematics)[projection]) serves as another `mmlang` sugar for `[get]`.
-
-
-
-The final example extends the `pg_1` model with the `vertex` and `edge` constructors. It also makes salient the topic of the next section: *type paths*.
-
-[exec]
-----
-:[model,pg_1]                     %%
- [define,vertex<=int-<('id'->_),   %
-           edge<=(vertex;vertex)-<('outV'->-<('id'->.0),'inV'->-<('id'->.1))]       //<1>
-(5;6) => (vertex;vertex)=>edge                                                      //<2>
-(5;6) => edge<=(vertex;vertex)
-(5;6) => edge                                                                       //<3>
-5 => int-<(vertex;vertex) => edge                                                   //<4>
-5-<(vertex;vertex)=>edge
-----
-<1> The `pg_1` model is extended with a vertex constructor and an edge constructor.
-<2> An `int` pair morphed into a `vertex` pair and then into an `edge`.
-<3> An `int` pair morphed into an `edge`.
-<4> An `int` split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
+<1> An `edge` is the `rec` product of two `vertices`.
+<2> If the components of the product can be coerced into vertices, they are automatically done so.
+<3> A `lst` product is not the same as a `rec` product given that `recs` are products of key/value pairs.
 
 ==== Type Paths
 [discrete]
 ===== Property Graph Model 2
 
+In the previous `pg_1` model, a `vertex` (`edge`) was constructed using a `rec` with the requisite component structure. After validating the structural type of `rec`, the `rec` is labeled `vertex` (`edge`). There are situations in which the _source_ `obj` has a significantly different absolute structure than the _target_ `obj`. The ways in which an `obj` can be constructed are categorized in the table below where *inline* is for one time use, *define* for repeated use in a program, and *model* for reuse across programs.
+
+[cols="1,9"]
+|====
+
+^.^h| inline a|
+[exec]
+----
+:[model,pg_1]
+1 => vertex<=int-<('id'->_)                     ## vertex:('id'->1)
+----
+{blank}
+^.^h|define a|
+[exec]
+----
+:[model,pg_1][define,vertex<=int-<('id'->_)]
+5 => vertex                                     ## vertex:('id'->5)
+(5;6) => (vertex;vertex)                        ## (vertex:('id'->5);vertex:('id'->6))
+----
+{blank}
+^.^h|model a|
 [source]
 ----
 include::../../src/main/resources/model/examples/pg_2.mm[]
 ----
+{blank}
+|====
+image::pg_2-model.svg[width=625,align=center]
+<1> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
+<2> A path from an `int` to a `vertex`.
+<3> The `mm` specification of a canonical `edge` (an `inst`-less ctype).
+<4> A path from a 2-tuple `vertex` `;-lst` to a `edge`.
 
-image::digraph-type-path-1.svg[width=625,align=center]
-<1> A `graph` is a `lst` containing 0 or more `edges`.
-<2> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
-<3> A path from an `int` to a `vertex`.
-<4> The `mm` specification of a canonical `edge` (an `inst`-less ctype).
-<5> A path from a 2-tuple `vertex` `;-lst` to a `edge`.
+An edge can be constructed in a number ways. The constructor below maps an `int` pair (\$\mathbb{Z} \times \mathbb{Z}\$) to an `edge` by propagating the pair into the edge product and then constructing vertices for the `outV` and `inV` fields. This structure has sufficient information for rendering the final `edge`. The mm-ADT VM simply names the `rec` pair elements `vertex` and the outer `rec` `edge` thus completing the transformation of an `(int;int)` to `edge` given `pg_1`.
 
-Note that every type is associated with a `lst` of type definition whose *range* is the type. Diagrammatically, every type is associated with all it's incoming `obj` graph paths called _type paths_.
+[exec]
+----
+:[model,pg_2]
+(5;6) => (vertex;vertex)=>edge                                              //<1>
+(5;6) => edge<=(vertex;vertex)
+(5;6) => edge                                                               //<2>
+5 => int-<(vertex;vertex) => edge                                           //<3>
+5-<(vertex;vertex)=>edge
+----
+<1> An `int` pair morphed into a `vertex` pair and then into an `edge`.
+<2> An `int` pair morphed into an `edge`.
+<3> An `int` split into `vertex` clone pairs and then morphed into a https://en.wikipedia.org/wiki/Loop_(graph_theory)[self-loop] edge.
+
+The final example above demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product] -- i.e., a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. For this reason, the https://en.wikipedia.org/wiki/Unicode[Unicode] character for https://en.wikipedia.org/wiki/Pi[pi] (π) (the conventional symbol for product https://en.wikipedia.org/wiki/Projection_(mathematics)[projection]) serves as another `mmlang` sugar for `[get]`.
+
 
 .model-ADT Application Programming Interfaces
 ================================================================
@@ -382,7 +379,6 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 
 These commuting diagrams are called *models* and are stored in model-ADT files analogous to `mm.mm` and `digraph.mm`. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with `[branch]`, serve as https://en.wikipedia.org/wiki/Lookup_table[lookup tables] for type path resolution.
 ================================================================
-
 
 
 ==== Model Paths

@@ -42,8 +42,6 @@ class IteratorProcessor extends Processor {
       output = tt._2 match {
         //////////////REDUCE//////////////
         case reducer: ReduceInstruction[E] => Iterator(reducer.exec(strm(output.toSeq)).asInstanceOf[E])
-        //////////////FILTER//////////////
-        case _: FilterInstruction => output.map(x => tt._2.exec(x).asInstanceOf[E]).filter(_.alive)
         //////////////OTHER//////////////
         case _ => output
           .map(x => tt._2.exec(x))
