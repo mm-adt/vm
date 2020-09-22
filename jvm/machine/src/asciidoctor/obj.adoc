@@ -371,13 +371,15 @@ The final example above demonstrates the use of `;-lst` as both a https://en.wik
 
 .model-ADT Application Programming Interfaces
 ================================================================
-The software development pattern espoused by mm-ADT is one in which software libraries (https://en.wikipedia.org/wiki/API[APIs]) are large https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagrams] constructed via domain/range concatenation of \$b<=a\$ types. With a diagram rich in paths, mm-ADT application code will tend towards a _look-and-feel_ similar in form to
+The software development pattern espoused by mm-ADT is one in which software libraries (https://en.wikipedia.org/wiki/API[APIs]) are large https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagrams] constructed via domain/range concatenation of \$b<=a\$ types. The diagrams are called *models* and are stored in model-ADT files analogous to `mm.mm`. With a diagram rich in paths, mm-ADT application code will tend towards a _look-and-feel_ similar in form to
 \[
-a \Rightarrow b \Rightarrow c \Rightarrow d[x][y][z] \Rightarrow e \Rightarrow \ldots \Rightarrow z,
+a\;{=[} b \Rightarrow c, \; d[x][y][z] \Rightarrow e \Rightarrow f ]\Rightarrow \ldots \dashv z.
 \]
-where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$.
+where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$ (i.e., an inline type path) and the connectives that reflect the core operators of the underlying stream ring are:
 
-These commuting diagrams are called *models* and are stored in model-ADT files analogous to `mm.mm` and `digraph.mm`. Models can be composed using the same ring algebraic mechanisms as type composition as they themselves are simply large product types that when used with `[branch]`, serve as https://en.wikipedia.org/wiki/Lookup_table[lookup tables] for type path resolution.
+* `\=>`  : multiplicative monoid for serial composition
+* `=[,]` : additive group for parallel alignment
+* `=|`   : non-commutative group for barrier aggregation
 ================================================================
 
 
