@@ -20,38 +20,31 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.op.reduce
+package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.StorageFactory.{qOne, zeroObj}
+import org.mmadt.storage.StorageFactory.lst
 import org.mmadt.storage.obj.value.VInst
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait BarrierOp {
+trait HelpOp {
   this:Obj =>
-  def barrier(atype:Type[Obj]):atype.type = BarrierOp(atype).exec(this).asInstanceOf[atype.type]
-  def =|(atype:Type[Obj]):atype.type = barrier(atype)
+  def help[A <: Type[A]](atype:A):A = HelpOp(atype).exec(this)
 }
-object BarrierOp extends Func[Obj, Obj] {
+object HelpOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
-  override val preStrm:Boolean = false
-
-  def apply(atype:Type[Obj]):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.barrier, List(atype)), func = this) with ReduceInstruction[Obj] {
-    val seed:Obj = zeroObj
-    val reducer:Obj = __.id
-  }
-
+  def apply[A <: Obj](atype:A):Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.help, List(atype)), func = this)
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
-    if (start.isInstanceOf[Type[_]]) return inst.arg0[Type[Obj]].range.via(start, inst).hardQ(qOne)
-    inst.arg0[Obj] match {
-      case anon if __.isToken(anon) => start.named(anon.name)
-      case atype:Type[Obj] => start.toStrm.drain.reduce[Obj]((a, b) => a.to('x).map(b) `=>`[Obj] atype).hardQ(qOne)
-    }
+    val domainT:Type[Obj] = inst.arg0[Obj].domain
+    val rangeT:Type[Obj] = inst.arg0[Obj].range
+    lst(g = (Tokens.`;`, start.model.dtypes
+      .filter(t => __.isAnon(domainT) || domainT.name == t.domain.name)
+      .filter(t => __.isAnon(rangeT) || rangeT.name == t.range.name)
+    ))
   }
 }

@@ -35,7 +35,7 @@ object Tokens {
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last, Tokens.empty, Tokens.swap,
     Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.juxt, Tokens.fold, Tokens.error,
-    Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id, Tokens.rule_unity, Tokens.walk, Tokens.lift)
+    Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id, Tokens.rule_unity, Tokens.walk, Tokens.lift, Tokens.help)
 
   lazy val reservedTypes:List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.anon)
   lazy val reservedTokens:Set[String] = (reservedTypes ++ reservedOps).toSet
@@ -64,6 +64,7 @@ object Tokens {
   val a = "a"
   val head = "head"
   val tail = "tail"
+  val help = "help"
   val last = "last"
   val juxt = "juxt"
   val noop = "noop"
@@ -126,7 +127,7 @@ object Tokens {
   val or_op = "||"
   val not_op = "!"
   val get_op = "."
-  val is_a_op = "?"
+  val help_op = "?"
   val barrier_op = "=|"
 
   val split_op = "-<"

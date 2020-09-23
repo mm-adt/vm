@@ -69,6 +69,7 @@ object OpInstResolver {
       case Tokens.rule_id => IdRewrite()
       case Tokens.rule_unity => BranchRewrite()
 
+      case Tokens.help | Tokens.help_op => HelpOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.barrier => BarrierOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.lift => LiftOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.`walk` | Tokens.`walk_op` => WalkOp(args.head.asInstanceOf[Type[Obj]])
@@ -91,7 +92,6 @@ object OpInstResolver {
       case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()
       case Tokens.a => AOp(args.head)
-      case Tokens.is_a_op => IsOp(__.a(args.head))
       case Tokens.as | Tokens.as_op => AsOp(args.head)
       case Tokens.not | Tokens.not_op => NotOp(args.head)
       case Tokens.and | Tokens.and_op => AndOp(args:_*)

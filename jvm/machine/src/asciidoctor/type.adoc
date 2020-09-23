@@ -596,19 +596,51 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 \]
 |====
 
-The mm-ADT virtual machine has two layers of logic: the https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] and the https://zenodo.org/record/2565243[stream ring]. The instructions specify how input `objs` are mapped to output `objs` this representation has a graphical realization as a generalized Cayley graph and a commuting diagram. This algebra is embedded in the processor-oriented https://zenodo.org/record/2565243[stream ring] algebra. The stream ring has three operators for composing `objs`: \$\ast\$, \$ +\$, and \$\oplus\$. The multiplicative https://en.wikipedia.org/wiki/Monoid[monoid's] \$\ast\$-operator concatenates *serial streams*, the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group's] \$ +\$-operator enables independent *parallel streams*, and the stream https://en.wikipedia.org/wiki/Near-ring[near-ring's] non-commutative group's \$\oplus\$-operator https://en.wikipedia.org/wiki/Fold_(higher-order_function)[reduces] streams down to a *singleton stream*.
+The mm-ADT virtual machine has two distinct algebraic layers: the https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] and the https://zenodo.org/record/2565243[stream ring]. The instructions (`inst`) specify how input `objs` are mapped to output `objs` and has a graphical realization as a generalized Cayley graph and/or a commuting diagram. The `inst` algebra's is evaluated by the processor-oriented https://zenodo.org/record/2565243[stream ring] algebra. A stream ring has three operators for composing `objs`: \$\ast\$, \$ +\$, and \$\oplus\$, where the first two are the classic ring operators and the last is particular to a stream ring. The stream ring's multiplicative https://en.wikipedia.org/wiki/Monoid[monoid's] \$\ast\$-operator concatenates *serial streams*, the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group's] \$ +\$-operator composes *parallel streams*, and the stream https://en.wikipedia.org/wiki/Near-ring[near-ring's] non-commutative group's \$\oplus\$-operator https://en.wikipedia.org/wiki/Fold_(higher-order_function)[reduces] streams down to a *singleton stream*.
 
-[.small]
-[cols="1,1,2",width=20,float=left]
+
+[cols="^1,1,^1",width=20,float=left]
 |====
-| sugar  | op            | inst
+| op            | inst        | sugar
 
-| `\=>`  | \$\ast\$      | `[juxt]`
-| `[ ]`  | \$ +\$        | `[branch]`
-| `=]`  | \$ \oplus\$    | `[barrier]`
+| \$\ast\$      | `[juxt]`    | `\=>`
+| \$ +\$        | `[branch]`  | `=[`
+| \$ \oplus\$   | `[barrier]` | `=\|`
 |====
 
-The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT instruction set architecture has three https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions] providing direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying stream ring algebra of the mm-ADT VM.
+The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. These three stream operators have a corresponding realization in `inst` as https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions]. It is through these instructions that the other instructions are grounded in the underlying stream ring algebra of the mm-ADT VM.
+
+'''
+
+[exec]
+----
+4 => int[mult,2] => str[plus,'0'] => real
+4 => int[mult,2] => str =[ str[plus,'0'],str[plus,'.1']] => real
+4 => int[mult,2] => str =[ str[plus,'0'],str[plus,'.1']] => real =| [plus,x]
+----
+
+The last example above makes use of all three stream operators. A decomposition of the expression is provided below.
+
+[cols="1h,^3,^5,^4,^3"]
+|====
+
+|type | `4 \=> int[mult,2]` | `=[str[plus,'0'],str[plus,'.1']]` | `\=> real`         | `=\|[plus,x]`
+|d/r  | `int\<=int`         | `str{2}\<=int`                    | `real{2}\<=str{2}`  | `real\<=real{2}`
+|value| `4\=>8`            | `8\=>['80','8.1']`             | `['80','8.1']\=>[80.0,8.1]` | `[80.0,8.1]\=>88.1`
+|q    | `{1}\=>{1}`          | `{1}\=>{2}`                      | `{2}\=>{2}`        | `{2}\=>{1}`
+|op   | \$ast\$-compose     | \$+\$-compose                     | \$\ast\$-compose   | \$\oplus\$-compose
+
+|term | series              | expansion                         | series              | contraction
+| poly | `--` | `-< >-` | `--` | `-\|`
+|====
+
+Finally, below is the unsugar'd form of the disectected type from above.
+
+[exec]
+----
+4[juxt,int[mult,2]][as,str][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]
+----
+
 
 ////
 The primary distinguising characteristic of the three aforementioned *stream instructions* is that they are no preserved in the `obj` graph. Their purpose is to compose instructions, not _be_ instructions. However, it is for this reason that processing can be detached from the `obj` graph, working a level below the instruction set architecture and directly at the stream ring level.
