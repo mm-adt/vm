@@ -1933,41 +1933,125 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT virtual machine has two layers of logic: the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> and the <a href="https://zenodo.org/record/2565243">stream ring</a>. The instructions specify how input <code>objs</code> are mapped to output <code>objs</code> this representation has a graphical realization as a generalized Cayley graph and a commuting diagram. This algebra is embedded in the processor-oriented <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. The stream ring has three operators for composing <code>objs</code>: \$\ast\$, \$ +\$, and \$\oplus\$. The multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator enables independent <strong>parallel streams</strong>, and the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
+<p>The mm-ADT virtual machine has two distinct algebraic layers: the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> and the <a href="https://zenodo.org/record/2565243">stream ring</a>. The instructions (<code>inst</code>) specify how input <code>objs</code> are mapped to output <code>objs</code> and has a graphical realization as a generalized Cayley graph and/or a commuting diagram. The <code>inst</code> algebra&#8217;s is evaluated by the processor-oriented <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. A stream ring has three operators for composing <code>objs</code>: \$\ast\$, \$ +\$, and \$\oplus\$, where the first two are the classic ring operators and the last is particular to a stream ring. The stream ring&#8217;s multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator composes <strong>parallel streams</strong>, and the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
 </div>
-<table class="tableblock frame-all grid-all left small" style="width: 20%;">
+<table class="tableblock frame-all grid-all left" style="width: 20%;">
 <colgroup>
-<col style="width: 25%;">
-<col style="width: 25%;">
-<col style="width: 50%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
 </colgroup>
 <thead>
 <tr>
-<th class="tableblock halign-left valign-top">sugar</th>
-<th class="tableblock halign-left valign-top">op</th>
+<th class="tableblock halign-center valign-top">op</th>
 <th class="tableblock halign-left valign-top">inst</th>
+<th class="tableblock halign-center valign-top">sugar</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=&gt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\ast\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$\ast\$</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[juxt]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>=&gt;</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[ ]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$ +\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$ +\$</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[branch]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>=[</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$ \oplus\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$ \oplus\$</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><code>[barrier]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>=|</code></p></td>
 </tr>
 </tbody>
 </table>
 <div class="paragraph">
-<p>The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. The mm-ADT instruction set architecture has three <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a> providing direct access to the three stream ring operators. It is through these instructions that the other instructions are grounded in the underlying stream ring algebra of the mm-ADT VM.</p>
+<p>The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. These three stream operators have a corresponding realization in <code>inst</code> as <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a>. It is through these instructions that the other instructions are grounded in the underlying stream ring algebra of the mm-ADT VM.</p>
+</div>
+<hr>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4 =&gt; int[mult,2] =&gt; str[plus,'0'] =&gt; real
+==&gt;80.0
+mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; real
+==&gt;80.0
+==&gt;8.1
+mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [plus,x]
+==&gt;88.1{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p>The last example above makes use of all three stream operators. A decomposition of the expression is provided below.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 6.25%;">
+<col style="width: 18.75%;">
+<col style="width: 31.25%;">
+<col style="width: 25%;">
+<col style="width: 18.75%;">
+</colgroup>
+<tbody>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">type</p></th>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>4 =&gt; int[mult,2]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>=[str[plus,'0'],str[plus,'.1']]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>=&gt; real</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>=|[plus,x]</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">d/r</p></th>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>int&lt;=int</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>str{2}&lt;=int</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>real{2}&lt;=str{2}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>real&lt;=real{2}</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">value</p></th>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>4=&gt;8</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>8=&gt;['80','8.1']</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>['80','8.1']=&gt;[80.0,8.1]</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>[80.0,8.1]=&gt;88.1</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">q</p></th>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>{1}=&gt;{1}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>{1}=&gt;{2}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>{2}=&gt;{2}</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>{2}=&gt;{1}</code></p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">op</p></th>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$ast\$-compose</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$+\$-compose</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$\ast\$-compose</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$\oplus\$-compose</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">term</p></th>
+<td class="tableblock halign-center valign-top"><p class="tableblock">series</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">expansion</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">series</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">contraction</p></td>
+</tr>
+<tr>
+<th class="tableblock halign-left valign-top"><p class="tableblock">poly</p></th>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>--</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt; &gt;-</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>--</code></p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-|</code></p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Finally, below is the unsugar&#8217;d form of the disectected type from above.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4[juxt,int[mult,2]][as,str][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]
+==&gt;88.1</code></pre>
+</div>
 </div>
 </div>
 </div>
@@ -7375,7 +7459,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-22 00:35:49 -0600
+Last updated 2020-09-22 02:17:23 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
