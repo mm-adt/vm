@@ -2051,17 +2051,17 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 </div>
 <div class="sect2">
 <h3 id="_type_system">Type System</h3>
-<div class="paragraph">
-<p>mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Type_system">type system</a> is founded on 3 classes of ctypes: <strong>anonymous</strong>, <strong>mono</strong>, and <strong>poly</strong> types. Within the <code>mono</code> and <code>poly</code> types, further subdivisions exist. These foundational types are the building blocks by which all other types are constructed using the ring operators of mm-ADT&#8217;s <a href="https://zenodo.org/record/2565243">stream ring algebra</a>. At the limit, an mm-ADT program is best understood as a "complex" type.</p>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 2. Constructive Type System</div>
+<div class="sidebarblock">
 <div class="content">
+<div class="title">Constructive Type Theory</div>
 <div class="paragraph">
-<p>Classical type theory correlates <strong>types</strong> and <strong>sets</strong>, where the type \$A\$ denotes a set containing all the elements of the type. To determine whether object \$x\$ is of type \$A\$, it is only necessary to check whether the set corresponding to the type contains \$x\$ via a membership function \$x \in A\$.</p>
+<p>Classical <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> associates <strong>types</strong> with <strong>sets</strong>, where the type \$A\$ denotes a <a href="https://en.wikipedia.org/wiki/Set_theory">set</a> containing all the elements of the type. The validity of the type assignment \$a:A\$ is determined via set membership of whether \$a \in A\$. This interpretation of a type implies that all elements exist in some <a href="https://en.wikipedia.org/wiki/Platonic_idealism">Platonic world</a> (as types can have an infinite number of elements). <a href="https://en.wikipedia.org/wiki/Intuitionistic_type_theory">Constructive type theory</a>, on the other hand, realizes types as <em>generators</em> of their elements, where a type&#8217;s definition specifies the rules for constructing objects of that type. Constructions imply <a href="https://en.wikipedia.org/wiki/Function_(mathematics)">functions</a> as opposed to sets.</p>
 </div>
 <div class="paragraph">
-<p>mm-ADT types are not sets, they are functions that <a href="https://en.wikipedia.org/wiki/Intuitionistic_type_theory">construct</a> objects of a given type (<strong>range</strong>) from objects of a given type (<strong>domain</strong>). The determination of whether \$a\$ is typed \$A\$ is whether the function \$A(a)\$ is defined at \$a\$.</p>
+<p>mm-ADT&#8217;s type theory is a constructive type theory. mm-ADT types are not sets, but instead are functions that generate objects of the type (<strong>range</strong>) from objects of another type (<strong>domain</strong>). Thus, the determination of whether \$a\$ is typed \$A\$ is a determination of whether the function \$A(a)\$ is defined at \$a\$. Such determinations are called <em>evaluations</em>.</p>
+</div>
+<div class="paragraph">
+<p>The table below itemizes the <a href="https://en.wikipedia.org/wiki/Intuitionistic_type_theory#Judgements">judgements</a> of Martin-Löf type theory (a constructive type theory) alongside mm-ADT&#8217;s corresponding construct.</p>
 </div>
 <table class="tableblock frame-all grid-all center" style="width: 65%;">
 <colgroup>
@@ -2078,19 +2078,14 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Declaring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Type declaration</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$A\$ Type</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>A</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Type assignment</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$x:A\$</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$a:A\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>A:a</code> or <code>a=&gt;A</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Object equality</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a = b\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>(a)&lt;=(b)</code></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">Type equality</p></td>
@@ -2119,16 +2114,42 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Note that type equality, dependency and \$Pi\$ all have the same form in mm-ADT. However, while type equality is a type dependency and a \$\Pi\$ type, every type dependency and \$\Pi\$ type is not a type equality.</p>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Type Dependency and \$Pi\$ Types</strong>: The structure of an mm-ADT type maintains both the type&#8217;s signature (<code>B&lt;=A</code>) and the type&#8217;s definition <code>[f]</code>). The form of a typical type dependency is <code>B&lt;=A[f]</code>, where a <code>B</code> is <em>constructed</em> from an <code>A</code> by applying instruction <code>[f]</code>. In standard mathematical notation, <code>B&lt;=A[f]</code> is denoted \$f: A \to B\$ which is the named version of the \$Pi\$ type \$A \to B\$ and therefore, a type dependency and a \$\Pi\$ type are the same construct in mm-ADT.</p>
+</li>
+<li>
+<p><strong>Type Equality</strong>: Note that type equality, dependency and \$Pi\$ all have the same form in mm-ADT. However, while type equality is a type dependency and a \$\Pi\$ type, every type dependency and \$\Pi\$ type is not a type equality. The type <code>B&lt;=A[f]</code> is not a type equality. The type equality \$A=B\$ is an <a href="https://en.wikipedia.org/wiki/Identity_function">identity function</a> <code>B&lt;=A[noop]</code>, where a <code>B</code> is realized by doing nothing to an <code>A</code>. The type <code>B&lt;=A[noop]</code> is more succinctly written <code>B&lt;=A</code> and thus, <code>B</code> is not <em>constructed</em> from <code>A</code>, but is <em>equivalent</em> to <code>A</code> and every <code>A</code> can be typed <code>B</code> as is.</p>
+</li>
+<li>
+<p><strong>\$\Sigma\$ Types</strong>: Contrary to their presentation in the table above, \$Sigma\$ types are more general than simple <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>. \$Sigma\$ types are <em>dependent products</em>. As an example, the "ascending pair" \$\Sigma\$ type
+\[
+\texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m&lt;n
+\]
+is a product of two integers \$m,n \in \mathbb{Z}\$, where \$m\$ is smaller than \$n\$ (\$m &lt; n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written <code>(int;int)&lt;x&gt;[is,&lt;x&gt;.0&lt;x.1]</code></p>
+</li>
+</ul>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm]
+         [define,apair&lt;=(int;int)[is,&lt;x&gt;.0&lt;x.1]]
+==&gt;_[define,apair&lt;=(int;int)[is,bool&lt;=(int;int)&lt;x&gt;[get,0,_][lt,x[get,1,_]]]]
+mmlang&gt; (1;2)   =&gt; apair
+==&gt;apair:(1;2)
+mmlang&gt; (2;1)   =&gt; apair
+language error: (2;1) is not an apair
+mmlang&gt; (1;2;3) =&gt; apair
+language error: (1;2;3) is not an apair
+mmlang&gt; 1       =&gt; apair
+language error: 1 is not an apair</code></pre>
+</div>
+</div>
+</div>
 </div>
 <div class="paragraph">
-<p>The structure of an mm-ADT type maintains both the type&#8217;s signature (<code>B&lt;=A</code>) and the type&#8217;s definition <code>[f]</code>). The form of a typical type dependency is <code>B&lt;=A[f]</code>, where a <code>B</code> is <em>constructed</em> from an <code>A</code> by applying instruction <code>[f]</code>. In standard mathematical notation, <code>B&lt;=A[f]</code> is denoted \$f: A \to B\$ which is the named version of the \$Pi\$ type \$A \to B\$ and therefore, a type dependency and a \$\Pi\$ type are the same construct in mm-ADT.</p>
-</div>
-<div class="paragraph">
-<p>Finally, the type <code>B&lt;=A[f]</code> is not a type equality. The type equality \$A=B\$ is an <a href="https://en.wikipedia.org/wiki/Identity_function">identity function</a> <code>B&lt;=A[noop]</code>, where a <code>B</code> is realized by doing nothing to an <code>A</code>. The type <code>B&lt;=A[noop]</code> is more succinctly written <code>B&lt;=A</code> and thus, <code>B</code> is not <em>constructed</em> from <code>A</code>, but is <em>equivalent</em> to <code>A</code> and every <code>A</code> can be typed <code>B</code> as is.</p>
-</div>
-</div>
+<p>mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Type_system">type system</a> is founded on 3 classes of ctypes: <strong>anonymous</strong>, <strong>mono</strong>, and <strong>poly</strong> types. Within the <code>mono</code> and <code>poly</code> types, further subdivisions exist. These foundational types are the building blocks by which all other types are constructed using the ring operators of mm-ADT&#8217;s <a href="https://zenodo.org/record/2565243">stream ring algebra</a>. At the limit, an mm-ADT program is best understood as a "complex" type.</p>
 </div>
 <div class="sect3">
 <h4 id="_anonymous_types">Anonymous Types</h4>
@@ -3715,7 +3736,7 @@ language error: -36 is not a nat</code></pre>
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 3. mm-ADT Type Prefix</div>
+<div class="title">Deep Dive 2. mm-ADT Type Prefix</div>
 <div class="content">
 <table class="tableblock frame-none grid-none right" style="width: 50%;">
 <colgroup>
@@ -3836,7 +3857,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 \]</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 4. Model-ADT Subgraphs of the <code>obj</code> Graph</div>
+<div class="title">Deep Dive 3. Model-ADT Subgraphs of the <code>obj</code> Graph</div>
 <div class="content">
 <div class="imageblock right">
 <div class="content">
@@ -4113,7 +4134,7 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge
 <p>The final example above demonstrates the use of <code>;-lst</code> as both a <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> and a <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>&#8201;&#8212;&#8201;i.e., a <a href="https://en.wikipedia.org/wiki/Biproduct">biproduct</a>. The <code>(vertex;vertex)</code> pair is created via a split <code>-&lt;</code> which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the <code>edge</code> definition projects out each component of via <code>.0</code> (<code>[get,0]</code>) and <code>.1</code> (<code>[get,1]</code>). Thus, the coproduct is also a product. For this reason, the <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> character for <a href="https://en.wikipedia.org/wiki/Pi">pi</a> (π) (the conventional symbol for product <a href="https://en.wikipedia.org/wiki/Projection_(mathematics)">projection</a>) serves as another <code>mmlang</code> sugar for <code>[get]</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 5. model-ADT Application Programming Interfaces</div>
+<div class="title">Deep Dive 4. model-ADT Application Programming Interfaces</div>
 <div class="content">
 <div class="paragraph">
 <p>The software development pattern espoused by mm-ADT is one in which software libraries (<a href="https://en.wikipedia.org/wiki/API">APIs</a>) are large <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagrams</a> constructed via domain/range concatenation of \$b&#8656;a\$ types. The diagrams are called <strong>models</strong> and are stored in model-ADT files analogous to <code>mm.mm</code>. With a diagram rich in paths, mm-ADT application code will tend towards a <em>look-and-feel</em> similar in form to
@@ -5569,7 +5590,7 @@ The significance of branching being fundamental in mm-ADT is that individual bra
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 6. Process Architectures Sympathetic to the Type Ringoid</div>
+<div class="title">Deep Dive 5. Process Architectures Sympathetic to the Type Ringoid</div>
 <div class="content">
 <div class="paragraph">
 <p>An <code>mmlang</code> expression denotes a <strong>type</strong> (program) that is executed by a processor.
@@ -5731,7 +5752,7 @@ The axioms for both left and right modules are provided below, where if \$A\$ is
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 7. Poly Constructs in mmlang</div>
+<div class="title">Deep Dive 6. Poly Constructs in mmlang</div>
 <div class="content">
 <table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
@@ -7518,7 +7539,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-24 02:36:23 -0600
+Last updated 2020-09-24 11:04:41 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
