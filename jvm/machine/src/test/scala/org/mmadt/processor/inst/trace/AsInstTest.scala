@@ -25,13 +25,13 @@ package org.mmadt.processor.inst.trace
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
 
 class AsInstTest extends BaseInstTest(
-  testSet("[as] w/ values", List(NONE, MM),
+  testSet("[as] w/ values", List(NONE, MMX),
     comment("bool"),
     testing(true, as(__), true, "true[as,_]"),
     testing(true, as(str), "true", "true[as,str]"),

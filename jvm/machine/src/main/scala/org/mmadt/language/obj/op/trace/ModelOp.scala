@@ -52,6 +52,7 @@ object ModelOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
   lazy val NONE:Model = model('none)
   lazy val MM:Model = model('mm)
+  lazy val MMX:Model = model('mmx)
   type Model = Rec[StrValue, ModelMap]
   type ModelMap = Rec[Obj, Lst[Obj]]
   val TYPE:StrValue = str("type")

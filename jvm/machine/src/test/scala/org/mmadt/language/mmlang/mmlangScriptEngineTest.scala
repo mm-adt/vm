@@ -68,7 +68,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("play2") {
     println(engine.eval(":[model,mm]"))
-    println(engine.eval("('plus',1)[as,inst]"))
+  //  println(engine.eval("('plus',1)[as,inst]"))
     println(engine.eval(
       """:[model,mm]
         |[define,node:('name'->str)]

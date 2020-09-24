@@ -768,13 +768,13 @@ The table below itemizes the https://en.wikipedia.org/wiki/Intuitionistic_type_t
 |====
 | Judgement         | Martin-Löf type | mm-ADT
 
-| Type declaration  | \$A\$ Type      | `A`
-| Type assignment   | \$a:A\$         | `A:a` or `a\=>A`
-| Type equality     | \$A = B\$       | `B\<=A`
-| Type dependency   | \$(x:A)B\$      | `B\<=A`
-| Type substitution | \$B[x//a]\$     | `a\=>B`
-| \$\Sigma\$ type   | \$A \times B\$  | `(A;B)`
-| \$\Pi\$ type      | \$A \to B\$        | `B\<=A`
+| Type declaration           | \$A\$ Type      | `A`
+| Type assignment            | \$a:A\$         | `A:a` or `a\=>A`
+| Type equality              | \$A = B\$       | `B\<=A`
+| Type dependency            | \$(x:A)B\$      | `B\<=A`
+| Type substitution          | \$B[x//a]\$     | `a\=>B`
+| \$\Sigma\$ type (coproduct)| \$A \times B\$  | `(A;B)`
+| \$\Pi\$ type (product)     | \$A \to B\$        | `B\<=A`
 |====
 
 * **Type Dependency and \$Pi\$ Types**: The structure of an mm-ADT type maintains both the type's signature (`B\<=A`) and the type's definition `[f]`). The form of a typical type dependency is `B\<=A[f]`, where a `B` is _constructed_ from an `A` by applying instruction `[f]`. In standard mathematical notation, `B\<=A[f]` is denoted \$f: A \to B\$ which is the named version of the \$Pi\$ type \$A \to B\$ and therefore, a type dependency and a \$\Pi\$ type are the same construct in mm-ADT.
@@ -785,7 +785,7 @@ The table below itemizes the https://en.wikipedia.org/wiki/Intuitionistic_type_t
 \[
 \texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m<n
 \]
-is a product of two integers \$m,n \in \mathbb{Z}\$, where \$m\$ is smaller than \$n\$ (\$m < n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written `(int;int)<x>[is,<x>.0<x.1]`
+is a product of two integers \$m,n \in \mathbb{Z}\$, where \$m\$ is smaller than \$n\$ (\$m < n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written `(int;int)[is,<x>.0<x.1]`
 
 [exec]
 ----
