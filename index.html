@@ -513,7 +513,7 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel3">
 <li><a href="#_constructors">Constructors</a></li>
 <li><a href="#_type_paths">Type Paths</a></li>
-<li><a href="#_model_paths">Model Paths</a></li>
+<li><a href="#_stream_paths">Stream Paths</a></li>
 <li><a href="#_higher_order_paths">Higher Order Paths</a></li>
 <li><a href="#_type_patterns">Type Patterns</a>
 <ul class="sectlevel4">
@@ -1933,7 +1933,7 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 </tbody>
 </table>
 <div class="paragraph">
-<p>The mm-ADT virtual machine has two distinct algebraic layers: the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> and the <a href="https://zenodo.org/record/2565243">stream ring</a>. The instructions (<code>inst</code>) specify how input <code>objs</code> are mapped to output <code>objs</code> and has a graphical realization as a generalized Cayley graph and/or a commuting diagram. The <code>inst</code> algebra&#8217;s is evaluated by the processor-oriented <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. A stream ring has three operators for composing <code>objs</code>: \$\ast\$, \$ +\$, and \$\oplus\$, where the first two are the classic ring operators and the last is particular to a stream ring. The stream ring&#8217;s multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator composes <strong>parallel streams</strong>, and the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
+<p>The mm-ADT virtual machine has two distinct algebraic layers: the <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> and the <a href="https://zenodo.org/record/2565243">stream ring</a>. The instructions (<code>inst</code>) specify how input <code>objs</code> are mapped to output <code>objs</code> and has a graphical realization as a generalized Cayley graph and/or a commuting diagram. The <code>inst</code> algebra is evaluated by the processor-oriented <a href="https://zenodo.org/record/2565243">stream ring</a> algebra. A stream ring has three operators for constructing types: \$\ast\$, \$ +\$, and \$\oplus\$, where the first two are the classic ring operators and the last is particular to a stream ring. The stream ring&#8217;s multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid&#8217;s</a> \$\ast\$-operator concatenates <strong>serial streams</strong>, the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group&#8217;s</a> \$ +\$-operator composes <strong>parallel streams</strong>, and the stream <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring&#8217;s</a> non-commutative group&#8217;s \$\oplus\$-operator <a href="https://en.wikipedia.org/wiki/Fold_(higher-order_function)">reduces</a> streams down to a <strong>singleton stream</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all left" style="width: 20%;">
 <colgroup>
@@ -2023,10 +2023,10 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">op</p></th>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$ast\$-compose</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$+\$-compose</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$\ast\$-compose</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$\oplus\$-compose</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$ast\$ monoid</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$+\$ abelian group</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$\ast\$ monoid</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\$\oplus\$ group</p></td>
 </tr>
 <tr>
 <th class="tableblock halign-left valign-top"><p class="tableblock">term</p></th>
@@ -2034,13 +2034,6 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 <td class="tableblock halign-center valign-top"><p class="tableblock">expansion</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">series</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">contraction</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-left valign-top"><p class="tableblock">poly</p></th>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>--</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-&lt; &gt;-</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>--</code></p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>-|</code></p></td>
 </tr>
 </tbody>
 </table>
@@ -3819,7 +3812,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 <h4 id="_constructors">Constructors</h4>
 <h5 id="_property_graph_model_1" class="discrete">Property Graph Model 1</h5>
 <div class="paragraph">
-<p><a href="https://en.wikipedia.org/wiki/Graph_theory">Graph theory</a> acknowledges a variety of graph structures. One such structure is the <strong>property graph</strong>. The more descriptive, yet significantly longer name is the <em><a href="https://en.wikipedia.org/wiki/Directed_graph">directed</a>, attributed, <a href="https://en.wikipedia.org/wiki/Multigraph">multi-relational</a> binary graph</em>. The breadth of features will ultimately be captured in <code>pg</code>. The reduced <code>pg_1</code> model only defines a <em>directed binary graph</em>. In <code>pg_1</code>, a <code>vertex</code> can be derived from a <code>rec</code> with an <code>'id'-&gt;int</code> field. An edge can be derived from a <code>rec</code> with an outgoing/start <code>vertex</code> (<code>outV</code>) and an incoming/end <code>vertex</code> (<code>inV</code>). The associated non-commuting diagram graphically captures the <code>pg_1</code> structure, where the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>&#8201;&#8212;&#8201;e.g., <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
+<p><a href="https://en.wikipedia.org/wiki/Graph_theory">Graph theory</a> acknowledges a variety of graph structures. One such structure is the <strong>property graph</strong>. The more descriptive, yet significantly longer name is the <em><a href="https://en.wikipedia.org/wiki/Directed_graph">directed</a>, attributed, <a href="https://en.wikipedia.org/wiki/Multigraph">multi-relational</a> binary graph</em>. The breadth of features will ultimately be captured in <code>pg</code>. The reduced <code>pg_1</code> model only defines a <em>directed binary graph</em>. In <code>pg_1</code>, a <code>vertex</code> can be derived from a <code>rec</code> with an <code>'id'-&gt;int</code> field. An edge can be derived from a <code>rec</code> with an outgoing/start <code>vertex</code> (<code>outV</code>) and an incoming/end <code>vertex</code> (<code>inV</code>). The associated diagram graphically captures the <code>pg_1</code> structure, where the <code>.</code> prefixes on the <code>inst</code> morphisms denote the <code>mmlang</code> sugar notation for <code>[get]</code>&#8201;&#8212;&#8201;e.g., <code>.outV</code> is sugar for <code>[get,'outV']</code>.</p>
 </div>
 <table class="tableblock frame-none grid-none stretch center">
 <colgroup>
@@ -4059,7 +4052,7 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 <p><code>=&gt;</code>  : multiplicative monoid for serial composition</p>
 </li>
 <li>
-<p><code>=[,]</code> : additive group for parallel alignment</p>
+<p><code>=[</code> : additive group for parallel alignment</p>
 </li>
 <li>
 <p><code>=|</code>   : non-commutative group for barrier aggregation</p>
@@ -4070,27 +4063,17 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 </div>
 </div>
 <div class="sect3">
-<h4 id="_model_paths">Model Paths</h4>
-<div class="paragraph">
-<p>The <code>pg_1</code> model extends <code>mm</code> via <code>pg_1&lt;=mm</code>. Note that it is possible for a model to define types that have no incoming paths from <code>mm</code>. For example:</p>
-</div>
+<h4 id="_stream_paths">Stream Paths</h4>
+<h5 id="_property_graph_model_3" class="discrete">Property Graph Model 3</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,ex:('type'-&gt;(A-&gt;(A&lt;=B),B-&gt;(B&lt;=C),C-&gt;(C&lt;=A)))]
-==&gt;_
-mmlang&gt; 6 + 12
-==&gt;18
-mmlang&gt; A =&gt; D
-language error: D for A is not a type in model ex
-mmlang&gt; A =&gt; B =&gt; C
-==&gt;C</code></pre>
+<pre class="CodeRay highlight"><code data-lang="python">pg_3:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (
+  graph  -&gt; (graph&lt;=edge{*}),
+  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>),
+             vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">vertex</span><span style="color:#710">'</span></span>)),
+  edge   -&gt; (edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),
+             edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">edge</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>)))) &lt;= mm</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>This is not typical. In practice, every model-ADT will extend <code>mm</code> or some other model, where there exists a path of model extensions to <code>mm</code>. This is the concept of a <strong>model path</strong> which is analogous to a <strong>type path</strong> but instead of mapping <em>types-to-types</em>, a model path maps sets of types to sets of types&#8212;&#8203;or <em>models-to-models</em>.</p>
-</div>
-<div class="paragraph">
-<p>That is, a type is associated with a list of type definitions for which the type is the range. These type definitions can be understood as single-step paths through the <code>obj</code> graph, such that the composition of these types is the diagram of the model.</p>
 </div>
 </div>
 <div class="sect3">
@@ -7459,7 +7442,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-22 02:17:23 -0600
+Last updated 2020-09-23 12:55:00 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
