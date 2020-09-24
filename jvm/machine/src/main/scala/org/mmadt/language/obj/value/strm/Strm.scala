@@ -55,7 +55,6 @@ trait Strm[+O <: Obj] extends Value[O] {
     case astrm:Strm[Obj] => this.q.within(other.q) && this.drain.head.test(astrm.drain.head)
     case _:Type[Obj] => this.q.within(other.domainObj.q) && this.drain.head.hardQ(other.q).test(other.domainObj)
     case _:Value[Obj] => this.q.within(other.q) && this.drain.head.test(other)
-
   }
   override def equals(other:Any):Boolean = other match {
     case obj:Obj if !this.alive => !obj.alive

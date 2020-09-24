@@ -214,7 +214,6 @@ include::../../src/main/resources/model/mm.mm[lines="1..4"]
 image:mm-model.svg[width=340,align=center]
 |====
 
-
 The `rec` encoding of a model-ADT has the model's canonical types (*ctypes*) as keys and `lsts` of derived types (*dtypes*) as values. The encoding is a serialization of a graph where the ctypes are vertices and the incoming paths to a ctype vertex are the edges. Unfortunately, the `mm` model is too basic to demonstrate this point clearly. What `mm` does capture is the set nature of the base types in that there are vertices and no edges (save `poly` which is the https://en.wikipedia.org/wiki/Coproduct[coproduct] of `lst` and `rec`).
 
 In general, any model \$\mathbf{m}\$ is defined
@@ -265,6 +264,7 @@ A type definition's instructions specify the specific, https://en.wikipedia.org/
 The `mm` model-ADT is too simple to be informative. The complexity of its types exist outside the virtual machine. In order to provide a comprehensive understanding of mm-ADT models, the following sections will build a *property graph* model-ADT (`pg`) in stages starting with `pg_1`, then `pg_2`, so forth before reaching the final complete encoding in `pg`.
 
 ==== Constructors
+
 [discrete]
 ===== Property Graph Model 1
 
@@ -315,6 +315,7 @@ Three `edge` construction examples are presented below.
 <3> A `lst` product is not the same as a `rec` product given that `recs` are products of key/value pairs.
 
 ==== Type Paths
+
 [discrete]
 ===== Property Graph Model 2
 
@@ -345,6 +346,7 @@ include::../../src/main/resources/model/examples/pg_2.mm[]
 ----
 {blank}
 |====
+
 image::pg_2-model.svg[width=625,align=center]
 <1> The `mm` specification of a canonical `vertex` (an `inst`-less ctype).
 <2> A path from an `int` to a `vertex`.
@@ -368,7 +370,6 @@ An edge can be constructed in a number ways. The constructor below maps an `int`
 
 The final example above demonstrates the use of `;-lst` as both a https://en.wikipedia.org/wiki/Coproduct[coproduct] and a https://en.wikipedia.org/wiki/Product_(category_theory)[product] -- i.e., a https://en.wikipedia.org/wiki/Biproduct[biproduct]. The `(vertex;vertex)` pair is created via a split `-<` which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the `edge` definition projects out each component of via `.0` (`[get,0]`) and `.1` (`[get,1]`). Thus, the coproduct is also a product. For this reason, the https://en.wikipedia.org/wiki/Unicode[Unicode] character for https://en.wikipedia.org/wiki/Pi[pi] (π) (the conventional symbol for product https://en.wikipedia.org/wiki/Projection_(mathematics)[projection]) serves as another `mmlang` sugar for `[get]`.
 
-
 .model-ADT Application Programming Interfaces
 ================================================================
 The software development pattern espoused by mm-ADT is one in which software libraries (https://en.wikipedia.org/wiki/API[APIs]) are large https://en.wikipedia.org/wiki/Commutative_diagram[commuting diagrams] constructed via domain/range concatenation of \$b<=a\$ types. The diagrams are called *models* and are stored in model-ADT files analogous to `mm.mm`. With a diagram rich in paths, mm-ADT application code will tend towards a _look-and-feel_ similar in form to
@@ -378,29 +379,19 @@ a\;{=[} b \Rightarrow c, \; d[x][y][z] \Rightarrow e \Rightarrow f ]\Rightarrow 
 where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\$ prior to translating \$d\$ to \$e\$ (i.e., an inline type path) and the connectives that reflect the core operators of the underlying stream ring are:
 
 * `\=>`  : multiplicative monoid for serial composition
-* `=[,]` : additive group for parallel alignment
+* `=[` : additive group for parallel alignment
 * `=|`   : non-commutative group for barrier aggregation
 ================================================================
 
+==== Stream Paths
 
-==== Model Paths
+[discrete]
+===== Property Graph Model 3
 
-The `pg_1` model extends `mm` via `pg_1\<=mm`. Note that it is possible for a model to define types that have no incoming paths from `mm`. For example:
-
-[exec]
+[source]
 ----
-:[model,ex:('type'->(A->(A<=B),B->(B<=C),C->(C<=A)))]
-6 + 12
-A => D               ## LanguageException
-A => B => C
+include::../../src/main/resources/model/examples/pg_3.mm[]
 ----
-
-This is not typical. In practice, every model-ADT will extend `mm` or some other model, where there exists a path of model extensions to `mm`. This is the concept of a *model path* which is analogous to a *type path* but instead of mapping _types-to-types_, a model path maps sets of types to sets of types--or _models-to-models_.
-
-That is, a type is associated with a list of type definitions for which the type is the range. These type definitions can be understood as single-step paths through the `obj` graph, such that the composition of these types is the diagram of the model.
-
-
-
 
 ==== Higher Order Paths
 
