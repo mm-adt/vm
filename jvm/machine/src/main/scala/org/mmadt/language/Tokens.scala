@@ -31,7 +31,7 @@ object Tokens {
 
   lazy val reservedOps:List[String] = List(
     Tokens.define, Tokens.neg, Tokens.branch, Tokens.barrier,
-    Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.defs, Tokens.load,
+    Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.load,
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last, Tokens.empty, Tokens.swap,
     Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.juxt, Tokens.fold, Tokens.error,
@@ -59,7 +59,6 @@ object Tokens {
   val branch = "branch"
   val barrier = "barrier"
   val load = "load"
-  val defs = "defs"
   val define = "define"
   val a = "a"
   val head = "head"

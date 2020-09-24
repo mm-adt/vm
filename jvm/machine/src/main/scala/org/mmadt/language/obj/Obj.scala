@@ -54,7 +54,6 @@ trait Obj
     with CountOp
     with SumOp
     with DefineOp
-    with DefsOp
     with IdOp
     with IsOp
     with SwapOp
