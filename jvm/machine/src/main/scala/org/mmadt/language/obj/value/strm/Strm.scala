@@ -25,6 +25,7 @@ package org.mmadt.language.obj.value.strm
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.obj.Obj.{IntQ, ViaTuple, rootVia}
 import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.Value
@@ -49,7 +50,13 @@ trait Strm[+O <: Obj] extends Value[O] {
   // standard Java implementations
   override def toString:String = LanguageFactory.printStrm(this)
   override lazy val hashCode:scala.Int = this.name.hashCode ^ this.drain.hashCode()
-  override def test(other:Obj):Boolean = this.q.within(other.q) && this.drain.head.test(other)
+  override def test(other:Obj):Boolean = other match {
+    case _ if __.isToken(other) => Obj.resolveTokenOption(this, other).exists(x => this.test(x))
+    case astrm:Strm[Obj] => this.q.within(other.q) && this.drain.head.test(astrm.drain.head)
+    case _:Type[Obj] => this.q.within(other.domainObj.q) && this.drain.head.hardQ(other.q).test(other.domainObj)
+    case _:Value[Obj] => this.q.within(other.q) && this.drain.head.test(other)
+
+  }
   override def equals(other:Any):Boolean = other match {
     case obj:Obj if !this.alive => !obj.alive
     case avalue:Value[O] => MultiSet.equals(this, avalue.toStrm)

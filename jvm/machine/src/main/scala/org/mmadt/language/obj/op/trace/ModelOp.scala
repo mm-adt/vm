@@ -115,24 +115,22 @@ object ModelOp extends Func[Obj, Obj] {
             .map(x => x.update(model)))
     }
 
-    final def findCtype[A <: Obj](name:String):Option[A] =
-      model.gmap.fetchOrElse(TYPE, NOREC).gmap
-        .filter(x => x._1.name == name)
-        .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2).find(x => x.root)
+    final def findCtype[A <: Obj](name:String):Option[A] = model.gmap.fetchOrElse(TYPE, NOREC).gmap
+      .filter(x => x._1.name == name)
+      .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2)
+      .find(x => x.root)
 
     final def rewrites:List[Obj] = model.gmap.fetchOrElse(TYPE, NOREC).gmap.values.flatMap(x => x.g._2).filter(x => x.domainObj.name.equals(Tokens.lift_op))
 
-    final def ctypes:List[Obj] = {
-      val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
-      typesMap.filter(x => !x._2.glist.exists(y => y.domainObj.name != Tokens.lift_op)).map(x => x._1.asInstanceOf[Type[Obj]])
-    }
+    final def ctypes:List[Obj] = Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
+      .filter(x => !x._2.glist.exists(y => y.domainObj.name != Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
+      .map(x => x._1.asInstanceOf[Type[Obj]])
 
-    final def dtypes:List[Type[Obj]] = {
-      val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
-      typesMap.flatMap(x => x._2.glist).filter(x => x.domainObj.name != Tokens.lift_op).asInstanceOf[List[Type[Obj]]] // little optimization hack that will go away as model becomes more cleverly organized
-    }
+    final def dtypes:List[Type[Obj]] = Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
+      .flatMap(x => x._2.glist)
+      .filter(x => !x.root || (x.domainObj.name != x.rangeObj.name))
+      .filter(x => x.domainObj.name != Tokens.lift_op) // little optimization hack that will go away as model becomes more cleverly organized
+      .asInstanceOf[List[Type[Obj]]]
 
     final def vars[A <: Obj](key:StrValue):Option[A] = {
       val map = Option(model.g._2).getOrElse(NOROOT)
