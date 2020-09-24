@@ -22,12 +22,13 @@
 
 package org.mmadt.language.obj.op.reduce
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.ReduceInstruction
-import org.mmadt.language.obj.{Inst, Obj, asType}
-import org.mmadt.language.{LanguageException, Tokens}
-import org.mmadt.storage.StorageFactory.{qOne, zeroObj}
+import org.mmadt.language.obj.op.trace.AsOp
+import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -48,12 +49,10 @@ object BarrierOp extends Func[Obj, Obj] {
   }
 
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
-    if (start.isInstanceOf[Type[_]]) return inst.arg0[Type[Obj]].via(start, inst)
-    inst.arg0[Obj] match {
-      case anon if __.isToken(anon) =>
-        if (!start.model.typeExists(anon)) throw LanguageException.typeNotInModel(asType(start), asType(anon), start.model.name)
-        start.named(anon.name)
-      case atype:Type[Obj] => start.toStrm.drain.reduce[Obj]((a, b) => a.to('x).map(b) `=>`[Obj] atype).hardQ(qOne)
-    }
+    val atype = inst.arg0[Type[Obj]]
+    if (start.isInstanceOf[Type[_]]) return atype.via(start, inst)
+    val asStart:Obj = AsOp.autoAsType(start, x => x, atype)
+    if (!atype.root) asStart.toStrm.drain.reduce[Obj]((a, b) => a.to('x).map(b) `=>`[Obj] atype)
+    else asStart
   }
 }
