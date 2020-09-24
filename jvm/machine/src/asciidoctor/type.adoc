@@ -755,35 +755,51 @@ a|[exec]
 
 === Type System
 
-mm-ADT's https://en.wikipedia.org/wiki/Type_system[type system] is founded on 3 classes of ctypes: *anonymous*, *mono*, and *poly* types. Within the `mono` and `poly` types, further subdivisions exist. These foundational types are the building blocks by which all other types are constructed using the ring operators of mm-ADT's https://zenodo.org/record/2565243[stream ring algebra]. At the limit, an mm-ADT program is best understood as a "complex" type.
+.Constructive Type Theory
+****
+Classical https://en.wikipedia.org/wiki/Type_theory[type theory] associates *types* with *sets*, where the type \$A\$ denotes a https://en.wikipedia.org/wiki/Set_theory[set] containing all the elements of the type. The validity of the type assignment \$a:A\$ is determined via set membership of whether \$a \in A\$. This interpretation of a type implies that all elements exist in some https://en.wikipedia.org/wiki/Platonic_idealism[Platonic world] (as types can have an infinite number of elements). https://en.wikipedia.org/wiki/Intuitionistic_type_theory[Constructive type theory], on the other hand, realizes types as _generators_ of their elements, where a type's definition specifies the rules for constructing objects of that type. Constructions imply https://en.wikipedia.org/wiki/Function_(mathematics)[functions] as opposed to sets.
 
-.Constructive Type System
-================================================================
-Classical type theory correlates *types* and *sets*, where the type \$A\$ denotes a set containing all the elements of the type. To determine whether object \$x\$ is of type \$A\$, it is only necessary to check whether the set corresponding to the type contains \$x\$ via a membership function \$x \in A\$.
+mm-ADT's type theory is a constructive type theory. mm-ADT types are not sets, but instead are functions that generate objects of the type (*range*) from objects of another type (*domain*). Thus, the determination of whether \$a\$ is typed \$A\$ is a determination of whether the function \$A(a)\$ is defined at \$a\$. Such determinations are called _evaluations_.
 
-mm-ADT types are not sets, they are functions that https://en.wikipedia.org/wiki/Intuitionistic_type_theory[construct] objects of a given type (*range*) from objects of a given type (*domain*). The determination of whether \$a\$ is typed \$A\$ is whether the function \$A(a)\$ is defined at \$a\$.
+The table below itemizes the https://en.wikipedia.org/wiki/Intuitionistic_type_theory#Judgements[judgements] of Martin-Löf type theory (a constructive type theory) alongside mm-ADT's corresponding construct.
 
 [.center]
 [cols="2,^2,^2",width=65]
 |====
 | Judgement         | Martin-Löf type | mm-ADT
 
-| Declaring         | \$A\$ Type      | `A`
-| Type assignment   | \$x:A\$         | `A:a` or `a\=>A`
-| Object equality   | \$a = b\$       | `(a)\<=(b)`
+| Type declaration  | \$A\$ Type      | `A`
+| Type assignment   | \$a:A\$         | `A:a` or `a\=>A`
 | Type equality     | \$A = B\$       | `B\<=A`
 | Type dependency   | \$(x:A)B\$      | `B\<=A`
 | Type substitution | \$B[x//a]\$     | `a\=>B`
 | \$\Sigma\$ type   | \$A \times B\$  | `(A;B)`
-| \$\Pi\$ type   | \$A \to B\$        | `B\<=A`
+| \$\Pi\$ type      | \$A \to B\$        | `B\<=A`
 |====
 
-Note that type equality, dependency and \$Pi\$ all have the same form in mm-ADT. However, while type equality is a type dependency and a \$\Pi\$ type, every type dependency and \$\Pi\$ type is not a type equality.
+* **Type Dependency and \$Pi\$ Types**: The structure of an mm-ADT type maintains both the type's signature (`B\<=A`) and the type's definition `[f]`). The form of a typical type dependency is `B\<=A[f]`, where a `B` is _constructed_ from an `A` by applying instruction `[f]`. In standard mathematical notation, `B\<=A[f]` is denoted \$f: A \to B\$ which is the named version of the \$Pi\$ type \$A \to B\$ and therefore, a type dependency and a \$\Pi\$ type are the same construct in mm-ADT.
 
-The structure of an mm-ADT type maintains both the type's signature (`B\<=A`) and the type's definition `[f]`). The form of a typical type dependency is `B\<=A[f]`, where a `B` is _constructed_ from an `A` by applying instruction `[f]`. In standard mathematical notation, `B\<=A[f]` is denoted \$f: A \to B\$ which is the named version of the \$Pi\$ type \$A \to B\$ and therefore, a type dependency and a \$\Pi\$ type are the same construct in mm-ADT.
+* **Type Equality**: Note that type equality, dependency and \$Pi\$ all have the same form in mm-ADT. However, while type equality is a type dependency and a \$\Pi\$ type, every type dependency and \$\Pi\$ type is not a type equality. The type `B\<=A[f]` is not a type equality. The type equality \$A=B\$ is an https://en.wikipedia.org/wiki/Identity_function[identity function] `B\<=A[noop]`, where a `B` is realized by doing nothing to an `A`. The type `B\<=A[noop]` is more succinctly written `B\<=A` and thus, `B` is not _constructed_ from `A`, but is _equivalent_ to `A` and every `A` can be typed `B` as is.
 
-Finally, the type `B\<=A[f]` is not a type equality. The type equality \$A=B\$ is an https://en.wikipedia.org/wiki/Identity_function[identity function] `B\<=A[noop]`, where a `B` is realized by doing nothing to an `A`. The type `B\<=A[noop]` is more succinctly written `B\<=A` and thus, `B` is not _constructed_ from `A`, but is _equivalent_ to `A` and every `A` can be typed `B` as is.
-================================================================
+* **\$\Sigma\$ Types**: Contrary to their presentation in the table above, \$Sigma\$ types are more general than simple https://en.wikipedia.org/wiki/Product_(category_theory)[products]. \$Sigma\$ types are _dependent products_. As an example, the "ascending pair" \$\Sigma\$ type
+\[
+\texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m<n
+\]
+is a product of two integers \$m,n \in \mathbb{Z}\$, where \$m\$ is smaller than \$n\$ (\$m < n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written `(int;int)<x>[is,<x>.0<x.1]`
+
+[exec]
+----
+:[model,mm] %
+ [define,apair<=(int;int)[is,<x>.0<x.1]]
+(1;2)   => apair                          ## apair:(1;2)
+(2;1)   => apair                          ## LanguageException
+(1;2;3) => apair                          ## LanguageException
+1       => apair                          ## LanguageException
+----
+
+****
+
+mm-ADT's https://en.wikipedia.org/wiki/Type_system[type system] is founded on 3 classes of ctypes: *anonymous*, *mono*, and *poly* types. Within the `mono` and `poly` types, further subdivisions exist. These foundational types are the building blocks by which all other types are constructed using the ring operators of mm-ADT's https://zenodo.org/record/2565243[stream ring algebra]. At the limit, an mm-ADT program is best understood as a "complex" type.
 
 ==== Anonymous Types
 
