@@ -27,6 +27,7 @@ import java.lang.{Boolean => JBoolean, Double => JDouble, Long => JLong}
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.map.WalkOp
+import org.mmadt.language.obj.op.trace.AsOp.autoAsType
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
@@ -40,8 +41,10 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait AsOp {
   this:Obj =>
-  def as[O <: Obj](obj:O):O = AsOp(obj).exec(this).asInstanceOf[O]
-  def as(obj:Symbol):__ = AsOp(__(obj.name)).exec(this).asInstanceOf[__]
+  def as[O <: Obj](aobj:O):O = AsOp(aobj).exec(this).asInstanceOf[O]
+  def as(atype:Symbol):__ = AsOp(__(atype.name)).exec(this).asInstanceOf[__]
+  def ~>(atype:Symbol):__ = autoAsType(this,x=>x,atype)
+  def ~>[O<:Obj](aobj:O):O = autoAsType(this,x=>x,aobj)
 }
 
 object AsOp extends Func[Obj, Obj] {
@@ -80,12 +83,12 @@ object AsOp extends Func[Obj, Obj] {
     Tokens.tryName(asObj, rObj)
   }
 
-  private def pickMapping(start:Obj, asObj:Obj, checkDepth:Boolean = false):Obj = {
+  private def pickMapping(start:Obj, asObj:Obj):Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
     else {
       if (start.isInstanceOf[Type[_]]) asObj
       else {
-        val defined = if (checkDepth || __.isToken(asObj)) start.model.search(start, asObj).find(x => !Tokens.named(x.name) || !x.root) else None
+        val defined = if (__.isToken(asObj)) start.model.search(start, asObj).find(x => !Tokens.named(x.name) || !x.root) else None
         (start match {
           case _ if defined.isDefined => pickMapping(start, defined.get)
           case abool:Bool => boolConverter(abool, asObj)

@@ -72,7 +72,7 @@ object OpInstResolver {
       case Tokens.help | Tokens.help_op => HelpOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.barrier => BarrierOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.lift => LiftOp(args.head.asInstanceOf[Type[Obj]])
-      case Tokens.`walk` | Tokens.`walk_op` => WalkOp(args.head.asInstanceOf[Type[Obj]])
+      case Tokens.`walk` => WalkOp(args.head.asInstanceOf[Type[Obj]])
       case Tokens.head => HeadOp()
       case Tokens.last => LastOp()
       case Tokens.tail => TailOp()
