@@ -2126,16 +2126,32 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 \[
 \texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m&lt;n,
 \]
-where the two integers \$m,n \in \mathbb{Z}\$ are the components of the product and \$m\$ is smaller than \$n\$ (\$m &lt; n\$). This definition specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In <code>mmlang</code>, \$\tt{apair}\$ is written <code>(int&lt;m&gt;;int&lt;n&gt;)[is,m&lt;n]</code></p>
+where the two integers \$m,n \in \mathbb{Z}\$ are the components of the product and \$m\$ is smaller than \$n\$ (\$m &lt; n\$). This definition specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In <code>mmlang</code>, \$\tt{apair}\$ is written</p>
 </li>
 </ul>
 </div>
+<table class="tableblock frame-all grid-all center" style="width: 40%;">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">apair&lt;=(int:m;int:n)[is,m&lt;n]</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm]
-         [define,apair&lt;=(int&lt;m&gt;;int&lt;n&gt;)[is,m&lt;n]]
+         [define,apair&lt;=(int:m;int:n)[is,m&lt;n]]
 ==&gt;_[define,apair&lt;=(int&lt;m&gt;;int&lt;n&gt;)[is,bool&lt;=(int&lt;m&gt;;int&lt;n&gt;)&lt;.m&gt;[lt,n]]]
-
 mmlang&gt; (1;2)   =&gt; apair
 ==&gt;apair:(1;2)
 mmlang&gt; (2;1)   =&gt; apair
@@ -7539,7 +7555,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-25 05:54:28 -0600
+Last updated 2020-09-25 05:58:21 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
