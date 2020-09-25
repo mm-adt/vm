@@ -1973,10 +1973,10 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4 =&gt; int[mult,2] =&gt; str[plus,'0'] =&gt; real
 ==&gt;80.0
-mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; real
+mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real
 ==&gt;80.0
 ==&gt;8.1
-mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [plus,x]
+mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [plus,x]
 ==&gt;88.1{2}</code></pre>
 </div>
 </div>
@@ -2041,7 +2041,7 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4[juxt,int[mult,2]][as,str][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4[juxt,int[mult,2]][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]
 ==&gt;88.1</code></pre>
 </div>
 </div>
@@ -2362,16 +2362,13 @@ inst        domain      range state
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; int[define,x&lt;=int[plus,2]][x]
-==&gt;3
+==&gt;x:3
 mmlang&gt; int[define,x&lt;=int[plus,2]][x][explain]
 ==&gt;'
-int[define,x&lt;=int[plus,2]][plus,2]
+x
 
-inst                       domain      range state
----------------------------------------------------
-[define,x&lt;=int[plus,2]]    int    =&gt;   int    x-&gt;x&lt;=int[plus,2]
- [plus,2]                   int   =&gt;    int   x-&gt;x&lt;=int[plus,2]
-[plus,2]                   int    =&gt;   int    x-&gt;x&lt;=int[plus,2]
+instdomain       range  state
+------------------------------
 '</code></pre>
 </div>
 </div>
@@ -7555,7 +7552,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-25 05:58:21 -0600
+Last updated 2020-09-25 12:01:05 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
