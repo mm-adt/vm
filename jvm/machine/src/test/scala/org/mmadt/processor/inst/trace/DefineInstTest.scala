@@ -32,7 +32,7 @@ import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.language.obj.{Bool, Int}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
-import org.mmadt.processor.inst.trace.DefineInstTest.{MODEL, myListType, natType}
+import org.mmadt.processor.inst.trace.DefineInstTest._
 import org.mmadt.storage.StorageFactory._
 
 object DefineInstTest {
@@ -40,14 +40,21 @@ object DefineInstTest {
   private val myListType:Type[__] = 'mylist <= __.-<(is(eqs(1)) `|`(1 `;` 'mylist)) >-
   private val iListType:Type[__] = 'ilist <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a('ilist))))
   private val siListType:Type[__] = 'silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist))))
+  private val apairType:Type[__] = 'apair <= (int.to('m) `;` int.to('n)).is(from("m", int).lt(from("n", int)))
+  private val bpairType:Type[__] = 'bpair <= (int.plus(1).to('m) `;` int.plus(2).to('n)).is(from("m", int).lt(from("n", int)))
   //private val vecType:Type[__] = 'vec <= __.split(id `;` lst.combine(id `,`).merge.count)
   private val MODEL:Model = ModelOp.MM.defining(natType).defining(myListType).defining(iListType).defining(siListType) //.defining(vecType)
-  //     testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.a(int)) | (int `,` __("abc"))))).a(__("abc")), btrue),
-  //    testing   ((int(1) `,` (int(1) `,` (int(2) `,` 3))).define(__("abc") <= (__.branch(__.is(__.lt(2)) | (int `,` __("abc"))))).a(__("abc")), bfalse),
-
 }
 class DefineInstTest extends BaseInstTest(
-  testSet("[define] table test w/ nat model", MODEL,
+  testSet("[define] test w/ apair", MODEL.defining(apairType).defining(bpairType),
+    comment("apair"),
+    testing(1 `;` 2, 'apair, 'apair(1 `;` 2), "(1;2)=>apair"),
+    testing(100 `;` 101, 'apair, 'apair(100 `;` 101), "(100;101)=>apair"),
+    excepting(2 `;` 1, 'apair, LanguageException.typingError(2 `;` 1, 'apair), "(2;1)=>apair"),
+    excepting(1 `;` 2 `;` 3, 'apair, LanguageException.typingError(1 `;` 2 `;` 3, 'apair), "(1;2;3)=>apair"),
+    comment("bpair"),
+    // testing(1 `;` 2, 'bpair, 'bpair(2 `;` 4), "(1;2)=>bpair"),
+  ), testSet("[define] table test w/ nat model", MODEL,
     comment("nat"),
     testing(2, a('nat), true),
     testing(-2, a('nat), false),

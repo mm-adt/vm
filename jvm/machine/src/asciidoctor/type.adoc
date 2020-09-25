@@ -780,11 +780,11 @@ The table below itemizes the https://en.wikipedia.org/wiki/Intuitionistic_type_t
 
 * **Type Equality**: Note that type equality, dependency and \$Pi\$ all have the same form in mm-ADT. However, while type equality is a type dependency and a \$\Pi\$ type, every type dependency and \$\Pi\$ type is not a type equality. The type `B\<=A[f]` is not a type equality. The type equality \$A=B\$ is an https://en.wikipedia.org/wiki/Identity_function[identity function] `B\<=A[noop]`, where a `B` is realized by doing nothing to an `A`. The type `B\<=A[noop]` is more succinctly written `B\<=A` and thus, `B` is not _constructed_ from `A`, but is _equivalent_ to `A` and every `A` can be typed `B` as is.
 
-* **\$\Sigma\$ Types**: Contrary to their presentation in the table above, \$Sigma\$ types are more general than simple https://en.wikipedia.org/wiki/Product_(category_theory)[products]. \$Sigma\$ types are _dependent products_. As an example, the "ascending pair" \$\Sigma\$ type
+* **\$\Sigma\$ Types**: Contrary to their presentation in the table above, \$Sigma\$ types are more general than standard https://en.wikipedia.org/wiki/Product_(category_theory)[products]. \$Sigma\$ types are _dependent products_. As an example, the "ascending pair" \$\Sigma\$ type is defined
 \[
-\texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m<n
+\texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m<n,
 \]
-is a product of two integers \$m,n \in \mathbb{Z}\$, where \$m\$ is smaller than \$n\$ (\$m < n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written `(int<m>;int<n>)[is,m<n]`
+where the two integers \$m,n \in \mathbb{Z}\$ are the components of the product and \$m\$ is smaller than \$n\$ (\$m < n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written `(int<m>;int<n>)[is,m<n]`
 
 [exec]
 ----
