@@ -784,13 +784,23 @@ The table below itemizes the https://en.wikipedia.org/wiki/Intuitionistic_type_t
 \[
 \texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m<n,
 \]
-where the two integers \$m,n \in \mathbb{Z}\$ are the components of the product and \$m\$ is smaller than \$n\$ (\$m < n\$). This definition specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In `mmlang`, \$\tt{apair}\$ is written `(int<m>;int<n>)[is,m<n]`
+where the two integers \$m,n \in \mathbb{Z}\$ are the components of the product and \$m\$ is smaller than \$n\$ (\$m < n\$). This definition specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In `mmlang`, \$\tt{apair}\$ is written
+
+[.center]
+[cols=^1,width=40]
+|====
+a|
+[exec,eval=false]
+----
+apair<=(int:m;int:n)[is,m<n]              ## LanguageException
+----
+{blank}
+|====
 
 [exec]
 ----
 :[model,mm] %
- [define,apair<=(int<m>;int<n>)[is,m<n]]
-
+ [define,apair<=(int:m;int:n)[is,m<n]]
 (1;2)   => apair                          ## apair:(1;2)
 (2;1)   => apair                          ## LanguageException
 (1;2;3) => apair                          ## LanguageException

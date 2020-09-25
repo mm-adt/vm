@@ -136,14 +136,23 @@ class mmlangParser extends JavaTokenParsers {
   lazy val anonTypeSugar:Parser[__] = rep1[Inst[Obj, Obj]](inst) ^^ (x => x.foldLeft(new __())((a, b) => a.clone(via = (a, b))))
 
   // value parsing
-  lazy val objValue:Parser[Obj] = (boolValue | realValue | intValue | strValue | lstValue | recValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
+  lazy val objValue:Parser[Obj] = (boolValue | realValue | intValue | strValue | lstValue | recValue | tokenValue) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val boolValue:Parser[BoolValue] = opt(typeNameColon) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x._2.toBoolean, x._1.getOrElse(Tokens.bool), qOne))
-  lazy val intValue:Parser[IntValue] = opt(typeNameColon) ~ wholeNumber ^^ (x => int(x._2.toLong, x._1.getOrElse(Tokens.int), qOne))
+  lazy val intValue:Parser[Int] = opt(typeNameColon) ~ wholeNumber ^^ (x => int(x._2.toLong, x._1.getOrElse(Tokens.int), qOne))
   lazy val realValue:Parser[RealValue] = opt(typeNameColon) ~ decimalNumber ^^ (x => real(x._2.toDouble, x._1.getOrElse(Tokens.real), qOne))
   lazy val strValue:Parser[StrValue] = opt(typeNameColon) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => str(g = x._2.subSequence(1, x._2.length - 1).toString, name = x._1.getOrElse(Tokens.str), qOne))
   lazy val lstValue:Parser[Lst[Obj]] = (opt(typeNameColon) ~ (LROUND ~> lstStruct(objValue) <~ RROUND) ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = (x._2._1, x._2._2))))
   lazy val recValue:Parser[Rec[Obj, Obj]] = (opt(typeNameColon) ~ (LROUND ~> recStruct(objValue) <~ RROUND) ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = (x._2._1, x._2._2))))
   lazy val startValue:Parser[Obj] = ((LBRACKET ~> rep1sep(objValue, COMMA)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => estrm(x._1.filter(_.alive).map(y => y.q(q => multQ(q, x._2.getOrElse(qOne)))):_*))
+  lazy val tokenValue:Parser[Obj] = (symbolName <~ COLON) ~ typeNameNoColon ^^ (x => (x._1 match {
+    case Tokens.bool => bool
+    case Tokens.int => int
+    case Tokens.real => real
+    case Tokens.str => str
+    case Tokens.lst => lst[Obj]
+    case Tokens.rec => rec[Obj, Obj]
+    case _ => __(x._1)
+  }).to(x._2).asInstanceOf[Obj])
 
   // instruction parsing
   lazy val inst:Parser[Inst[Obj, Obj]] = (
@@ -171,7 +180,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val sugarlessInst:Parser[Inst[Obj, Obj]] = LBRACKET ~> ((LROUND + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + RROUND + "|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
   lazy val branchSugar:Parser[Inst[Obj, Obj]] = opt(Tokens.combine_op) ~> ((LBRACKET ~> lstStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(lst(g = (x._1, x._2)))) | ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(rec(g = (x._1, x._2))))
   // quantifier parsing
-  lazy val quantifier:Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1, x._2.getOrElse(x._1)))
+  lazy val quantifier:Parser[IntQ] = (LCURL ~> quantifierType <~ RCURL) | (LCURL ~> intValue ~ opt(COMMA ~> intValue) <~ RCURL) ^^ (x => (x._1.asInstanceOf[IntValue], x._2.getOrElse(x._1).asInstanceOf[IntValue]))
   lazy val quantifierType:Parser[IntQ] = (Tokens.q_star | Tokens.q_mark | Tokens.q_plus) ^^ {
     case Tokens.q_star => qStar
     case Tokens.q_mark => qMark

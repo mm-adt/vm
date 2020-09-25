@@ -50,6 +50,12 @@ class mmlangScriptEngineTest extends FunSuite {
     println(engine.eval("[(1;2),(3;4),(1;3)] => (vertex;vertex) => edge =| graph"))
   }
 
+  test("help2") {
+    println(engine.eval(":[model,mm][define,apair<=(int:m;int:n)[is,m<n]]"))
+    assertThrows[LanguageException](println(engine.eval("(73;5) => apair")))
+    assertResult("apair:(3;5)")((engine.eval("(3;5) => apair")).toString)
+  }
+
   test("help") {
     println(engine.eval(":[model,mm][define,apair<=(int<m>;int<n>)[is,m<n]]"))
     assertResult(str("marko"))(engine.eval("""('m','a','r','k','o')>-[fold,<.x>.0+<.x>.1]"""))
