@@ -2585,6 +2585,79 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 </tbody>
 </table>
 <hr>
+<div class="exampleblock">
+<div class="title">Deep Dive 2. Mathematical Notation Conventions for mm-ADT</div>
+<div class="content">
+<table class="tableblock frame-all grid-all right small" style="width: 20%;">
+<colgroup>
+<col style="width: 33.3333%;">
+<col style="width: 33.3333%;">
+<col style="width: 33.3334%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">mmlang</th>
+<th class="tableblock halign-center valign-middle" colspan="2">mmnotation</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><code>=&gt;</code></p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\$\ast\$</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[\tiny{\prod}\]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><code>=[</code></p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\$ +\$</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[\tiny{\coprod}\]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock"><code>=|</code></p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\$\oplus\$</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[\tiny{\bigoplus}\]</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The <code>mmlang</code> notation is able to denote every possible type through the <code>obj</code> graph. That is, is can be used to define automata that can recognize every possible path through the <code>obj</code> graph. A companion notation exists separate from <code>mmlang</code> which is more aligned with the formalisms used in standard mathematical treatments of an algebraic system. This notation is called <strong>mm notation</strong>.</p>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p><strong>Monoidal composition (\$\ast\$)</strong>: A non-branch serial path through the <code>obj</code> graph is expressed with the multiplicative \$\Pi\$ operator. Given sequence of types \$\mathbf{a} = [a_0,a_1,\ldots,a_n]\$, their monoidal composition is denoted
+\[
+\prod_{i=0}^{n} \mathbf{a}_i \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_\ast
+\]
+where, for the latter, it is implied that entire sequence is left-to-right composed (via fold) using the stream ring multiplicative \$\ast\$-operator. While the first representation is more verbose, it&#8217;s use will become apparent when considering intermediate operations within a monoidal composition.</p>
+</li>
+<li>
+<p><strong>Groupoidal composition (\$+\$)</strong>: Parallel paths through the <code>obj</code> graph is denoted with the respective additive operator. Thus, given \$n\$-independent types \$\mathbf{a} = [a_0,a_1,\ldots,a_n]\$, their parallel evaluation is denoted
+\[
+\coprod_{i=0}^n \mathbf{a}_i \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_{ +}
+\]</p>
+</li>
+<li>
+<p><strong>Near-ring reduction (\$\oplus\$)</strong>: A path barrier is denoted with the \$\oplus\$ reduction operator. Given \$n\$-types  (serial or parallel), their reduction using using the function \$f:A^* \to B\$ is denoted
+\[
+\bigoplus_{i=0}^n f(\mathbf{a}_i)  \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_{\oplus f}
+\]</p>
+</li>
+</ul>
+</div>
+<div class="paragraph">
+<p>It is important to note that the composition operator on the vector representation is portrayed bottom right. The reason being is that regular language syntax is reserved for the top right. Next, in order to apply the same \$m\$-serial types to \$n\$-parallel types the additive and multiplicative operators are used in conjunction.
+\[
+\begin{split}
+\coprod_{i=0}^n \mathbf{a}_i \prod_{j=0}^m \mathbf{b}_j
+       &amp;= (\mathbf{a}\mathbf{b}_{*})_{ +} \\
+       &amp;= (a_0\mathbf{b}_{\ast} + a_1\mathbf{b}_{\ast} + \ldots + a_n\mathbf{b}_{\ast}) \\
+       &amp;= (a_0 b_0 b_1 \ldots b_m) + \ldots + (a_n b_0 b_1 \ldots b_m)
+\end{split}
+\]
+The additive/multiplicative pattern emphasizes the <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid ring</a> interpretation of mm-ADT as well as the well know ring property that every ring is isomorphic to the composition of <a href="https://en.wikipedia.org/wiki/Endomorphism_ring">endomorphisms</a> (\$ \ast \$) of the ring&#8217;s additive abelian group (\$ +\$), where each \$a_i\$ group element has applied a series of \$\mathbf{b}\$ morphisms back to the carrier set (i.e., an endomorphism).</p>
+</div>
+</div>
+</div>
 <div class="sect4">
 <h5 id="_poly_collections">Poly Collections</h5>
 <div class="paragraph">
@@ -3749,7 +3822,7 @@ language error: -36 is not a nat</code></pre>
 </table>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 2. mm-ADT Type Prefix</div>
+<div class="title">Deep Dive 3. mm-ADT Type Prefix</div>
 <div class="content">
 <table class="tableblock frame-none grid-none right" style="width: 50%;">
 <colgroup>
@@ -3870,7 +3943,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 \]</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 3. Model-ADT Subgraphs of the <code>obj</code> Graph</div>
+<div class="title">Deep Dive 4. Model-ADT Subgraphs of the <code>obj</code> Graph</div>
 <div class="content">
 <div class="imageblock right">
 <div class="content">
@@ -4147,7 +4220,7 @@ mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge
 <p>The final example above demonstrates the use of <code>;-lst</code> as both a <a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a> and a <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>&#8201;&#8212;&#8201;i.e., a <a href="https://en.wikipedia.org/wiki/Biproduct">biproduct</a>. The <code>(vertex;vertex)</code> pair is created via a split <code>-&lt;</code> which serves as the coproduct injections \$\iota_0\$ and \$\iota_1\$. From this vertex coproduct, the <code>edge</code> definition projects out each component of via <code>.0</code> (<code>[get,0]</code>) and <code>.1</code> (<code>[get,1]</code>). Thus, the coproduct is also a product. For this reason, the <a href="https://en.wikipedia.org/wiki/Unicode">Unicode</a> character for <a href="https://en.wikipedia.org/wiki/Pi">pi</a> (π) (the conventional symbol for product <a href="https://en.wikipedia.org/wiki/Projection_(mathematics)">projection</a>) serves as another <code>mmlang</code> sugar for <code>[get]</code>.</p>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 4. model-ADT Application Programming Interfaces</div>
+<div class="title">Deep Dive 5. model-ADT Application Programming Interfaces</div>
 <div class="content">
 <div class="paragraph">
 <p>The software development pattern espoused by mm-ADT is one in which software libraries (<a href="https://en.wikipedia.org/wiki/API">APIs</a>) are large <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commuting diagrams</a> constructed via domain/range concatenation of \$b&#8656;a\$ types. The diagrams are called <strong>models</strong> and are stored in model-ADT files analogous to <code>mm.mm</code>. With a diagram rich in paths, mm-ADT application code will tend towards a <em>look-and-feel</em> similar in form to
@@ -5603,7 +5676,7 @@ The significance of branching being fundamental in mm-ADT is that individual bra
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 5. Process Architectures Sympathetic to the Type Ringoid</div>
+<div class="title">Deep Dive 6. Process Architectures Sympathetic to the Type Ringoid</div>
 <div class="content">
 <div class="paragraph">
 <p>An <code>mmlang</code> expression denotes a <strong>type</strong> (program) that is executed by a processor.
@@ -5765,7 +5838,7 @@ The axioms for both left and right modules are provided below, where if \$A\$ is
 </div>
 </div>
 <div class="exampleblock">
-<div class="title">Deep Dive 6. Poly Constructs in mmlang</div>
+<div class="title">Deep Dive 7. Poly Constructs in mmlang</div>
 <div class="content">
 <table class="tableblock frame-all grid-all right small" style="width: 40%;">
 <colgroup>
@@ -7552,7 +7625,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-25 12:01:05 -0600
+Last updated 2020-09-25 13:03:13 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
