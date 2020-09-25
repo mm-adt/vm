@@ -67,8 +67,7 @@ trait StorageFactory {
   def real(g:Double, name:String = Tokens.real, q:IntQ = qOne, via:ViaTuple = rootVia):RealValue
   def str(g:String, name:String = Tokens.str, q:IntQ = qOne, via:ViaTuple = rootVia):StrValue
   def rec[A <: Obj, B <: Obj](name:String = Tokens.rec, g:RecTuple[A, B] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia):Rec[A, B] = ORec.makeRec(name, g, q, via)
-  def lst[A <: Obj](name:String = Tokens.lst, g:LstTuple[A] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia):Lst[A] = OLst.makeLst(name, g, q, via)
-  def lst[A <: Obj](sep:String, values:A*):Lst[A] = OLst.makeLst(g = (sep, values.toList)) // TODO: phase this out
+  def lst[A <: Obj](name:String = Tokens.lst, g:LstTuple[A] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia):Lst[A]
   def lst[A <: Obj](single:A):Lst[A] = lst(g = (Tokens.`,`, List(single)))
   //
   def strm[O <: Obj](objs:Seq[O]):OStrm[O]
@@ -88,12 +87,11 @@ object StorageFactory {
   lazy val str:StrType = tstr()
   lazy val inst:Inst[Obj, Obj] = new VInst(g = (Tokens.inst, Nil))
   def rec[A <: Obj, B <: Obj](implicit f:StorageFactory):RecType[A, B] = f.rec[A, B].asInstanceOf[RecType[A, B]]
-  def rec[A <: Obj, B <: Obj](value:(A, B), values:(A, B)*)(implicit f:StorageFactory):Rec[A, B] = f.rec(g = (Tokens.`,`, List(value) ++ values.toList))
-  def rec[A <: Obj, B <: Obj](name:String = Tokens.rec, g:RecTuple[A, B] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):Rec[A, B] = ORec.makeRec(name, g, q, via)
+  def rec[A <: Obj, B <: Obj](single:(A, B))(implicit f:StorageFactory):Rec[A, B] = f.rec(g = (Tokens.`,`, List(single)))
+  def rec[A <: Obj, B <: Obj](name:String = Tokens.rec, g:RecTuple[A, B] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):Rec[A, B] = f.rec[A,B](name,g,q,via)
   def lst[A <: Obj](single:A)(implicit f:StorageFactory):Lst[A] = f.lst[A](single)
   def lst[A <: Obj](implicit f:StorageFactory):LstType[A] = f.lst[A].asInstanceOf[LstType[A]]
-  def lst[A <: Obj](sep:String, values:A*)(implicit f:StorageFactory):Lst[A] = f.lst[A](sep, values:_*)
-  def lst[A <: Obj](name:String = Tokens.lst, g:LstTuple[A] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):Lst[A] = OLst.makeLst(name, g, q, via)
+  def lst[A <: Obj](name:String = Tokens.lst, g:LstTuple[A] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):Lst[A] = f.lst[A](name, g, q, via)
   //
   def tbool(name:String = Tokens.bool, q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):BoolType = f.tbool(name, q, via)
   def tint(name:String = Tokens.int, q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):IntType = f.tint(name, q, via)
@@ -140,6 +138,8 @@ object StorageFactory {
     override def real(value1:RealValue, value2:RealValue, valuesN:RealValue*):RealStrm = new VRealStrm(values = MultiSet(value1 +: (value2 +: valuesN)))
     override def str(g:String, name:String = Tokens.str, q:IntQ, via:ViaTuple):StrValue = new VStr(name, g, q, rootVia)
     override def str(value1:StrValue, value2:StrValue, valuesN:StrValue*):StrStrm = new VStrStrm(values = MultiSet(value1 +: (value2 +: valuesN)))
+    override def lst[A <: Obj](name:String = Tokens.lst, g:LstTuple[A] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia):Lst[A] = OLst.makeLst(name, g, q, via)
+    override def rec[A <: Obj, B <: Obj](name:String = Tokens.rec, g:RecTuple[A, B] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia):Rec[A, B] = ORec.makeRec(name, g, q, via)
     //
     override def strm[O <: Obj]:OStrm[O] = new VObjStrm(values = List.empty).asInstanceOf[OStrm[O]]
     override def strm[O <: Obj](values:Seq[O]):OStrm[O] = {

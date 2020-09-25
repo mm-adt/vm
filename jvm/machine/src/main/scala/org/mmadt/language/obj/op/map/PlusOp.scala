@@ -57,10 +57,10 @@ object PlusOp extends Func[Obj, Obj] {
     // poly plus
     case multA:Lst[Obj] if multA.isSerial => inst.arg0[Lst[Obj]] match {
       case multB:Lst[Obj] if multB.isSerial => multA `,` multB
-      case plusB:Lst[Obj] if plusB.isPlus => lst(plusB.gsep, multA, plusB)
+      case plusB:Lst[Obj] if plusB.isPlus => lst(g=(plusB.gsep, List(multA, plusB)))
     }
     case plusA:Lst[Obj] if plusA.isPlus => inst.arg0[Lst[Obj]] match {
-      case multB:Lst[Obj] if multB.isSerial => if (multB.isEmpty) plusA else lst(plusA.gsep, plusA, multB)
+      case multB:Lst[Obj] if multB.isSerial => if (multB.isEmpty) plusA else lst(g=(plusA.gsep, List(plusA, multB)))
       case plusB:Lst[Obj] if plusB.isPlus => plusA.clone(g = (plusA.gsep, plusA.glist ++ plusB.glist))
     }
   }) match {

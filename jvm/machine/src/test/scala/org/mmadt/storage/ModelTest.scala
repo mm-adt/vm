@@ -57,9 +57,9 @@ class ModelTest extends FunSuite {
   }
 
   test("[tp3] model") {
-    val record1a = rec(
-      str("id") -> int(1),
-      str("label") -> str("person"))
+    val record1a = (
+      str("id") -> int(1) `_,`
+        str("label") -> str("person"))
     assertResult('vertex(record1a))(record1a ==> tp3 `=>` as('vertex))
     ///
     val record2a = str("id") -> int(1) `_,`
@@ -69,10 +69,10 @@ class ModelTest extends FunSuite {
     assertResult(record2b)(record2a ==> tp3 `=>` __("vertex"))
     assertResult(record2b)(record2a ==> tp3 `=>` as('vertex))
     ///
-    val record3 = 'vertex(rec(
-      str("id") -> int(1),
-      str("label") -> str("person"),
-      str("properties") -> 'property(rec(str("id") -> str("marko")))))
+    val record3 = 'vertex((
+      str("id") -> int(1) `_,`
+        str("label") -> str("person") `_,`
+        str("properties") -> 'property(rec(str("id") -> str("marko")))))
     assertThrows[LanguageException] {
       record3 ==> tp3 `=>` as('vertex)
     }
@@ -107,7 +107,7 @@ class ModelTest extends FunSuite {
     assertResult(record2b)(record2a ==> kv `=>` as('kv) `=>` tp3_kv `=>` as('vertex))
     assertResult(record2b)(record2a ==> tp3_kv `=>` as('vertex))
     // (edge<=kv:('k'->(is=='edge',obj),'v'->('link'->(obj;obj),str->obj{*}))<x>-<
-    val edge1:Rec[StrValue, Obj] = rec(str("k") -> (str("edge") `,` 7), str("v") -> rec(str("link") -> (1 `;` 1)))
+    val edge1:Rec[StrValue, Obj] = (str("k") -> (str("edge") `,` 7) `_,` str("v") -> rec(str("link") -> (1 `;` 1)))
     val store:Lst[Rec[StrValue, Obj]] = record1a `;` edge1
     val s:Obj = store ==> kv `=>` 'store
     println(s)

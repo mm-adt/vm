@@ -28,11 +28,11 @@ import org.mmadt.language.jsr223.mmADTScriptEngine
 import org.mmadt.language.obj.Obj.{booleanToBool, intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.language.obj.op.sideeffect.LoadOp
-import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.op.trace.ModelOp._
 import org.mmadt.language.{LanguageException, LanguageFactory, Tokens}
-import org.mmadt.storage
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -51,9 +51,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("help") {
-    engine.eval(":[model,pg_2]")
-
-    println(engine.eval("?_<=int"))
+    println(5.model(MM).map[Lst[Obj]]((int(1).to('x)`;`int(2).to('y))).merge.model.vars("x"))
   }
 
   test("num") {
@@ -200,25 +198,25 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("rec value parsing") {
     assertResult(rec(str("name") -> str("marko")))(engine.eval("('name'->'marko')"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(engine.eval("('name'->'marko','age'->29)"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(engine.eval("('name'->  'marko' , 'age' ->29)"))
+    assertResult(str("name") -> str("marko")`_,` str("age") -> int(29))(engine.eval("('name'->'marko','age'->29)"))
+    assertResult(str("name") -> str("marko")`_,` str("age") -> int(29))(engine.eval("('name'->  'marko' , 'age' ->29)"))
     assertResult(str("marko"))(engine.eval("('name'->'marko','age'->29)[head]"))
     assertResult(rec(str("age") -> int(29)))(engine.eval("('name'->'marko','age'->29)[tail]"))
     assertResult(str("name") -> str("marko") `_;` str("age") -> int(29))(engine.eval("('a'->23;'name'->'marko';'age'->29)[tail]"))
   }
 
   test("rec type parsing") {
-    assertResult(rec(str("name") -> str, str("age") -> int))(engine.eval("(   'name'   ->str ,   'age' ->int)"))
-    assertResult(rec(str("name") -> str, str("age") -> int))(engine.eval("('name'->str,'age'->int)"))
-    assertResult(rec(str("name") -> str, str("age") -> int).q(30))(engine.eval("('name'->str,'age'->int){30}"))
-    assertResult(rec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("('name'->str,'age'->int){30}[get,'age',int][gt,30]"))
-    assertResult(rec(str("name") -> str, str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("bool{30}<=('name'->str,'age'->int){30}[get,'age',int][gt,30]"))
-    assertResult(bool.q(*) <= rec(str("name") -> str, str("age") -> int).q(*).get("age", int).gt(30))(engine.eval("bool{*}<=('name'->str,'age'->int){*}[get,'age',int][gt,30]"))
+    assertResult(str("name") -> str`_,` str("age") -> int)(engine.eval("(   'name'   ->str ,   'age' ->int)"))
+    assertResult(str("name") -> str`_,` str("age") -> int)(engine.eval("('name'->str,'age'->int)"))
+    assertResult((str("name") -> str`_,` str("age") -> int).q(30))(engine.eval("('name'->str,'age'->int){30}"))
+    assertResult((str("name") -> str`_,` str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("('name'->str,'age'->int){30}[get,'age',int][gt,30]"))
+    assertResult((str("name") -> str`_,` str("age") -> int).q(30).get("age", int).gt(30))(engine.eval("bool{30}<=('name'->str,'age'->int){30}[get,'age',int][gt,30]"))
+    assertResult(bool.q(*) <= (str("name") -> str`_,` str("age") -> int).q(*).get("age", int).gt(30))(engine.eval("bool{*}<=('name'->str,'age'->int){*}[get,'age',int][gt,30]"))
   }
 
   test("rec named value parsing") {
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).named("person"))(engine.eval("person:(   'name'   ->'marko' ,   'age' ->29)"))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)).named("person"))(engine.eval("person:('name'->'marko','age'->29)"))
+    assertResult('person(str("name") -> str("marko")`_,` str("age") -> int(29)))(engine.eval("person:(   'name'   ->'marko' ,   'age' ->29)"))
+    assertResult('person(str("name") -> str("marko")`_,` str("age") -> int(29)))(engine.eval("person:('name'->'marko','age'->29)"))
   }
 
 
@@ -946,7 +944,7 @@ class mmlangScriptEngineTest extends FunSuite {
       """ [('name'->'marko','age'->-29),('name'->'marko','age'->29)]
         | [define,nat<=int[is>0],person:('name'->str,'age'->nat)]
         | [is,[a,person]][[is,[get,'age'][gt,20]] -> 'old guy' , [is,[get,'age'][lt,20]] -> 'young guy']""".stripMargin))
-    assertResult(rec(str("name") -> str("ryan"), str("age") -> int(2)))(engine.eval(
+    assertResult(str("name") -> str("ryan")`_,` str("age") -> int(2))(engine.eval(
       """ [('name'->'ryan','age'->2),('name'->'marko','age'->-29)]
         | [define,nat<=int[is>0],person:('name'->str,'age'->nat)]
         | [is,[a,person]]""".stripMargin))
@@ -954,7 +952,7 @@ class mmlangScriptEngineTest extends FunSuite {
       """ ('name'->'marko','age'->-29)
         | [define,nat<=int[is>0],person:('name'->str,'age'->nat)]
         | [is,[a,person]]""".stripMargin))
-    assertResult(rec(str("name") -> str("marko"), str("age") -> int(29)))(engine.eval(
+    assertResult(str("name") -> str("marko")`_,` str("age") -> int(29))(engine.eval(
       """ ('name'->'marko','age'->29)
         | [define,nat<=int[is>0],person:('name'->str,'age'->nat)]
         | [is,[a,person]]""".stripMargin))

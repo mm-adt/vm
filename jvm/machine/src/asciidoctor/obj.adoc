@@ -2,7 +2,7 @@
 
 == The Obj Graph
 
-An mm-ADT program is a *type*. The `mmlang` parser converts a textual representation of a type into a type `obj`. A type is inductively defined and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within the larger *type graph*. The type's path is a graphical encoding specifying a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in the *value graph*. Together, the type graph and the value graph form the *obj graph*.
+An mm-ADT program is a *type*. The `mmlang` parser converts a textual representation of a type into a type `obj`. A type is inductively defined and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] within the larger *type graph*. The type's path is a graphical encoding specifying a data flow https://en.wikipedia.org/wiki/Pipeline_(computing)[pipeline] that when evaluated, constructs elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in the *value graph*. Together, the type graph and the value graph form the https://en.wikipedia.org/wiki/Quiver_(mathematics)[quiver] known as the *obj graph*.
 
 Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the `obj` graph. The following itemizations summarizes the various roles that the `obj` graph throughout a computation.
 
@@ -21,8 +21,7 @@ Let \$(M,\cdot,e)\$ be a https://en.wikipedia.org/wiki/Monoid[monoid], where \$e
 Thus, every monoid has a *single unique identity*.
 However, in a https://en.wikipedia.org/wiki/Free_monoid[free monoid], where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly _labeled_ elements even though their role in the non-free monoid's binary composition are the same -- namely, that they both act as identities.
 
-[.small]
-[cols="2,1,2" width=42,float=right]
+[cols="2,1,2" width=50,float=right]
 |====
 | idiom                                                                      | inst           | description
 

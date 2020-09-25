@@ -22,9 +22,9 @@
 
 package org.mmadt.processor.obj.`type`.rewrite
 
-import org.mmadt.language.obj.Obj.symbolToToken
+import org.mmadt.language.obj.Obj.{symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.value.{RecValue, StrValue, Value}
-import org.mmadt.language.obj.{OStrm, Obj, Rec, Str}
+import org.mmadt.language.obj.{OStrm, Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
@@ -35,10 +35,8 @@ class GraphRewriteTest extends FunSuite {
   private type Vertex = RecValue[StrValue, Value[Obj]]
   private type Graph = RecValue[StrValue, Value[Obj]]
 
-  val vertex:Rec[Str, Obj] = rec(str("id") -> int, str("outE") -> 'edge.q {
-    *
-  })
-  val edge:Rec[Str, Obj] = rec(str("id") -> int, str("inV") -> 'vertex.q(1), str("outV") -> 'vertex.q(1), str("label") -> str)
+  val vertex:Rec[StrValue, Obj] = (str("id") -> int `_,` str("outE") -> 'edge.q(*))
+  val edge:Rec[StrValue, Obj] = (str("id") -> int `_,` str("inV") -> 'vertex.q(1) `_,` str("outV") -> 'vertex.q(1) `_,` str("label") -> str)
 
   /*val model: Model = Model.simple().
     put(rec(str("id") -> int, str("outE") -> tobj("edge").q(*), str("inE") -> tobj("edge").q(*)), rec(str("id") -> int, str("outE") -> tobj("edge").q(*), str("inE") -> tobj("edge").q(*)).named("vertex")).
@@ -68,7 +66,7 @@ class GraphRewriteTest extends FunSuite {
 
   test("connected values") {
     def makeEdge(outV:Vertex, label:String, inV:Vertex) = {
-      rec(str("outV") -> outV, str("label") -> str(label), str("inV") -> inV)
+      (str("outV") -> outV`_,` str("label") -> str(label)`_,` str("inV") -> inV)
     }
     var marko:Vertex = rec(str("id") -> int(1)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
     val vadas:Vertex = rec(str("id") -> int(2)).asInstanceOf[RecValue[StrValue, Value[Obj]]]

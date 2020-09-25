@@ -53,11 +53,11 @@ object MultOp extends Func[Obj, Obj] {
     // poly mult
     case multA: Lst[Obj] if multA.isSerial => inst.arg0[Lst[Obj]] match {
       case multB: Lst[Obj] if multB.isSerial => multA.clone(g = (multA.gsep, multA.glist ++ multB.glist))
-      case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(g = (plusB.gsep, plusB.glist.map(a => lst(Tokens.`;`, multA.glist :+ a: _*))))
+      case plusB: Lst[Obj] if plusB.isPlus => plusB.clone(g = (plusB.gsep, plusB.glist.map(a => lst(g=(Tokens.`;`, multA.glist :+ a)))))
     }
     case multA: Lst[Obj] if multA.isPlus => inst.arg0[Lst[Obj]] match {
-      case multB: Lst[Obj] if multB.isSerial => multA.clone(g = (multA.gsep, multA.glist.map(a => lst(Tokens.`;`, a +: multB.glist: _*))))
-      case plusB: Lst[Obj] if plusB.isPlus => multA.clone(g = (multA.gsep, multA.glist.flatMap(a => plusB.glist.map(b => lst(plusB.gsep, a, b)))))
+      case multB: Lst[Obj] if multB.isSerial => multA.clone(g = (multA.gsep, multA.glist.map(a => lst(g=(Tokens.`;`, a +: multB.glist)))))
+      case plusB: Lst[Obj] if plusB.isPlus => multA.clone(g = (multA.gsep, multA.glist.flatMap(a => plusB.glist.map(b => lst(g=(plusB.gsep, List(a, b)))))))
     }
   }) match {
     case x: Failure[_] if x.exception.isInstanceOf[LanguageException] => throw x.exception

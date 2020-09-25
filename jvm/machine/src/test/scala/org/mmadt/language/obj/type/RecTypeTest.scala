@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Obj.tupleToRecYES
+import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
 import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -31,9 +32,9 @@ import org.scalatest.FunSuite
 
 class RecTypeTest extends FunSuite {
 
-  val X: (IntValue, StrValue) = int(1) -> str("a")
-  val Y: (IntValue, StrValue) = int(2) -> str("b")
-  val Z: (IntValue, StrValue) = int(3) -> str("c")
+  val X:(IntValue, StrValue) = int(1) -> str("a")
+  val Y:(IntValue, StrValue) = int(2) -> str("b")
+  val Z:(IntValue, StrValue) = int(3) -> str("c")
 
   test("rec type token") {
     assertResult("rec")(rec.toString)
@@ -54,9 +55,9 @@ class RecTypeTest extends FunSuite {
   }
 
   test("rec type [split]/[merge]") {
-    val crec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_,` str("b") -> int.plus(2) `_,` str("c") -> int.plus(3)
-    val prec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_|` str("b") -> int.plus(2) `_|` str("c") -> int.plus(3)
-    val srec: Rec[StrValue, IntType] = str("a") -> int.plus(1) `_;` str("b") -> int.plus(2) `_;` str("c") -> int.plus(3)
+    val crec:Rec[StrValue, IntType] = str("a") -> int.plus(1) `_,` str("b") -> int.plus(2) `_,` str("c") -> int.plus(3)
+    val prec:Rec[StrValue, IntType] = str("a") -> int.plus(1) `_|` str("b") -> int.plus(2) `_|` str("c") -> int.plus(3)
+    val srec:Rec[StrValue, IntType] = str("a") -> int.plus(1) `_;` str("b") -> int.plus(2) `_;` str("c") -> int.plus(3)
     assertResult(int.q(3))(crec.merge.range)
     assertResult(int.q(1))(prec.merge.range)
     assertResult(int.q(1))(srec.merge.range)
@@ -67,7 +68,7 @@ class RecTypeTest extends FunSuite {
 
   test("rec values") {
     assertResult("(1->true)")(rec(int(1) -> btrue).toString)
-    assertResult("(1->true,2->false)")(((int(1) -> btrue) `,` (int(2) -> bfalse)).toString)
+    assertResult("(1->true,2->false)")(((int(1) -> btrue) `,`(int(2) -> bfalse)).toString)
     assertResult("(1->true,2->false)")((int(1) -> btrue).plus(int(2) -> bfalse).toString)
     assertResult(bfalse)((int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)).get(int(2)))
     assertResult(int(1) -> btrue `_,` int(2) -> bfalse)((int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(int(2) -> bfalse))
@@ -90,11 +91,11 @@ class RecTypeTest extends FunSuite {
 
   test("rec value via varargs construction") {
     // forwards keys
-    assertResult(List(X, Y))(rec(X, Y).gmap)
-    assertResult(List(X, Y))(rec(X).plus(rec(Y)).gmap)
-    assertResult(List(X, Y, Z))(rec(X, Y, Z).gmap)
-    assertResult(List(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
-    assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
+    assertResult(List(X, Y))((X `,` Y).gmap)
+    assertResult(List(X, Y))(X.plus(Y).gmap)
+    assertResult(List(X, Y, Z))((X `,` Y `,` Z).gmap)
+    assertResult(List(X, Y, Z))(X.plus(Y `,` Z).gmap)
+    assertResult(List(X, Y, Z))((X `,` Y).plus(Z).gmap)
     // backwards keys
     assertResult(List(Y, X))((Y `_,` X).gmap)
     assertResult(List(Y, X))(rec(Y).plus(rec(X)).gmap)
@@ -107,26 +108,26 @@ class RecTypeTest extends FunSuite {
 
   test("rec value via map construction") {
     // forwards keys
-    assertResult(List(X, Y))(rec(X, Y).gmap)
+    assertResult(List(X, Y))((X `,` Y).gmap)
     assertResult(List(X, Y))(rec(X).plus(rec(Y)).gmap)
-    assertResult(List(X, Y, Z))(rec(X, Y, Z).gmap)
-    assertResult(List(X, Y, Z))(rec(X).plus(rec(Y, Z)).gmap)
-    assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(Z)).gmap)
+    assertResult(List(X, Y, Z))((X `,` Y `,` Z).gmap)
+    assertResult(List(X, Y, Z))(rec(X).plus((Y `,` Z)).gmap)
+    assertResult(List(X, Y, Z))((X `,` Y).plus(Z).gmap)
     // backwards keys
-    assertResult(List(Y, X))(rec(Y, X).gmap)
+    assertResult(List(Y, X))((Y `,` X).gmap)
     assertResult(List(Y, X))(rec(Y).plus(rec(X)).gmap)
-    assertResult(List(Z, Y, X))(rec(Z, Y, X).gmap)
-    assertResult(List(Z, Y, X))(rec(Z).plus(rec(Y, X)).gmap)
-    assertResult(List(Z, Y, X))(rec(Z, Y).plus(rec(X)).gmap)
+    assertResult(List(Z, Y, X))((Z `,` Y `,` X).gmap)
+    assertResult(List(Z, Y, X))(rec(Z).plus((Y `,` X)).gmap)
+    assertResult(List(Z, Y, X))((Z `,` Y).plus(rec(X)).gmap)
     // overwrite orderings
-    assertResult(List(X, Y, Z))(rec(X, Y).plus(rec(X, Z)).gmap)
+    assertResult(List(X, Y, Z))((X `,` Y).plus((X `,` Z)).gmap)
   }
 
   test("rec value quantifiers") {
-    assertResult(rec(X, Y).q(int(2)))(rec(X, Y).q(int(2)) ==> rec.q(int(2)))
-    assertResult(rec(X, Y, Z).q(2))(rec(X, Y).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Z))
-    assertResult(rec(X, Y, Z).q(2))(rec(X).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)))
-    assertResult(rec(X, Y, Z).q(4))(rec(X).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)).q(2))
+    assertResult((X `,` Y).q(int(2)))((X `,` Y).q(int(2)) ==> rec.q(int(2)))
+    assertResult((X `,` Y `,` Z).q(2))((X `,` Y).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Z))
+    assertResult((X `,` Y `,` Z).q(2))(rec(X).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)))
+    assertResult((X `,` Y `,` Z).q(4))(rec(X).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)).q(2))
   }
 
   test("rec choose branching") {
@@ -136,21 +137,21 @@ class RecTypeTest extends FunSuite {
   }
 
   test("record value/type checking") {
-    val extra = rec(str("name") -> str, __ -> str, __ -> int)
+    val extra = (str("name") -> str `_,` __ -> str `_,` __ -> int)
     val extraLess = rec(__ -> __)
     val markoLess = rec(str("name") -> str("marko"))
-    val marko = rec(str("name") -> str("marko"), str("age") -> int(29))
+    val marko = (str("name") -> str("marko") `_,` str("age") -> int(29))
     val markoNoAge = rec(str("name") -> str("marko"))
-    val markoMore = rec(str("name") -> str("marko"), str("age") -> int(29), str("alive") -> bfalse)
-    val person = rec(str("name") -> str, str("age") -> int)
+    val markoMore = (str("name") -> str("marko") `_,` str("age") -> int(29) `_,` str("alive") -> bfalse)
+    val person = (str("name") -> str `_,` str("age") -> int)
     val personLess = rec(str("age") -> int)
     val markoLessName = rec(str("name") -> str("marko")).named("person")
-    val markoName = rec(str("name") -> str("marko"), str("age") -> int(29)).named("person")
-    val markoMoreName = rec(str("name") -> str("marko"), str("age") -> int(29), str("alive") -> bfalse).named("person")
-    val personName = rec(str("name") -> str, str("age") -> int).named("person")
-    val personNameBackwards = rec(str("age") -> int, str("name") -> str).named("person")
-    val personBackwards = rec(str("age") -> int, str("name") -> str)
-    val personMaybeAge = (str("name") -> str) `_,` (str("age") -> int.q(*))
+    val markoName = 'person(str("name") -> str("marko") `_,` str("age") -> int(29))
+    val markoMoreName = 'person(str("name") -> str("marko") `_,` str("age") -> int(29) `_,` str("alive") -> bfalse)
+    val personName = (str("name") -> str `_,` str("age") -> int).named("person")
+    val personNameBackwards = (str("age") -> int `_,` str("name") -> str).named("person")
+    val personBackwards = (str("age") -> int `_,` str("name") -> str)
+    val personMaybeAge = (str("name") -> str) `_,`(str("age") -> int.q(*))
     assert(marko.test(marko))
     assert(markoMore.test(markoMore))
     assert(markoLess.test(markoLess))

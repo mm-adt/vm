@@ -336,8 +336,7 @@ NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram abov
 
 .The Obj Graph as a Cayley Graph and a Commutative Diagram
 ================================================================
-The `obj` graph is both a generalized https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] of a https://en.wikipedia.org/wiki/Partial_function[partial] https://en.wikipedia.org/wiki/Monoid[monoid] and the https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] of a https://en.wikipedia.org/wiki/Free_category[free category].
-More generally, the `obj` graph is the https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function[graph of unary functions] comprising `inst`, where instructions operate on both types and values.
+The `obj` graph is both a generalized https://en.wikipedia.org/wiki/Cayley_graph[Cayley graph] of a https://en.wikipedia.org/wiki/Partial_function[partial] https://en.wikipedia.org/wiki/Monoid[monoid] and the https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] (or https://en.wikipedia.org/wiki/Quiver_(mathematics)[quiver]) of the category composed of `obj` vertices and `inst` labeled edges. More generally, the `obj` graph is the https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function[graph of unary functions] comprising `inst`, where instructions operate on both types and values.
 From compilation to evaluation, depending on the particular context, either interpretation will be leveraged.
 
 * *Commutative diagram*: vertices denote type/value-objects of the `obj` category with `inst` morphisms.

@@ -25,6 +25,7 @@ package org.mmadt.storage.mmkv
 import javax.script.ScriptContext
 import org.mmadt.language.LanguageFactory
 import org.mmadt.language.jsr223.mmADTScriptEngine
+import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.IntType
 import org.mmadt.language.obj.value.{BoolValue, IntValue, StrValue}
@@ -37,11 +38,11 @@ import org.scalatest.FunSuite
  */
 class mmkvStoreTest extends FunSuite {
 
-  lazy val engine: mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
-  val file1: String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
-  val file2: String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
-  val file3: String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
-  val mmkv: String = "=mmkv"
+  lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
+  val file1:String = getClass.getResource("/mmkv/mmkv-1.mm").getPath
+  val file2:String = getClass.getResource("/mmkv/mmkv-2.mm").getPath
+  val file3:String = getClass.getResource("/mmkv/mmkv-3.mm").getPath
+  val mmkv:String = "=mmkv"
 
   test("mmkv storage provider") {
     assert(engine.getBindings(ScriptContext.ENGINE_SCOPE).values().isEmpty)
@@ -58,9 +59,9 @@ class mmkvStoreTest extends FunSuite {
   }
 
   test("mmkv store [count]") {
-    val store: mmkvStore[IntType, Rec[StrValue, Obj]] = mmkvStore.open[IntType, Rec[StrValue, Obj]](file2)
+    val store:mmkvStore[IntType, Rec[StrValue, Obj]] = mmkvStore.open[IntType, Rec[StrValue, Obj]](file2)
     try {
-      assertResult(rec[StrValue, Obj](g=(",", List(str("k") -> int, str("v") -> rec[StrValue, Obj](g=(",", List(str("name") -> str, str("age") -> int))).named("person")))).named("mmkv"))(store.schema)
+      assertResult(rec[StrValue, Obj](g = (",", List(str("k") -> int, str("v") -> rec[StrValue, Obj](g = (",", List(str("name") -> str, str("age") -> int))).named("person")))).named("mmkv"))(store.schema)
       assertResult(4)(store.count())
     } finally store.close()
   }
@@ -68,7 +69,7 @@ class mmkvStoreTest extends FunSuite {
   test("mmkv store [put]") {
     val store = mmkvStore.open[IntValue, BoolValue](file3)
     try {
-      assertResult(rec(g=(",", List(str("k") -> int, str("v") -> bool))).named("mmkv"))(store.schema)
+      assertResult(rec(g = (",", List(str("k") -> int, str("v") -> bool))).named("mmkv"))(store.schema)
       store.clear()
       assertResult(0)(store.stream().drain.count(_ => true))
       assertResult(bfalse)(store.put(bfalse))
@@ -86,7 +87,7 @@ class mmkvStoreTest extends FunSuite {
   test("mmkv store [close]/[clear]/[count]") {
     var store = mmkvStore.open[IntValue, BoolValue](file3)
     try {
-      assertResult(rec(str("k") -> int, str("v") -> bool).named("mmkv"))(store.schema)
+      assertResult((str("k") -> int `_,` str("v") -> bool).named("mmkv"))(store.schema)
       store.clear()
       assertResult(bfalse)(store.put(0, bfalse))
       assertResult(1L)(store.count())

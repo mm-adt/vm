@@ -25,7 +25,9 @@ package org.mmadt.storage.mmkv
 import java.util
 import java.util.Optional
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
+import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.`type`.__._
@@ -57,8 +59,8 @@ class mmkvStorageProvider extends StorageProvider {
     })
   }
   override def rewrites():util.List[Inst[Obj, Obj]] = seqAsJavaList(List(
-    DefineOp((__.error("keys are immutable") `,`) <= '^(lst(",", mmkv.put(K, __.via(__, StartOp(__)))))),
-    DefineOp((__.error("values are immutable") `,`) <= '^(lst(",", mmkv.put(V, __.via(__, StartOp(__)))))),
+    DefineOp((__.error("keys are immutable") `,`) <= '^(lst(g=(Tokens.`,`, List(mmkv.put(K, __.via(__, StartOp(__)))))))),
+    DefineOp((__.error("values are immutable") `,`) <= '^(lst(g=(Tokens.`,`, List(mmkv.put(V, __.via(__, StartOp(__)))))))),
     /*RewriteOp(
       (List(mmkvGetRecordsByKey(str, 1)).foldLeft(__.asInstanceOf[Obj])((x, y) => y.exec(x)) `,`)
         <=
@@ -94,8 +96,9 @@ object mmkvStorageProvider {
         val key:Obj = inst.arg2[Obj]
         (start match {
           case _:Type[_] => mmkvStore.open(fileStr).schema.via(start, inst).hardQ(*)
-          case _ => rec(K -> key, V -> mmkvStore.open(fileStr).get(key)).via(start, inst)
+          case _ => ((K -> key) `_,` (V -> mmkvStore.open(fileStr).get(key).asInstanceOf[Obj])).via(start, inst)
         })
+
       }
     }
 
