@@ -145,6 +145,7 @@ object ModelOp extends Func[Obj, Obj] {
       val typesMap = Option(map.fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
       nameModel(rec(model.name, g = (Tokens.`,`, map.replace(ModelOp.VAR -> rec(g = (Tokens.`,`, typesMap.replace(key -> lst(g = (Tokens.`,`, List(value.rangeObj))))))))))
     }
+    final def vars:List[(StrValue, Obj)] = Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP).map(x => (x._1.asInstanceOf[StrValue], x._2.glist.last))
 
     final def defining(definition:Obj):Model = {
       val map = Option(model.g._2).getOrElse(NOROOT)

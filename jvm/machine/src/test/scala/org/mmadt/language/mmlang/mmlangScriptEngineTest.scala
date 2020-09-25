@@ -51,8 +51,12 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("help") {
-    println(5.model(MM).map[Lst[Obj]]((int(1).to('x)`;`int(2).to('y))).merge.model.vars("x"))
+    println(engine.eval(":[model,mm][define,apair<=(int<m>;int<n>)[is,m<n]]"))
+    assertResult(str("marko"))(engine.eval("""('m','a','r','k','o')>-[fold,<.x>.0+<.x>.1]"""))
+    assertThrows[LanguageException](println(engine.eval("(73;5) => apair")))
+    assertResult("apair:(3;5)")((engine.eval("(3;5) => apair")).toString)
   }
+
 
   test("num") {
     engine.eval(":[model,num]")

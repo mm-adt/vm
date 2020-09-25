@@ -84,7 +84,7 @@ trait Obj
   val q:IntQ // the obj quantifier
   val via:ViaTuple // the obj's incoming edge in the obj-graph
   //////////////////////////////////////////////////////////////
-
+  def reload:this.type = this
   // type methods
   def named:Boolean = Tokens.named(this.name)
   def named(name:String, ignoreAnon:Boolean = false):this.type = {

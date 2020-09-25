@@ -24,6 +24,7 @@ package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
+import org.mmadt.language.obj.Poly.fetchVars
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
@@ -43,6 +44,7 @@ trait Lst[+A <: Obj] extends Poly[A]
   lazy val glist:List[A] = if (null == g._2) List.empty[A] else g._2.map(x => x.update(this.model))
   override def ctype:Boolean = null == g._2 // type token
   override def scalarMult(start:Obj):this.type = this.clone(values => Lst.moduleStruct(gsep, values, start))
+  override def reload:this.type = this.update(fetchVars(this.model, this.g._2))
 
   override def equals(other:Any):Boolean = other match {
     case alst:Lst[_] => Poly.sameSep(this, alst) &&

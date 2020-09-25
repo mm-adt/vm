@@ -54,6 +54,7 @@ object AsOp extends Func[Obj, Obj] {
 
   def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E = autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
   private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
+    if (domain && __.isToken(target) && source.reload.model.vars(target.name).isDefined && source.isInstanceOf[Type[_]]) return source.from(target.name)
     if (source.name.equals(target.name)) {
       source match {
         case alst:LstValue[Obj] if !Lst.exactTest(alst, target) =>
@@ -142,7 +143,7 @@ object AsOp extends Func[Obj, Obj] {
       case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
       case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
       case alst:LstType[Obj] if alst.ctype => x.named(alst.name)
-      case alst:LstType[Obj] if Lst.shapeTest(x, alst) => lst(name = alst.name, g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.as(a._2))), via = x.via)
+      case alst:LstType[Obj] if Lst.shapeTest(x, alst) => lst(name = alst.name, g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.compute(a._2))), via = x.via).reload
       case alst:LstType[Obj] if Lst.test(x, alst) => x.named(alst.name)
       case _ => throw LanguageException.typingError(x, asType(y))
     })
