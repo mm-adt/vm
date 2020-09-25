@@ -1008,6 +1008,50 @@ image:poly-kinds.svg[width=350,float=left]
 
 '''
 
+.Mathematical Notation Conventions for mm-ADT
+================================================================
+
+[.small]
+[cols="^.^1,^.^1,^.^1",width=20,float=right]
+|====
+| mmlang 2+| mmnotation
+
+| `\=>`    | \$\ast\$    | \[\tiny{\prod}\]
+| `=[`     | \$ +\$      | \[\tiny{\coprod}\]
+| `=\|`    | \$\oplus\$  | \[\tiny{\bigoplus}\]
+|====
+
+The `mmlang` notation is able to denote every possible type through the `obj` graph. That is, is can be used to define automata that can recognize every possible path through the `obj` graph. A companion notation exists separate from `mmlang` which is more aligned with the formalisms used in standard mathematical treatments of an algebraic system. This notation is called **mm notation**.
+
+* **Monoidal composition (\$\ast\$)**: A non-branch serial path through the `obj` graph is expressed with the multiplicative \$\Pi\$ operator. Given sequence of types \$\mathbf{a} = [a_0,a_1,\ldots,a_n]\$, their monoidal composition is denoted
+\[
+\prod_{i=0}^{n} \mathbf{a}_i \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_\ast
+\]
+where, for the latter, it is implied that entire sequence is left-to-right composed (via fold) using the stream ring multiplicative \$\ast\$-operator. While the first representation is more verbose, it's use will become apparent when considering intermediate operations within a monoidal composition.
+
+* **Groupoidal composition (\$+\$)**: Parallel paths through the `obj` graph is denoted with the respective additive operator. Thus, given \$n\$-independent types \$\mathbf{a} = [a_0,a_1,\ldots,a_n]\$, their parallel evaluation is denoted
+\[
+\coprod_{i=0}^n \mathbf{a}_i \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_{ +}
+\]
+
+* **Near-ring reduction (\$\oplus\$)**: A path barrier is denoted with the \$\oplus\$ reduction operator. Given \$n\$-types  (serial or parallel), their reduction using using the function \$f:A^* \to B\$ is denoted
+\[
+\bigoplus_{i=0}^n f(\mathbf{a}_i)  \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_{\oplus f}
+\]
+
+It is important to note that the composition operator on the vector representation is portrayed bottom right. The reason being is that regular language syntax is reserved for the top right. Next, in order to apply the same \$m\$-serial types to \$n\$-parallel types the additive and multiplicative operators are used in conjunction.
+\[
+\begin{split}
+\coprod_{i=0}^n \mathbf{a}\_i \prod_{j=0}^m \mathbf{b}\_j
+       &= (\mathbf{a}\mathbf{b}_{*})\_{ +} \\
+       &= (a_0\mathbf{b}_{\ast} + a_1\mathbf{b}_{\ast} + \ldots + a_n\mathbf{b}_{\ast}) \\
+       &= (a_0 b_0 b_1 \ldots b_m) + \ldots + (a_n b_0 b_1 \ldots b_m)
+\end{split}
+\]
+The additive/multiplicative pattern emphasizes the https://en.wikipedia.org/wiki/Monoid_ring[monoid ring] interpretation of mm-ADT as well as the well know ring property that every ring is isomorphic to the composition of https://en.wikipedia.org/wiki/Endomorphism_ring[endomorphisms] (\$ \ast \$) of the ring's additive abelian group (\$ +\$), where each \$a_i\$ group element has applied a series of \$\mathbf{b}\$ morphisms back to the carrier set (i.e., an endomorphism).
+================================================================
+
+
 ===== Poly Collections
 
 A `poly` can be used a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. There are a total of 6 sorts of collections as there are two kinds of `poly` (`lst` and `rec`) and each kind has 3 algebras (`,`,`;`,`|`).
