@@ -1494,8 +1494,7 @@ This process is called <strong>path retraction</strong> and is the mm-ADT equiva
 <div class="title">Deep Dive 1. The Obj Graph as a Cayley Graph and a Commutative Diagram</div>
 <div class="content">
 <div class="paragraph">
-<p>The <code>obj</code> graph is both a generalized <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> of a <a href="https://en.wikipedia.org/wiki/Partial_function">partial</a> <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> and the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> of a <a href="https://en.wikipedia.org/wiki/Free_category">free category</a>.
-More generally, the <code>obj</code> graph is the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function">graph of unary functions</a> comprising <code>inst</code>, where instructions operate on both types and values.
+<p>The <code>obj</code> graph is both a generalized <a href="https://en.wikipedia.org/wiki/Cayley_graph">Cayley graph</a> of a <a href="https://en.wikipedia.org/wiki/Partial_function">partial</a> <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> and the <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> (or <a href="https://en.wikipedia.org/wiki/Quiver_(mathematics)">quiver</a>) of the category composed of <code>obj</code> vertices and <code>inst</code> labeled edges. More generally, the <code>obj</code> graph is the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)#Representing_a_function">graph of unary functions</a> comprising <code>inst</code>, where instructions operate on both types and values.
 From compilation to evaluation, depending on the particular context, either interpretation will be leveraged.</p>
 </div>
 <div class="ulist">
@@ -2103,12 +2102,12 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>a=&gt;B</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\Sigma\$ type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\Sigma\$ type (coproduct)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$A \times B\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>(A;B)</code></p></td>
 </tr>
 <tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\Pi\$ type</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$\Pi\$ type (product)</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock">\$A \to B\$</p></td>
 <td class="tableblock halign-center valign-top"><p class="tableblock"><code>B&lt;=A</code></p></td>
 </tr>
@@ -2127,15 +2126,15 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 \[
 \texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m&lt;n
 \]
-is a product of two integers \$m,n \in \mathbb{Z}\$, where \$m\$ is smaller than \$n\$ (\$m &lt; n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written <code>(int;int)&lt;x&gt;[is,&lt;x&gt;.0&lt;x.1]</code></p>
+is a product of two integers \$m,n \in \mathbb{Z}\$, where \$m\$ is smaller than \$n\$ (\$m &lt; n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written <code>(int&lt;m&gt;;int&lt;n&gt;)[is,m&lt;n]</code></p>
 </li>
 </ul>
 </div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm]
-         [define,apair&lt;=(int;int)[is,&lt;x&gt;.0&lt;x.1]]
-==&gt;_[define,apair&lt;=(int;int)[is,bool&lt;=(int;int)&lt;x&gt;[get,0,_][lt,x[get,1,_]]]]
+         [define,apair&lt;=(int&lt;m&gt;;int&lt;n&gt;)[is,m&lt;n]]
+==&gt;_[define,apair&lt;=(int&lt;m&gt;;int&lt;n&gt;)[is,bool&lt;=(int&lt;m&gt;;int&lt;n&gt;)&lt;.m&gt;[lt,n]]]
 mmlang&gt; (1;2)   =&gt; apair
 ==&gt;apair:(1;2)
 mmlang&gt; (2;1)   =&gt; apair
@@ -3399,7 +3398,7 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 <h2 id="_the_obj_graph">The Obj Graph</h2>
 <div class="sectionbody">
 <div class="paragraph">
-<p>An mm-ADT program is a <strong>type</strong>. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. A type is inductively defined and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within the larger <strong>type graph</strong>. The type&#8217;s path is a graphical encoding specifying a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that when evaluated, realizes elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in the <strong>value graph</strong>. Together, the type graph and the value graph form the <strong>obj graph</strong>.</p>
+<p>An mm-ADT program is a <strong>type</strong>. The <code>mmlang</code> parser converts a textual representation of a type into a type <code>obj</code>. A type is inductively defined and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> within the larger <strong>type graph</strong>. The type&#8217;s path is a graphical encoding specifying a data flow <a href="https://en.wikipedia.org/wiki/Pipeline_(computing)">pipeline</a> that when evaluated, constructs elements of the type (i.e. computed resultant values). These values also have a graphical encoding paths in the <strong>value graph</strong>. Together, the type graph and the value graph form the <a href="https://en.wikipedia.org/wiki/Quiver_(mathematics)">quiver</a> known as the <strong>obj graph</strong>.</p>
 </div>
 <div class="paragraph">
 <p>Every aspect of an mm-ADT computation from composition, to compilation, and ultimately to evaluation is materialized in the <code>obj</code> graph. The following itemizations summarizes the various roles that the <code>obj</code> graph throughout a computation.</p>
@@ -3436,7 +3435,7 @@ mmlang&gt; [1,2,3]-&lt;(int{3};[mult,10];-&lt;(-&lt;([is&gt;20];-&lt;(+70,+170,+
 Thus, every monoid has a <strong>single unique identity</strong>.
 However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a>, where element composition history is preserved, it is possible to record \$e\$ and \$e'\$ as distinctly <em>labeled</em> elements even though their role in the non-free monoid&#8217;s binary composition are the same&#8201;&#8212;&#8201;namely, that they both act as identities.</p>
 </div>
-<table class="tableblock frame-all grid-all right small" style="width: 42%;">
+<table class="tableblock frame-all grid-all right" style="width: 50%;">
 <colgroup>
 <col style="width: 40%;">
 <col style="width: 20%;">
@@ -7539,7 +7538,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-24 11:04:41 -0600
+Last updated 2020-09-24 12:30:43 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
