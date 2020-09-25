@@ -27,6 +27,7 @@ import org.mmadt.language.obj.Rec._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory._
 
@@ -134,7 +135,7 @@ object Rec {
       var taken:Boolean = false
       pairs
         .filter(kv => kv._1.alive && kv._2.alive)
-        .map(kv => (newStart ~~> kv._1) -> kv._2)
+        .map(kv => (if(kv._1.isInstanceOf[Type[_]]) (AsOp.autoAsType(newStart,kv._1) ~~> kv._1) else (newStart ~~> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
         .filter(kv =>
           if (taken) false
@@ -143,7 +144,7 @@ object Rec {
             taken = true;
             true
           })
-        .map(kv => if (nostart) kv else kv._1 -> ((start ~~> kv._2) match {
+        .map(kv => if (nostart) kv else kv._1 -> (if(kv._2.isInstanceOf[Type[_]]) ((AsOp.autoAsType(newStart,kv._2)) ~~> kv._2) else (newStart ~~> kv._2) match {
           case x if kv._2.isInstanceOf[Value[_]] => x.hardQ(q => q.mult(kv._2.q)).asInstanceOf[B]
           case x => x
         }))

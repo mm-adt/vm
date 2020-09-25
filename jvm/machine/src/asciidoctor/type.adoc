@@ -613,9 +613,9 @@ The illustration above is an intuitive visualization of an mm-ADT type from the 
 
 [exec]
 ----
-4 => int[mult,2] => str[plus,'0'] => real
-4 => int[mult,2] => str =[ str[plus,'0'],str[plus,'.1']] => real
-4 => int[mult,2] => str =[ str[plus,'0'],str[plus,'.1']] => real =| [plus,x]
+4 => int[mult,2] => str[plus,'0'] => real                               ## 80.0
+4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real               ## [80.0,8.1]
+4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real =| [plus,x]   ## 88.1{2}
 ----
 
 The last example above makes use of all three stream operators. A decomposition of the expression is provided below.
@@ -636,7 +636,7 @@ Finally, below is the unsugar'd form of the disectected type from above.
 
 [exec]
 ----
-4[juxt,int[mult,2]][as,str][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]
+4[juxt,int[mult,2]][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]  ## 88.1
 ----
 
 

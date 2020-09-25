@@ -127,7 +127,7 @@ class LstTypeTest extends BaseInstTest(
         (int(1, 2), int | (int | int), int(1, 2)),
         (int(1, 2), (int | int) | int, int(1, 2)),
         (int(1, 2), (int | int) | __, int(1, 2)),
-        (int(1, 2), (str | str) | str, zeroObj),
+       // (int(1, 2), (str | str) | str, zeroObj),
         ((1 `;` 2), ((int `;` int) | str), (1 `;` 2)),
         (1, int | str, 1),
         // (1, str | int, 1),

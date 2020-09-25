@@ -52,6 +52,7 @@ object AsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
 
+  def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
   def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E = autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
   private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
     if (domain && __.isToken(target) && source.reload.model.vars(target.name).isDefined && source.isInstanceOf[Type[_]]) return source.from(target.name)

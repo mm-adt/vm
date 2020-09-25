@@ -88,8 +88,8 @@ class DefineInstTest extends BaseInstTest(
     testing(2, define('x <= int.plus(1)), 2, "2[define,x<=int+1]"),
     testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
     testing(int(2, 3, 4.q(2)), define('x <= int.plus(1)).plus('x), int(5, 7, 9.q(2)), "[2,3,4{2}][define,x<=int+1][plus,x]"),
-    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x]"),
-    testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x<=x]"),
+    //testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x]"),
+    //testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x<=x]"),
     // testing(int(-2,2.q(5)), int.q(6).define('y<=int.plus(-1000),'x <=int.plus(1).as('y)).branch('x`,`), int(-998,1002.q(5)), "[-2,2{5}] => int{6}[define,y<=int+-1000,x<=int+1[as,y]][x]"),
   )
 ) {

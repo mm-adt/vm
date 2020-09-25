@@ -28,6 +28,7 @@ import org.mmadt.language.obj.Poly.fetchVars
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
+import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
@@ -108,7 +109,7 @@ object Lst {
       if (null == start) return Type.mergeObjs(values).filter(_.alive)
       Type.mergeObjs(Type.mergeObjs(values).map(v =>
         if (!__.isAnon(start) && v.isInstanceOf[Value[_]]) start `=>` v
-        else start ~~> v)).filter(_.alive)
+        else (if(v.isInstanceOf[Type[_]]) AsOp.autoAsType(start,v.domain) else start) ~~> v)).filter(_.alive)
     /////////// ;-lst
     case Tokens.`;` =>
       if (null == start) return values
