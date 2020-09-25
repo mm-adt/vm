@@ -2122,11 +2122,11 @@ mmlang&gt; 4 =&gt; int[mult,2] =&gt; str =[ str[plus,'0'],str[plus,'.1']] =&gt; 
 <p><strong>Type Equality</strong>: Note that type equality, dependency and \$Pi\$ all have the same form in mm-ADT. However, while type equality is a type dependency and a \$\Pi\$ type, every type dependency and \$\Pi\$ type is not a type equality. The type <code>B&lt;=A[f]</code> is not a type equality. The type equality \$A=B\$ is an <a href="https://en.wikipedia.org/wiki/Identity_function">identity function</a> <code>B&lt;=A[noop]</code>, where a <code>B</code> is realized by doing nothing to an <code>A</code>. The type <code>B&lt;=A[noop]</code> is more succinctly written <code>B&lt;=A</code> and thus, <code>B</code> is not <em>constructed</em> from <code>A</code>, but is <em>equivalent</em> to <code>A</code> and every <code>A</code> can be typed <code>B</code> as is.</p>
 </li>
 <li>
-<p><strong>\$\Sigma\$ Types</strong>: Contrary to their presentation in the table above, \$Sigma\$ types are more general than simple <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>. \$Sigma\$ types are <em>dependent products</em>. As an example, the "ascending pair" \$\Sigma\$ type
+<p><strong>\$\Sigma\$ Types</strong>: Contrary to their presentation in the table above, \$Sigma\$ types are more general than standard <a href="https://en.wikipedia.org/wiki/Product_(category_theory)">products</a>. \$Sigma\$ types are <em>dependent products</em>. As an example, the "ascending pair" \$\Sigma\$ type is defined
 \[
-\texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m&lt;n
+\texttt{apair} = \sum_{m:\mathbb{Z}} \sum_{n:\mathbb{Z}} m&lt;n,
 \]
-is a product of two integers \$m,n \in \mathbb{Z}\$, where \$m\$ is smaller than \$n\$ (\$m &lt; n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written <code>(int&lt;m&gt;;int&lt;n&gt;)[is,m&lt;n]</code></p>
+where the two integers \$m,n \in \mathbb{Z}\$ are the components of the product and \$m\$ is smaller than \$n\$ (\$m &lt; n\$). This definitation specifies a relation between the components of the product (i.e., a dependence) that must be satisfied by every object of this type. In mm-ADT, \$\tt{apair}\$ is written <code>(int&lt;m&gt;;int&lt;n&gt;)[is,m&lt;n]</code></p>
 </li>
 </ul>
 </div>
@@ -7538,7 +7538,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-24 12:30:43 -0600
+Last updated 2020-09-25 05:23:26 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
