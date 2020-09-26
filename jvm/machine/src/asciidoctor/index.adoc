@@ -23,8 +23,8 @@ include::type.adoc[]
 
 include::obj.adoc[]
 
-include::algebra.adoc[]
+// include::algebra.adoc[]
 
-include::processor.adoc[]
+// include::processor.adoc[]
 
 include::reference.adoc[]

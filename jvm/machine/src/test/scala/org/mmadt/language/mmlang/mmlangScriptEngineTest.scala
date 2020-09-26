@@ -132,7 +132,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(typingError(int(0), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("0 => nat[plus,0]")))
     assertResult(typingError(int(0), __("nat") <= int.is(bool <= int.gt(0))))(intercept[LanguageException](engine.eval("0 => nat")))
     assertResult(typingError(int.q(2), int.q(10)))(intercept[LanguageException](engine.eval("66{2} => int{10}")))
-    assertResult(typingError(true.q(10), int.q(10)))(intercept[LanguageException](engine.eval("true{10} => int{10}")))
+    assertResult(typingError(bool.q(10), int.q(10)))(intercept[LanguageException](engine.eval("true{10} => int{10}")))
     assertResult(LanguageException.typingError(int(3), real))(intercept[LanguageException](engine.eval("3[plus,42.5]")))
     assertResult(LanguageException.typingError(int(3), real))(intercept[LanguageException](engine.eval("3[mult,42.5]")))
     // assertResult(LanguageException.typingError(int, bool))(intercept[LanguageException](engine.eval("bool<=int")))

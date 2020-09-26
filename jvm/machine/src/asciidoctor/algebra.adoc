@@ -956,26 +956,7 @@ image::product-coproduct-iso.svg[width=475,align=center]
 
 ====== ,-poly
 
-[cols="7,9"]
-|===
-^| `,-lst` ^| `,-rec`
 
-| image:comma-lst-graph.svg[] | image:comma-rec-graph.svg[]
-a|
-[exec]
-----
-'x'-<(+'a',+'b',+'c')
-'x'-<(+'a',+'b',+'c')>-
-----
-{blank}
-a|
-[exec]
-----
-'x'-<(+'s'->+'a',+'r'->+'b',+'t'->+'c')
-'x'-<(+'s'->+'a',+'r'->+'b',+'t'->+'c')>-
-----
-{blank}
-|===
 
 [float=right,width=35]
 |===
@@ -1038,26 +1019,7 @@ The two cases above are expressed in `mmlang` below with the last two examples b
 
 ====== ;-poly
 
-[cols="7,9"]
-|===
-^| `;-lst` ^| `;-rec`
 
-| image:semi-lst-graph.svg[] | image:semi-rec-graph.svg[]
-a|
-[exec]
-----
-'x'-<(+'a';+'b';+'c')
-'x'-<(+'a';+'b';+'c')>-
-----
-{blank}
-a|
-[exec]
-----
-'x'-<(+'s'->+'a';+'r'->+'b';+'t'->+'c')
-'x'-<(+'s'->+'a';+'r'->+'b';+'t'->+'c')>-
-----
-{blank}
-|===
 
 [float=right,width=35]
 |===
@@ -1122,26 +1084,7 @@ In mm-ADT, \$x\$ above (and 5 below) play the role of the _particle_ and `;-poly
 
 ====== |-poly
 
-[cols="7,9"]
-|===
-^| `\|-lst` ^| `\|-rec`
 
-| image:pipe-lst-graph.svg[] | image:pipe-rec-graph.svg[]
-a|
-[exec]
-----
-'x'-<('a'{0}\|+'b'\|+'c')
-'x'-<('a'{0}\|+'b'\|+'c')>-
-----
-{blank}
-a|
-[exec]
-----
-'x'-<('s'{0}->+'a'\|+'r'->+'b'\|+'t'->+'c')
-'x'-<('s'{0}->+'a'\|+'r'->+'b'\|+'t'->+'c')>-
-----
-{blank}
-|===
 
 [float=right,width=35]
 |===

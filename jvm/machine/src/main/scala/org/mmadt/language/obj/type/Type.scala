@@ -44,7 +44,9 @@ trait Type[+T <: Obj] extends Obj {
     case _:Type[_] =>  (sameBase(this, other.domain) || baseMapping(this,other.domain)) && this.q.within(other.q) // withinQ domain?
     case _ => false
   }
-  private def baseMapping(source:Obj, target:Obj):Boolean = source.model.dtypes.exists(t => source.compute(t.domainObj,withAs = false).alive && target.compute(t.rangeObj,withAs = false).alive)
+  private def baseMapping(source:Obj, target:Obj):Boolean = source.model.dtypes.exists(t =>
+    !t.domain.named && !t.range.named &&
+    source.compute(t.domainObj,withAs = false).alive && target.compute(t.rangeObj,withAs = false).alive)
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printType(this)
