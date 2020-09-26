@@ -24,13 +24,13 @@ package org.mmadt.processor.inst.filter
 
 import org.mmadt.language.obj.Obj.{booleanToBool, doubleToReal, intToInt}
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{NONE, MM}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class IsInstTest extends BaseInstTest(
-  testSet("[is] table test", List(NONE,MM),
+  testSet("[is] table test", List(NONE, MM),
     comment("int"),
     testing(2, is(true), 2, "2[is,true]"),
     testing(2.q(10), int.q(10).is(true), 2.q(10), "2{10} => int{10}[is,true]"),
@@ -47,7 +47,7 @@ class IsInstTest extends BaseInstTest(
     testing(int(1, 2, 3), is(true), int(1, 2, 3), "[1,2,3][is,true]"),
     testing(int(1, 2, 3), is(false), zeroObj, "[1,2,3][is,false]"),
     IGNORING("eval-5")(int(1, 2, 3), int.q(3).is(int.gt(2.q(10))), 3, "[1,2,3] => int{3}[is,int[gt,2{10}]]"),
-    IGNORING(List((NONE,"eval-5"),(MM,null)))(int(1, 2, 3), int.q(3).is(gte(2)).q(10), int(2.q(10), 3.q(10)), "[1,2,3] => int{3}[is,>=2]{10}"),
+    IGNORING(List((NONE, "eval-5"), (MM, null)))(int(1, 2, 3), int.q(3).is(gte(2)).q(10), int(2.q(10), 3.q(10)), "[1,2,3] => int{3}[is,>=2]{10}"),
     testing(int(1, 2, 3), is(gt(int)), zeroObj, "[1,2,3][is>int]"),
     IGNORING("eval-5")(int(1, 2, 3), int.q(3).is(gte(mult(int))), 1, "[1,2,3] => int{3}[is>=*int]"),
     comment("real"),
@@ -57,7 +57,7 @@ class IsInstTest extends BaseInstTest(
     testing(2.0, real.is(gt(mult(real))), zeroObj, "2.0 => real[is>*real]"),
     testing(real, is(real.gt(2.0)), real.is(real.gt(2.0)), "real[is,real>2.0]"),
     testing(real, real.is(gt(2.0)), real.is(real.gt(2.0)), "real => real[is>2.0]"),
-    testing(real, is(bool), real.is(bool), "real[is,bool]"),
+    IGNORING("eval-3", "eval-4", "eval-5")(real, is(bool), real.is(bool), "real[is,bool]"),
     IGNORING("eval-5")(real(1.0, 2.0, 3.0), is(real.gt(2.0)), 3.0, "[1.0,2.0,3.0][is,real>2.0]"),
     testing(real(1.0, 2.0, 3.0), real.q(3).is(real.gt(real)), zeroObj, "[1.0,2.0,3.0] => real{3}[is,real>real]"),
     testing(real(1.0, 2.0, 3.0), is(gt(mult(real))), zeroObj, "[1.0,2.0,3.0][is>*real]"),

@@ -86,6 +86,8 @@ object AsOp extends Func[Obj, Obj] {
     Tokens.tryName(asObj, rObj)
   }
 
+  private def baseMapping(source:Obj, target:Obj):Boolean = __.isAnon(source) || __.isAnon(target) || source.named || target.named || source.model.dtypes.exists(t => source.test(t.domainObj) && target.test(t.rangeObj))
+
   private def pickMapping(start:Obj, asObj:Obj):Obj = {
     if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
     else if (start.isInstanceOf[Type[_]]) asObj.update(start.model)
@@ -105,7 +107,7 @@ object AsOp extends Func[Obj, Obj] {
     y.trace.reconstruct(y.domain match {
       case _:__ => x
       case abool:BoolType => bool(name = abool.name, g = x.g, via = x.via)
-      case astr:StrType => str(name = astr.name, g = x.g.toString, via = x.via)
+      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.g.toString, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     })
 
@@ -113,8 +115,8 @@ object AsOp extends Func[Obj, Obj] {
     y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
       case _:__ => x
       case aint:IntType => int(name = aint.name, g = x.g, via = x.via)
-      case areal:RealType => real(name = areal.name, g = x.g, via = x.via)
-      case astr:StrType => str(name = astr.name, g = x.g.toString, via = x.via)
+      case areal:RealType if baseMapping(x, real) => real(name = areal.name, g = x.g, via = x.via)
+      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.g.toString, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     })
   }
@@ -122,18 +124,18 @@ object AsOp extends Func[Obj, Obj] {
   private def realConverter(x:Real, y:Obj):Obj =
     y.trace.reconstruct(y.domain match {
       case _:__ => x
-      case aint:IntType => int(name = aint.name, g = x.g.longValue(), via = x.via)
+      case aint:IntType if baseMapping(x, int) => int(name = aint.name, g = x.g.longValue(), via = x.via)
       case areal:RealType => real(name = areal.name, g = x.g, via = x.via)
-      case astr:StrType => str(name = astr.name, g = x.g.toString, via = x.via)
+      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.g.toString, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     })
 
   private def strConverter(x:Str, y:Obj):Obj =
     y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
       case _:__ => x
-      case abool:BoolType => bool(name = abool.name, g = JBoolean.valueOf(x.g), via = x.via)
-      case aint:IntType => int(name = aint.name, g = JLong.valueOf(x.g), via = x.via)
-      case areal:RealType => real(name = areal.name, g = JDouble.valueOf(x.g), via = x.via)
+      case abool:BoolType if baseMapping(x, bool) => bool(name = abool.name, g = JBoolean.valueOf(x.g), via = x.via)
+      case aint:IntType if baseMapping(x, int) => int(name = aint.name, g = JLong.valueOf(x.g), via = x.via)
+      case areal:RealType if baseMapping(x, real) => real(name = areal.name, g = JDouble.valueOf(x.g), via = x.via)
       case astr:StrType => str(name = astr.name, g = x.g, via = x.via)
       case _ => throw LanguageException.typingError(x, asType(y))
     })
@@ -141,7 +143,7 @@ object AsOp extends Func[Obj, Obj] {
   private def lstConverter(x:Lst[Obj], y:Obj):Obj = {
     y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
       case _:__ => x
-      case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
+      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.toString, via = x.via)
       case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
       case alst:LstType[Obj] if alst.ctype => x.named(alst.name)
       case alst:LstType[Obj] if Lst.shapeTest(x, alst) => lst(name = alst.name, g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.compute(a._2))), via = x.via).reload
@@ -153,7 +155,7 @@ object AsOp extends Func[Obj, Obj] {
   private def recConverter(x:Rec[Obj, Obj], y:Obj):Obj =
     y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
       case _:__ => x
-      case astr:StrType => str(name = astr.name, g = x.toString, via = x.via)
+      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.toString, via = x.via)
       case arec:RecType[Obj, Obj] if arec.ctype => x.named(arec.name)
       case arec:RecType[Obj, Obj] => val z = rec(name = arec.name, g = (arec.gsep,
         x.gmap.flatMap(a => arec.gmap

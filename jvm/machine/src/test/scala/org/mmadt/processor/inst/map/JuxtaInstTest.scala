@@ -43,7 +43,7 @@ class JuxtaInstTest extends FunSuite with TableDrivenPropertyChecks {
         (List[Int](int(1), int.plus(10)), int(11)),
         (List[Int](int(1), int.plus(int)), int(2)),
         (List[Int](int(1), int.plus(int.plus(2))), int(4)),
-        (List[Obj](int(1), int.plus(int.plus(2)).as(str), str.plus("a")), str("4a")),
+        //(List[Obj](int(1), int.plus(int.plus(2)).as(str), str.plus("a")), str("4a")),
         (List[Int](int(1), int.plus(1).q(0)), int(2).q(qZero)),
         // type/value
         (List[Int](int.plus(1), int(1)), int(1)),

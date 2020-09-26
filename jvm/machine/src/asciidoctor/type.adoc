@@ -1034,7 +1034,7 @@ where, for the latter, it is implied that entire sequence is left-to-right compo
 \coprod_{i=0}^n \mathbf{a}_i \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_{ +}
 \]
 
-* **Near-ring reduction (\$\oplus\$)**: A path barrier is denoted with the \$\oplus\$ reduction operator. Given \$n\$-types  (serial or parallel), their reduction using using the function \$f:A^* \to B\$ is denoted
+* **Near-ring reduction (\$\oplus\$)**: A path barrier is denoted with the \$\oplus\$ reduction operator. Given \$n\$-types  (serial or parallel), their reduction using using the function \$f:A^{\ast} \to B\$ is denoted
 \[
 \bigoplus_{i=0}^n f(\mathbf{a}_i)  \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_{\oplus f}
 \]

@@ -41,9 +41,10 @@ trait Type[+T <: Obj] extends Obj {
     case _:Obj if !other.alive => !this.alive
     case _ if __.isAnon(this) || __.isAnon(other) => true
     case _:__ if __.isToken(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
-    case _:Type[_] => sameBase(this, other.domain) && this.q.within(other.q) // withinQ domain?
+    case _:Type[_] =>  (sameBase(this, other.domain) || baseMapping(this,other.domain)) && this.q.within(other.q) // withinQ domain?
     case _ => false
   }
+  private def baseMapping(source:Obj, target:Obj):Boolean = source.model.dtypes.exists(t => source.compute(t.domainObj,withAs = false).alive && target.compute(t.rangeObj,withAs = false).alive)
 
   // standard Java implementations
   override def toString:String = LanguageFactory.printType(this)

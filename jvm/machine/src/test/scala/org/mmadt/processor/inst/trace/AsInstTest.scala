@@ -31,7 +31,7 @@ import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
 
 class AsInstTest extends BaseInstTest(
-  testSet("[as] w/ values", List(NONE, MMX),
+  testSet("[as] w/ values", List(MMX),
     comment("bool"),
     testing(true, as(__), true, "true[as,_]"),
     testing(true, as(str), "true", "true[as,str]"),

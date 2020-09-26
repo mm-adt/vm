@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.branch.BranchOp
 import org.mmadt.language.obj.op.map.PlusOp
-import org.mmadt.language.obj.op.trace.ModelOp.{NONE, MM}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
@@ -45,13 +45,13 @@ class BranchInstTest extends BaseInstTest(
     testing("a", -<(plus("a") `,` plus("b")) >-, str(str("aa"), str("ab")), "'a' => str-<(+'a',+'b')>-"),
     testing("a", id.-<(plus("a") `,` plus("b")).id.id.>-, str(str("aa"), str("ab")), "'a' => [id]-<(+'a',+'b')[id][id]>-"),
   ),
-  testSet("[branch] ,-lst", List(MM, NONE),
+  testSet("[branch] ,-lst", List(MMX),
     testing(str, branch(str `,` str `,` str), str.id.q(3), "str[str,str,str]"),
     testing(int, branch(is(gt(10)) `,` is(gt(5)) `,` is(gt(0))), int.q(0, 3) <= int.branch(int.is(gt(10)) `,` int.is(gt(5)) `,` int.is(gt(0))),
       "int[[is>10],[is>5],[is>0]]"),
     IGNORING("eval-5")(7, branch(is(gt(10)) `,` is(gt(5)) `,` is(gt(0))), 7.q(2),
       "7 => int[[is>10],[is>5],[is>0]]"),
-    IGNORING(MM)(int.q(10), plus(0).branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).plus(0).branch(plus(1) `,` plus(2)).is(gt(10)),
+    IGNORING(MMX)(int.q(10), plus(0).branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).plus(0).branch(plus(1) `,` plus(2)).is(gt(10)),
       "int{10}[plus,0][+1,+2][is>10]"),
     testing(int.q(10), branch(plus(1) `,` plus(2)).is(gt(10)), int.q(0, 20) <= int.q(10).branch(plus(1) `,` plus(2)).is(gt(10)),
       "int{10}[+1,+2][is>10]"),
@@ -69,7 +69,7 @@ class BranchInstTest extends BaseInstTest(
       "[1,2] => int{2}[plus,0][+1+1,+2]"),
     testing(int(1, 2), plus(0).branch(plus(1).plus(1) `,` plus(2)), int(3.q(2), 4.q(2)),
       "[1,2][plus,0][+1+1,+2]"),
-    IGNORING(MM)(1, int.plus(0).branch(plus(1) `,` plus(2)).path, strm(
+    IGNORING(MMX)(1, int.plus(0).branch(plus(1) `,` plus(2)).path, strm(
       (1 `;` plus(0).inst `;` 1 `;` plus(1).inst `;` 2),
       (1 `;` plus(0).inst `;` 1 `;` plus(2).inst `;` 3)),
       "1 => int+0[+1,+2][path]"),
