@@ -45,7 +45,7 @@ class SplitInstTest extends BaseInstTest(
     testing(1, -<(int `,` int), int(1) `,` int(1), "1-<(int,int)"),
     testing(1, -<(int `,` int.plus(2)), int(1) `,` int(3), "1-<(int,int+2)"),
     testing(1, -<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10), "1-<(int,int+{10}2)"),
-    // TODO: !! testing(1.q(5), -<(int `,` int.plus(2).q(10)), (1 `,` 3.q(10)).q(5), "1{5}-<(int,int+{10}2)"),  // can't run two ranges on a mutation
+    testing(1.q(5), -<(int `,` int.plus(2).q(10)), (1 `,` 3.q(10)).q(5), "1{5}-<(int,int+{10}2)"),
     testing(1.q(5), -<(int `,` int.plus(2).q(10)) >-, int(1.q(5), 3.q(50))),
   ), testSet("[split] ;-lst table test",
     testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
@@ -72,22 +72,22 @@ class SplitInstTest extends BaseInstTest(
     testing(0, plus(1).-<(
       int.is(int.gt(2)) -> int.mult(3) |
         int -> int.mult(4)) >-, 4, "0[plus,1]-<(int[is>2] -> int[mult,3] | int -> int[mult,4])>-"),
-    IGNORING("eval-6")(0, int.plus(39).-<(
+    testing(0, int.plus(39).-<(
       int.is(int.gt(40)) -> int.plus(1) |
         int.is(int.gt(30)) -> int.plus(2) |
         int.is(int.gt(20)) -> int.plus(3) |
         int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 42, "0 => int[plus,39]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    IGNORING("eval-6")(0, int.plus(29).-<(
+    testing(0, int.plus(29).-<(
       int.is(int.gt(40)) -> int.plus(1) `_|`
         int.is(int.gt(30)) -> int.plus(2) `_|`
         int.is(int.gt(20)) -> int.plus(3) `_|`
         int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    IGNORING("eval-6")(0, int.plus(29).-<(
+    testing(0, int.plus(29).-<(
       (is(gt(40)) -> int.plus(1)) |
         (is(gt(30)) -> int.plus(2)) |
         (is(gt(20)) -> int.plus(3)) |
         (is(gt(10)) -> int.plus(4))).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    IGNORING("eval-5", "query-2")(29, int.-<(
+    testing(29, int.-<(
       int.is(int.gt(40)) -> plus(1) `_|`
         int.is(int.gt(30)) -> plus(2) `_|`
         int.is(int.gt(20)) -> plus(3) `_|`
@@ -131,7 +131,7 @@ class SplitInstTest extends BaseInstTest(
   test("lineage preservation (products)") {
     assertResult(int(321))(int(1) ==> int.plus(100).plus(200).split(int `,` is(a(bool))).merge[Int].plus(20))
     assertResult(int.plus(100).plus(200).split(int | is(a(bool))).merge[Int].plus(20))(int ==> int.plus(100).plus(200).split(int | is(a(bool))).merge[Int].plus(20))
-//    assertResult(int(1) `;` 101 `;` 301 `;` 301 `;` 321)((int(1) ==> int.plus(100).plus(200).split(int `,` is(a(bool))).merge[Int].plus(20)).path(VERTICES))
+    //    assertResult(int(1) `;` 101 `;` 301 `;` 301 `;` 321)((int(1) ==> int.plus(100).plus(200).split(int `,` is(a(bool))).merge[Int].plus(20)).path(VERTICES))
   }
   test("lineage preservation (coproducts)") {
     assertResult(int(321, 323))(int(1) ==> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))
