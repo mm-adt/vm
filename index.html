@@ -526,69 +526,6 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 </li>
 </ul>
 </li>
-<li><a href="#_the_algebra">The Algebra</a>
-<ul class="sectlevel2">
-<li><a href="#_the_obj_monoid">The Obj Monoid</a></li>
-<li><a href="#_the_inst_monoid">The Inst Monoid</a></li>
-<li><a href="#_the_stream_ringoid">The Stream Ringoid</a>
-<ul class="sectlevel3">
-<li><a href="#_ring_axioms">Ring Axioms</a>
-<ul class="sectlevel4">
-<li><a href="#_ring_theorems">Ring Theorems</a></li>
-</ul>
-</li>
-<li><a href="#_stream_ring_axioms">Stream Ring Axioms</a>
-<ul class="sectlevel4">
-<li><a href="#_stream_compression">Stream Compression</a></li>
-<li><a href="#_asynchronous_types">Asynchronous Types</a></li>
-<li><a href="#_commuting_quantifiers">Commuting Quantifiers</a></li>
-<li><a href="#_type_inference">Type Inference</a></li>
-</ul>
-</li>
-<li><a href="#_stream_module_axioms">Stream Module Axioms</a>
-<ul class="sectlevel4">
-<li><a href="#_polynomials">Polynomials</a>
-<ul class="sectlevel5">
-<li><a href="#_poly">,-poly</a></li>
-<li><a href="#_poly_2">;-poly</a></li>
-<li><a href="#_poly_3">|-poly</a></li>
-</ul>
-</li>
-<li><a href="#_poly_factoring">Poly Factoring</a></li>
-<li><a href="#_poly_expansion">Poly Expansion</a></li>
-<li><a href="#_poly_embedding">Poly Embedding</a></li>
-</ul>
-</li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#_processor_structures">Processor Structures</a>
-<ul class="sectlevel2">
-<li><a href="#_processes">Processes</a></li>
-<li><a href="#_algebraic_actions">Algebraic Actions</a>
-<ul class="sectlevel3">
-<li><a href="#_type_specification">Type Specification</a></li>
-<li><a href="#_type_compilation">Type Compilation</a></li>
-<li><a href="#_type_optimization">Type Optimization</a></li>
-<li><a href="#_type_evaluation_2">Type Evaluation</a>
-<ul class="sectlevel4">
-<li><a href="#_type_checking">Type Checking</a></li>
-</ul>
-</li>
-<li><a href="#_instruction_classes">Instruction Classes</a>
-<ul class="sectlevel4">
-<li><a href="#_map">Map</a></li>
-<li><a href="#_filter">Filter</a></li>
-<li><a href="#_trace">Trace</a></li>
-<li><a href="#_branch">Branch</a></li>
-</ul>
-</li>
-</ul>
-</li>
-<li><a href="#_processor_implementations">Processor Implementations</a></li>
-</ul>
-</li>
 <li><a href="#_reference">Reference</a>
 <ul class="sectlevel2">
 <li><a href="#_mmlang_grammar">mmlang Grammar</a></li>
@@ -2361,14 +2298,17 @@ inst        domain      range state
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; int[define,x&lt;=int[plus,2]][x]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; int[define,x&lt;=int[plus,2]][as,x]
 ==&gt;x:3
-mmlang&gt; int[define,x&lt;=int[plus,2]][x][explain]
+mmlang&gt; int[define,x&lt;=int[plus,2]][as,x][explain]
 ==&gt;'
-x
+x&lt;=int[define,x&lt;=int[plus,2]][as,x]
 
-instdomain       range  state
-------------------------------
+inst                       domain      range state
+---------------------------------------------------
+[define,x&lt;=int[plus,2]]    int    =&gt;   int    x-&gt;x&lt;=int[plus,2]
+ [plus,2]                   int   =&gt;    int   x-&gt;x&lt;=int[plus,2]
+[as,x]                     int    =&gt;   x      x-&gt;x&lt;=int[plus,2]
 '</code></pre>
 </div>
 </div>
@@ -2637,7 +2577,7 @@ where, for the latter, it is implied that entire sequence is left-to-right compo
 \]</p>
 </li>
 <li>
-<p><strong>Near-ring reduction (\$\oplus\$)</strong>: A path barrier is denoted with the \$\oplus\$ reduction operator. Given \$n\$-types  (serial or parallel), their reduction using using the function \$f:A^* \to B\$ is denoted
+<p><strong>Near-ring reduction (\$\oplus\$)</strong>: A path barrier is denoted with the \$\oplus\$ reduction operator. Given \$n\$-types  (serial or parallel), their reduction using using the function \$f:A^{\ast} \to B\$ is denoted
 \[
 \bigoplus_{i=0}^n f(\mathbf{a}_i)  \;\;\;\;\text{ or }\;\;\;\; \mathbf{a}_{\oplus f}
 \]</p>
@@ -3198,13 +3138,11 @@ When each <code>poly</code> contains 0 or 1 element, the respective algebras beh
 <div class="title">,-poly Controls</div>
 <p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring. The <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> and <a href="https://en.wikipedia.org/wiki/Commutative_property">commutativity</a> of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a <code>,-poly</code> are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes <a href="https://en.wikipedia.org/wiki/Parallel_computing">parallelism</a>. The <code>,-poly</code> algebra realizes <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> in <code>lst</code> and <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> cascading in <code>rec</code>.</p>
 </div>
-<div class="paragraph">
-<p>Note that in all subsequent <code>[branch,poly]</code> equations to follow, \$x \in \tt{obj}\$ is an incoming <code>obj</code> to the respective <code>[branch]</code> instruction.</p>
-</div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 2. ,-poly Branch</caption>
 <colgroup>
-<col style="width: 42.8571%;">
-<col style="width: 57.1429%;">
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
 </colgroup>
 <thead>
 <tr>
@@ -3214,10 +3152,10 @@ When each <code>poly</code> contains 0 or 1 element, the respective algebras beh
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
 x &#8658; \big[v_0,v_1,\ldots,v_n\big] \;\;=\;\; \coprod_{i=0}^n x &#8658; v_i
 \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
 x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
 \;\;=\;\;
 \coprod_{i=0}^n
@@ -3227,16 +3165,91 @@ x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 \end{cases}
 \]</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; [+'a',+'b',+'c']
+==&gt;'xa'
+==&gt;'xb'
+==&gt;'xc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; [+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c']
+==&gt;'xa'
+==&gt;'xb'
+==&gt;'xc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 3. ,-poly Split/Merge</caption>
+<colgroup>
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">,-lst (union cascade)</th>
+<th class="tableblock halign-center valign-top">,-rec (conditional cascade)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/comma-lst-graph.svg" alt="comma lst graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/comma-rec-graph.svg" alt="comma rec graph"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')
+==&gt;('xa','xb','xc')
+mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')&gt;-
+==&gt;'xa'
+==&gt;'xb'
+==&gt;'xc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')
+==&gt;('xs'-&gt;'xa','xr'-&gt;'xb','xt'-&gt;'xc')
+mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')&gt;-
+==&gt;'xa'
+==&gt;'xb'
+==&gt;'xc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>Note that in all subsequent <code>[branch,poly]</code> equations to follow, \$x \in \tt{obj}\$ is an incoming <code>obj</code> to the respective <code>[branch]</code> instruction.</p>
+</div>
 <div class="paragraph">
 <div class="title">;-poly Controls</div>
 <p>The <strong>;-polys</strong> capture the multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. The result of each term is the input to the next term in the sequence. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Method_chaining">method chaining</a> is realized and in <code>rec</code> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> chaining.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 4. ;-poly Branch</caption>
 <colgroup>
-<col style="width: 42.8571%;">
-<col style="width: 57.1429%;">
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
 </colgroup>
 <thead>
 <tr>
@@ -3246,10 +3259,10 @@ x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
 x &#8658; \big[v_0;v_1;\ldots;v_n\big] \;\;=\;\; x &#8658; \prod_{i=0}^n v_i
 \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
 x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
 \;\;=\;\;
 x &#8658; \prod_{i=0}^n
@@ -3259,16 +3272,86 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 \end{cases}
 \]</p></td>
 </tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; [+'a';+'b';+'c']
+==&gt;'xabc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; [+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c']
+==&gt;'xabc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
 </tbody>
 </table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 5. ;-poly Split/Merge</caption>
+<colgroup>
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">;-lst (fluent chaining)</th>
+<th class="tableblock halign-center valign-top">;-rec (conditional chaining)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/semi-lst-graph.svg" alt="semi lst graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/semi-rec-graph.svg" alt="semi rec graph"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')
+==&gt;('xa';'xab';'xabc')
+mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')&gt;-
+==&gt;'xabc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')
+==&gt;('xs'-&gt;'xa';'xar'-&gt;'xab';'xabt'-&gt;'xabc')
+mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')&gt;-
+==&gt;'xabc'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p><span class="image left"><img src="./images/type/bubble-chamber.png" alt="bubble chamber" width="200"></span> The <code>;-lst</code> equation above realizes a structure and process joyfully named the <a href="https://en.wikipedia.org/wiki/Bubble_chamber">"bubble chamber"</a>.
+In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor.
+Particles are shot into the room and the trace they leave (called their <em>varpor trail</em>) provides physicists empirical data on the nature of the particle under study&#8201;&#8212;&#8201;e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it.
+In mm-ADT, \$x\$ above plays the role of the <em>particle</em> and <code>;-lst</code> the <em>bubble chamber</em> with each term in the <code>;-lst</code> acting as a <em>vapor droplet</em>.</p>
+</div>
 <div class="paragraph">
 <div class="title">|-poly Controls</div>
 <p>The <strong>|-polys</strong> capture mm-ADT&#8217;s <em>barrier</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a>, where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. As a control structure, <code>|-poly</code> is a <a href="https://en.wikipedia.org/wiki/Sequential_algorithm">sequential</a> branch that can be understood programmatically as a <a href="https://en.wikipedia.org/wiki/Short-circuit_evaluation">short-circuit</a> <a href="https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29">fold</a>. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 6. |-poly Branch</caption>
 <colgroup>
-<col style="width: 42.8571%;">
-<col style="width: 57.1429%;">
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
 </colgroup>
 <thead>
 <tr>
@@ -3278,7 +3361,7 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
 x &#8658; \big[v_0,v_1,\ldots,v_n\big] =
 \begin{cases}
 x &#8658; v_0  &amp; \text{if } (x &#8658; v_0) \neq \mathbf{0}, \\
@@ -3288,7 +3371,7 @@ x &#8658; v_n  &amp; \text{if } (x &#8658; v_n) \neq \mathbf{0}, \\
 \mathbf{0} &amp; \text{otherwise}.
 \end{cases}
 \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[
 x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
 =
 \begin{cases}
@@ -3299,6 +3382,69 @@ x &#8658; v_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
 \mathbf{0} &amp; \text{otherwise}.
 \end{cases}
 \]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; ['a'{0}|+'b'|+'c']
+==&gt;'xb'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; ['s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c']
+==&gt;'xb'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<table class="tableblock frame-all grid-all stretch">
+<caption class="title">Table 7. |-poly Split/Merge</caption>
+<colgroup>
+<col style="width: 43.75%;">
+<col style="width: 56.25%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">|-lst (coalesce)</th>
+<th class="tableblock halign-center valign-top">|-rec (switch)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/pipe-lst-graph.svg" alt="pipe lst graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/pipe-rec-graph.svg" alt="pipe rec graph"></span></p></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')
+==&gt;('xb')
+mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')&gt;-
+==&gt;'xb'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;('s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c')
+==&gt;('xr'-&gt;'xb')
+mmlang&gt; 'x'-&lt;('s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c')&gt;-
+==&gt;'xb'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
 </tr>
 </tbody>
 </table>
@@ -4522,2784 +4668,6 @@ language error: (3;'a';1;'b';2) is not a ylist</code></pre>
 </div>
 </div>
 <div class="sect1">
-<h2 id="_the_algebra">The Algebra</h2>
-<div class="sectionbody">
-<div class="sect2">
-<h3 id="_the_obj_monoid">The Obj Monoid</h3>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Monoids</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>The <code>obj</code> monoid is defined
-\[
-(\texttt{obj},&#8658;,\mathbf{1},\mathbf{0}),
-\]
-where <code>obj</code> is the set of all quantified mm-ADT objects, \$ &#8658;: \tt{obj} \times \tt{obj} \rightarrow \tt{obj}\$ the <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> <a href="https://en.wikipedia.org/wiki/Binary_operation">binary</a> <em>juxtaposition</em> operator (<code>[juxta]</code> \$\in\$ <code>inst</code>), \$\mathbf{1}\$ the <a href="https://en.wikipedia.org/wiki/Identity_element">identity element</a> <code>_{1}</code> (or simply <code>{1}</code>), and \$\mathbf{0}\$ is the annihilator <code>_{0}</code> (or simply <code>{0}</code>). Given that an <code>obj</code> is either a type or a value, \$&#8658;\$ supports four <a href="https://en.wikipedia.org/wiki/Argument_of_a_function">argument</a> combinations.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 11.1111%;">
-<col style="width: 11.1111%;">
-<col style="width: 22.2222%;">
-<col style="width: 55.5556%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">arguments</th>
-<th class="tableblock halign-left valign-top">name</th>
-<th class="tableblock halign-left valign-top">equation</th>
-<th class="tableblock halign-left valign-top">mmlang example</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">value/value</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">push</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} = b_{q_0 \ast q_1}\$</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2} =&gt; 'b'{6}
-==&gt;'b'{12}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">value/type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">evaluate</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} = b(a)_{q_0 \ast q_1}\$</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'a'{2} =&gt; str{2}[plus,'b']{6}
-==&gt;'ab'{12}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type/value</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">push</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} = b_{q_0 \ast q_1}\$</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; str[plus,'a']{2} =&gt; 'b'{6}
-==&gt;'b'{12}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type/type</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">compile</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$a_{q_0} &#8658; b_{q_1} = b(a)_{q_0 \ast q_1}\$</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; str[plus,'a']{2} =&gt; str{2}[plus,'b']{6}
-==&gt;str{12}&lt;=str[plus,'a'][plus,'b']{12}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>For the two \$x &#8658; \tt{type}\$ argument patterns, the type <a href="https://en.wikipedia.org/wiki/Semigroup_action">acts</a> on \$x\$&#8201;&#8212;&#8201;i.e., \$\tt{type}(x)\$.
-The \$&#8658;\$ operator is a <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher order function</a>, where the semantics of the application are in the type&#8217;s definition. For instance, in the expression <code>'a' =&gt; str[plus,'b']</code>, <code>'a'</code> is being applied to <code>str[plus,'b']</code>, and only when <code>str[plus,'b']</code> acts on <code>'a'</code> is \$&#8658;\$ full defined. Thus, the complexity of the <code>obj</code> monoid lies in the elements of its carrier set&#8201;&#8212;&#8201;in particular, in the virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (<code>inst</code>).</p>
-</div>
-<div class="paragraph">
-<p>The <code>obj</code> monoid&#8217;s \$&#8658;\$ operator is a sugar symbol denoting the instruction <code>[juxta]</code>. Furthermore, <code>[juxta]</code> is one of three mm-ADT instructions in <code>inst</code> that provide direct access to the underlying stream ring algebra where <code>[juxta]</code> is the <code>inst</code> denotation of the \$\ast\$-operator of the stream ring. With the \$+\$ and \$\oplus\$ operators being denoted in <code>inst</code> via <code>[branch]</code> and <code>[barrier]</code>, respectively, their exists an isomorphism between <code>obj</code> monoid and the stream ring.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-a * b      \;\;\mapsto&amp;\;\;  a \Rightarrow b          \\
-a + b      \;\;\mapsto&amp;\;\;  \texttt{[branch,(a,b)]}  \\
-a \oplus b \;\;\mapsto&amp;\;\;  \texttt{[a,b]} \Rightarrow \texttt{[barrier]} \\
-\mathbf{1} \;\;\mapsto&amp;\;\;  \mathbf{1}               \\
-\mathbf{0} \;\;\mapsto&amp;\;\;  \mathbf{0}
-\end{split}
-\]</p>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_the_inst_monoid">The Inst Monoid</h3>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Free Algebra</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma algebra</a> is defined by a carrier set \$A\$ along with a <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> \$\cdot: A \times A \to A\$ that combines and two \$A\$-elements into one (\$a \cdot b \mapsto c\$), and a set of <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> denoting "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" \$A\$-related equations that a structure must obey should it be an instance of the <a href="https://en.wikipedia.org/wiki/Algebraic_structure">algebra</a> \$(A,\cdot)\$.</p>
-</div>
-<div class="paragraph">
-<p>With the more concise representation of \$ab \equiv a \cdot b\$, if \$a,b,c \in A\$, and \$ab = c\$, then should there be another element \$d \in A\$ such that \$ad = c\$, it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$.
-Assuming the general case that all elements do not have unique two element <a href="https://en.wikipedia.org/wiki/Factorization">factors</a> in \$A\$, then the binary operator \$\cdot\$ is an irreversible, <a href="https://en.wikipedia.org/wiki/Lossy_compression">lossy</a> operation.</p>
-</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Sequence">sequence</a> of \$\cdot\$-compositions can be stored in a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>.
-Such structures are \$A\$-"<a href="https://en.wikipedia.org/wiki/Computer_program">programs</a>" that can be executed against <em>any</em> \$A\$-machine.
-If \$a,b,c,d,e \in A\$, then an example \$A\$-program is \[
-aabbbcadebdcaecadeeeeabccbcaabb.
-\]
-While the individual elements of the \$A\$-program are in \$A\$, the program as a whole is a <em>single</em> element in \$A^\ast\$.
-\$A^\ast\$ is the infinite set of all possible \$A\$-element sequences of arbitrary length called the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene closure</a> over \$A\$.
-From this vantage point, the elements of \$A\$ are called <strong>letters</strong> and the elements of \$A^\ast\$ are called <strong>words</strong>.
-The set \$A^\ast\$ is the carrier set of another algebra \$(A^\ast,\circ)\$, where \$\circ: A^\ast \times A^\ast \to A^\ast\$ concatenates two words into a single word (i.e. list concatenation).
-This algebra is used to "<a href="https://en.wikipedia.org/wiki/Programmer">code</a>" \$A\$-programs.
-In the world of <a href="https://en.wikipedia.org/wiki/Abstract_algebra">abstract algebra</a>, this new \$(A^\ast,\circ)\$ algebra is called the <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> over \$A\$.</p>
-</div>
-<div class="paragraph">
-<p>A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a <a href="https://en.wikipedia.org/wiki/Algebra_homomorphism">homomorphism</a> that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\eta: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\eta\$ "<a href="https://en.wikipedia.org/wiki/Execution_(computing)">executes</a>" the program on some \$A\$-machine.
-If the \$\eta\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such mappings in a structure known as the <code>obj</code> graph. mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a>-encoding of a free algebraic <a href="https://en.wikipedia.org/wiki/Digital_footprint">trace</a> is the foundation of numerous mm-ADT capabilities including <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a>, <a href="https://en.wikipedia.org/wiki/State_(computer_science)">program state</a>, <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>, and <a href="https://en.wikipedia.org/wiki/Reversible_computing">reversible computing</a>.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>The mm-ADT virtual machine&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> (ISA) is denoted <code>inst</code> \$\subset\$ <code>obj</code>.
-In <code>mmlang</code>, an <code>inst</code> is defined by the grammar fragment</p>
-</div>
-<div class="paragraph text-center">
-<p><code>inst  ::= '[' op(','obj)* ']' q?</code>,</p>
-</div>
-<div class="paragraph">
-<p>where <code>op</code> is an <a href="https://en.wikipedia.org/wiki/Opcode">opcode</a> from a predefined set of character string. Example opcodes include <code>plus</code>, <code>mult</code>, <code>branch</code>, <code>is</code>, <code>gt</code>, <code>lt</code>, etc. An mm-ADT program is a <a href="https://en.wikipedia.org/wiki/Assembly_language">sequence of instructions</a> commonly known as <a href="https://en.wikipedia.org/wiki/Bytecode">bytecode</a>. While an mm-ADT program can be realized as a ring of types and values being added and multiplied, there is a <a href="https://en.wikipedia.org/wiki/Full_and_faithful_functors">faithful embedding</a> of this richer ring structure into a <a href="https://en.wikipedia.org/wiki/Syntactic_monoid">syntactic monoid</a> called the <code>inst</code> monoid defined as
-\[
-(\texttt{inst}^\ast,\circ,\emptyset),
-\]
-where \$\circ:\tt{i\nst}^\ast \times \tt{i\nst}^\ast \to \tt{i\nst}^\ast\$ concatenates <code>inst</code> sequences and \$\emptyset\$ is the <a href="https://en.wikipedia.org/wiki/Empty_set">empty set</a> behaving as the identity element. An mm-ADT program is a type. In order to generate a type from a word of the free <code>inst</code> monoid, there exists a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> (<a href="https://en.wikipedia.org/wiki/Assembly_language#Assembler">assembler</a>) from the <code>inst</code> monoid to the previously defined <code>obj</code> monoid \$(\tt{obj},\Rightarrow,\mathbf{1},\mathbf{0})\$.</p>
-</div>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
-<caption class="title">Table 2. Rosetta Stone</caption>
-<colgroup>
-<col style="width: 16.6666%;">
-<col style="width: 33.3333%;">
-<col style="width: 50.0001%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">algebra</th>
-<th class="tableblock halign-left valign-top">machine</th>
-<th class="tableblock halign-left valign-top">mm-ADT</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ISA</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst<sup>*</sup></code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">bytecode</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>inst</code> <code>poly</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\eta\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">assembler</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type induction</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>type</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">program</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">type</p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<div class="title"><code>inst</code> monoid to <code>obj</code> monoid homomorphism</div>
-<p>\[
-\begin{split}
-  &amp; \eta: \texttt{inst}^\ast &amp;\to \texttt{type} \\\\
-  &amp; \eta(\emptyset) &amp;= \mathbf{1} \\
-  &amp; \eta(a \circ b) &amp;= a \Rightarrow b \\\\
-  &amp; \eta(x)         &amp;= \prod_{i=0}^n x_i \\
-  &amp;                 &amp;= x_0 \Rightarrow x_1 \Rightarrow \ldots \Rightarrow x_n
-\end{split}
-\]
-
-</p>
-</div>
-<table class="tableblock frame-none grid-none stretch">
-<colgroup>
-<col style="width: 55.5555%;">
-<col style="width: 44.4445%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p>For example, given the free <code>inst</code> monoid word \$abcde \in \tt{i\nst}^\ast\$, then
-\[
-\eta(abcde) \mapsto a &#8658; b &#8658; c &#8658; d &#8658; e.
-\]</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [start,int][plus,1][mult,2]
-==&gt;int[plus,1][mult,2]
-mmlang&gt; [start,int]=&gt;[plus,1]=&gt;[mult,2]=&gt;{1}
-==&gt;int[plus,1][mult,2]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/start-ctypes.svg" alt="start ctypes"></span></p></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect2">
-<h3 id="_the_stream_ringoid">The Stream Ringoid</h3>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Stream Ring Theory</div>
-<div class="paragraph">
-<p><span class="image right"><img src="./images/algebra/biproduct.svg" alt="biproduct" width="250"></span></p>
-</div>
-<div class="paragraph">
-<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring.
-Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding <a href="https://en.wikipedia.org/wiki/Coefficient">coefficient</a> dynamics.
-Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>.
-A biproduct has both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams.
-Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located by the <em>reduce</em> near-ring operator \$\oplus\$.</p>
-</div>
-<div class="paragraph">
-<p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>.
-Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called the <strong>type ringoid</strong>.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>The <strong><code>obj</code> stream ringoid</strong> is the <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring</a>
-\[
-(\texttt{obj},[,],[;],\;\mathbf{0}\;\mathbf{1}), \]</p>
-</div>
-<div class="paragraph">
-<p>where</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/algebra/type-value-illustration.svg" alt="type value illustration" width="525">
-</div>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p><code>obj</code> is the set of all quantified objects,</p>
-</li>
-<li>
-<p><code>[,]</code> the additive <em>parallel branch</em> operator,</p>
-</li>
-<li>
-<p><code>[;]</code> the multiplicative <em>serial chain</em> operator,</p>
-</li>
-<li>
-<p>\$\mathbf{0}\$ the additive identity, and</p>
-</li>
-<li>
-<p>\$\mathbf{1}\$ the multiplicative identity.</p>
-</li>
-</ul>
-</div>
-<hr>
-<div class="paragraph">
-<p>Given \$\tt{obj} = \tt{type} + \tt{value}\$ and the suggestive illustration above, the stream ringoid&#8217;s binary operators</p>
-</div>
-<div class="ulist">
-<ul>
-<li>
-<p>\$,;: \tt{type} \times \tt{type} \to \tt{type}\$ generate functions graph (<strong>program compilation</strong>) and,</p>
-</li>
-<li>
-<p>\$,;: \tt{value} \times \tt{type} \to \tt{value}\$ <em>stream</em> values through the type structure (<strong>program evaluation</strong>).</p>
-</li>
-</ul>
-</div>
-<div class="paragraph">
-<p>Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> (save operator <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>), the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>.
-The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in <code>mmlang</code> using both <code>obj</code> <strong>values</strong> and <strong>types</strong>.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The <code>mmlang</code> examples are rife with <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugars</a>.
-The term <code>_{0}</code> (sugar&#8217;d <code>{0}</code>) is \$\mathbf{0}\$, <code>_{1}</code> (sugar&#8217;d <code>{1}</code>) is \$\mathbf{1}\$, <code>[a,b,c]</code> denotes <code>[branch,(a,b,c)]</code> and <code>+{q}n</code> denotes <code>[plus,n]{q}</code>.
-Finally, while <code>[,]</code> and <code>[;]</code> are defined as binary operators, due to the <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> axioms of the respective additive group and multiplicative monoid of a ring, <code>[,]</code> and <code>[;]</code> are effectively \$n\$-ary operators and will be used as such in examples to follow.
-</td>
-</tr>
-</table>
-</div>
-<div class="sect3">
-<h4 id="_ring_axioms">Ring Axioms</h4>
-<div class="paragraph">
-<p><a href="https://en.wikipedia.org/wiki/Axiom">Axioms</a> are the "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" equations of a system.
-Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 10%;">
-<col style="width: 10%;">
-<col style="width: 35%;">
-<col style="width: 45%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">axiom</th>
-<th class="tableblock halign-center valign-top">equation</th>
-<th class="tableblock halign-center valign-top">mmlang values</th>
-<th class="tableblock halign-center valign-top">mmlang types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Additive Abelian Group&#8201;&#8212;&#8201;\$(\tt{obj},[,],\mathbf{0})\$</p></th>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Additive associativity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;(a+b)+c \\
-=&amp; a+(b+c)
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a','b'],'c']
-==&gt;'a'
-==&gt;'b'
-==&gt;'c'
-mm&gt; ['a',['b','c']]
-==&gt;'a'
-==&gt;'b'
-==&gt;'c'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id],[id]],[id]]
-==&gt;str{3}&lt;=str[id]{3}
-mm&gt; str[[id],[[id],[id]]]
-==&gt;str{3}&lt;=str[id]{3}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Additive commutativity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;a+b \\
-=&amp; b+a
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','b']
-==&gt;'a'
-==&gt;'b'
-mm&gt; ['b','a']
-==&gt;'b'
-==&gt;'a'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{2},[id]{3}]
-==&gt;str{5}&lt;=str[id]{5}
-mm&gt; str[[id]{3},[id]{2}]
-==&gt;str{5}&lt;=str[id]{5}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Additive identity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[a+\mathbf{0} = a\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a',{0}]
-==&gt;'a'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],{0}]
-==&gt;str</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Additive inverse</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[a + ({-a}) = \mathbf{0}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','a'{-1}]
-mm&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],[id]{-1}]
-mm&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Multiplicative Monoid&#8201;&#8212;&#8201;\$(\tt{obj},[;],\mathbf{1})\$</p></th>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative associativity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;(a \cdot b) \cdot c \\
-=&amp; a \cdot (b \cdot c)
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a';'b'];'c']
-==&gt;'c'
-mm&gt; ['a';['b';'c']]
-==&gt;'c'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id];[id]];[id]]
-==&gt;str
-mm&gt; str[[id];[[id];[id]]]
-==&gt;str</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative identity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[a \cdot \mathbf{1} = a\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';{1}]
-==&gt;'a'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];{1}]
-==&gt;str</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},[,],[;],\mathbf{0},\mathbf{1})\$</p></th>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Left distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;a \cdot (b + c) \\
-=&amp; ab + ac
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';['b','c']]
-==&gt;'b'
-==&gt;'c'
-mm&gt; [['a';'b'],['a';'c']]
-==&gt;'b'
-==&gt;'c'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];[[id],[id]]]
-==&gt;str{2}&lt;=str[id]{2}
-mm&gt; str[[[id];[id]],[[id];[id]]]
-==&gt;str{2}&lt;=str[id]{2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Right distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;(a+b) \cdot c \\
-=&amp; ac + bc
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a','b'];'c']
-==&gt;'c'{2}
-mm&gt; [['a';'c'],['b';'c']]
-==&gt;'c'{2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id],[id]];[id]]
-==&gt;str{2}&lt;=str[id]{2}
-mm&gt; str[[[id];[id]],[[id];[id]]]
-==&gt;str{2}&lt;=str[id]{2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="sect4">
-<h5 id="_ring_theorems">Ring Theorems</h5>
-<div class="paragraph">
-<p>The axioms of a theory entail its <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>.
-Stated in reverse, theorems are the derivations of an <a href="https://en.wikipedia.org/wiki/Axiomatic_system">axiomatic system</a>.
-Once a system is determined to be a ring, then all the theorems that have been proved about rings in general are also true for that system.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 10%;">
-<col style="width: 10%;">
-<col style="width: 35%;">
-<col style="width: 45%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">theorem</th>
-<th class="tableblock halign-center valign-top">equation</th>
-<th class="tableblock halign-center valign-top">mmlang values</th>
-<th class="tableblock halign-center valign-top">mmlang types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},[,],[;],\mathbf{0},\mathbf{1})\$</p></th>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Additive factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;a + b = a + c \\
-&#8658;&amp; b = c
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Unique factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;a + b = \mathbf{0} \\
-&#8658;&amp; a = -b \\
-&#8658;&amp; b = -a
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;-(a+b) \\
-=&amp; (-a) + (-b)
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','b']{-1}
-==&gt;'a'{-1}
-==&gt;'b'{-1}
-mm&gt; ['a'{-1},'b'{-1}]
-==&gt;'a'{-1}
-==&gt;'b'{-1}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],[id]]{-1}
-==&gt;str{-2}&lt;=str[id]{-2}
-mm&gt; str[[id]{-1},[id]{-1}]
-==&gt;str{-2}&lt;=str[id]{-2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[-(-a) = a\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{-1}]{-1}
-==&gt;'a'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{-1}]{-1}
-==&gt;str</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Annihilator</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;a*\mathbf{0} \\
-=&amp; \mathbf{0} \\
-=&amp; \mathbf{0}*a
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';{0}]
-mm&gt;
-mm&gt; [{0};'a']
-mm&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];{0}]
-mm&gt;
-mm&gt; str[{0};[id]]
-mm&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;a * (-b) \\
-=&amp; -a * b \\
-=&amp; -(a*b)
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';'b'{-1}]
-==&gt;'b'{-1}
-mm&gt; ['a'{-1};'b']
-==&gt;'b'{-1}
-mm&gt; ['a';'b']{-1}
-==&gt;'b'{-1}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];[id]{-1}]
-==&gt;str{-1}&lt;=str[id]{-1}
-mm&gt; str[[id]{-1};[id]]
-==&gt;str{-1}&lt;=str[id]{-1}
-mm&gt; str[[id];[id]]{-1}
-==&gt;str{-1}&lt;=str[id]{-1}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp;(-a) * (-b) \\
-=&amp; a * b
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{-1};'b'{-1}]
-==&gt;'b'
-mm&gt; ['a';'b']
-==&gt;'b'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{-1};[id]{-1}]
-==&gt;str
-mm&gt; str[[id];[id]]
-==&gt;str</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_stream_ring_axioms">Stream Ring Axioms</h4>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Ringoids</div>
-<div class="paragraph">
-<p>An algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> \$(A,+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires \[
-a \ast (b + c) = ab + ac \\ (a + b) \ast c = ac + bc.
-\]
-A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are <a href="https://en.wikipedia.org/wiki/Partial_function">partial functions</a> lacking <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>.
-In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.</p>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p><span class="image left"><img src="./images/algebra/obj-semiring-orderedring.svg" alt="obj semiring orderedring" width="350"></span></p>
-</div>
-<div class="paragraph">
-<p>Stream ring theory studies <em>quantified objects</em>.
-The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity.
-The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient <a href="https://en.wikipedia.org/wiki/Stream_(computing)">stream computing</a>.
-The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$.
-However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring(oid)</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.
-In mm-ADT, the elements of the additive component can be inverted by their corresponding <em>negative type</em> (or negative <code>obj</code> in general).
-Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoid">groupoid</a>, where, for example, the <code>,-poly</code> <code>[int{1},int{-1}]</code> is <code>int{0}</code> which is isomorphic to the initial <code>obj{0}</code>.
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 10%;">
-<col style="width: 10%;">
-<col style="width: 35%;">
-<col style="width: 45%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">axiom</th>
-<th class="tableblock halign-center valign-top">equation</th>
-<th class="tableblock halign-center valign-top">mmlang values</th>
-<th class="tableblock halign-center valign-top">mmlang types</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Bulking</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp; xa + ya \\
-=&amp; (x+y)a
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{2},'a'{3}]
-==&gt;'a'{5}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{2},[id]{3}]
-==&gt;str{5}&lt;=str[id]{5}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Applying</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa \ast yb = (xy)ab\$</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'a'{2}['b'{3}]
-==&gt;'b'{6}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str{2}[[id]{3}]
-==&gt;str{6}&lt;=str{2}[id]{3}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Splitting</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp; xa \ast (yb + zc) \\
-=&amp; (xy)ab + (xz)ac
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'a'{2}['b'{3},'c'{4}]
-==&gt;'b'{6}
-==&gt;'c'{8}
-mm&gt; ['b'{6},'c'{8}]
-==&gt;'b'{6}
-==&gt;'c'{8}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str{2}[[id]{3},[id]{4}]
-==&gt;str{14}&lt;=str{2}[id]{7}
-mm&gt; str[[id]{6},[id]{8}]
-==&gt;str{14}&lt;=str[id]{14}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Merging</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
-&amp; ((xa) + (yb)) \\
-=&amp; (xa + yb)
-\end{split}\]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a'{2}],['b'{3}]]
-==&gt;'a'{2}
-==&gt;'b'{3}
-mm&gt; ['a'{2},'b'{3}]
-==&gt;'a'{2}
-==&gt;'b'{3}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id]{2}],[[id]{3}]]
-==&gt;str{5}&lt;=str[id]{5}
-mm&gt; str[[id]{2},[id]{3}]
-==&gt;str{5}&lt;=str[id]{5}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Removing</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[ (\mathbf{0}a + b) = b \]</p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{0},'b']
-==&gt;'b'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[{0},[id]]
-==&gt;str</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="sect4">
-<h5 id="_stream_compression">Stream Compression</h5>
-<div class="paragraph">
-<p>The <strong>bulking</strong>, <strong>merging</strong>, and <strong>removing</strong> axioms are aimed at reducing the amount of data flowing through a stream, while the <strong>splitting</strong> and <strong>applying</strong> axioms maintain quantifier semantics as elements of the <em>object</em> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> are operated on.
-When only considering the standard ring axioms, the stream</p>
-</div>
-<table class="tableblock frame-all grid-all right" style="width: 45%;">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','a','b','a','b','b','a','a']
-==&gt;'b'{3}
-==&gt;'a'{5}
-mmlang&gt; ['a'{5},'b'{3}]
-==&gt;'a'{5}
-==&gt;'b'{3}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>\[
-[ a,a,b,a,b,b,a,a ]
-\]
-is <a href="https://en.wikipedia.org/wiki/Irreducible_polynomial">irreducible</a>.
-However, with the stream ring axioms and \$\mathbb{Z}\$-quantifiers, the above stream is equivalent to \[
-[ 5a,3b ], \]
-where the abelian group operator <code>[,]</code> is <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>&#8201;&#8212;&#8201;i.e., \$[ 5a,3b ] \equiv [3b,5a]\$.</p>
-</div>
-<div class="paragraph">
-<p>Stream compression is achieved by removing redundant information in a <a href="https://en.wikipedia.org/wiki/Lossless_compression">lossless</a> manner such that <a href="https://en.wikipedia.org/wiki/Enumeration">enumeration</a> is replaced with quantification.
-From a data structure perspective, an unordered <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> is converted into a weighted <a href="https://en.wikipedia.org/wiki/Multiset">multiset</a>.
-Relying on the same axiomatic principle, but reframed in terms of types (programs), the <em>atemporal stream theorem</em> guarantees equivalent outcomes for both <a href="https://en.wikipedia.org/wiki/Synchronous_circuit">synchronous</a> and <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> execution strategies.</p>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_asynchronous_types">Asynchronous Types</h5>
-<div class="paragraph">
-<p>The two examples below highlight this time/space entailment, where the former realizes a <a href="https://en.wikipedia.org/wiki/Optimizing_compiler">compile time optimization</a> and the latter a <a href="https://en.wikipedia.org/wiki/Program_optimization#Run_time">runtime optimization</a>.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-Expressions of the form <code>-&lt;(a,b,c)&gt;-</code> are decomposed representations of <code>[a,b,c]</code>, where <code>-&lt;(a,b,c)</code> <em>splits</em>, but does not <em>merge</em>.
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 38.4615%;">
-<col style="width: 61.5385%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1
-==&gt;6
-mmlang&gt; 5 =&gt; int+1-&lt;(_,_)
-==&gt;(6{2})
-mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)
-==&gt;(12{2})
-mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)&gt;-
-==&gt;12{2}
-mmlang&gt; 5 =&gt; int+1-&lt;(*2,*2)&gt;-+2
-==&gt;14{2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1*{2}2+2
-==&gt;14{2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/type-bulk-example.svg" alt="type bulk example"></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int+1
-==&gt;6
-mmlang&gt; 5 =&gt; int+1-&lt;(_,_)
-==&gt;(6{2})
-mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)
-==&gt;(12{2})
-mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)&gt;-
-==&gt;12{2}
-mmlang&gt; 5 =&gt; int+1-&lt;(*2,+6)&gt;-+2
-==&gt;14{2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)
-==&gt;(14{2})
-mmlang&gt; 5 =&gt; int-&lt;(+1*2+2,+1+6+2)&gt;-
-==&gt;14{2}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/value-bulk-example.svg" alt="value bulk example"></span></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>As a ring, an mm-ADT <code>obj</code> can be multiplied or added to another <code>obj</code>.
-Multiplication is denoted with <code>=&gt;</code> (<code>5 =&gt; int+2</code>) or simple term juxtaposition (<code>5+2</code>).
-Addition, on the other hand, is realized by the <code>[branch]</code> instruction which has an <code>mmlang</code> sugar of <code>[,]</code>.
-The way in which <code>obj</code> addition effects the <code>obj</code> graph is important.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; int[+4[is&gt;0],*5]+1                                                   <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;int{1,2}&lt;=int[int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]],int[mult,5]][plus,1]
-mmlang&gt; 2 =&gt; int[+4[is&gt;0],*5]+1                                                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;7
-==&gt;11
-mmlang&gt; 2 =&gt; int[+4[is&gt;0],*5]+1[path]                                               <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(2;[plus,4];6;[is,true];6;[plus,1];7)
-==&gt;(2;[mult,5];10;[plus,1];11)
-mmlang&gt; 2 =&gt; int[+4[is&gt;0],*5]+1[type]                                               <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]][plus,1]
-==&gt;int[mult,5][plus,1]</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The <code>int</code>-dependent type clones the <code>int</code> to the two branches, merges the branch output, and adds <code>1</code> (<strong>compilation</strong>).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td><code>2</code> is propagated through the <code>int{1,2}&lt;=int</code> type (<strong>evalution</strong>).</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The path through the <code>obj</code> value graph taken by the resultant <code>objs</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The type of each resultant value.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>The compilation of the <code>int{1,2}&lt;=int</code> type generates the path diagrammed below in the <strong>type subgraph</strong> of the <code>obj</code> graph.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/algebra/obj-type-path-example.svg" alt="obj type path example" width="625">
-</div>
-</div>
-<div class="paragraph">
-<p>The evaluation of the type with the input of <code>2</code> generates two paths through the <strong>value subgraph</strong> of the <code>obj</code> graph&#8201;&#8212;&#8201;via <em>split</em> (\$\Delta\$) and <em>merge</em> (\$\nabla\$).
-Branching (addition) is one of two fundamental operations in the mm-ADT ring algebra.
-It is not manifested as an <code>inst</code> in a value&#8217;s path history.
-Likewise, the other fundamental operation, <code>=&gt;</code> (multiplication) has no explicit <code>inst</code> and is denoted with juxtaposition in the value path history.
-The significance of branching being fundamental in mm-ADT is that individual branches can evaluate in <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">decoupled</a>, independent manner requiring no <a href="https://en.wikipedia.org/wiki/Synchronization_(computer_science)">synchronization</a> nor explicit <a href="https://en.wikipedia.org/wiki/Barrier_%28computer_science%29">coordination</a> at merge.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/algebra/obj-value-path-example.svg" alt="obj value path example">
-</div>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 6. Process Architectures Sympathetic to the Type Ringoid</div>
-<div class="content">
-<div class="paragraph">
-<p>An <code>mmlang</code> expression denotes a <strong>type</strong> (program) that is executed by a processor.
-A type is an element of the <strong>type ringoid</strong> algebra.
-The type ringoid is not the intended algebra of the language component.
-The reason being, languages yield linear structures.
-A linear medium is sympathetic to single operator <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> such as <a href="https://en.wikipedia.org/wiki/Monoid">monoids</a> or <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">groups</a>.
-In order to express addition (branching) in these structures, the parallel branches are serially embedded using the <code>[,]</code> syntactic <a href="https://en.wikipedia.org/wiki/Kludge#Computer_science">hack</a>.</p>
-</div>
-<div class="paragraph">
-<p>The <strong>type</strong> elements of the type ringoid are <a href="https://en.wikipedia.org/wiki/Three-dimensional_space">three dimensional</a> structures (where the third dimension captures nesting) and have a more natural embedding in the spatial component of the physical world.
-Computationally, types are evaluated by processors across a number of cores of a single machine and/or across a multi-machine compute cluster.
-The type ringoid algebra yields types that are sympathetic to a variety of modern processor architectures.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Iterator">Iterator</a>: single threaded, pull-based, lazily evaluated, functionally oriented</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Reactive_programming">Reactive</a>: multi-threaded, push-based, lazily evaluated, stream oriented</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">Bulk Synchronous Parallel</a>: cluster, pull-based, eagerly evaluated, pipeline oriented</p>
-</li>
-<li>
-<p><a href="https://en.wikipedia.org/wiki/Message_passing">Message-Passing</a>; cluster/multi-threaded, push-based, lazily evaluated, actor oriented</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_commuting_quantifiers">Commuting Quantifiers</h5>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 63.6363%;">
-<col style="width: 36.3637%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Each of these expressions is equivalent to <code>obj{0}</code>. This is demonstrated using the <code>;-poly</code> quantifier equation. <code>2*3*0 = 2*0*4 = 0*3*4</code>. In general, if there exists a <strong>0</strong>-quantified <code>obj</code> in a <code>obj</code>  monoid expression, then the result is always <code>obj{0}</code>.</p></td>
-<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{0}2
-mmlang&gt;
-mmlang&gt; 6{2}+{0}1+{4}2
-mmlang&gt;
-mmlang&gt; 6{0}+{3}1+{4}2
-mmlang&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">All three expression evaluate to the same <code>9{24}</code> value. The quantifier ring has a <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> multiplicative monoid such that <code>2*3*4 = 3*4*2 = 4*2*1</code>.</p></td>
-<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{4}2
-==&gt;9{24}
-mmlang&gt; 6{3}+{4}1+{2}2
-==&gt;9{24}
-mmlang&gt; 6{4}+{2}1+{3}2
-==&gt;9{24}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is still possible to propagate coefficients left or right through an <code>obj</code> <code>*</code>-expression. Regardless of the quantifiers being <a href="https://en.wikipedia.org/wiki/Prime_element">prime elements</a>, quantifier propagation need not preserve the factors of a <code>*</code>. In this way, if the <a href="https://en.wikipedia.org/wiki/Geometric_progression">geometric sequence</a> remains the same, any quantifier distribution is allowed.</p></td>
-<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{4}2
-==&gt;9{24}
-mmlang&gt; 6+{6}1+{4}2
-==&gt;9{24}
-mmlang&gt; 6+1+{24}2
-==&gt;9{24}
-mmlang&gt; 6+{12}1+{2}2
-==&gt;9{24}
-mmlang&gt; 6{6}+{2}1+{2}2
-==&gt;9{24}</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers propagate along the the multiplicative <code>obj</code> monoid via their <code>*</code>-operator. They propagate along the additive <code>obj</code> group via their <code>+</code>-operator. In this way, if two branches have <a href="https://en.wikipedia.org/wiki/Orthogonality">orthogonal</a> quantifiers of the same magnitude, then when they leave the <code>+</code>-group to be additively merged onto the <code>*</code>-monoid, they cancel each other out. Various set theoretic and <a href="https://en.wikipedia.org/wiki/Quantum_computing">quantum</a> operations make use of constructive and deconstructive quantifier <a href="https://en.wikipedia.org/wiki/Orthogonality">interference</a> when computing.</p></td>
-<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[+{-1}1+{2}1,+{2}2]
-mmlang&gt;
-mmlang&gt; 6[+{-1}1+1,+2]{2}
-mmlang&gt;
-mmlang&gt; 6{2}[+{-1}1+1,+2]
-mmlang&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_type_inference">Type Inference</h5>
-
-</div>
-</div>
-<div class="sect3">
-<h4 id="_stream_module_axioms">Stream Module Axioms</h4>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Modules</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> for a group \$(A,+\_A,\mathbf{0}_A)\$ is a ring \$(X, +_X ,\ast_X, \mathbf{0}_X, \mathbf{1}_X )\$ such that elements of \$X\$ act on elements of \$A\$ via a function \$\cdot: X \times A \to A\$ called <strong>scalar multiplication</strong>.
-If \$A = X\$, the action is defined by the ring&#8217;s multiplicative operator.
-However, when \$A \ne X\$ and moreover, when \$A\$ and/or \$X\$ is free, a ring theoretic interpretation of <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebraic</a> emerges with \$A\$-based vectors (free magma) and matrices (two free magmas) being operated by \$X\$ scalars, vectors, and matrices.
-The axioms for both left and right modules are provided below, where if \$A\$ is an <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a>, then \$X\$ is a <a href="https://en.wikipedia.org/wiki/Bimodule">bimodule</a> and both sets of axioms hold.</p>
-</div>
-<table class="tableblock frame-all grid-all center" style="width: 70%;">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">Left \$X\$-Module Axioms</th>
-<th class="tableblock halign-center valign-top">Right \$X\$-Module Axioms</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \$</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \$</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$(x \ast_X y) \cdot a = x \cdot (y \cdot a)\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot (x \ast_X y) = (a \cdot x) \cdot y\$</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$\mathbf{1}_X \cdot a = a\$</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\$a \cdot \mathbf{1}_X = a\$</p></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="exampleblock">
-<div class="title">Deep Dive 7. Poly Constructs in mmlang</div>
-<div class="content">
-<table class="tableblock frame-all grid-all right small" style="width: 40%;">
-<colgroup>
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 12.5%;">
-<col style="width: 62.5%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">name</th>
-<th class="tableblock halign-left valign-top">mmlang</th>
-<th class="tableblock halign-left valign-top">latex</th>
-<th class="tableblock halign-left valign-top">description</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>split</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>-&lt;</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\Delta\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">scalar <code>*</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>merge</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>&gt;-</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\nabla\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">fold <code>+</code> (linear combine)</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>branch</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>[ ]</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$◊\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">scalar <code>*</code> then fold <code>+</code></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><em>combine</em></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>=</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\$\circ\$</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">pairwise juxtaposition</p></td>
-</tr>
-</tbody>
-</table>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><code>( )</code> is a polynomial constructor.</p>
-</li>
-<li>
-<p><code>lst</code> is a polynomial with terms indexed by <code>int</code>.</p>
-</li>
-<li>
-<p><code>rec</code> is a polynomial with terms indexed by <code>obj</code>.</p>
-</li>
-<li>
-<p><code>,</code> is a polynomial term deliminator denoting parallel compose.</p>
-</li>
-<li>
-<p><code>|</code> is a polynomial term deliminator denoting parallel choose.</p>
-</li>
-<li>
-<p><code>;</code> is a polynomial term combinator denoting serial compose.</p>
-</li>
-</ol>
-</div>
-</div>
-</div>
-<div class="paragraph">
-<p>Modules introduce a new <em>scalar multiplication</em> binary operator \$cdot: X \times A \to A\$ typically denoted as \$X\$/\$A\$-element juxtaposition.
-In mm-ADT, the module expression \[
-x \cdot (a + b) \mapsto (xa + xb) \]
-is realized as \[
-x \Delta (a + b) \mapsto (x&#8658;a,x&#8658;b).
-\]
-The \$\Delta\$ (<em>split</em>) copys an <code>obj</code> that is <em>outside</em> of a <code>poly</code> to the left of one or more <code>objs</code> <em>inside</em> the <code>poly</code>.
-When juxtaposed to the left and an internal <code>obj</code>, the <code>obj</code> monoid&#8217;s binary operator \$&#8658;:\tt{obj} \times \tt{obj} \to \tt{obj}\$ determines the type/type, value/type, value/value, type/value resolution.
-The following table provides a translation of the standard module axioms to mm-ADT.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 33.3333%;">
-<col style="width: 33.3333%;">
-<col style="width: 33.3334%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">Module Algebra</th>
-<th class="tableblock halign-center valign-top">mm-ADT Branch</th>
-<th class="tableblock halign-center valign-top">mm-ADT Split/Merge</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<th class="tableblock halign-center valign-top" colspan="3"><p class="tableblock">Left \$X\$-Module Axioms</p></th>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[x \cdot (a +_A b) = (x \cdot a) +_A (x \cdot b) \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[x;[a,b]] = [[x;a],[x;b]]\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[x \Delta (a,b) = (x&#8658;a,x&#8658;b)\]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(x +_X y) \cdot a = (x \cdot a) +_A (y \cdot a) \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[ [x,y];a] = [[x;a],[y;a]]\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(x,y) \nabla a = (x&#8658;a,y&#8658;a)\nabla \]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(x \ast_X y) \cdot a = x \cdot (y \cdot a)\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[[x;y];a] = [x;y;a]\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(x;y) \nabla a = x&#8658;y&#8658;a\]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[\mathbf{1}_X \cdot a = a\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[\mathbf{1};a]  = a \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[\mathbf{1}&#8658;a = a\]</p></td>
-</tr>
-<tr>
-<th class="tableblock halign-center valign-top" colspan="3"><p class="tableblock">Right \$X\$-Module Axioms</p></th>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(a +_A b) \cdot x = (a \cdot x) +_A (b \cdot x) \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[ [a,b];x] = [[a;x],[b;x]]\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(a,b) \nabla x = (a&#8658;x,b&#8658;x)\nabla \]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[a \cdot (x +_X y) = (a \cdot x) +_A (a \cdot y) \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[a;[x,y]] = [[a;x],[a;y]]\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[a \Delta (x,y) = (a&#8658;x,a&#8658;y) \]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[a \cdot (x \ast_X y) = (a \cdot x) \cdot y\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[a;[x;y]] = [a;x;y]\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[a \Delta (x;y) = (a&#8658;x;a&#8658;x&#8658;y) \]</p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[a \cdot \mathbf{1}_X = a\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[[a;\mathbf{1}] = a\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[a&#8658;\mathbf{1} = a\]</p></td>
-</tr>
-</tbody>
-</table>
-<div class="sect4">
-<h5 id="_polynomials">Polynomials</h5>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The reason for the <code>[split]</code> sugar symbol <code>-&lt;</code>, is that it represents one wire (<code>-</code>) splitting into many (<code>&lt;</code>).
-Likewise, the reason for <code>&gt;-</code> being the <code>[merge]</code> sugar symbol is it represents many wires merging (<code>&gt;</code>) into one (<code>-</code>).
-Finally, <code>[combine]</code> has a sugar of <code>=</code> which represents parallel wires being operated on independently.
-</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>A <a href="https://en.wikipedia.org/wiki/Polynomial">polynomial</a> is a <em>linear combination</em> of <em>terms</em> composed of <em>coefficients</em> and <em>indeterminates</em> typically expressed as \[
-f(x) = q_1 x^1 + q_2 x^2 + q_3 x^3 + \ldots + q_n x^n, \]
-where \$q_i\$ is a coefficient, \$x^i\$ is an indeterminate raised to the \$i^\text{th}\$ power, \$q_i x^i\$ is a term, and the terms are linearly combined via \$+\$.
-If \$x \in \mathbb{Z}\$, then the <a href="https://en.wikipedia.org/wiki/Function_(mathematics)#Arrow_notation">signature</a> of \$f\$ is \$f: \mathbb{Z} \to \mathbb{Z}\$.
-When \$f(x)\$ is evaluated with some \$x \in \mathbb{Z}\$, \$x\$ becomes determined and the polynomial is reduced to a single \mathbb{Z}.
-For instance, \[
-f(x) = 2x + 3x^2 + 6x^3 \]
-is irreducible due to \$x\$ being an indeterminant variable.
-If \$x =4\$, then the polynomial is solved via the reduction \[
-\begin{split}
-f(4) &amp;= (2 \ast 4) + (3 \ast 4^2) + (6 \ast 4^3) \\ &amp;= (2 \ast 4) + (3 \ast 16) + (6 \ast 64) \\ &amp;= 8 + 48 + 384 \\ &amp;= 440. \end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>In mm-ADT, <code>poly</code> \$\subset\$ <code>obj</code> is the (infinite) set of polynomials.
-The polynomial expression above is a <code>,-poly</code> \$\subset\$ <code>poly</code> (pronounced "comma poly") and, in <code>mmlang</code>, are expressions of the form</p>
-</div>
-<div class="paragraph text-center">
-<p><code>x =&gt; [x1{q1},x2{q2},x3{q3},&#8230;&#8203;,xn{qn}]</code></p>
-</div>
-<div class="paragraph">
-<p>where <code>qi</code> is a <em>quantifier</em> (coefficient), <code>xi</code> is a <em>type</em> (indeterminate), <code>xi{qi}</code> is a quantified type (term), and the type are linearly combined via <code>[,]</code> (addition).
-Instead of the terms being raised to a power (as is typical of numeric polynomials), <code>,-poly</code> terms are "raised" to a type with instructions.
-This is <a href="https://en.wikipedia.org/wiki/Exponential_object">type exponentiation</a> which is the type-equivalent of <a href="https://en.wikipedia.org/wiki/Exponentiation">numeric exponentiation</a>.</p>
-</div>
-<div class="paragraph">
-<p>The aforementioned polynomial \$f: \mathbb{N} \to \mathbb{N}\$ is denoted in mm-ADT by the following <code>int&lt;=int</code> type.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int =&gt; [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
-==&gt;int[int{2}&lt;=int[id]{2},int{3}&lt;=int[mult,int]{3},int{6}&lt;=int[mult,int[mult,int]]{6}][sum]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In \$f\$, addition and multiplication is with respects to the integer ring \$(\mathbb{Z},+,\ast,0,1)\$.
-In <code>,-poly</code>, they are with respects to the stream ring, where multiplication is \$\Delta\$ and addition is \$\nabla\$.
-The mm-ADT <code>,-poly</code> is a generalized algebraic structure known as a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> that, when used to solve <code>int</code> based polynomials, the instructions <code>[mult]</code> and <code>[sum]</code> are required, where <code>int&lt;=int</code> type is reducible when the domain <code>int</code> is determined.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4 =&gt; [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}]
-==&gt;4{2}
-==&gt;16{3}
-==&gt;64{6}
-
-mmlang&gt; 4 =&gt; [int[id]{2},int[mult,int]{3},int[mult,[mult,int]]{6}][sum]
-==&gt;440
-
-mmlang&gt; 4 =&gt; [int[id]{2},int*{3}int,int*{6}*int][sum]
-==&gt;440
-
-mmlang&gt; [4;[int[id]{2},int*{3}int,int*{6}*int][sum]]
-==&gt;440</code></pre>
-</div>
-</div>
-<div class="imageblock left">
-<div class="content">
-<img src="./images/algebra/poly-columns.svg" alt="poly columns" width="275">
-</div>
-</div>
-<div class="paragraph">
-<p>The suggestive illustration on the left depicts a single element of some (free) ring.
-There are four multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> compositions diagrammed as vertical chains rooted at an \$a\$.
-There is single additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> element diagrammed horizontally, reflecting a (commutative) linear combination of the monoid elements.
-As 1-dimensional horizontal and vertical structures, each depicts an element of a free magma (group or monoid), where 0-dimensional elements would be drawn from a non-free algebra.
-Thus, the illustration contains</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>four <strong>free monoid</strong> elements&#8201;&#8212;&#8201;<code>(a;b;c)</code>, <code>(a;d)</code>, <code>(a;b;e)</code>, <code>(a;d;e;b)</code>, and</p>
-</li>
-<li>
-<p>one <strong>free group</strong> element&#8201;&#8212;&#8201;<code>((a;b;c),(a;d),(a;b;e),(a;d;e;b))</code>,</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>where, in relation to <code>poly</code>, the illustration&#8217;s <code>*</code> is denoted <code>;</code> and <code>+</code> is denoted <code>,</code>.</p>
-</div>
-<div class="paragraph">
-<p>Each mm-ADT <code>poly</code> constrains the general construction of the illustration such that one magma remain free (<strong>unevalated</strong>) and the other non-free (<strong>evaluated</strong>).
-In particular, as a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a>, a <code>,-poly</code> maintains a <strong>free additive group</strong> composed of isolated <strong>non-free multiplicative monoids</strong>.
-Thus, with respects to the illustration, the vertical \$\ast\$-compositions are "collapsed" yielding four terms (<code>objs</code>) that are unable to merge horizontally due to the free nature of the additive group.
-Thus, the <code>,-poly</code> is suggestively illustrated as</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/algebra/comma-poly-example.png" alt="comma poly example" width="350">
-</div>
-</div>
-<div class="paragraph">
-<p>and specified in <code>mmlang</code> as</p>
-</div>
-<div class="paragraph text-center">
-<p><code>(abc{q0},ad{q1},abe{q2},adeb{q3})</code>.</p>
-</div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-For visual simplicity, quantifiers are not illustrated.
-Furthermore, the reason that every term of the multiplicative monoid only has a single quantifier is due to the <em>universal commutativity of coefficients theorem</em> of <a href="https://zenodo.org/record/2565243">stream ring theory</a>.
-</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 5%;">
-<col style="width: 15%;">
-<col style="width: 40%;">
-<col style="width: 40%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-left valign-top">symbol</th>
-<th class="tableblock halign-left valign-top">structure</th>
-<th class="tableblock halign-left valign-top">branch use</th>
-<th class="tableblock halign-left valign-top">illustration</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>,-poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unordered biproducts<br>
-nondeterministic branching</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/comma-poly-example.png" alt="comma poly example"></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>;-poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">ordered biproducts<br>
-serial branching</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/semi-poly-example.png" alt="semi poly example"></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><code>|-poly</code></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid ring</a></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">unary biproducts<br>
-deterministic branching</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/pipe-poly-example.png" alt="pipe poly example"></span></p></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all center" style="width: 85%;">
-<colgroup>
-<col style="width: 27.2727%;">
-<col style="width: 72.7273%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>,-poly</code>
-\[
-[f,g] = \nabla \circ \Delta (f,g)  = \Diamond(f,g)
-\]</p>
-<p class="tableblock">copy/clone-branching<br>
-independent terms<br>
-\[A \times A = 2A\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/comma-delta-nabla.png"><img src="./images/algebra/comma-delta-nabla.svg" alt="comma delta nabla" width="475"></a></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>;-poly</code>
-\[
-[f;g] = \nabla \circ \Delta (f;g) = \Diamond(f;g)
-\]</p>
-<p class="tableblock">serial/compose-chain<br>
-dependent terms<br>
-\[A^{_A A} = A \]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/semi-delta-nabla.png"><img src="./images/algebra/semi-delta-nabla.svg" alt="semi delta nabla" width="500"></a></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><code>|-poly</code>
-\[
-[f | g] = \nabla \circ \Delta (f | g)  = \Diamond(f | g) \\
-\]</p>
-<p class="tableblock">\[
-\nabla \circ \iota_x \circ f \circ \pi_x \circ \Delta = B \\
-\nabla \circ \iota_y \circ g \circ \pi_y \circ \Delta = \mathbf{0} \\
-x \neq y
-\]</p>
-<p class="tableblock">either/choice-branching<br>
-dependent terms<br>
-\[A + A = A\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock"><span class="image"><a class="image" href="images/language/pipe-delta-nabla.png"><img src="./images/algebra/pipe-delta-nabla.svg" alt="pipe delta nabla" width="475"></a></span></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>In mm-ADT, <code>polys</code> are both <code>obj</code> products and coproducts&#8212;&#8203;called <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>.
-They have projections (<code>[get]</code>) and injections (<code>[put]</code>) such that the following diagram commutes.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/algebra/product-coproduct-iso.svg" alt="product coproduct iso" width="475">
-</div>
-</div>
-<div class="sect5">
-<h6 id="_poly">,-poly</h6>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 43.75%;">
-<col style="width: 56.25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top"><code>,-lst</code></th>
-<th class="tableblock halign-center valign-top"><code>,-rec</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/comma-lst-graph.svg" alt="comma lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/comma-rec-graph.svg" alt="comma rec graph"></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')
-==&gt;('xa','xb','xc')
-mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')&gt;-
-==&gt;'xa'
-==&gt;'xb'
-==&gt;'xc'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')
-==&gt;('xs'-&gt;'xa','xr'-&gt;'xb','xt'-&gt;'xc')
-mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')&gt;-
-==&gt;'xa'
-==&gt;'xb'
-==&gt;'xc'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">\$\nabla\$ on value ,-poly</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1,2,3)&gt;-
-==&gt;1
-==&gt;2
-==&gt;3
-mmlang&gt; (1,,3)&gt;-
-==&gt;1
-==&gt;3
-mmlang&gt; (,,3)&gt;-
-==&gt;3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1,'b'-&gt;2,'c'-&gt;3)&gt;-
-==&gt;1
-==&gt;2
-==&gt;3
-mmlang&gt; ('a'-&gt;1,,'c'-&gt;3)&gt;-
-==&gt;1
-==&gt;3
-mmlang&gt; (,,'c'-&gt;3)&gt;-
-==&gt;3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A <code>,-poly</code> (pronounced "comma poly") is a classic <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> composed of a free additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>.
-If \$a,b \in \tt{object}\$ and \$q_0, q_1 \in \tt{q}\$ are elements comprising <code>obj</code> products, then the additive operator of the <code>obj</code> stream ring is defined as \[
-[a_{q_0},b_{q_1}] = \begin{cases}
-[a_{q_0+q_1}]     &amp; \text{if } a==b, \\
-[a_{q_0},b_{q_1}] &amp; \text{otherwise}, \end{cases}
-\]</p>
-</div>
-<div class="paragraph">
-<p>where \$[a_{q_0},b_{q_1}] \equiv ◊(a_{q_0},b_{q_1}) \equiv \nabla(\Delta(a_{q_0},b_{q_1})) \$ and \$+\$ denotes the respective quantifier ring&#8217;s additive operator.
-Given the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> nature of the <code>,-poly</code> abelian group, the terms can be rearranged.
-In <a href="https://zenodo.org/record/2565243">stream ring theory</a>, this equality is known as the <strong>bulking axiom</strong> and it is of fundamental importance to efficient stream-based computing with benefits realized in both the <a href="https://en.wikipedia.org/wiki/Space%E2%80%93time_tradeoff">time and space</a> dimensions.</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 43.75%;">
-<col style="width: 56.25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">\$[a_{q_0},b_{q_1}]\$</th>
-<th class="tableblock halign-center valign-top">\$x_{q_2}[a_{q_0},b_{q_1}] \$</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/obj-addition.png" alt="obj addition"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/obj-scalar-multiplication.png" alt="obj scalar multiplication"></span></p></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>When applying \$x \in \tt{obj}\$, the <code>,-poly</code> group is a <a href="https://en.wikipedia.org/wiki/Group_action">right action</a> on \$x\$ satisfying the equation below.
-As an algebraic <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a>, \$x\$ is an element of the right <code>,-poly</code> <a href="https://en.wikipedia.org/wiki/Module_(mathematics)">module</a> <code>obj</code> realizing a generalized form of <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a>.</p>
-</div>
-<div class="paragraph">
-<p>\[
-x_{q_2}[a_{q_0},b_{q_1}] = \begin{cases}
-[{xa}_{q_2*(q_0+q_1)}]            &amp; \text{if } a==b, \\
-[{xa}_{q_2*q_0},{xb}_{q_2*q_1}] &amp; \text{otherwise}, \end{cases}
-\]</p>
-</div>
-<div class="paragraph">
-<p>The two cases above are expressed in <code>mmlang</code> below with the last two examples being the <code>[ ]</code> sugar of <code>-&lt;()&gt;-</code> (\$◊\$).</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}-&lt;(+{3}'a',+{4}'a')&gt;-
-==&gt;'xa'{14}
-mmlang&gt; 'x'{2}-&lt;(+{3}'a',+{4}'b')&gt;-
-==&gt;'xa'{6}
-==&gt;'xb'{8}
-mmlang&gt; 'x'{2}[+{3}'a',+{4}'a']
-==&gt;'xa'{14}
-mmlang&gt; 'x'{2}[+{3}'a',+{4}'b']
-==&gt;'xa'{6}
-==&gt;'xb'{8}</code></pre>
-</div>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_poly_2">;-poly</h6>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 43.75%;">
-<col style="width: 56.25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top"><code>;-lst</code></th>
-<th class="tableblock halign-center valign-top"><code>;-rec</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/semi-lst-graph.svg" alt="semi lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/semi-rec-graph.svg" alt="semi rec graph"></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')
-==&gt;('xa';'xab';'xabc')
-mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')&gt;-
-==&gt;'xabc'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')
-==&gt;('xs'-&gt;'xa';'xar'-&gt;'xab';'xabt'-&gt;'xabc')
-mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')&gt;-
-==&gt;'xabc'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">\$\nabla\$ on value ;-poly</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1;2;3)&gt;-
-==&gt;3
-mmlang&gt; (1;;3)&gt;-
-==&gt;3
-mmlang&gt; (;;3)&gt;-
-==&gt;3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1;'b'-&gt;2;'c'-&gt;3)&gt;-
-==&gt;3
-mmlang&gt; ('a'-&gt;1;;'c'-&gt;3)&gt;-
-==&gt;3
-mmlang&gt; (;;'c'-&gt;3)&gt;-
-==&gt;3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>The two <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magmas</a> of <code>;-poly</code> (pronounced "semi poly") are the free and non-free forms of the <code>obj</code> stream ring&#8217;s multiplicative monoid.
-The terms of <code>;-poly</code> <em>geometrically</em> combined using the multiplicative operator \$&#8658;\$ (denoted <code>;</code> in <code>poly</code>).
-A <code>;-poly</code> is a partially commutative monoid known as a <a href="https://en.wikipedia.org/wiki/Trace_monoid">trace monoid</a>.
-If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, \$◊(a;b) \equiv [a;b]\$, then the <code>;-poly</code> \$(a_{q_0} ; b_{q_1})\$ acts on \$x_{q_2}\$ as</p>
-</div>
-<div class="paragraph">
-<p>\[
-[ a_{q_0} ; b_{q_1} ](x_{q_2}) = b(a(x))_{ q_2 * q_0 * q_1 }.
-\]</p>
-</div>
-<div class="paragraph">
-<p>Of particular interest, when not merging (\$\nabla\$),</p>
-</div>
-<div class="paragraph">
-<p>\[
-\Delta(x_{q_2}, (a_{q_0} ; b_{q_1})) = ( a(x)_{ q_2 * q_0 } ; b(a(x))_{ q_2 * q_0 * q_1 } ).
-\]</p>
-</div>
-<div class="paragraph">
-<p><span class="image left"><img src="./images/algebra/bubble-chamber.png" alt="bubble chamber" width="200"></span> The equation above realizes a structure and process joyfully named the <a href="https://en.wikipedia.org/wiki/Bubble_chamber">"bubble chamber"</a>.
-In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor.
-Particles are shot into the room and the trace they leave (called their <em>varpor trail</em>) provides physicists information that they then used to understand the nature of the particle under study&#8201;&#8212;&#8201;e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it.
-In mm-ADT, \$x\$ above (and 5 below) play the role of the <em>particle</em> and <code>;-poly</code> the <em>bubble chamber</em> with each term in the <code>;-poly</code> acting as a <em>vapor droplet</em>.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)     <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;(6;8;11;15;20)
-mmlang&gt; 5-&lt;(+1+2;+3;+4+5)       <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(8;11;20)
-mmlang&gt; 5-&lt;(+1+2+3+4+5)         <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;(20)
-mmlang&gt; 5-&lt;(+1;+2;+3;+4;+5)&gt;-   <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;20
-mmlang&gt; 5[+1;+2;+3;+4;+5]       <i class="conum" data-value="5"></i><b>(5)</b>
-==&gt;20
-mmlang&gt; 5+15                    <i class="conum" data-value="6"></i><b>(6)</b>
-==&gt;20</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td><code>5</code> is propagated through the <code>;-poly</code> terms leaving a trace of it&#8217;s state at each term slot.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>Since the elements of the \$R\$-module \$M\$ are in \$M\$, any monoid element is a legal term.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>A <code>;-poly</code> with single term derived via the composition of 5 other \$M\$ elements.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The merge operator (\$\nabla\$) emits the final term of the <code>;-poly</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>The sugar form of the previous expression.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="6"></i><b>6</b></td>
-<td>The last three examples are equivalent.</td>
-</tr>
-</table>
-</div>
-</div>
-<div class="sect5">
-<h6 id="_poly_3">|-poly</h6>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 43.75%;">
-<col style="width: 56.25%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top"><code>|-lst</code></th>
-<th class="tableblock halign-center valign-top"><code>|-rec</code></th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/pipe-lst-graph.svg" alt="pipe lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/algebra/pipe-rec-graph.svg" alt="pipe rec graph"></span></p></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')
-==&gt;('xb')
-mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')&gt;-
-==&gt;'xb'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;('s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c')
-==&gt;('xr'-&gt;'xb')
-mmlang&gt; 'x'-&lt;('s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c')&gt;-
-==&gt;'xb'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<table class="tableblock frame-all grid-all right" style="width: 35%;">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">\$\nabla\$ on value |-poly</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (1|2|3)&gt;-
-==&gt;1
-mmlang&gt; (1||3)&gt;-
-==&gt;1
-mmlang&gt; (||3)&gt;-
-==&gt;3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ('a'-&gt;1|'b'-&gt;2|'c'-&gt;3)&gt;-
-==&gt;1
-mmlang&gt; ('a'-&gt;1||'c'-&gt;3)&gt;-
-==&gt;1
-mmlang&gt; (||'c'-&gt;3)&gt;-
-==&gt;3</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-<div class="paragraph">
-<p>A <code>|-poly</code> (pronounced "pipe poly") uses <code>|</code> as the <code>obj</code> term separator.
-Like the <code>,-poly</code>, a <code>|-poly</code> maintains a <a href="https://en.wikipedia.org/wiki/Free_group">free additive group</a> and a non-free multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a>.
-However, unlike <code>,-poly</code>, the additive group is not <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a>.
-If \$a,b,x \in \tt{objects}\$ and \$q_0,q_1,q_2 \in \tt{q}\$, then <code>|-poly</code> \$[a_{q_0} | b_{q_1}]\$ acts on \$x_{q_2}\$ as</p>
-</div>
-<div class="paragraph">
-<p>\[
-x_{q_2} [a_{q_0} | b_{q_1}] = \begin{cases}
-{xa}_{q_2 * q_0} &amp; \text{if } x_{q_2} a_{q_0} \neq \bf{0}, \\
-{bx}_{q_2 * q_1} &amp; \text{if } x_{q_2} b_{q_1} \neq \bf{0}, \\ \bf{0} &amp; \text{otherwise}.
-\end{cases}
-\]</p>
-</div>
-<div class="paragraph">
-<p>Thus, while <code>,-lst</code> implements <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a>, <code>|-lst</code> implements <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">null coalescing</a>, where in mm-ADT, <em>null</em> is <code>obj{0}</code> (the <a href="https://en.wikipedia.org/wiki/Zero_element">zero element</a> of the <code>obj</code> stream ring&#8201;&#8212;&#8201;\$\mathbf{0}\$).
-Like coalesce, the order in which the terms/branches are evaluated determines the result of the computation.
-This is the reason that the additive group of <code>|-lst</code> (and <code>|-poly</code> in general) is not commutative.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[+{3}'a' | +{4}'b']  <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;'xa'{6}
-mmlang&gt; 'x'{2}[+{0}'a' | +{4}'b']  <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;'xb'{8}
-mmlang&gt; 'x'{2}[+{0}'a' | +{0}'b']  <i class="conum" data-value="3"></i><b>(3)</b>
-mmlang&gt;</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>The first term applied to <code>x</code> is not <code>obj{0}</code> so <code>'a'</code> is added to <code>'x'</code>.
-The polynomial reduces to <code>[plus,'a']{3}</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The first term applied to <code>x</code> is <code>obj{0}</code> and the second is not so <code>'b'</code> is added to <code>'x'</code>.
-The polynomial reduces to <code>[plus,'b']{4}</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>Both terms, when applied to <code>x</code> yield <code>obj{0}</code>.
-The polynomial reduces to <code>obj{0}</code>.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p><code>|-rec</code> enables <a href="https://en.wikipedia.org/wiki/Predicate_%28mathematical_logic%29">predicate</a>-based coalescing which is a form of <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional branching</a> realized in most programming languages as <a href="https://en.wikipedia.org/wiki/Control_flow#If-then-(else)<em>statements">if/else</a> and <a href="https://en.wikipedia.org/wiki/Switch_statement">switch/case</a> branching.
-While predicate-based branching is a function of \$\mathbb{B}\$ (<code>bool</code>), in mm-ADT it is determined by \$\tt{q}\$ (<code>{q}</code>), where <em>false</em> is <code>obj{0}</code> (\$\mathbf{0}\$) and <em>true</em> is any non-zero quantifier.
-The non-commutative additive group of <code>|-poly</code>, as inherited by <code>|-rec</code>, realizes <a href="https://en.wikipedia.org/wiki/Conditional</em>(computer_programming)#Case_and_switch_statements">case-based</a> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)#Pattern_matching">pattern matching</a> branch ordering semantics.
-Thus, if \$a,b,c,d,x \in \tt{objects}\$ and \$q_i \in \tt{q}\$, then</p>
-</div>
-<div class="paragraph">
-<p>\[
-x_{q_4} [a_{q_0} \to b_{q_1}  | c_{q_2} \to d_{q_3}] = \begin{cases}
-{xb}_{q_4 * q_1} &amp; \text{if } x_{q_4} a_{q_0} \neq \bf{0}, \\
-{xd}_{q_4 * q_3} &amp; \text{if } x_{q_4} c_{q_2} \neq \bf{0}, \\ \bf{0} &amp; \text{otherwise}.
-\end{cases}
-\]</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'{2}[+{3}'a' -&gt; +{4}'b' | +{5}'c' -&gt; +{6}'d']
-==&gt;'xb'{8}
-mmlang&gt; 'x'{2}[+{0}'a' -&gt; +{4}'b' | +{5}'c' -&gt; +{6}'d']
-==&gt;'xd'{12}
-mmlang&gt; 'x'{2}[+{0}'a' -&gt; +{4}'b' | +{0}'c' -&gt; +{6}'d']
-mmlang&gt;</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The previous <code>mmlang</code> examples are contrived.
-In practice, they keys of <code>|-rec</code> will typically leverage <code>[is,bool]</code> with the anonymous type <code>_</code> serving as the <a href="https://en.wikipedia.org/wiki/Switch_statement#Fallthrough">default case</a> of the switch.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/algebra/pipe-rec-string-example.png" alt="pipe rec string example" width="650">
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [1,10,100]-&lt;([is,[gt,50]] -&gt; [plus,10] | [is,[lt,5]] -&gt; [plus,20] | _ -&gt; [plus,30])&gt;-   <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;21
-==&gt;40
-==&gt;110
-mmlang&gt; [1,10,100][is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30]                                       <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;21
-==&gt;40
-==&gt;110</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>Three branches with the final branch serving as <em>default</em>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The same expression, but leveraging <code>mmlang</code> syntax sugar.</td>
-</tr>
-</table>
-</div>
-<table class="tableblock frame-all grid-all stretch small">
-<colgroup>
-<col style="width: 100%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int{3}[is&gt;50 -&gt; +10 | is&lt;5 -&gt; +20 | _ -&gt; +30][explain]
-==&gt;'
-int{3}[int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,50]]-&gt;int{3}[plus,10]|int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[lt,5]]-&gt;int{3}[plus,20]|int{3}-&gt;int{3}[plus,30]]
-
-inst                                           domain         range      state
--------------------------------------------------------------------------------
-[int{0,3}&lt;=int{3}[is,bool{3}&lt;=int{3}[gt,...    int{3}    =&gt;   int{3}
- [is,bool{3}&lt;=int{3}[gt,50]]                    int{3}   =&gt;    int{0,3}
-  [gt,50]                                        int{3}  =&gt;     bool{3}
- -&gt;[plus,10]                                      int{3}   =&gt;    int{3}
- [is,bool{3}&lt;=int{3}[lt,5]]                     int{3}   =&gt;    int{0,3}
-  [lt,5]                                         int{3}  =&gt;     bool{3}
- -&gt;[plus,20]                                      int{3}   =&gt;    int{3}
- -&gt;[plus,30]                                      int{3}   =&gt;    int{3}
-'</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_poly_factoring">Poly Factoring</h5>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">int[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></pre>
-</div>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/algebra/module-example-2.png" alt="module example 2">
-</div>
-</div>
-<div class="paragraph">
-<p>The above expression denotes a <a href="https://en.wikipedia.org/wiki/Polynomial_ring">polynomial ring</a> whose linearly combined terms are elements of the multiplicative monoid.
-With abuse of notation, the expression below binds the monoidal terms with <code>+</code> to emphasize the prototypical polynomial form \$q_0 x^0 + q_1x^1 + q_2x^2\$.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\texttt{int+2[is&gt;0]*5&lt;44} \;\;+\;\; \texttt{int+2[is&gt;0]*-6&lt;44} \;\;+\;\; \texttt{int+2[is&gt;0]*10+7&lt;44} \]</p>
-</div>
-<div class="paragraph">
-<p>Rings support both left and right <a href="https://en.wikipedia.org/wiki/Distributive_property">distributivity</a> such that the following derivation yields the respective equivalence.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-abcg + abdg + abefg &amp;= a \ast (bcg + bdg + befg) \\ &amp;= a \ast b \ast (cg + dg + efg) \\ &amp;= a \ast b \ast (c + d + ef) \ast g \\ \end{split}
-\]</p>
-</div>
-<div class="paragraph">
-<p>Thus <code>int+2[is&gt;0]</code> is <a href="https://en.wikipedia.org/wiki/Factorization">factored</a> out on the left and <code>&lt;44</code> is factored out on the right.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">int+2[is&gt;0][*5,*-6,*10+7]&lt;44</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Again with an abuse of notation to emphasize the lexical structure.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\texttt{int+2[is&gt;0]} \;\ast\; (\texttt{*5} \;\;+\;\; \texttt{*-6} \;\;+\;\; \texttt{*10+7}) \;\ast\; \texttt{&lt;44} \]</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/algebra/module-example-1.png" alt="module example 1">
-</div>
-</div>
-<div class="paragraph">
-<p>To be certain, both the factored and unfactored forms of the expression return the same result for the same input.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; [int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]
-==&gt;true{2}
-==&gt;false
-mmlang&gt; 5 =&gt; int+2[is&gt;0][*5,*-6,*10+7]&lt;44
-==&gt;true{2}
-==&gt;false</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>A progressive <em>split/merge</em> example is provided to better illustrate the intermediate results of the computation.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5 =&gt; -&lt;(int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44)
-==&gt;(true{2},false)
-mmlang&gt; 5 =&gt; -&lt;(int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44)&gt;-
-==&gt;true{2}
-==&gt;false
-
-mmlang&gt; 5 =&gt; int
-==&gt;5
-mmlang&gt; 5 =&gt; int+2
-==&gt;7
-mmlang&gt; 5 =&gt; int+2[is&gt;0]
-==&gt;7
-mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)
-==&gt;(35,-42,77)
-mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-
-==&gt;35
-==&gt;-42
-==&gt;77
-mmlang&gt; 5 =&gt; int+2[is&gt;0]-&lt;(*5,*-6,*10+7)&gt;-&lt;44
-==&gt;true{2}
-==&gt;false</code></pre>
-</div>
-</div>
-</div>
-<div class="sect4">
-<h5 id="_poly_expansion">Poly Expansion</h5>
-<div class="paragraph">
-<p>Polynomials are the subject of interest primarily because they contain both multiplication and addition and, through derivations, multiplication can be translated to addition and addition to multiplication.
-For instance, the left hand side of the the <a href="https://en.wikipedia.org/wiki/Binomial_(polynomial)">binomial</a> below is the serial composition of two parallel branches while the right hand side is the parallelization of 4 serial compositions.</p>
-</div>
-<div class="paragraph">
-<p>\[
-(a+2b)(a+4b) = a^2 + 2ba + 4ab + 8b^2 \]</p>
-</div>
-<table class="tableblock frame-all grid-all stretch">
-<colgroup>
-<col style="width: 30%;">
-<col style="width: 70%;">
-</colgroup>
-<thead>
-<tr>
-<th class="tableblock halign-center valign-top">equation</th>
-<th class="tableblock halign-left valign-top">mmlang</th>
-</tr>
-</thead>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[ (a+b+b)(a+b+b+b) \]<br>
-<span class="image"><img src="./images/algebra/binomial-1.svg" alt="binomial 1"></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b','b']
-==&gt;'a'
-==&gt;'b'{2}
-mmlang&gt; ['a','b','b'][count]
-==&gt;3
-mmlang&gt; ['a','b','b'][+'a',+'b',+'b',+'b',+'b']
-==&gt;'aa'
-==&gt;'ab'{4}
-==&gt;'ba'{2}
-==&gt;'bb'{8}
-mmlang&gt; ['a','b','b'][+'a',+'b',+'b',+'b',+'b'][count]
-==&gt;15</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[ (a+2b)(a+4b) \]<br>
-<span class="image"><img src="./images/algebra/binomial-2.svg" alt="binomial 2"></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['a','b'{2}]
-==&gt;'a'
-==&gt;'b'{2}
-mmlang&gt; ['a','b'{2}][count]
-==&gt;3
-mmlang&gt; ['a','b'{2}][+'a',+{4}'b']
-==&gt;'aa'
-==&gt;'ab'{4}
-==&gt;'ba'{2}
-==&gt;'bb'{8}
-mmlang&gt; ['a','b'{2}][+'a',+{4}'b'][count]
-==&gt;15</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[ a^2 + 2ba + 4ab + 8b^2 \]<br>
-<span class="image"><img src="./images/algebra/binomial-3.svg" alt="binomial 3"></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['aa','ba'{2},'ab'{4},'bb'{8}]
-==&gt;'aa'
-==&gt;'ba'{2}
-==&gt;'ab'{4}
-==&gt;'bb'{8}
-mmlang&gt; ['aa','ba'{2},'ab'{4},'bb'{8}][count]
-==&gt;15</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[ a^2 + 6ab + 8b^2       \]<br>
-<span class="image"><img src="./images/algebra/binomial-4.svg" alt="binomial 4"></span></p></td>
-<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; ['aa','ab'{6},'bb'{8}]
-==&gt;'aa'
-==&gt;'ab'{6}
-==&gt;'bb'{8}
-mmlang&gt; ['aa','ab'{6},'bb'{8}][count]
-==&gt;15</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p></p>
-</div></div></td>
-</tr>
-</tbody>
-</table>
-</div>
-<div class="sect4">
-<h5 id="_poly_embedding">Poly Embedding</h5>
-<div class="paragraph">
-<p><span class="image left"><img src="./images/algebra/type-ringoid-illustration.png" alt="type ringoid illustration" width="350"></span></p>
-</div>
-<div class="paragraph">
-<p>A non-free element is a <em>zero</em>-dimensional point.
-A free element is a <em>one</em>-dimensional line.
-The carrier set of the <strong>type ringoid</strong> is formed from the union of the elements of <code>obj</code> stream ring&#8217;s <a href="https://en.wikipedia.org/wiki/Free_abelian_group">free additive abelian group</a> and <a href="https://en.wikipedia.org/wiki/Free_monoid">free multiplicative monoid</a>.
-This is the <em>freest</em> possible stream ring representation&#8201;&#8212;&#8201;a <a href="https://en.wikipedia.org/wiki/Free_algebra">free ring</a>.
-With two free magmas, the type ringoid&#8217;s elements are <em>two</em>-dimensional planes.
-One dimension represents multiplication and the other addition.
-The type ringoid is encoded in <code>mmlang</code> as a <code>,-lst</code> (additive) with zero or more <code>;-lst</code> (multiplicative) terms.
-The unfactored type from the previous section is presented, followed by its two-dimensional encoding as an element of the type ringoid.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">[int+2[is&gt;0]*5&lt;44, int+2[is&gt;0]*-6&lt;44, int+2[is&gt;0]*10+7&lt;44]</code></pre>
-</div>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>In a manner analogous to polynomials in <a href="https://en.wikipedia.org/wiki/Linear_algebra">linear algebra</a>, the free monoids of the polynomial can be organized into a <a href="https://en.wikipedia.org/wiki/Matrix_(mathematics)">matrix</a>, where the following equations maintain <code>,</code> and <code>;</code> tokens to help orient the reader and the multiplicative identity <code>_</code> pads rows to ensure a proper \$n \times m\$-matrix.</p>
-</div>
-<div class="paragraph">
-<p>\begin{bmatrix}
-\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *5; &amp; \_ ; &amp; &lt;44, \\ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *{-6}; &amp; \_ ; &amp; &lt;44, \\ \tt{int}; &amp; +2; &amp; \tt{[is&gt;0]}; &amp; *10; &amp; +7 ; &amp; &lt;44 \\ \end{bmatrix}</p>
-</div>
-<div class="paragraph">
-<p>A left <code>obj</code>-module (a row vector) can be factored out of the matrix leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M}\$.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{bmatrix}
-\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; \begin{bmatrix}
-*5; &amp; \_ ; &amp; &lt;44, \\ *{-6}; &amp; \_ ; &amp; &lt;44, \\ *10; &amp; +7 ; &amp; &lt;44 \\ \end{bmatrix}
-\]</p>
-</div>
-<div class="paragraph">
-<p>Similarly, a right <code>obj</code>-module <a href="https://en.wikipedia.org/wiki/Scalar_(mathematics)">scalar</a> can be factored out leaving an expression of the form \$\mathbf{v}^{\top} \mathbf{M} u \$.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{bmatrix}
-\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; &lt;44 \]</p>
-</div>
-<div class="paragraph">
-<p>This fully factored form can be evaluated with <code>obj</code>-scalar left multiplication.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\begin{split}
-&amp; 5; \begin{bmatrix}\tt{int}; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix} *5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; &lt;44 \\ &amp;= \begin{bmatrix}5; &amp; +2; &amp; \tt{[is&gt;0]} \end{bmatrix} ; &amp; \begin{bmatrix} *5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; &lt;44 \\ &amp;=7 ; \begin{bmatrix}
-*5; &amp; \_ , \\ *{-6}; &amp; \_ , \\ *10; &amp; +7 \\ \end{bmatrix} ; &lt;44 = &amp; \begin{bmatrix}
-35; &amp; \_ , \\ -42; &amp; \_ , \\ 70; &amp; +7 \\ \end{bmatrix} ; &lt;44 = \begin{bmatrix}
-35, \\ -42, \\ 77 \\ \end{bmatrix} ; &lt;44 =\begin{bmatrix}
-\tt{true}, \\ \tt{true}, \\ \tt{false}   \\ \end{bmatrix}
-= \begin{bmatrix}
-\tt{true}\{ 2 \}, \\ \tt{false}           \\ \end{bmatrix}
-\end{split}
-\]</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
-==&gt;true{2}
-==&gt;false
-
-mmlang&gt; 5-&lt;(int;+2;[is&gt;0];-&lt;(*5,*-6,-&lt;(*10;+7)))
-==&gt;(5;7;7;(35,-42,(70;77)))
-mmlang&gt; 5-&lt;(int;+2;[is&gt;0];-&lt;(*5,*-6,-&lt;(*10;+7)&gt;-)&gt;-;&lt;44)&gt;-
-==&gt;true{2}
-==&gt;false</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>Again, to be certain, all three derivations yield the same result for the same input.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; [5;[[int;+2;[is&gt;0];*5;_;&lt;44],[int;+2;[is&gt;0];*-6;_;&lt;44],[int;+2;[is&gt;0];*10;+7;&lt;44]]]
-==&gt;true{2}
-==&gt;false
-mmlang&gt; [5;[[int;+2;[is&gt;0]];[[*5;&lt;44],[*-6;&lt;44],[*10;+7;&lt;44]]]]
-==&gt;true{2}
-==&gt;false
-mmlang&gt; [5;[[int;+2;[is&gt;0]];[*5,*-6,[*10;+7]];&lt;44]]
-==&gt;true{2}
-==&gt;false</code></pre>
-</div>
-</div>
-<div class="paragraph">
-<p>The linear algebraic type ringoid compartmentalizes the type induced at the individual instruction-level.
-This is the <em>absolutely</em> freest representation of a ring(oid).
-This "cellular form" is well suited to manipulation by the processor.
-At compile-time, factoring a matrix representation can be leveraged for optimization and rewriting.
-At evaluation runtime, the free type ringoid provides a deconstructed, 2-dimensional <a href="https://en.wikipedia.org/wiki/Pipeline">pipeline</a> architecture that can be partitioned across machines of a cluster and/or threads of a machine.</p>
-</div>
-<div class="paragraph">
-<p>The <a href="https://en.wikipedia.org/wiki/Universal_property">universal property</a> of monoid mappings is realized as the "lifted" <code>poly</code> syntactic encoding of an mm-ADT type.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/algebra/monoid-homomorphisms.png" alt="monoid homomorphisms" width="500">
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-</div>
-<div class="sect1">
-<h2 id="_processor_structures">Processor Structures</h2>
-<div class="sectionbody">
-<div class="paragraph">
-<p>The programs of the mm-ADT virtual machine are <strong>types</strong>.
-From a set of canonical types (<em>ctypes</em>), derived types (<em>dtypes</em>) of arbitrary complexity can be constructed using instructions from the VM&#8217;s <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a>.
-Every mm-ADT type has a corresponding <a href="https://en.wikipedia.org/wiki/Diagram_(category_theory)">diagrammatic</a> representation that is <a href="https://en.wikipedia.org/wiki/Isomorphism">isomorphic</a> to a directed labeled <strong>type graph</strong> composed of <em>type</em>-vertices and <em>instruction</em>-edges.</p>
-</div>
-<div class="paragraph">
-<p>A program&#8217;s type graph is the <a href="https://en.wikipedia.org/wiki/Intermediate_representation">intermediate representation</a> used by the mm-ADT VM to not only link types (encode), but also to compile them (transform/optimize).
-At execution time, values propagate through the type graph and generate a parallel, homomorphic image of the types as values in the <strong>value graph</strong>, where the resultant structure of an mm-ADT computation is the <strong>obj graph</strong>, where</p>
-</div>
-<div class="paragraph">
-<p>\[
-\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
-\]</p>
-</div>
-<div class="imageblock right">
-<div class="content">
-<img src="./images/processor/process-stack.png" alt="process stack" width="200">
-</div>
-</div>
-<div class="paragraph">
-<p>Type composition, compilation, and evaluation are carried out by mm-ADT compliant <strong>processors</strong>.
-Processors ground the mm-ADT VM to the underlying physical computer (whether on a single machine, via multiple threads, or across compute cluster), where, at the bottom of this <em>process stack</em>, the natural world&#8217;s physics provides the baseline dynamics (the fundamental ground of the computation).</p>
-</div>
-<div class="paragraph">
-<p>This section details the specifics of the relationships between types, values, and processors.</p>
-</div>
-<div class="sect2">
-<h3 id="_processes">Processes</h3>
-<div class="paragraph">
-<p>Processors are used in the following three situations:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Composition</strong>: (<a href="https://en.wikipedia.org/wiki/Type_inference">type inference</a>).</p>
-</li>
-<li>
-<p><strong>Compilation</strong>: (<a href="https://en.wikipedia.org/wiki/Program_optimization">type optimization</a>). (<a href="https://en.wikipedia.org/wiki/Fixed_point_%28mathematics%29">fix point</a>).</p>
-</li>
-<li>
-<p><strong>Evaluation</strong>: (<a href="https://en.wikipedia.org/wiki/Execution_(computing)">type enumeration</a>).</p>
-</li>
-</ol>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_algebraic_actions">Algebraic Actions</h3>
-<div class="paragraph">
-<p>A thread of execution in the VM maintains two primary references: 1.) a reference to an <code>obj</code> and 2.) a reference to an <code>inst</code>.
-Via the juxtaposition of <code>obj</code> and <code>inst</code> another <code>obj</code> is realized.
-When a VM process refers to the <code>obj</code> \$a\$ and the instruction <code>inst</code> \$i\$, then the VM will perform one of the following operations:</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p>If the vertex \$a\$ has no outgoing \$i\$-labeled edge, then the VM <em>applies</em> \$a\$ to \$i\$ to yield the edge \$a \to_i b\$ and arrive at \$b\$ (<strong>compute</strong>).</p>
-</li>
-<li>
-<p>If the vertex \$a\$ has an outgoing \$i\$-labeled edge, then the VM <em>traverses</em> the edge \$a \to_i b\$ to arrive at \$b\$ (<strong>memoize</strong>).</p>
-</li>
-</ol>
-</div>
-<div class="paragraph">
-<p>The first situation is computing via function <a href="https://en.wikipedia.org/wiki/Evaluation_strategy">evaluation</a> (save space).
-The second situation leverages <a href="https://en.wikipedia.org/wiki/Memoization">memoization</a> to avoid recomputing (save time).
-These two situations offer three high-level perspectives on the <code>obj</code> graph.</p>
-</div>
-<div class="olist arabic">
-<ol class="arabic">
-<li>
-<p><strong>Mathematically</strong>: The <code>obj</code> graph has an infinite number of <code>obj</code> vertices connected to each other by edges labeled from the infinite <a href="https://en.wikipedia.org/wiki/Instruction_set_architecture">instruction set architecture</a> <code>inst</code>.
-From this perspective, computing is traversal (i.e. <a href="https://en.wikipedia.org/wiki/Lookup_table">look-up</a>) as the <code>obj</code> graph is fully materialized.</p>
-</li>
-<li>
-<p><strong>Theoretically</strong>: The <code>obj</code> graph is manifested as computations proceed where, if \$a \in \tt{obj}\$ and \$i \in \tt{i\nst}\$, then any binary operation \$ai\$ that has already been evaluated already exists in the <code>obj</code> graph and as such, can be traversed.</p>
-</li>
-<li>
-<p><strong>Physically</strong>: The <code>obj</code> graph is a dynamic entity that expands and contracts given the resource constraints of the underlying physical machines supporting its manifestation across all levels of the <a href="https://en.wikipedia.org/wiki/Memory_hierarchy">memory hierarchy</a>, where <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a> prunes the graph and computation grows the graph.</p>
-</li>
-</ol>
-</div>
-<div class="sect3">
-<h4 id="_type_specification">Type Specification</h4>
-<div class="paragraph">
-<p>An mm-ADT <strong>program</strong> in an mm-ADT <strong>type</strong>.
-In the type graph (a subgraph of the <code>obj</code> graph) a type is denoted by a vertex (an <em>ungrounded</em> vertex).
-That vertex is the type&#8217;s <strong>range</strong>.
-The type&#8217;s <strong>definition</strong> is encoded in the directed, <a href="https://en.wikipedia.org/wiki/Deterministic_automaton">deterministic</a> path that ends at a vertex with no outgoing edges.
-The resultant vertex is a <em>root</em> vertex and is the type&#8217;s <strong>domain</strong>.
-If the type definition&#8217;s path length is 0, then the domain and the range are equal, and the type is a ctype (a canonical type).
-If the path length is greater than 0, then the directed binary edges of the path are labeled with instructions from <code>inst</code>.
-This construction is abstractly represented in the diagram below.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/type-path.png" alt="type path" width="800">
-</div>
-</div>
-<div class="paragraph">
-<p>The type graph forms the central structure upon by which various VM processes are enacted.
-These processes include type/program specification, compilation, optimization, and ultimately, via a <a href="https://en.wikipedia.org/wiki/Homomorphism">homomorphism</a> from the type graph to the value graph, evaluation.
-Given finite computing resources, the type graph does not exist eternally in a static form ready-made.
-No, instead, subgraphs of it must be generated.
-This is accomplished via an action of <code>inst</code> monoid on the set <code>inst<sup>*</sup></code> (the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene star</a> closure of <code>inst</code>).
-For instance, in <code>mmlang</code> the user juxtaposes a ctype (domain) and an <code>inst</code> to construct a dtype.
-That dtype is juxtaposed with another <code>inst</code> to yield another dtype so forth until a desired type is reached.</p>
-</div>
-<div class="paragraph">
-<p>\[
-\texttt{range} = ((((((\texttt{domain} \cdot \texttt{inst}_0) \cdot \texttt{inst}_1) \cdot \texttt{inst}_2) \ldots) \cdot \texttt{inst}_{n-2}) \cdot \texttt{inst}_{n-1}).
-\]</p>
-</div>
-<div class="paragraph">
-<p>In general, the action of an <code>inst</code> on a type is the function \[
-\texttt{inst}: T \to T, \]
-where if \$a \in \tt{i\nst}\$, then \[
-a(x) = xa.
-\]</p>
-</div>
-<div class="paragraph">
-<p>Said plainly, instructions in <code>inst</code> act on types by concatenating themselves to the type definition.
-Thus, algebraically, a type is an element of the <a href="https://en.wikipedia.org/wiki/Free_algebra">free</a> inst monoid rooted at a ctype.</p>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_type_compilation">Type Compilation</h4>
-
-</div>
-<div class="sect3">
-<h4 id="_type_optimization">Type Optimization</h4>
-
-</div>
-<div class="sect3">
-<h4 id="_type_evaluation_2">Type Evaluation</h4>
-<div class="paragraph">
-<p>A type <a href="https://en.wikipedia.org/wiki/Compiler">compiles</a> a type.
-A type <a href="https://en.wikipedia.org/wiki/Executable">evaluates</a> a value.
-The <code>inst</code> monoid&#8217;s <strong>type specification</strong> action yields an element in the free <code>inst</code> monoid, which, in the <code>obj</code> graph, is realized as a path from a range vertex to a domain vertex.
-In the example <code>obj</code> graph encoding below, the range vertex is the <strong>type path</strong>'s <em>source</em> and the domain vertex is the path&#8217;s <em>target</em>.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/type-path.png" alt="type path" width="800">
-</div>
-</div>
-<div class="paragraph">
-<p>During <strong>type evaluation</strong>, the type path is reversed to form the <strong>co-type path</strong>, where the domain vertex is the source and the range vertex is the target.</p>
-</div>
-<div class="imageblock text-center">
-<div class="content">
-<img src="./images/processor/co-type-path.png" alt="co type path" width="800">
-</div>
-</div>
-<div class="paragraph">
-<p>If \$x \in \tt{value}\$, then \$x\$ is propagated along the co-type path, where the \$\tt{domai\n}\$ and \$\tt{rang\e}\$ types perform <a href="https://en.wikipedia.org/wiki/Type_system#Dynamic_type_checking_and_runtime_type_information">runtime type checking</a> and the instructions transform the source \$x\$ value at each step into the resultant \$y\$ value.</p>
-</div>
-<div class="paragraph">
-<p>\[
-y = ((((((((x \cdot \texttt{domain}) \cdot \texttt{inst}_0) \cdot \texttt{inst}_1) \cdot \texttt{inst}_2) \ldots) \cdot \texttt{inst}_{n-2}) \cdot \texttt{inst}_{n-1}) \cdot \texttt{range}).
-\]</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int[plus,1][plus,2][plus,3]                                   <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;int[plus,1][plus,2][plus,3]
-mmlang&gt; int[plus,1][plus,2][plus,3][path]                             <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;(int;;int;[plus,1];int;[plus,2];int;[plus,3];int)
-   &lt;=int[plus,1][plus,2][plus,3][path,(_;_)]
-mmlang&gt; 1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int                     <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;7
-mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]                          <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;(1;[plus,1];2;[plus,2];4;[plus,3];7)
-   &lt;=1[plus,1][plus,2][plus,3][path,(_;_)]
-mmlang&gt; 1=&gt;int[plus,1][plus,2][plus,3][path]&gt;-                        <i class="conum" data-value="5"></i><b>(5)</b>
-==&gt;7</code></pre>
-</div>
-</div>
-<div class="colist arabic">
-<table>
-<tr>
-<td><i class="conum" data-value="1"></i><b>1</b></td>
-<td>An <code>int&lt;=int</code> type with a type path length of 5.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="2"></i><b>2</b></td>
-<td>The co-type path of the previous type encoded in a <code>;-poly</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="3"></i><b>3</b></td>
-<td>The step-wise <code>=&gt;</code> evaluation of the co-type path.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="4"></i><b>4</b></td>
-<td>The step-wise <code>=&gt;</code> evaluation of the co-type path chambered in a <code>;-poly</code>.</td>
-</tr>
-<tr>
-<td><i class="conum" data-value="5"></i><b>5</b></td>
-<td>The evaluation of the <code>;-poly</code> simply returns the last path value.</td>
-</tr>
-</table>
-</div>
-<div class="paragraph">
-<p>In the <code>mmlang</code> example above, the step-wise <code>=&gt;</code> evaluation of the co-type path is in one-to-one correspondence with the mm-ADT VM&#8217;s execution plan.
-The mm-ADT algebras are particular constraints on the most general algebraic specification of mm-ADT: the <code>obj</code> magma.</p>
-</div>
-<div class="paragraph text-center">
-<p><code>1=&gt;int=&gt;[plus,1]=&gt;[plus,2]=&gt;[plus,3]=&gt;int</code></p>
-</div>
-<div class="sect4">
-<h5 id="_type_checking">Type Checking</h5>
-
-</div>
-</div>
-<div class="sect3">
-<h4 id="_instruction_classes">Instruction Classes</h4>
-<div class="sect4">
-<h5 id="_map">Map</h5>
-
-</div>
-<div class="sect4">
-<h5 id="_filter">Filter</h5>
-
-</div>
-<div class="sect4">
-<h5 id="_trace">Trace</h5>
-
-</div>
-<div class="sect4">
-<h5 id="_branch">Branch</h5>
-
-</div>
-</div>
-</div>
-<div class="sect2">
-<h3 id="_processor_implementations">Processor Implementations</h3>
-
-</div>
-</div>
-</div>
-<div class="sect1">
 <h2 id="_reference">Reference</h2>
 <div class="sectionbody">
 <div class="sect2">
@@ -7625,7 +4993,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-25 13:03:13 -0600
+Last updated 2020-09-26 01:30:05 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
