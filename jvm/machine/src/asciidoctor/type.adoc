@@ -1476,7 +1476,10 @@ a|
 |===
 ^| ;-lst (fluent chaining) ^| ;-rec (conditional chaining)
 
-| image:semi-lst-graph.svg[] | image:semi-rec-graph.svg[]
+| image:semi-lst-graph.svg[]
+| +++<div class="zoom">+++
+  image:semi-rec-graph.svg[]
+  +++</div>+++
 a|
 [exec,prompt="mm> "]
 ----
