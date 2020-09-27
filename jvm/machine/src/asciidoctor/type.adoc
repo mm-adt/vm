@@ -1376,6 +1376,8 @@ a|
 .,-poly Controls
 The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring. The https://en.wikipedia.org/wiki/Associative_property[associativity] and https://en.wikipedia.org/wiki/Commutative_property[commutativity] of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a `,-poly` are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes https://en.wikipedia.org/wiki/Parallel_computing[parallelism]. The `,-poly` algebra realizes https://en.wikipedia.org/wiki/Method_cascading[cascading] https://en.wikipedia.org/wiki/Union_(set_theory)[union] in `lst` and https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional] cascading in `rec`.
 
+NOTE: In the examples to follow \$v\$ is the neumoi for _value_ and \$k\$ is the nuemonic for _key_. Furthermore, the `mmlang` examples use Unicode supscript characters to better align the `mmlang` examples with the `mmnotation` equations.
+
 .,-poly Branch
 [cols="7,9"]
 |===
@@ -1383,28 +1385,28 @@ The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[a
 
 |
 \[
-x => \big[v_0,v_1,\ldots,v_n\big] \;\;=\;\; \coprod_{i=0}^n x => v_i
+x => \big[g_0,g_1,\ldots,g_n\big] \;\;=\;\; \coprod_{i=0}^n x => g_i
 \]
 |
 \[
-x => \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+x => \big[(k_0 \to g_0),\ldots,(k_n \to g_n)\big]
 \;\;=\;\;
 \coprod_{i=0}^n
 \begin{cases}
-x => v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
+x => g_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 \mathbf{0} & \text{otherwise}.
 \end{cases}
 \]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x' => [+'a',+'b',+'c']                    ## ['xa','xb','xc']
+'x' => [+'g₀',+'g₁',+'g₂']                    ## ['xg₀','xg₁','xg₂']
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x' => [+'s'->+'a',+'r'->+'b',+'t'->+'c']                ## ['xa','xb','xc']
+'x' => [+'k₀'->+'g₀',+'k₁'->+'g₁',+'k₂'->+'g₂']                ## ['xg₀','xg₁','xg₂']
 ----
 {blank}
 |===
@@ -1416,18 +1418,17 @@ a|
 
 | image:comma-lst-graph.svg[] | image:comma-rec-graph.svg[]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x'-<(+'a',+'b',+'c')                      ## ('xa','xb','xc')
-'x'-<(+'a',+'b',+'c')>-                    ## ['xa','xb','xc']
-
+'x'-<(+'g₀',+'g₁',+'g₂')                      ## ('xg₀','xg₁','xg₂')
+'x'-<(+'g₀',+'g₁',+'g₂')>-                    ## ['xg₀','xg₁','xg₂']
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x'-<(+'s'->+'a',+'r'->+'b',+'t'->+'c')                 ## ('xs'->'xa','xr'->'xb','xt'->'xc')
-'x'-<(+'s'->+'a',+'r'->+'b',+'t'->+'c')>-               ## ['xa','xb','xc']
+'x'-<(+'k₀'->+'g₀',+'k₁'->+'g₁',+'k₂'->+'g₂')                 ## ('xk₀'->'xg₀','xk₁'->'xg₁','xk₂'->'xg₂')
+'x'-<(+'k₀'->+'g₀',+'k₁'->+'g₁',+'k₂'->+'g₂')>-               ## ['xg₀','xg₁','xg₂']
 ----
 {blank}
 |===
@@ -1444,29 +1445,28 @@ The *;-polys* capture the multiplicative https://en.wikipedia.org/wiki/Monoid[mo
 
 |
 \[
-x => \big[v_0;v_1;\ldots;v_n\big] \;\;=\;\; x => \prod_{i=0}^n v_i
+x => \big[m_0;m_1;\ldots;m_n\big] \;\;=\;\; x => \prod_{i=0}^n m_i
 \]
-
 |
 \[
-x => \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+x => \big[(k_0 \to m_0),\ldots,(k_n \to m_n)\big]
 \;\;=\;\;
 x => \prod_{i=0}^n
 \begin{cases}
-v_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
+m_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
 \mathbf{0} & \text{otherwise}.
 \end{cases}
 \]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x' => [+'a';+'b';+'c']                         ## 'xabc'
+'x' => [+'m₀';+'m₁';+'m₂']                         ## 'xm₀m₁m₂'
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x' => [+'s'->+'a';+'r'->+'b';+'t'->+'c']                   ## 'xabc'
+'x' => [+'k₀'->+'m₀';+'k₁'->+'m₁';+'k₂'->+'m₂']                   ## 'xm₀m₁m₂'
 ----
 {blank}
 |===
@@ -1478,17 +1478,17 @@ a|
 
 | image:semi-lst-graph.svg[] | image:semi-rec-graph.svg[]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x'-<(+'a';+'b';+'c')                     ## ('xa';'xab';'xabc')
-'x'-<(+'a';+'b';+'c')>-                   ## 'xabc'
+'x'-<(+'m₀';+'m₁';+'m₂')                     ## ('xm₀';'xm₀m₁';'xm₀m₁m₂')
+'x'-<(+'m₀';+'m₁';+'m₂')>-                   ## 'xm₀m₁m₂'
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x'-<(+'s'->+'a';+'r'->+'b';+'t'->+'c')                      ## ('xs'->'xa';'xar'->'xab';'xabt'->'xabc')
-'x'-<(+'s'->+'a';+'r'->+'b';+'t'->+'c')>-                    ## 'xabc'
+'x'-<(+'k₀'->+'m₀';+'k₁'->+'m₁';+'k₂'->+'m₂')                      ## ('xk₀'->'xm₀';'xm₀k₁'->'xm₀m₁';'xm₀m₁k₂'->'xm₀m₁m₂')
+'x'-<(+'k₀'->+'m₀';+'k₁'->+'m₁';+'k₂'->+'m₂')>-                    ## 'xm₀m₁m₂'
 ----
 {blank}
 |===
@@ -1509,37 +1509,38 @@ The *|-polys* capture mm-ADT's _barrier_ https://en.wikipedia.org/wiki/Near-ring
 
 |
 \[
-x => \big[v_0,v_1,\ldots,v_n\big] =
+x => \big[r_0,r_1,\ldots,r_n\big] =
 \begin{cases}
-x => v_0  & \text{if } (x => v_0) \neq \mathbf{0}, \\
-x => v_1  & \text{if } (x => v_1) \neq \mathbf{0}, \\
+x => r_0  & \text{if } (x => r_0) \neq \mathbf{0}, \\
+x => r_1  & \text{if } (x => r_1) \neq \mathbf{0}, \\
 \ldots  & \\
-x => v_n  & \text{if } (x => v_n) \neq \mathbf{0}, \\
+x => r_n  & \text{if } (x => r_n) \neq \mathbf{0}, \\
 \mathbf{0} & \text{otherwise}.
 \end{cases}
 \]
 |
 \[
-x => \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+x => \big[(k_0\to r_0),\ldots,(k_n\to r_n)\big]
 =
 \begin{cases}
-x => v_0  & \text{if } (x => k_0) \neq \mathbf{0}, \\
-x => v_1  & \text{if } (x => k_1) \neq \mathbf{0}, \\
+x => r_0  & \text{if } (x => k_0) \neq \mathbf{0}, \\
+x => r_1  & \text{if } (x => k_1) \neq \mathbf{0}, \\
 \ldots  & \\
-x => v_n  & \text{if } (x => k_n) \neq \mathbf{0}, \\
+x => r_n  & \text{if } (x => k_n) \neq \mathbf{0}, \\
 \mathbf{0} & \text{otherwise}.
 \end{cases}
 \]
+// +'m₀';+'m₁';+'m₂'
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x' => ['a'{0}\|+'b'\|+'c']                     ## 'xb'
+'x' => ['r₀'{0}\|+'r₁'\|+'r₂']                     ## 'xr₁'
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x' => ['s'{0}->+'a'\|+'r'->+'b'\|+'t'->+'c']                   ## 'xb'
+'x' => ['k₀'{0}->+'r₀'\|+'k₁'->+'r₁'\|+'k₂'->+'r₂']                   ## 'xr₁'
 ----
 {blank}
 |====
@@ -1551,17 +1552,17 @@ a|
 
 | image:pipe-lst-graph.svg[] | image:pipe-rec-graph.svg[]
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x'-<('a'{0}\|+'b'\|+'c')                     ## ('xb')
-'x'-<('a'{0}\|+'b'\|+'c')>-                   ## 'xb'
+'x'-<('r₀'{0}\|+'r₁'\|+'r₂')                     ## ('xr₁')
+'x'-<('r₀'{0}\|+'r₁'\|+'r₂')>-                   ## 'xr₁'
 ----
 {blank}
 a|
-[exec]
+[exec,prompt="mm> "]
 ----
-'x'-<('s'{0}->+'a'\|+'r'->+'b'\|+'t'->+'c')                       ## ('xr'->'xb')
-'x'-<('s'{0}->+'a'\|+'r'->+'b'\|+'t'->+'c')>-                     ## 'xb'
+'x'-<('k₀'{0}->+'r₀'\|+'k₁'->+'r₁'\|+'k₂'->+'r₂')                       ## ('xk₁'->'xr₁')
+'x'-<('k₀'{0}->+'r₀'\|+'k₁'->+'r₁'\|+'k₂'->+'r₂')>-                     ## 'xr₁'
 ----
 {blank}
 |====

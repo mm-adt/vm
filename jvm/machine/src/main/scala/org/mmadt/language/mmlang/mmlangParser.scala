@@ -49,6 +49,7 @@ class mmlangParser extends JavaTokenParsers {
 
   override val whiteSpace:Regex = """[\s]*(//.*[\s]*)*(/\*.*?\*/[\s]*)*""".r // includes support for single line // and /**/ comments
   override def decimalNumber:Parser[String] = """-?\d+\.\d+""".r
+  val string:Regex = """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r
 
   // all mm-ADT languages must be able to accept a string representation of an expression in the language and return an Obj
   private def parse[O <: Obj](input:String, prefix:Option[Type[Obj]] = None):O = {
@@ -86,7 +87,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val obj:Parser[Obj] = objValue | objType | anonQuant
 
   // variable parsing
-  lazy val symbolName:Parser[String] = Tokens.lift_op | ("[\\^]?[a-zA-Z]+[a-zA-Z_0-9]*".r)
+  lazy val symbolName:Parser[String] = Tokens.lift_op | ("""[\\^]?[a-zA-Z]+[a-zA-Z_0-9]*""".r)
   lazy val typeNameNoColon:Parser[String] = symbolName.filter(x => !Tokens.reservedTokens.contains(x)) <~ not(":")
   lazy val typeNameColon:Parser[String] = symbolName.filter(x => !Tokens.reservedTokens.contains(x)) <~ ":"
 
@@ -140,7 +141,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val boolValue:Parser[BoolValue] = opt(typeNameColon) ~ (Tokens.btrue | Tokens.bfalse) ^^ (x => bool(x._2.toBoolean, x._1.getOrElse(Tokens.bool), qOne))
   lazy val intValue:Parser[Int] = opt(typeNameColon) ~ wholeNumber ^^ (x => int(x._2.toLong, x._1.getOrElse(Tokens.int), qOne))
   lazy val realValue:Parser[RealValue] = opt(typeNameColon) ~ decimalNumber ^^ (x => real(x._2.toDouble, x._1.getOrElse(Tokens.real), qOne))
-  lazy val strValue:Parser[StrValue] = opt(typeNameColon) ~ """'([^'\x00-\x1F\x7F\\]|\\[\\'"bfnrt]|\\u[a-fA-F0-9]{4})*'""".r ^^ (x => str(g = x._2.subSequence(1, x._2.length - 1).toString, name = x._1.getOrElse(Tokens.str), qOne))
+  lazy val strValue:Parser[StrValue] = opt(typeNameColon) ~ string ^^ (x => str(g = x._2.subSequence(1, x._2.length - 1).toString, name = x._1.getOrElse(Tokens.str), qOne))
   lazy val lstValue:Parser[Lst[Obj]] = (opt(typeNameColon) ~ (LROUND ~> lstStruct(objValue) <~ RROUND) ^^ (x => lst(name = x._1.getOrElse(Tokens.lst), g = (x._2._1, x._2._2))))
   lazy val recValue:Parser[Rec[Obj, Obj]] = (opt(typeNameColon) ~ (LROUND ~> recStruct(objValue) <~ RROUND) ^^ (x => rec(name = x._1.getOrElse(Tokens.rec), g = (x._2._1, x._2._2))))
   lazy val startValue:Parser[Obj] = ((LBRACKET ~> rep1sep(objValue, COMMA)) <~ RBRACKET) ~ opt(quantifier) ^^ (x => estrm(x._1.filter(_.alive).map(y => y.q(q => multQ(q, x._2.getOrElse(qOne)))):_*))

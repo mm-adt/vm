@@ -141,6 +141,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("empty space parsing") {
+    println(engine.eval("'x₀'"))
     assert(!engine.eval("").alive)
     assert(!engine.eval("    ").alive)
     assert(!engine.eval("  \n  ").alive)
