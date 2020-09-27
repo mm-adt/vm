@@ -2446,14 +2446,27 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 </tbody>
 </table>
 <div class="paragraph">
-<p>In mm-ADT, a <code>poly</code> can be used as a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29"><strong>collection</strong></a> data structure, where the collection&#8217;s semantics are tied to the operator(s) of the free object&#8217;s abstract algebra. Moreover, type-based <code>polys</code> offer data flow <a href="https://en.wikipedia.org/wiki/Control_flow"><strong>control</strong></a> semantics. The mm-ADT <code>poly</code> is a versatile structure because it is agnostic to the types and values contained therein while remaining in <a href="https://en.wikipedia.org/wiki/Isomorphism">one-to-one correspondence</a> with the <a href="https://zenodo.org/record/2565243">stream ring algebra</a>'s operators' axioms and entailed theorems.</p>
+<p>In mm-ADT, <code>polys</code> are</p>
 </div>
-<h5 id="_poly_structures" class="discrete">Poly Structures</h5>
-<div class="paragraph">
-<p>There are <strong>value</strong> <code>polys</code> and there are <strong>type</strong> <code>polys</code>. A value <code>poly</code> is composed of only value <code>objs</code> and is best understood as a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure. A type <code>poly</code> contains at least one type <code>obj</code> and is intuitively understood as a <a href="https://en.wikipedia.org/wiki/Control_flow">flow control</a> structure.</p>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29"><strong>collection</strong></a> data structures, where the collection&#8217;s semantics are tied to the operator(s) of the free object&#8217;s abstract algebra, and</p>
+</li>
+<li>
+<p><a href="https://en.wikipedia.org/wiki/Control_flow"><strong>control</strong></a> data processes, where the control semantics are likewise a consequence of the underlying free object&#8217;s algebra.</p>
+</li>
+</ol>
 </div>
 <div class="paragraph">
-<p>As a practical consideration, mm-ADT offers two kinds of <code>poly</code>: <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>), where theoretically, <code>rec</code> is simply a <code>lst</code> with some added conveniences that make typical programming patterns easier to express. Finally, a <code>poly</code> is associated with one of three algebras: <code>,</code> (<a href="https://en.wikipedia.org/wiki/Free_abelian_group">abelian group</a>), <code>;</code> (<a href="https://en.wikipedia.org/wiki/Free_monoid">monoid</a>), or <code>|</code> (<a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a>). These algebras correspond to the magmas of mm-ADT&#8217;s <a href="https://zenodo.org/record/2565243">stream ring algebra</a>.</p>
+<p>The mm-ADT <code>poly</code> is versatile because it is agnostic to the types and values contained therein while remaining in <a href="https://en.wikipedia.org/wiki/Isomorphism">one-to-one correspondence</a> with the <a href="https://zenodo.org/record/2565243">stream ring algebra</a>'s operators' axioms and entailed theorems. More poetically, <code>poly</code> is the bedrock upon which the mm-ADT algebraic ecology is sustained.</p>
+</div>
+<h5 id="_poly_types_and_values" class="discrete">Poly Types and Values</h5>
+<div class="paragraph">
+<p>There are <strong>type</strong> <code>polys</code> and there are <strong>value</strong> <code>polys</code>. A type <code>poly</code> contains at least one type <code>obj</code> and is typically intended for use as a <a href="https://en.wikipedia.org/wiki/Control_flow">flow control</a> structure. A value <code>poly</code> is composed of only value <code>objs</code> with a common use as a <a href="https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29">collection</a> data structure.</p>
+</div>
+<div class="paragraph">
+<p>As a practical consideration, mm-ADT offers two kinds of <code>poly</code>: <code>lst</code> (<a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>) and <code>rec</code> (<a href="https://en.wikipedia.org/wiki/Record_%28computer_science%29">record</a>), where theoretically, <code>rec</code> is simply a <code>lst</code> with some added conveniences that make typical programming patterns easier to express. Finally, a <code>poly</code> is associated with one of three algebras that comprise mm-ADT&#8217;s <a href="https://zenodo.org/record/2565243">stream ring</a>: <code>,</code> (<a href="https://en.wikipedia.org/wiki/Free_abelian_group">abelian group</a>), <code>;</code> (<a href="https://en.wikipedia.org/wiki/Free_monoid">monoid</a>), or <code>|</code> (<a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a>).</p>
 </div>
 <div class="paragraph">
 <p>\[
@@ -2525,6 +2538,25 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 </tbody>
 </table>
 <hr>
+<div class="paragraph">
+<p>There are three instructions that are of primary importance for <code>poly</code> with one being a composite of the other two.</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p><code>[split]</code> (<code>-&lt;</code>): propagates an incoming <code>obj</code> through a <code>poly</code> according to its algebra.</p>
+</li>
+<li>
+<p><code>[merge]</code> (<code>&gt;-</code>): aggregates outgoing <code>objs</code> from a <code>poly</code> according to its algebra.</p>
+</li>
+<li>
+<p><code>[branch]</code> (<code>=[</code>): propagates and then aggregates <code>objs</code> through a <code>poly</code> according to its algebra.</p>
+</li>
+</ol>
+</div>
+<div class="paragraph">
+<p>The details of these instructions will be discussed in full over the following subsections.</p>
+</div>
 <div class="exampleblock">
 <div class="title">Deep Dive 2. Mathematical Notation Conventions for mm-ADT</div>
 <div class="content">
@@ -3179,6 +3211,9 @@ mm&gt; [['x']+'g₀',['x']+'g₁',['x']+'g₂']
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p>Branching can be understood as a two stage process which is captured by the <code>[split]/[merge]</code> instruction pairing. In practice, <code>[split]/[merge]</code> are useful in isolating a <code>poly</code> computation (<code>[split]</code>) to then later introduce the results (<code>[merge]</code>) into the outer stream. This is demonstrated below for <code>,-lst</code> and <code>,-rec</code> where <code>-&lt;</code> is <code>mmlang</code> sugar for <code>[split]</code> and <code>&gt;-</code> is <code>mmlang</code> sugar for <code>[merge]</code>.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 3. ,-poly Split/Merge</caption>
 <colgroup>
@@ -3286,6 +3321,9 @@ mm&gt; 'x' =&gt; +'m₀m₁m₂'
 </tr>
 </tbody>
 </table>
+<div class="paragraph">
+<p><span class="image left"><img src="./images/type/bubble-chamber.png" alt="bubble chamber" width="200"></span> The <code>;-lst</code> equation above realizes a structure and process joyfully named the <a href="https://en.wikipedia.org/wiki/Bubble_chamber">"bubble chamber"</a>. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the chamber and the trace they leave (called their <em>varpor trail</em>) provides physicists empirical data regarding the nature of the particle under study&#8201;&#8212;&#8201;e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. As demonstrated below, \$x\$ is the <em>particle</em> and <code>-&lt;</code> <em>shoots</em> \$x\$ into the <code>;-lst</code> <em>bubble chamber</em>, where each term in the <code>;-lst</code> acts as a <em>vapor droplet</em>.</p>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 5. ;-poly Split/Merge</caption>
 <colgroup>
@@ -3331,12 +3369,6 @@ mm&gt; 'x'-&lt;(+'k₀'-&gt;+'m₀';+'k₁'-&gt;+'m₁';+'k₂'-&gt;+'m₂')&gt;
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p><span class="image left"><img src="./images/type/bubble-chamber.png" alt="bubble chamber" width="200"></span> The <code>;-lst</code> equation above realizes a structure and process joyfully named the <a href="https://en.wikipedia.org/wiki/Bubble_chamber">"bubble chamber"</a>.
-In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor.
-Particles are shot into the room and the trace they leave (called their <em>varpor trail</em>) provides physicists empirical data on the nature of the particle under study&#8201;&#8212;&#8201;e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it.
-In mm-ADT, \$x\$ above plays the role of the <em>particle</em> and <code>;-lst</code> the <em>bubble chamber</em> with each term in the <code>;-lst</code> acting as a <em>vapor droplet</em>.</p>
-</div>
 <div class="paragraph">
 <div class="title">|-poly Controls</div>
 <p>The <strong>|-polys</strong> capture mm-ADT&#8217;s <em>barrier</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a>, where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. As a control structure, <code>|-poly</code> is a <a href="https://en.wikipedia.org/wiki/Sequential_algorithm">sequential</a> branch that can be understood programmatically as a <a href="https://en.wikipedia.org/wiki/Short-circuit_evaluation">short-circuit</a> <a href="https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29">fold</a>. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
@@ -4989,7 +5021,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-26 23:55:10 -0600
+Last updated 2020-09-27 01:13:08 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
