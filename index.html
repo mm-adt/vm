@@ -3138,6 +3138,18 @@ When each <code>poly</code> contains 0 or 1 element, the respective algebras beh
 <div class="title">,-poly Controls</div>
 <p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring. The <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> and <a href="https://en.wikipedia.org/wiki/Commutative_property">commutativity</a> of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a <code>,-poly</code> are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes <a href="https://en.wikipedia.org/wiki/Parallel_computing">parallelism</a>. The <code>,-poly</code> algebra realizes <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> in <code>lst</code> and <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> cascading in <code>rec</code>.</p>
 </div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the examples to follow \$v\$ is the neumoi for <em>value</em> and \$k\$ is the nuemonic for <em>key</em>. Furthermore, the <code>mmlang</code> examples use Unicode supscript characters to better align the <code>mmlang</code> examples with the <code>mmnotation</code> equations.
+</td>
+</tr>
+</table>
+</div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 2. ,-poly Branch</caption>
 <colgroup>
@@ -3153,14 +3165,14 @@ When each <code>poly</code> contains 0 or 1 element, the respective algebras beh
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
-x &#8658; \big[v_0,v_1,\ldots,v_n\big] \;\;=\;\; \coprod_{i=0}^n x &#8658; v_i
+x &#8658; \big[g_0,g_1,\ldots,g_n\big] \;\;=\;\; \coprod_{i=0}^n x &#8658; g_i
 \]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
-x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+x &#8658; \big[(k_0 \to g_0),\ldots,(k_n \to g_n)\big]
 \;\;=\;\;
 \coprod_{i=0}^n
 \begin{cases}
-x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
+x &#8658; g_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 \mathbf{0} &amp; \text{otherwise}.
 \end{cases}
 \]</p></td>
@@ -3168,10 +3180,10 @@ x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; [+'a',+'b',+'c']
-==&gt;'xa'
-==&gt;'xb'
-==&gt;'xc'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; [+'g₀',+'g₁',+'g₂']
+==&gt;'xg₀'
+==&gt;'xg₁'
+==&gt;'xg₂'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3179,10 +3191,10 @@ x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; [+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c']
-==&gt;'xa'
-==&gt;'xb'
-==&gt;'xc'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; [+'k₀'-&gt;+'g₀',+'k₁'-&gt;+'g₁',+'k₂'-&gt;+'g₂']
+==&gt;'xg₀'
+==&gt;'xg₁'
+==&gt;'xg₂'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3211,12 +3223,12 @@ x &#8658; v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')
-==&gt;('xa','xb','xc')
-mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')&gt;-
-==&gt;'xa'
-==&gt;'xb'
-==&gt;'xc'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x'-&lt;(+'g₀',+'g₁',+'g₂')
+==&gt;('xg₀','xg₁','xg₂')
+mm&gt; 'x'-&lt;(+'g₀',+'g₁',+'g₂')&gt;-
+==&gt;'xg₀'
+==&gt;'xg₁'
+==&gt;'xg₂'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3224,12 +3236,12 @@ mmlang&gt; 'x'-&lt;(+'a',+'b',+'c')&gt;-
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')
-==&gt;('xs'-&gt;'xa','xr'-&gt;'xb','xt'-&gt;'xc')
-mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')&gt;-
-==&gt;'xa'
-==&gt;'xb'
-==&gt;'xc'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x'-&lt;(+'k₀'-&gt;+'g₀',+'k₁'-&gt;+'g₁',+'k₂'-&gt;+'g₂')
+==&gt;('xk₀'-&gt;'xg₀','xk₁'-&gt;'xg₁','xk₂'-&gt;'xg₂')
+mm&gt; 'x'-&lt;(+'k₀'-&gt;+'g₀',+'k₁'-&gt;+'g₁',+'k₂'-&gt;+'g₂')&gt;-
+==&gt;'xg₀'
+==&gt;'xg₁'
+==&gt;'xg₂'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3260,14 +3272,14 @@ mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a',+'r'-&gt;+'b',+'t'-&gt;+'c')&gt;-
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
-x &#8658; \big[v_0;v_1;\ldots;v_n\big] \;\;=\;\; x &#8658; \prod_{i=0}^n v_i
+x &#8658; \big[m_0;m_1;\ldots;m_n\big] \;\;=\;\; x &#8658; \prod_{i=0}^n m_i
 \]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
-x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+x &#8658; \big[(k_0 \to m_0),\ldots,(k_n \to m_n)\big]
 \;\;=\;\;
 x &#8658; \prod_{i=0}^n
 \begin{cases}
-v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
+m_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 \mathbf{0} &amp; \text{otherwise}.
 \end{cases}
 \]</p></td>
@@ -3275,8 +3287,8 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; [+'a';+'b';+'c']
-==&gt;'xabc'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; [+'m₀';+'m₁';+'m₂']
+==&gt;'xm₀m₁m₂'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3284,8 +3296,8 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; [+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c']
-==&gt;'xabc'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; [+'k₀'-&gt;+'m₀';+'k₁'-&gt;+'m₁';+'k₂'-&gt;+'m₂']
+==&gt;'xm₀m₁m₂'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3314,10 +3326,10 @@ v_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')
-==&gt;('xa';'xab';'xabc')
-mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')&gt;-
-==&gt;'xabc'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x'-&lt;(+'m₀';+'m₁';+'m₂')
+==&gt;('xm₀';'xm₀m₁';'xm₀m₁m₂')
+mm&gt; 'x'-&lt;(+'m₀';+'m₁';+'m₂')&gt;-
+==&gt;'xm₀m₁m₂'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3325,10 +3337,10 @@ mmlang&gt; 'x'-&lt;(+'a';+'b';+'c')&gt;-
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')
-==&gt;('xs'-&gt;'xa';'xar'-&gt;'xab';'xabt'-&gt;'xabc')
-mmlang&gt; 'x'-&lt;(+'s'-&gt;+'a';+'r'-&gt;+'b';+'t'-&gt;+'c')&gt;-
-==&gt;'xabc'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x'-&lt;(+'k₀'-&gt;+'m₀';+'k₁'-&gt;+'m₁';+'k₂'-&gt;+'m₂')
+==&gt;('xk₀'-&gt;'xm₀';'xm₀k₁'-&gt;'xm₀m₁';'xm₀m₁k₂'-&gt;'xm₀m₁m₂')
+mm&gt; 'x'-&lt;(+'k₀'-&gt;+'m₀';+'k₁'-&gt;+'m₁';+'k₂'-&gt;+'m₂')&gt;-
+==&gt;'xm₀m₁m₂'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3362,23 +3374,23 @@ In mm-ADT, \$x\$ above plays the role of the <em>particle</em> and <code>;-lst</
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
-x &#8658; \big[v_0,v_1,\ldots,v_n\big] =
+x &#8658; \big[r_0,r_1,\ldots,r_n\big] =
 \begin{cases}
-x &#8658; v_0  &amp; \text{if } (x &#8658; v_0) \neq \mathbf{0}, \\
-x &#8658; v_1  &amp; \text{if } (x &#8658; v_1) \neq \mathbf{0}, \\
+x &#8658; r_0  &amp; \text{if } (x &#8658; r_0) \neq \mathbf{0}, \\
+x &#8658; r_1  &amp; \text{if } (x &#8658; r_1) \neq \mathbf{0}, \\
 \ldots  &amp; \\
-x &#8658; v_n  &amp; \text{if } (x &#8658; v_n) \neq \mathbf{0}, \\
+x &#8658; r_n  &amp; \text{if } (x &#8658; r_n) \neq \mathbf{0}, \\
 \mathbf{0} &amp; \text{otherwise}.
 \end{cases}
 \]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
-x &#8658; \big[[k_0,v_0],\ldots,[k_n,v_n]\big]
+x &#8658; \big[(k_0\to r_0),\ldots,(k_n\to r_n)\big]
 =
 \begin{cases}
-x &#8658; v_0  &amp; \text{if } (x &#8658; k_0) \neq \mathbf{0}, \\
-x &#8658; v_1  &amp; \text{if } (x &#8658; k_1) \neq \mathbf{0}, \\
+x &#8658; r_0  &amp; \text{if } (x &#8658; k_0) \neq \mathbf{0}, \\
+x &#8658; r_1  &amp; \text{if } (x &#8658; k_1) \neq \mathbf{0}, \\
 \ldots  &amp; \\
-x &#8658; v_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
+x &#8658; r_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
 \mathbf{0} &amp; \text{otherwise}.
 \end{cases}
 \]</p></td>
@@ -3386,8 +3398,8 @@ x &#8658; v_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; ['a'{0}|+'b'|+'c']
-==&gt;'xb'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; ['r₀'{0}|+'r₁'|+'r₂']
+==&gt;'xr₁'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3395,8 +3407,8 @@ x &#8658; v_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x' =&gt; ['s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c']
-==&gt;'xb'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; ['k₀'{0}-&gt;+'r₀'|+'k₁'-&gt;+'r₁'|+'k₂'-&gt;+'r₂']
+==&gt;'xr₁'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3425,10 +3437,10 @@ x &#8658; v_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')
-==&gt;('xb')
-mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')&gt;-
-==&gt;'xb'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x'-&lt;('r₀'{0}|+'r₁'|+'r₂')
+==&gt;('xr₁')
+mm&gt; 'x'-&lt;('r₀'{0}|+'r₁'|+'r₂')&gt;-
+==&gt;'xr₁'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -3436,10 +3448,10 @@ mmlang&gt; 'x'-&lt;('a'{0}|+'b'|+'c')&gt;-
 </div></div></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 'x'-&lt;('s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c')
-==&gt;('xr'-&gt;'xb')
-mmlang&gt; 'x'-&lt;('s'{0}-&gt;+'a'|+'r'-&gt;+'b'|+'t'-&gt;+'c')&gt;-
-==&gt;'xb'</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x'-&lt;('k₀'{0}-&gt;+'r₀'|+'k₁'-&gt;+'r₁'|+'k₂'-&gt;+'r₂')
+==&gt;('xk₁'-&gt;'xr₁')
+mm&gt; 'x'-&lt;('k₀'{0}-&gt;+'r₀'|+'k₁'-&gt;+'r₁'|+'k₂'-&gt;+'r₂')&gt;-
+==&gt;'xr₁'</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4993,7 +5005,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-26 01:30:05 -0600
+Last updated 2020-09-26 01:38:08 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
