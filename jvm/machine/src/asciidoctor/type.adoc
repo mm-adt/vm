@@ -1131,14 +1131,11 @@ The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[a
 
 A general `,-poly` has `obj` as its carrier set, `,` as its the https://en.wikipedia.org/wiki/Commutative_property[commutative] binary \$\+\$-operator, and `{0}` (`\_{0}`) as its identity element. With `obj` quantification, should two `,-poly` terms have equal __objects__, they can be merged according to the mm-ADT `[branch]` operator equation:
 \[
-\begin{split}
-[\texttt{branch},a_q, b_r] &=
+[\texttt{branch},a_q, b_r] =
 \begin{cases}
 a_{q + r}                      & \text{if } a == b, \\
 [\texttt{branch},a_q, b_r] & \text{otherwise},
-\end{cases} \\
-[a_q, b_r] &=
-\end{split}
+\end{cases}
 \]
 where \$+\$ is the quantifier ring's additive operator and
 \[
@@ -1179,9 +1176,9 @@ The *;-polys* capture the non-commutative, multiplicative https://en.wikipedia.o
 |===
 | abstract magma | stream magma | free poly
 
-| \[(\tt{obj}, \ast, \mathbf{1},\mathbf{0})\]
-| \[(\texttt{obj},\texttt{[juxt]},\{\mathbf{1}\},\{\mathbf{0}\})\]
-| \[(\texttt{obj},\texttt{(;)},\{\mathbf{1}\},\{\mathbf{0}\})\]
+| \[(\tt{obj}, \ast, \mathbf{1})\]
+| \[(\texttt{obj},\texttt{[juxt]},\texttt{[noop]})\]
+| \[(\texttt{obj},\texttt{(;)},\{\mathbf{1}\})\]
 |===
 
 The `;-poly` carrier set is `obj`, the multiplicative operator is `;`, the multiplicative identity is `{1}`, and due to the larger ring in which this magma is embedded, `{0}` is the https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator]. Due to non-commutativity, the `;` delimited elements form an https://en.wikipedia.org/wiki/Sequence[ordered sequence]. In `lst`, the consequence is a collection data structure with https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]-semantics. In `rec`, a https://en.wikipedia.org/wiki/Record_%28computer_science%29[record] with ordered fields is realized. Both support duplicates so the `rec` form is less like an associative array and more like a _list of pairs/fields_.
@@ -1189,40 +1186,17 @@ The `;-poly` carrier set is `obj`, the multiplicative operator is `;`, the multi
 The `[juxt]` operator is mm-ADT's multiplicative monoid operator and is only applied in `;-poly` for the universal elements \$\mathbf{1}\$ and \$\mathbf{0}\$. Given the equation
 
 \[
-\begin{split}
-a_q[\texttt{juxt}, b_r] &=
+a_q[\texttt{juxt}, b_r] =
 \begin{cases}
 b_{q \ast r} & \text{if } b \text{ is a value}, \\
 b(a)_{q \ast r}         & \text{otherwise,}
 \end{cases} \\
-a_q \Rightarrow b_r     &=
-\end{split}
 \]
 
-`;-poly` only computes the identity and the annihilator
-
-[.center]
-[cols="1,1",frame=none,grid=none,width=60]
-|===
-
-|
+`;-poly` only computes the free monoid identity
 \[
-\begin{split}
-a_q \Rightarrow \{\mathbf{1}\} &= \\
-\{\mathbf{1}\}_1(a_q)          &= \\
-a_{q \ast 1}                   &= a_q
-\end{split}
+a_q\texttt{[juxt,[noop]]} = a_q.
 \]
-
-|
-\[
-\begin{split}
-a_q \Rightarrow \{\mathbf{0}\} &= \\
-\{\mathbf{0}\}_0(a_q)          &= \\
-a_{q \ast 0}                   &= \{\mathbf{0}\}.
-\end{split}
-\]
-|===
 
 Examples are presented below that contain both \$\{\mathbf{0}\}\$ and \$\{\mathbf{1}\}\$ elements.
 
@@ -1371,12 +1345,10 @@ a|
 {blank}
 |===
 
-'''
+NOTE: In the examples to follow, the elements of the `polys` are labeled by first letter of their algebraic structure: \$g\$ is *abelian group*, \$m\$ is *monoid*, and \$r\$ is *near-ring*. For the `rec` examples, the key elements are labeled with \$k\$. The `mmlang` examples use Unicode subscript characters and `[plus]` to compose \$x\$ with the `objs` along the respective data control path. These choices were purely aesthetic, driven by the desire to better align the examples with their respective illustrative diagrams and `mm` notation equations.
 
 .,-poly Controls
-The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT ring. The https://en.wikipedia.org/wiki/Associative_property[associativity] and https://en.wikipedia.org/wiki/Commutative_property[commutativity] of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a `,-poly` are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes https://en.wikipedia.org/wiki/Parallel_computing[parallelism]. The `,-poly` algebra realizes https://en.wikipedia.org/wiki/Method_cascading[cascading] https://en.wikipedia.org/wiki/Union_(set_theory)[union] in `lst` and https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional] cascading in `rec`.
-
-NOTE: In the examples to follow \$v\$ is the neumoi for _value_ and \$k\$ is the nuemonic for _key_. Furthermore, the `mmlang` examples use Unicode supscript characters to better align the `mmlang` examples with the `mmnotation` equations.
+The *,-polys* capture the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group] of the mm-ADT stream ring. The https://en.wikipedia.org/wiki/Associative_property[associativity] and https://en.wikipedia.org/wiki/Commutative_property[commutativity] of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a `,-poly` are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes https://en.wikipedia.org/wiki/Parallel_computing[parallelism]. The `,-poly` algebra realizes https://en.wikipedia.org/wiki/Method_cascading[cascading] https://en.wikipedia.org/wiki/Union_(set_theory)[union] in `lst` and https://en.wikipedia.org/wiki/Conditional_(computer_programming)[conditional] https://en.wikipedia.org/wiki/Method_cascading[cascading] in `rec`.
 
 .,-poly Branch
 [cols="7,9"]
@@ -1385,12 +1357,12 @@ NOTE: In the examples to follow \$v\$ is the neumoi for _value_ and \$k\$ is the
 
 |
 \[
-x => \big[g_0,g_1,\ldots,g_n\big] \;\;=\;\; \coprod_{i=0}^n x => g_i
+x => \big[g_0,g_1,\ldots,g_n\big] \;=\; \coprod_{i=0}^n x => g_i
 \]
 |
 \[
 x => \big[(k_0 \to g_0),\ldots,(k_n \to g_n)\big]
-\;\;=\;\;
+\;=\;
 \coprod_{i=0}^n
 \begin{cases}
 x => g_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
@@ -1401,6 +1373,7 @@ a|
 [exec,prompt="mm> "]
 ----
 'x' => [+'g₀',+'g₁',+'g₂']                    ## ['xg₀','xg₁','xg₂']
+[['x']+'g₀',['x']+'g₁',['x']+'g₂']            ## ['xg₀','xg₁','xg₂']
 ----
 {blank}
 a|
@@ -1445,12 +1418,12 @@ The *;-polys* capture the multiplicative https://en.wikipedia.org/wiki/Monoid[mo
 
 |
 \[
-x => \big[m_0;m_1;\ldots;m_n\big] \;\;=\;\; x => \prod_{i=0}^n m_i
+x => \big[m_0;m_1;\ldots;m_n\big] \;=\; x => \prod_{i=0}^n m_i
 \]
 |
 \[
 x => \big[(k_0 \to m_0),\ldots,(k_n \to m_n)\big]
-\;\;=\;\;
+\;=\;
 x => \prod_{i=0}^n
 \begin{cases}
 m_i   & \text{if } (x => k_i) \neq \mathbf{0}, \\
@@ -1461,6 +1434,8 @@ a|
 [exec,prompt="mm> "]
 ----
 'x' => [+'m₀';+'m₁';+'m₂']                         ## 'xm₀m₁m₂'
+'x' => +'m₀'+'m₁'+'m₂'                             ## 'xm₀m₁m₂'
+'x' => +'m₀m₁m₂'                                   ## 'xm₀m₁m₂'
 ----
 {blank}
 a|
@@ -1537,7 +1512,8 @@ x => r_n  & \text{if } (x => k_n) \neq \mathbf{0}, \\
 a|
 [exec,prompt="mm> "]
 ----
-'x' => ['r₀'{0}\|+'r₁'\|+'r₂']                     ## 'xr₁'
+'x' => [+{0}'r₀'\|+'r₁'\|+'r₂']                     ## 'xr₁'
+[['x']+{0}'r₀'\|['x']+'r₁']                         ## 'xr₁'
 ----
 {blank}
 a|
@@ -1557,8 +1533,8 @@ a|
 a|
 [exec,prompt="mm> "]
 ----
-'x'-<('r₀'{0}\|+'r₁'\|+'r₂')                     ## ('xr₁')
-'x'-<('r₀'{0}\|+'r₁'\|+'r₂')>-                   ## 'xr₁'
+'x'-<(+{0}'r₀'\|+'r₁'\|+'r₂')                     ## ('xr₁')
+'x'-<(+{0}'r₀'\|+'r₁'\|+'r₂')>-                   ## 'xr₁'
 ----
 {blank}
 a|

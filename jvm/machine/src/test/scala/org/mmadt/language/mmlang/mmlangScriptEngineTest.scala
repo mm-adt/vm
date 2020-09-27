@@ -141,13 +141,14 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("empty space parsing") {
-    println(engine.eval("'x₀'"))
-    assert(!engine.eval("").alive)
+    println(engine.eval("'x' => [+'g₀',+'g₁',+'g₂']"))
+    println(engine.eval("[['x']+'g₀',['x']+'g₁',['x']+'g₂']"))
+   /* assert(!engine.eval("").alive)
     assert(!engine.eval("    ").alive)
     assert(!engine.eval("  \n  ").alive)
     assert(!engine.eval("\t  \n  ").alive)
 
-    println(engine.eval("(1,1,2)"))
+    println(engine.eval("(1,1,2)"))*/
     //  engine.eval("[true,6,7.8,'ryan']-<([type][zero],[zero])")
   }
 
