@@ -2746,14 +2746,11 @@ mm&gt; ('a'-&gt;1|'b'-&gt;2|'a'-&gt;3)&gt;-
 <div class="paragraph">
 <p>A general <code>,-poly</code> has <code>obj</code> as its carrier set, <code>,</code> as its the <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> binary \$+\$-operator, and <code>{0}</code> (<code>_{0}</code>) as its identity element. With <code>obj</code> quantification, should two <code>,-poly</code> terms have equal <em>objects</em>, they can be merged according to the mm-ADT <code>[branch]</code> operator equation:
 \[
-\begin{split}
-[\texttt{branch},a_q, b_r] &amp;=
+[\texttt{branch},a_q, b_r] =
 \begin{cases}
 a_{q + r}                      &amp; \text{if } a == b, \\
 [\texttt{branch},a_q, b_r] &amp; \text{otherwise},
-\end{cases} \\
-[a_q, b_r] &amp;=
-\end{split}
+\end{cases}
 \]
 where \$+\$ is the quantifier ring&#8217;s additive operator and
 \[
@@ -2825,9 +2822,9 @@ mmlang&gt; ('a'-&gt;true,1.0-&gt;6,1-&gt;{0},'a'-&gt;'a')
 </thead>
 <tbody>
 <tr>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\tt{obj}, \ast, \mathbf{1},\mathbf{0})\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\texttt{obj},\texttt{[juxt]},\{\mathbf{1}\},\{\mathbf{0}\})\]</p></td>
-<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\texttt{obj},\texttt{(;)},\{\mathbf{1}\},\{\mathbf{0}\})\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\tt{obj}, \ast, \mathbf{1})\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\texttt{obj},\texttt{[juxt]},\texttt{[noop]})\]</p></td>
+<td class="tableblock halign-center valign-top"><p class="tableblock">\[(\texttt{obj},\texttt{(;)},\{\mathbf{1}\})\]</p></td>
 </tr>
 </tbody>
 </table>
@@ -2839,43 +2836,19 @@ mmlang&gt; ('a'-&gt;true,1.0-&gt;6,1-&gt;{0},'a'-&gt;'a')
 </div>
 <div class="paragraph">
 <p>\[
-\begin{split}
-a_q[\texttt{juxt}, b_r] &amp;=
+a_q[\texttt{juxt}, b_r] =
 \begin{cases}
 b_{q \ast r} &amp; \text{if } b \text{ is a value}, \\
 b(a)_{q \ast r}         &amp; \text{otherwise,}
 \end{cases} \\
-a_q \Rightarrow b_r     &amp;=
-\end{split}
 \]</p>
 </div>
 <div class="paragraph">
-<p><code>;-poly</code> only computes the identity and the annihilator</p>
+<p><code>;-poly</code> only computes the free monoid identity
+\[
+a_q\texttt{[juxt,[noop]]} = a_q.
+\]</p>
 </div>
-<table class="tableblock frame-none grid-none center" style="width: 60%;">
-<colgroup>
-<col style="width: 50%;">
-<col style="width: 50%;">
-</colgroup>
-<tbody>
-<tr>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[
-\begin{split}
-a_q \Rightarrow \{\mathbf{1}\} &amp;= \\
-\{\mathbf{1}\}_1(a_q)          &amp;= \\
-a_{q \ast 1}                   &amp;= a_q
-\end{split}
-\]</p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock">\[
-\begin{split}
-a_q \Rightarrow \{\mathbf{0}\} &amp;= \\
-\{\mathbf{0}\}_0(a_q)          &amp;= \\
-a_{q \ast 0}                   &amp;= \{\mathbf{0}\}.
-\end{split}
-\]</p></td>
-</tr>
-</tbody>
-</table>
 <div class="paragraph">
 <p>Examples are presented below that contain both \$\{\mathbf{0}\}\$ and \$\{\mathbf{1}\}\$ elements.</p>
 </div>
@@ -3133,11 +3106,6 @@ When each <code>poly</code> contains 0 or 1 element, the respective algebras beh
 </tr>
 </tbody>
 </table>
-<hr>
-<div class="paragraph">
-<div class="title">,-poly Controls</div>
-<p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT ring. The <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> and <a href="https://en.wikipedia.org/wiki/Commutative_property">commutativity</a> of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a <code>,-poly</code> are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes <a href="https://en.wikipedia.org/wiki/Parallel_computing">parallelism</a>. The <code>,-poly</code> algebra realizes <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> in <code>lst</code> and <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> cascading in <code>rec</code>.</p>
-</div>
 <div class="admonitionblock note">
 <table>
 <tr>
@@ -3145,10 +3113,14 @@ When each <code>poly</code> contains 0 or 1 element, the respective algebras beh
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In the examples to follow \$v\$ is the neumoi for <em>value</em> and \$k\$ is the nuemonic for <em>key</em>. Furthermore, the <code>mmlang</code> examples use Unicode supscript characters to better align the <code>mmlang</code> examples with the <code>mmnotation</code> equations.
+In the examples to follow, the elements of the <code>polys</code> are labeled by first letter of their algebraic structure: \$g\$ is <strong>abelian group</strong>, \$m\$ is <strong>monoid</strong>, and \$r\$ is <strong>near-ring</strong>. For the <code>rec</code> examples, the key elements are labeled with \$k\$. The <code>mmlang</code> examples use Unicode subscript characters and <code>[plus]</code> to compose \$x\$ with the <code>objs</code> along the respective data control path. These choices were purely aesthetic, driven by the desire to better align the examples with their respective illustrative diagrams and <code>mm</code> notation equations.
 </td>
 </tr>
 </table>
+</div>
+<div class="paragraph">
+<div class="title">,-poly Controls</div>
+<p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT stream ring. The <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> and <a href="https://en.wikipedia.org/wiki/Commutative_property">commutativity</a> of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a <code>,-poly</code> are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes <a href="https://en.wikipedia.org/wiki/Parallel_computing">parallelism</a>. The <code>,-poly</code> algebra realizes <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> in <code>lst</code> and <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> in <code>rec</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <caption class="title">Table 2. ,-poly Branch</caption>
@@ -3165,11 +3137,11 @@ In the examples to follow \$v\$ is the neumoi for <em>value</em> and \$k\$ is th
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
-x &#8658; \big[g_0,g_1,\ldots,g_n\big] \;\;=\;\; \coprod_{i=0}^n x &#8658; g_i
+x &#8658; \big[g_0,g_1,\ldots,g_n\big] \;=\; \coprod_{i=0}^n x &#8658; g_i
 \]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
 x &#8658; \big[(k_0 \to g_0),\ldots,(k_n \to g_n)\big]
-\;\;=\;\;
+\;=\;
 \coprod_{i=0}^n
 \begin{cases}
 x &#8658; g_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
@@ -3181,6 +3153,10 @@ x &#8658; g_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; [+'g₀',+'g₁',+'g₂']
+==&gt;'xg₀'
+==&gt;'xg₁'
+==&gt;'xg₂'
+mm&gt; [['x']+'g₀',['x']+'g₁',['x']+'g₂']
 ==&gt;'xg₀'
 ==&gt;'xg₁'
 ==&gt;'xg₂'</code></pre>
@@ -3272,11 +3248,11 @@ mm&gt; 'x'-&lt;(+'k₀'-&gt;+'g₀',+'k₁'-&gt;+'g₁',+'k₂'-&gt;+'g₂')&gt;
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
-x &#8658; \big[m_0;m_1;\ldots;m_n\big] \;\;=\;\; x &#8658; \prod_{i=0}^n m_i
+x &#8658; \big[m_0;m_1;\ldots;m_n\big] \;=\; x &#8658; \prod_{i=0}^n m_i
 \]</p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock">\[
 x &#8658; \big[(k_0 \to m_0),\ldots,(k_n \to m_n)\big]
-\;\;=\;\;
+\;=\;
 x &#8658; \prod_{i=0}^n
 \begin{cases}
 m_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
@@ -3288,6 +3264,10 @@ m_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; [+'m₀';+'m₁';+'m₂']
+==&gt;'xm₀m₁m₂'
+mm&gt; 'x' =&gt; +'m₀'+'m₁'+'m₂'
+==&gt;'xm₀m₁m₂'
+mm&gt; 'x' =&gt; +'m₀m₁m₂'
 ==&gt;'xm₀m₁m₂'</code></pre>
 </div>
 </div>
@@ -3321,7 +3301,9 @@ m_i   &amp; \text{if } (x &#8658; k_i) \neq \mathbf{0}, \\
 <tbody>
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/semi-lst-graph.svg" alt="semi lst graph"></span></p></td>
-<td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/semi-rec-graph.svg" alt="semi rec graph"></span></p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><div class="zoom">
+  <span class="image"><img src="./images/type/semi-rec-graph.svg" alt="semi rec graph"></span>
+  </div></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -3398,7 +3380,9 @@ x &#8658; r_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; ['r₀'{0}|+'r₁'|+'r₂']
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x' =&gt; [+{0}'r₀'|+'r₁'|+'r₂']
+==&gt;'xr₁'
+mm&gt; [['x']+{0}'r₀'|['x']+'r₁']
 ==&gt;'xr₁'</code></pre>
 </div>
 </div>
@@ -3437,9 +3421,9 @@ x &#8658; r_n  &amp; \text{if } (x &#8658; k_n) \neq \mathbf{0}, \\
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x'-&lt;('r₀'{0}|+'r₁'|+'r₂')
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'x'-&lt;(+{0}'r₀'|+'r₁'|+'r₂')
 ==&gt;('xr₁')
-mm&gt; 'x'-&lt;('r₀'{0}|+'r₁'|+'r₂')&gt;-
+mm&gt; 'x'-&lt;(+{0}'r₀'|+'r₁'|+'r₂')&gt;-
 ==&gt;'xr₁'</code></pre>
 </div>
 </div>
@@ -5005,7 +4989,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-26 01:38:08 -0600
+Last updated 2020-09-26 23:55:10 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
