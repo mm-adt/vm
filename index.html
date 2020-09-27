@@ -1846,6 +1846,83 @@ language error: int{2} is not an int{3}</code></pre>
 </tr>
 </tbody>
 </table>
+<h6 id="_quantifier_commutativity" class="discrete">Quantifier Commutativity</h6>
+<table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col style="width: 63.6363%;">
+<col style="width: 36.3637%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Each of these expressions is equivalent to <code>obj{0}</code>. This is demonstrated using the <code>;-poly</code> quantifier equation. <code>2*3*0 = 2*0*4 = 0*3*4</code>. In general, if there exists a <strong>0</strong>-quantified <code>obj</code> in a <code>obj</code>  monoid expression, then the result is always <code>obj{0}</code>.</p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{0}2
+mmlang&gt;
+mmlang&gt; 6{2}+{0}1+{4}2
+mmlang&gt;
+mmlang&gt; 6{0}+{3}1+{4}2
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">All three expression evaluate to the same <code>9{24}</code> value. The quantifier ring has a <a href="https://en.wikipedia.org/wiki/Commutative_property">commutative</a> multiplicative monoid such that <code>2*3*4 = 3*4*2 = 4*2*1</code>.</p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{4}2
+==&gt;9{24}
+mmlang&gt; 6{3}+{4}1+{2}2
+==&gt;9{24}
+mmlang&gt; 6{4}+{2}1+{3}2
+==&gt;9{24}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">If the quantifier ring is not commutative, it is still possible to propagate coefficients left or right through an <code>obj</code> <code>*</code>-expression. Regardless of the quantifiers being <a href="https://en.wikipedia.org/wiki/Prime_element">prime elements</a>, quantifier propagation need not preserve the factors of a <code>*</code>. In this way, if the <a href="https://en.wikipedia.org/wiki/Geometric_progression">geometric sequence</a> remains the same, any quantifier distribution is allowed.</p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6{2}+{3}1+{4}2
+==&gt;9{24}
+mmlang&gt; 6+{6}1+{4}2
+==&gt;9{24}
+mmlang&gt; 6+1+{24}2
+==&gt;9{24}
+mmlang&gt; 6+{12}1+{2}2
+==&gt;9{24}
+mmlang&gt; 6{6}+{2}1+{2}2
+==&gt;9{24}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Quantifiers propagate along the the multiplicative <code>obj</code> monoid via their <code>*</code>-operator. They propagate along the additive <code>obj</code> group via their <code>+</code>-operator. In this way, if two branches have <a href="https://en.wikipedia.org/wiki/Orthogonality">orthogonal</a> quantifiers of the same magnitude, then when they leave the <code>+</code>-group to be additively merged onto the <code>*</code>-monoid, they cancel each other out. Various set theoretic and <a href="https://en.wikipedia.org/wiki/Quantum_computing">quantum</a> operations make use of constructive and deconstructive quantifier <a href="https://en.wikipedia.org/wiki/Orthogonality">interference</a> when computing.</p></td>
+<td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6[+{-1}1+{2}1,+{2}2]
+mmlang&gt;
+mmlang&gt; 6[+{-1}1+1,+2]{2}
+mmlang&gt;
+mmlang&gt; 6{2}[+{-1}1+1,+2]
+mmlang&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 <div class="sect4">
 <h5 id="_type_evaluation">Type Evaluation</h5>
@@ -2406,6 +2483,30 @@ mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
 </div>
 <div class="sect3">
 <h4 id="_poly_types">Poly Types</h4>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Free Objects</div>
+<div class="paragraph">
+<p>A <a href="https://en.wikipedia.org/wiki/Magma_(algebra)">magma algebra</a> is defined by a carrier set \$A\$ along with a <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> \$\cdot: A \times A \to A\$ that combines any two \$A\$-elements into one, where as an example, if \$a,b,c \in A\$, then \$a \cdot b \mapsto c\$ (with \$ab = c\$ being a more concise encoding). Implicit in the binary operator behavior is a set of <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> denoting "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" \$A\$-related equations that a structure must obey should it be an instance of the \$(A,\cdot)\$ <a href="https://en.wikipedia.org/wiki/Algebraic_structure">algebra</a>.</p>
+</div>
+<div class="paragraph">
+<p>Given another element \$d \in A\$ such that \$ad = c\$, then it is unknown whether \$ab\$ or \$ad\$ was used to derive \$c\$. Assuming the general case that all elements do not have unique two element <a href="https://en.wikipedia.org/wiki/Factorization">factors</a> in \$A\$, then like the logical operations of <code>AND</code> and <code>OR</code>, the binary operator \$\cdot\$ is an irreversible, <a href="https://en.wikipedia.org/wiki/Lossy_compression">lossy</a> operation. This can be remedied in a number of ways. The more efficient, general solution is a <a href="https://en.wikipedia.org/wiki/Sequence">sequence</a> of \$\cdot\$-compositions stored in a <a href="https://en.wikipedia.org/wiki/List_(abstract_data_type)">list</a>. Such structures are \$A\$-"<a href="https://en.wikipedia.org/wiki/Computer_program">programs</a>" that can be executed against <em>any</em> \$A\$-machine.
+If \$a,b,c,d,e \in A\$, then an example \$A\$-program is \[
+aabbbcadebdcaecadeeeeabccbcaabb.
+\]
+While the individual elements of the \$A\$-program are in \$A\$, the program as a whole is a <em>single</em> element in \$A^\ast\$.
+\$A^\ast\$ is the infinite set of all possible \$A\$-element sequences of arbitrary length called the <a href="https://en.wikipedia.org/wiki/Kleene_star">Kleene closure</a> over \$A\$.
+From this vantage point, the elements of \$A\$ are called <strong>letters</strong> and the elements of \$A^\ast\$ are called <strong>words</strong>.
+The set \$A^\ast\$ is the carrier set of another algebra \$(A^\ast,\circ)\$, where \$\circ: A^\ast \times A^\ast \to A^\ast\$ concatenates two words into a single word (i.e. list concatenation).
+This algebra is used to "<a href="https://en.wikipedia.org/wiki/Programmer">code</a>" \$A\$-programs.
+In the world of <a href="https://en.wikipedia.org/wiki/Abstract_algebra">abstract algebra</a>, this new \$(A^\ast,\circ)\$ algebra is called the <a href="https://en.wikipedia.org/wiki/Free_algebra">free algebra</a> over \$A\$.</p>
+</div>
+<div class="paragraph">
+<p>A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a <a href="https://en.wikipedia.org/wiki/Algebra_homomorphism">homomorphism</a> that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\eta: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\eta\$ "<a href="https://en.wikipedia.org/wiki/Execution_(computing)">executes</a>" the program on some \$A\$-machine.
+If the \$\eta\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such mappings in a structure known as the <code>obj</code> graph. mm-ADT&#8217;s <a href="https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)">graph</a>-encoding of a free algebraic <a href="https://en.wikipedia.org/wiki/Digital_footprint">trace</a> is the foundation of numerous mm-ADT capabilities including <a href="https://en.wikipedia.org/wiki/Abstract_interpretation">abstract interpretation</a>, <a href="https://en.wikipedia.org/wiki/State_(computer_science)">program state</a>, <a href="https://en.wikipedia.org/wiki/Metaprogramming">metaprogramming</a>, and <a href="https://en.wikipedia.org/wiki/Reversible_computing">reversible computing</a>.</p>
+</div>
+</div>
+</div>
 <div class="paragraph">
 <p>A <code>poly</code> is a <a href="https://en.wikipedia.org/wiki/Free_object">free object</a>. Free objects are <a href="https://en.wikipedia.org/wiki/Universal_algebra">universal</a> structures in that they respect the equations of an abstract algebra, but not the equations of an instance of the abstract algebra. Hence the term <em>free</em> as in "free" from constraint of the concrete&#8212;&#8203;i.e., universal. Examples of these two classes of equations are provided in the table below. If the concrete algebra equations appear random, it is because they are. Each concrete algebra&#8217;s operator(s) map elements-to-elements in a manner specific to an application domain and as such, are not <em>universal</em> equations.</p>
 </div>
@@ -2750,8 +2851,8 @@ mm&gt; ('a'-&gt;1|'b'-&gt;2|'a'-&gt;3)&gt;-
 </tr>
 </tbody>
 </table>
+<h6 id="_poly_collections_2" class="discrete">,-poly Collections</h6>
 <div class="paragraph">
-<div class="title">,-poly Collections</div>
 <p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT stream ring.</p>
 </div>
 <table class="tableblock frame-none grid-none center" style="width: 60%;">
@@ -2835,8 +2936,8 @@ mmlang&gt; ('a'-&gt;true,1.0-&gt;6,1-&gt;{0},'a'-&gt;'a')
 </tr>
 </tbody>
 </table>
+<h6 id="_poly_collections_3" class="discrete">;-poly Collections</h6>
 <div class="paragraph">
-<div class="title">;-poly Collections</div>
 <p>The <strong>;-polys</strong> capture the non-commutative, multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring.</p>
 </div>
 <table class="tableblock frame-none grid-none center" style="width: 60%;">
@@ -2926,8 +3027,8 @@ mmlang&gt; ('a'-&gt;true;1.0-&gt;4;1-&gt;{0};{1}-&gt;'a')
 </tr>
 </tbody>
 </table>
+<h6 id="_poly_collections_4" class="discrete">|-poly Collections</h6>
 <div class="paragraph">
-<div class="title">|-poly Collections</div>
 <p>The <strong>|-polys</strong> captures <a href="https://en.wikipedia.org/wiki/Endomorphism">endomorphic</a>, left-<a href="https://en.wikipedia.org/wiki/Distributive_property">distributive</a>, multiplicative, <a href="https://en.wikipedia.org/wiki/Function_composition">compositions</a> over the <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a> subgroup of mm-ADT&#8217;s additive abelian group.</p>
 </div>
 <table class="tableblock frame-none grid-none center" style="width: 80%;">
@@ -3150,8 +3251,8 @@ In the examples to follow, the elements of the <code>polys</code> are labeled by
 </tr>
 </table>
 </div>
+<h6 id="_poly_controls_2" class="discrete">,-poly Controls</h6>
 <div class="paragraph">
-<div class="title">,-poly Controls</div>
 <p>The <strong>,-polys</strong> capture the additive <a href="https://en.wikipedia.org/wiki/Abelian_group">abelian group</a> of the mm-ADT stream ring. The <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> and <a href="https://en.wikipedia.org/wiki/Commutative_property">commutativity</a> of the group operator means that the order in which the terms are evaluated (associativity) and results aggregated (commutativity) does not change the semantics of the computation. More specifically to the notion of control, it means that the irreducible terms in a <code>,-poly</code> are not sequentially dependent on one another. This independence enables evaluation isolation and thus, promotes <a href="https://en.wikipedia.org/wiki/Parallel_computing">parallelism</a>. The <code>,-poly</code> algebra realizes <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> <a href="https://en.wikipedia.org/wiki/Union_(set_theory)">union</a> in <code>lst</code> and <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> <a href="https://en.wikipedia.org/wiki/Method_cascading">cascading</a> in <code>rec</code>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -3264,8 +3365,16 @@ mm&gt; 'x'-&lt;(+'k₀'-&gt;+'g₀',+'k₁'-&gt;+'g₁',+'k₂'-&gt;+'g₂')&gt;
 <div class="paragraph">
 <p>Note that in all subsequent <code>[branch,poly]</code> equations to follow, \$x \in \tt{obj}\$ is an incoming <code>obj</code> to the respective <code>[branch]</code> instruction.</p>
 </div>
+<h6 id="_poly_controls_3" class="discrete">;-poly Controls</h6>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Monoids</div>
 <div class="paragraph">
-<div class="title">;-poly Controls</div>
+<p>A <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> is a structure of the form \$(A,\cdot,\mathbf{1})\$, where \$A\$ is the carrier set closed under the <a href="https://en.wikipedia.org/wiki/Associative_property">associative</a> <a href="https://en.wikipedia.org/wiki/Binary_operation">binary operator</a> \$\cdot: A \times A \rightarrow A\$ with \$\mathbf{1} \in A\$ being the <a href="https://en.wikipedia.org/wiki/Identity_element">identity</a> such that for every \$a,b,c \in A\$, \$(a \cdot b) \cdot c = a \cdot (b \cdot c)\$ and \$a \cdot \mathbf{1} = \mathbf{1} \cdot a = a\$.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
 <p>The <strong>;-polys</strong> capture the multiplicative <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> of the mm-ADT ring. The result of each term is the input to the next term in the sequence. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Method_chaining">method chaining</a> is realized and in <code>rec</code> <a href="https://en.wikipedia.org/wiki/Conditional_(computer_programming)">conditional</a> chaining.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -3369,8 +3478,8 @@ mm&gt; 'x'-&lt;(+'k₀'-&gt;+'m₀';+'k₁'-&gt;+'m₁';+'k₂'-&gt;+'m₂')&gt;
 </tr>
 </tbody>
 </table>
+<h6 id="_poly_controls_4" class="discrete">|-poly Controls</h6>
 <div class="paragraph">
-<div class="title">|-poly Controls</div>
 <p>The <strong>|-polys</strong> capture mm-ADT&#8217;s <em>barrier</em> <a href="https://en.wikipedia.org/wiki/Near-ring">near-ring</a>, where the first non-\$\mathbf{0}\$ ("non-<a href="https://en.wikipedia.org/wiki/Null_pointer">null</a>") element is the output of the branch. As a control structure, <code>|-poly</code> is a <a href="https://en.wikipedia.org/wiki/Sequential_algorithm">sequential</a> branch that can be understood programmatically as a <a href="https://en.wikipedia.org/wiki/Short-circuit_evaluation">short-circuit</a> <a href="https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29">fold</a>. In <code>lst</code>, <a href="https://en.wikipedia.org/wiki/Null_coalescing_operator">non-null coalescing</a> is realized and in <code>rec</code> a <a href="https://en.wikipedia.org/wiki/Switch_statement">switch statement</a> is realized.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
@@ -5021,7 +5130,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-27 01:13:08 -0600
+Last updated 2020-09-27 14:37:59 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
