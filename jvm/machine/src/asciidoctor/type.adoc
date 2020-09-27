@@ -963,14 +963,19 @@ A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objec
 | \$a \cdot b = b \cdot a\$                      | \$a \cdot a = a\$
 |===
 
-In mm-ADT, a `poly` can be used as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[*collection*] data structure, where the collection's semantics are tied to the operator(s) of the free object's abstract algebra. Moreover, type-based `polys` offer data flow https://en.wikipedia.org/wiki/Control_flow[*control*] semantics. The mm-ADT `poly` is a versatile structure because it is agnostic to the types and values contained therein while remaining in https://en.wikipedia.org/wiki/Isomorphism[one-to-one correspondence] with the https://zenodo.org/record/2565243[stream ring algebra]'s operators' axioms and entailed theorems.
+In mm-ADT, `polys` are
+
+. https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[*collection*] data structures, where the collection's semantics are tied to the operator(s) of the free object's abstract algebra, and
+. https://en.wikipedia.org/wiki/Control_flow[*control*] data processes, where the control semantics are likewise a consequence of the underlying free object's algebra.
+
+The mm-ADT `poly` is versatile because it is agnostic to the types and values contained therein while remaining in https://en.wikipedia.org/wiki/Isomorphism[one-to-one correspondence] with the https://zenodo.org/record/2565243[stream ring algebra]'s operators' axioms and entailed theorems. More poetically, `poly` is the bedrock upon which the mm-ADT algebraic ecology is sustained.
 
 [discrete]
-===== Poly Structures
+===== Poly Types and Values
 
-There are *value* `polys` and there are *type* `polys`. A value `poly` is composed of only value `objs` and is best understood as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure. A type `poly` contains at least one type `obj` and is intuitively understood as a https://en.wikipedia.org/wiki/Control_flow[flow control] structure.
+There are *type* `polys` and there are *value* `polys`. A type `poly` contains at least one type `obj` and is typically intended for use as a https://en.wikipedia.org/wiki/Control_flow[flow control] structure. A value `poly` is composed of only value `objs` with a common use as a https://en.wikipedia.org/wiki/Collection_%28abstract_data_type%29[collection] data structure.
 
-As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]), where theoretically, `rec` is simply a `lst` with some added conveniences that make typical programming patterns easier to express. Finally, a `poly` is associated with one of three algebras: `,` (https://en.wikipedia.org/wiki/Free_abelian_group[abelian group]), `;` (https://en.wikipedia.org/wiki/Free_monoid[monoid]), or `|` (https://en.wikipedia.org/wiki/Near-ring[near-ring]). These algebras correspond to the magmas of mm-ADT's https://zenodo.org/record/2565243[stream ring algebra].
+As a practical consideration, mm-ADT offers two kinds of `poly`: `lst` (https://en.wikipedia.org/wiki/List_(abstract_data_type)[list]) and `rec` (https://en.wikipedia.org/wiki/Record_%28computer_science%29[record]), where theoretically, `rec` is simply a `lst` with some added conveniences that make typical programming patterns easier to express. Finally, a `poly` is associated with one of three algebras that comprise mm-ADT's https://zenodo.org/record/2565243[stream ring]: `,` (https://en.wikipedia.org/wiki/Free_abelian_group[abelian group]), `;` (https://en.wikipedia.org/wiki/Free_monoid[monoid]), or `|` (https://en.wikipedia.org/wiki/Near-ring[near-ring]).
 
 \[
 \begin{split}
@@ -1007,6 +1012,14 @@ image:poly-kinds.svg[width=350,float=left]
 |===
 
 '''
+
+There are three instructions that are of primary importance for `poly` with one being a composite of the other two.
+
+. `[split]` (`-<`): propagates an incoming `obj` through a `poly` according to its algebra.
+. `[merge]` (`>-`): aggregates outgoing `objs` from a `poly` according to its algebra.
+. `[branch]` (`=[`): propagates and then aggregates `objs` through a `poly` according to its algebra.
+
+The details of these instructions will be discussed in full over the following subsections.
 
 .Mathematical Notation Conventions for mm-ADT
 ================================================================
@@ -1384,6 +1397,8 @@ a|
 {blank}
 |===
 
+Branching can be understood as a two stage process which is captured by the `[split]/[merge]` instruction pairing. In practice, `[split]/[merge]` are useful in isolating a `poly` computation (`[split]`) to then later introduce the results (`[merge]`) into the outer stream. This is demonstrated below for `,-lst` and `,-rec` where `-<` is `mmlang` sugar for `[split]` and `>-` is `mmlang` sugar for `[merge]`.
+
 .,-poly Split/Merge
 [cols="7,9"]
 |===
@@ -1446,6 +1461,8 @@ a|
 {blank}
 |===
 
+image:bubble-chamber.png[width=200,float=left] The `;-lst` equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"]. In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor. Particles are shot into the chamber and the trace they leave (called their _varpor trail_) provides physicists empirical data regarding the nature of the particle under study -- e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it. As demonstrated below, \$x\$ is the _particle_ and `-<` _shoots_ \$x\$ into the `;-lst` _bubble chamber_, where each term in the `;-lst` acts as a _vapor droplet_.
+
 .;-poly Split/Merge
 [cols="7,9"]
 |===
@@ -1470,12 +1487,6 @@ a|
 ----
 {blank}
 |===
-
-image:bubble-chamber.png[width=200,float=left] The `;-lst` equation above realizes a structure and process joyfully named the https://en.wikipedia.org/wiki/Bubble_chamber["bubble chamber"].
-In experimental higher-energy physics, a bubble chamber is small room filled with high pressure vapor.
-Particles are shot into the room and the trace they leave (called their _varpor trail_) provides physicists empirical data on the nature of the particle under study -- e.g., its mass, velocity, spin, and, when capturing decay, the sub-atomic particles that compose it.
-In mm-ADT, \$x\$ above plays the role of the _particle_ and `;-lst` the _bubble chamber_ with each term in the `;-lst` acting as a _vapor droplet_.
-
 
 .|-poly Controls
 The *|-polys* capture mm-ADT's _barrier_ https://en.wikipedia.org/wiki/Near-ring[near-ring], where the first non-\$\mathbf{0}\$ ("non-link:https://en.wikipedia.org/wiki/Null_pointer[null]") element is the output of the branch. As a control structure, `|-poly` is a https://en.wikipedia.org/wiki/Sequential_algorithm[sequential] branch that can be understood programmatically as a https://en.wikipedia.org/wiki/Short-circuit_evaluation[short-circuit] https://en.wikipedia.org/wiki/Fold_%28higher-order_function%29[fold]. In `lst`, https://en.wikipedia.org/wiki/Null_coalescing_operator[non-null coalescing] is realized and in `rec` a https://en.wikipedia.org/wiki/Switch_statement[switch statement] is realized.
