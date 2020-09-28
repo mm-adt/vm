@@ -134,17 +134,24 @@ object ModelOp extends Func[Obj, Obj] {
       .asInstanceOf[List[Type[Obj]]]
 
     final def vars[A <: Obj](key:StrValue):Option[A] = {
-      val map = Option(model.g._2).getOrElse(NOROOT)
-      val typesMap = Option(map.fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
-      typesMap.fetchOption(key).map(x => x.glist.head).asInstanceOf[Option[A]]
+      Option(model)
+        .map(m => m.g._2)
+        .flatMap(m => m.fetchOption(ModelOp.VAR))
+        .map(m => m.g._2)
+        .flatMap(m => m.fetchOption(key))
+        .map(x => x.glist.head)
+        .asInstanceOf[Option[A]]
     }
 
     final def vars(key:StrValue, value:Obj):Model = {
       if (model.vars(key).isDefined && value.isInstanceOf[Type[_]]) return model
       val map = Option(model.g._2).getOrElse(NOROOT)
       val typesMap = Option(map.fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP)
-      nameModel(rec(model.name, g = (Tokens.`,`, map.replace(ModelOp.VAR -> rec(g = (Tokens.`,`, typesMap.replace(key -> lst(g = (Tokens.`,`, List(value.rangeObj))))))))))
+      nameModel(
+        rec(model.name, g = (Tokens.`,`, map.filter(x => !x._1.equals(ModelOp.VAR)) :+ (ModelOp.VAR ->
+          rec(g = (Tokens.`,`, typesMap.filter(x => !x._1.equals(key)) :+ (key -> lst(g = (Tokens.`,`, List(value.rangeObj))))))))))
     }
+
     final def vars:List[(StrValue, Obj)] = Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP).map(x => (x._1.asInstanceOf[StrValue], x._2.glist.last))
 
     final def defining(definition:Obj):Model = {

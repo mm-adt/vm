@@ -45,6 +45,8 @@ object TraceScanRewrite extends Rewrite {
     val rewrites = OpInstResolver.applyRewrites(obj).model.rewrites.sortBy(x => -x.domainObj.trace.length)
     var a:Obj = obj
     var b:Obj = a
+    // a quick determination of whether the rewrites will apply to this type (if not, break out of computing)
+    if (!fastCheck(obj.trace.modeless, rewrites)) return obj
     rewrites.foreach(rewrite => {
       if (rewrite.equals(lst(__) <= '^(lst(id)))) {
         b = removeRules(BranchRewrite.processType(BranchRewrite().exec(IdRewrite.processType(b))).asInstanceOf[A]) // a faster implementation of id rewrite removal
@@ -80,6 +82,17 @@ object TraceScanRewrite extends Rewrite {
     else if (b.trace.map(x => x._2).exists(x => x.op == Tokens.branch)) b.asInstanceOf[A]
     else b.asInstanceOf[A].q(divQ(obj.q, b.domainObj.q))
   }
+
+  // TODO: a bit of a hornets nest (cause of poly argument on [branch])
+  private def fastCheck(objTrace:Trace, rewrites:List[Obj]):Boolean =
+    rewrites.exists(rewrite => {
+      objTrace.nexists(objVia => getPolyOrObj(rewrite).trace.modeless
+        .map(rewriteVia => rewriteVia._2)
+        .exists(rewriteInst => {
+          if (objVia._2.op.equals(Tokens.branch)) objVia._2.arg0[Poly[Obj]].glist.exists(polyTerm => polyTerm.root || fastCheck(polyTerm.trace, List(rewrite)))
+          else rewriteInst.op.equals(objVia._2.op) && rewriteInst.args.zip(objVia._2.args).forall(pair => pair._1.isInstanceOf[Type[Obj]] || pair._1.equals(pair._2))
+        }))
+    })
 
   private def rewriteInstArgs(inst:Inst[Obj, Obj], rewrite:Writer):Inst[Obj, Obj] = inst match {
     case _:TraceInstruction => inst

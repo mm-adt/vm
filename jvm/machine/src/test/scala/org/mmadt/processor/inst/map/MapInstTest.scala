@@ -73,6 +73,7 @@ class MapInstTest extends BaseInstTest(
     assertResult(int(2))(1.plus(1).map(int))
     assertResult(int(20))(1.plus(1).map(int.mult(10)))
   }
+
   test("[map] w/ types") {
     assertResult("int[plus,1][map,int]")(int.plus(1).map(int).toString)
     assertResult("int[plus,1][map,int[mult,10]]")(int.plus(1).map(int.mult(10)).toString)
