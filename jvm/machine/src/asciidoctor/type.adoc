@@ -652,9 +652,24 @@ From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Co
 Relying on the same axiomatic principle, but reframed in terms of types (programs), the _atemporal stream theorem_ guarantees equivalent outcomes for both https://en.wikipedia.org/wiki/Synchronous_circuit[synchronous] and https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] execution strategies.
 ////
 
-==== Type Evaluation
+==== Type Composition
 
 ===== Stream Ring Operators
+
+.Stream Ring Theory
+****
+
+image:biproduct.svg[float=right,width=250]
+
+https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* https://en.wikipedia.org/wiki/Semiring[semiring] and *coefficient* ring.
+Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms] over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding https://en.wikipedia.org/wiki/Coefficient[coefficient] dynamics.
+Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts].
+A biproduct has both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams.
+Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located by the _reduce_ near-ring operator \$\oplus\$.
+
+mm-ADT adopts the algebra of stream ring theory, but uses the term *instruction* for _function_ and *quantifier* for _coefficient_.
+Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wiki/Inductive_type[inductive], https://en.wikipedia.org/wiki/Dependent_type[dependent] https://en.wikipedia.org/wiki/Type_theory[type theory] based on a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] stream ring with https://en.wikipedia.org/wiki/Interval_(mathematics)[interval] quantifiers called the *type ringoid* whose free algebra is captured by the *type graph*.
+****
 
 [cols=1,width=20,float=right,grid=none,frame=none]
 |====
@@ -717,19 +732,15 @@ Finally, below is the unsugar'd form of the disectected type from above.
 
 ===== Stream Ring Algebra
 
-.Stream Ring Theory
+.Ringoids
 ****
+An algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] \$(A,\+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires
+\[
+a \ast (b + c) = ab + ac \\ (a + b) \ast c = ac + bc.
+\]
+A https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are https://en.wikipedia.org/wiki/Partial_function[partial functions] lacking https://en.wikipedia.org/wiki/Closure_(mathematics)[closure]. In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.
 
-image:biproduct.svg[float=right,width=250]
-
-https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* https://en.wikipedia.org/wiki/Semiring[semiring] and *coefficient* ring.
-Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms] over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding https://en.wikipedia.org/wiki/Coefficient[coefficient] dynamics.
-Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts].
-A biproduct has both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams.
-Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located by the _reduce_ near-ring operator \$\oplus\$.
-
-mm-ADT adopts the algebra of stream ring theory, but uses the term *instruction* for _function_ and *quantifier* for _coefficient_.
-Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wiki/Inductive_type[inductive], https://en.wikipedia.org/wiki/Dependent_type[dependent] https://en.wikipedia.org/wiki/Type_theory[type theory] based on a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] stream ring with https://en.wikipedia.org/wiki/Interval_(mathematics)[interval] quantifiers called the *type ringoid* whose free algebra is captured by the *type graph*.
+For all the intended practical uses for mm-ADT, the instruction set architecture constrains the stream ring to a stream ringoid. However, given that the ISA is predicated on the *model*, the more general and more widely known _ring_ will serve as the classifying term.
 ****
 
 The mm-ADT stream ring is the https://en.wikipedia.org/wiki/Ring_theory[algebraic ring]
@@ -754,8 +765,6 @@ The equation \$\tt{obj} = \tt{type} + \tt{value}\$) and the suggestive illustrat
 . \$\ast: \tt{type} \times \tt{type} \to \tt{type}\$ generate functions graph (*program compilation*) and,
 . \$\ast: \tt{value} \times \tt{type} \to \tt{value}\$ _stream_ values through the type structure (*program evaluation*).
 
-NOTE: The mm-ADT stream ring is more accurately known as a *ringoid*. A ringoid is a ring without operator closure. That is, some `obj` compositions are undefined such as `5 + 'a'`. Given that closure is more accurately understood to be determined by the instruction set architecture, the term *ring* will be used.
-
 Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms] (save operator https://en.wikipedia.org/wiki/Closure_(mathematics)[closure]), the `obj` stream ring respects the five additional axioms of *stream ring theory*.
 The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in `mmlang` using both `obj` *values* and *types*.
 
@@ -763,7 +772,8 @@ NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntacti
 The term `\_{0}` (sugar'd `{0}`) is \$\mathbf{0}\$, `_{1}` (sugar'd `{1}`) is \$\mathbf{1}\$, `[a,b,c]` denotes `[branch,(a,b,c)]` and `+{q}n` denotes `[plus,n]{q}`.
 Finally, while `[,]` and `[;]` are defined as binary operators, due to the link:https://en.wikipedia.org/wiki/Associative_property[associativity] axioms of the respective additive group and multiplicative monoid of a ring, `[,]` and `[;]` are effectively \$n\$-ary operators and will be used as such in examples to follow.
 
-==== Ring Axioms
+[discrete]
+====== Ring Axioms
 
 https://en.wikipedia.org/wiki/Axiom[Axioms] are the "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" equations of a system.
 Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.
@@ -918,7 +928,8 @@ str[[[id];[id]],[[id];[id]]]
 {blank}
 |===
 
-===== Ring Theorems
+[discrete]
+====== Ring Theorems
 
 The axioms of a theory entail its https://en.wikipedia.org/wiki/Theorem[theorems].
 Stated in reverse, theorems are the derivations of an https://en.wikipedia.org/wiki/Axiomatic_system[axiomatic system].
@@ -1045,16 +1056,8 @@ str[[id];[id]]
 {blank}
 |===
 
-==== Stream Ring Axioms
-
-.Ringoids
-****
-An algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] \$(A,\+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires \[
-a \ast (b + c) = ab + ac \\ (a + b) \ast c = ac + bc.
-\]
-A https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are https://en.wikipedia.org/wiki/Partial_function[partial functions] lacking https://en.wikipedia.org/wiki/Closure_(mathematics)[closure].
-In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.
-****
+[discrete]
+====== Stream Ring Axioms
 
 image:obj-semiring-orderedring.svg[float=left,width=350]
 
