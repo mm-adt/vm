@@ -652,7 +652,9 @@ From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Co
 Relying on the same axiomatic principle, but reframed in terms of types (programs), the _atemporal stream theorem_ guarantees equivalent outcomes for both https://en.wikipedia.org/wiki/Synchronous_circuit[synchronous] and https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] execution strategies.
 ////
 
-===== Type Evaluation
+==== Type Evaluation
+
+===== Stream Ring Operators
 
 [cols=1,width=20,float=right,grid=none,frame=none]
 |====
@@ -713,118 +715,442 @@ Finally, below is the unsugar'd form of the disectected type from above.
 4[juxt,int[mult,2]][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]  ## 88.1
 ----
 
+===== Stream Ring Algebra
 
-////
-The primary distinguising characteristic of the three aforementioned *stream instructions* is that they are no preserved in the `obj` graph. Their purpose is to compose instructions, not _be_ instructions. However, it is for this reason that processing can be detached from the `obj` graph, working a level below the instruction set architecture and directly at the stream ring level.
+.Stream Ring Theory
+****
 
-[cols="4,7"]
-|====
-^| `\=>` ^| `[ ]`
+image:biproduct.svg[float=right,width=250]
 
-a|
-[exec]
-----
-6 => 8 => 10
-6[map,8][map,10]
-6 => 8 => 10 => [path]
-6[map,8][map,10][path]
-----
-{blank}
+https://zenodo.org/record/2565243[Stream ring theory] studies a particular type of algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] constructed from a https://en.wikipedia.org/wiki/Product_ring[direct product] of a *function* https://en.wikipedia.org/wiki/Semiring[semiring] and *coefficient* ring.
+Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms] over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional https://en.wikipedia.org/wiki/Axiom[axioms] regarding https://en.wikipedia.org/wiki/Coefficient[coefficient] dynamics.
+Categorically, every stream ring forms an https://en.wikipedia.org/wiki/Additive_category[additive category] with https://en.wikipedia.org/wiki/Biproduct[biproducts].
+A biproduct has both projection (https://en.wikipedia.org/wiki/Product_(category_theory)[product]) and injection (https://en.wikipedia.org/wiki/Coproduct[coproduct]) morphisms that capture the splitting and merging of streams.
+Along with the _atemporal stream theorem_ derived from the stream ring axioms, biproduct streams have practical significance in https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] distributed computing environments that primarily enjoy https://en.wikipedia.org/wiki/Embarrassingly_parallel[embarrassingly parallel] processing, but where, at certain space and time https://en.wikipedia.org/wiki/Bulk_synchronous_parallel[synchronization] points, data needs to be co-located by the _reduce_ near-ring operator \$\oplus\$.
 
-a|
-[exec]
-----
-6[+1,+2]+3
-6-<(+1,+2)>-+3
-6[+1,+2]+3[path]
-6-<(+1,+2)>-+3[path]
-----
-{blank}
-|====
+mm-ADT adopts the algebra of stream ring theory, but uses the term *instruction* for _function_ and *quantifier* for _coefficient_.
+Moreover, mm-ADT extends stream ring theory with an https://en.wikipedia.org/wiki/Inductive_type[inductive], https://en.wikipedia.org/wiki/Dependent_type[dependent] https://en.wikipedia.org/wiki/Type_theory[type theory] based on a https://en.wikipedia.org/wiki/Many-sorted_logic[multi-sorted] stream ring with https://en.wikipedia.org/wiki/Interval_(mathematics)[interval] quantifiers called the *type ringoid* whose free algebra is captured by the *type graph*.
+****
 
-
-[cols="7,2",float=right,frame=none,grid=none]
-|====
-
-| mm-ADT instructions are curried https://en.wikipedia.org/wiki/Unary_function[unary functions].
-For instance, the instruction `[neg]` takes an input `int` and outputs the inverse (or negative) `int`. Thus, `[neg]` behaves as its classic unary function counterpart
+The mm-ADT stream ring is the https://en.wikipedia.org/wiki/Ring_theory[algebraic ring]
 \[
-\texttt{neg}(x) = -x,
-\]
-where `5\=>int[neg]` maps to `-5`.
+(\texttt{obj},+,\ast,\oplus,\mathbf{0},\mathbf{1}), \]
 
+where
 
-a|
-[exec]
-----
-5=>int[neg]
-5=>-5
--5
-----
-{blank}
-|====
+image::type-value-illustration.svg[float=right,width=525]
 
-[cols="7,3",float=right,frame=none,grid=none]
-|====
-
-| Next, suppose the https://en.wikipedia.org/wiki/Binary_function[binary function]
-\[
-\texttt{plus\}(x,y) = x + y.
-\]
-In mm-ADT, a particular evaluation may be expressed as `6\=>[plus,2]`. Given that the instruction has a https://en.wikipedia.org/wiki/Constant_function[constant] value argument of \$2\$, `[plus,2]` acts in a manner analogous to a https://en.wikipedia.org/wiki/Currying[curried] unary function.
-
-a|
-[exec]
-----
-6=>int[plus,2]
-6=>int[plus,[6=>2]]
-6=>8
-8
-----
-{blank}
-|====
-
-[cols="7,5",float=right,frame=none,grid=none]
-|====
-
-| If the argument to `[plus]` is a type (as opposed to a value), then the argument's value resolution is https://en.wikipedia.org/wiki/Dependent_type[dependent] on the incoming `obj`. For instance, if `int[plus,[mult,2]]` has an incoming `int` of 6, the argument to `[plus]` is 12.
-
-a|[exec]
-----
-6=>int[plus,[mult,2]]
-6=>int[plus,[6=>[mult,2]]]
-6=>int[plus,[6=>[mult,[6=>2]]]]
-6=>int[plus,[6=>[mult,2]]]
-6=>int[plus,12]
-6=>18
-18
-----
-{blank}
-|====
-
-
-[cols="7,5",float=right,frame=none,grid=none]
-|====
-
-| However, if the incoming `int` is 8, then the `[plus]` argument is 16. Thus, while mm-ADT can be understood as the serial and parallel composition of unary functions, function behavior via types, can be made dependent on the state of the incoming `obj`.
-
-
-a|[exec]
-----
-8=>int[plus,[mult,2]]
-8=>int[plus,[8=>[mult,2]]]
-8=>int[plus,[8=>[mult,[8=>2]]]]
-8=>int[plus,[8=>[mult,2]]]
-8=>int[plus,16]
-8=>24
-24
-----
-{blank}
-|====
+* \$\tt{obj}\$ is the carrier set containing all quantified objects,
+* \$+\$ the additive _parallel branch_ operator,
+* \$\ast\$ the multiplicative _serial chain_ operator,
+* \$\oplus\$ is the reducing _barrier_ operator,
+* \$\mathbf{0}\$ the additive identity, and
+* \$\mathbf{1}\$ the multiplicative identity.
 
 '''
 
-////
+The equation \$\tt{obj} = \tt{type} + \tt{value}\$) and the suggestive illustration above highlight two important uses of the ring's multiplicative binary \$\ast\$-operator:
+
+. \$\ast: \tt{type} \times \tt{type} \to \tt{type}\$ generate functions graph (*program compilation*) and,
+. \$\ast: \tt{value} \times \tt{type} \to \tt{value}\$ _stream_ values through the type structure (*program evaluation*).
+
+NOTE: The mm-ADT stream ring is more accurately known as a *ringoid*. A ringoid is a ring without operator closure. That is, some `obj` compositions are undefined such as `5 + 'a'`. Given that closure is more accurately understood to be determined by the instruction set architecture, the term *ring* will be used.
+
+Along with the standard https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition[ring axioms] (save operator https://en.wikipedia.org/wiki/Closure_(mathematics)[closure]), the `obj` stream ring respects the five additional axioms of *stream ring theory*.
+The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in `mmlang` using both `obj` *values* and *types*.
+
+NOTE: The `mmlang` examples are rife with https://en.wikipedia.org/wiki/Syntactic_sugar[syntactic sugars].
+The term `\_{0}` (sugar'd `{0}`) is \$\mathbf{0}\$, `_{1}` (sugar'd `{1}`) is \$\mathbf{1}\$, `[a,b,c]` denotes `[branch,(a,b,c)]` and `+{q}n` denotes `[plus,n]{q}`.
+Finally, while `[,]` and `[;]` are defined as binary operators, due to the link:https://en.wikipedia.org/wiki/Associative_property[associativity] axioms of the respective additive group and multiplicative monoid of a ring, `[,]` and `[;]` are effectively \$n\$-ary operators and will be used as such in examples to follow.
+
+==== Ring Axioms
+
+https://en.wikipedia.org/wiki/Axiom[Axioms] are the "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" equations of a system.
+Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.
+
+[cols="2,2,7,9"]
+|===
+^|  axiom ^| equation  ^| mmlang values ^| mmlang types
+
+4.+^h| Additive Abelian Group -- \$(\tt{obj},+,\mathbf{0})\$
+
+| Additive associativity
+| \[\begin{split}
+&(a+b)\+c \\
+=& a+(b+c)
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+[['a','b'],'c']
+['a',['b','c']]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[[id],[id]],[id]]
+str[[id],[[id],[id]]]
+----
+{blank}
+| Additive commutativity
+| \[\begin{split}
+&a+b \\
+=& b+a
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+['a','b']
+['b','a']
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id]{2},[id]{3}]
+str[[id]{3},[id]{2}]
+----
+{blank}
+| Additive identity
+| \[a+\mathbf{0} = a\]
+a|
+[exec,prompt="mm> "]
+----
+['a',{0}]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id],{0}]
+----
+{blank}
+| Additive inverse
+| \[a + ({-a}) = \mathbf{0}\]
+a|
+[exec,prompt="mm> "]
+----
+['a','a'{-1}]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id],[id]{-1}]
+----
+{blank}
+
+4.+^h| Multiplicative Monoid -- \$(\tt{obj},\ast,\mathbf{1})\$
+| Multiplicative associativity
+| \[\begin{split}
+&(a \cdot b) \cdot c \\
+=& a \cdot (b \cdot c)
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+[['a';'b'];'c']
+['a';['b';'c']]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[[id];[id]];[id]]
+str[[id];[[id];[id]]]
+----
+{blank}
+| Multiplicative identity
+| \[a \cdot \mathbf{1} = a\]
+a|
+[exec,prompt="mm> "]
+----
+['a';{1}]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id];{1}]
+----
+{blank}
+
+4.+^h| Ring with Unity -- \$(\tt{obj},+,\ast,\mathbf{0},\mathbf{1})\$
+
+| Left distributivity
+| \[\begin{split}
+&a \cdot (b + c) \\
+=& ab + ac
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+['a';['b','c']]
+[['a';'b'],['a';'c']]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id];[[id],[id]]]
+str[[[id];[id]],[[id];[id]]]
+----
+{blank}
+| Right distributivity
+| \[\begin{split}
+&(a+b) \cdot c \\
+=& ac + bc
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+[['a','b'];'c']
+[['a';'c'],['b';'c']]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[[id],[id]];[id]]
+str[[[id];[id]],[[id];[id]]]
+----
+{blank}
+|===
+
+===== Ring Theorems
+
+The axioms of a theory entail its https://en.wikipedia.org/wiki/Theorem[theorems].
+Stated in reverse, theorems are the derivations of an https://en.wikipedia.org/wiki/Axiomatic_system[axiomatic system].
+Once a system is determined to be a ring, then all the theorems that have been proved about rings in general are also true for that system.
+
+[cols="2,2,7,9"]
+|===
+^| theorem ^| equation  ^| mmlang values ^| mmlang types
+
+4.+^h| Ring with Unity -- \$(\tt{obj},+,\ast,\mathbf{0},\mathbf{1})\$
+
+| Additive factoring
+| \[\begin{split}
+&a + b = a + c \\
+=>& b = c
+\end{split}\]
+a|
+{blank}
+a|
+{blank}
+| Unique factoring
+|  \[\begin{split}
+&a + b = \mathbf{0} \\
+=>& a = -b \\
+=>& b = -a
+\end{split}\]
+a|
+{blank}
+a|
+{blank}
+| Inverse distributivity
+| \[\begin{split}
+&-(a+b) \\
+=& (-a) + (-b)
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+['a','b']{-1}
+['a'{-1},'b'{-1}]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id],[id]]{-1}
+str[[id]{-1},[id]{-1}]
+----
+{blank}
+| Inverse distributivity
+| \[-(-a) = a\]
+a|
+[exec,prompt="mm> "]
+----
+['a'{-1}]{-1}
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id]{-1}]{-1}
+----
+{blank}
+| Annihilator
+| \[\begin{split}
+&a*\mathbf{0} \\
+=& \mathbf{0} \\
+=& \mathbf{0}*a
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+['a';{0}]
+[{0};'a']
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id];{0}]
+str[{0};[id]]
+----
+{blank}
+| Factoring
+| \[\begin{split}
+&a * (-b) \\
+=& -a * b \\
+=& -(a*b)
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+['a';'b'{-1}]
+['a'{-1};'b']
+['a';'b']{-1}
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id];[id]{-1}]
+str[[id]{-1};[id]]
+str[[id];[id]]{-1}
+----
+{blank}
+| Factoring
+|  \[\begin{split}
+&(-a) * (-b) \\
+=& a * b
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+['a'{-1};'b'{-1}]
+['a';'b']
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id]{-1};[id]{-1}]
+str[[id];[id]]
+----
+{blank}
+|===
+
+==== Stream Ring Axioms
+
+.Ringoids
+****
+An algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring] \$(A,\+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires \[
+a \ast (b + c) = ab + ac \\ (a + b) \ast c = ac + bc.
+\]
+A https://ncatlab.org/nlab/show/Ab-enriched+category[ringoid] generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are https://en.wikipedia.org/wiki/Partial_function[partial functions] lacking https://en.wikipedia.org/wiki/Closure_(mathematics)[closure].
+In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.
+****
+
+image:obj-semiring-orderedring.svg[float=left,width=350]
+
+Stream ring theory studies _quantified objects_.
+The quantifiers must be elements of an https://en.wikipedia.org/wiki/Ordered_ring[ordered ring] with unity.
+The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient https://en.wikipedia.org/wiki/Stream_(computing)[stream computing].
+The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$.
+However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.
+
+NOTE: The algebra underlying most type theories operate as a https://en.wikipedia.org/wiki/Semiring[semiring(oid)], where the additive component is a https://en.wikipedia.org/wiki/Monoid[monoid] as opposed to an invertible https://en.wikipedia.org/wiki/Group_(mathematics)[group].
+In mm-ADT, the elements of the additive component can be inverted by their corresponding _negative type_ (or negative `obj` in general).
+Thus, mm-ADT realizes an additive https://en.wikipedia.org/wiki/Groupoid[groupoid], where, for example, the `,-poly` `[int{1},int{-1}]` is `int{0}` which is isomorphic to the initial `obj{0}`.
+
+[cols="2,2,7,9"]
+|===
+^| axiom   ^| equation    ^| mmlang values ^| mmlang types
+
+| Bulking  | \[\begin{split}
+& xa + ya \\
+=& (x+y)a
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+['a'{2},'a'{3}]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[id]{2},[id]{3}]
+----
+{blank}
+| Applying  | \$xa \ast yb = (xy)ab\$
+a|
+[exec,prompt="mm> "]
+----
+'a'{2}['b'{3}]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str{2}[[id]{3}]
+----
+{blank}
+| Splitting  | \[\begin{split}
+& xa \ast (yb + zc) \\
+=& (xy)ab + (xz)ac
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+'a'{2}['b'{3},'c'{4}]
+['b'{6},'c'{8}]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str{2}[[id]{3},[id]{4}]
+str[[id]{6},[id]{8}]
+----
+{blank}
+| Merging  | \[\begin{split}
+& \((xa) + (yb)) \\
+=& (xa + yb)
+\end{split}\]
+a|
+[exec,prompt="mm> "]
+----
+[['a'{2}],['b'{3}]]
+['a'{2},'b'{3}]
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[[[id]{2}],[[id]{3}]]
+str[[id]{2},[id]{3}]
+----
+{blank}
+| Removing  | \[ (\mathbf{0}a + b) = b \]
+a|
+[exec,prompt="mm> "]
+----
+['a'{0},'b']
+----
+{blank}
+a|
+[exec,prompt="mm> "]
+----
+str[{0},[id]]
+----
+{blank}
+|===
 
 === Type System
 
