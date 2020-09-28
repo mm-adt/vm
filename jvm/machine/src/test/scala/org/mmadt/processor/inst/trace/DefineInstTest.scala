@@ -40,8 +40,8 @@ object DefineInstTest {
   private val myListType:Type[__] = 'mylist <= __.-<(is(eqs(1)) `|`(1 `;` 'mylist)) >-
   private val iListType:Type[__] = 'ilist <= lst.branch(is(empty) `|` branch(is(head.a(int)) `;` is(tail.a('ilist))))
   private val siListType:Type[__] = 'silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist))))
-  private val apairType:Type[__] = 'apair <= (int.to('m) `;` int.to('n)).is(from("m", int).lt(from("n", int)))
-  private val bpairType:Type[__] = 'bpair <= (int.plus(1).to('m) `;` int.plus(2).to('n)).is(from("m", int).lt(from("n", int)))
+  private val apairType:Type[__] = 'apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))
+  private val bpairType:Type[__] = 'bpair <= (int.plus(1).to('m) `;` int.plus(2).to('n)).is(from('m, int).lt(from('n, int)))
   //private val vecType:Type[__] = 'vec <= __.split(id `;` lst.combine(id `,`).merge.count)
   private val MODEL:Model = ModelOp.MM.defining(natType).defining(myListType).defining(iListType).defining(siListType) //.defining(vecType)
 }

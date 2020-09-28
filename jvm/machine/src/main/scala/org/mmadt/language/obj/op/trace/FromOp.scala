@@ -35,10 +35,8 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait FromOp {
   this: Obj =>
-  def from(label: StrValue): this.type = FromOp(label).exec(this).asInstanceOf[this.type]
-  def from(label: __): this.type = this.from(label.name)
-  def from[O <: Obj](label: StrValue, atype: O): O = FromOp(label, atype).exec(this)
-  def from[O <: Obj](label: __, atype: O): O = this.from(label.name,atype)
+  def from(label: __): this.type = FromOp(label.name).exec(this).asInstanceOf[this.type]
+  def from[O <: Obj](label: __, atype: O): O = FromOp(label.name, atype).exec(this)
 }
 object FromOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false

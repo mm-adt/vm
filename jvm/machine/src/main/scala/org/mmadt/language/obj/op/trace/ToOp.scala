@@ -26,7 +26,6 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.value.StrValue
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
@@ -35,8 +34,7 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait ToOp {
   this:Obj =>
-  def to(label:StrValue):this.type = this.to(__(label.g))
-  def to(label:__):this.type = ToOp(label).exec(this)
+  def to(token:__):this.type = ToOp(token).exec(this)
 }
 object ToOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false

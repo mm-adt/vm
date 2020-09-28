@@ -23,71 +23,81 @@
 package org.mmadt.processor.inst.trace
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Obj
+import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.TestSetUtil.{excepting, _}
 import org.mmadt.storage.StorageFactory._
-import org.scalatest.FunSuite
-import org.scalatest.prop.TableDrivenPropertyChecks
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ToFromTest extends FunSuite with TableDrivenPropertyChecks {
+class ToFromTest extends BaseInstTest(
+  testSet("[to][from] table test", List(NONE, MM, MMX),
+    comment("types"),
+    IGNORING("eval-3", "eval-4", "eval-5", "query-2")(int, to('x).plus(1).from('x), int.to('x).plus(1).from('x), "int<x>[plus,1]<.x>"),
+    IGNORING("eval-3", "eval-4", "eval-5", "query-2")(int, to('x).plus(1).plus(from('x)), int.to('x).plus(1).plus(from('x)), "int<x>[plus,1][plus,int<.x>]"),
+    testing(__, int.to('x).map(__).to('y).from('x).from('y), int.to('x).map(int).to('y).from('x).from('y), "int<x>[map,_]<y><.x><.y>"),
+    testing(__, int.to('x).map(from('x)).to('y).from('x).from('y), int.to('x).map(int.from('x)).to('y).from('x).from('y), "int<x>[map,int<.x>]<y><.x><.y>"),
+    testing(int, int.to('x).map(from('x)).to('y).from('x).from('y), int.to('x).map(int.from('x)).to('y).from('x).from('y), "int<x>[map,<.x>]<y><.x><.y>"),
+    testing(int, int.to('x).map(plus(mult(from('x)))).to('y).from('x).from('y), int.to('x).map(int.plus(int.mult(int.from('x)))).to('y).from('x).from('y), "int<x>[map,[plus,[mult,<.x>]]]<y><.x><.y>"),
+    excepting(1, int.plus(1).plus(int.mult(10).to('x)).from('x), LanguageException.labelNotFound(1 `;` 2 `;` 22, "x"), "1=>int[plus,1][plus,int[mult,10]<x>]<.x>"),
+    comment("values"),
+    testing(1, int.to('x).plus(1).plus(from('x, int)), 3, "1 => int<x>+1[plus,<.x>]"),
+    testing(1, int.to('x).plus(1).plus(2).plus(int.from('x, int)), 5, "1 => int<x>[plus,1][plus,2][plus,<.x>]"),
+    testing(1, int.to('x).plus(1).plus(2).plus(int.from('x, int)), 5, "1 => int<x>[plus,1][plus,2][plus,x]"),
+    testing(1, int.to('x).plus(1).plus(int.from('x).plus(2)), 5, "1 => int<x>[plus,1][plus,x+2]"),
+    testing(1, int.to('x).plus(1).plus(int.plus(2).from('x)), 3, "1 => int<x>[plus,1][plus,int[plus,2]<.x>]"),
+    testing(1, int.to('x).plus(1).map(int.from('x, int)), 1, "1 => int<x>[plus,1][map,<.x>]"),
+    testing(1, int.to('x).plus(1).map('x), 1, "1 => int<x>[plus,1][map,x]"),
+    testing(1, int.to('x).plus(1).plus(int.from('x)), 3, "1 => int<x>[plus,1][plus,int<.x>]"),
+    testing(1, int.to('x).plus(1).map[Int](100).from('x), 1, "1 => int<x>[plus,1][map,100]<.x>"),
+    testing(1, int.to('x).plus(1).map[Int](100).from('x), 1, "1 => int<x>[plus,1][map,100][x]"),
+    testing(1, int.plus(1).map[Int](5).to('x).from('x), 5, "1 => int[plus,1][map,5]<x><.x>"),
+    testing(1, int.plus(2).to('x).plus(1).to('y).map(int.plus(int.from('x, int).mult(int.from('y, int)))), 16, "1 => int[plus,2]<x>[plus,1]<y>[map,int[plus,<.x>[mult,y]]]"),
+    //testing(1,int.plus(2).to('x).plus(1).to('y).map(int.plus(int.from('x, int).mult(int.from('y, int)))),16,"1 => int[plus,2]<x>[plus,1]<y>[map,int[plus,[x][mult,y]]]"), // TODO: why [x] bad? <.x> required
+    //testing(1,int.plus(2).to('x).plus(1).to('y).map(int.plus(int.from('x, int).mult(int.from('y, int)))),16,"1 => int[plus,2]<x>[plus,1]<y>[map,int[plus,x[mult,y]]]"), // TODO: why x bad? <.x> required
+    excepting(1, int.from('x).plus(1).map(int.mult(10)), LanguageException.labelNotFound(lst(int(1)), "x"), "1 => int<.x>+1[map,int*10]"),
+    excepting(1, int.from('x).plus(1), LanguageException.labelNotFound(lst(int(1)), "x"), "1 => int<.x>+1"),
+  ), testSet("[to][from] id rewrite", List(MMX, MM),
+    comment("types"),
+    IGNORING("eval-3", "eval-4", "eval-5", "query-2")(int, id.to('x).map(int.plus(int.mult(int.from('x)))).to('y).from('x).from('y), int.to('x).map(int.plus(int.mult(int.from('x)))).to('y).from('x).from('y), "int[id]<x>[map,int[plus,int[mult,int<.x>]]]<y><.x><.y>"),
+    testing(__, int.id.to('x).map(int.plus(int.from('x))).to('y).from('x).from('y), int.to('x).map(int.plus(int.from('x))).to('y).from('x).from('y), "int[id]<x>[map,int[plus,int<.x>]]<y><.x><.y>"),
+    testing(__, int.id.to('x).id.plus(int.from('x).id).to('y).from('x).id.from('y).id, int.to('x).plus(int.from('x)).to('y).from('x).from('y), "int[id]<x>[id][plus,int<.x>[id]]<y><.x>[id]<.y>[id]"),
+    testing(int, int.id.to('x).map(int.from('x)).to('y).from('x).from('y), int.to('x).map(int.from('x)).to('y).from('x).from('y), "int[id]<x>[map,int<.x>]<y><.x><.y>"),
+    testing(__, int.to('x).map(id).to('y).from('x).from('y), int.to('x).map(int).to('y).from('x).from('y), "int<x>[map,[id]]<y><.x><.y>"))) {
 
   test("[to][from] model") {
-    val model = int.to("y").plus(2).to("x").plus(int.to("z").from("y")).model
+    val model = int.to('y).plus(2).to('x).plus(int.to('z).from('y)).model
     assert(model.vars("x").isDefined)
     assert(model.vars("y").isDefined)
     assert(model.vars("z").isEmpty)
   }
 
-  test("[to][from] w/ values") {
-    assertResult("int<x>[plus,1]<.x>")(int.to('x).plus(1).from('x).toString)
-    assertResult("int<x>[plus,1]<.x>")(int.to("x").plus(1).from("x").toString)
-    assertResult("int<x>[plus,1][plus,int<.x>]")((int ==> int.to("x").plus(1).plus(int.from("x"))).toString)
-    assertResult("int<x>[plus,1][plus,int<.x>]")((int ==> int.to("x").plus(1).plus(int.from("x"))).toString)
-    assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.from("x", int)))
-    assertResult(int(5))(int(1) ==> int.to("x").plus(1).plus(2).plus(int.from("x", int)))
-    assertResult(int(5))(int(1) ==> int.to("x").plus(1).plus(int.from("x", int).plus(2)))
-    assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.plus(2).from("x", int)))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from("x", int)))
-    assertResult(int(1))(int(1) ==> int.to('x).plus(1).map[Obj]('x))
-    //
-    assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.from("x")))
-    assertResult(int(5))(int(1) ==> int.to("x").plus(1).plus(2).plus(int.from("x")))
-    assertResult(int(5))(int(1) ==> int.to("x").plus(1).plus(int.from("x").plus(2)))
-    assertResult(int(3))(int(1) ==> int.to("x").plus(1).plus(int.plus(2).from("x")))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int.from("x")))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).from("x", int))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).from("x"))
-    assertResult(int(1))(int(1) ==> int.to("x").plus(1).map(int(100)).from("x", int))
-    //
-    assertResult(int(5))(int(1) ==> int.plus(1).map(int(5)).to("x").from("x", int))
-    assertResult(int(16))(int(1) ==> int.plus(2).to("x").plus(1).to("y").map(int.plus(int.from("x", int).mult(int.from("y", int)))))
-    //
-    intercept[LanguageException] {
-      int(1) ==> int.from("x").plus(1).map(int.mult(10))
+  /*
+    test("to/from state parsing") {
+    assertResult(real(45.5))(engine.eval("45.0<x>[mult,0.0][plus,<.x>][plus,0.5]"))
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int(20)))(engine.eval("int<a>[plus,10]<b>[mult,20]"))
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from("a")))(engine.eval("int<a>[plus,10]<b>[mult,<.a>]"))
+    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<.a>]"))
+    assertResult(int.to("x").plus(int(10)).to("y").mult('x))(engine.eval("int<x>[plus,10]<y>[mult,x]"))
+    assertResult(int(600))(engine.eval("19[plus,1]<x>[plus,10][mult,x]"))
+    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,<.x>]"))
+    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<.x>]"))
+    assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,int<.y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<.x>[plus,<.y>]]").toString)
+    assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,<.y>]]"))
+    assertResult(int(13))(engine.eval("5 => int<x>[plus,1][plus,x[plus,2]]"))
+    assertResult(int(14))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]]"))
+    assertResult(int(19))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]][plus,x]"))
+    assertResult(int(28))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
+    assertResult(int(28).q(3))(engine.eval("[5,5,5] => int{3}<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
+    assertResult(int(28, 32, 36))(engine.eval("[5,6,7] => int{3}<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
+    assertThrows[LanguageException] {
+      engine.eval("50[is>dog]")
     }
   }
-
-  test("[to][from] w/ types") {
-    assertResult("int[plus,1][map,int]<x>")(int.plus(1).map(int).to("x").toString)
-//    assertResult("int[id]<x>[map,int<.x>]<y><.x><.y>")(int.id.to("x").map[__]('x).to("y").from("x").from("y").toString)
-    assertResult("int[id]<x>[map,int[plus,int<.x>]]<y><.x><.y>")(int.id.to("x").map(int.plus(int.from("x"))).to("y").from("x").from("y").toString)
-    assertResult("int[id]<x>[map,int[plus,int[mult,int<.x>]]]<y><.x><.y>")(int.id.to("x").map(int.plus(int.mult(int.from("x")))).to("y").from("x").from("y").toString)
-    assertResult("int[id]<x>[plus,int<.x>]<y><.x><.y>")(int.id.to("x").plus(int.from("x")).to("y").from("x").from("y").toString)
-    assertResult("int[id]<x>[map,int<.x>]<y><.x><.y>")((int ==> int.id.to("x").map(int.from("x")).to("y").from("x").from("y")).toString)
-    //
-    intercept[LanguageException] {
-      assertResult(int(20))(int(1) ==> int.plus(1).plus(int.mult(10).to("x")).from("x"))
-    }
-  }
-
-  test("[to][from] w/ anonymous types") {
-    assertResult("int<x>[map,int[id]]<y><.x><.y>")(int.to("x").map(__.id).to("y").from("x").from("y").toString)
-    assertResult("int<x>[map,int<.x>]<y><.x><.y>")(int.to("x").map(__.from("x", int)).to("y").from("x").from("y").toString)
-    assertResult("int<x>[map,int<.x>]<y><.x><.y>")((int ==> int.to("x").map(__.from("x")).to("y").from("x").from("y")).toString)
-    assertResult("int<x>[map,int[plus,int[mult,int<.x>]]]<y><.x><.y>")((int ==> int.to("x").map(__.plus(__.mult(__.from("x")))).to("y").from("x").from("y")).toString)
-  }
+   */
 }

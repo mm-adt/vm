@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.{ReduceInstruction, TraceInstruction}
-import org.mmadt.language.obj.value.{IntValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Int, Obj}
 import org.mmadt.storage.StorageFactory._
@@ -36,24 +36,24 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait CountOp {
-  this: Obj =>
-  def count: Int = CountOp().exec(this)
+  this:Obj =>
+  def count:Int = CountOp().exec(this)
 }
 
 object CountOp extends Func[Obj, Obj] {
-  override val preArgs: Boolean = false
-  override val preStrm: Boolean = false
+  override val preArgs:Boolean = false
+  override val preStrm:Boolean = false
 
-  def apply(): Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.count, Nil), func = this) with ReduceInstruction[Int] with TraceInstruction {
-    val seed: Int = int(0)
-    val reducer: Int = __.to("x").get(0).plus(__.from("x").get(1).quant()).as(int)
+  def apply():Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.count, Nil), func = this) with ReduceInstruction[Int] with TraceInstruction {
+    val seed:Int = int(0)
+    val reducer:Int = __.to('x).get(0).plus(__.from('x).get(1).quant()).as(int)
   }
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
     start match {
-      case _: __ => int.via(start,inst)
-      case strm: Strm[_] => strm.drain.map(x => x.q._1).foldLeft(int(0))((x, y) => x + y).clone(q = qOne, via = (start, inst))
-      case avalue: Value[_] => int(0).plus(avalue.q._1).clone(q = qOne, via = (start, inst))
-      case _: Type[_] => int.via(start, inst)
+      case _:__ => int.via(start, inst)
+      case strm:Strm[_] => strm.drain.map(x => x.q._1).foldLeft(int(0))((x, y) => x + y).clone(q = qOne, via = (start, inst))
+      case avalue:Value[_] => int(0).plus(avalue.q._1).clone(q = qOne, via = (start, inst))
+      case _:Type[_] => int.via(start, inst)
     }
   }
 }

@@ -50,14 +50,14 @@ object FoldOp extends Func[Obj, Obj] {
   def apply[A <: Obj](_reducer: A): Inst[Obj, A] = FoldOp[A](__.zero.asInstanceOf[A], _reducer)
   def apply[A <: Obj](_seed: A, _reducer: A): Inst[Obj, A] = new VInst[Obj, A](g = (Tokens.fold, List(_seed, _reducer)), func = this) with ReduceInstruction[A] with TraceInstruction {
     val seed: A = _seed
-    val reducer: A = __.to("x").compute(_reducer)
+    val reducer: A = __.to('x).compute(_reducer)
   }
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val seed: Obj = start.toStrm.drain.headOption.getOrElse(start) ~~> inst.arg0[Obj]
-    val folding: Obj = __.to("x").compute(inst.arg1[Obj])
+    val folding: Obj = __.to('x).compute(inst.arg1[Obj])
     (start match {
-      case strm: Strm[_] => strm.drain.foldLeft(seed)((x, y) => ((x `;` y).to("x") ~~> folding))
+      case strm: Strm[_] => strm.drain.foldLeft(seed)((x, y) => ((x `;` y).to('x) ~~> folding))
       case avalue: Value[_] => (avalue `;` seed) ~~> folding
       case _: Type[_] => inst.arg1[Type[Obj]].via(start, inst)
     }).hardQ(qOne)

@@ -406,7 +406,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("map instruction parsing") {
-    assertResult(int.to("x").map(int.from('x).plus(int.from('x))))(engine.eval("int<x>[map,<.x>+<.x>]"))
+    assertResult(int.to('x).map(int.from('x).plus(int.from('x))))(engine.eval("int<x>[map,<.x>+<.x>]"))
     assertResult(int(10))(engine.eval("5<x>[map,<.x>+<.x>]"))
     assertResult(int(11))(engine.eval("5<x>[plus,1]<y>[map,<.x>+<.y>]"))
   }
@@ -566,28 +566,6 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(btrue)(engine.eval("5[plus,1]-<([is>5] -> true | int+1 -> false)>-"))
     assertResult(bfalse)(engine.eval("4[plus,1][[is>5] -> true | int -> false]"))
     assertResult(btrue)(engine.eval("5[plus,1][[is>5] -> true | int+3 -> false]"))
-  }
-
-  test("to/from state parsing") {
-    assertResult(real(45.5))(engine.eval("45.0<x>[mult,0.0][plus,<.x>][plus,0.5]"))
-    assertResult(int.to("a").plus(int(10)).to("b").mult(int(20)))(engine.eval("int<a>[plus,10]<b>[mult,20]"))
-    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from("a")))(engine.eval("int<a>[plus,10]<b>[mult,<.a>]"))
-    assertResult(int.to("a").plus(int(10)).to("b").mult(int.from("a")))(engine.eval("int<a>[plus,10]<b>[mult,int<.a>]"))
-    assertResult(int.to("x").plus(int(10)).to("y").mult('x))(engine.eval("int<x>[plus,10]<y>[mult,x]"))
-    assertResult(int(600))(engine.eval("19[plus,1]<x>[plus,10][mult,x]"))
-    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,<.x>]"))
-    assertResult(int(21))(engine.eval("5[plus,2]<x>[mult,2][plus,int<.x>]"))
-    assertResult("int[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,int<.y>]]")(engine.eval("int[plus,2]<x>[mult,2]<y>[plus,<.x>[plus,<.y>]]").toString)
-    assertResult(int(35))(engine.eval("5[plus,2]<x>[mult,2]<y>[plus,int<.x>[plus,<.y>]]"))
-    assertResult(int(13))(engine.eval("5 => int<x>[plus,1][plus,x[plus,2]]"))
-    assertResult(int(14))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]]"))
-    assertResult(int(19))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]][plus,x]"))
-    assertResult(int(28))(engine.eval("5 => int<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
-    assertResult(int(28).q(3))(engine.eval("[5,5,5] => int{3}<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
-    assertResult(int(28, 32, 36))(engine.eval("[5,6,7] => int{3}<x>[plus,1][plus,<x>[plus,2]][plus,<x>]"))
-    assertThrows[LanguageException] {
-      engine.eval("50[is>dog]")
-    }
   }
 
   test("infix operator instruction parsing") {

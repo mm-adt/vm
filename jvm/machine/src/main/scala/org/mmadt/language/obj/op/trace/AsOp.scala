@@ -55,7 +55,7 @@ object AsOp extends Func[Obj, Obj] {
   def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
   def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E = autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
   private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
-    if (domain && __.isToken(target) && source.reload.model.vars(target.name).isDefined && source.isInstanceOf[Type[_]]) return source.from(target.name)
+    if (domain && __.isToken(target) && source.reload.model.vars(target.name).isDefined && source.isInstanceOf[Type[_]]) return source.from(__(target.name))
     if (source.name.equals(target.name)) {
       source match {
         case alst:LstValue[Obj] if !Lst.exactTest(alst, target) =>
