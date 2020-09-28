@@ -481,9 +481,20 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_type_signature">Type Signature</a></li>
 <li><a href="#_type_definition">Type Definition</a></li>
 <li><a href="#_type_quantification">Type Quantification</a></li>
-<li><a href="#_type_evaluation">Type Evaluation</a></li>
 </ul>
 </li>
+<li><a href="#_type_evaluation">Type Evaluation</a>
+<ul class="sectlevel4">
+<li><a href="#_stream_ring_operators">Stream Ring Operators</a></li>
+<li><a href="#_stream_ring_algebra">Stream Ring Algebra</a></li>
+</ul>
+</li>
+<li><a href="#_ring_axioms">Ring Axioms</a>
+<ul class="sectlevel4">
+<li><a href="#_ring_theorems">Ring Theorems</a></li>
+</ul>
+</li>
+<li><a href="#_stream_ring_axioms">Stream Ring Axioms</a></li>
 </ul>
 </li>
 <li><a href="#_type_system">Type System</a>
@@ -1924,8 +1935,11 @@ mmlang&gt;</code></pre>
 </tbody>
 </table>
 </div>
+</div>
+<div class="sect3">
+<h4 id="_type_evaluation">Type Evaluation</h4>
 <div class="sect4">
-<h5 id="_type_evaluation">Type Evaluation</h5>
+<h5 id="_stream_ring_operators">Stream Ring Operators</h5>
 <table class="tableblock frame-none grid-none right" style="width: 20%;">
 <colgroup>
 <col style="width: 100%;">
@@ -2060,6 +2074,750 @@ mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [p
 </div>
 </div>
 </div>
+<div class="sect4">
+<h5 id="_stream_ring_algebra">Stream Ring Algebra</h5>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Stream Ring Theory</div>
+<div class="paragraph">
+<p><span class="image right"><img src="./images/type/biproduct.svg" alt="biproduct" width="250"></span></p>
+</div>
+<div class="paragraph">
+<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring.
+Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding <a href="https://en.wikipedia.org/wiki/Coefficient">coefficient</a> dynamics.
+Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>.
+A biproduct has both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams.
+Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located by the <em>reduce</em> near-ring operator \$\oplus\$.</p>
+</div>
+<div class="paragraph">
+<p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>.
+Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called the <strong>type ringoid</strong> whose free algebra is captured by the <strong>type graph</strong>.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p>The mm-ADT stream ring is the <a href="https://en.wikipedia.org/wiki/Ring_theory">algebraic ring</a>
+\[
+(\texttt{obj},+,\ast,\oplus,\mathbf{0},\mathbf{1}), \]</p>
+</div>
+<div class="paragraph">
+<p>where</p>
+</div>
+<div class="imageblock right">
+<div class="content">
+<img src="./images/type/type-value-illustration.svg" alt="type value illustration" width="525">
+</div>
+</div>
+<div class="ulist">
+<ul>
+<li>
+<p>\$\tt{obj}\$ is the carrier set containing all quantified objects,</p>
+</li>
+<li>
+<p>\$+\$ the additive <em>parallel branch</em> operator,</p>
+</li>
+<li>
+<p>\$\ast\$ the multiplicative <em>serial chain</em> operator,</p>
+</li>
+<li>
+<p>\$\oplus\$ is the reducing <em>barrier</em> operator,</p>
+</li>
+<li>
+<p>\$\mathbf{0}\$ the additive identity, and</p>
+</li>
+<li>
+<p>\$\mathbf{1}\$ the multiplicative identity.</p>
+</li>
+</ul>
+</div>
+<hr>
+<div class="paragraph">
+<p>The equation \$\tt{obj} = \tt{type} + \tt{value}\$) and the suggestive illustration above highlight two important uses of the ring&#8217;s multiplicative binary \$\ast\$-operator:</p>
+</div>
+<div class="olist arabic">
+<ol class="arabic">
+<li>
+<p>\$\ast: \tt{type} \times \tt{type} \to \tt{type}\$ generate functions graph (<strong>program compilation</strong>) and,</p>
+</li>
+<li>
+<p>\$\ast: \tt{value} \times \tt{type} \to \tt{value}\$ <em>stream</em> values through the type structure (<strong>program evaluation</strong>).</p>
+</li>
+</ol>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The mm-ADT stream ring is more accurately known as a <strong>ringoid</strong>. A ringoid is a ring without operator closure. That is, some <code>obj</code> compositions are undefined such as <code>5 + 'a'</code>. Given that closure is more accurately understood to be determined by the instruction set architecture, the term <strong>ring</strong> will be used.
+</td>
+</tr>
+</table>
+</div>
+<div class="paragraph">
+<p>Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> (save operator <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>), the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>.
+The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in <code>mmlang</code> using both <code>obj</code> <strong>values</strong> and <strong>types</strong>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The <code>mmlang</code> examples are rife with <a href="https://en.wikipedia.org/wiki/Syntactic_sugar">syntactic sugars</a>.
+The term <code>_{0}</code> (sugar&#8217;d <code>{0}</code>) is \$\mathbf{0}\$, <code>_{1}</code> (sugar&#8217;d <code>{1}</code>) is \$\mathbf{1}\$, <code>[a,b,c]</code> denotes <code>[branch,(a,b,c)]</code> and <code>+{q}n</code> denotes <code>[plus,n]{q}</code>.
+Finally, while <code>[,]</code> and <code>[;]</code> are defined as binary operators, due to the <a href="https://en.wikipedia.org/wiki/Associative_property">associativity</a> axioms of the respective additive group and multiplicative monoid of a ring, <code>[,]</code> and <code>[;]</code> are effectively \$n\$-ary operators and will be used as such in examples to follow.
+</td>
+</tr>
+</table>
+</div>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_ring_axioms">Ring Axioms</h4>
+<div class="paragraph">
+<p><a href="https://en.wikipedia.org/wiki/Axiom">Axioms</a> are the "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" equations of a system.
+Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 35%;">
+<col style="width: 45%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">axiom</th>
+<th class="tableblock halign-center valign-top">equation</th>
+<th class="tableblock halign-center valign-top">mmlang values</th>
+<th class="tableblock halign-center valign-top">mmlang types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Additive Abelian Group&#8201;&#8212;&#8201;\$(\tt{obj},+,\mathbf{0})\$</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive associativity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;(a+b)+c \\
+=&amp; a+(b+c)
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a','b'],'c']
+==&gt;'a'
+==&gt;'b'
+==&gt;'c'
+mm&gt; ['a',['b','c']]
+==&gt;'a'
+==&gt;'b'
+==&gt;'c'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id],[id]],[id]]
+==&gt;str{3}&lt;=str[id]{3}
+mm&gt; str[[id],[[id],[id]]]
+==&gt;str{3}&lt;=str[id]{3}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive commutativity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a+b \\
+=&amp; b+a
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','b']
+==&gt;'a'
+==&gt;'b'
+mm&gt; ['b','a']
+==&gt;'b'
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{2},[id]{3}]
+==&gt;str{5}&lt;=str[id]{5}
+mm&gt; str[[id]{3},[id]{2}]
+==&gt;str{5}&lt;=str[id]{5}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[a+\mathbf{0} = a\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a',{0}]
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],{0}]
+==&gt;str</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive inverse</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[a + ({-a}) = \mathbf{0}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','a'{-1}]
+mm&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],[id]{-1}]
+mm&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Multiplicative Monoid&#8201;&#8212;&#8201;\$(\tt{obj},\ast,\mathbf{1})\$</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative associativity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;(a \cdot b) \cdot c \\
+=&amp; a \cdot (b \cdot c)
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a';'b'];'c']
+==&gt;'c'
+mm&gt; ['a';['b';'c']]
+==&gt;'c'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id];[id]];[id]]
+==&gt;str
+mm&gt; str[[id];[[id];[id]]]
+==&gt;str</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Multiplicative identity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[a \cdot \mathbf{1} = a\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';{1}]
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];{1}]
+==&gt;str</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},+,\ast,\mathbf{0},\mathbf{1})\$</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Left distributivity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a \cdot (b + c) \\
+=&amp; ab + ac
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';['b','c']]
+==&gt;'b'
+==&gt;'c'
+mm&gt; [['a';'b'],['a';'c']]
+==&gt;'b'
+==&gt;'c'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];[[id],[id]]]
+==&gt;str{2}&lt;=str[id]{2}
+mm&gt; str[[[id];[id]],[[id];[id]]]
+==&gt;str{2}&lt;=str[id]{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Right distributivity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;(a+b) \cdot c \\
+=&amp; ac + bc
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a','b'];'c']
+==&gt;'c'{2}
+mm&gt; [['a';'c'],['b';'c']]
+==&gt;'c'{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id],[id]];[id]]
+==&gt;str{2}&lt;=str[id]{2}
+mm&gt; str[[[id];[id]],[[id];[id]]]
+==&gt;str{2}&lt;=str[id]{2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+<div class="sect4">
+<h5 id="_ring_theorems">Ring Theorems</h5>
+<div class="paragraph">
+<p>The axioms of a theory entail its <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>.
+Stated in reverse, theorems are the derivations of an <a href="https://en.wikipedia.org/wiki/Axiomatic_system">axiomatic system</a>.
+Once a system is determined to be a ring, then all the theorems that have been proved about rings in general are also true for that system.</p>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 35%;">
+<col style="width: 45%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">theorem</th>
+<th class="tableblock halign-center valign-top">equation</th>
+<th class="tableblock halign-center valign-top">mmlang values</th>
+<th class="tableblock halign-center valign-top">mmlang types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<th class="tableblock halign-center valign-top" colspan="4"><p class="tableblock">Ring with Unity&#8201;&#8212;&#8201;\$(\tt{obj},+,\ast,\mathbf{0},\mathbf{1})\$</p></th>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Additive factoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a + b = a + c \\
+&#8658;&amp; b = c
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Unique factoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a + b = \mathbf{0} \\
+&#8658;&amp; a = -b \\
+&#8658;&amp; b = -a
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;-(a+b) \\
+=&amp; (-a) + (-b)
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a','b']{-1}
+==&gt;'a'{-1}
+==&gt;'b'{-1}
+mm&gt; ['a'{-1},'b'{-1}]
+==&gt;'a'{-1}
+==&gt;'b'{-1}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id],[id]]{-1}
+==&gt;str{-2}&lt;=str[id]{-2}
+mm&gt; str[[id]{-1},[id]{-1}]
+==&gt;str{-2}&lt;=str[id]{-2}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Inverse distributivity</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[-(-a) = a\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{-1}]{-1}
+==&gt;'a'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{-1}]{-1}
+==&gt;str</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Annihilator</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a*\mathbf{0} \\
+=&amp; \mathbf{0} \\
+=&amp; \mathbf{0}*a
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';{0}]
+mm&gt;
+mm&gt; [{0};'a']
+mm&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];{0}]
+mm&gt;
+mm&gt; str[{0};[id]]
+mm&gt;</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;a * (-b) \\
+=&amp; -a * b \\
+=&amp; -(a*b)
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a';'b'{-1}]
+==&gt;'b'{-1}
+mm&gt; ['a'{-1};'b']
+==&gt;'b'{-1}
+mm&gt; ['a';'b']{-1}
+==&gt;'b'{-1}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id];[id]{-1}]
+==&gt;str{-1}&lt;=str[id]{-1}
+mm&gt; str[[id]{-1};[id]]
+==&gt;str{-1}&lt;=str[id]{-1}
+mm&gt; str[[id];[id]]{-1}
+==&gt;str{-1}&lt;=str[id]{-1}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Factoring</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp;(-a) * (-b) \\
+=&amp; a * b
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{-1};'b'{-1}]
+==&gt;'b'
+mm&gt; ['a';'b']
+==&gt;'b'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{-1};[id]{-1}]
+==&gt;str
+mm&gt; str[[id];[id]]
+==&gt;str</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+<div class="sect3">
+<h4 id="_stream_ring_axioms">Stream Ring Axioms</h4>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Ringoids</div>
+<div class="paragraph">
+<p>An algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> \$(A,+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires \[
+a \ast (b + c) = ab + ac \\ (a + b) \ast c = ac + bc.
+\]
+A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are <a href="https://en.wikipedia.org/wiki/Partial_function">partial functions</a> lacking <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>.
+In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.</p>
+</div>
+</div>
+</div>
+<div class="paragraph">
+<p><span class="image left"><img src="./images/type/obj-semiring-orderedring.svg" alt="obj semiring orderedring" width="350"></span></p>
+</div>
+<div class="paragraph">
+<p>Stream ring theory studies <em>quantified objects</em>.
+The quantifiers must be elements of an <a href="https://en.wikipedia.org/wiki/Ordered_ring">ordered ring</a> with unity.
+The stream ring axioms are primarily concerned with quantifier equations and their relationship to efficient <a href="https://en.wikipedia.org/wiki/Stream_(computing)">stream computing</a>.
+The most common quantifier ring is integer pairs (denoting a range) with standard pairwise addition and multiplication, \$(\mathbb{Z} \times \mathbb{Z},+,\ast,(0,0),(1,1))\$.
+However, the theory holds as long as the quantifiers respect the ring axioms and, when coupled to an object, they respect the stream ring axioms.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+The algebra underlying most type theories operate as a <a href="https://en.wikipedia.org/wiki/Semiring">semiring(oid)</a>, where the additive component is a <a href="https://en.wikipedia.org/wiki/Monoid">monoid</a> as opposed to an invertible <a href="https://en.wikipedia.org/wiki/Group_(mathematics)">group</a>.
+In mm-ADT, the elements of the additive component can be inverted by their corresponding <em>negative type</em> (or negative <code>obj</code> in general).
+Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoid">groupoid</a>, where, for example, the <code>,-poly</code> <code>[int{1},int{-1}]</code> is <code>int{0}</code> which is isomorphic to the initial <code>obj{0}</code>.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 10%;">
+<col style="width: 10%;">
+<col style="width: 35%;">
+<col style="width: 45%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-top">axiom</th>
+<th class="tableblock halign-center valign-top">equation</th>
+<th class="tableblock halign-center valign-top">mmlang values</th>
+<th class="tableblock halign-center valign-top">mmlang types</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Bulking</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp; xa + ya \\
+=&amp; (x+y)a
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{2},'a'{3}]
+==&gt;'a'{5}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[id]{2},[id]{3}]
+==&gt;str{5}&lt;=str[id]{5}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Applying</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\$xa \ast yb = (xy)ab\$</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'a'{2}['b'{3}]
+==&gt;'b'{6}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str{2}[[id]{3}]
+==&gt;str{6}&lt;=str{2}[id]{3}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Splitting</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp; xa \ast (yb + zc) \\
+=&amp; (xy)ab + (xz)ac
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'a'{2}['b'{3},'c'{4}]
+==&gt;'b'{6}
+==&gt;'c'{8}
+mm&gt; ['b'{6},'c'{8}]
+==&gt;'b'{6}
+==&gt;'c'{8}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str{2}[[id]{3},[id]{4}]
+==&gt;str{14}&lt;=str{2}[id]{7}
+mm&gt; str[[id]{6},[id]{8}]
+==&gt;str{14}&lt;=str[id]{14}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Merging</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[\begin{split}
+&amp; ((xa) + (yb)) \\
+=&amp; (xa + yb)
+\end{split}\]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; [['a'{2}],['b'{3}]]
+==&gt;'a'{2}
+==&gt;'b'{3}
+mm&gt; ['a'{2},'b'{3}]
+==&gt;'a'{2}
+==&gt;'b'{3}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[[[id]{2}],[[id]{3}]]
+==&gt;str{5}&lt;=str[id]{5}
+mm&gt; str[[id]{2},[id]{3}]
+==&gt;str{5}&lt;=str[id]{5}</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock">Removing</p></td>
+<td class="tableblock halign-left valign-top"><p class="tableblock">\[ (\mathbf{0}a + b) = b \]</p></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; ['a'{0},'b']
+==&gt;'b'</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+<td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; str[{0},[id]]
+==&gt;str</code></pre>
+</div>
+</div>
+<div class="paragraph">
+<p></p>
+</div></div></td>
+</tr>
+</tbody>
+</table>
 </div>
 </div>
 <div class="sect2">
@@ -5154,7 +5912,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-27 15:04:08 -0600
+Last updated 2020-09-27 23:06:34 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
