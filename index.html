@@ -483,18 +483,12 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <li><a href="#_type_quantification">Type Quantification</a></li>
 </ul>
 </li>
-<li><a href="#_type_evaluation">Type Evaluation</a>
+<li><a href="#_type_composition">Type Composition</a>
 <ul class="sectlevel4">
 <li><a href="#_stream_ring_operators">Stream Ring Operators</a></li>
 <li><a href="#_stream_ring_algebra">Stream Ring Algebra</a></li>
 </ul>
 </li>
-<li><a href="#_ring_axioms">Ring Axioms</a>
-<ul class="sectlevel4">
-<li><a href="#_ring_theorems">Ring Theorems</a></li>
-</ul>
-</li>
-<li><a href="#_stream_ring_axioms">Stream Ring Axioms</a></li>
 </ul>
 </li>
 <li><a href="#_type_system">Type System</a>
@@ -1937,9 +1931,28 @@ mmlang&gt;</code></pre>
 </div>
 </div>
 <div class="sect3">
-<h4 id="_type_evaluation">Type Evaluation</h4>
+<h4 id="_type_composition">Type Composition</h4>
 <div class="sect4">
 <h5 id="_stream_ring_operators">Stream Ring Operators</h5>
+<div class="sidebarblock">
+<div class="content">
+<div class="title">Stream Ring Theory</div>
+<div class="paragraph">
+<p><span class="image right"><img src="./images/type/biproduct.svg" alt="biproduct" width="250"></span></p>
+</div>
+<div class="paragraph">
+<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring.
+Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding <a href="https://en.wikipedia.org/wiki/Coefficient">coefficient</a> dynamics.
+Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>.
+A biproduct has both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams.
+Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located by the <em>reduce</em> near-ring operator \$\oplus\$.</p>
+</div>
+<div class="paragraph">
+<p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>.
+Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called the <strong>type ringoid</strong> whose free algebra is captured by the <strong>type graph</strong>.</p>
+</div>
+</div>
+</div>
 <table class="tableblock frame-none grid-none right" style="width: 20%;">
 <colgroup>
 <col style="width: 100%;">
@@ -2078,20 +2091,16 @@ mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [p
 <h5 id="_stream_ring_algebra">Stream Ring Algebra</h5>
 <div class="sidebarblock">
 <div class="content">
-<div class="title">Stream Ring Theory</div>
+<div class="title">Ringoids</div>
 <div class="paragraph">
-<p><span class="image right"><img src="./images/type/biproduct.svg" alt="biproduct" width="250"></span></p>
+<p>An algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> \$(A,+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires
+\[
+a \ast (b + c) = ab + ac \\ (a + b) \ast c = ac + bc.
+\]
+A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are <a href="https://en.wikipedia.org/wiki/Partial_function">partial functions</a> lacking <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>. In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.</p>
 </div>
 <div class="paragraph">
-<p><a href="https://zenodo.org/record/2565243">Stream ring theory</a> studies a particular type of algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> constructed from a <a href="https://en.wikipedia.org/wiki/Product_ring">direct product</a> of a <strong>function</strong> <a href="https://en.wikipedia.org/wiki/Semiring">semiring</a> and <strong>coefficient</strong> ring.
-Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> over \$\ast\$ and \$ \+\$, the theory requires that every stream ring uphold five additional <a href="https://en.wikipedia.org/wiki/Axiom">axioms</a> regarding <a href="https://en.wikipedia.org/wiki/Coefficient">coefficient</a> dynamics.
-Categorically, every stream ring forms an <a href="https://en.wikipedia.org/wiki/Additive_category">additive category</a> with <a href="https://en.wikipedia.org/wiki/Biproduct">biproducts</a>.
-A biproduct has both projection (<a href="https://en.wikipedia.org/wiki/Product_(category_theory)">product</a>) and injection (<a href="https://en.wikipedia.org/wiki/Coproduct">coproduct</a>) morphisms that capture the splitting and merging of streams.
-Along with the <em>atemporal stream theorem</em> derived from the stream ring axioms, biproduct streams have practical significance in <a href="https://en.wikipedia.org/wiki/Asynchronous_system">asynchronous</a> distributed computing environments that primarily enjoy <a href="https://en.wikipedia.org/wiki/Embarrassingly_parallel">embarrassingly parallel</a> processing, but where, at certain space and time <a href="https://en.wikipedia.org/wiki/Bulk_synchronous_parallel">synchronization</a> points, data needs to be co-located by the <em>reduce</em> near-ring operator \$\oplus\$.</p>
-</div>
-<div class="paragraph">
-<p>mm-ADT adopts the algebra of stream ring theory, but uses the term <strong>instruction</strong> for <em>function</em> and <strong>quantifier</strong> for <em>coefficient</em>.
-Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedia.org/wiki/Inductive_type">inductive</a>, <a href="https://en.wikipedia.org/wiki/Dependent_type">dependent</a> <a href="https://en.wikipedia.org/wiki/Type_theory">type theory</a> based on a <a href="https://en.wikipedia.org/wiki/Many-sorted_logic">multi-sorted</a> stream ring with <a href="https://en.wikipedia.org/wiki/Interval_(mathematics)">interval</a> quantifiers called the <strong>type ringoid</strong> whose free algebra is captured by the <strong>type graph</strong>.</p>
+<p>For all the intended practical uses for mm-ADT, the instruction set architecture constrains the stream ring to a stream ringoid. However, given that the ISA is predicated on the <strong>model</strong>, the more general and more widely known <em>ring</em> will serve as the classifying term.</p>
 </div>
 </div>
 </div>
@@ -2144,18 +2153,6 @@ Moreover, mm-ADT extends stream ring theory with an <a href="https://en.wikipedi
 </li>
 </ol>
 </div>
-<div class="admonitionblock note">
-<table>
-<tr>
-<td class="icon">
-<i class="fa icon-note" title="Note"></i>
-</td>
-<td class="content">
-The mm-ADT stream ring is more accurately known as a <strong>ringoid</strong>. A ringoid is a ring without operator closure. That is, some <code>obj</code> compositions are undefined such as <code>5 + 'a'</code>. Given that closure is more accurately understood to be determined by the instruction set architecture, the term <strong>ring</strong> will be used.
-</td>
-</tr>
-</table>
-</div>
 <div class="paragraph">
 <p>Along with the standard <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)#Definition">ring axioms</a> (save operator <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>), the <code>obj</code> stream ring respects the five additional axioms of <strong>stream ring theory</strong>.
 The following tables provide a consolidated summary of the ring axioms, stream ring axioms and their realization in mm-ADT via examples in <code>mmlang</code> using both <code>obj</code> <strong>values</strong> and <strong>types</strong>.</p>
@@ -2174,10 +2171,7 @@ Finally, while <code>[,]</code> and <code>[;]</code> are defined as binary opera
 </tr>
 </table>
 </div>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_ring_axioms">Ring Axioms</h4>
+<h6 id="_ring_axioms" class="discrete">Ring Axioms</h6>
 <div class="paragraph">
 <p><a href="https://en.wikipedia.org/wiki/Axiom">Axioms</a> are the "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" equations of a system.
 Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.</p>
@@ -2428,8 +2422,7 @@ mm&gt; str[[[id];[id]],[[id];[id]]]
 </tr>
 </tbody>
 </table>
-<div class="sect4">
-<h5 id="_ring_theorems">Ring Theorems</h5>
+<h6 id="_ring_theorems" class="discrete">Ring Theorems</h6>
 <div class="paragraph">
 <p>The axioms of a theory entail its <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>.
 Stated in reverse, theorems are the derivations of an <a href="https://en.wikipedia.org/wiki/Axiomatic_system">axiomatic system</a>.
@@ -2629,22 +2622,7 @@ mm&gt; str[[id];[id]]
 </tr>
 </tbody>
 </table>
-</div>
-</div>
-<div class="sect3">
-<h4 id="_stream_ring_axioms">Stream Ring Axioms</h4>
-<div class="sidebarblock">
-<div class="content">
-<div class="title">Ringoids</div>
-<div class="paragraph">
-<p>An algebraic <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring</a> \$(A,+,\ast,\mathbf{0},\mathbf{1})\$ is composed of an additive abelian group \$(A,\+,\mathbf{0})\$ and a multiplicative monoid \$(A,\ast,\mathbf{1})\$ that share the same carrier set \$A\$ and whose operators are bound by the axiom of distributivity that requires \[
-a \ast (b + c) = ab + ac \\ (a + b) \ast c = ac + bc.
-\]
-A <a href="https://ncatlab.org/nlab/show/Ab-enriched+category">ringoid</a> generalizes a ring with a multi-sorted carrier \$A = (A_0,A_1,\ldots,A_n)\$ such that the magmas of the binary operators are <a href="https://en.wikipedia.org/wiki/Partial_function">partial functions</a> lacking <a href="https://en.wikipedia.org/wiki/Closure_(mathematics)">closure</a>.
-In other words, a ringoid is a ring with a type system with the consequence that for any element \$a \in A_i\$ and \$b \in A_j\$, it is not required that \$a + b\$ nor \$a \ast b\$ be defined.</p>
-</div>
-</div>
-</div>
+<h6 id="_stream_ring_axioms" class="discrete">Stream Ring Axioms</h6>
 <div class="paragraph">
 <p><span class="image left"><img src="./images/type/obj-semiring-orderedring.svg" alt="obj semiring orderedring" width="350"></span></p>
 </div>
@@ -2818,6 +2796,7 @@ mm&gt; str[[id]{2},[id]{3}]
 </tr>
 </tbody>
 </table>
+</div>
 </div>
 </div>
 <div class="sect2">
@@ -5912,7 +5891,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-27 23:06:34 -0600
+Last updated 2020-09-27 23:41:58 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
