@@ -25,7 +25,7 @@ package org.mmadt.language.obj.op.trace
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Obj, asType}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.obj.value.VInst
@@ -34,19 +34,19 @@ import org.mmadt.storage.obj.value.VInst
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 trait FromOp {
-  this: Obj =>
-  def from(label: __): this.type = FromOp(label.name).exec(this).asInstanceOf[this.type]
-  def from[O <: Obj](label: __, atype: O): O = FromOp(label.name, atype).exec(this)
+  this:Obj =>
+  def from(token:__):this.type = FromOp(token).exec(this).asInstanceOf[this.type]
+  def from[O <: Obj](token:__, atype:O):O = FromOp(token, atype).exec(this)
 }
 object FromOp extends Func[Obj, Obj] {
-  override val preArgs: Boolean = false
+  override val preArgs:Boolean = false
 
-  def apply[O <: Obj](label: StrValue): Inst[Obj, Obj] = new VInst[Obj, O](g = (Tokens.from, List(label)), func = this) with TraceInstruction
-  def apply[O <: Obj](label: StrValue, default: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.from, List(label, default)), func = this) with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj =
-    start.model.vars(inst.arg0[StrValue]).getOrElse(
+  def apply[O <: Obj](token:__):Inst[Obj, Obj] = new VInst[Obj, O](g = (Tokens.from, List(token)), func = this) with TraceInstruction
+  def apply[O <: Obj](token:__, default:O):Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.from, List(token, default)), func = this) with TraceInstruction
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj =
+    start.model.vars[Obj](inst.arg0[__].name).filter(x => !x.isInstanceOf[__]).getOrElse(
       start match {
-        case _: Type[_] => inst.args.tail.headOption.getOrElse(asType(start))
-        case _: Value[_] => inst.args.tail.headOption.map(x => start ~~> x).getOrElse(throw LanguageException.labelNotFound(start.path(PathOp.VERTICES), inst.arg0[StrValue].g))
+        case _:Type[_] => inst.args.tail.headOption.getOrElse(asType[Obj](start))
+        case _:Value[_] => inst.args.tail.headOption.map(x => start ~~> x).getOrElse(throw LanguageException.labelNotFound(start.path(PathOp.VERTICES), inst.arg0[__].name))
       }).via(start, inst)
 }

@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.Tokens._
 import org.mmadt.language.obj.Obj.IntQ
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{LstType, RecType, Type}
+import org.mmadt.language.obj.`type`.{LstType, RecType, Type, __}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{StrValue, Value}
 import org.mmadt.storage.StorageFactory
@@ -115,8 +115,8 @@ object mmlangPrinter {
   def instString(inst:Inst[_, _]):String = {
     (inst.op match {
       case Tokens.model | Tokens.noop => Tokens.blank
-      case Tokens.to => LANGLE + inst.arg0[Obj].name + RANGLE
-      case Tokens.from => LANGLE + PERIOD + inst.arg0[StrValue].g + RANGLE
+      case Tokens.to => LANGLE + inst.arg0[__].name + RANGLE
+      case Tokens.from => LANGLE + PERIOD + inst.arg0[__].name + RANGLE
       case Tokens.branch => LBRACKET +
         Some[Obj](inst.arg0[Obj])
           .filter(x => x.isInstanceOf[Poly[Obj]])

@@ -200,7 +200,7 @@ object Obj {
     Some(arg).filter(a => __.isToken(a))
       .map(a => obj.model.search[A](obj, a, baseName).headOption)
       .filter(x => x.isDefined)
-      .map(a => arg.trace.reconstruct[A](a.get))
+      .map(a => arg.trace.reconstruct[A](a.get.update(obj.model)))
 
   private def resolveObj[S <: Obj, E <: Obj](objA:S, objB:E):E = {
     if (!objA.alive || !objB.alive) zeroObj.asInstanceOf[E]

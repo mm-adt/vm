@@ -179,7 +179,7 @@ class mmlangParser extends JavaTokenParsers {
   lazy val getIntSugar:Parser[Inst[Obj, Obj]] = (Tokens.get_op | Tokens.pi_op) ~> wholeNumber ^^ (x => GetOp[Obj, Obj](int(java.lang.Long.valueOf(x))))
   lazy val toSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> varName <~ RANGLE ^^ (x => ToOp(__(x)))
   lazy val liftSugar:Parser[Inst[Obj, Obj]] = (LANGLE + LANGLE) ~> (objValue | objType) <~ (RANGLE + RANGLE) ^^ (x => LiftOp(x))
-  lazy val fromSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ varName <~ RANGLE ^^ (x => FromOp(x._2))
+  lazy val fromSugar:Parser[Inst[Obj, Obj]] = LANGLE ~> PERIOD ~ varName <~ RANGLE ^^ (x => FromOp(__(x._2)))
   lazy val repeatSugar:Parser[Inst[Obj, Obj]] = (LROUND ~> obj <~ RROUND) ~ (Tokens.lift_op ~> LROUND ~> obj <~ RROUND) ^^ (x => RepeatOp(x._1, x._2))
   lazy val sugarlessInst:Parser[Inst[Obj, Obj]] = LBRACKET ~> ((LROUND + Tokens.reservedOps.foldLeft(EMPTY)((a, b) => a + PIPE + b).drop(1) + RROUND + "|(=[a-zA-Z]+)").r <~ opt(COMMA)) ~ repsep(obj, COMMA) <~ RBRACKET ^^ (x => OpInstResolver.resolve(x._1, x._2))
   lazy val branchSugar:Parser[Inst[Obj, Obj]] = opt(Tokens.combine_op) ~> ((LBRACKET ~> lstStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(lst(g = (x._1, x._2)))) | ((LBRACKET ~> recStruct(obj)) <~ RBRACKET) ^^ (x => BranchOp(rec(g = (x._1, x._2))))

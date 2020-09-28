@@ -39,7 +39,7 @@ trait ToOp {
 object ToOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
   def apply[O <: Obj](label:__):Inst[O, O] = new VInst[O, O](g = (Tokens.to, List(label.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start.via(start.update(start.model.vars(inst.arg0[Obj].name, start)), inst)
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start.via(start.update(start.model.vars(inst.arg0[__].name, start)), inst)
 }
 
 

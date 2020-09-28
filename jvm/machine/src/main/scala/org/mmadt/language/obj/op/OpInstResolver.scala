@@ -120,10 +120,10 @@ object OpInstResolver {
       case Tokens.put => PutOp(args.head, args.tail.head)
       case Tokens.`type` => TypeOp()
       case Tokens.from =>
-        val label = args.head.asInstanceOf[StrValue]
+        val token = args.head.asInstanceOf[__]
         args.tail match {
-          case Nil => FromOp(label)
-          case list:List[Obj] => FromOp(label, list.head)
+          case Nil => FromOp(token)
+          case list:List[Obj] => FromOp(token, list.head)
           case _ => throw new IllegalStateException
         }
       case Tokens.fold => if (args.tail.isEmpty) FoldOp(args.head) else FoldOp(args.head, args.tail.head)

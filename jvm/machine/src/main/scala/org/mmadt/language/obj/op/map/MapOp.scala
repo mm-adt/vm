@@ -40,10 +40,10 @@ trait MapOp {
 object MapOp extends Func[Obj, Obj] {
   def apply[O <: Obj](other: O): Inst[Obj, O] = new VInst[Obj, O](g = (Tokens.map, List(other)), func = this)
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
-    val oldInst = Inst.oldInst(inst)
+    val mapArg = inst.arg0[Obj]
     start match {
-      case _: Value[_] => inst.arg0[Obj].via(start, oldInst).hardQ(q => multQ(q, oldInst.arg0[Obj].q))
-      case _: Type[_] => asType(inst.arg0[Obj]).via(start, inst)
+      case _: Value[_] => mapArg.via(start, inst).hardQ(q => Inst.oldInst(inst).arg0[Obj].q.mult(q))
+      case _: Type[_] => asType(mapArg).via(start, inst.clone(_ => List(mapArg.hardQ(Inst.oldInst(inst).arg0[Obj].q))))
     }
   }
 }
