@@ -480,15 +480,15 @@ body.book #toc,body.book #preamble,body.book h1.sect0,body.book .sect1>h2{page-b
 <ul class="sectlevel4">
 <li><a href="#_type_signature">Type Signature</a></li>
 <li><a href="#_type_definition">Type Definition</a></li>
+</ul>
+</li>
 <li><a href="#_type_quantification">Type Quantification</a></li>
 </ul>
 </li>
 <li><a href="#_type_composition">Type Composition</a>
-<ul class="sectlevel4">
+<ul class="sectlevel3">
 <li><a href="#_stream_ring_operators">Stream Ring Operators</a></li>
 <li><a href="#_stream_ring_algebra">Stream Ring Algebra</a></li>
-</ul>
-</li>
 </ul>
 </li>
 <li><a href="#_type_system">Type System</a>
@@ -1471,8 +1471,9 @@ This is especially useful when considering <strong>streams</strong> (definition 
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_type_quantification">Type Quantification</h5>
+</div>
+<div class="sect3">
+<h4 id="_type_quantification">Type Quantification</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Initial and Terminal Objects</div>
@@ -1930,10 +1931,10 @@ mmlang&gt;</code></pre>
 </table>
 </div>
 </div>
+<div class="sect2">
+<h3 id="_type_composition">Type Composition</h3>
 <div class="sect3">
-<h4 id="_type_composition">Type Composition</h4>
-<div class="sect4">
-<h5 id="_stream_ring_operators">Stream Ring Operators</h5>
+<h4 id="_stream_ring_operators">Stream Ring Operators</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Stream Ring Theory</div>
@@ -2087,8 +2088,8 @@ mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [p
 </div>
 </div>
 </div>
-<div class="sect4">
-<h5 id="_stream_ring_algebra">Stream Ring Algebra</h5>
+<div class="sect3">
+<h4 id="_stream_ring_algebra">Stream Ring Algebra</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Ringoids</div>
@@ -2171,7 +2172,7 @@ Finally, while <code>[,]</code> and <code>[;]</code> are defined as binary opera
 </tr>
 </table>
 </div>
-<h6 id="_ring_axioms" class="discrete">Ring Axioms</h6>
+<h5 id="_ring_axioms" class="discrete">Ring Axioms</h5>
 <div class="paragraph">
 <p><a href="https://en.wikipedia.org/wiki/Axiom">Axioms</a> are the "<a href="https://en.wikipedia.org/wiki/Hard_coding">hardcoded</a>" equations of a system.
 Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.</p>
@@ -2422,7 +2423,7 @@ mm&gt; str[[[id];[id]],[[id];[id]]]
 </tr>
 </tbody>
 </table>
-<h6 id="_ring_theorems" class="discrete">Ring Theorems</h6>
+<h5 id="_ring_theorems" class="discrete">Ring Theorems</h5>
 <div class="paragraph">
 <p>The axioms of a theory entail its <a href="https://en.wikipedia.org/wiki/Theorem">theorems</a>.
 Stated in reverse, theorems are the derivations of an <a href="https://en.wikipedia.org/wiki/Axiomatic_system">axiomatic system</a>.
@@ -2622,7 +2623,7 @@ mm&gt; str[[id];[id]]
 </tr>
 </tbody>
 </table>
-<h6 id="_stream_ring_axioms" class="discrete">Stream Ring Axioms</h6>
+<h5 id="_stream_ring_axioms" class="discrete">Stream Ring Axioms</h5>
 <div class="paragraph">
 <p><span class="image left"><img src="./images/type/obj-semiring-orderedring.svg" alt="obj semiring orderedring" width="350"></span></p>
 </div>
@@ -2796,7 +2797,6 @@ mm&gt; str[[id]{2},[id]{3}]
 </tr>
 </tbody>
 </table>
-</div>
 </div>
 </div>
 <div class="sect2">
@@ -4902,11 +4902,18 @@ language error: 0 is not a nat</code></pre>
 <div class="paragraph">
 <p>The example below defines a <code>date</code> to be a <code>;-lst</code> with 2 or 3 <code>nats</code>. If the <code>;-lst</code> contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT&#8217;s type system. Variables, types, and rewrites are all <em>graph search processes</em>. A defined type (path) with a desired <strong>range</strong> is searched for in the <code>obj</code> graph and returned if and only if the morphing <code>obj</code> matches the defined type&#8217;s <strong>domain</strong>. Type definitions are simply other types that specify the means by which one type is translated into another type. To the left, the meaning of the arrows' <a href="https://en.wikipedia.org/wiki/Commutative_diagram">graphical annotations</a> are provided.</p>
 </div>
-<div class="imageblock">
-<div class="content">
-<img src="./images/obj/date-example.svg" alt="date example">
-</div>
-</div>
+<table class="tableblock frame-none grid-none stretch">
+<colgroup>
+<col style="width: 100%;">
+</colgroup>
+<tbody>
+<tr>
+<td class="tableblock halign-left valign-top"><p class="tableblock"><div class="zoom">
+<span class="image"><img src="./images/obj/date-example.svg" alt="date example"></span>
+</div></p></td>
+</tr>
+</tbody>
+</table>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0],
@@ -5891,7 +5898,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-27 23:41:58 -0600
+Last updated 2020-09-27 23:54:30 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
