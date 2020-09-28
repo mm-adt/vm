@@ -354,7 +354,7 @@ This static immutable structure serves to https://en.wikipedia.org/wiki/Memoizat
 This is especially useful when considering *streams* (definition forthcoming) and their role in data-intensive, cluster-oriented environments where storage is cheap and processors are costly.
 ================================================================
 
-===== Type Quantification
+==== Type Quantification
 
 .Initial and Terminal Objects
 ****
@@ -652,9 +652,9 @@ From a data structure perspective, an unordered https://en.wikipedia.org/wiki/Co
 Relying on the same axiomatic principle, but reframed in terms of types (programs), the _atemporal stream theorem_ guarantees equivalent outcomes for both https://en.wikipedia.org/wiki/Synchronous_circuit[synchronous] and https://en.wikipedia.org/wiki/Asynchronous_system[asynchronous] execution strategies.
 ////
 
-==== Type Composition
+=== Type Composition
 
-===== Stream Ring Operators
+==== Stream Ring Operators
 
 .Stream Ring Theory
 ****
@@ -730,7 +730,7 @@ Finally, below is the unsugar'd form of the disectected type from above.
 4[juxt,int[mult,2]][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]  ## 88.1
 ----
 
-===== Stream Ring Algebra
+==== Stream Ring Algebra
 
 .Ringoids
 ****
@@ -773,7 +773,7 @@ The term `\_{0}` (sugar'd `{0}`) is \$\mathbf{0}\$, `_{1}` (sugar'd `{1}`) is \$
 Finally, while `[,]` and `[;]` are defined as binary operators, due to the link:https://en.wikipedia.org/wiki/Associative_property[associativity] axioms of the respective additive group and multiplicative monoid of a ring, `[,]` and `[;]` are effectively \$n\$-ary operators and will be used as such in examples to follow.
 
 [discrete]
-====== Ring Axioms
+===== Ring Axioms
 
 https://en.wikipedia.org/wiki/Axiom[Axioms] are the "link:https://en.wikipedia.org/wiki/Hard_coding[hardcoded]" equations of a system.
 Regardless of any other behaviors the system may express, if the system always respects the ring axioms, then the system is (in part) a ring.
@@ -929,7 +929,7 @@ str[[[id];[id]],[[id];[id]]]
 |===
 
 [discrete]
-====== Ring Theorems
+===== Ring Theorems
 
 The axioms of a theory entail its https://en.wikipedia.org/wiki/Theorem[theorems].
 Stated in reverse, theorems are the derivations of an https://en.wikipedia.org/wiki/Axiomatic_system[axiomatic system].
@@ -1057,7 +1057,7 @@ str[[id];[id]]
 |===
 
 [discrete]
-====== Stream Ring Axioms
+===== Stream Ring Axioms
 
 image:obj-semiring-orderedring.svg[float=left,width=350]
 

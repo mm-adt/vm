@@ -197,8 +197,13 @@ https://en.wikipedia.org/wiki/Equality_(mathematics)[equality]
 
 The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all _graph search processes_. A defined type (path) with a desired *range* is searched for in the `obj` graph and returned if and only if the morphing `obj` matches the defined type's *domain*. Type definitions are simply other types that specify the means by which one type is translated into another type. To the left, the meaning of the arrows' https://en.wikipedia.org/wiki/Commutative_diagram[graphical annotations] are provided.
 
+[frame=none,grid=none]
+|====
+| +++<div class="zoom">+++
+image:date-example.svg[]
++++</div>+++
+|====
 
-image::date-example.svg[]
 
 [exec]
 ----
