@@ -175,7 +175,28 @@ a|
 Prepending type definitions to every program reduces legibility and complicates program development. For this reason, mm-ADT provides a *type prefix*. All `mmlang` examples that start with `:` are defining _the_ type prefix that will be used for all subsequent programs. The type prefix is a generalization of a https://en.wikipedia.org/wiki/Comparison_of_programming_languages_(syntax)#Libraries[library statement] such as `import` or `module` found in other programming languages. The generalization is that a type prefix can be any type, not just those containing only `[define]`). The type prefix is prepended to the program type prior to compilation, where this operation is made sound by the free `inst` monoid.
 ================================================================
 
-The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all _graph search processes_. A defined type (path) with a desired *range* is searched for in the `obj` graph and returned if and only if the morphing `obj` matches the defined type's *domain*. Type definitions are simply other types that specify the means by which one type is translated into another type.
+[cols="^.1,^.^2",width=15,grid=none,float=left]
+|====
+1.5+|
+\[
+\begin{split}
+\hookrightarrow \\
+\rightarrowtail \\
+\twoheadrightarrow \\
+\sim \\
+{=}
+\end{split}
+\]
+1.5+|
+https://en.wikipedia.org/wiki/Embedding[inclusion]
+https://en.wikipedia.org/wiki/Monomorphism[monomorphism]
+https://en.wikipedia.org/wiki/Epimorphism[epimorphism]
+https://en.wikipedia.org/wiki/Isomorphism[isomorphism]
+https://en.wikipedia.org/wiki/Equality_(mathematics)[equality]
+|====
+
+The example below defines a `date` to be a `;-lst` with 2 or 3 `nats`. If the `;-lst` contains only 2 terms, then a default value of 2020 is provided. This highlights an important aspect of mm-ADT's type system. Variables, types, and rewrites are all _graph search processes_. A defined type (path) with a desired *range* is searched for in the `obj` graph and returned if and only if the morphing `obj` matches the defined type's *domain*. Type definitions are simply other types that specify the means by which one type is translated into another type. To the left, the meaning of the arrows' https://en.wikipedia.org/wiki/Commutative_diagram[graphical annotations] are provided.
+
 
 image::date-example.svg[]
 
