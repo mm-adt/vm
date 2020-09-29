@@ -707,6 +707,7 @@ The mm-ADT virtual machine has two distinct algebraic layers: the https://en.wik
 
 The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. These three stream operators have a corresponding realization in `inst` as https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions]. It is through these instructions that the other instructions are grounded in the underlying stream ring algebra of the mm-ADT VM.
 
+'''
 ==== Stream Ring Operators
 
 An `obj` is defined
