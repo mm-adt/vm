@@ -331,9 +331,14 @@ int[plus,4][is>0][path,({0};_)]
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _path_.
 
-image:model-transformations.svg[float=right,width=400] To provide a preview of what is to come, an mm-ADT *model* defines an `obj` graph for a particular https://en.wikipedia.org/wiki/Domain_of_discourse[domain of discourse]. A transition from model \$A\$ to model \$B\$ occurs by way of the functor \[
-\texttt{Hom}(A,B) = \texttt{Hom}_A(\texttt{obj}_A,\texttt{obj}_A) \to \texttt{Hom}_B(\texttt{obj}\_B,\texttt{obj}_B)
-\] known as a https://en.wikipedia.org/wiki/Natural_transformation[natural transformation] (or 2-path in https://en.wikipedia.org/wiki/Homotopy_type_theory[homotopy type theory]). Such model mappings allow types written in one https://en.wikipedia.org/wiki/Universe_(mathematics)[universe] to be evaluated within another universe, where, ultimately, all types must be grounded in the base `mm` model. It is through `mm` that the mm-ADT VM communicates with storage systems and processing engines, enabling arbitrary models atop a natural evaluation.
+image:model-transformations.svg[float=right,width=400] To provide a preview of what is to come, an mm-ADT *model* defines an `obj` graph for a particular https://en.wikipedia.org/wiki/Domain_of_discourse[domain of discourse]. A transition from model \$A\$ to model \$B\$ may be possible by way of a https://en.wikipedia.org/wiki/Functor[functor] derived from \$\tt{Hom}(A,B)\$. Furthermore, it may be possible to go from \$A\$ to \$\tt{mm}\$ via a composition with \$\tt{Hom}(B,\tt{mm})\$. Two such parallel compositions between models are illustrated in the associated diagram and written as
+\[
+\begin{split}
+\texttt{Hom}(A,B) &\circ \texttt{Hom}(B,\texttt{mm}) \\
+\texttt{Hom}(A,C) &\circ \texttt{Hom}(C,\texttt{mm}).
+\end{split}
+\]
+Model mappings allow types written in one https://en.wikipedia.org/wiki/Universe_(mathematics)[universe] to be evaluated within another universe, where, ultimately, all types must be grounded in the base `mm` model. The specification and selection of paths to `mm` is determined by mm-ADT programs that leverage https://en.wikipedia.org/wiki/API[model libraries]. Ultimately, it is through `mm` that the mm-ADT VM communicates with storage systems and processing engines, enabling arbitrary models atop a sound evaluation.
 
 '''
 
