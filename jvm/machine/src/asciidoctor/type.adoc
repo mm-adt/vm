@@ -300,8 +300,10 @@ which, in Cayley graph notation, is denoted \$A \to_f B \to_g C\$. An important 
 
 Types and values both have a *ground* that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the https://en.wikipedia.org/wiki/Java_virtual_machine[JVM]). The ground of the mm-ADT value `2` is the JVM primitive `2L` (a Java `long`). The ground of the mm-ADT type `int` is the JVM class `java.lang.Long`. When the instruction `[plus,4]` is applied to the mm-ADT `int` value `2`, a new mm-ADT `int` value is created whose ground is the JVM value `6L`. When `[plus,4]` is applied to the mm-ADT `int` type, a new type is created with the same `java.lang.Long` ground. Thus, the information that distinguishes `int` from `int[plus,4]` is in the reference to the instruction that was applied to `int`.
 
-image:value-type-graph-embedding.svg[width=250,float=right] For a type, the https://en.wikipedia.org/wiki/Deterministic_finite_automaton[deterministic] chain of references is called the *type definition* and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] in the *type graph*. For a value, the *value graph* encodes a path called the *value history*. The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] below is composed of two horizontal paths. The top path is a value history and the bottom path is a type definition. These paths are joined by the `[type]` instruction which are diagrammed using https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols[hook-tailed] arrows that denote, by convention, a https://en.wikipedia.org/wiki/Monomorphism[monomorphic] https://en.wikipedia.org/wiki/Embedding[embedding] known more simply as an https://en.wikipedia.org/wiki/Inclusion_map[inclusion] (i.e., \$a \in A\$ or \$A' \subset A\$). The set of all `[type]` morphisms is equivalent to the https://en.wikipedia.org/wiki/Hom_functor[hom-set] \$\tt{Hom}(\tt{value},\tt{type})\$ which defines a https://en.wikipedia.org/wiki/Functor[functor] that specifies a particular https://en.wikipedia.org/wiki/Embedding[embedding] of the value graph into the type graph. This aggregate structure is a primary object of intereted in mm-ADT. It's called the *obj graph*.
+image:value-type-graph-embedding.svg[width=250,float=right] For a type, the https://en.wikipedia.org/wiki/Deterministic_finite_automaton[deterministic] chain of references is called the *type definition* and is encoded as a https://en.wikipedia.org/wiki/Path_(graph_theory)[path] in the *type graph*. For a value, the *value graph* encodes a path called the *value history*. The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] below is composed of two horizontal paths. The top path is a value history and the bottom path is a type definition. These paths are joined by the `[type]` instruction which are diagrammed using https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols[hook-tailed] arrows that denote, by convention, a https://en.wikipedia.org/wiki/Monomorphism[monomorphic] https://en.wikipedia.org/wiki/Embedding[embedding] known more simply as an https://en.wikipedia.org/wiki/Inclusion_map[inclusion] (i.e., \$a \in A\$ or \$A' \subset A\$). The set of all `[type]` morphisms is equivalent to the https://en.wikipedia.org/wiki/Hom_functor[hom-set] \$\tt{Hom}(\tt{value},\tt{type})\$ which defines a https://en.wikipedia.org/wiki/Functor[functor] that specifies a particular https://en.wikipedia.org/wiki/Embedding[embedding] of the value graph into the type graph. This aggregate structure is of import in mm-ADT. It's called the *obj graph*.
 
+In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in the `obj` graph. However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
+This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
 
 [cols="4,^.^3"]
 |====
@@ -318,21 +320,22 @@ int[plus,4][is>0][path]
 | image:type-value-path-short.svg[]
 |====
 
+////
 A type's path has sufficient information to construct an element of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] known as the **`inst` monoid** -- the https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid] of mm-ADT. The element is unambiguously determined by concatenating the instructions encountered on the edges of the inverted path starting from the current _range_ vertex and terminating at the root _domain_ vertex (i.e. the base type of the type induction -- the ctype).
-
 [exec]
 ----
 int[plus,4][is>0][path,({0};_)]
 ----
+////
+
 
 NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _path_.
 
-In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in the `obj` graph. However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
-This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
-
-NOTE: image:model-transformations.svg[float=right,width=375] To provide a preview of what is to come, an mm-ADT *model* defines an `obj` graph for a particular https://en.wikipedia.org/wiki/Domain_of_discourse[domain of discourse]. A transition from model \$A\$ to model \$B\$ occurs by way of the functor \[
+image:model-transformations.svg[float=right,width=400] To provide a preview of what is to come, an mm-ADT *model* defines an `obj` graph for a particular https://en.wikipedia.org/wiki/Domain_of_discourse[domain of discourse]. A transition from model \$A\$ to model \$B\$ occurs by way of the functor \[
 \texttt{Hom}(A,B) = \texttt{Hom}_A(\texttt{obj}_A,\texttt{obj}_A) \to \texttt{Hom}_B(\texttt{obj}\_B,\texttt{obj}_B)
 \] known as a https://en.wikipedia.org/wiki/Natural_transformation[natural transformation] (or 2-path in https://en.wikipedia.org/wiki/Homotopy_type_theory[homotopy type theory]). Such model mappings allow types written in one https://en.wikipedia.org/wiki/Universe_(mathematics)[universe] to be evaluated within another universe, where, ultimately, all types must be grounded in the base `mm` model. It is through `mm` that the mm-ADT VM communicates with storage systems and processing engines, enabling arbitrary models atop a natural evaluation.
+
+'''
 
 .The Obj Graph as a Cayley Graph and a Commutative Diagram
 ================================================================
