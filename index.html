@@ -1365,11 +1365,7 @@ which, in Cayley graph notation, is denoted \$A \to_f B \to_g C\$. An important 
 <p>Types and values both have a <strong>ground</strong> that exists outside of the mm-ADT virtual machine within the hosting environment (e.g. the <a href="https://en.wikipedia.org/wiki/Java_virtual_machine">JVM</a>). The ground of the mm-ADT value <code>2</code> is the JVM primitive <code>2L</code> (a Java <code>long</code>). The ground of the mm-ADT type <code>int</code> is the JVM class <code>java.lang.Long</code>. When the instruction <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> value <code>2</code>, a new mm-ADT <code>int</code> value is created whose ground is the JVM value <code>6L</code>. When <code>[plus,4]</code> is applied to the mm-ADT <code>int</code> type, a new type is created with the same <code>java.lang.Long</code> ground. Thus, the information that distinguishes <code>int</code> from <code>int[plus,4]</code> is in the reference to the instruction that was applied to <code>int</code>.</p>
 </div>
 <div class="paragraph">
-<p>For a type, the <a href="https://en.wikipedia.org/wiki/Deterministic_finite_automaton">deterministic</a> chain of references is called the <strong>type definition</strong> and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> in the <strong>type graph</strong>. For a value, the <strong>value graph</strong> encodes an analogous path called the <strong>value history</strong> (or <em>mutation history</em>). Both types and values exist in a larger graph called an <strong>obj graph</strong> such that
-\[
-G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
-\]
-The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> below also represents the corresponding <code>obj</code> graph that is composed of two lateral paths. The top path is a <strong>value history</strong> and the bottom path is a <strong>type definition</strong>. These paths are joined by the <code>[type]</code> instruction which unites the type and value subgraphs of the <code>obj</code> graph. The <code>[type]</code> instructions are diagrammed using <a href="https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols">hook-tailed</a> arrows which, by convention, denote <a href="https://en.wikipedia.org/wiki/Monomorphism">monomorphic</a> <a href="https://en.wikipedia.org/wiki/Embedding">embeddings</a> known more simply as <a href="https://en.wikipedia.org/wiki/Inclusion_map">inclusions</a> (i.e., \$a \in A\$ or \$A' \subset A\$).</p>
+<p><span class="image right"><img src="./images/type/value-type-graph-embedding.svg" alt="value type graph embedding" width="250"></span> For a type, the <a href="https://en.wikipedia.org/wiki/Deterministic_finite_automaton">deterministic</a> chain of references is called the <strong>type definition</strong> and is encoded as a <a href="https://en.wikipedia.org/wiki/Path_(graph_theory)">path</a> in the <strong>type graph</strong>. For a value, the <strong>value graph</strong> encodes a path called the <strong>value history</strong>. The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diagram</a> below is composed of two horizontal paths. The top path is a value history and the bottom path is a type definition. These paths are joined by the <code>[type]</code> instruction which are diagrammed using <a href="https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols">hook-tailed</a> arrows that denote, by convention, a <a href="https://en.wikipedia.org/wiki/Monomorphism">monomorphic</a> <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> known more simply as an <a href="https://en.wikipedia.org/wiki/Inclusion_map">inclusion</a> (i.e., \$a \in A\$ or \$A' \subset A\$). The set of all <code>[type]</code> morphisms is equivalent to the <a href="https://en.wikipedia.org/wiki/Hom_functor">hom-set</a> \$\tt{Hom}(\tt{value},\tt{type})\$ which defines a <a href="https://en.wikipedia.org/wiki/Functor">functor</a> that specifies a particular <a href="https://en.wikipedia.org/wiki/Embedding">embedding</a> of the value graph into the type graph. This aggregate structure is a primary object of intereted in mm-ADT. It&#8217;s called the <strong>obj graph</strong>.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -1380,9 +1376,7 @@ The <a href="https://en.wikipedia.org/wiki/Commutative_diagram">commutative diag
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 2[plus,4][is&gt;0]
-==&gt;6
-mmlang&gt; 2[plus,4][is&gt;0][path]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 2[plus,4][is&gt;0][path]
 ==&gt;(2;[plus,4];6;[is,true];6)&lt;=2[plus,4][is,true][path]
 mmlang&gt; int[plus,4][is&gt;0][path]
 ==&gt;(int;[plus,4];int;[is,bool&lt;=int[gt,0]];int{?}){?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]][path]
@@ -1421,6 +1415,20 @@ In practice, the string representation of a value is its <em>ground</em> and the
 <div class="paragraph">
 <p>In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in the <code>obj</code> graph. However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
 This process is called <strong>path retraction</strong> and is the mm-ADT equivalent of <a href="https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)">garbage collection</a>.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+<span class="image right"><img src="./images/type/model-transformations.svg" alt="model transformations" width="375"></span> To provide a preview of what is to come, an mm-ADT <strong>model</strong> defines an <code>obj</code> graph for a particular <a href="https://en.wikipedia.org/wiki/Domain_of_discourse">domain of discourse</a>. A transition from model \$A\$ to model \$B\$ occurs by way of the functor \[
+\texttt{Hom}(A,B) = \texttt{Hom}_A(\texttt{obj}_A,\texttt{obj}_A) \to \texttt{Hom}_B(\texttt{obj}_B,\texttt{obj}_B)
+\] known as a <a href="https://en.wikipedia.org/wiki/Natural_transformation">natural transformation</a> (or 2-path in <a href="https://en.wikipedia.org/wiki/Homotopy_type_theory">homotopy type theory</a>). Such model mappings allow types written in one <a href="https://en.wikipedia.org/wiki/Universe_(mathematics)">universe</a> to be evaluated within another universe, where, ultimately, all types must be grounded in the base <code>mm</code> model. It is through <code>mm</code> that the mm-ADT VM communicates with storage systems and processing engines, enabling arbitrary models atop a natural evaluation.
+</td>
+</tr>
+</table>
 </div>
 <div class="exampleblock">
 <div class="title">Deep Dive 1. The Obj Graph as a Cayley Graph and a Commutative Diagram</div>
@@ -5875,7 +5883,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-28 23:24:27 -0600
+Last updated 2020-09-29 01:39:28 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
