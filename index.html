@@ -2001,7 +2001,7 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-Thus, an <code>obj</code> is either a <strong>quantified type</strong> or a <strong>quantifier value</strong>. With respects to the stream ring&#8217;s three operators, there are 4 binary <code>obj</code> configurations (\$2^2\$) that each operator will encounter: <strong>value</strong>/<strong>value</strong>, <strong>value</strong>/<strong>type</strong>, <strong>type</strong>/<strong>value</strong>, and <strong>type</strong>/<strong>type</strong>. The table below presents the equations of each operator for each of the 4 configurations, where it is through operations involving right-hand side types that the instructions in <code>inst</code> are applied (e.g., \$t(v)\$ is evaluation or \$t(t)\$ is compilation). Thus, the stream ring is the fundamental algebra of the mm-ADT VM.</p>
+Thus, an <code>obj</code> is either a <strong>quantified type</strong> or a <strong>quantifier value</strong>. With respects to the stream ring&#8217;s three operators, there are 4 binary <code>obj</code> configurations (\$2^2\$) that each operator will encounter: <strong>value</strong>/<strong>value</strong>, <strong>value</strong>/<strong>type</strong>, <strong>type</strong>/<strong>value</strong>, and <strong>type</strong>/<strong>type</strong>. The table below presents the equations of each operator for each of the 4 configurations, where it is through operations involving right-hand side (<a href="https://en.wikipedia.org/wiki/Sides_of_an_equation">RHS</a>) types that the instructions in <code>inst</code> are <a href="https://en.wikipedia.org/wiki/Function_application">applied</a> to <code>objs</code> (e.g., \$t(v)\$ is <a href="https://en.wikipedia.org/wiki/Execution_(computing)">evaluation</a> and \$t(t)\$ is <a href="https://en.wikipedia.org/wiki/Compiler">compilation</a>). Thus, the stream ring is the fundamental algebra of the mm-ADT VM.</p>
 </div>
 <div class="admonitionblock note">
 <table>
@@ -2010,7 +2010,7 @@ Thus, an <code>obj</code> is either a <strong>quantified type</strong> or a <str
 <i class="fa icon-note" title="Note"></i>
 </td>
 <td class="content">
-In the examples to follow, a term of the form \$x_q\$ is a type (\$t\$) or value (\$v\$) with quantifier \$q\$ and \$\mathbf{x}\$ is a stream of types or values, where an \$i \in \mathbb{N}\$ as in \$\mathbf{x}_i\$ denotes an index into the \$\mathbf{x}\$ stream.
+In the examples to follow, a term of the form \$x_q\$ is a type (\$t\$) or value (\$v\$) with quantifier \$q\$ and \$\mathbf{x}\$ is a stream of types or values, where an \$i \in \mathbb{N}\$ as in \$\mathbf{x}_i\$ denotes the \$i^{\text{th}}\$ <code>obj</code> of \$\mathbf{x}\$.
 </td>
 </tr>
 </table>
@@ -5963,7 +5963,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-29 04:30:25 -0600
+Last updated 2020-09-29 11:12:46 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
