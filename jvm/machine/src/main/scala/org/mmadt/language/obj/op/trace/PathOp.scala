@@ -25,10 +25,8 @@ package org.mmadt.language.obj.op.trace
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.branch.CombineOp
-import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage.StorageFactory._
 import org.mmadt.storage.obj.value.VInst
@@ -42,13 +40,14 @@ trait PathOp {
 object PathOp extends Func[Obj, Lst[Obj]] {
   override val preArgs:Boolean = false
   val VERTICES:Lst[Obj] = (__ `;` zeroObj).asInstanceOf[Lst[Obj]]
-  def apply():Inst[Obj, Lst[Obj]] = PathOp.apply((__ `;` __).asInstanceOf[Lst[Obj]])
+  def apply():Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, Nil), func = this) with TraceInstruction
   def apply(pattern:Lst[_ <: Obj]):Inst[Obj, Lst[Obj]] = new VInst[Obj, Lst[Obj]](g = (Tokens.path, List(pattern)), func = this) with TraceInstruction
-  override def apply(start:Obj, inst:Inst[Obj, Lst[Obj]]):Lst[Obj] = {
-    if (start.isInstanceOf[__]) return lst.via(start, inst)
-    lst(g = (inst.arg0[Lst[Obj]].gsep,
-      CombineOp.combineAlgorithm(lst(g = (
-        inst.arg0[Lst[Obj]].gsep,
-        start.trace.foldLeft(List.empty[Obj])((a, b) => a :+ b._1 :+ b._2) :+ start)), inst.arg0[Lst[Obj]]).glist.toList)).via(start, inst)
-  }
+  override def apply(start:Obj, inst:Inst[Obj, Lst[Obj]]):Lst[Obj] = (start match {
+    case _:__ => lst
+    case _ => val trace = start.trace.modeless.foldLeft(List.empty[Obj])((a, b) => a :+ b._1 :+ b._2) :+ start
+      if (inst.args.isEmpty) lst(g = (Tokens.`;`, trace))
+      else lst(g = (inst.arg0[Lst[Obj]].gsep, CombineOp.combineAlgorithm(lst(g = (inst.arg0[Lst[Obj]].gsep, trace)), inst.arg0[Lst[Obj]]).glist.toList))
+  }).via(start, inst)
+
+
 }

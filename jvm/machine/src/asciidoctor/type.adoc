@@ -1326,7 +1326,7 @@ A few of the more interesting aspects of the mono types are detailed in the foll
 [discrete]
 ===== Zero and One
 
-The instructions `[zero]` and `[one]` are https://en.wikipedia.org/wiki/Constant_function[constant] https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphic] instructions. Each provides a unique singleton value associated with the type of the respective incoming `obj`. In the example to follow, `=` is sugar for pairwise `[combine]`, with https://en.wikipedia.org/wiki/Round-robin_item_allocation[round robin] evaluation for overflow. As examples, `(a,b,c)=(x,y)` yields `(ax,by,cx)` and `(a,b,c)=(x)` is `(ax,bx,cx)` (right https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication]).
+The instructions `[zero]` and `[one]` are https://en.wikipedia.org/wiki/Constant_function[constant] https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphic] instructions. Each provides a unique singleton value associated with the type of the respective incoming `obj`. In the example to follow, `=` is sugar for pairwise `[combine]`, with https://en.wikipedia.org/wiki/Round-robin_item_allocation[round robin] evaluation for overflow. As examples, `(a,b,c)=(x,y)` yields `(ax,by,cx)` and `(a,b,c)=(x)` is `(ax,bx,cx)` (i.e.,right https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication]).
 
 [exec]
 ----
