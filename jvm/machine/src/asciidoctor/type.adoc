@@ -664,8 +664,6 @@ Relying on the same axiomatic principle, but reframed in terms of types (program
 
 === Type Composition
 
-==== Stream Ring Operators
-
 .Stream Ring Theory
 ****
 
@@ -709,7 +707,86 @@ The mm-ADT virtual machine has two distinct algebraic layers: the https://en.wik
 
 The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. These three stream operators have a corresponding realization in `inst` as https://en.wikipedia.org/wiki/Higher-order_function[higher-order instructions]. It is through these instructions that the other instructions are grounded in the underlying stream ring algebra of the mm-ADT VM.
 
-'''
+==== Stream Ring Operators
+
+An `obj` is defined
+\[
+\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
+\]
+Thus, an `obj` is either a *quantified type* or a *quantifier value*. With respects to the stream ring's three operators, there are 4 binary `obj` configurations (\$2^2\$) that each operator will encounter: *value*/*value*, *value*/*type*, *type*/*value*, and *type*/*type*. The table below presents the equations of each operator for each of the 4 configurations, where it is through operations involving right-hand side types that the instructions in `inst` are applied (e.g., \$t(v)\$ is evaluation or \$t(t)\$ is compilation). Thus, the stream ring is the fundamental algebra of the mm-ADT VM.
+
+NOTE: In the examples to follow, a term of the form \$x_q\$ is a type (\$t\$) or value (\$v\$) with quantifier \$q\$ and \$\mathbf{x}\$ is a stream of types or values, where an \$i \in \mathbb{N}\$ as in \$\mathbf{x}_i\$ denotes an index into the \$\mathbf{x}\$ stream.
+
+[cols="^.^2,^.^3,^.^3,^.^3"]
+|====
+| \$\cdot\$ | [juxt] `\=>` | [branch] `=[` | [barrier] `=\|`
+
+| value \$\cdot\$ value
+|
+\[
+{v_0}_{q} \Rightarrow {v_1}_{r} = {v_1}_{q \ast r}
+\]
+|
+\[
+[{v_0}_{q},{v_1}_{r}] =
+\begin{cases}
+{v_0}_{q + r} & \text{if } v_0 == v_1 \\
+[{v_0}_q,{v_1}_r] & \text{otherwise}.
+\end{cases}
+\]
+|
+\[
+\mathbf{v} ⫤ {v_1}_r = {v_1}_r
+\]
+// %%%%%%%%%%%%%%%%%%%%%%%%%
+| value \$\cdot\$ type
+|
+\[
+v_q \Rightarrow t_r = t(v)_{q \ast r}
+\]
+|
+\[
+[v_q,t_r] = [v_q,t_r]
+\]
+|
+\[
+\mathbf{v} ⫤ t_r = \left(\bigoplus_{i=0}^n t(\mathbf{v}_i)\right)_r
+\]
+// %%%%%%%%%%%%%%%%%%%%%%%%
+| type \$\cdot\$ value
+|
+\[
+t_q \Rightarrow v_r = v_{q \ast r}
+\]
+|
+\[
+[t_q,v_r] = [t_q,v_r]
+\]
+|
+\[
+\mathbf{t} ⫤ v_r = v_r
+\]
+// %%%%%%%%%%%%%%%%%%%%%%%%
+| type \$\cdot\$ type
+|
+\[
+{t_0}_q \Rightarrow {t_1}_r = t_1(t_0)_{q \ast r}
+\]
+|
+\[
+[{t_0}_{q},{t_1}_{r}] =
+\begin{cases}
+{t_0}_{q + r} & \text{if } t_0 == t_1 \\
+[{t_0}_q,{t_1}_r] & \text{otherwise}.
+\end{cases}
+\]
+|
+\[
+\mathbf{t_0} ⫤ t_1 = \left(\bigoplus_{i=0}^n t_1(\mathbf{t_0}_i)\right)_r
+\]
+|====
+
+The simple example program below uses all 3 stream ring operators. The subsequent table provides a detailed decomposition of the evaluation.
 
 [exec]
 ----
@@ -717,8 +794,6 @@ The illustration above is an intuitive visualization of an mm-ADT type from the 
 4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real               ## [80.0,8.1]
 4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real =| [plus,x]   ## 88.1{2}
 ----
-
-The last example above makes use of all three stream operators. A decomposition of the expression is provided below.
 
 [cols="1h,^3,^5,^4,^3"]
 |====
