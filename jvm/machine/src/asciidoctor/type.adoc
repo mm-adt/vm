@@ -380,6 +380,7 @@ Similar to initials, should another terminal exist, the two terminal are isomorp
 ****
 
 In order to quantify the _amount_ of values denoted by a type, every mm-ADT type has an associated *quantifier* \$q \in Q\$ written `{q}` in `mmlang`, where \$Q\$ is the carrier of an ordered algebraic https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] (e.g. integers \$\mathbb{Z}\$, reals in \$ \mathbb{R}, \mathbb{R}^2, \mathbb{R}^3, \ldots, \mathbb{R}^n \$, https://en.wikipedia.org/wiki/Unitary_matrix[unitary matrices], etc.).
+
 [width=35,float=right,frame=none,grid=none]
 |===
 a|
@@ -389,6 +390,7 @@ a|
 ----
 {blank}
 |===
+
 Typically, integer quantifiers signify "amount." However, other quantifiers such as unitary matrices used in the representation of a https://en.wikipedia.org/wiki/Wave_function[quantum wave function], "amount" is a less accurate description as `objs` interact with constructive and destructive https://en.wikipedia.org/wiki/Wave_interference[interference]. Even in \$\mathbb{Z}\$, negative integers are possible and are leveraged for computing https://en.wikipedia.org/wiki/Lazy_evaluation[lazy] https://en.wikipedia.org/wiki/Set_(mathematics)[set] operations as demonstrated by https://en.wikipedia.org/wiki/Intersection_(set_theory)[intersection] in the associated example.
 
 The default *quantifier ring* of the mm-ADT VM is
@@ -409,7 +411,6 @@ a|
 ----
 {blank}
 |===
-
 
 \[
 \texttt{int} \equiv \texttt{int\{1\}} \equiv \texttt{int\{1,1\}}.
@@ -433,6 +434,7 @@ _{0}             ## {0}
 ----
 {blank}
 |===
+
 Types such as `int{0}` and `int{0}\<=int[is,false]` are equivalent due to their quantifiers both being `{0}`.
 Throughout the documentation, all zero quantified `objs` will be referred to as `_{0}`, `{0}`, or \$\mathbf{0}\$ (the *zero object*).
 ====
@@ -687,7 +689,6 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 |====
 
 The mm-ADT virtual machine has two distinct algebraic layers: the https://en.wikipedia.org/wiki/Instruction_set_architecture[instruction set architecture] and the https://zenodo.org/record/2565243[stream ring]. The instructions (`inst`) specify how input `objs` are mapped to output `objs` and has a graphical realization as a generalized Cayley graph and/or a commuting diagram. The `inst` algebra is evaluated by the processor-oriented https://zenodo.org/record/2565243[stream ring] algebra. A stream ring has three operators for constructing types: \$\ast\$, \$ +\$, and \$\oplus\$, where the first two are the classic ring operators and the last is particular to a stream ring. The stream ring's multiplicative https://en.wikipedia.org/wiki/Monoid[monoid's] \$\ast\$-operator concatenates *serial streams*, the additive https://en.wikipedia.org/wiki/Abelian_group[abelian group's] \$ +\$-operator composes *parallel streams*, and the stream https://en.wikipedia.org/wiki/Near-ring[near-ring's] non-commutative group's \$\oplus\$-operator https://en.wikipedia.org/wiki/Fold_(higher-order_function)[reduces] streams down to a *singleton stream*.
-
 
 [cols="^1,1,^1",width=20,float=left]
 |====
@@ -1325,26 +1326,22 @@ A few of the more interesting aspects of the mono types are detailed in the foll
 [discrete]
 ===== Zero and One
 
-The instructions `[zero]` and `[one]` are https://en.wikipedia.org/wiki/Constant_function[constant] polymorphic instructions. Each provides a unique singleton value associated with the type of the respective incoming `obj`.
+The instructions `[zero]` and `[one]` are https://en.wikipedia.org/wiki/Constant_function[constant] https://en.wikipedia.org/wiki/Polymorphism_(computer_science)[polymorphic] instructions. Each provides a unique singleton value associated with the type of the respective incoming `obj`. In the example to follow, `=` is sugar for pairwise `[combine]`, with https://en.wikipedia.org/wiki/Round-robin_item_allocation[round robin] evaluation for overflow. As examples, `(a,b,c)=(x,y)` yields `(ax,by,cx)` and `(a,b,c)=(x)` is `(ax,bx,cx)` (right https://en.wikipedia.org/wiki/Scalar_multiplication[scalar multiplication]).
 
-////
-(bool[zero],int[zero],real[zero],str[zero])          ## (false,0,0.0,'')
-(bool[one],int[one],real[one])                       ## (true,1,1.0)
-////
 [exec]
 ----
-(true;6;5.5;'ryan')=([zero];[zero];[zero];[zero])    ## (false;0;0.0;'')
-(true;6;5.5)=([one];[one];[one])                     ## (true;1;1.0)
+(true;6;5.5;'ryan')=([zero])                         ## (false;0;0.0;'')
+(true;6;5.5)=([one])                                 ## (true;1;1.0)
 'ryan'[one]                                          ## LanguageException
 ----
 
-Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `[mult]` instruction identities, respectively. Furthermore, for those types that form a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity], the `[zero]` is their respective multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator].
+Each type's \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the `[plus]` and `[mult]` instruction identities, respectively. Furthermore, for types respecting a https://en.wikipedia.org/wiki/Ring_(mathematics)[ring with unity] algebra, `[zero]` is their corresponding multiplicative https://en.wikipedia.org/wiki/Annihilator_(ring_theory)[annihilator].
 
 [exec]
 ----
-(true,6,5.5,'ryan')>-_[plus,[zero]]
-(true,6,5.5)>-_[mult,[one]]
-(true,6,5.5)>-_[mult,[zero]]
+(true;6;5.5;'ryan')=(+[zero])          ## (true;6;5.5;'ryan')
+(true;6;5.5)=(*[one])                  ## (true;6;5.5)
+(true;6;5.5)=(*[zero])                 ## (false;0;0.0)
 ----
 
 ==== Poly Types
@@ -1367,7 +1364,6 @@ In the world of https://en.wikipedia.org/wiki/Abstract_algebra[abstract algebra]
 A word in \$A^\ast\$ can be reduced to a single letter in \$A\$ via a https://en.wikipedia.org/wiki/Algebra_homomorphism[homomorphism] that relates \$(A^\ast,\circ)\$ and \$(A,\cdot)\$ denoted \$\eta: A^\ast \to \A\$ . Thus, given any \$A^\ast\$-program, \$\eta\$ "link:https://en.wikipedia.org/wiki/Execution_(computing)[executes]" the program on some \$A\$-machine.
 If the \$\eta\$-mapping is preserved, then the answer to whether \$c\$ was arrived at via \$ab\$ or \$ad\$ is known. mm-ADT preserves such mappings in a structure known as the `obj` graph. mm-ADT's link:https://en.wikipedia.org/wiki/Graph_(discrete_mathematics)[graph]-encoding of a free algebraic https://en.wikipedia.org/wiki/Digital_footprint[trace] is the foundation of numerous mm-ADT capabilities including https://en.wikipedia.org/wiki/Abstract_interpretation[abstract interpretation], https://en.wikipedia.org/wiki/State_(computer_science)[program state], https://en.wikipedia.org/wiki/Metaprogramming[metaprogramming], and https://en.wikipedia.org/wiki/Reversible_computing[reversible computing].
 ****
-
 
 A `poly` is a https://en.wikipedia.org/wiki/Free_object[free object]. Free objects are https://en.wikipedia.org/wiki/Universal_algebra[universal] structures in that they respect the equations of an abstract algebra, but not the equations of an instance of the abstract algebra. Hence the term _free_ as in "free" from constraint of the concrete--i.e., universal. Examples of these two classes of equations are provided in the table below. If the concrete algebra equations appear random, it is because they are. Each concrete algebra's operator(s) map elements-to-elements in a manner specific to an application domain and as such, are not _universal_ equations.
 
@@ -1479,14 +1475,13 @@ It is important to note that the composition operator on the vector representati
 \[
 \begin{split}
 \coprod_{i=0}^n \mathbf{a}\_i \prod_{j=0}^m \mathbf{b}\_j
-       &= (\mathbf{a}\mathbf{b}_{*})\_{ +} \\
-       &= (a_0\mathbf{b}_{\ast} + a_1\mathbf{b}_{\ast} + \ldots + a_n\mathbf{b}_{\ast}) \\
-       &= (a_0 b_0 b_1 \ldots b_m) + \ldots + (a_n b_0 b_1 \ldots b_m)
+&= (\mathbf{a}\mathbf{b}_{*})\_{ +} \\
+&= (a_0\mathbf{b}_{\ast} + a_1\mathbf{b}_{\ast} + \ldots + a_n\mathbf{b}_{\ast}) \\
+&= (a_0 b_0 b_1 \ldots b_m) + \ldots + (a_n b_0 b_1 \ldots b_m)
 \end{split}
 \]
 The additive/multiplicative pattern emphasizes the https://en.wikipedia.org/wiki/Monoid_ring[monoid ring] interpretation of mm-ADT as well as the well know ring property that every ring is isomorphic to the composition of https://en.wikipedia.org/wiki/Endomorphism_ring[endomorphisms] (\$ \ast \$) of the ring's additive abelian group (\$ +\$), where each \$a_i\$ group element has applied a series of \$\mathbf{b}\$ morphisms back to the carrier set (i.e., an endomorphism).
 ================================================================
-
 
 ===== Poly Collections
 
@@ -1908,8 +1903,8 @@ image:bubble-chamber.png[width=200,float=left] The `;-lst` equation above realiz
 
 | image:semi-lst-graph.svg[]
 | +++<div class="zoom">+++
-  image:semi-rec-graph.svg[]
-  +++</div>+++
+image:semi-rec-graph.svg[]
++++</div>+++
 a|
 [exec,prompt="mm> "]
 ----
