@@ -125,7 +125,7 @@ object TraceScanRewrite extends Rewrite {
       model = mergeAllModels(middle, middle.model)
       middle
     })
-    range.foldLeft(query)((x, y) => y.exec(x.model(model)))
+    range.foldLeft(query.update(model).asInstanceOf[Obj])((x, y) => y.exec(x))
   }
 
   def mergeAllModels(obj:Obj, model:Model):Model = obj.trace.foldLeft(model)((m, x) => {
