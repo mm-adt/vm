@@ -1408,9 +1408,14 @@ In practice, the string representation of a value is its <em>ground</em> and the
 </table>
 </div>
 <div class="paragraph">
-<p><span class="image right"><img src="./images/type/model-transformations.svg" alt="model transformations" width="400"></span> To provide a preview of what is to come, an mm-ADT <strong>model</strong> defines an <code>obj</code> graph for a particular <a href="https://en.wikipedia.org/wiki/Domain_of_discourse">domain of discourse</a>. A transition from model \$A\$ to model \$B\$ occurs by way of the functor \[
-\texttt{Hom}(A,B) = \texttt{Hom}_A(\texttt{obj}_A,\texttt{obj}_A) \to \texttt{Hom}_B(\texttt{obj}_B,\texttt{obj}_B)
-\] known as a <a href="https://en.wikipedia.org/wiki/Natural_transformation">natural transformation</a> (or 2-path in <a href="https://en.wikipedia.org/wiki/Homotopy_type_theory">homotopy type theory</a>). Such model mappings allow types written in one <a href="https://en.wikipedia.org/wiki/Universe_(mathematics)">universe</a> to be evaluated within another universe, where, ultimately, all types must be grounded in the base <code>mm</code> model. It is through <code>mm</code> that the mm-ADT VM communicates with storage systems and processing engines, enabling arbitrary models atop a natural evaluation.</p>
+<p><span class="image right"><img src="./images/type/model-transformations.svg" alt="model transformations" width="400"></span> To provide a preview of what is to come, an mm-ADT <strong>model</strong> defines an <code>obj</code> graph for a particular <a href="https://en.wikipedia.org/wiki/Domain_of_discourse">domain of discourse</a>. A transition from model \$A\$ to model \$B\$ may be possible by way of a <a href="https://en.wikipedia.org/wiki/Functor">functor</a> derived from \$\tt{Hom}(A,B)\$. Furthermore, it may be possible to go from \$A\$ to \$\tt{mm}\$ via a composition with \$\tt{Hom}(B,\tt{mm})\$. Two such parallel compositions between models are illustrated in the associated diagram and written as
+\[
+\begin{split}
+\texttt{Hom}(A,B) &amp;\circ \texttt{Hom}(B,\texttt{mm}) \\
+\texttt{Hom}(A,C) &amp;\circ \texttt{Hom}(C,\texttt{mm}).
+\end{split}
+\]
+Model mappings allow types written in one <a href="https://en.wikipedia.org/wiki/Universe_(mathematics)">universe</a> to be evaluated within another universe, where, ultimately, all types must be grounded in the base <code>mm</code> model. The specification and selection of paths to <code>mm</code> is determined by mm-ADT programs that leverage <a href="https://en.wikipedia.org/wiki/API">model libraries</a>. Ultimately, it is through <code>mm</code> that the mm-ADT VM communicates with storage systems and processing engines, enabling arbitrary models atop a sound evaluation.</p>
 </div>
 <hr>
 <div class="exampleblock">
@@ -5866,7 +5871,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-29 02:48:50 -0600
+Last updated 2020-09-29 02:58:03 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
