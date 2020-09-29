@@ -713,9 +713,9 @@ An `obj` is defined
 \[
 \texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
 \]
-Thus, an `obj` is either a *quantified type* or a *quantifier value*. With respects to the stream ring's three operators, there are 4 binary `obj` configurations (\$2^2\$) that each operator will encounter: *value*/*value*, *value*/*type*, *type*/*value*, and *type*/*type*. The table below presents the equations of each operator for each of the 4 configurations, where it is through operations involving right-hand side types that the instructions in `inst` are applied (e.g., \$t(v)\$ is evaluation or \$t(t)\$ is compilation). Thus, the stream ring is the fundamental algebra of the mm-ADT VM.
+Thus, an `obj` is either a *quantified type* or a *quantifier value*. With respects to the stream ring's three operators, there are 4 binary `obj` configurations (\$2^2\$) that each operator will encounter: *value*/*value*, *value*/*type*, *type*/*value*, and *type*/*type*. The table below presents the equations of each operator for each of the 4 configurations, where it is through operations involving right-hand side (https://en.wikipedia.org/wiki/Sides_of_an_equation[RHS]) types that the instructions in `inst` are https://en.wikipedia.org/wiki/Function_application[applied] to `objs` (e.g., \$t(v)\$ is https://en.wikipedia.org/wiki/Execution_(computing)[evaluation] and \$t(t)\$ is https://en.wikipedia.org/wiki/Compiler[compilation]). Thus, the stream ring is the fundamental algebra of the mm-ADT VM.
 
-NOTE: In the examples to follow, a term of the form \$x_q\$ is a type (\$t\$) or value (\$v\$) with quantifier \$q\$ and \$\mathbf{x}\$ is a stream of types or values, where an \$i \in \mathbb{N}\$ as in \$\mathbf{x}_i\$ denotes an index into the \$\mathbf{x}\$ stream.
+NOTE: In the examples to follow, a term of the form \$x_q\$ is a type (\$t\$) or value (\$v\$) with quantifier \$q\$ and \$\mathbf{x}\$ is a stream of types or values, where an \$i \in \mathbb{N}\$ as in \$\mathbf{x}_i\$ denotes the \$i^{\text{th}}\$ `obj` of \$\mathbf{x}\$.
 
 [cols="^.^2,^.^3,^.^3,^.^3"]
 |====
