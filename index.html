@@ -3185,36 +3185,29 @@ inst                       domain      range state
 </div>
 <h5 id="_zero_and_one" class="discrete">Zero and One</h5>
 <div class="paragraph">
-<p>The instructions <code>[zero]</code> and <code>[one]</code> are <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> polymorphic instructions. Each provides a unique singleton value associated with the type of the respective incoming <code>obj</code>.</p>
+<p>The instructions <code>[zero]</code> and <code>[one]</code> are <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a> instructions. Each provides a unique singleton value associated with the type of the respective incoming <code>obj</code>. In the example to follow, <code>=</code> is sugar for pairwise <code>[combine]</code>, with <a href="https://en.wikipedia.org/wiki/Round-robin_item_allocation">round robin</a> evaluation for overflow. As examples, <code>(a,b,c)=(x,y)</code> yields <code>(ax,by,cx)</code> and <code>(a,b,c)=(x)</code> is <code>(ax,bx,cx)</code> (right <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (true;6;5.5;'ryan')=([zero];[zero];[zero];[zero])
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (true;6;5.5;'ryan')=([zero])
 ==&gt;(false;0;0.0;'')
-mmlang&gt; (true;6;5.5)=([one];[one];[one])
+mmlang&gt; (true;6;5.5)=([one])
 ==&gt;(true;1;1.0)
 mmlang&gt; 'ryan'[one]
 language error: 'ryan' is not supported by [one]</code></pre>
 </div>
 </div>
 <div class="paragraph">
-<p>Each type&#8217;s \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the <code>[plus]</code> and <code>[mult]</code> instruction identities, respectively. Furthermore, for those types that form a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a>, the <code>[zero]</code> is their respective multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>.</p>
+<p>Each type&#8217;s \$\mathbf{0}\$ and \$\mathbf{1}\$ value serves as the <code>[plus]</code> and <code>[mult]</code> instruction identities, respectively. Furthermore, for types respecting a <a href="https://en.wikipedia.org/wiki/Ring_(mathematics)">ring with unity</a> algebra, <code>[zero]</code> is their corresponding multiplicative <a href="https://en.wikipedia.org/wiki/Annihilator_(ring_theory)">annihilator</a>.</p>
 </div>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (true,6,5.5,'ryan')&gt;-_[plus,[zero]]
-==&gt;true
-==&gt;6
-==&gt;5.5
-==&gt;'ryan'
-mmlang&gt; (true,6,5.5)&gt;-_[mult,[one]]
-==&gt;true
-==&gt;6
-==&gt;5.5
-mmlang&gt; (true,6,5.5)&gt;-_[mult,[zero]]
-==&gt;false
-==&gt;0
-==&gt;0.0</code></pre>
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; (true;6;5.5;'ryan')=(+[zero])
+==&gt;(true;6;5.5;'ryan')
+mmlang&gt; (true;6;5.5)=(*[one])
+==&gt;(true;6;5.5)
+mmlang&gt; (true;6;5.5)=(*[zero])
+==&gt;(false;0;0.0)</code></pre>
 </div>
 </div>
 </div>
@@ -3459,9 +3452,9 @@ where, for the latter, it is implied that entire sequence is left-to-right compo
 \[
 \begin{split}
 \coprod_{i=0}^n \mathbf{a}_i \prod_{j=0}^m \mathbf{b}_j
-       &amp;= (\mathbf{a}\mathbf{b}_{*})_{ +} \\
-       &amp;= (a_0\mathbf{b}_{\ast} + a_1\mathbf{b}_{\ast} + \ldots + a_n\mathbf{b}_{\ast}) \\
-       &amp;= (a_0 b_0 b_1 \ldots b_m) + \ldots + (a_n b_0 b_1 \ldots b_m)
+&amp;= (\mathbf{a}\mathbf{b}_{*})_{ +} \\
+&amp;= (a_0\mathbf{b}_{\ast} + a_1\mathbf{b}_{\ast} + \ldots + a_n\mathbf{b}_{\ast}) \\
+&amp;= (a_0 b_0 b_1 \ldots b_m) + \ldots + (a_n b_0 b_1 \ldots b_m)
 \end{split}
 \]
 The additive/multiplicative pattern emphasizes the <a href="https://en.wikipedia.org/wiki/Monoid_ring">monoid ring</a> interpretation of mm-ADT as well as the well know ring property that every ring is isomorphic to the composition of <a href="https://en.wikipedia.org/wiki/Endomorphism_ring">endomorphisms</a> (\$ \ast \$) of the ring&#8217;s additive abelian group (\$ +\$), where each \$a_i\$ group element has applied a series of \$\mathbf{b}\$ morphisms back to the carrier set (i.e., an endomorphism).</p>
@@ -4186,8 +4179,8 @@ mm&gt; 'x' =&gt; +'m₀m₁m₂'
 <tr>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/type/semi-lst-graph.svg" alt="semi lst graph"></span></p></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><div class="zoom">
-  <span class="image"><img src="./images/type/semi-rec-graph.svg" alt="semi rec graph"></span>
-  </div></p></td>
+<span class="image"><img src="./images/type/semi-rec-graph.svg" alt="semi rec graph"></span>
+</div></p></td>
 </tr>
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
@@ -5898,7 +5891,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-27 23:54:30 -0600
+Last updated 2020-09-28 00:14:21 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
