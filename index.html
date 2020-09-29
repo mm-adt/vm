@@ -1403,7 +1403,7 @@ In practice, the string representation of a value is its <em>ground</em> and the
 ==&gt;6
 mmlang&gt; 2[plus,4][is&gt;0][path]
 ==&gt;(2;[plus,4];6;[is,true];6)
-   &lt;=2[plus,4][is,true][path,(_;_)]
+   &lt;=2[plus,4][is,true][path]
 mmlang&gt; 2[plus,4][is&gt;0][type]
 ==&gt;int{?}&lt;=int[plus,4][is,bool&lt;=int[gt,0]]</code></pre>
 </div>
@@ -3185,7 +3185,7 @@ inst                       domain      range state
 </div>
 <h5 id="_zero_and_one" class="discrete">Zero and One</h5>
 <div class="paragraph">
-<p>The instructions <code>[zero]</code> and <code>[one]</code> are <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a> instructions. Each provides a unique singleton value associated with the type of the respective incoming <code>obj</code>. In the example to follow, <code>=</code> is sugar for pairwise <code>[combine]</code>, with <a href="https://en.wikipedia.org/wiki/Round-robin_item_allocation">round robin</a> evaluation for overflow. As examples, <code>(a,b,c)=(x,y)</code> yields <code>(ax,by,cx)</code> and <code>(a,b,c)=(x)</code> is <code>(ax,bx,cx)</code> (right <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a>).</p>
+<p>The instructions <code>[zero]</code> and <code>[one]</code> are <a href="https://en.wikipedia.org/wiki/Constant_function">constant</a> <a href="https://en.wikipedia.org/wiki/Polymorphism_(computer_science)">polymorphic</a> instructions. Each provides a unique singleton value associated with the type of the respective incoming <code>obj</code>. In the example to follow, <code>=</code> is sugar for pairwise <code>[combine]</code>, with <a href="https://en.wikipedia.org/wiki/Round-robin_item_allocation">round robin</a> evaluation for overflow. As examples, <code>(a,b,c)=(x,y)</code> yields <code>(ax,by,cx)</code> and <code>(a,b,c)=(x)</code> is <code>(ax,bx,cx)</code> (i.e.,right <a href="https://en.wikipedia.org/wiki/Scalar_multiplication">scalar multiplication</a>).</p>
 </div>
 <div class="listingblock">
 <div class="content">
@@ -4578,10 +4578,10 @@ However, in a <a href="https://en.wikipedia.org/wiki/Free_monoid">free monoid</a
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 6 =&gt; int[plus,[mult,2]][path]
 ==&gt;(6;[plus,12];18)
-   &lt;=6[plus,12][path,(_;_)]
+   &lt;=6[plus,12][path]
 mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
 ==&gt;(8;[plus,16];24)
-   &lt;=8[plus,16][path,(_;_)]</code></pre>
+   &lt;=8[plus,16][path]</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -4593,7 +4593,7 @@ mmlang&gt; 8 =&gt; int[plus,[mult,2]][path]
 ==&gt;true
 mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path]                                                     <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;(8;[plus,1];9;[mult,2];18;[lt,63];true)
-   &lt;=8[plus,1][mult,2][lt,63][path,(_;_)]
+   &lt;=8[plus,1][mult,2][lt,63][path]
 mmlang&gt; 8 =&gt; int[plus,1][mult,2][lt,63][path][get,5][get,0]                                       <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;63</code></pre>
 </div>
@@ -4694,7 +4694,7 @@ mmlang&gt; 9   =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x]
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 9 =&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][path]                                                 <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;(9;[plus,1];10;&lt;x&gt;;10;[plus,2];12;[mult,10];120)
-   &lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path,(_;_)]
+   &lt;=9[plus,1]&lt;x&gt;[plus,2][mult,10][path]
 mmlang&gt; int[plus,1]&lt;x&gt;[plus,2][mult,x][explain]                                                   <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;'
 int[plus,1]&lt;x&gt;[plus,2][mult,x]
@@ -4730,7 +4730,7 @@ mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x]         
 ==&gt;12
 mmlang&gt; 2 =&gt; int&lt;x&gt;[plus,[plus,x]&lt;x&gt;[plus,x]][plus,x][path]                                       <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;(2;&lt;x&gt;;2;[plus,8];10;[plus,2];12)
-   &lt;=2&lt;x&gt;[plus,8][plus,2][path,(_;_)]
+   &lt;=2&lt;x&gt;[plus,8][plus,2][path]
 mmlang&gt; int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x][explain]         <i class="conum" data-value="4"></i><b>(4)</b>
 ==&gt;'
 int&lt;x&gt;[plus,int&lt;y&gt;[plus,int&lt;z&gt;[plus,x][plus,y][plus,z]][plus,y]][plus,x]
@@ -5891,7 +5891,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-28 00:14:21 -0600
+Last updated 2020-09-28 22:48:04 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
