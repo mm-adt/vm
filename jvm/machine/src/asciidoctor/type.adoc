@@ -304,35 +304,36 @@ For a type, the https://en.wikipedia.org/wiki/Deterministic_finite_automaton[det
 \[
 G_{\texttt{obj}} = G_{\texttt{type}} \cup G_{\texttt{value}}.
 \]
-The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] below also represents the corresponding `obj` graph that is composed of two lateral paths. The top path is a value history \$(2 \to 6 \to 6)\$ and the bottom path is a type definition
-\[
-(\tt{int} \to \tt{int[plus,4]} \to \tt{int[plus,4][is>0]}).
-\]
-These paths are joined by the `[type]` instruction in `inst` and serves to unite the type graph and value graph subgraphs of the `obj` graph such that
-\[
-\texttt{[type]}: \texttt{obj} \to \texttt{type}.
-\]
+The https://en.wikipedia.org/wiki/Commutative_diagram[commutative diagram] below also represents the corresponding `obj` graph that is composed of two lateral paths. The top path is a *value history* and the bottom path is a *type definition*. These paths are joined by the `[type]` instruction which unites the type and value subgraphs of the `obj` graph. The `[type]` instructions are diagrammed using https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols[hook-tailed] arrows which, by convention, denote https://en.wikipedia.org/wiki/Monomorphism[monomorphic] https://en.wikipedia.org/wiki/Embedding[embeddings] known more simply as https://en.wikipedia.org/wiki/Inclusion_map[inclusions] (i.e., \$a \in A\$ or \$A' \subset A\$).
 
-NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _path_.
 
-[cols="7,9"]
-|===
+[cols="4,^.^3"]
+|====
+// ## (2;[plus,4];6;[is,true];6)
+// ## (int;[plus,4];int;[is>0];int{?})
 a|
 [exec]
 ----
-2[plus,4][is>0]
+2[plus,4][is>0]              ## 6
 2[plus,4][is>0][path]
-2[plus,4][is>0][type]
+int[plus,4][is>0][path]
+2[plus,4][is>0][type]        ## int[plus,4][is>0]
 ----
 {blank}
-|image:type-value-path.svg[]
-|===
+| image:type-value-path-short.svg[]
+|====
 
-In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in the `obj` graph.
-However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
+A type's path has sufficient information to construct an element of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] known as the **`inst` monoid** -- the https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid] of mm-ADT. The element is unambiguously determined by concatenating the instructions encountered on the edges of the inverted path starting from the current _range_ vertex and terminating at the root _domain_ vertex (i.e. the base type of the type induction -- the ctype).
+
+[exec]
+----
+int[plus,4][is>0][path,({0};_)]
+----
+
+NOTE: In practice, the string representation of a value is its _ground_ and the string representation of a type is its _path_.
+
+In theory, the complete history of an mm-ADT program (from compilation to execution) is stored in the `obj` graph. However, in practice, the mm-ADT VM removes paths once they are no longer required by the program.
 This process is called *path retraction* and is the mm-ADT equivalent of https://en.wikipedia.org/wiki/Garbage_collection_(computer_science)[garbage collection].
-
-NOTE: image:type-value-path-short.svg[float=right,width=350] In the diagram above, the type vertices are elements of a https://en.wikipedia.org/wiki/Free_algebra[free algebra] called the `inst` monoid best understood as a https://en.wikipedia.org/wiki/Syntactic_monoid[syntactic monoid]. In order to present more complex https://en.wikipedia.org/wiki/Commutative_diagram[diagrams], vertex labels will be shortened to the type's canonical range type. With this convention, there is no loss of information. The full definition can be unambiguously determined by concatenating the instructions encountered on the edges of the inverted path from the current _range_ vertex to the root _domain_ vertex (i.e. the base canonical type of the type induction). Furthermore, https://en.wikipedia.org/wiki/Commutative_diagram#Arrow_symbols[hook-tailed] arrows will replace `[type]`-labeled arrows as they denote a https://en.wikipedia.org/wiki/Monomorphism[monomorphic] https://en.wikipedia.org/wiki/Embedding[embedding] known simply as an https://en.wikipedia.org/wiki/Inclusion_map[inclusion]. All subsequent diagrams will follow this convention.
 
 .The Obj Graph as a Cayley Graph and a Commutative Diagram
 ================================================================

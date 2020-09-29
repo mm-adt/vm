@@ -23,22 +23,30 @@
 package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
-import org.mmadt.language.obj.op.trace.PathOp.VERTICES
+import org.mmadt.language.obj.op.trace.PathOp.{EDGES, VERTICES}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.storage.StorageFactory.{int, str, strm}
+import org.mmadt.storage.StorageFactory.{int, lst, str, strm}
 
 
 class PathInstTest extends BaseInstTest(
   testSet("[path] table test", List(NONE, MM, MMX),
-    comment("vertices and edges"),
+    comment("type vertices and edges"),
+    testing(__, str.path, lst(str) <= str.path, "str => [path]"),
+    testing(str.q(2), str.q(2).path, (str.q(2) `;`).q(2) <= str.q(2).path, "str{2} => str{2}[path]"),
+    testing(str.q(2), str.q(2).plus("b").q(3).path, (str.q(2) `;` plus("b").inst.q(3) `;` str.q(6)).q(6) <= str.q(2).plus("b").q(3).path, "str{2} => str{2}[plus,'b']{3}[path]"),
+    testing(str, str.plus("b").plus("c").path, (str `;` plus("b").inst `;` str `;` plus("c").inst `;` str) <= str.plus("b").plus("c").path, "str[plus,'b'][plus,'c'][path]"),
+    comment("type edges"),
+    testing(str, str.plus("b").plus("c").path(EDGES), (str `;` plus("b").inst `;` plus("c").inst) <= str.plus("b").plus("c").path(EDGES), "str[plus,'b'][plus,'c'][path,({0};_)]"),
+    comment("value vertices and edges"),
     testing("a", str.path, "a" `;`, "'a' => str[path]"),
     testing("a".q(2), str.q(2).path, ("a".q(2) `;`).q(2), "'a'{2} => str{2}[path]"),
     testing("a".q(2), str.q(2).plus("b").q(3).path, ("a".q(2) `;` plus("b").inst.q(3) `;` "ab".q(6)).q(6) <= "a".q(2).plus("b").q(3).path, "'a'{2} => str{2}[plus,'b']{3}[path]"),
     testing("a", str.plus("b").plus("c").path, ("a" `;` plus("b").inst `;` "ab" `;` plus("c").inst `;` "abc") <= "a".plus("b").plus("c").path, "'a'[plus,'b'][plus,'c'][path]"),
-    comment("vertices only"),
+    comment("value vertices only"),
     testing("a", str.plus("b").plus("c").path(VERTICES), "a" `;` "ab" `;` "abc", "'a'[plus,'b'][plus,'c'][path,(_;{0})]"),
     testing("a", str.plus("b").plus(plus("c").plus("d")).plus("e").path(VERTICES), "a" `;` "ab" `;` "ababcd" `;` "ababcde", "'a'=>str[plus,'b'][plus,[plus,'c'][plus,'d']][plus,'e'][path,(_;{0})]"),
     testing("a", plus("b").plus(plus("c").plus("d")).plus("e").path(VERTICES).get(1).path(VERTICES), str("a") `;` "ab" `;` "ababcd" `;` "ababcde", "'a'+'b'[++'c'+'d']+'e'[path,(_;{0})]"),

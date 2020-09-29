@@ -37,7 +37,7 @@ import org.mmadt.storage.StorageFactory._
  */
 object mmlangPrinter {
 
-  private val prettyPrint:Boolean = true
+  private val prettyPrint:Boolean = false
   private val tab:String = "\n   "
 
   private def aliveString(obj:Any):String = if (obj.asInstanceOf[Obj].alive) obj.toString else "{0}"
