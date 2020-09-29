@@ -1919,8 +1919,6 @@ mmlang&gt;</code></pre>
 </div>
 <div class="sect2">
 <h3 id="_type_composition">Type Composition</h3>
-<div class="sect3">
-<h4 id="_stream_ring_operators">Stream Ring Operators</h4>
 <div class="sidebarblock">
 <div class="content">
 <div class="title">Stream Ring Theory</div>
@@ -1996,7 +1994,104 @@ g_0  \\ + \\ g_1 \\ + \\ \vdots \\ + \\ g_n
 <div class="paragraph">
 <p>The illustration above is an intuitive visualization of an mm-ADT type from the perspective of monoidal, group, and near-ring magmas interacting with one another in a series (\$\ast\$) of expansions (\$ +\$) and contractions (\$ \oplus\$), where \$m_i,g_i,r \in \tt{obj}\$. These three stream operators have a corresponding realization in <code>inst</code> as <a href="https://en.wikipedia.org/wiki/Higher-order_function">higher-order instructions</a>. It is through these instructions that the other instructions are grounded in the underlying stream ring algebra of the mm-ADT VM.</p>
 </div>
-<hr>
+<div class="sect3">
+<h4 id="_stream_ring_operators">Stream Ring Operators</h4>
+<div class="paragraph">
+<p>An <code>obj</code> is defined
+\[
+\texttt{obj} = (\texttt{type} \times \texttt{q}) + (\texttt{value} \times \texttt{q}).
+\]
+Thus, an <code>obj</code> is either a <strong>quantified type</strong> or a <strong>quantifier value</strong>. With respects to the stream ring&#8217;s three operators, there are 4 binary <code>obj</code> configurations (\$2^2\$) that each operator will encounter: <strong>value</strong>/<strong>value</strong>, <strong>value</strong>/<strong>type</strong>, <strong>type</strong>/<strong>value</strong>, and <strong>type</strong>/<strong>type</strong>. The table below presents the equations of each operator for each of the 4 configurations, where it is through operations involving right-hand side types that the instructions in <code>inst</code> are applied (e.g., \$t(v)\$ is evaluation or \$t(t)\$ is compilation). Thus, the stream ring is the fundamental algebra of the mm-ADT VM.</p>
+</div>
+<div class="admonitionblock note">
+<table>
+<tr>
+<td class="icon">
+<i class="fa icon-note" title="Note"></i>
+</td>
+<td class="content">
+In the examples to follow, a term of the form \$x_q\$ is a type (\$t\$) or value (\$v\$) with quantifier \$q\$ and \$\mathbf{x}\$ is a stream of types or values, where an \$i \in \mathbb{N}\$ as in \$\mathbf{x}_i\$ denotes an index into the \$\mathbf{x}\$ stream.
+</td>
+</tr>
+</table>
+</div>
+<table class="tableblock frame-all grid-all stretch">
+<colgroup>
+<col style="width: 18.1818%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2727%;">
+<col style="width: 27.2728%;">
+</colgroup>
+<thead>
+<tr>
+<th class="tableblock halign-center valign-middle">\$\cdot\$</th>
+<th class="tableblock halign-center valign-middle">[juxt] <code>=&gt;</code></th>
+<th class="tableblock halign-center valign-middle">[branch] <code>=[</code></th>
+<th class="tableblock halign-center valign-middle">[barrier] <code>=|</code></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">value \$\cdot\$ value</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+{v_0}_{q} \Rightarrow {v_1}_{r} = {v_1}_{q \ast r}
+\]</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+[{v_0}_{q},{v_1}_{r}] =
+\begin{cases}
+{v_0}_{q + r} &amp; \text{if } v_0 == v_1 \\
+[{v_0}_q,{v_1}_r] &amp; \text{otherwise}.
+\end{cases}
+\]</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+\mathbf{v} ⫤ {v_1}_r = {v_1}_r
+\]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">value \$\cdot\$ type</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+v_q \Rightarrow t_r = t(v)_{q \ast r}
+\]</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+[v_q,t_r] = [v_q,t_r]
+\]</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+\mathbf{v} ⫤ t_r = \left(\bigoplus_{i=0}^n t(\mathbf{v}_i)\right)_r
+\]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">type \$\cdot\$ value</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+t_q \Rightarrow v_r = v_{q \ast r}
+\]</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+[t_q,v_r] = [t_q,v_r]
+\]</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+\mathbf{t} ⫤ v_r = v_r
+\]</p></td>
+</tr>
+<tr>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">type \$\cdot\$ type</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+{t_0}_q \Rightarrow {t_1}_r = t_1(t_0)_{q \ast r}
+\]</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+[{t_0}_{q},{t_1}_{r}] =
+\begin{cases}
+{t_0}_{q + r} &amp; \text{if } t_0 == t_1 \\
+[{t_0}_q,{t_1}_r] &amp; \text{otherwise}.
+\end{cases}
+\]</p></td>
+<td class="tableblock halign-center valign-middle"><p class="tableblock">\[
+\mathbf{t_0} ⫤ t_1 = \left(\bigoplus_{i=0}^n t_1(\mathbf{t_0}_i)\right)_r
+\]</p></td>
+</tr>
+</tbody>
+</table>
+<div class="paragraph">
+<p>The simple example program below uses all 3 stream ring operators. The subsequent table provides a detailed decomposition of the evaluation.</p>
+</div>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4 =&gt; int[mult,2] =&gt; str[plus,'0'] =&gt; real
@@ -2007,9 +2102,6 @@ mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real
 mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [plus,x]
 ==&gt;88.1{2}</code></pre>
 </div>
-</div>
-<div class="paragraph">
-<p>The last example above makes use of all three stream operators. A decomposition of the expression is provided below.</p>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -5871,7 +5963,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-29 04:24:25 -0600
+Last updated 2020-09-29 04:30:25 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
