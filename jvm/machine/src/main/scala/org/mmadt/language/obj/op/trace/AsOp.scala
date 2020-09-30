@@ -53,7 +53,9 @@ object AsOp extends Func[Obj, Obj] {
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
 
   def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
-  def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E = autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
+  def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E =
+    if (target.root) f(autoAsType(source, target.domain)).asInstanceOf[E]
+    else autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
 
   private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
     if (domain && __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined) return source.from(__(target.name))
@@ -87,8 +89,8 @@ object AsOp extends Func[Obj, Obj] {
     Tokens.tryName(asObj, rObj)
   }
 
-  private def baseMapping(source:Obj, target:Obj):Boolean = __.isAnon(source) || __.isAnon(target) || source.named || target.named ||
-    source.model.dtypes.exists(t => source.name.equals(t.domainObj.name) && target.name.equals(t.rangeObj.name))
+  /*private def baseMapping(source:Obj, target:Obj):Boolean = __.isAnon(source) || __.isAnon(target) || source.named || target.named ||
+    source.model.dtypes.exists(t => source.name.equals(t.domainObj.name) && target.name.equals(t.rangeObj.name))*/
   def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
 
   private def pickMapping(source:Obj, target:Obj):Obj = {

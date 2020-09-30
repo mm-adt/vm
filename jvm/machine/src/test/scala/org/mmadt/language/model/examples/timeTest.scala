@@ -36,7 +36,7 @@ import org.mmadt.storage.model
 object timeTest {
   val TIME:Model = MM
     .defining('date <= ('nat.is(lte(12)) `;` 'nat.is(lte(31)) `;` 'nat))
-    .defining('date <= ('nat.is(lt(12)) `;` 'nat.is(lte(31))).put(2, 2020)).merging(model('num)).named("time")
+    .defining('date <= ('nat.is(lt(12)) `;` 'nat.is(lte(31))).put(2, 'nat(2020))).merging(model('num)).named("time")
 }
 
 class timeTest extends BaseInstTest(
