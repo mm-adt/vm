@@ -96,9 +96,9 @@ object ModelOp extends Func[Obj, Obj] {
         .filter(x => x.domainObj.name != Tokens.lift_op) // little optimization hack that will go away as model becomes more cleverly organized
         .map(x => if (__.isToken(x.domainObj) && !typeGrounded(model, x)) __.asInstanceOf[A] else x) // is the type is not grounded in an mm base type, then anything matches
         .filter(x => if (__.isToken(x.domainObj))
-          model.search(source, x.domainObj, baseName = false).exists(y => source.update(model).test(y))
-        else if (source.isInstanceOf[LstValue[Obj]] && AsOp.searchable(x.domainObj)) Lst.fastCheck(source.update(model), x.domainObj)
-        else source.update(model).test(x.domainObj.hardQ(source.q)))
+          model.search(source, x.domainObj, baseName = false).exists(y => source.test(y))
+        else if (source.isInstanceOf[LstValue[Obj]] && AsOp.searchable(x.domainObj)) Lst.fastCheck(source, x.domainObj)
+        else source.test(x.domainObj.hardQ(source.q)))
 
     private final def typeGrounded(model:Model, aobj:Obj):Boolean =
       model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap
@@ -113,8 +113,7 @@ object ModelOp extends Func[Obj, Obj] {
         .map(x => List(x))
         .getOrElse[List[A]](
           findType[A](model, source, target.name)
-            .map(y => if (baseName) toBaseName(y) else y)
-            .map(x => x.update(model)))
+            .map(y => if (baseName) toBaseName(y) else y))
     }
 
     final def findCtype[A <: Obj](name:String):Option[A] = model.gmap.fetchOrElse(TYPE, NOREC).gmap
