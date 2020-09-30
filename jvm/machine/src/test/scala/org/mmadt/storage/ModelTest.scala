@@ -84,7 +84,7 @@ class ModelTest extends FunSuite {
   }
 
 
-  test("[tp3<=kv] functor") {
+  /*test("[tp3<=kv] functor") {
     val record1a:Rec[StrValue, Obj] =
       str("k") -> (str("vertex") `,` int(1)) `_,`
         str("v") -> rec(str("name") -> str("marko"))
@@ -115,5 +115,5 @@ class ModelTest extends FunSuite {
     val g:Obj = s ==> tp3_kv `=>` 'graph
     println(g)
     assertResult(btrue)(g ==> tp3 `=>` a('graph))
-  }
+  }*/
 }

@@ -31,7 +31,7 @@ import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{StrValue, Value}
+import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{lst, rec, str}
 import org.mmadt.storage.model
@@ -96,8 +96,9 @@ object ModelOp extends Func[Obj, Obj] {
         .filter(x => x.domainObj.name != Tokens.lift_op) // little optimization hack that will go away as model becomes more cleverly organized
         .map(x => if (__.isToken(x.domainObj) && !typeGrounded(model, x)) __.asInstanceOf[A] else x) // is the type is not grounded in an mm base type, then anything matches
         .filter(x => if (__.isToken(x.domainObj))
-          model.search(source, x.domainObj, baseName = false).exists(y => source.update(model).test(y)) else
-          source.update(model).test(x.domainObj.hardQ(source.q)))
+          model.search(source, x.domainObj, baseName = false).exists(y => source.update(model).test(y))
+        else if (source.isInstanceOf[LstValue[Obj]] && AsOp.searchable(x.domainObj)) Lst.fastCheck(source.update(model), x.domainObj)
+        else source.update(model).test(x.domainObj.hardQ(source.q)))
 
     private final def typeGrounded(model:Model, aobj:Obj):Boolean =
       model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap

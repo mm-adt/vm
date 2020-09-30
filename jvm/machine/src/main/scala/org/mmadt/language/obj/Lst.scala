@@ -25,7 +25,7 @@ package org.mmadt.language.obj
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Lst.LstTuple
 import org.mmadt.language.obj.Poly.fetchVars
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{LstType, Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.op.trace.AsOp
@@ -75,6 +75,14 @@ trait Lst[+A <: Obj] extends Poly[A]
 object Lst {
   type LstTuple[+A <: Obj] = (String, List[A])
 
+  def fastCheck(source:Obj, target:Obj):Boolean = {
+    source match {
+      case alst:Lst[Obj] if target.isInstanceOf[LstType[Obj]] =>
+        val blst = target.asInstanceOf[LstType[Obj]]
+        !alst.ctype && !blst.ctype && Lst.shapeTest(alst, blst)
+      case _ => false
+    }
+  }
   def shapeTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => WalkOp.testSourceToTarget(pair._1, pair._2))
   def exactTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
     case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
@@ -109,7 +117,7 @@ object Lst {
       if (null == start) return Type.mergeObjs(values).filter(_.alive)
       Type.mergeObjs(Type.mergeObjs(values).map(v =>
         if (!__.isAnon(start) && v.isInstanceOf[Value[_]]) start `=>` v
-        else (if(v.isInstanceOf[Type[_]]) AsOp.autoAsType(start,v.domain) else start) ~~> v)).filter(_.alive)
+        else (if (v.isInstanceOf[Type[_]]) AsOp.autoAsType(start, v.domain) else start) ~~> v)).filter(_.alive)
     /////////// ;-lst
     case Tokens.`;` =>
       if (null == start) return values

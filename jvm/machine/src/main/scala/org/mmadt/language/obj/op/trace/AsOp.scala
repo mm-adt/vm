@@ -55,7 +55,7 @@ object AsOp extends Func[Obj, Obj] {
   def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
   def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E = autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
   private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
-    if (domain && __.isToken(target) && source.reload.model.vars(target.name).isDefined && source.isInstanceOf[Type[_]]) return source.from(__(target.name))
+    if (domain && __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined) return source.from(__(target.name))
     if (source.name.equals(target.name)) {
       source match {
         case alst:LstValue[Obj] if !Lst.exactTest(alst, target) =>
@@ -76,10 +76,10 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
-    val asObj:Obj = if (__.isToken(target)) WalkOp.walkSourceToTarget(source, target, targetName = true) else target
+    val asObj:Obj = if (searchable(target)) WalkOp.walkSourceToTarget(source, target, targetName = true) else target
     val dObj:Obj = Tokens.tryName(asObj, pickMapping(source, asObj))
     val rObj:Obj =
-      if (__.isToken(asObj.range) && asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined)
+      if (searchable(asObj.range) && asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined)
         pickMapping(dObj, Tokens.tryName(target, asObj.range))
       else dObj
     if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
@@ -87,81 +87,86 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def baseMapping(source:Obj, target:Obj):Boolean = __.isAnon(source) || __.isAnon(target) || source.named || target.named || source.model.dtypes.exists(t => source.test(t.domainObj) && target.test(t.rangeObj))
+  def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
 
-  private def pickMapping(start:Obj, asObj:Obj):Obj = {
-    if (asObj.isInstanceOf[Value[Obj]]) start ~~> asObj
-    else if (start.isInstanceOf[Type[_]]) asObj.update(start.model)
-    else if (__.isToken(asObj))
-      start.model.search(start, asObj).headOption.map(x => pickMapping(start, x)).get // recursively search for a base type
-    else (start match {
-      case abool:Bool => boolConverter(abool, asObj)
-      case aint:Int => intConverter(aint, asObj)
-      case areal:Real => realConverter(areal, asObj)
-      case astr:Str => strConverter(astr, asObj)
-      case alst:Lst[Obj] => lstConverter(alst, asObj)
-      case arec:Rec[Obj, Obj] => recConverter(arec, asObj)
-    }).update(start.model)
+  private def pickMapping(source:Obj, target:Obj):Obj = {
+    if (target.isInstanceOf[Value[Obj]]) source ~~> target
+    else if (source.isInstanceOf[Type[_]]) target.update(source.model)
+    else if (searchable(target)) objConverter(source, source.model.search(source, target).headOption.getOrElse(target))
+    else objConverter(source, target)
   }
 
-  private def boolConverter(x:Bool, y:Obj):Obj =
-    y.trace.reconstruct(y.domain match {
-      case _:__ => x
-      case abool:BoolType => bool(name = abool.name, g = x.g, via = x.via)
-      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.g.toString, via = x.via)
-      case _ => throw LanguageException.typingError(x, asType(y))
+  /////// CONVERTERS
+
+  private def objConverter(source:Obj, target:Obj):Obj =
+    (source match {
+      case abool:Bool => boolConverter(abool, target)
+      case aint:Int => intConverter(aint, target)
+      case areal:Real => realConverter(areal, target)
+      case astr:Str => strConverter(astr, target)
+      case alst:Lst[Obj] => lstConverter(alst, target)
+      case arec:Rec[Obj, Obj] => recConverter(arec, target)
+    }).update(source.model)
+
+  private def boolConverter(source:Bool, target:Obj):Obj =
+    target.trace.reconstruct(target.domain match {
+      case _:__ => source
+      case abool:BoolType => bool(name = abool.name, g = source.g, via = source.via)
+      case astr:StrType if baseMapping(source, str) => str(name = astr.name, g = source.g.toString, via = source.via)
+      case _ => throw LanguageException.typingError(source, asType(target))
     })
 
-  private def intConverter(x:Int, y:Obj):Obj = {
-    y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
-      case _:__ => x
-      case aint:IntType => int(name = aint.name, g = x.g, via = x.via)
-      case areal:RealType if baseMapping(x, real) => real(name = areal.name, g = x.g, via = x.via)
-      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.g.toString, via = x.via)
-      case _ => throw LanguageException.typingError(x, asType(y))
-    })
-  }
-
-  private def realConverter(x:Real, y:Obj):Obj =
-    y.trace.reconstruct(y.domain match {
-      case _:__ => x
-      case aint:IntType if baseMapping(x, int) => int(name = aint.name, g = x.g.longValue(), via = x.via)
-      case areal:RealType => real(name = areal.name, g = x.g, via = x.via)
-      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.g.toString, via = x.via)
-      case _ => throw LanguageException.typingError(x, asType(y))
-    })
-
-  private def strConverter(x:Str, y:Obj):Obj =
-    y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
-      case _:__ => x
-      case abool:BoolType if baseMapping(x, bool) => bool(name = abool.name, g = JBoolean.valueOf(x.g), via = x.via)
-      case aint:IntType if baseMapping(x, int) => int(name = aint.name, g = JLong.valueOf(x.g), via = x.via)
-      case areal:RealType if baseMapping(x, real) => real(name = areal.name, g = JDouble.valueOf(x.g), via = x.via)
-      case astr:StrType => str(name = astr.name, g = x.g, via = x.via)
-      case _ => throw LanguageException.typingError(x, asType(y))
-    })
-
-  private def lstConverter(x:Lst[Obj], y:Obj):Obj = {
-    y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
-      case _:__ => x
-      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.toString, via = x.via)
-      case _:Inst[Obj, Obj] => OpInstResolver.resolve(x.g._2.head.asInstanceOf[StrValue].g, x.g._2.tail)
-      case alst:LstType[Obj] if alst.ctype => x.named(alst.name)
-      case alst:LstType[Obj] if Lst.shapeTest(x, alst) => lst(name = alst.name, g = (alst.gsep, x.glist.zip(alst.glist).map(a => a._1.compute(a._2))), via = x.via).reload
-      case alst:LstType[Obj] if Lst.test(x, alst) => x.named(alst.name)
-      case _ => throw LanguageException.typingError(x, asType(y))
+  private def intConverter(source:Int, target:Obj):Obj = {
+    target.trace.reconstruct(Obj.resolveToken(source, target).domain match {
+      case _:__ => source
+      case aint:IntType => int(name = aint.name, g = source.g, via = source.via)
+      case areal:RealType if baseMapping(source, real) => real(name = areal.name, g = source.g, via = source.via)
+      case astr:StrType if baseMapping(source, str) => str(name = astr.name, g = source.g.toString, via = source.via)
+      case _ => throw LanguageException.typingError(source, asType(target))
     })
   }
 
-  private def recConverter(x:Rec[Obj, Obj], y:Obj):Obj =
-    y.trace.reconstruct(Obj.resolveToken(x, y).domain match {
-      case _:__ => x
-      case astr:StrType if baseMapping(x, str) => str(name = astr.name, g = x.toString, via = x.via)
-      case arec:RecType[Obj, Obj] if arec.ctype => x.named(arec.name)
+  private def realConverter(source:Real, target:Obj):Obj =
+    target.trace.reconstruct(target.domain match {
+      case _:__ => source
+      case aint:IntType if baseMapping(source, int) => int(name = aint.name, g = source.g.longValue(), via = source.via)
+      case areal:RealType => real(name = areal.name, g = source.g, via = source.via)
+      case astr:StrType if baseMapping(source, str) => str(name = astr.name, g = source.g.toString, via = source.via)
+      case _ => throw LanguageException.typingError(source, asType(target))
+    })
+
+  private def strConverter(source:Str, target:Obj):Obj =
+    target.trace.reconstruct(Obj.resolveToken(source, target).domain match {
+      case _:__ => source
+      case abool:BoolType if baseMapping(source, bool) => bool(name = abool.name, g = JBoolean.valueOf(source.g), via = source.via)
+      case aint:IntType if baseMapping(source, int) => int(name = aint.name, g = JLong.valueOf(source.g), via = source.via)
+      case areal:RealType if baseMapping(source, real) => real(name = areal.name, g = JDouble.valueOf(source.g), via = source.via)
+      case astr:StrType => str(name = astr.name, g = source.g, via = source.via)
+      case _ => throw LanguageException.typingError(source, asType(target))
+    })
+
+  private def lstConverter(source:Lst[Obj], target:Obj):Obj = {
+    target.trace.reconstruct(Obj.resolveToken(source, target).domain match {
+      case _:__ => source
+      case astr:StrType if baseMapping(source, str) => str(name = astr.name, g = source.toString, via = source.via)
+      case _:Inst[Obj, Obj] => OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail)
+      case alst:LstType[Obj] if alst.ctype => source.named(alst.name)
+      case alst:LstType[Obj] if Lst.shapeTest(source, alst) => lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a => a._1.compute(a._2))), via = source.via).reload
+      case alst:LstType[Obj] if Lst.test(source, alst) => source.named(alst.name)
+      case _ => throw LanguageException.typingError(source, asType(target))
+    })
+  }
+
+  private def recConverter(source:Rec[Obj, Obj], target:Obj):Obj =
+    target.trace.reconstruct(Obj.resolveToken(source, target).domain match {
+      case _:__ => source
+      case astr:StrType if baseMapping(source, str) => str(name = astr.name, g = source.toString, via = source.via)
+      case arec:RecType[Obj, Obj] if arec.ctype => source.named(arec.name)
       case arec:RecType[Obj, Obj] => val z = rec(name = arec.name, g = (arec.gsep,
-        x.gmap.flatMap(a => arec.gmap
+        source.gmap.flatMap(a => arec.gmap
           .filter(b => a._1.test(b._1))
-          .map(b => (a._1.as(b._1), a._2.as(b._2))))), via = x.via)
-        if (z.gmap.size < arec.gmap.count(x => x._2.q._1.g > 0)) throw LanguageException.typingError(x, asType(y)) else z
-      case _ => throw LanguageException.typingError(x, asType(y))
+          .map(b => (a._1.as(b._1), a._2.as(b._2))))), via = source.via)
+        if (z.gmap.size < arec.gmap.count(x => x._2.q._1.g > 0)) throw LanguageException.typingError(source, asType(target)) else z
+      case _ => throw LanguageException.typingError(source, asType(target))
     })
 }

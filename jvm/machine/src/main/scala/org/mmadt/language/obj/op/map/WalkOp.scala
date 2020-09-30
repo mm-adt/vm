@@ -25,6 +25,7 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
@@ -56,13 +57,7 @@ object WalkOp extends Func[Obj, Obj] {
   /////////////////////////////////////////////////////////////////////////
 
   val nameTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => source.rangeObj.name == target.domainObj.name || __.isAnon(target.domainObj)
-  val rangeDomainTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => {
-    (nameTest(source, target) && Type.trueRange(source).rangeObj.test(target.domainObj)) || {
-      (source.rangeObj.isInstanceOf[Lst[_]] && target.domainObj.isInstanceOf[Lst[_]] &&
-        source.rangeObj.asInstanceOf[Lst[Obj]].size == target.domainObj.asInstanceOf[Lst[Obj]].size &&
-        source.rangeObj.asInstanceOf[Lst[Obj]].glist.zip(target.domainObj.asInstanceOf[Lst[Obj]].glist).forall(pair => WalkOp.resolvePaths(List(pair._1), pair._2).nonEmpty))
-    }
-  }
+  val rangeDomainTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => (nameTest(source, target) && source.rangeObj.test(target.domainObj)) || Lst.fastCheck(source, target.domainObj)
   val objObjTest:(Obj, Obj) => Boolean = (source:Obj, target:Obj) => nameTest(source, target) && source.test(target)
 
   def resolvePaths[A <: Obj, B <: Obj](source:List[A], target:B, checked:List[Obj] = Nil, composeTest:(Obj, Obj) => Boolean = rangeDomainTest):List[List[B]] = {
@@ -90,7 +85,7 @@ object WalkOp extends Func[Obj, Obj] {
       case astrm:Strm[Obj] => astrm(x => walkSourceToTarget[A](x, target, composeTest))
       case _ if !target.named => target // NEED A PATH RESOLVER FOR BASE TYPES TO AVOID STACK ISSUES
       case _ => Obj.resolveTokenOption(source, target).getOrElse({
-        if (source.isInstanceOf[Type[_]] || !__.isToken(target)) return target
+        if (source.isInstanceOf[Type[_]] || !AsOp.searchable(target)) return target
         WalkOp.resolvePaths[Obj, A](List(source), target, composeTest = composeTest)
           .filter(_ => source.model.search[A](target = target).nonEmpty)
           .map(path => path.foldLeft(source)((a, b) => (a `=>` toBaseName(b)).named(b.name, ignoreAnon = true)))

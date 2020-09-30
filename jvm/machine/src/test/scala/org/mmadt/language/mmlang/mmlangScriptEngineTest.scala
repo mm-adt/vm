@@ -44,6 +44,11 @@ class mmlangScriptEngineTest extends FunSuite {
 
   lazy val engine:mmADTScriptEngine = LanguageFactory.getLanguage("mmlang").getEngine.get()
 
+  test("pairs") {
+    engine.eval(":[model,pg_2][define,(vertex;vertex)<=int-<(vertex;vertex)]")
+    println(engine.eval("1 => (vertex;vertex)"))
+  }
+
   test("test check") {
     engine.eval(":[model,pg_3][model,mmx]")
     println(engine.eval("[1,2,3,4,5] =|[plus,x] => str =[+'1',+'2',+'3']=> int =|[mult,x]"))
