@@ -23,15 +23,14 @@
 package org.mmadt.processor.inst.trace
 
 import org.mmadt.language.LanguageException
-import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken}
 import org.mmadt.language.obj.`type`.__.{branch, symbolToRichToken, _}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
-import org.mmadt.language.obj.{Bool, Int}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, Model}
+import org.mmadt.language.obj.{Int, Obj, asType}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.processor.inst.trace.DefineInstTest._
 import org.mmadt.storage.StorageFactory._
 
@@ -51,9 +50,9 @@ class DefineInstTest extends BaseInstTest(
     testing(1 `;` 2, 'apair, 'apair(1 `;` 2), "(1;2)=>apair"),
     testing(100 `;` 101, 'apair, 'apair(100 `;` 101), "(100;101)=>apair"),
     excepting(2 `;` 1, 'apair, LanguageException.typingError(2 `;` 1, 'apair), "(2;1)=>apair"),
-    excepting(1 `;` 2 `;` 3, 'apair, LanguageException.typingError(1 `;` 2 `;` 3, 'apair), "(1;2;3)=>apair"),
+    excepting(1 `;` 2 `;` 3, 'apair, LanguageException.typingError(1 `;` 2 `;` 3, 'apair), "(1;2;3)=>apair"), // TODO: if root then don't double domain/range
     comment("bpair"),
-    // testing(1 `;` 2, 'bpair, 'bpair(2 `;` 4), "(1;2)=>bpair"),
+    testing(1 `;` 2, 'bpair <= (int `;` int), 'bpair(2 `;` 4), "(1;2)=>bpair<=(int;int)"),
   ), testSet("[define] table test w/ nat model", MODEL,
     comment("nat"),
     testing(2, a('nat), true),
@@ -83,7 +82,7 @@ class DefineInstTest extends BaseInstTest(
     //    testing(lst(), a('vec), true, "()[a,vec]"),
     //    testing(lst(), as('vec), (lst() `;` 0).named("vec"), "()[as,vec]"),
     //    testing(1 `;` 2, as('vec), (((1 `;` 2) `;`) `;` 2).named("vec"), "(1;2)[as,vec]"),
-  ), testSet("[define] table test w/ mm", MM,
+  ), testSet("[define] table test w/ mm", List(MM, MMX),
     comment("midway-define]"),
     testing(2, define('x <= int.plus(1)), 2, "2[define,x<=int+1]"),
     testing(2, define('x <= int.plus(1)).plus('x), 5, "2[define,x<=int+1][plus,x]"),
@@ -91,26 +90,26 @@ class DefineInstTest extends BaseInstTest(
     //testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x]"),
     //testing(2, define('x <= int.plus(1)).branch('x `,`), 3, "2 => int[define,x<=int+1][x<=x]"),
     // testing(int(-2,2.q(5)), int.q(6).define('y<=int.plus(-1000),'x <=int.plus(1).as('y)).branch('x`,`), int(-998,1002.q(5)), "[-2,2{5}] => int{6}[define,y<=int+-1000,x<=int+1[as,y]][x]"),
+  ), testSet("[define] pair test", List(MM, MMX).map(m => m.defining('pair <= (str `;` str).to('x).:=(plus('x.get(1)) `;` plus('x.get(0))))),
+    testing("a" `;` "b", 'pair <= (str `;` str), 'pair("ab" `;` "ba"), "('a';'b')=>pair<=(str;str)"),
+    testing("ab" `;` "ba", 'pair <= (str `;` str), 'pair("abba" `;` "baab"), "('ab';'ba')=>pair<=(str;str)"),
+    testing("ab" `;` "ba", as('pair).get(0, str), "abba", "('ab';'ba')=>[as,pair][get,0,str]"),
+    testing(strm(("a" `;` "b"), ("ab" `;` "ba")), 'pair <= (str `;` str).q(2), strm('pair("ab" `;` "ba"), 'pair("abba" `;` "baab")), "[('a';'b'),('ab';'ba')]=> pair<=(str;str){2}"),
+    testing('pair("ab" `;` "ba"), 'pair <= (str `;` str), 'pair("abba" `;` "baab"), "pair:('ab';'ba')=>pair<=(str;str)"),
+    IGNORING("eval-3", "eval-4", "eval-5")('pair("ab" `;` "ba"), (str `;` str) <=[Obj] 'pair, ("ab" `;` "ba"), "pair:('ab';'ba')=>(str;str)<=pair"),
+    excepting("ab", 'pair <= (str `;` str), LanguageException.typingError("ab", asType(str `;` str)), "'ab' => pair<=(str;str)"),
+    // excepting("ab", 'pair, LanguageException.typingError("ab", 'pair), "'ab' => pair"),
   )
-) {
-  println('silist <= lst.branch(is(empty) `|` branch(is(head.a(str)) `;` is(tail.head.a(int)) `;` is(tail.tail.a('silist)))))
-  test("[define] play tests") {
-    println(int.define(int.is(int.gt(0))).a('nat))
-    println(int(-10).model('mm).define('nat <= int.is(int.gt(0))).a('nat.plus(100)))
-    println('nat.plus(100).domain)
-    println(int(-10).model('mm).compute(int.define('nat <= int.is(int.gt(0))).a('nat).asInstanceOf[Type[Bool]]))
-    //    println(int.define(int.plus(10).mult(20)).plus(2) -< ('x.plus(100) `,` 'x) >-)
-    println(new mmlangScriptEngineFactory().getScriptEngine.eval("1[a,[real|str]]"))
-    println(str.a(__.-<(real `|` int) >-)) // TODO
-  }
-  /*test("vec documentation example") {
-    engine.eval(
-      """:[model,mm][define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),
-        |                single<=vec:(lst,is<4).0[tail][head],
-        |                single<=vec:(lst,is>3).0[head],
-        |                single<=int]""".stripMargin)
-    assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3)[as,vec]"))
-    assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3) => vec<=lst"))
-    assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3) => vec"))
-  }*/
-}
+)
+
+/*test("vec documentation example") {
+  engine.eval(
+    """:[model,mm][define,vec:(lst,int)<=lst-<(_,=(_)>-[count]),
+      |                single<=vec:(lst,is<4).0[tail][head],
+      |                single<=vec:(lst,is>3).0[head],
+      |                single<=int]""".stripMargin)
+  assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3)[as,vec]"))
+  assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3) => vec<=lst"))
+  assertResult('vec((1 `;` 2 `;` 3) `,` 3))(engine.eval("(1;2;3) => vec"))
+}*/
+

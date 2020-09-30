@@ -82,7 +82,7 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
         }),
         ("eval-5", s => {
           val result = s ==> (middle.domain ==> middle)
-          if (!middle.trace.nexists(x => List(Tokens.one, Tokens.map, Tokens.neg, Tokens.repeat).contains(x._2.op) ||
+          if (!middle.trace.nexists(x => List(Tokens.one, Tokens.noop, Tokens.map, Tokens.neg, Tokens.repeat).contains(x._2.op) ||
             (x._2.op.equals(Tokens.lift) || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
             result.trace.modeless.zip((asType(s) ==> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
               assert(asType(x._1._1).test(x._2._1.rangeObj), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
