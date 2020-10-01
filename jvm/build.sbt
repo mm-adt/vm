@@ -8,6 +8,8 @@ ThisBuild / scalaVersion := "2.12.10"
 ThisBuild / version := "0.1-SNAPSHOT"
 Compile / compileOrder := CompileOrder.JavaThenScala
 
+// library versions
+val tp3_version = "3.4.8" // tinkerpop
 
 val copyData = taskKey[Unit]("Copy .mm files to data directory")
 copyData := {
@@ -43,6 +45,7 @@ makeSite := {
   (makeSite in machine).value
 }
 
+
 lazy val machine = (project in file("machine"))
   .settings(
     name := "machine",
@@ -52,21 +55,27 @@ lazy val machine = (project in file("machine"))
     mainClass in assembly := Some("org.mmadt.language.console.Console"),
     assemblyJarName in assembly := s"mmadt-vm-${version.value}.jar",
     assemblyOption in assembly := (assemblyOption in assembly).value.copy(prependShellScript = Some(defaultShellScript)),
-    assemblyMergeStrategy in assembly ~= (old => {
+    assemblyMergeStrategy in assembly ~= (_ => {
       case PathList("META-INF", "MANIFEST.MF") => MergeStrategy.discard
       case _ => MergeStrategy.first
     }),
     // base:= font_size_min: $base_font_size * 0.75
     libraryDependencies := List(
-      "org.jline" % "jline" % "3.13.3",
+      // vm core
+      "org.apache.tinkerpop" % "gremlin-core" % tp3_version,
+      "org.apache.tinkerpop" % "tinkergraph-gremlin" % tp3_version,
+      // mmlang parser
       "org.scala-lang.modules" %% "scala-parser-combinators" % "1.1.2",
+      // console
+      "org.jline" % "jline" % "3.13.3",
+      // documentation
       "org.asciidoctor" % "asciidoctorj-diagram" % "2.0.2",
       "org.asciidoctor" % "asciidoctorj" % "2.4.0",
       // tests
       "org.scalatest" %% "scalatest" % "3.0.8" % "test"),
     git.remoteRepo := scmInfo.value.get.connection.replace("scm:git:", ""),
     scmInfo := Some(ScmInfo(url("https://github.com/mm-adt/vm"), "scm:git:git@github.com:mm-adt/vm.git")),
-    excludeFilter in ghpagesCleanSite := ((f: File) => f.getName.contains("index")),
+    excludeFilter in ghpagesCleanSite := ((f:File) => f.getName.contains("index")),
   )
   .enablePlugins(AssemblyPlugin)
   .enablePlugins(AsciidoctorPlugin)
