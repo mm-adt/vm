@@ -22,11 +22,14 @@
 
 package org.mmadt.storage.obj.graph
 
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{__ => ___}
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.storage.StorageFactory.int
-import org.mmadt.storage.obj.graph.ObjGraphUtil._
+import org.mmadt.language.obj.Int
+import org.mmadt.storage.obj.graph.ObjGraph.{ObjGraph, ObjTraversalSource, ObjVertex, ROOT}
 import org.scalatest.FunSuite
 
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
@@ -37,8 +40,9 @@ import scala.collection.convert.ImplicitConversions.`iterator asScala`
 class ObjGraphTest extends FunSuite {
 
   test("obj graph") {
-    val graph:ObjGraph = new ObjGraph
-    val g = graph.traversal
+    val graph:ObjGraph = new ObjGraph(TinkerGraph.open())
+    val g = graph.g
+
     graph.add(10 ==> int.mult(5).plus(1).gt(2))
     graph.add(int.mult(2).plus(10).is(gt(4)))
     graph.add(int.mult(12).plus(10).is(gt(4)))
@@ -46,6 +50,16 @@ class ObjGraphTest extends FunSuite {
     println("Number of roots: " + g.V().has(ROOT,true).count().next())
     println("Number of vertices:" + g.V().count().next())
     println("-----")
-    graph.roots.flatMap(x => g.V(x).repeat(__.outE().inV()).until(__.outE().count().is(0L)).path().by("range").toSeq).foreach(x => println(x))
+    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by("range").foreach(x => println(x))
+  }
+
+  test("more") {
+    val graph:ObjGraph = new ObjGraph(TinkerGraph.open())
+    val g = graph.g
+    val v = graph.add(int.mult(15).plus(88).branch(int.plus(3)`,`int.mult(55)).gt(500))
+    g.R.foreach(x => println(x))
+    println("computing: " + (v <== 16))
+    g.R.valueMap[Object]().foreach(x => println(x))
+
   }
 }

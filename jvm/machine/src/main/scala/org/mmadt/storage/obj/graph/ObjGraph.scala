@@ -22,49 +22,72 @@
 
 package org.mmadt.storage.obj.graph
 
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversalSource, __}
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __}
 import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, Vertex}
-import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.obj.graph.ObjGraphUtil._
-
-import scala.collection.JavaConverters
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class ObjGraph {
-  val graph:Graph = TinkerGraph.open
-  val traversal:GraphTraversalSource = this.graph.traversal()
+object ObjGraph {
 
-  def add(aobj:Obj):Vertex = {
-    val vertex = addV(aobj)
-    aobj.trace.reverse.foldLeft(vertex)((a, b) => {
-      val nextVertex = addV(b._1)
-      addE(nextVertex, b._2, a)
-      nextVertex
-    }).property(ROOT, true)
-    vertex
+  val OBJ:String = "obj"
+  val TYPE:String = "type"
+  val VALUE:String = "value"
+  val ROOT:String = "root"
+  val RANGE:String = "range"
+
+  @inline implicit class ObjVertex[A <: Obj](val vertex:Vertex) {
+    def obj:A = vertex.property[A](OBJ).value()
+    def iso:A = vertex.property[A](RANGE).value()
+    def ==>[E <: Obj](target:E):E = obj ==> target
+    def <==(source:Obj):A = {
+      vertex.graph().add(source)
+      source ==> vertex.obj
+    }
   }
 
-  def roots:Seq[Vertex] = JavaConverters.asScalaIterator(traversal.V().has(ROOT, true)).toSeq
+  @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
+    def R:GraphTraversal[Vertex, Vertex] = g.V().has(ROOT, true)
+  }
 
-  private def addV(aobj:Obj):Vertex = {
-    traversal.V().has(OBJ, aobj).tryNext().orElseGet(() => {
-      val vertex = graph.addVertex(if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE)
-      vertex.property(OBJ, aobj)
-      vertex.property(RANGE, aobj.rangeObj)
+  @inline implicit class ObjGraph(val graph:Graph) {
+    val g:GraphTraversalSource = graph.traversal()
+
+    def add(aobj:Obj):Vertex = {
+      val vertex = addV(aobj)
+      aobj.trace.reverse.foldLeft(vertex)((a, b) => {
+        val nextVertex = addV(b._1)
+        addE(nextVertex, b._2, a)
+        nextVertex
+      })
       vertex
-    })
+    }
+
+    private def addV(aobj:Obj):Vertex = {
+      g.V().has(OBJ, aobj).tryNext().orElseGet(() => {
+        val vertex = graph.addVertex(if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE)
+        vertex.property(OBJ, aobj)
+        vertex.property(RANGE, aobj.rangeObj)
+        vertex.property(ROOT, true)
+        vertex
+      })
+    }
+
+    private def addE(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
+      g.V(source).outE(inst.op).has(OBJ, inst).where(__.inV().has(OBJ, target.obj.asInstanceOf[Obj])).tryNext().map[Edge](x => {
+        target.property(ROOT, false)
+        x
+      }).orElseGet(() => {
+        val edge = source.addEdge(inst.op, target)
+        target.property(ROOT, false)
+        edge.property(OBJ, inst)
+        edge.property(RANGE, inst)
+        edge
+      })
+    }
   }
 
-  private def addE(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
-    traversal.V(source).outE(inst.op).has(OBJ, inst).where(__.inV().has(OBJ, target.obj)).tryNext().orElseGet(() => {
-      val edge = source.addEdge(inst.op, target)
-      edge.property(OBJ, inst)
-      edge.property(RANGE, inst)
-      edge
-    })
-  }
+
 }
