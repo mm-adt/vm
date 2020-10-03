@@ -23,15 +23,12 @@
 package org.mmadt.storage.obj.graph
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{__ => ___}
-import org.apache.tinkerpop.gremlin.structure.T
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.obj.Obj.intToInt
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.storage.StorageFactory.int
-import org.mmadt.language.obj.Int
-import org.mmadt.language.obj.op.trace.NoOp
-import org.mmadt.storage.obj.graph.ObjGraph.{ObjGraph, ObjTraversalSource, ObjVertex, RANGE, ROOT}
+import org.mmadt.storage.obj.graph.ObjGraph.{OBJ, ObjGraph, ObjTraversalSource, RANGE, ROOT}
 import org.scalatest.FunSuite
 
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
@@ -45,11 +42,11 @@ class ObjGraphTest extends FunSuite {
     val graph:ObjGraph = new ObjGraph(TinkerGraph.open())
     val g = graph.g
 
-    graph.add(10 ==> int.mult(5).plus(1).gt(2))
-    graph.add(int.mult(2).plus(10).is(gt(4)))
-    graph.add(int.mult(12).plus(10).is(gt(4)))
-    graph.add(int.mult(12).plus(10).mult(100))
-    println("Number of roots: " + g.V().has(ROOT,true).count().next())
+    graph.doObj(10 ==> int.mult(5).plus(1).gt(2))
+    graph.doObj(int.mult(2).plus(10).is(gt(4)))
+    graph.doObj(int.mult(12).plus(10).is(gt(4)))
+    graph.doObj(int.mult(12).plus(10).mult(100))
+    println("Number of roots: " + g.V().has(ROOT, true).count().next())
     println("Number of vertices:" + g.V().count().next())
     println("-----")
     g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by("range").foreach(x => println(x))
@@ -58,9 +55,8 @@ class ObjGraphTest extends FunSuite {
   test("more") {
     val graph:ObjGraph = new ObjGraph(TinkerGraph.open())
     val g = graph.g
-    val v = graph.add(int.mult(15).plus(88).branch(int.plus(3)`,`int.mult(55)).gt(500))._2
+    graph.doObj(int.mult(15).plus(88).branch(int.plus(3) `,` int.mult(55)).gt(500))
     g.R.foreach(x => println(x))
-    println("computing: " + (v <== 16))
     g.R.valueMap[Object]().foreach(x => println(x))
     println("-----")
     g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by("range").foreach(x => println(x))
@@ -69,19 +65,26 @@ class ObjGraphTest extends FunSuite {
   test("more2") {
     val graph = new ObjGraph(TinkerGraph.open())
     val g = graph.g
-    val a = graph.add(int.plus(10).plus(-10))
-    val b = graph.add(int.plus(0))
-    a._2.addEdge("==",b._2).property(RANGE,NoOp())
+    graph.doRewrite(int.plus(10).plus(-10), int.plus(0))
     println("-----")
-    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(T.label).foreach(x => println(x))
+    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(OBJ).foreach(x => println(x))
+  }
+
+  test("yyy") {
+    val graph = new ObjGraph(TinkerGraph.open())
+    val g = graph.g
+    graph.doModel('pg_2)
+    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(RANGE).foreach(x => println(x))
+    println("-----")
+    graph.path(__, 'edge).foreach(x => println(x))
   }
 
   test("xxx") {
     val graph = new ObjGraph(TinkerGraph.open())
     val g = graph.g
-    graph.model('play)
+    graph.doModel('play)
     g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(RANGE).foreach(x => println(x))
     println("-----")
-    graph.path('A,'C).foreach(x => println(x))
+    graph.path('A, 'C).foreach(x => println(x))
   }
 }

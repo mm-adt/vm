@@ -22,11 +22,12 @@
 
 package org.mmadt.storage.obj.graph
 
+import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
-import org.apache.tinkerpop.gremlin.process.traversal.{Path, Traverser}
 import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, Vertex}
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.op.trace.NoOp
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage
 
@@ -43,14 +44,9 @@ object ObjGraph {
   val ROOT:String = "root"
   val RANGE:String = "range"
 
-  @inline implicit class ObjVertex[A <: Obj](val vertex:Vertex) {
-    def obj:A = vertex.property[A](OBJ).value()
-    def iso:A = vertex.property[A](RANGE).value()
-    def ==>[E <: Obj](target:E):E = obj ==> target
-    def <==(source:Obj):A = {
-      vertex.graph().add(source)
-      source ==> vertex.obj
-    }
+  @inline implicit class ObjVertex(val vertex:Vertex) {
+    def obj:Obj = vertex.property[Obj](OBJ).value()
+    def iso:Obj = vertex.property[Obj](RANGE).value()
   }
 
   @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
@@ -63,34 +59,50 @@ object ObjGraph {
 
   @inline implicit class ObjGraph(val graph:Graph) {
     val g:GraphTraversalSource = graph.traversal()
+    def doObj(aobj:Obj):Obj = {
+      this.addType(aobj)
+      aobj
+    };
+    def doRewrite(aobj:Obj, bobj:Obj):Unit = {
+      this.addObj(aobj).addEdge("==", this.addObj(bobj)).property(OBJ, NoOp())
+    }
+    def doModel(model:Symbol):Unit = this.doModel(storage.model(model))
+    def doModel(model:Model):Unit = {
+      model.dtypes.foreach(d => {
+        val st = this.addType(d)
+        st._1.property(OBJ, st._1.property[Obj](OBJ).value().domainObj)
+        st._2.property(OBJ, st._2.property[Obj](OBJ).value().rangeObj)
+      })
+    }
 
-    def path(source:Obj, range:Obj):Seq[Path] =
-      g.R.filter((t:Traverser[Vertex]) => source.name.equals(t.get().obj.asInstanceOf[Obj].name))
+    ///////////////////////////////////////////////////
+
+    def compute(source:Obj, target:Obj):Unit = {
+      this.doObj(source)
+      this.doObj(target)
+      source ==> target
+    }
+
+    def path(source:Obj, range:Obj):Seq[List[Obj]] = {
+      g.R.filter((t:Traverser[Vertex]) => __.isAnon(source) || source.name.equals(t.get().obj.name))
         .repeat(___.outE().inV())
-        .until((t:Traverser[Vertex]) => range.name.equals(t.get().obj.asInstanceOf[Obj].name))
+        .until((t:Traverser[Vertex]) => __.isAnon(range) || range.name.equals(t.get().obj.name))
         .path().by(RANGE)
         .toSeq
+        .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
+    }
 
-    def add(aobj:Obj):(Vertex, Vertex) = {
-      val vertex = addV(aobj)
+    ///////////////////////////////////////////////////
+
+    private def addType(aobj:Obj):(Vertex, Vertex) = {
+      val vertex = addObj(aobj)
       (aobj.trace.reverse.foldLeft(vertex)((a, b) => {
-        val nextVertex = addV(b._1)
-        addE(nextVertex, b._2, a)
+        val nextVertex = addObj(b._1)
+        addInst(nextVertex, b._2, a)
         nextVertex
       }), vertex)
     }
-
-    def model(model:Symbol):Graph = this.model(storage.model(model))
-    def model(model:Model):Graph = {
-      model.dtypes.foreach(d => {
-        val st = this.add(d)
-        st._1.property(OBJ, st._2.property[Obj](OBJ).value().domainObj)
-        st._2.property(OBJ, st._2.property[Obj](OBJ).value().rangeObj)
-      })
-      graph
-    }
-
-    private def addV(aobj:Obj):Vertex = {
+    private def addObj(aobj:Obj):Vertex = {
       g.V().has(OBJ, aobj).tryNext().orElseGet(() => {
         val vertex = graph.addVertex(if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE)
         vertex.property(OBJ, aobj)
@@ -99,8 +111,7 @@ object ObjGraph {
         vertex
       })
     }
-
-    private def addE(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
+    private def addInst(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
       g.V(source).outE(inst.op).has(OBJ, inst).where(___.inV().has(OBJ, target.obj.asInstanceOf[Obj])).tryNext().map[Edge](x => {
         target.property(ROOT, false)
         x
@@ -113,6 +124,4 @@ object ObjGraph {
       })
     }
   }
-
-
 }
