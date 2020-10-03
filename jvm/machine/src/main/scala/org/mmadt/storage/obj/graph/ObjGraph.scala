@@ -27,9 +27,10 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal,
 import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, Vertex}
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.op.trace.NoOp
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.op.trace.{AsOp, NoOp}
+import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage
+import org.mmadt.storage.StorageFactory.zeroObj
 
 import scala.collection.JavaConverters
 
@@ -83,16 +84,52 @@ object ObjGraph {
       source ==> target
     }
 
-    def path(source:Obj, range:Obj):Seq[List[Obj]] = {
-      g.R.filter((t:Traverser[Vertex]) => __.isAnon(source) || source.name.equals(t.get().obj.name))
+    def path(source:Obj, target:Obj):Seq[List[_]] = {
+      g.V().filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj))
+        .until((t:Traverser[Vertex]) => objMatch(target, t.get().obj))
         .repeat(___.outE().inV())
-        .until((t:Traverser[Vertex]) => __.isAnon(range) || range.name.equals(t.get().obj.name))
         .path().by(RANGE)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
+        .map(x => List(source,objMatch2(source, x.head),x.head) ++ x.tail)
     }
 
+    def types(source:Obj, target:Obj):Seq[Obj] = path(source, target).map(p => pathToObj(p))
+
     ///////////////////////////////////////////////////
+
+    private def objMatch(aobj:Obj, bobj:Obj):Boolean = {
+      aobj match {
+        case _ if __.isAnon(aobj) => true
+        case _ if aobj.named && aobj.name.equals(bobj.name) => true
+        case alst:Lst[Obj] => bobj match {
+          case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size => alst.g._2.zip(blst.g._2).forall(pair => path(pair._1, pair._2).nonEmpty)
+          case _ => false
+        }
+        case _ if aobj.name.equals(bobj.name) => true
+        case _ => false
+      }
+    }
+
+    def pathToObj(path:List[_]):Obj = {
+      path.tail.foldLeft(path.head.asInstanceOf[Obj])((a, b) => b match {
+        case inst:Inst[Obj, Obj] => inst.exec(a)
+        case aobj:Obj => AsOp(aobj).exec(a)
+      })
+    }
+
+    private def objMatch2(aobj:Obj, bobj:Obj):Obj = {
+      aobj match {
+        case _ if __.isAnon(aobj) => bobj
+        case _ if aobj.named && aobj.name.equals(bobj.name) => bobj
+        case alst:Lst[Obj] => bobj match {
+          case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size => __.combine(alst.clone(_ => alst.g._2.zip(blst.g._2).map(pair => types(pair._1, pair._2).head))).inst
+          case _ => zeroObj
+        }
+        case _ if aobj.name.equals(bobj.name) => bobj
+        case _ => zeroObj
+      }
+    }
 
     private def addType(aobj:Obj):(Vertex, Vertex) = {
       val vertex = addObj(aobj)
@@ -112,7 +149,7 @@ object ObjGraph {
       })
     }
     private def addInst(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
-      g.V(source).outE(inst.op).has(OBJ, inst).where(___.inV().has(OBJ, target.obj.asInstanceOf[Obj])).tryNext().map[Edge](x => {
+      g.V(source).outE(inst.op).has(OBJ, inst).where(___.inV().has(OBJ, target.obj)).tryNext().map[Edge](x => {
         target.property(ROOT, false)
         x
       }).orElseGet(() => {

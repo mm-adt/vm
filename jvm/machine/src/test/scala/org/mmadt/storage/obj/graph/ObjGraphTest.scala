@@ -24,8 +24,7 @@ package org.mmadt.storage.obj.graph
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{__ => ___}
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
-import org.mmadt.language.obj.Obj.intToInt
-import org.mmadt.language.obj.`type`.__
+import org.mmadt.language.obj.Obj.{intToInt, symbolToToken}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.storage.StorageFactory.int
 import org.mmadt.storage.obj.graph.ObjGraph.{OBJ, ObjGraph, ObjTraversalSource, RANGE, ROOT}
@@ -76,8 +75,9 @@ class ObjGraphTest extends FunSuite {
     graph.doModel('pg_2)
     g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(RANGE).foreach(x => println(x))
     println("-----")
-    graph.path(__, 'edge).foreach(x => println(x))
+    graph.types(int `;` int, 'edge).foreach(x => println(x))
   }
+
 
   test("xxx") {
     val graph = new ObjGraph(TinkerGraph.open())
@@ -85,6 +85,6 @@ class ObjGraphTest extends FunSuite {
     graph.doModel('play)
     g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(RANGE).foreach(x => println(x))
     println("-----")
-    graph.path('A, 'C).foreach(x => println(x))
+    graph.types('A, 'C).foreach(x => println(x))
   }
 }
