@@ -23,13 +23,15 @@
 package org.mmadt.storage.obj.graph
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{__ => ___}
+import org.apache.tinkerpop.gremlin.structure.T
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.obj.Obj.intToInt
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.storage.StorageFactory.int
 import org.mmadt.language.obj.Int
-import org.mmadt.storage.obj.graph.ObjGraph.{ObjGraph, ObjTraversalSource, ObjVertex, ROOT}
+import org.mmadt.language.obj.op.trace.NoOp
+import org.mmadt.storage.obj.graph.ObjGraph.{ObjGraph, ObjTraversalSource, ObjVertex, RANGE, ROOT}
 import org.scalatest.FunSuite
 
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
@@ -56,10 +58,30 @@ class ObjGraphTest extends FunSuite {
   test("more") {
     val graph:ObjGraph = new ObjGraph(TinkerGraph.open())
     val g = graph.g
-    val v = graph.add(int.mult(15).plus(88).branch(int.plus(3)`,`int.mult(55)).gt(500))
+    val v = graph.add(int.mult(15).plus(88).branch(int.plus(3)`,`int.mult(55)).gt(500))._2
     g.R.foreach(x => println(x))
     println("computing: " + (v <== 16))
     g.R.valueMap[Object]().foreach(x => println(x))
+    println("-----")
+    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by("range").foreach(x => println(x))
+  }
 
+  test("more2") {
+    val graph = new ObjGraph(TinkerGraph.open())
+    val g = graph.g
+    val a = graph.add(int.plus(10).plus(-10))
+    val b = graph.add(int.plus(0))
+    a._2.addEdge("==",b._2).property(RANGE,NoOp())
+    println("-----")
+    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(T.label).foreach(x => println(x))
+  }
+
+  test("xxx") {
+    val graph = new ObjGraph(TinkerGraph.open())
+    val g = graph.g
+    graph.model('play)
+    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(RANGE).foreach(x => println(x))
+    println("-----")
+    graph.path('A,'C).foreach(x => println(x))
   }
 }
