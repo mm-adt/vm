@@ -24,7 +24,7 @@ package org.mmadt.storage.obj.graph
 
 import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
-import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, Vertex}
+import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, T, Vertex}
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
@@ -44,12 +44,13 @@ object ObjGraph {
   val OBJ:String = "obj"
   val TYPE:String = "type"
   val VALUE:String = "value"
-  val ROOT:String = "root"
   val RANGE:String = "range"
 
   def create(model:Symbol):ObjGraph = create(storage.model(model))
   def create(model:Model):ObjGraph = {
-    val graph = new ObjGraph(TinkerGraph.open())
+    val tg = TinkerGraph.open()
+    // tg.createIndex(OBJ,classOf[Vertex])
+    val graph = new ObjGraph(tg)
     graph.doModel(model)
     graph
   }
@@ -57,10 +58,6 @@ object ObjGraph {
   @inline implicit class ObjVertex(val vertex:Vertex) {
     def obj:Obj = vertex.property[Obj](OBJ).value()
     def iso:Obj = vertex.property[Obj](RANGE).value()
-  }
-
-  @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
-    def R:GraphTraversal[Vertex, Vertex] = g.V().has(ROOT, true)
   }
 
   @inline implicit class ObjTraversal[A <: Object, B <: Object](val g:GraphTraversal[A, B]) {
@@ -85,17 +82,17 @@ object ObjGraph {
       // TODO: fix in model
       Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
         .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
-        .map(x => x._1.asInstanceOf[Type[Obj]]).foreach(c => {
-        this.addType(c)._1.property(ROOT, true)
-      })
+        .map(x => x._1.asInstanceOf[Type[Obj]])
+        .foreach(c => this.addType(c))
       this.model = model
     }
 
     ///////////////////////////////////////////////////
 
     def path(source:Obj, target:Obj):Seq[List[Obj]] = {
-      g.V().filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive)
-        .until((t:Traverser[Vertex]) => objMatch(target, t.get().obj).alive)
+      (if (g.V().has(OBJ, source).hasNext) g.V().has(OBJ, source)
+      else g.V().filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive))
+        .until((t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive)
         .repeat(___.outE().inV())
         .filter((t:Traverser[Vertex]) => t.get().obj.alive)
         .path().by(RANGE)
@@ -116,15 +113,15 @@ object ObjGraph {
 
     def pathToObj(path:List[Obj]):Obj = {
       path.tail.foldLeft(path.head)((a, b) => b match {
-        case _ if !b.alive || !a.alive => zeroObj
+        case _ if !b.alive || !a.alive => return zeroObj
         case inst:Inst[Obj, Obj] => inst.exec(a)
         case _:__ if __.isAnon(b) => a
         case _:Obj if a == b => a
         case _:Type[Obj] if a.isInstanceOf[Type[Obj]] => b <= a
         case _ if a.named && b.name.equals(a.name) => a
         case _ if !a.isInstanceOf[Poly[_]] => Tokens.tryName(b, a)
-        case _:Obj if a.model(this.model).test(b) => a.model(this.model).as(b)
-        case _ => zeroObj
+        case _:Obj if a.model(this.model).test(b) => a.model(this.model) `=>` b
+        case _ => return zeroObj
       })
     }
 
@@ -134,7 +131,9 @@ object ObjGraph {
         case _ if aobj.named && aobj.name.equals(bobj.name) => aobj
         case alst:Lst[Obj] => bobj match {
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            val combination = alst.clone(_ => alst.g._2.zip(blst.g._2).map(pair => fpath(pair._1, pair._2, filtering = false).head))
+            val combo = alst.g._2.zip(blst.g._2).map(pair => fpath(pair._1, pair._2, filtering = false))
+            if (combo.exists(x => x.isEmpty)) return zeroObj
+            val combination = alst.clone(_ => combo.map(x => x.head))
             if (combination.g._2.zip(alst.g._2).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
           case _ => zeroObj
         }
@@ -153,26 +152,19 @@ object ObjGraph {
     }
 
     private def addObj(aobj:Obj):Vertex = {
-      g.V().has(OBJ, aobj).tryNext().orElseGet(() => {
-        val vertex = graph.addVertex(if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE)
-        vertex.property(OBJ, aobj)
-        vertex.property(RANGE, aobj.rangeObj)
-        vertex.property(ROOT, true)
-        vertex
-      })
+      g.V().has(OBJ, aobj).tryNext().orElseGet(() =>
+        graph.addVertex(
+          T.label, if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE,
+          OBJ, aobj,
+          RANGE, aobj.rangeObj))
     }
 
     private def addInst(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
-      g.V(source).outE(inst.op).has(OBJ, inst).where(___.inV().has(OBJ, target.obj)).tryNext().map[Edge](x => {
-        target.property(ROOT, false)
-        x
-      }).orElseGet(() => {
-        val edge = source.addEdge(inst.op, target)
-        target.property(ROOT, false)
-        edge.property(OBJ, inst)
-        edge.property(RANGE, inst)
-        edge
-      })
+      g.V(source).outE(inst.op).has(OBJ, inst).where(___.inV().has(OBJ, target.obj)).tryNext().orElseGet(() =>
+        source.addEdge(
+          inst.op, target,
+          OBJ, inst,
+          RANGE, inst))
     }
   }
 }
