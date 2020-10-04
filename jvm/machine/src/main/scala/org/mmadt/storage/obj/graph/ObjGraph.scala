@@ -30,7 +30,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.{Inst, Lst, Obj}
+import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.zeroObj
 
@@ -68,6 +68,8 @@ object ObjGraph {
   }
 
   @inline implicit class ObjGraph(val graph:Graph) {
+    var model:Model = ModelOp.NONE
+
     val g:GraphTraversalSource = graph.traversal()
     def doObj(aobj:Obj):Obj = {
       this.addType(aobj)
@@ -86,27 +88,27 @@ object ObjGraph {
         .map(x => x._1.asInstanceOf[Type[Obj]]).foreach(c => {
         this.addType(c)._1.property(ROOT, true)
       })
+      this.model = model
     }
 
     ///////////////////////////////////////////////////
-
-    def compute(source:Obj, target:Obj):Unit = {
-      this.doObj(source)
-      this.doObj(target)
-      source ==> target
-    }
 
     def path(source:Obj, target:Obj):Seq[List[Obj]] = {
       g.V().filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive)
         .until((t:Traverser[Vertex]) => objMatch(target, t.get().obj).alive)
         .repeat(___.outE().inV())
+        .filter((t:Traverser[Vertex]) => t.get().obj.alive)
         .path().by(RANGE)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
         .map(x => List(source, objMatch(source, x.head), x.head) ++ x.tail)
     }
 
-    def types(source:Obj, target:Obj):Seq[Obj] = path(source, target).map(p => pathToObj(p)).distinct
+    def fpath(source:Obj, target:Obj, filtering:Boolean = true):Seq[Obj] =
+      path(source, target)
+        .map(p => pathToObj(p))
+        .filter(o => !filtering || o.name.equals(target.name))
+        .distinct
 
     def exists(aobj:Obj):Boolean = g.V().has(OBJ, aobj).hasNext
 
@@ -114,20 +116,29 @@ object ObjGraph {
 
     def pathToObj(path:List[Obj]):Obj = {
       path.tail.foldLeft(path.head)((a, b) => b match {
+        case _ if !b.alive || !a.alive => zeroObj
         case inst:Inst[Obj, Obj] => inst.exec(a)
-        case aobj:Obj => aobj <= a
+        case _:__ if __.isAnon(b) => a
+        case _:Obj if a == b => a
+        case _:Type[Obj] if a.isInstanceOf[Type[Obj]] => b <= a
+        case _ if a.named && b.name.equals(a.name) => a
+        case _ if !a.isInstanceOf[Poly[_]] => Tokens.tryName(b, a)
+        case _:Obj if a.model(this.model).test(b) => a.model(this.model).as(b)
+        case _ => zeroObj
       })
     }
 
     private def objMatch(aobj:Obj, bobj:Obj):Obj = {
       aobj match {
-        case _ if __.isAnon(aobj) => bobj
-        case _ if aobj.named && aobj.name.equals(bobj.name) => bobj
+        case _ if __.isAnon(bobj) => aobj
+        case _ if aobj.named && aobj.name.equals(bobj.name) => aobj
         case alst:Lst[Obj] => bobj match {
-          case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size => __.combine(alst.clone(_ => alst.g._2.zip(blst.g._2).map(pair => types(pair._1, pair._2).head))).inst
+          case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
+            val combination = alst.clone(_ => alst.g._2.zip(blst.g._2).map(pair => fpath(pair._1, pair._2, filtering = false).head))
+            if (combination.g._2.zip(alst.g._2).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
           case _ => zeroObj
         }
-        case _ if aobj.name.equals(bobj.name) => bobj
+        case _ if aobj.name.equals(bobj.name) => aobj
         case _ => zeroObj
       }
     }
