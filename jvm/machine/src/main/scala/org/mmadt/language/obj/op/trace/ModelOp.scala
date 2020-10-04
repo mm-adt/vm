@@ -62,7 +62,6 @@ object ModelOp extends Func[Obj, Obj] {
   val NOMAP:Pairs[Obj, Lst[Obj]] = List.empty
   val NOREC:ModelMap = rec[Obj, Lst[Obj]]
 
-
   def apply[O <: Obj](file:StrValue):Inst[O, O] = this.apply(storage.model(LoadOp.loadObj[Model](file.g)))
   def apply[O <: Obj](model:Model):Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(storage.model(model)).asInstanceOf[List[O]]), func = this) with TraceInstruction
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start match {
@@ -88,6 +87,8 @@ object ModelOp extends Func[Obj, Obj] {
 
   @inline implicit def modelToRichModel(ground:Model):RichModel = new RichModel(ground)
   class RichModel(val model:Model) {
+    lazy val coreName:String = model.name.split(MODEL_EXTENSION)(0)
+
     private final def findType[A <: Obj](model:Model, source:Obj, targetName:String):List[A] =
       (if (model.name.equals(targetName)) List(model).asInstanceOf[List[A]]
       else model.gmap.fetchOrElse(TYPE, NOREC).gmap

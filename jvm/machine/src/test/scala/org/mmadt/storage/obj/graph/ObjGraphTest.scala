@@ -24,9 +24,10 @@ package org.mmadt.storage.obj.graph
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{__ => ___}
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
-import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str}
 import org.mmadt.storage.obj.graph.ObjGraph.{ObjGraph, RANGE}
 import org.scalatest.FunSuite
@@ -37,6 +38,16 @@ import scala.collection.convert.ImplicitConversions.`iterator asScala`
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ObjGraphTest extends FunSuite {
+
+  test("type existence w/ pair") {
+    val graph:ObjGraph = ObjGraph.create(ModelOp.MM
+      .defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int))))
+      .defining('pair <= (str `;` str).to('x).:=(plus('x.get(1)) `;` plus('x.get(0)))))
+    assertResult(Stream('apair(1 `;` 2)))(graph.fpath(1 `;` 2, 'apair))
+    assertResult(Nil)(graph.fpath(10 `;` 2, 'apair))
+    //assertResult(Stream('pair("ab" `;` "ba")))(graph.fpath("a" `;` "b", 'pair))
+
+  }
 
   test("type existence w/ pg_2") {
     val graph:ObjGraph = ObjGraph.create('pg_2)
@@ -51,6 +62,12 @@ class ObjGraphTest extends FunSuite {
     assert(graph.exists('edge))
   }
 
+  test("type construction w/ none") {
+    val graph:ObjGraph = ObjGraph.create('none)
+    assertResult(Stream(int))(graph.fpath(int, int))
+    assertResult(Stream(int(45)))(graph.fpath(45, int))
+  }
+
   test("type construction w/ pg_2") {
     val graph:ObjGraph = ObjGraph.create('pg_2)
     assertResult(Seq(__('vertex)))(graph.fpath('vertex, 'vertex))
@@ -62,6 +79,9 @@ class ObjGraphTest extends FunSuite {
 
   test("type construction w/ digraph") {
     val graph:ObjGraph = ObjGraph.create('digraph)
+    //assertResult(Stream(graph.model))(graph.fpath('digraph,'digraph))
+    assertResult(Stream(int))(graph.fpath(int, int))
+    assertResult(Stream(int(45)))(graph.fpath(45, int))
     assertResult(Nil)(graph.fpath(str("bad_id") -> int(12), 'vertex))
     assertResult(Nil)(graph.fpath(0, 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2))))(graph.fpath('nat(1) `;` 'nat(2), 'vertex `;` 'vertex))

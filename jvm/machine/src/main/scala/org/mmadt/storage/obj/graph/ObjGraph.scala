@@ -32,15 +32,15 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.zeroObj
+import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 
 import scala.collection.JavaConverters
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 object ObjGraph {
-
   val OBJ:String = "obj"
   val TYPE:String = "type"
   val VALUE:String = "value"
@@ -66,7 +66,6 @@ object ObjGraph {
 
   @inline implicit class ObjGraph(val graph:Graph) {
     var model:Model = ModelOp.NONE
-
     val g:GraphTraversalSource = graph.traversal()
     def doObj(aobj:Obj):Obj = {
       this.addType(aobj)
@@ -74,22 +73,53 @@ object ObjGraph {
     };
     def doModel(model:Symbol):Unit = this.doModel(storage.model(model))
     def doModel(model:Model):Unit = {
-      model.dtypes.foreach(d => {
-        val st = this.addType(d)
-        st._1.property(OBJ, st._1.property[Obj](OBJ).value().domainObj)
-        st._2.property(OBJ, st._2.property[Obj](OBJ).value().rangeObj)
-      })
-      // TODO: fix in model
-      Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
-        .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
-        .map(x => x._1.asInstanceOf[Type[Obj]])
-        .foreach(c => this.addType(c))
+      if (model.name.equals("none")) {
+        List(bool, int, real, str, lst, rec).foreach(c => this.addType(c))
+      } else {
+        model.dtypes.foreach(d => {
+          val st = this.addType(d)
+          st._1.property(OBJ, st._1.property[Obj](OBJ).value().domainObj)
+          st._2.property(OBJ, st._2.property[Obj](OBJ).value().rangeObj)
+        })
+        // TODO: fix in model
+        Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
+          .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
+          .map(x => x._1.asInstanceOf[Type[Obj]])
+          .foreach(c => this.addType(c))
+        this.addType(model)
+      }
       this.model = model
     }
 
     ///////////////////////////////////////////////////
 
-    def path(source:Obj, target:Obj):Seq[List[Obj]] = {
+    def fpath(source:Obj, target:Obj, filtering:Boolean = true):Seq[Obj] = {
+      if (source.name.equals(model.coreName) && target.name.equals(model.coreName)) return List(model)
+      path(source, target)
+        .map(p => pathToObj(p))
+        .filter(o => !filtering || o.name.equals(target.name))
+        .distinct
+    }
+
+    def exists(aobj:Obj):Boolean = g.V().has(OBJ, aobj).hasNext
+
+    ///////////////////////////////////////////////////
+
+    private def pathToObj(path:List[Obj]):Obj = {
+      path.tail.foldLeft(path.head)((a, b) => b match {
+        case _ if !b.alive || !a.alive => return zeroObj
+        case inst:Inst[Obj, Obj] => inst.exec(a)
+        case _:__ if __.isAnon(b) => a
+        case _:Obj if a == b => a
+        case _:Type[Obj] if a.isInstanceOf[Type[Obj]] => b <= a
+        case _ if a.named && b.name.equals(a.name) => a
+        case _ if !a.isInstanceOf[Poly[_]] => Tokens.tryName(b, a)
+        case _:Obj if a.update(model).test(b) => Try[Obj](a.update(model) `=>` b).getOrElse(zeroObj)
+        case _ => return zeroObj
+      })
+    }
+
+    private def path(source:Obj, target:Obj):Seq[List[Obj]] = {
       (if (g.V().has(OBJ, source).hasNext) g.V().has(OBJ, source)
       else g.V().filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive))
         .until((t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive)
@@ -101,35 +131,11 @@ object ObjGraph {
         .map(x => List(source, objMatch(source, x.head), x.head) ++ x.tail)
     }
 
-    def fpath(source:Obj, target:Obj, filtering:Boolean = true):Seq[Obj] =
-      path(source, target)
-        .map(p => pathToObj(p))
-        .filter(o => !filtering || o.name.equals(target.name))
-        .distinct
-
-    def exists(aobj:Obj):Boolean = g.V().has(OBJ, aobj).hasNext
-
-    ///////////////////////////////////////////////////
-
-    def pathToObj(path:List[Obj]):Obj = {
-      path.tail.foldLeft(path.head)((a, b) => b match {
-        case _ if !b.alive || !a.alive => return zeroObj
-        case inst:Inst[Obj, Obj] => inst.exec(a)
-        case _:__ if __.isAnon(b) => a
-        case _:Obj if a == b => a
-        case _:Type[Obj] if a.isInstanceOf[Type[Obj]] => b <= a
-        case _ if a.named && b.name.equals(a.name) => a
-        case _ if !a.isInstanceOf[Poly[_]] => Tokens.tryName(b, a)
-        case _:Obj if a.model(this.model).test(b) => a.model(this.model) `=>` b
-        case _ => return zeroObj
-      })
-    }
-
-    private def objMatch(aobj:Obj, bobj:Obj):Obj = {
-      aobj match {
-        case _ if __.isAnon(bobj) => aobj
-        case _ if aobj.named && aobj.name.equals(bobj.name) => aobj
-        case alst:Lst[Obj] => bobj match {
+    private def objMatch(source:Obj, target:Obj):Obj = {
+      source match {
+        case _ if __.isAnon(target) => source
+        case _ if source.named && source.name.equals(target.name) => source
+        case alst:Lst[Obj] => target match {
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
             val combo = alst.g._2.zip(blst.g._2).map(pair => fpath(pair._1, pair._2, filtering = false))
             if (combo.exists(x => x.isEmpty)) return zeroObj
@@ -137,7 +143,7 @@ object ObjGraph {
             if (combination.g._2.zip(alst.g._2).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
           case _ => zeroObj
         }
-        case _ if aobj.name.equals(bobj.name) => aobj
+        case _ if source.name.equals(target.name) => source
         case _ => zeroObj
       }
     }
