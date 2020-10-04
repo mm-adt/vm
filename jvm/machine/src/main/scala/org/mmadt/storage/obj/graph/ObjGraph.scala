@@ -45,6 +45,7 @@ object ObjGraph {
   val TYPE:String = "type"
   val VALUE:String = "value"
   val RANGE:String = "range"
+  val ROOT:String = "root"
 
   def create(model:Symbol):ObjGraph = create(storage.model(model))
   def create(model:Model):ObjGraph = {
@@ -58,6 +59,10 @@ object ObjGraph {
   @inline implicit class ObjVertex(val vertex:Vertex) {
     def obj:Obj = vertex.property[Obj](OBJ).value()
     def iso:Obj = vertex.property[Obj](RANGE).value()
+  }
+
+  @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
+    def R:GraphTraversal[Vertex, Vertex] = g.V().has(ROOT, true)
   }
 
   @inline implicit class ObjTraversal[A <: Object, B <: Object](val g:GraphTraversal[A, B]) {
@@ -76,11 +81,7 @@ object ObjGraph {
       if (model.name.equals("none")) {
         List(bool, int, real, str, lst, rec).foreach(c => this.addType(c))
       } else {
-        model.dtypes.foreach(d => {
-          val st = this.addType(d)
-          st._1.property(OBJ, st._1.property[Obj](OBJ).value().domainObj)
-          st._2.property(OBJ, st._2.property[Obj](OBJ).value().rangeObj)
-        })
+        model.dtypes.foreach(d => this.addType(d))
         // TODO: fix in model
         Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
           .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
@@ -101,7 +102,7 @@ object ObjGraph {
         .distinct
     }
 
-    def exists(aobj:Obj):Boolean = g.V().has(OBJ, aobj).hasNext
+    def exists(aobj:Obj):Boolean = g.R.has(RANGE, aobj).hasNext
 
     ///////////////////////////////////////////////////
 
@@ -120,9 +121,8 @@ object ObjGraph {
     }
 
     private def path(source:Obj, target:Obj):Seq[List[Obj]] = {
-      (if (g.V().has(OBJ, source).hasNext) g.V().has(OBJ, source)
-      else g.V().filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive))
-        .until((t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive)
+      g.R.filter((t:Traverser[Vertex]) => t.get().property(ROOT).value().equals(true) && objMatch(source, t.get().obj).alive)
+        .until((t:Traverser[Vertex]) => t.get().property(ROOT).value().equals(true) && objMatch(t.get().obj, target).alive)
         .repeat(___.outE().inV())
         .filter((t:Traverser[Vertex]) => t.get().obj.alive)
         .path().by(RANGE)
@@ -149,19 +149,21 @@ object ObjGraph {
     }
 
     private def addType(aobj:Obj):(Vertex, Vertex) = {
-      val vertex = addObj(aobj)
-      (aobj.trace.reverse.foldLeft(vertex)((a, b) => {
-        val nextVertex = addObj(b._1)
+      val target = addObj(aobj, root = true)
+      val source = aobj.trace.reverse.foldLeft(target)((a, b) => {
+        val nextVertex = if (b._1.equals(aobj.domainObj)) addObj(b._1, root = true) else addObj(b._1)
         addInst(nextVertex, b._2, a)
         nextVertex
-      }), vertex)
+      })
+      (source, target)
     }
 
-    private def addObj(aobj:Obj):Vertex = {
-      g.V().has(OBJ, aobj).tryNext().orElseGet(() =>
+    private def addObj(aobj:Obj, root:Boolean = false):Vertex = {
+      (if (root) g.R.has(RANGE, aobj) else g.V().has(OBJ, aobj)).tryNext().orElseGet(() =>
         graph.addVertex(
           T.label, if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE,
           OBJ, aobj,
+          ROOT, Boolean.box(root),
           RANGE, aobj.rangeObj))
     }
 

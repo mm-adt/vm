@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str}
-import org.mmadt.storage.obj.graph.ObjGraph.{ObjGraph, RANGE}
+import org.mmadt.storage.obj.graph.ObjGraph.{OBJ, ObjGraph, ObjTraversalSource, RANGE}
 import org.scalatest.FunSuite
 
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
@@ -79,14 +79,15 @@ class ObjGraphTest extends FunSuite {
 
   test("type construction w/ digraph") {
     val graph:ObjGraph = ObjGraph.create('digraph)
-    //assertResult(Stream(graph.model))(graph.fpath('digraph,'digraph))
+    println(graph.g.R.values(OBJ).toList)
+    assertResult(Stream(graph.model))(graph.fpath('digraph, 'digraph))
     assertResult(Stream(int))(graph.fpath(int, int))
     assertResult(Stream(int(45)))(graph.fpath(45, int))
     assertResult(Nil)(graph.fpath(str("bad_id") -> int(12), 'vertex))
     assertResult(Nil)(graph.fpath(0, 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2))))(graph.fpath('nat(1) `;` 'nat(2), 'vertex `;` 'vertex))
     assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.fpath(str("a") `;` "b", 'attr))
-    //assertResult(Seq('attr <= (str `;` str).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(graph.fpath(str `;` str, 'attr))
+    // assertResult(Seq('attr <= (str `;` str).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(graph.fpath(str `;` str, 'attr))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.fpath('nat(23), 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.fpath(23, 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data")))))(graph.fpath(-23, 'vertex))
