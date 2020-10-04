@@ -24,10 +24,10 @@ package org.mmadt.storage.obj.graph
 
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{__ => ___}
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
-import org.mmadt.language.obj.Obj.{intToInt, symbolToToken}
-import org.mmadt.language.obj.`type`.__._
-import org.mmadt.storage.StorageFactory.int
-import org.mmadt.storage.obj.graph.ObjGraph.{OBJ, ObjGraph, ObjTraversalSource, RANGE, ROOT}
+import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
+import org.mmadt.language.obj.`type`.__
+import org.mmadt.storage.StorageFactory.{bool, int, real, rec, str}
+import org.mmadt.storage.obj.graph.ObjGraph.{ObjGraph, ObjTraversalSource, RANGE}
 import org.scalatest.FunSuite
 
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
@@ -37,47 +37,29 @@ import scala.collection.convert.ImplicitConversions.`iterator asScala`
  */
 class ObjGraphTest extends FunSuite {
 
-  test("obj graph") {
-    val graph:ObjGraph = new ObjGraph(TinkerGraph.open())
-    val g = graph.g
-
-    graph.doObj(10 ==> int.mult(5).plus(1).gt(2))
-    graph.doObj(int.mult(2).plus(10).is(gt(4)))
-    graph.doObj(int.mult(12).plus(10).is(gt(4)))
-    graph.doObj(int.mult(12).plus(10).mult(100))
-    println("Number of roots: " + g.V().has(ROOT, true).count().next())
-    println("Number of vertices:" + g.V().count().next())
-    println("-----")
-    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by("range").foreach(x => println(x))
+  test("type existence") {
+    val graph:ObjGraph = ObjGraph.create('pg_2)
+    assert(graph.exists(bool))
+    assert(graph.exists(int))
+    assert(graph.exists(real))
+    assert(graph.exists(str))
+    assert(graph.exists('vertex))
+    assert(graph.exists('edge))
   }
 
-  test("more") {
-    val graph:ObjGraph = new ObjGraph(TinkerGraph.open())
-    val g = graph.g
-    graph.doObj(int.mult(15).plus(88).branch(int.plus(3) `,` int.mult(55)).gt(500))
-    g.R.foreach(x => println(x))
-    g.R.valueMap[Object]().foreach(x => println(x))
-    println("-----")
-    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by("range").foreach(x => println(x))
+  test("type construction") {
+    val graph:ObjGraph = ObjGraph.create('pg_2)
+    //
+    assertResult(1)(graph.types('vertex, 'vertex).length)
+    assertResult(__('vertex))(graph.types('vertex, 'vertex).head)
+    //
+    assertResult(1)(graph.types(int, 'vertex).length)
+    assertResult('vertex <= int.-<(rec(str("id") -> __)))(graph.types(int, 'vertex).head)
+    //
+    assertResult('edge <= (('vertex `;` 'vertex) <= (int `;` int)
+      .combine(('vertex <= int.-<(rec(str("id") -> __))) `;`('vertex <= int.-<(rec(str("id") -> __)))))
+      .-<((str("outV") -> ('vertex <= ('vertex `;` 'vertex).get(0))) `_,`(str("inV") -> ('vertex <= ('vertex `;` 'vertex).get(1)))))(graph.types(int `;` int, 'edge).head)
   }
-
-  test("more2") {
-    val graph = new ObjGraph(TinkerGraph.open())
-    val g = graph.g
-    graph.doRewrite(int.plus(10).plus(-10), int.plus(0))
-    println("-----")
-    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(OBJ).foreach(x => println(x))
-  }
-
-  test("yyy") {
-    val graph = new ObjGraph(TinkerGraph.open())
-    val g = graph.g
-    graph.doModel('pg_2)
-    g.R.repeat(___.outE().inV()).until(___.outE().count().is(0L)).path().by(RANGE).foreach(x => println(x))
-    println("-----")
-    graph.types(int `;` int, 'edge).foreach(x => println(x))
-  }
-
 
   test("xxx") {
     val graph = new ObjGraph(TinkerGraph.open())

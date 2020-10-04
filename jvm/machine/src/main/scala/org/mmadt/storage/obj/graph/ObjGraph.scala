@@ -25,9 +25,11 @@ package org.mmadt.storage.obj.graph
 import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
 import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, Vertex}
+import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.trace.ModelOp.Model
-import org.mmadt.language.obj.op.trace.{AsOp, NoOp}
+import org.mmadt.language.obj.op.trace.ModelOp
+import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.zeroObj
@@ -44,6 +46,13 @@ object ObjGraph {
   val VALUE:String = "value"
   val ROOT:String = "root"
   val RANGE:String = "range"
+
+  def create(model:Symbol):ObjGraph = create(storage.model(model))
+  def create(model:Model):ObjGraph = {
+    val graph = new ObjGraph(TinkerGraph.open())
+    graph.doModel(model)
+    graph
+  }
 
   @inline implicit class ObjVertex(val vertex:Vertex) {
     def obj:Obj = vertex.property[Obj](OBJ).value()
@@ -64,15 +73,18 @@ object ObjGraph {
       this.addType(aobj)
       aobj
     };
-    def doRewrite(aobj:Obj, bobj:Obj):Unit = {
-      this.addObj(aobj).addEdge("==", this.addObj(bobj)).property(OBJ, NoOp())
-    }
     def doModel(model:Symbol):Unit = this.doModel(storage.model(model))
     def doModel(model:Model):Unit = {
       model.dtypes.foreach(d => {
         val st = this.addType(d)
         st._1.property(OBJ, st._1.property[Obj](OBJ).value().domainObj)
         st._2.property(OBJ, st._2.property[Obj](OBJ).value().rangeObj)
+      })
+      // TODO: fix in model
+      Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
+        .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
+        .map(x => x._1.asInstanceOf[Type[Obj]]).foreach(c => {
+        this.addType(c)._1.property(ROOT, true)
       })
     }
 
@@ -84,41 +96,30 @@ object ObjGraph {
       source ==> target
     }
 
-    def path(source:Obj, target:Obj):Seq[List[_]] = {
-      g.V().filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj))
-        .until((t:Traverser[Vertex]) => objMatch(target, t.get().obj))
+    def path(source:Obj, target:Obj):Seq[List[Obj]] = {
+      g.V().filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive)
+        .until((t:Traverser[Vertex]) => objMatch(target, t.get().obj).alive)
         .repeat(___.outE().inV())
         .path().by(RANGE)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
-        .map(x => List(source,objMatch2(source, x.head),x.head) ++ x.tail)
+        .map(x => List(source, objMatch(source, x.head), x.head) ++ x.tail)
     }
 
-    def types(source:Obj, target:Obj):Seq[Obj] = path(source, target).map(p => pathToObj(p))
+    def types(source:Obj, target:Obj):Seq[Obj] = path(source, target).map(p => pathToObj(p)).distinct
+
+    def exists(aobj:Obj):Boolean = g.V().has(OBJ, aobj).hasNext
 
     ///////////////////////////////////////////////////
 
-    private def objMatch(aobj:Obj, bobj:Obj):Boolean = {
-      aobj match {
-        case _ if __.isAnon(aobj) => true
-        case _ if aobj.named && aobj.name.equals(bobj.name) => true
-        case alst:Lst[Obj] => bobj match {
-          case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size => alst.g._2.zip(blst.g._2).forall(pair => path(pair._1, pair._2).nonEmpty)
-          case _ => false
-        }
-        case _ if aobj.name.equals(bobj.name) => true
-        case _ => false
-      }
-    }
-
-    def pathToObj(path:List[_]):Obj = {
-      path.tail.foldLeft(path.head.asInstanceOf[Obj])((a, b) => b match {
+    def pathToObj(path:List[Obj]):Obj = {
+      path.tail.foldLeft(path.head)((a, b) => b match {
         case inst:Inst[Obj, Obj] => inst.exec(a)
-        case aobj:Obj => AsOp(aobj).exec(a)
+        case aobj:Obj => aobj <= a
       })
     }
 
-    private def objMatch2(aobj:Obj, bobj:Obj):Obj = {
+    private def objMatch(aobj:Obj, bobj:Obj):Obj = {
       aobj match {
         case _ if __.isAnon(aobj) => bobj
         case _ if aobj.named && aobj.name.equals(bobj.name) => bobj
@@ -139,6 +140,7 @@ object ObjGraph {
         nextVertex
       }), vertex)
     }
+
     private def addObj(aobj:Obj):Vertex = {
       g.V().has(OBJ, aobj).tryNext().orElseGet(() => {
         val vertex = graph.addVertex(if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE)
@@ -148,6 +150,7 @@ object ObjGraph {
         vertex
       })
     }
+
     private def addInst(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
       g.V(source).outE(inst.op).has(OBJ, inst).where(___.inV().has(OBJ, target.obj)).tryNext().map[Edge](x => {
         target.property(ROOT, false)
