@@ -60,7 +60,7 @@ class digraphTest extends BaseInstTest(
   ), testSet("digraph model vertex test", DIGRAPH,
     comment("vertex directly"),
     testing('vertex(str("id") -> int(12)), __, 'vertex(str("id") -> int(12)), "vertex:('id'->12)"),
-    // excepting('vertex(str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "vertex:('bad_id'->12) => vertex"),
+    excepting('vertex(str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "vertex:('bad_id'->12) => vertex"),
     excepting((str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "('bad_id'->12) => vertex"),
     comment("vertex via int"),
     testing(23, 'vertex, 'vertex(str("id") -> 'nat(23)), "23 => vertex"),
@@ -68,12 +68,12 @@ class digraphTest extends BaseInstTest(
     testing(-23, 'vertex, 'vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data"))), "-23 => vertex"),
     excepting(0, 'vertex, LanguageException.typingError((0 `;`("no" `;` "data")).q(qZero), (str("id") -> __("nat") `_,` str("attrs") -> 'attr.q(*)).asInstanceOf[Type[_]]), "0 => vertex"),
     comment("vertex via int/pair"),
-    IGNORING("eval-4", "query-2")((1 `;` 2), ('vertex `;` 'vertex), 'vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2)), "(1;2)=>(vertex;vertex)"), // shouldn't need [as]
+    testing((1 `;` 2), ('vertex `;` 'vertex), 'vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2)), "(1;2)=>(vertex;vertex)"),
     testing(
       (32 `;`("name" `;` "marko")),
       as(int `;` 'attr),
       (32 `;` 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
-      "(32;('name';'marko')) => [as,(int;attr)]"), // shouldn't need [as]
+      "(32;('name';'marko')) => (int;attr)"),
     testing(
       (32 `;`("name" `;` "marko")),
       (int `;` 'attr) `=>` 'vertex,
