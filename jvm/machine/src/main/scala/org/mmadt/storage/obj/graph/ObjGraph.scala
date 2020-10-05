@@ -30,7 +30,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.{Inst, Lst, Obj, asType}
+import org.mmadt.language.obj.{Inst, Lst, Obj}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 
@@ -110,7 +110,7 @@ object ObjGraph {
     private def pathToObj(path:List[Obj]):Obj = {
       path.tail.foldLeft(path.head.update(model))((a, b) => b match {
         case _ if !b.alive || !a.alive => return zeroObj
-        case inst:Inst[Obj, Obj] => a.compute(__.via(asType(a), inst).asInstanceOf[Obj], withAs = false)
+        case inst:Inst[Obj, Obj] => inst.exec(a)
         case _ if __.isToken(b) => Try[Obj](a.compute(Obj.resolveToken(a, b, baseName = false))).getOrElse(zeroObj)
         case _ => Tokens.tryName(b, a)
       })
@@ -118,7 +118,7 @@ object ObjGraph {
 
     private def path(source:Obj, target:Obj):Seq[List[Obj]] = {
       g.R.filter((t:Traverser[Vertex]) => t.get().property(ROOT).value().equals(true) && objMatch(source, t.get().obj).alive)
-        .until((t:Traverser[Vertex]) => t.get().property(ROOT).value().equals(true) && objMatch(t.get().obj, target).alive)
+        .until((t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive)
         .repeat(___.outE().inV())
         .filter((t:Traverser[Vertex]) => t.get().obj.alive)
         .path().by(OBJ)
@@ -135,8 +135,9 @@ object ObjGraph {
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
             val combo = alst.g._2.zip(blst.g._2).map(pair => fpath(pair._1, pair._2, filtering = false))
             if (combo.exists(x => x.isEmpty)) return zeroObj
-            val combination = alst.clone(_ => combo.map(x => x.head))
-            if (combination.g._2.zip(alst.g._2).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
+            val combination = alst.clone(_ => combo.map(x => x.last))
+            if (combination.g._2.zip(alst.g._2).forall(pair => pair._1.domainObj == pair._2.domainObj)) __ else __.combine(combination).inst
+          case _ if source.name.equals(target.name) => source
           case _ => zeroObj
         }
         case _ if source.name.equals(target.name) => source

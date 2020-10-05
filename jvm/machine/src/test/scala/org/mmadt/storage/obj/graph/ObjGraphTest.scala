@@ -64,12 +64,11 @@ class ObjGraphTest extends FunSuite {
 
   test("type construction w/ pg_2") {
     val graph:ObjGraph = ObjGraph.create('pg_2)
+    println(graph.fpath(int `;` int, 'edge))
     assertResult(Seq(__('vertex)))(graph.fpath('vertex, 'vertex))
     assertResult(Seq('vertex(str("id") -> int) <= int.-<(rec(str("id") -> __))))(graph.fpath(int, 'vertex))
     assertResult(Seq('edge <= ('vertex `;` 'vertex).-<((str("outV") -> ('vertex <= ('vertex `;` 'vertex).get(0))) `_,`(str("inV") -> ('vertex <= ('vertex `;` 'vertex).get(1))))))(Stream('edge <= graph.fpath('vertex `;` 'vertex, 'edge).head))
-    /*    assertResult(Seq('edge <= (('vertex `;` 'vertex) <= (int `;` int)
-          .combine(('vertex <= int.-<(rec(str("id") -> __))) `;`('vertex <= int.-<(rec(str("id") -> __)))))
-          .-<((str("outV") -> ('vertex <= ('vertex `;` 'vertex).get(0))) `_,`(str("inV") -> ('vertex <= ('vertex `;` 'vertex).get(1))))))(graph.fpath(int `;` int, 'edge))*/
+    assertResult(Seq('edge <= (('vertex `;` 'vertex) <= (int `;` int).-<((str("outV") -> ('vertex <= ('vertex `;` 'vertex).get(0))) `_,`(str("inV") -> ('vertex <= ('vertex `;` 'vertex).get(1)))))))(Stream('edge <= graph.fpath(int `;` int, 'edge).head))
   }
 
   test("type construction w/ digraph") {
@@ -90,5 +89,13 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('vertex(str("id") -> 'nat(55) `_,` str("attrs") -> 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)))))(graph.fpath('nat(55) `;` 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)), 'vertex))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('nat(100) `;` 'nat(200), 'edge))
+  }
+
+  test("type construction w/ time") {
+    val graph:ObjGraph = ObjGraph.create('time)
+    println(graph.g.R.values(OBJ).toList)
+    assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.fpath(8 `;` 26 `;` 2020, 'date))
+    assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.fpath(8 `;` 26, 'date))
+    assertResult(Nil)(graph.fpath(8, 'date))
   }
 }
