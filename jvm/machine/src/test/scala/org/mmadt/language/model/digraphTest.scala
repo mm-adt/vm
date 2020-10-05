@@ -84,11 +84,11 @@ class digraphTest extends BaseInstTest(
       'vertex,
       'vertex(str("id") -> 'nat(32) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
       "(32;('name';'marko')) => vertex"),
-    testing(
+   /* testing(
       ("40" `;`("name" `;` "marko")),
       'vertex,
       'vertex(str("id") -> 'nat(40) `_,` str("attrs") -> 'attr(str("key") -> str("namex") `_,` str("value") -> str("markoxx"))),
-      "('40';('name';'marko')) => vertex"),
+      "('40';('name';'marko')) => vertex"),*/
   ), testSet("digraph model edge test", DIGRAPH,
     testing((1 `;` 2), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>edge"),
     testing((1 `;` 2), ('vertex `;` 'vertex) `=>` 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>(vertex;vertex)=>edge"),

@@ -28,9 +28,9 @@ import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, T, Vertex}
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.{Inst, Lst, Obj}
+import org.mmadt.language.obj.op.trace.{AsOp, ModelOp}
+import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 
@@ -44,8 +44,9 @@ object ObjGraph {
   val OBJ:String = "obj"
   val TYPE:String = "type"
   val VALUE:String = "value"
-  val RANGE:String = "range"
+  val ISO:String = "iso"
   val ROOT:String = "root"
+  val NONE:String = "none"
 
   def create(model:Symbol):ObjGraph = create(storage.model(model))
   def create(model:Model):ObjGraph = {
@@ -58,7 +59,7 @@ object ObjGraph {
 
   @inline implicit class ObjVertex(val vertex:Vertex) {
     def obj:Obj = vertex.property[Obj](OBJ).value()
-    def iso:Obj = vertex.property[Obj](RANGE).value()
+    def iso:Obj = vertex.property[Obj](ISO).value()
   }
 
   @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
@@ -78,19 +79,27 @@ object ObjGraph {
     };
     def doModel(model:Symbol):Unit = this.doModel(storage.model(model))
     def doModel(model:Model):Unit = {
-      if (model.name.equals("none")) {
+      this.model = model
+      if (model.name.equals(NONE)) {
         List(bool, int, real, str, lst, rec).foreach(c => this.addType(c))
       } else {
         Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
           .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
           .flatMap(x => x._1 +: x._2.glist)
           .distinct
-          .filter(x => x.root)
-          .foreach(c => this.addType(c))
-        model.dtypes.foreach(d => this.addType(d))
+          .foreach(c => {
+            val ctype = if (__.isTokenRoot(c)) this.model.findCtype[Obj](c.name).getOrElse(c) else c
+            this.addType(ctype)
+          })
+        model.dtypes.foreach(d => {
+          val rangeCtype = if (__.isTokenRoot(d.rangeObj)) this.model.findCtype[Obj](d.rangeObj.name).getOrElse(d.rangeObj) else d.rangeObj
+          val domainCtype = if (__.isTokenRoot(d.domainObj)) this.model.findCtype[Obj](d.domainObj.name).getOrElse(d.domainObj) else d.domainObj
+          this.addType(rangeCtype)
+          this.addType(domainCtype)
+          this.addType(d)
+        })
         this.addType(model)
       }
-      this.model = model
     }
 
     ///////////////////////////////////////////////////
@@ -103,7 +112,7 @@ object ObjGraph {
         .distinct
     }
 
-    def exists(aobj:Obj):Boolean = g.R.has(RANGE, aobj).hasNext
+    def exists(aobj:Obj):Boolean = g.R.has(ISO, aobj).hasNext
 
     ///////////////////////////////////////////////////
 
@@ -111,7 +120,8 @@ object ObjGraph {
       path.tail.foldLeft(path.head.update(model))((a, b) => b match {
         case _ if !b.alive || !a.alive => return zeroObj
         case inst:Inst[Obj, Obj] => inst.exec(a)
-        case _ if __.isToken(b) => Try[Obj](a.compute(Obj.resolveToken(a, b, baseName = false))).getOrElse(zeroObj)
+        //case _ if __.isToken(b) => Try[Obj](a.compute(Obj.resolveToken(a, b, baseName = false))).getOrElse(zeroObj)
+        case _:Type[Obj] => Try[Obj](a.compute(Obj.resolveToken(a, b, baseName = false))).getOrElse(zeroObj)
         case _ => Tokens.tryName(b, a)
       })
     }
@@ -130,13 +140,20 @@ object ObjGraph {
     private def objMatch(source:Obj, target:Obj):Obj = {
       source match {
         case _ if __.isAnon(target) => source
-        case _ if source.named && source.name.equals(target.name) => source
+        //case _ if source.named && source.name.equals(target.name) => source
         case alst:Lst[Obj] => target match {
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
             val combo = alst.g._2.zip(blst.g._2).map(pair => fpath(pair._1, pair._2, filtering = false))
             if (combo.exists(x => x.isEmpty)) return zeroObj
             val combination = alst.clone(_ => combo.map(x => x.last))
             if (combination.g._2.zip(alst.g._2).forall(pair => pair._1.domainObj == pair._2.domainObj)) __ else __.combine(combination).inst
+          case atype:Type[Obj] if !atype.root => Try[Obj](alst.compute(atype)).getOrElse(zeroObj)
+          case _ if source.name.equals(target.name) => source
+          case _ => zeroObj
+        }
+        case arec:Rec[Obj, Obj] => target match {
+          case brec:Rec[Obj, Obj] => Try[Obj](AsOp.autoAsType(arec, brec)).getOrElse(zeroObj)
+          case atype:Type[Obj] if !atype.root => Try[Obj](arec.compute(atype)).getOrElse(zeroObj)
           case _ if source.name.equals(target.name) => source
           case _ => zeroObj
         }
@@ -164,7 +181,7 @@ object ObjGraph {
           T.label, if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE,
           OBJ, aobj,
           ROOT, Boolean.box(root),
-          RANGE, aobj.rangeObj))
+          ISO, aobj.rangeObj))
     }
 
     private def addInst(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
@@ -172,7 +189,7 @@ object ObjGraph {
         source.addEdge(
           inst.op, target,
           OBJ, inst,
-          RANGE, inst))
+          ISO, inst))
     }
   }
 }
