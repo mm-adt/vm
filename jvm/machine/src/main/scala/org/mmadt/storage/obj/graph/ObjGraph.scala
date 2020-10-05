@@ -81,10 +81,10 @@ object ObjGraph {
       if (model.name.equals("none")) {
         List(bool, int, real, str, lst, rec).foreach(c => this.addType(c))
       } else {
-        // TODO: fix in model
         Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
           .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
-          .flatMap(x => x._2.glist)
+          .flatMap(x => x._1 +: x._2.glist)
+          .distinct
           .filter(x => x.root)
           .foreach(c => this.addType(c))
         model.dtypes.foreach(d => this.addType(d))
@@ -111,6 +111,7 @@ object ObjGraph {
       path.tail.foldLeft(path.head.update(model))((a, b) => b match {
         case _ if !b.alive || !a.alive => return zeroObj
         case inst:Inst[Obj, Obj] => a.compute(__.via(asType(a), inst).asInstanceOf[Obj], withAs = false)
+        case _ if __.isToken(b) => Try[Obj](a.compute(Obj.resolveToken(a, b, baseName = false))).getOrElse(zeroObj)
         case _ => Tokens.tryName(b, a)
       })
     }
@@ -145,7 +146,7 @@ object ObjGraph {
 
     private def addType(aobj:Obj):(Vertex, Vertex) = {
       val target = if (__.isToken(aobj))
-        g.R.filter((t:Traverser[Vertex]) => t.get().obj.name.equals(aobj.name)).tryNext().orElse(addObj(aobj, root = true))
+        g.R.filter((t:Traverser[Vertex]) => t.get().obj.name.equals(aobj.name)).tryNext().orElse(addObj(aobj, aobj.root))
       else
         addObj(aobj, aobj.root)
       val source = aobj.trace.reverse.foldLeft(target)((a, b) => {
