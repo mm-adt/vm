@@ -30,6 +30,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{AsOp, ModelOp}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
@@ -121,7 +122,7 @@ object ObjGraph {
         case _ if !b.alive || !a.alive => return zeroObj
         case inst:Inst[Obj, Obj] => inst.exec(a)
         //case _ if __.isToken(b) => Try[Obj](a.compute(Obj.resolveToken(a, b, baseName = false))).getOrElse(zeroObj)
-        case _:Type[Obj] => Try[Obj](a.compute(Obj.resolveToken(a, b, baseName = false))).getOrElse(zeroObj)
+        case _:Type[Obj] if a.isInstanceOf[Value[_]] && b.root => Try[Obj](a.compute(b)).getOrElse(zeroObj)
         case _ => Tokens.tryName(b, a)
       })
     }
@@ -147,13 +148,11 @@ object ObjGraph {
             if (combo.exists(x => x.isEmpty)) return zeroObj
             val combination = alst.clone(_ => combo.map(x => x.last))
             if (combination.g._2.zip(alst.g._2).forall(pair => pair._1.domainObj == pair._2.domainObj)) __ else __.combine(combination).inst
-          case atype:Type[Obj] if !atype.root => Try[Obj](alst.compute(atype)).getOrElse(zeroObj)
           case _ if source.name.equals(target.name) => source
           case _ => zeroObj
         }
         case arec:Rec[Obj, Obj] => target match {
           case brec:Rec[Obj, Obj] => Try[Obj](AsOp.autoAsType(arec, brec)).getOrElse(zeroObj)
-          case atype:Type[Obj] if !atype.root => Try[Obj](arec.compute(atype)).getOrElse(zeroObj)
           case _ if source.name.equals(target.name) => source
           case _ => zeroObj
         }
