@@ -22,6 +22,8 @@
 
 package org.mmadt.storage.obj.graph
 
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.outE
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{__ => ___}
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
@@ -97,6 +99,12 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('vertex(str("id") -> 'nat(55) `_,` str("attrs") -> 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)))))(graph.fpath('nat(55) `;` 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)), 'vertex))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('nat(100) `;` 'nat(200), 'edge))
+  }
+
+  test("play") {
+    val graph:ObjGraph = ObjGraph.create('digraph)
+    graph.g.V().repeat(outE().inV()).until(___.outE().count().is(0)).path().by(OBJ).forEachRemaining(x => println(x))
+    println(graph.fpath(-23, 'vertex))
   }
 
   test("type construction w/ time") {

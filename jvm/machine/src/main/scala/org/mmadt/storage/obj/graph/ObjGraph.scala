@@ -135,7 +135,7 @@ object ObjGraph {
         .path().by(OBJ)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
-        .map(x => List(source, objMatch(source, x.head), x.head) ++ x.tail)
+        .map(x => source +: x)
     }
 
     private def objMatch(source:Obj, target:Obj):Obj = {
