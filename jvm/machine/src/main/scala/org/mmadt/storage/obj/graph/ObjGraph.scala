@@ -30,7 +30,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.{Inst, Lst, Obj, Poly}
+import org.mmadt.language.obj.{Inst, Lst, Obj, asType}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 
@@ -81,12 +81,13 @@ object ObjGraph {
       if (model.name.equals("none")) {
         List(bool, int, real, str, lst, rec).foreach(c => this.addType(c))
       } else {
-        model.dtypes.foreach(d => this.addType(d))
         // TODO: fix in model
         Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
           .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
-          .map(x => x._1.asInstanceOf[Type[Obj]])
+          .flatMap(x => x._2.glist)
+          .filter(x => x.root)
           .foreach(c => this.addType(c))
+        model.dtypes.foreach(d => this.addType(d))
         this.addType(model)
       }
       this.model = model
@@ -107,16 +108,10 @@ object ObjGraph {
     ///////////////////////////////////////////////////
 
     private def pathToObj(path:List[Obj]):Obj = {
-      path.tail.foldLeft(path.head)((a, b) => b match {
+      path.tail.foldLeft(path.head.update(model))((a, b) => b match {
         case _ if !b.alive || !a.alive => return zeroObj
-        case inst:Inst[Obj, Obj] => inst.exec(a)
-        case _:__ if __.isAnon(b) => a
-        case _:Obj if a == b => a
-        case _:Type[Obj] if a.isInstanceOf[Type[Obj]] => b <= a
-        case _ if a.named && b.name.equals(a.name) => a
-        case _ if !a.isInstanceOf[Poly[_]] => Tokens.tryName(b, a)
-        case _:Obj if a.update(model).test(b) => Try[Obj](a.update(model) `=>` b).getOrElse(zeroObj)
-        case _ => return zeroObj
+        case inst:Inst[Obj, Obj] => a.compute(__.via(asType(a), inst).asInstanceOf[Obj], withAs = false)
+        case _ => Tokens.tryName(b, a)
       })
     }
 
@@ -125,7 +120,7 @@ object ObjGraph {
         .until((t:Traverser[Vertex]) => t.get().property(ROOT).value().equals(true) && objMatch(t.get().obj, target).alive)
         .repeat(___.outE().inV())
         .filter((t:Traverser[Vertex]) => t.get().obj.alive)
-        .path().by(RANGE)
+        .path().by(OBJ)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
         .map(x => List(source, objMatch(source, x.head), x.head) ++ x.tail)
@@ -149,7 +144,10 @@ object ObjGraph {
     }
 
     private def addType(aobj:Obj):(Vertex, Vertex) = {
-      val target = addObj(aobj, root = true)
+      val target = if (__.isToken(aobj))
+        g.R.filter((t:Traverser[Vertex]) => t.get().obj.name.equals(aobj.name)).tryNext().orElse(addObj(aobj, root = true))
+      else
+        addObj(aobj, aobj.root)
       val source = aobj.trace.reverse.foldLeft(target)((a, b) => {
         val nextVertex = if (b._1.equals(aobj.domainObj)) addObj(b._1, root = true) else addObj(b._1)
         addInst(nextVertex, b._2, a)
@@ -159,7 +157,7 @@ object ObjGraph {
     }
 
     private def addObj(aobj:Obj, root:Boolean = false):Vertex = {
-      (if (root) g.R.has(RANGE, aobj) else g.V().has(OBJ, aobj)).tryNext().orElseGet(() =>
+      g.V().has(OBJ, aobj).has(ROOT, root).tryNext().orElseGet(() =>
         graph.addVertex(
           T.label, if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE,
           OBJ, aobj,
