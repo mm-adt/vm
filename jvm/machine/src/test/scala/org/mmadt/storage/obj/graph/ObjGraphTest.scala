@@ -22,7 +22,7 @@
 
 package org.mmadt.storage.obj.graph
 
-import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.outE
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.__.{outE, simplePath}
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str}
-import org.mmadt.storage.obj.graph.ObjGraph.{OBJ, ObjGraph, ObjTraversal, ObjTraversalSource}
+import org.mmadt.storage.obj.graph.ObjGraph.{ISO, OBJ, ObjGraph, ObjTraversal}
 import org.scalatest.FunSuite
 
 /**
@@ -57,6 +57,13 @@ class ObjGraphTest extends FunSuite {
     assert(graph.exists('poly))
     assert(graph.exists('vertex))
     assert(graph.exists('edge))
+    assert(graph.exists('vertex `;` 'vertex))
+    assert(graph.exists('vertex(str("id") -> __)))
+    //
+    assert(!graph.exists(int.plus(2)))
+    assert(!graph.exists('vertex.get(str("id"))))
+    // assert(!graph.exists(rec(str("fake_id")->__).named("vertex")))
+
   }
 
   test("type construction w/ none") {
@@ -67,12 +74,13 @@ class ObjGraphTest extends FunSuite {
 
   test("type construction w/ pg_2") {
     val graph:ObjGraph = ObjGraph.create(storage.model('pg_2).defining('nat <= int.is(gt(0))).defining(int <= (int `;` int `;` int).get(1)))
+    graph.g.V().repeat(outE().inV()).until(outE().count().is(0).and(simplePath())).path().by(ISO).forEachRemaining(x => println(x))
     println(graph.fpath(int, str))
     println(graph.fpath(int `;` int, 'edge))
     assertResult(Seq(int <= (int `;` int `;` int).get(1)))(graph.fpath((int `;` int `;` int), int))
     assertResult(Seq('nat <= int.is(gt(0))))(graph.fpath(int, 'nat))
     assertResult(Seq('nat <= int.plus(10).is(gt(0))))(graph.fpath(int.plus(10), 'nat))
-    // assertResult(Seq('nat <= (int `;` int `;` int).get(1)))(graph.fpath((int `;` int `;` int), 'nat))
+    assertResult(Seq('nat <= (int `;` int `;` int).get(1).is(gt(0))))(graph.fpath((int `;` int `;` int), 'nat))
     assertResult(Seq(__('vertex)))(graph.fpath('vertex, 'vertex))
     assertResult(Seq('vertex(str("id") -> int) <= int.-<(rec(str("id") -> __))))(graph.fpath(int, 'vertex))
     assertResult(Seq('vertex(str("id") -> int(6))))(graph.fpath(6, 'vertex))
@@ -83,7 +91,8 @@ class ObjGraphTest extends FunSuite {
 
   test("type construction w/ digraph") {
     val graph:ObjGraph = ObjGraph.create('digraph)
-    println(graph.g.R.values(OBJ).toList)
+    // GraphSONWriter.build().create().writeGraph(new FileOutputStream(new File("/Users/marko/Desktop/digraph.json")),graph.graph)
+    graph.g.V().repeat(outE().inV().simplePath()).until(outE().count().is(0)).path().by(ISO).forEachRemaining(x => println(x))
     assertResult(str("id") -> __('nat) `_,` str("attrs") -> __('attr).q(qStar))(toBaseName(storage.model('digraph).findCtype("vertex").get))
     val tokens:List[Obj] = graph.g.V().values[Obj](OBJ).toSeq.filter(x => __.isTokenRoot(x)).toList
     assertResult(2)(tokens.length)
@@ -108,16 +117,15 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('nat(100) `;` 'nat(200), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath(100 `;` 200, 'edge))
-    /*assertResult(Nil)(
+    /*assertResult(8)(
       graph.fpath(
-        ((1 `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29))) `;`
-          (2 `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27)))), 'edge))*/
-    // assertResult(Seq('edge<=('nat`;`'nat).combine('vertex<='nat.split(str("id")->__('nat))`;`'vertex<='nat.split(str("id")->__('nat))).split(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('nat `;` 'nat, 'edge))
+        (('nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29))) `;`
+          ('nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27)))), 'edge))*/
+    // assertResult(Seq('edge<=('nat`;`'nat).combine(('vertex<='nat.split(str("id")->__('nat)))`;`('vertex<='nat.split(str("id")->__('nat))).split(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200))))))(graph.fpath('nat `;` 'nat, 'edge))
   }
 
   test("play") {
     val graph:ObjGraph = ObjGraph.create('digraph)
-    graph.g.V().repeat(outE().inV()).until(outE().count().is(0)).path().by(OBJ).forEachRemaining(x => println(x))
     println("----")
     graph.path(-6, 'vertex).foreach(x => println(x))
     println(graph.fpath(-23, 'vertex))
@@ -134,7 +142,7 @@ class ObjGraphTest extends FunSuite {
   test("dependent sum construction w/ custom types") {
     val graph = ObjGraph.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))))
     assertResult(List(int <= __('nat)))(graph.fpath('nat, int))
-    //assertResult(List(2))(graph.fpath('nat(2), int))
+    // assertResult(List(int(2)))(graph.fpath('nat(2), int))
     assertResult(List('nat(566)))(graph.fpath(566, 'nat))
     assertResult(List('apair(5 `;` 6)))(graph.fpath((5 `;` 6), 'apair))
     assertResult(Nil)(graph.fpath((6 `;` 5), 'apair))

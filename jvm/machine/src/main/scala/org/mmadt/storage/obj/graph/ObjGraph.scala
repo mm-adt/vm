@@ -28,10 +28,10 @@ import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, T, Vertex}
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{LstType, RecType, Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{AsOp, ModelOp}
-import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.{PolyValue, Value}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 
@@ -93,10 +93,10 @@ object ObjGraph {
             this.addType(ctype)
           })
         model.dtypes.foreach(d => {
-          val rangeCtype = if (__.isTokenRoot(d.rangeObj)) this.model.findCtype[Obj](d.rangeObj.name).getOrElse(d.rangeObj) else d.rangeObj
-          val domainCtype = if (__.isTokenRoot(d.domainObj)) this.model.findCtype[Obj](d.domainObj.name).getOrElse(d.domainObj) else d.domainObj
-          this.addType(rangeCtype)
-          this.addType(domainCtype)
+          //  val rangeCtype = if (__.isTokenRoot(d.rangeObj)) this.model.findCtype[Obj](d.rangeObj.name).getOrElse(d.rangeObj) else d.rangeObj
+          //  val domainCtype = if (__.isTokenRoot(d.domainObj)) this.model.findCtype[Obj](d.domainObj.name).getOrElse(d.domainObj) else d.domainObj
+          //  this.addType(rangeCtype)
+          //  this.addType(domainCtype)
           this.addType(d)
         })
         this.addType(model)
@@ -105,11 +105,25 @@ object ObjGraph {
 
     ///////////////////////////////////////////////////
 
-    def fpath(source:Obj, target:Obj, filtering:Boolean = true):Seq[Obj] = {
+    def fpath(source:Obj, target:Obj):Seq[Obj] = {
       if (source.name.equals(model.coreName) && target.name.equals(model.coreName)) return List(model)
       path(source, target)
-        .map(p => pathToObj(p))
-        .filter(o => !filtering || o.name.equals(target.name))
+        .map(path => {
+          path.tail.dropRight(1).foldLeft(path.head.update(model))((a, b) => {
+            b match {
+              case _ if !b.alive || !a.alive => zeroObj
+              case inst:Inst[Obj, Obj] => inst.exec(a)
+              case _ => Tokens.tryName(b, a)
+            }
+          }) match {
+            case aobj if !aobj.alive => aobj
+            // TODO: get rid of autoAsType
+            case avalue:PolyValue[Obj, _] => Try[Obj](AsOp.autoAsType(avalue, path.last)).getOrElse(zeroObj)
+            case avalue:Value[Obj] => Tokens.tryName(path.last, avalue)
+            case atype:Type[Obj] => path.last <= atype
+          }
+        })
+        .filter(_.alive)
         .distinct
     }
 
@@ -117,28 +131,10 @@ object ObjGraph {
 
     ///////////////////////////////////////////////////
 
-    private def pathToObj(path:List[Obj]):Obj = {
-      path.tail.dropRight(1).foldLeft(path.head.update(model))((a, b) => {
-        b match {
-          case _ if !b.alive || !a.alive => return zeroObj
-          case inst:Inst[Obj, Obj] => inst.exec(a)
-          case _ => Tokens.tryName(b, a)
-        }
-      }) match {
-        // TODO: get rid of autoAsType (will happen when rec fully graphized)
-        case avalue:Lst[Obj] if !avalue.name.equals(path.last.name) && !avalue.test(path.last) =>
-          fpath(avalue.named(path.last.name), path.last).headOption.getOrElse(zeroObj)
-        case avalue:Lst[Obj] => Try[Obj](AsOp.autoAsType(avalue, path.last)).getOrElse(zeroObj)
-        case avalue:Value[Obj] => Tokens.tryName(path.last, avalue)
-        case atype:Type[Obj] => path.last <= atype
-      }
-    }
-
-    def path(source:Obj, target:Obj):Seq[List[Obj]] = {
-      g.R.filter((t:Traverser[Vertex]) => t.get().property(ROOT).value().equals(true) && objMatch(source, t.get().obj).alive)
+    def path(source:Obj, target:Obj):Seq[List[Obj]] =
+      g.R.filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive)
         .until((t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive)
-        .repeat(___.outE().inV())
-        .filter((t:Traverser[Vertex]) => t.get().obj.alive)
+        .repeat(___.outE().inV().simplePath())
         .path().by(ISO)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
@@ -146,23 +142,31 @@ object ObjGraph {
         .map(x => if (x.size > 1) x.head +: (objMatch(source, x.head) +: x.tail) else x)
         .map(x => if (x.head == source) x else source +: x)
         .map(x => if (x.last.isInstanceOf[Lst[Obj]]) x.dropRight(1) :+ __.combine(toBaseName(x.last)).inst :+ x.last else x)
-    }
 
     private def objMatch(source:Obj, target:Obj):Obj = {
       source match {
         case _ if __.isAnon(target) => source
-        //case _ if source.named && source.name.equals(target.name) => source
+        case _ if source.named && source.name.equals(target.name) => source
         case alst:Lst[Obj] => target match {
+          case blst:LstType[Obj] if blst.ctype => alst.named(blst.name)
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            val combo = alst.glist.zip(blst.glist).map(pair => fpath(pair._1.rangeObj, pair._2, filtering = false))
+            val combo = alst.glist.zip(blst.glist).map(pair => fpath(pair._1.rangeObj, pair._2))
             if (combo.exists(x => x.isEmpty)) return zeroObj
-            val combination = alst.clone(_ => combo.map(x => x.last))
+            // TODO: multiple legal paths leads to non-deterministic morphing (currently choosing smallest trace)
+            val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size)))
             if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
           case _ if source.name.equals(target.name) => source
           case _ => zeroObj
         }
         case arec:Rec[Obj, Obj] => target match {
-          case brec:Rec[Obj, Obj] => Try[Obj](AsOp.autoAsType(arec, brec)).getOrElse(zeroObj)
+          case brec:RecType[Obj, Obj] if brec.ctype => arec.named(brec.name)
+          case brec:Rec[Obj, Obj] =>
+            val z = arec.clone(name = brec.name, g = (brec.gsep,
+              arec.gmap.flatMap(a => brec.gmap
+                .filter(b => a._1.test(b._1))
+                .map(b => (fpath(a._1.rangeObj, b._1).headOption.getOrElse(zeroObj), fpath(a._2.rangeObj, b._2).headOption.getOrElse(zeroObj)))
+                .filter(b => b._1.alive && b._2.alive))))
+            if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) zeroObj else z
           case _ if source.name.equals(target.name) => source
           case _ => zeroObj
         }
@@ -171,11 +175,10 @@ object ObjGraph {
       }
     }
 
+    ///////////////////////////////////////////////////
+
     private def addType(aobj:Obj):(Vertex, Vertex) = {
-      val target = if (__.isToken(aobj))
-        g.R.filter((t:Traverser[Vertex]) => t.get().obj.name.equals(aobj.name)).tryNext().orElse(addObj(aobj, aobj.root))
-      else
-        addObj(aobj, aobj.root)
+      val target = addObj(aobj, root = true)
       val source = aobj.trace.reverse.foldLeft(target)((a, b) => {
         val nextVertex = if (b._1.equals(aobj.domainObj)) addObj(b._1, root = true) else addObj(b._1)
         addInst(nextVertex, b._2, a)
@@ -185,7 +188,7 @@ object ObjGraph {
     }
 
     private def addObj(aobj:Obj, root:Boolean = false):Vertex = {
-      g.V().has(OBJ, aobj).has(ROOT, root).tryNext().orElseGet(() =>
+      (if (root) g.V().has(ISO, aobj.rangeObj) else g.V().has(OBJ, aobj)).tryNext().orElseGet(() =>
         graph.addVertex(
           T.label, if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE,
           OBJ, aobj,
@@ -194,7 +197,7 @@ object ObjGraph {
     }
 
     private def addInst(source:Vertex, inst:Inst[Obj, Obj], target:Vertex):Edge = {
-      g.V(source).outE(inst.op).has(OBJ, inst).where(___.inV().has(OBJ, target.obj)).tryNext().orElseGet(() =>
+      g.V(source).outE(inst.op).has(OBJ, inst).where(___.inV().is(target)).tryNext().orElseGet(() =>
         source.addEdge(
           inst.op, target,
           OBJ, inst,
