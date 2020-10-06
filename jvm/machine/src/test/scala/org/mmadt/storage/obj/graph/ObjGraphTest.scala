@@ -66,10 +66,17 @@ class ObjGraphTest extends FunSuite {
   }
 
   test("type construction w/ pg_2") {
-    val graph:ObjGraph = ObjGraph.create('pg_2)
+    val graph:ObjGraph = ObjGraph.create(storage.model('pg_2).defining('nat <= int.is(gt(0))).defining(int <= (int `;` int `;` int).get(1)))
+    println(graph.fpath(int, str))
     println(graph.fpath(int `;` int, 'edge))
+    assertResult(Seq(int <= (int `;` int `;` int).get(1)))(graph.fpath((int `;` int `;` int), int))
+    assertResult(Seq('nat <= int.is(gt(0))))(graph.fpath(int, 'nat))
+    assertResult(Seq('nat <= int.plus(10).is(gt(0))))(graph.fpath(int.plus(10), 'nat))
+    // assertResult(Seq('nat <= (int `;` int `;` int).get(1)))(graph.fpath((int `;` int `;` int), 'nat))
     assertResult(Seq(__('vertex)))(graph.fpath('vertex, 'vertex))
     assertResult(Seq('vertex(str("id") -> int) <= int.-<(rec(str("id") -> __))))(graph.fpath(int, 'vertex))
+    assertResult(Seq('vertex(str("id") -> int(6))))(graph.fpath(6, 'vertex))
+    assertResult(Seq(int(6)))(graph.fpath((1 `;` 6 `;` 3), int))
     assertResult(Seq('edge <= ('vertex `;` 'vertex).-<((str("outV") -> ('vertex <= ('vertex `;` 'vertex).get(0))) `_,`(str("inV") -> ('vertex <= ('vertex `;` 'vertex).get(1))))))(Stream('edge <= graph.fpath('vertex `;` 'vertex, 'edge).head))
     //assertResult(Seq('edge <= (('vertex `;` 'vertex) <= (int `;` int).-<((str("outV") -> ('vertex <= ('vertex `;` 'vertex).get(0))) `_,`(str("inV") -> ('vertex <= ('vertex `;` 'vertex).get(1)))))))(Stream('edge <= graph.fpath(int `;` int, 'edge).head))
   }
@@ -89,6 +96,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Stream(int(45)))(graph.fpath(45, int))
     assertResult(Nil)(graph.fpath(str("bad_id") -> int(12), 'vertex))
     assertResult(Nil)(graph.fpath(0, 'vertex))
+    assertResult(Nil)(graph.fpath("0", 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2))))(graph.fpath('nat(1) `;` 'nat(2), 'vertex `;` 'vertex))
     assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.fpath(str("a") `;` "b", 'attr))
     assertResult(Seq('attr <= (str `;` str).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.fpath(str `;` str, 'attr).head))
@@ -99,6 +107,12 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('vertex(str("id") -> 'nat(55) `_,` str("attrs") -> 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)))))(graph.fpath('nat(55) `;` 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)), 'vertex))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('nat(100) `;` 'nat(200), 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath(100 `;` 200, 'edge))
+    /*assertResult(Nil)(
+      graph.fpath(
+        ((1 `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29))) `;`
+          (2 `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27)))), 'edge))*/
+    // assertResult(Seq('edge<=('nat`;`'nat).combine('vertex<='nat.split(str("id")->__('nat))`;`'vertex<='nat.split(str("id")->__('nat))).split(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('nat `;` 'nat, 'edge))
   }
 
   test("play") {
@@ -115,6 +129,15 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.fpath(8 `;` 26 `;` 2020, 'date))
     assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.fpath(8 `;` 26, 'date))
     assertResult(Nil)(graph.fpath(8, 'date))
+  }
+
+  test("dependent sum construction w/ custom types") {
+    val graph = ObjGraph.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))))
+    assertResult(List(int <= __('nat)))(graph.fpath('nat, int))
+    //assertResult(List(2))(graph.fpath('nat(2), int))
+    assertResult(List('nat(566)))(graph.fpath(566, 'nat))
+    assertResult(List('apair(5 `;` 6)))(graph.fpath((5 `;` 6), 'apair))
+    assertResult(Nil)(graph.fpath((6 `;` 5), 'apair))
   }
 
 }
