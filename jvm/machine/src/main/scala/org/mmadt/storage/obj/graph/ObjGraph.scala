@@ -27,11 +27,11 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal,
 import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, T, Vertex}
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{AsOp, ModelOp}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Lst, Obj, Rec}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 
@@ -118,24 +118,34 @@ object ObjGraph {
     ///////////////////////////////////////////////////
 
     private def pathToObj(path:List[Obj]):Obj = {
-      path.tail.foldLeft(path.head.update(model))((a, b) => b match {
-        case _ if !b.alive || !a.alive => return zeroObj
-        case inst:Inst[Obj, Obj] => inst.exec(a)
-        //case _ if __.isToken(b) => Try[Obj](a.compute(Obj.resolveToken(a, b, baseName = false))).getOrElse(zeroObj)
-        case _:Type[Obj] if a.isInstanceOf[Value[_]] && b.root => Try[Obj](a.compute(b)).getOrElse(zeroObj)
-        case _ => Tokens.tryName(b, a)
-      })
+      path.tail.dropRight(1).foldLeft(path.head.update(model))((a, b) => {
+        b match {
+          case _ if !b.alive || !a.alive => return zeroObj
+          case inst:Inst[Obj, Obj] => inst.exec(a)
+          case _ => Tokens.tryName(b, a)
+        }
+      }) match {
+        // TODO: get rid of autoAsType (will happen when rec fully graphized)
+        case avalue:Lst[Obj] if !avalue.name.equals(path.last.name) && !avalue.test(path.last) =>
+          fpath(avalue.named(path.last.name), path.last).headOption.getOrElse(zeroObj)
+        case avalue:Lst[Obj] => Try[Obj](AsOp.autoAsType(avalue, path.last)).getOrElse(zeroObj)
+        case avalue:Value[Obj] => Tokens.tryName(path.last, avalue)
+        case atype:Type[Obj] => path.last <= atype
+      }
     }
 
-    private def path(source:Obj, target:Obj):Seq[List[Obj]] = {
+    def path(source:Obj, target:Obj):Seq[List[Obj]] = {
       g.R.filter((t:Traverser[Vertex]) => t.get().property(ROOT).value().equals(true) && objMatch(source, t.get().obj).alive)
         .until((t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive)
         .repeat(___.outE().inV())
         .filter((t:Traverser[Vertex]) => t.get().obj.alive)
-        .path().by(OBJ)
+        .path().by(ISO)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
-        .map(x => source +: x)
+        // manipulate head and tail types with computable paths
+        .map(x => if (x.size > 1) x.head +: (objMatch(source, x.head) +: x.tail) else x)
+        .map(x => if (x.head == source) x else source +: x)
+        .map(x => if (x.last.isInstanceOf[Lst[Obj]]) x.dropRight(1) :+ __.combine(toBaseName(x.last)).inst :+ x.last else x)
     }
 
     private def objMatch(source:Obj, target:Obj):Obj = {
@@ -144,10 +154,10 @@ object ObjGraph {
         //case _ if source.named && source.name.equals(target.name) => source
         case alst:Lst[Obj] => target match {
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            val combo = alst.g._2.zip(blst.g._2).map(pair => fpath(pair._1, pair._2, filtering = false))
+            val combo = alst.glist.zip(blst.glist).map(pair => fpath(pair._1.rangeObj, pair._2, filtering = false))
             if (combo.exists(x => x.isEmpty)) return zeroObj
             val combination = alst.clone(_ => combo.map(x => x.last))
-            if (combination.g._2.zip(alst.g._2).forall(pair => pair._1.domainObj == pair._2.domainObj)) __ else __.combine(combination).inst
+            if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
           case _ if source.name.equals(target.name) => source
           case _ => zeroObj
         }

@@ -29,46 +29,48 @@ import org.mmadt.language.obj.op.{BranchInstruction, TraceInstruction}
 import org.mmadt.storage.obj.value.VInst
 
 trait CombineOp[+A <: Obj] {
-  this: Poly[A] =>
-  def combine[B <: Obj](other: Poly[B]): this.type = CombineOp[A, B](other).exec(this).asInstanceOf[this.type]
-  final def :=[B <: Obj](other: Poly[B]): this.type = this.combine[B](other)
+  this:Poly[A] =>
+  def combine[B <: Obj](other:Poly[B]):this.type = CombineOp[A, B](other).exec(this).asInstanceOf[this.type]
+  final def :=[B <: Obj](other:Poly[B]):this.type = this.combine[B](other)
 }
 
 object CombineOp extends Func[Obj, Obj] {
-  override val preArgs: Boolean = false
-  def apply[A <: Obj, B <: Obj](other: Obj): Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.combine, List(other)), func = this) with BranchInstruction with TraceInstruction
-  override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
+  override val preArgs:Boolean = false
+  def apply[A <: Obj, B <: Obj](other:Obj):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.combine, List(other)), func = this) with BranchInstruction with TraceInstruction
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
     (start match {
-      case alst: Poly[Obj] if !alst.ctype => combineAlgorithm(alst, inst.arg0[Poly[Obj]]).via(start, inst)
-      case alst: Poly[Obj] => alst
+      case alst:Poly[Obj] if !alst.ctype => combineAlgorithm(alst, inst.arg0[Poly[Obj]]).via(start, inst)
+      case alst:Poly[Obj] => alst
       case _ => start
     }).via(start, inst)
   }
 
-  def combineAlgorithm(apoly: Poly[Obj], bpoly: Poly[Obj]): Poly[Obj] = {
+  def combineAlgorithm(apoly:Poly[Obj], bpoly:Poly[Obj]):Poly[Obj] = {
     apoly match {
-      case arec: Rec[Obj, Obj] =>
-        val argList: Rec.Pairs[Obj, Obj] = bpoly.asInstanceOf[Rec[Obj, Obj]].gmap
+      case arec:Rec[Obj, Obj] =>
+        val argList:Rec.Pairs[Obj, Obj] = bpoly.asInstanceOf[Rec[Obj, Obj]].gmap
         val argSize = argList.size
         var i = 0
-        var newList: Rec.Pairs[Obj, Obj] = List.empty[(Obj, Obj)]
-        val newSep: String = /*if (argSize < 2) apoly.gsep else*/ bpoly.gsep
+        var newList:Rec.Pairs[Obj, Obj] = List.empty[(Obj, Obj)]
+        val newSep:String = /*if (argSize < 2) apoly.gsep else*/ bpoly.gsep
         if (argSize > 0) {
           for (x <- arec.gmap) {
-            newList = newList :+ (x._1 ~~> argList(i)._1, x._2 ~~> argList(i)._2)
+            newList = newList :+ (
+              Tokens.tryName(argList(i)._1, x._1 ~~> argList(i)._1),
+              Tokens.tryName(argList(i)._2, x._2 ~~> argList(i)._2))
             i = (i + 1) % argSize
           }
         }
         arec.clone(g = (newSep, newList))
-      case alst: Lst[Obj] =>
-        val argList: Seq[Obj] = bpoly.asInstanceOf[Lst[Obj]].glist
+      case alst:Lst[Obj] =>
+        val argList:Seq[Obj] = bpoly.asInstanceOf[Lst[Obj]].glist
         val argSize = argList.size
         var i = 0
-        var newList: List[Obj] = List.empty[Obj]
-        val newSep: String = if (argSize < 2) apoly.gsep else bpoly.gsep
+        var newList:List[Obj] = List.empty[Obj]
+        val newSep:String = if (argSize < 2) apoly.gsep else bpoly.gsep
         if (argSize > 0) {
           for (x <- alst.glist) {
-            newList = newList :+ (x ~~> argList(i))
+            newList = newList :+ Tokens.tryName(argList(i), x ~~> argList(i))
             i = (i + 1) % argSize
           }
         }
