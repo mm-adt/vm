@@ -31,7 +31,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
-import org.mmadt.language.obj.value.{PolyValue, Value}
+import org.mmadt.language.obj.value.Value
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 
@@ -96,26 +96,18 @@ object ObjGraph {
 
     ///////////////////////////////////////////////////
 
-    def fpath(source:Obj, target:Obj):Seq[Obj] = {
-      if (source.name.equals(model.coreName) && target.name.equals(model.coreName)) return List(model)
-      val valueHead = source.isInstanceOf[Value[_]]
-      path(if (valueHead) asType(source) else source, target)
-        .map(path => {
-          path.tail.dropRight(1).foldLeft(path.head.update(model))((a, b) => {
-            b match {
-              case _ if !b.alive || !a.alive => zeroObj
-              case inst:Inst[Obj, Obj] => inst.exec(a)
-              case _ => Tokens.tryName(b, a)
-            }
-          }) match {
-            case aobj if !aobj.alive => aobj
-            case _:PolyValue[_, _] => zeroObj // TODO: get rid of autoAsType (hack due to ({0};{0}) being a value
-            case atype:Type[Obj] => path.last <= atype
-          }
-        })
+    def fpath(source:Obj, target:Obj):Stream[Obj] = {
+      if (source.name.equals(model.coreName) && target.name.equals(model.coreName)) return Stream(model)
+      path(if (source.isInstanceOf[Value[_]]) asType(source) else source, target)
+        .map(path => path.last <= path.tail.dropRight(1).foldLeft(path.head.update(model))(
+          (a, b) => b match {
+            case _ if !b.alive || !a.alive => zeroObj
+            case inst:Inst[Obj, Obj] => inst.exec(a)
+            case _ => Tokens.tryName(b, a)
+          }))
         .filter(_.alive)
         .distinct
-        .map(x => if (valueHead) Try[Obj](source.update(model).compute(x)).getOrElse(zeroObj) else x)
+        .map(x => Try[Obj](source.rangeObj.update(model).compute(x)).getOrElse(zeroObj))
         .filter(_.alive)
     }
 
@@ -128,7 +120,7 @@ object ObjGraph {
     val aSource:Obj => Traverser[Vertex] => Boolean = (source:Obj) => (t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive
     val aTarget:Obj => Traverser[Vertex] => Boolean = (target:Obj) => (t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive
 
-    def path(source:Obj, target:Obj, form:String = ISO):Seq[List[Obj]] = {
+    def path(source:Obj, target:Obj, form:String = ISO):Stream[List[Obj]] = {
       val xsource = source match {
         case _:__ if __.isAnon(source) => noSource(source)
         case _ => aSource(source)
@@ -139,12 +131,13 @@ object ObjGraph {
       }
       path(source, target, xsource, xtarget, form)
     }
-    private def path(source:Obj, target:Obj, sourceFilter:Traverser[Vertex] => Boolean, targetFilter:Traverser[Vertex] => Boolean, form:String):Seq[List[Obj]] =
-      g.R.filter((t:Traverser[Vertex]) => sourceFilter(t))
-        .until((t:Traverser[Vertex]) => targetFilter(t))
-        .repeat(___.simplePath().outE().inV())
-        .path().by(form)
-        .toSeq
+    private def path(source:Obj, target:Obj, sourceFilter:Traverser[Vertex] => Boolean, targetFilter:Traverser[Vertex] => Boolean, form:String):Stream[List[Obj]] =
+      JavaConverters.asScalaIterator(
+        g.R.filter((t:Traverser[Vertex]) => sourceFilter(t))
+          .until((t:Traverser[Vertex]) => targetFilter(t))
+          .repeat(___.simplePath().outE().inV())
+          .path().by(form))
+        .toStream
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
         // manipulate head and tail types with computable paths
         .map(x => x.filter(y => y != NoOp())) // direct mappings (e.g. str<=int) have a [noop] as the morphism

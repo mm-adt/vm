@@ -35,6 +35,7 @@ import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{lst, rec, str}
 import org.mmadt.storage.model
+import org.mmadt.storage.obj.graph.ObjGraph
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -87,6 +88,7 @@ object ModelOp extends Func[Obj, Obj] {
 
   @inline implicit def modelToRichModel(ground:Model):RichModel = new RichModel(ground)
   class RichModel(val model:Model) {
+    lazy val graph:ObjGraph.ObjGraph = ObjGraph.create(model)
     lazy val coreName:String = model.name.split(MODEL_EXTENSION)(0)
 
     private final def findType[A <: Obj](model:Model, source:Obj, targetName:String):List[A] =
@@ -113,7 +115,7 @@ object ModelOp extends Func[Obj, Obj] {
         .map(x => if (x.isInstanceOf[Type[_]]) target.range.asInstanceOf[A] else x)
         .map(x => List(x))
         .getOrElse[List[A]](
-          findType[A](model, source, target.name)
+          findType[A](model, source, target.name)  // TODO: graph.model.fpath()
             .map(y => if (baseName) toBaseName(y) else y))
     }
 

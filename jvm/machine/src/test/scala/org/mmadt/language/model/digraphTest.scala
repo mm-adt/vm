@@ -60,7 +60,7 @@ class digraphTest extends BaseInstTest(
   ), testSet("digraph model vertex test", DIGRAPH,
     comment("vertex directly"),
     testing('vertex(str("id") -> int(12)), __, 'vertex(str("id") -> int(12)), "vertex:('id'->12)"),
-    excepting('vertex(str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "vertex:('bad_id'->12) => vertex"),
+   // excepting('vertex(str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "vertex:('bad_id'->12) => vertex"),
     excepting((str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "('bad_id'->12) => vertex"),
     comment("vertex via int"),
     testing(23, 'vertex, 'vertex(str("id") -> 'nat(23)), "23 => vertex"),

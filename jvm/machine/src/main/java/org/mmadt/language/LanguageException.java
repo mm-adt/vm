@@ -104,7 +104,7 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (AsOp.searchable(type)) WalkOp.walkSourceToTarget(obj, type.domain());
+        if (AsOp.searchable(type)) WalkOp.walkSourceToTarget(obj, type.domain(), false);
         else if (!obj.range().test(type.domain())) throw LanguageException.typingError(obj, type);
     }
 
