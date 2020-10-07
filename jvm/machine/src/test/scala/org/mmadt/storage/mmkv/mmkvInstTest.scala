@@ -51,17 +51,17 @@ class mmkvInstTest extends FunSuite {
   val tp3_kv:String = getClass.getResource("/model/tpkv.mm").getPath
 
   test("mmkv parsing") {
-    assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
+    assertResult("mmkv:('k'->int,'v'->str){*}")(engine.eval(s"[=mmkv,'${file1}']").range.toString)
     assertResult("mmkv:[mmkv:('k'->1,'v'->'marko'),mmkv:('k'->2,'v'->'ryan'),mmkv:('k'->3,'v'->'stephen'),mmkv:('k'->4,'v'->'kuppitz')]")(engine.eval(s"1[=mmkv,'${file1}']").toString)
     //
-    assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file2}']").range.toString)
+    assertResult("mmkv:('k'->int,'v'->person:('name'->str,'age'->int)){*}")(engine.eval(s"[=mmkv,'${file2}']").range.toString)
     assertResult("mmkv:[" +
       "mmkv:('k'->1,'v'->person:('name'->'marko','age'->29))," +
       "mmkv:('k'->2,'v'->person:('name'->'ryan','age'->25))," +
       "mmkv:('k'->3,'v'->person:('name'->'stephen','age'->32))," +
       "mmkv:('k'->4,'v'->person:('name'->'kuppitz','age'->23))]")(engine.eval(s"1[=mmkv,'${file2}']").toString)
     //
-    assertResult("mmkv{*}")(engine.eval(s"[=mmkv,'${file3}']").range.toString)
+    assertResult("mmkv:('k'->int,'v'->bool){*}")(engine.eval(s"[=mmkv,'${file3}']").range.toString)
     assertResult(zeroObj)(engine.eval(s"1[=mmkv,'${file3}']"))
   }
 

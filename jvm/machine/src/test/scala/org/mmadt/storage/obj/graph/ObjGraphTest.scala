@@ -92,7 +92,7 @@ class ObjGraphTest extends FunSuite {
   test("type construction w/ digraph") {
     val graph:ObjGraph = ObjGraph.create('digraph)
     // GraphSONWriter.build().create().writeGraph(new FileOutputStream(new File("/Users/marko/Desktop/digraph.json")),graph.graph)
-    graph.g.V().repeat(outE().inV().simplePath()).until(outE().count().is(0)).path().by(ISO).forEachRemaining(x => println(x))
+    graph.path(__, __, OBJ).foreach(x => println(x))
     assertResult(str("id") -> __('nat) `_,` str("attrs") -> __('attr).q(qStar))(toBaseName(storage.model('digraph).findCtype("vertex").get))
     val tokens:List[Obj] = graph.g.V().values[Obj](OBJ).toSeq.filter(x => __.isTokenRoot(x)).toList
     assertResult(2)(tokens.length)

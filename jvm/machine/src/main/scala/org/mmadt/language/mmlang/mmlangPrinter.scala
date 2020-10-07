@@ -49,7 +49,7 @@ object mmlangPrinter {
     typeName(arec) +
       (arec match {
         case _:Strm[_] => strmString(arec.asInstanceOf[Strm[Obj]])
-        case _:RecType[_, _] if Tokens.named(arec.name) => return arec.name
+        case _:RecType[_, _] if !arec.root && Tokens.named(arec.name) => return arec.name
         case _ if arec.isEmpty => EMPTYREC
         case _ =>
           val recString:String = arec.gmap.foldLeft(LROUND)((string, kv) => string + (aliveString(kv._1) + Tokens.-> + aliveString(kv._2) + arec.gsep)).dropRight(1) + RROUND
@@ -62,7 +62,7 @@ object mmlangPrinter {
     typeName(alst) +
       (alst match {
         case _:Strm[_] => strmString(alst.asInstanceOf[Strm[Obj]])
-        case _:LstType[_] if Tokens.named(alst.name) => return alst.name
+        case _:LstType[_] if !alst.root && Tokens.named(alst.name) => return alst.name
         case _ if alst.isEmpty => EMPTYLST
         case _ =>
           val lstString:String = alst.glist.foldLeft(LROUND)((string, element) => string + aliveString(element) + alst.gsep).dropRight(1) + RROUND

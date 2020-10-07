@@ -24,7 +24,7 @@ package org.mmadt.storage.obj.graph
 
 import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
-import org.apache.tinkerpop.gremlin.structure.{Edge, Graph, T, Vertex}
+import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
@@ -88,17 +88,8 @@ object ObjGraph {
           .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
           .flatMap(x => x._1 +: x._2.glist)
           .distinct
-          .foreach(c => {
-            val ctype = if (__.isTokenRoot(c)) this.model.findCtype[Obj](c.name).getOrElse(c) else c
-            this.addType(ctype)
-          })
-        model.dtypes.foreach(d => {
-          //  val rangeCtype = if (__.isTokenRoot(d.rangeObj)) this.model.findCtype[Obj](d.rangeObj.name).getOrElse(d.rangeObj) else d.rangeObj
-          //  val domainCtype = if (__.isTokenRoot(d.domainObj)) this.model.findCtype[Obj](d.domainObj.name).getOrElse(d.domainObj) else d.domainObj
-          //  this.addType(rangeCtype)
-          //  this.addType(domainCtype)
-          this.addType(d)
-        })
+          .foreach(c => this.addType(if (__.isTokenRoot(c)) this.model.findCtype[Obj](c.name).getOrElse(c) else c))
+        model.dtypes.foreach(d => this.addType(d))
         this.addType(model)
       }
     }
@@ -131,16 +122,32 @@ object ObjGraph {
 
     ///////////////////////////////////////////////////
 
-    def path(source:Obj, target:Obj):Seq[List[Obj]] =
-      g.R.filter((t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive)
-        .until((t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive)
+    val noSource:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => true
+    val noTarget:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => !t.get().edges(Direction.OUT).hasNext
+    val aSource:Obj => Traverser[Vertex] => Boolean = (source:Obj) => (t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive
+    val aTarget:Obj => Traverser[Vertex] => Boolean = (target:Obj) => (t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive
+
+    def path(source:Obj, target:Obj, form:String = ISO):Seq[List[Obj]] = {
+      val xsource = source match {
+        case _:__ if __.isAnon(source) => noSource(source)
+        case _ => aSource(source)
+      }
+      val xtarget = target match {
+        case _:__ if __.isAnon(target) => noTarget(target)
+        case _ => aTarget(target)
+      }
+      path(source, target, xsource, xtarget, form)
+    }
+    private def path(source:Obj, target:Obj, sourceFilter:Traverser[Vertex] => Boolean, targetFilter:Traverser[Vertex] => Boolean, form:String):Seq[List[Obj]] =
+      g.R.filter((t:Traverser[Vertex]) => sourceFilter(t))
+        .until((t:Traverser[Vertex]) => targetFilter(t))
         .repeat(___.outE().inV().simplePath())
-        .path().by(ISO)
+        .path().by(form)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
         // manipulate head and tail types with computable paths
-        .map(x => if (x.size > 1) x.head +: (objMatch(source, x.head) +: x.tail) else x)
-        .map(x => if (x.head == source) x else source +: x)
+        .map(x => if (!__.isAnonRootAlive(source) && x.size > 1) x.head +: (objMatch(source, x.head) +: x.tail) else x)
+        .map(x => if (__.isAnonRootAlive(source) || x.head == source) x else source +: x)
         .map(x => if (x.last.isInstanceOf[Lst[Obj]]) x.dropRight(1) :+ __.combine(toBaseName(x.last)).inst :+ x.last else x)
 
     private def objMatch(source:Obj, target:Obj):Obj = {
@@ -188,7 +195,7 @@ object ObjGraph {
     }
 
     private def addObj(aobj:Obj, root:Boolean = false):Vertex = {
-      (if (root) g.V().has(ISO, aobj.rangeObj) else g.V().has(OBJ, aobj)).tryNext().orElseGet(() =>
+      (if (root) g.R.has(ISO, aobj.rangeObj) else g.V().has(OBJ, aobj)).tryNext().orElseGet(() =>
         graph.addVertex(
           T.label, if (aobj.isInstanceOf[Type[_]]) TYPE else VALUE,
           OBJ, aobj,
