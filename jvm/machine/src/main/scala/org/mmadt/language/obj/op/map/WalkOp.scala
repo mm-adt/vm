@@ -24,7 +24,7 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
@@ -49,7 +49,7 @@ object WalkOp extends Func[Obj, Obj] {
     Poly.finalResult(start match {
       case _:Type[_] => lst
       case _:Value[_] => lst(g = (Tokens.`,`,
-        start.model.graph.path(asType(start).rangeObj.hardQ(qOne), inst.arg0[Obj]).toList
+        start.model.graph.paths(asType(start).rangeObj.hardQ(qOne), inst.arg0[Obj]).toList
           .map(list => lst(g = (Tokens.`;`, list.map(step => step.rangeObj))))))
     }, start, inst)
 
@@ -57,16 +57,16 @@ object WalkOp extends Func[Obj, Obj] {
   /////////////////////////////////////////////////////////////////////////
 
   def testSourceToTarget(source:Obj, target:Obj):Boolean =
-    source.model.graph.path(source, target).nonEmpty && Try[Boolean]((source `=>` target).alive).getOrElse(false)
+    source.model.graph.paths(source, target).nonEmpty && Try[Boolean]((source `=>` target).alive).getOrElse(false)
   def walkSourceToTarget[A <: Obj](source:Obj, target:A, targetName:Boolean = false):A = {
     val result:A = source match {
       case astrm:Strm[Obj] => astrm(x => walkSourceToTarget[A](x, target))
       case _ if !target.named => target // NEED A PATH RESOLVER FOR BASE TYPES TO AVOID STACK ISSUES
       case _ => Obj.resolveTokenOption(source, target).getOrElse({
         if (source.isInstanceOf[Type[_]] || !AsOp.searchable(target)) return target
-        source.model.graph.fpath(source, target).headOption
+        source.model.graph.coerce(source, target).headOption
           .getOrElse {
-            if (source.model.search[A](__, target).nonEmpty) throw LanguageException.typingError(source, asType(target))
+            if (source.model.graph.exists(target)) throw LanguageException.typingError(source, asType(target))
             else throw LanguageException.labelNotFound(source, target.name)
           }.asInstanceOf[A]
       })

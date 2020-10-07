@@ -88,7 +88,7 @@ object ModelOp extends Func[Obj, Obj] {
 
   @inline implicit def modelToRichModel(ground:Model):RichModel = new RichModel(ground)
   class RichModel(val model:Model) {
-    lazy val graph:ObjGraph.ObjGraph = ObjGraph.create(model)
+    lazy val graph:ObjGraph = ObjGraph.create(model)
     lazy val coreName:String = model.name.split(MODEL_EXTENSION)(0)
 
     private final def findType[A <: Obj](model:Model, source:Obj, targetName:String):List[A] =
