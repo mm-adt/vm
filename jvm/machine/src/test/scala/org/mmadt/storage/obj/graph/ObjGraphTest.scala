@@ -61,14 +61,13 @@ class ObjGraphTest extends FunSuite {
     //
     assert(!graph.exists(int.plus(2)))
     assert(!graph.exists('vertex.get(str("id"))))
-    // assert(!graph.exists(rec(str("fake_id")->__).named("vertex")))
-
   }
 
   test("type construction w/ none") {
     val graph:ObjGraph = ObjGraph.create('none)
     assertResult(Stream(int))(graph.fpath(int, int))
     assertResult(Stream(int(45)))(graph.fpath(45, int))
+    assertResult(Nil)(graph.fpath(int(35), str))
   }
 
   test("type construction w/ pg_2") {
@@ -116,12 +115,17 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('vertex(str("id") -> 'nat(55) `_,` str("attrs") -> 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)))))(graph.fpath('nat(55) `;` 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)), 'vertex))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath('nat(100) `;` 'nat(200), 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List(('nat(100) `;` 'nat(200)) ==> graph.fpath('nat `;` 'nat, 'edge).head))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.fpath(100 `;` 200, 'edge))
-    /*assertResult(8)(
-      graph.fpath(
-        (('nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29))) `;`
-          ('nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27)))), 'edge))*/
-    // assertResult(Seq('edge<=('nat`;`'nat).combine(('vertex<='nat.split(str("id")->__('nat)))`;`('vertex<='nat.split(str("id")->__('nat))).split(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200))))))(graph.fpath('nat `;` 'nat, 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==> graph.fpath(int `;` int, 'edge).head))
+    /*    assertResult(8)(
+          graph.fpath(
+            (('nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29))) `;`
+              ('nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27)))), 'edge))*/
+    // assertResult(8)(graph.fpath((('nat `;` 'attr) `;`('nat `;` 'attr)), 'edge))
+    // TODO: .... I don't think this is a good idea
+    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex `;` 'vertex)).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.fpath('nat `;` 'nat, 'edge))
+    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex `;` 'vertex)).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.fpath('nat `;` 'nat, 'edge))
   }
 
   test("play") {

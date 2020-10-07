@@ -30,7 +30,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.op.trace.{AsOp, ModelOp}
+import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.{PolyValue, Value}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
@@ -98,7 +98,8 @@ object ObjGraph {
 
     def fpath(source:Obj, target:Obj):Seq[Obj] = {
       if (source.name.equals(model.coreName) && target.name.equals(model.coreName)) return List(model)
-      path(source, target)
+      val valueHead = source.isInstanceOf[Value[_]]
+      path(if (valueHead) asType(source) else source, target)
         .map(path => {
           path.tail.dropRight(1).foldLeft(path.head.update(model))((a, b) => {
             b match {
@@ -108,14 +109,14 @@ object ObjGraph {
             }
           }) match {
             case aobj if !aobj.alive => aobj
-            // TODO: get rid of autoAsType
-            case avalue:PolyValue[Obj, _] => Try[Obj](AsOp.autoAsType(avalue, path.last)).getOrElse(zeroObj)
-            case avalue:Value[Obj] => AsOp.objConverter(avalue, path.last)
+            case _:PolyValue[_, _] => zeroObj // TODO: get rid of autoAsType (hack due to ({0};{0}) being a value
             case atype:Type[Obj] => path.last <= atype
           }
         })
         .filter(_.alive)
         .distinct
+        .map(x => if (valueHead) Try[Obj](source.update(model).compute(x)).getOrElse(zeroObj) else x)
+        .filter(_.alive)
     }
 
     def exists(aobj:Obj):Boolean = g.R.has(ISO, aobj).hasNext
@@ -146,6 +147,7 @@ object ObjGraph {
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
         // manipulate head and tail types with computable paths
+        .map(x => x.filter(y => y != NoOp())) // direct mappings (e.g. str<=int) have a [noop] as the morphism
         .map(x => if (!__.isAnonRootAlive(source) && x.size > 1) x.head +: (objMatch(source, x.head) +: x.tail) else x)
         .map(x => if (__.isAnonRootAlive(source) || x.head == source) x else source +: x)
         .map(x => if (x.last.isInstanceOf[Lst[Obj]]) x.dropRight(1) :+ __.combine(toBaseName(x.last)).inst :+ x.last else x)
@@ -157,10 +159,10 @@ object ObjGraph {
         case alst:Lst[Obj] => target match {
           case blst:LstType[Obj] if blst.ctype => alst.named(blst.name)
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            val combo = alst.glist.zip(blst.glist).map(pair => fpath(pair._1.rangeObj, pair._2))
+            val combo = alst.glist.zip(blst.glist).map(pair => fpath(pair._1, pair._2))
             if (combo.exists(x => x.isEmpty)) return zeroObj
             // TODO: multiple legal paths leads to non-deterministic morphing (currently choosing smallest trace)
-            val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size)))
+            val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size).rangeObj)) // hmmmm.
             if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
           case _ if source.name.equals(target.name) => source
           case _ => zeroObj
@@ -171,7 +173,7 @@ object ObjGraph {
             val z = arec.clone(name = brec.name, g = (brec.gsep,
               arec.gmap.flatMap(a => brec.gmap
                 .filter(b => a._1.test(b._1))
-                .map(b => (fpath(a._1.rangeObj, b._1).headOption.getOrElse(zeroObj), fpath(a._2.rangeObj, b._2).headOption.getOrElse(zeroObj)))
+                .map(b => (fpath(a._1, b._1).headOption.getOrElse(zeroObj), fpath(a._2, b._2).headOption.getOrElse(zeroObj)))
                 .filter(b => b._1.alive && b._2.alive))))
             if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) zeroObj else z
           case _ if source.name.equals(target.name) => source
