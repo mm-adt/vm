@@ -1,6 +1,6 @@
 digraph:(
 'type' -> (
-  //int    -> (int<=vertex.id),
+  int    -> (int<=vertex.id),
   vertex -> (vertex:('id'->nat,'attrs'->attr{*}),
              vertex<=nat-<('id'->nat),
              vertex<=(str;attr)=(int<=str;-<('key'->.key+'x','value'->.value+'xx')),

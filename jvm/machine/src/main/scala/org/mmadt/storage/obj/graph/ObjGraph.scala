@@ -110,7 +110,7 @@ object ObjGraph {
             case aobj if !aobj.alive => aobj
             // TODO: get rid of autoAsType
             case avalue:PolyValue[Obj, _] => Try[Obj](AsOp.autoAsType(avalue, path.last)).getOrElse(zeroObj)
-            case avalue:Value[Obj] => Tokens.tryName(path.last, avalue)
+            case avalue:Value[Obj] => AsOp.objConverter(avalue, path.last)
             case atype:Type[Obj] => path.last <= atype
           }
         })
@@ -123,7 +123,7 @@ object ObjGraph {
     ///////////////////////////////////////////////////
 
     val noSource:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => true
-    val noTarget:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => !t.get().edges(Direction.OUT).hasNext
+    val noTarget:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => !t.get().edges(Direction.OUT).hasNext || !t.path().isSimple
     val aSource:Obj => Traverser[Vertex] => Boolean = (source:Obj) => (t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive
     val aTarget:Obj => Traverser[Vertex] => Boolean = (target:Obj) => (t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive
 
@@ -141,7 +141,7 @@ object ObjGraph {
     private def path(source:Obj, target:Obj, sourceFilter:Traverser[Vertex] => Boolean, targetFilter:Traverser[Vertex] => Boolean, form:String):Seq[List[Obj]] =
       g.R.filter((t:Traverser[Vertex]) => sourceFilter(t))
         .until((t:Traverser[Vertex]) => targetFilter(t))
-        .repeat(___.outE().inV().simplePath())
+        .repeat(___.simplePath().outE().inV())
         .path().by(form)
         .toSeq
         .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])

@@ -44,7 +44,6 @@ class ObjGraphTest extends FunSuite {
     assertResult(Stream('apair(1 `;` 2)))(graph.fpath(1 `;` 2, 'apair))
     assertResult(Nil)(graph.fpath(10 `;` 2, 'apair))
     // assertResult(Stream('pair("ab" `;` "ba")))(graph.fpath("a" `;` "b", 'pair))
-
   }
   test("type existence w/ pg_2") {
     val graph:ObjGraph = ObjGraph.create('pg_2)
@@ -95,8 +94,8 @@ class ObjGraphTest extends FunSuite {
     graph.path(__, __, OBJ).foreach(x => println(x))
     assertResult(str("id") -> __('nat) `_,` str("attrs") -> __('attr).q(qStar))(toBaseName(storage.model('digraph).findCtype("vertex").get))
     val tokens:List[Obj] = graph.g.V().values[Obj](OBJ).toSeq.filter(x => __.isTokenRoot(x)).toList
-    assertResult(2)(tokens.length)
     println(tokens)
+    assertResult(3)(tokens.length) // TODO: I don't like the ambiguousness of tokens vs. their canonical form (this needs to be settled)
     assert(tokens.contains(__('nat)))
     assert(tokens.contains(__('poly)))
     //
@@ -106,6 +105,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Nil)(graph.fpath(str("bad_id") -> int(12), 'vertex))
     assertResult(Nil)(graph.fpath(0, 'vertex))
     assertResult(Nil)(graph.fpath("0", 'vertex))
+    assertResult(Seq(int(23)))(graph.fpath('vertex(str("id") -> 'nat(23)), int))
     assertResult(Seq('vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2))))(graph.fpath('nat(1) `;` 'nat(2), 'vertex `;` 'vertex))
     assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.fpath(str("a") `;` "b", 'attr))
     assertResult(Seq('attr <= (str `;` str).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.fpath(str `;` str, 'attr).head))
@@ -140,9 +140,12 @@ class ObjGraphTest extends FunSuite {
   }
 
   test("dependent sum construction w/ custom types") {
-    val graph = ObjGraph.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))))
+    val graph = ObjGraph.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))).defining(str <= int))
+    graph.path(__, __, OBJ).foreach(x => println(x))
     assertResult(List(int <= __('nat)))(graph.fpath('nat, int))
-    // assertResult(List(int(2)))(graph.fpath('nat(2), int))
+    assertResult(List(int(2)))(graph.fpath('nat(2), int))
+    assertResult(List(str <= int))(graph.fpath(int, str))
+    assertResult(List(str("2")))(graph.fpath(int(2), str))
     assertResult(List('nat(566)))(graph.fpath(566, 'nat))
     assertResult(List('apair(5 `;` 6)))(graph.fpath((5 `;` 6), 'apair))
     assertResult(Nil)(graph.fpath((6 `;` 5), 'apair))

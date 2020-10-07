@@ -102,7 +102,7 @@ object AsOp extends Func[Obj, Obj] {
 
   /////// CONVERTERS
 
-  private def objConverter(source:Obj, target:Obj):Obj =
+  def objConverter(source:Obj, target:Obj):Obj =
     (source match {
       case abool:Bool => boolConverter(abool, target)
       case aint:Int => intConverter(aint, target)
@@ -110,7 +110,7 @@ object AsOp extends Func[Obj, Obj] {
       case astr:Str => strConverter(astr, target)
       case alst:Lst[Obj] => lstConverter(alst, target)
       case arec:Rec[Obj, Obj] => recConverter(arec, target)
-    }).update(source.model)
+    }).named(target.name, ignoreAnon = true).update(source.model)
 
   private def boolConverter(source:Bool, target:Obj):Obj =
     target.trace.reconstruct(target.domain match {
