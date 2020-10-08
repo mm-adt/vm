@@ -44,10 +44,7 @@ object SumOp extends Func[Obj, Obj] {
   override val preArgs: Boolean = false
   override val preStrm: Boolean = false
 
-  def apply(): Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.sum, Nil), func = this) with ReduceInstruction[Int] with TraceInstruction {
-    val seed: Int = int(0)
-    val reducer: Int = __.to('x).get(0).plus(__.from('x).get(1).mult(__.quant())).as(int)
-  }
+  def apply(): Inst[Obj, Int] = new VInst[Obj, Int](g = (Tokens.sum, Nil), func = this) with ReduceInstruction[Int] with TraceInstruction
 
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     start match {

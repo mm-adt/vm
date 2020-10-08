@@ -28,7 +28,6 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.rewrite.{BranchRewrite, IdRewrite}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage.StorageFactory.{int, _}
-import org.mmadt.storage.obj.`type`.TObj
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -40,7 +39,7 @@ package object op {
   trait BranchInstruction
 
   object BranchInstruction {
-    def mergeBranches[O <: Obj](brch: Poly[O], inst: Inst[Obj, Obj]): O = {
+    def mergeBranches[O <: Obj](brch:Poly[O], inst:Inst[Obj, Obj]):O = {
       brch.gsep match {
         case Tokens.`,` => strm[O](brch.glist.map(x => BranchInstruction.multPolyQ[O](x, brch, inst)))
         case Tokens.`;` => brch.glist.lastOption.map(x => BranchInstruction.multPolyQ[O](x, brch, inst)).getOrElse(deadObj[O])
@@ -48,24 +47,24 @@ package object op {
       }
     }
 
-    def brchType[OT <: Obj](brch: Poly[_ <: Obj], instQ: IntQ = qOne): OT = {
+    def brchType[OT <: Obj](brch:Poly[_ <: Obj], instQ:IntQ = qOne):OT = {
       val types = brch.glist.filter(_.alive).map {
-        case atype: Type[OT] => atype.hardQ(1).range
-        case avalue: Value[OT] => asType(avalue)
+        case atype:Type[OT] => atype.hardQ(1).range
+        case avalue:Value[OT] => asType(avalue)
       }.asInstanceOf[Iterable[OType[OT]]]
-      val result: OType[OT] = types.toSet.size match {
+      val result:OType[OT] = types.toSet.size match {
         case 1 => types.head
         case _ => new __().asInstanceOf[OType[OT]] // if types are distinct, generalize to obj
       }
       val x = if (brch.isParallel) { // [,] sum the min/max quantification
         brch match {
-          case arec: Rec[Obj, Obj] => result.hardQ(arec.g._2.filter(b => b._1.alive && b._2.alive).foldLeft(qZero)((a, b) => plusQ(a, (if (b._1.q._1.g == 0) int(0) else b._2.q._1, b._2.q._2))))
-          case _: Lst[Obj] => result.hardQ(brch.glist.map(x => x.q).foldLeft(qZero)((a, b) => plusQ(a, b)))
+          case arec:Rec[Obj, Obj] => result.hardQ(arec.g._2.filter(b => b._1.alive && b._2.alive).foldLeft(qZero)((a, b) => plusQ(a, (if (b._1.q._1.g == 0) int(0) else b._2.q._1, b._2.q._2))))
+          case _:Lst[Obj] => result.hardQ(brch.glist.map(x => x.q).foldLeft(qZero)((a, b) => plusQ(a, b)))
         }
       } else if (brch.isSerial) { // [;] last quantification
         brch match {
-          case alst: Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch).filter(b => !b.root).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
-          case arec: Rec[Obj, Obj] => asType[OT](arec.gmap.map(x => x._2).foldLeft(Option(arec).filter(b => !b.root).getOrElse(arec.gmap.head._2.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
+          case alst:Lst[Obj] => asType[OT](alst.glist.foldLeft(Option(brch).filter(b => !b.root).getOrElse(brch.glist.head.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
+          case arec:Rec[Obj, Obj] => asType[OT](arec.gmap.map(x => x._2).foldLeft(Option(arec).filter(b => !b.root).getOrElse(arec.gmap.head._2.domain))((a, b) => a.compute(b)).asInstanceOf[OT])
         }
       } else { // [|] min/max quantification
         result.hardQ(brch.glist.filter(_.alive).map(x => x.q).reduceLeftOption((a, b) => (
@@ -75,7 +74,7 @@ package object op {
       x.hardQ(q => q.mult(brch.q).mult(instQ))
     }
 
-    def multPolyQ[O <: Obj](obj: O, poly: Poly[O], inst: Inst[Obj, Obj]): O = obj.hardQ(q => multQ(multQ(q, poly.q), inst.q))
+    def multPolyQ[O <: Obj](obj:O, poly:Poly[O], inst:Inst[Obj, Obj]):O = obj.hardQ(q => multQ(multQ(q, poly.q), inst.q))
   }
 
   trait FilterInstruction
@@ -88,10 +87,7 @@ package object op {
 
   trait QuantifierInstruction
 
-  trait ReduceInstruction[O <: Obj] {
-    val seed: O
-    val reducer: O
-  }
+  trait ReduceInstruction[O <: Obj]
 
   trait SideEffectInstruction
 
@@ -102,8 +98,8 @@ package object op {
   trait RewriteInstruction
 
   object RewriteInstruction {
-    val rule_id: Inst[Obj, Obj] = IdRewrite()
-    val rule_branch: Inst[Obj, Obj] = BranchRewrite()
+    val rule_id:Inst[Obj, Obj] = IdRewrite()
+    val rule_branch:Inst[Obj, Obj] = BranchRewrite()
   }
 
 }

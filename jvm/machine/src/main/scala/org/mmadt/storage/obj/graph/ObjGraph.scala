@@ -91,7 +91,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         }))
       .filter(_.alive)
       .distinct
-      .map(x => Try[Obj](source.rangeObj.update(model).compute(x)).getOrElse(zeroObj))
+      .map(x => Try[Obj](source.update(model).compute(x)).getOrElse(zeroObj))
       .filter(_.alive).asInstanceOf[Stream[target.type]]
   }
 

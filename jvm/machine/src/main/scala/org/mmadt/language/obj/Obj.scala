@@ -139,8 +139,8 @@ trait Obj
   def toStrm:Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   // evaluation methods
-  final def compute[E <: Obj](target:E, withAs:Boolean):E = if (withAs) this.compute(target) else Obj.resolveInternal[E](this, target) // Scala isn't grabbing default value ?
-  final def compute[E <: Obj](target:E):E = AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target)
+  final def compute[E <: Obj](target:E, withAs:Boolean=true):E =
+    if (withAs) AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target) else Obj.resolveInternal[E](this, target)
   final def ~~>[E <: Obj](target:E):E = Obj.resolveArg[this.type, E](this, target)
   final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
 

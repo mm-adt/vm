@@ -44,13 +44,13 @@ class __Test extends FunSuite {
     assert(str("marko").q(10).test(__.q(10)))
     assert(str("marko").q(5, 10).test(__.q(*)))
     assert(str("marko").q(10).test(__.q(3, 11)))
-    assertResult(0)(str("marko").q(10).compute(__.q(+)).trace.length)
+    assertResult(0)((str("marko").q(10) `=>` __.q(+)).trace.length)
   }
 
   test("__ type structure") {
     assertResult(__.q(0))(__.q(0))
     assertResult(int.q(0))(__.q(0))
-    assertResult(zeroObj)(__.q(0).compute(__.q(0)))
+    assertResult(zeroObj)(__.q(0) `=>` __.q(0))
     assertResult(zeroObj)(__.q(0) ==> __.q(0))
     assert(__.root)
     assert(!__.plus(1).root)

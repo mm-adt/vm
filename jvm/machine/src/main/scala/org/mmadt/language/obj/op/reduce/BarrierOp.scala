@@ -24,11 +24,10 @@ package org.mmadt.language.obj.op.reduce
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.ReduceInstruction
 import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.{Inst, Obj}
-import org.mmadt.storage.StorageFactory.zeroObj
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -43,10 +42,7 @@ object BarrierOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
   override val preStrm:Boolean = false
 
-  def apply(atype:Type[Obj]):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.barrier, List(atype)), func = this) with ReduceInstruction[Obj] {
-    val seed:Obj = zeroObj
-    val reducer:Obj = __.id
-  }
+  def apply(atype:Type[Obj]):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.barrier, List(atype)), func = this) with ReduceInstruction[Obj]
 
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
     val atype = inst.arg0[Type[Obj]]
