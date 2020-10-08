@@ -151,7 +151,11 @@ class ObjGraphTest extends FunSuite {
   test("dependent sum construction w/ custom types") {
     val graph = ObjGraph.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))).defining(str <= int))
     graph.paths(__, __, OBJ).foreach(x => println(x))
-    assertResult(List(int <= __('nat)))(graph.coerce('nat, int))
+    assertResult(Stream(int(45)))(graph.coerce(45,int))
+    assertResult(Stream(int))(graph.coerce(int,int))
+    assertResult(Stream(int))(graph.coerce(int,int <=int))
+    assertResult(Stream('nat<=int.is(gt(0))))(graph.coerce(int,'nat))
+    assertResult(List(int <=[__] 'nat))(graph.coerce('nat, int))
     assertResult(List(int(2)))(graph.coerce('nat(2), int))
     assertResult(List(str <= int))(graph.coerce(int, str))
     assertResult(List(str("2")))(graph.coerce(int(2), str))
