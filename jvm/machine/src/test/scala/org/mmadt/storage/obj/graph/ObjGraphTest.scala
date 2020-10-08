@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str}
+import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str, strm}
 import org.mmadt.storage.obj.graph.ObjGraph.{ISO, OBJ}
 import org.scalatest.FunSuite
 
@@ -162,5 +162,10 @@ class ObjGraphTest extends FunSuite {
     assertResult(List('nat(566)))(graph.coerce(566, 'nat))
     assertResult(List('apair(5 `;` 6)))(graph.coerce((5 `;` 6), 'apair))
     assertResult(Nil)(graph.coerce((6 `;` 5), 'apair))
+  }
+
+  test("obj coercion directly") {
+    val model = ObjGraph.create(storage.model('num)).model
+    assertResult(strm[Obj]('nat(5)))(5.update(model).coerce(__('nat)))
   }
 }

@@ -32,8 +32,6 @@ import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{lst, qOne}
 import org.mmadt.storage.obj.value.VInst
 
-import scala.util.Try
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
@@ -56,19 +54,16 @@ object WalkOp extends Func[Obj, Obj] {
   /////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////
 
-  def testSourceToTarget(source:Obj, target:Obj):Boolean =
-    source.model.graph.paths(source, target).nonEmpty && Try[Boolean]((source `=>` target).alive).getOrElse(false)
   def walkSourceToTarget[A <: Obj](source:Obj, target:A, targetName:Boolean = false):A = {
     val result:A = source match {
       case astrm:Strm[Obj] => astrm(x => walkSourceToTarget[A](x, target))
       case _ if !target.named => target // NEED A PATH RESOLVER FOR BASE TYPES TO AVOID STACK ISSUES
       case _ => Obj.resolveTokenOption(source, target).getOrElse({
         if (source.isInstanceOf[Type[_]] || !AsOp.searchable(target)) return target
-        source.model.graph.coerce(source, target).headOption
-          .getOrElse {
-            if (source.model.graph.exists(target)) throw LanguageException.typingError(source, asType(target))
-            else throw LanguageException.labelNotFound(source, target.name)
-          }.asInstanceOf[A]
+        source.coerce(target).drain.headOption.getOrElse {
+          if (source.model.graph.exists(target)) throw LanguageException.typingError(source, asType(target))
+          else throw LanguageException.labelNotFound(source, target.name)
+        }
       })
     }
     if (targetName) result.named(target.name) else result

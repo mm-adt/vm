@@ -148,12 +148,12 @@ class mmlangScriptEngineTest extends FunSuite {
   test("empty space parsing") {
     println(engine.eval("'x' => [+'g₀',+'g₁',+'g₂']"))
     println(engine.eval("[['x']+'g₀',['x']+'g₁',['x']+'g₂']"))
-   /* assert(!engine.eval("").alive)
-    assert(!engine.eval("    ").alive)
-    assert(!engine.eval("  \n  ").alive)
-    assert(!engine.eval("\t  \n  ").alive)
+    /* assert(!engine.eval("").alive)
+     assert(!engine.eval("    ").alive)
+     assert(!engine.eval("  \n  ").alive)
+     assert(!engine.eval("\t  \n  ").alive)
 
-    println(engine.eval("(1,1,2)"))*/
+     println(engine.eval("(1,1,2)"))*/
     //  engine.eval("[true,6,7.8,'ryan']-<([type][zero],[zero])")
   }
 
@@ -343,7 +343,7 @@ class mmlangScriptEngineTest extends FunSuite {
     // assertResult(int(10))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:['a'-><.x>,'b'-><.y>]][get,'b']"))
     // assertResult(int ==> int.to("x").plus(1).to("y").as(rec(str("a") -> int.from("x"), str("b") -> int.from("y"))).get("b"))(engine.eval("int<x>[plus,1]<y>[as,rec:('a'->int<.x>,'b'->int<.y>)].b"))
     // assertResult(rec(str("x") -> int(7), str("y") -> int(10), str("z") -> rec(str("a") -> int(17))))(engine.eval("5 int[plus 2]<x>[plus 3]<y>[as,rec:('x'->int<.x>,'y'->int<.y>,'z'->[as,rec:('a'-><.x> + <.y>)])]"))
-  engine.eval(":{1}")
+    engine.eval(":{1}")
   }
 
   test("start instruction initial") {
@@ -770,7 +770,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult(lst)(engine.eval("()"))
     assertResult(int(1) `,`)(engine.eval("(1)"))
     assertResult("('a';'a')")(engine.eval("'a'-<(str;str)").toString)
-    assertResult("('b','a')")(engine.eval("('a';'b')-<(.1,.0)").toString)
+    //assertResult("('b','a')")(engine.eval("('a';'b')-<(.1,.0)").toString)
     //assertResult("('aZ';'bz')")(engine.eval("('a';'b')<w>-<(.1+'z'<x>;<.w>.0+'Z'<y>)>--<(y;x)").toString) // TODO
     assertResult(zeroObj |)(engine.eval("(|)")) // TODO: this might be bad
     assertResult(zeroObj | zeroObj)(engine.eval("(|)"))

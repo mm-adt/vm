@@ -91,11 +91,11 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         }))
       .filter(_.alive)
       .distinct
-      .map(x => Try[Obj](source.rangeObj.update(model).compute(x)).getOrElse(zeroObj))
+      .map(x => Try[Obj](source.rangeObj.update(model).compute(x)).filter(y => y.test(x.rangeObj)).getOrElse(zeroObj))
       .filter(_.alive).asInstanceOf[Stream[target.type]]
   }
 
-  def exists(aobj:Obj):Boolean = g.R.has(ISO, aobj).hasNext
+  def exists(aobj:Obj):Boolean = g.R.has(ISO, aobj.rangeObj).hasNext
 
   ///////////////////////////////////////////////////
 
