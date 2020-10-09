@@ -40,6 +40,7 @@ trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
     case _ => false
   }
 
+  override lazy val hashCode:scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode() ^ this.g.hashCode()
   override def equals(other:Any):Boolean = other match {
     case _:LstValue[_] => super[Lst].equals(other) && super[PolyValue].equals(other)
     case _ => false

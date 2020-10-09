@@ -25,16 +25,18 @@ package org.mmadt.language.obj.`type`
 import org.mmadt.language.obj.{Lst, Obj}
 
 trait LstType[A <: Obj] extends PolyType[A, Lst[A]] with Lst[A] {
-  override def test(other: Obj): Boolean = {
+  override def test(other:Obj):Boolean = {
     if (!super[PolyType].test(other)) return false
     other match {
-      case alst: Lst[A] => Lst.test(this, alst)
-      case _ =>  __.isAnonToken(other)
+      case alst:Lst[A] => Lst.test(this, alst)
+      case _ => __.isAnonToken(other)
     }
   }
-  override def equals(other: Any): Boolean = other match {
-    case alst: Lst[_] if alst.isEmpty && this.isEmpty => super[Lst].equals(other)
-    case _: LstType[_] => super[Lst].equals(other) && super[PolyType].equals(other)
+  
+  override lazy val hashCode:scala.Int = this.name.hashCode ^ this.q.hashCode() ^ this.trace.hashCode() ^ this.g.hashCode()
+  override def equals(other:Any):Boolean = other match {
+    case alst:Lst[_] if alst.isEmpty && this.isEmpty => super[Lst].equals(other)
+    case _:LstType[_] => super[Lst].equals(other) && super[PolyType].equals(other)
     case _ => false
   }
 }
