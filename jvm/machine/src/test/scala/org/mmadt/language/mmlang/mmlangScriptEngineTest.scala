@@ -767,7 +767,7 @@ class mmlangScriptEngineTest extends FunSuite {
   }
 
   test("lst values w/ [mult], [plus], and [zero]") {
-    assertResult(lst)(engine.eval("()"))
+    assertResult(lst())(engine.eval("()"))
     assertResult(int(1) `,`)(engine.eval("(1)"))
     assertResult("('a';'a')")(engine.eval("'a'-<(str;str)").toString)
     //assertResult("('b','a')")(engine.eval("('a';'b')-<(.1,.0)").toString)

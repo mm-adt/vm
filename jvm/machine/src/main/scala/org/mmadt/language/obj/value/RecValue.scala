@@ -36,11 +36,10 @@ trait RecValue[A <: Obj, B <: Obj] extends PolyValue[B, Rec[A, B]] with Rec[A, B
     case _:Type[_] => this.q.within(other.domain.q) && (other.domain match {
       case arec:Rec[A, B] => Rec.test(this, arec)
       case x => __.isAnon(x)
-    }) && this.compute(other).alive
+    }) && this.compute(other, withAs = false).alive
     case _ => false
   }
   override def equals(other:Any):Boolean = other match {
-    case alst:Rec[_, _] if alst.isEmpty && this.isEmpty => super[Rec].equals(other)
     case _:RecValue[_, _] => super[Rec].equals(other) && super[PolyValue].equals(other)
     case _ => false
   }

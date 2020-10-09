@@ -55,8 +55,7 @@ trait Type[+T <: Obj] extends Obj {
 
   override def equals(other:Any):Boolean = other match {
     case obj:Obj if !this.alive => !obj.alive
-    case atype:Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && // sameBase(this, other.domain)
-      this.trace.modeless == atype.trace.modeless
+    case atype:Type[_] => atype.name.equals(this.name) && eqQ(atype, this) && this.trace.modeless == atype.trace.modeless
     case _ => false
   }
 

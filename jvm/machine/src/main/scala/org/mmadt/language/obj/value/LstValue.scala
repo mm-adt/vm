@@ -41,7 +41,6 @@ trait LstValue[A <: Obj] extends PolyValue[A, Lst[A]] with Lst[A] {
   }
 
   override def equals(other:Any):Boolean = other match {
-    case alst:Lst[_] if alst.isEmpty && this.isEmpty => super[Lst].equals(other)
     case _:LstValue[_] => super[Lst].equals(other) && super[PolyValue].equals(other)
     case _ => false
   }

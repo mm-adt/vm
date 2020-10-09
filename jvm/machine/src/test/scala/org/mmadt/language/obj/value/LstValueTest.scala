@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.value
 
 import org.mmadt.language.obj.Obj._
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.sideeffect.PutOp
 import org.mmadt.language.obj.{Lst, Obj, Str}
 import org.mmadt.processor.inst.BaseInstTest
@@ -44,7 +45,7 @@ class LstValueTest extends BaseInstTest() {
     // TODO: think on the semantics of this --- assert(("z" | ("b" |)).test("a" | ("b" | "c")))
     //
     assertResult(btrue)(lst.zero.eqs(lst))
-    assertResult(lst)(lst ==> lst.is(lst.eqs(lst.zero)))
+    assertResult(lst())(lst() ==> __.is(__.eqs(lst.zero)))
   }
 
   test("parallel [tail][head][last] values") {

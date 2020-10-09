@@ -49,12 +49,13 @@ object ObjGraph {
   val ROOT:String = "root"
   val NONE:String = "none"
   val G:String = "g"
+  val Q:String = "q"
 
   def create(model:Symbol):ObjGraph = create(storage.model(model))
   def create(model:Model):ObjGraph = new ObjGraph(model)
 
   @inline implicit class ObjVertex(val vertex:Vertex) {
-    def obj:Obj = vertex.property[Obj](OBJ).value()
+    def obj:Obj = vertex.value[Obj](OBJ)
   }
 
   @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
@@ -62,7 +63,6 @@ object ObjGraph {
   }
 }
 class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
-  // tg.createIndex(OBJ,classOf[Vertex])
   val g:GraphTraversalSource = graph.traversal()
   // load model into graph
   if (model.name.equals(NONE)) {
@@ -79,7 +79,14 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   ///////////////////////////////////////////////////
 
   def coerce(source:Obj, target:Obj):Stream[target.type] = {
-    if (source.name.equals(model.coreName) && target.name.equals(model.coreName)) return Stream(model.asInstanceOf[target.type])
+    Option(source match {
+      case alst:Lst[_] if Lst.exactTest(alst, target) => source
+      case _:Poly[_] => null
+      case _ if target.name.equals(model.coreName) => model
+      case _ if source.name.equals(target.name) => source
+      case _ => null
+    }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
+    ////////////////////////////////////////////////////////////////
     paths(if (source.isInstanceOf[Value[_]]) asType(source) else source, target)
       .map(path => path.last.rangeObj <= path.tail.dropRight(1).foldLeft(path.head.update(model))(
         (a, b) => b match {
@@ -94,7 +101,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       .asInstanceOf[Stream[target.type]]
   }
 
-  def exists(aobj:Obj):Boolean = g.R.has(OBJ, aobj).hasNext
+  def exists(aobj:Obj):Boolean = g.V(aobj).hasNext
 
   ///////////////////////////////////////////////////
 
@@ -176,7 +183,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   def createType(atype:Type[Obj]):Unit = {
     val target:Vertex = createObj(atype)
     if (!atype.root) {
-      g.V(target).outE(Tokens.noop).has(OBJ, NoOp()).where(___.inV().has(OBJ, atype.range)).tryNext().orElseGet(() => {
+      g.V(target).outE(Tokens.noop).has(OBJ, NoOp()).where(___.inV().hasId(atype.range)).tryNext().orElseGet(() => {
         val rangeV = bindObj(atype.range)
         val edge = target.addEdge(Tokens.noop, rangeV, OBJ, NoOp())
         if (__.isTokenRoot(rangeV.obj))
@@ -189,7 +196,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   private def createObj(aobj:Obj):Vertex = {
     val target:Vertex = bindObj(aobj)
     if (!aobj.root) {
-      g.V(target).inE(aobj.via._2.op).has(OBJ, aobj.via._2).where(___.outV().has(OBJ, aobj.via._1)).tryNext().orElseGet(() => {
+      g.V(target).inE(aobj.via._2.op).has(OBJ, aobj.via._2).where(___.outV().hasId(aobj.via._1)).tryNext().orElseGet(() => {
         createObj(aobj.via._1).addEdge(aobj.via._2.op, target, OBJ, aobj.via._2)
       })
     }
@@ -197,19 +204,23 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   }
 
   private def bindObj(aobj:Obj):Vertex = {
-    g.V().has(OBJ, aobj).tryNext().orElseGet(() => {
+    g.V(aobj).tryNext().orElseGet(() => {
       aobj match {
         case avalue:Value[_] =>
           graph.addVertex(
             T.label, VALUE,
+            T.id, avalue,
             OBJ, avalue,
             G, avalue.g.asInstanceOf[Object],
+            Q, avalue.q,
             ROOT, Boolean.box(aobj.root)
           )
         case atype:Type[_] =>
           graph.addVertex(
             T.label, TYPE,
+            T.id, atype,
             OBJ, atype,
+            Q, atype.q,
             ROOT, Boolean.box(aobj.root)
           )
       }

@@ -47,14 +47,17 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   override def glist:Seq[B] = this.gmap.values
   override def ctype:Boolean = null == g._2 // type token
   override def scalarMult(start:Obj):this.type = this.clone(pairs => Rec.moduleStruct(gsep, pairs, start))
-  def internalRange:this.type = this.clone(g=(gsep,if(g._2 == null) null else g._2.map(x=>(x._1.rangeObj,x._2.rangeObj))), q = this.q, via = this.domainObj.via)
+  def internalRange:this.type = this.clone(g = (gsep, if (g._2 == null) null else g._2.map(x => (x._1.rangeObj, x._2.rangeObj))), q = this.q, via = this.domainObj.via)
   def clone(f:Pairs[A, B] => Pairs[A, Obj]):this.type = this.clone(g = (this.gsep, f(this.gmap)))
   override def equals(other:Any):Boolean = other match {
-    case arec:Rec[_, _] => Poly.sameSep(this, arec) &&
-      this.name.equals(arec.name) &&
-      eqQ(this, arec) &&
-      this.size == arec.size &&
-      this.gmap.zip(arec.gmap).forall(x => x._1._1.equals(x._2._1) && x._1._2.equals(x._2._2))
+    case arec:Rec[_, _] =>
+      this.ctype == arec.ctype &&
+        Poly.sameSep(this, arec) &&
+        this.name.equals(arec.name) &&
+        eqQ(this, arec) &&
+        (this.ctype ||
+          (this.size == arec.size &&
+            this.g._2.zip(arec.g._2).forall(x => x._1._1.equals(x._2._1) && x._1._2.equals(x._2._2))))
     case _ => true
   }
 
@@ -135,7 +138,7 @@ object Rec {
       var taken:Boolean = false
       pairs
         .filter(kv => kv._1.alive && kv._2.alive)
-        .map(kv => (if(kv._1.isInstanceOf[Type[_]]) (AsOp.autoAsType(newStart,kv._1) ~~> kv._1) else (newStart ~~> kv._1)) -> kv._2)
+        .map(kv => (if (kv._1.isInstanceOf[Type[_]]) (AsOp.autoAsType(newStart, kv._1) ~~> kv._1) else (newStart ~~> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
         .filter(kv =>
           if (taken) false
@@ -144,7 +147,7 @@ object Rec {
             taken = true;
             true
           })
-        .map(kv => if (nostart) kv else kv._1 -> (if(kv._2.isInstanceOf[Type[_]]) ((AsOp.autoAsType(newStart,kv._2)) ~~> kv._2) else (newStart ~~> kv._2) match {
+        .map(kv => if (nostart) kv else kv._1 -> (if (kv._2.isInstanceOf[Type[_]]) ((AsOp.autoAsType(newStart, kv._2)) ~~> kv._2) else (newStart ~~> kv._2) match {
           case x if kv._2.isInstanceOf[Value[_]] => x.hardQ(q => q.mult(kv._2.q)).asInstanceOf[B]
           case x => x
         }))

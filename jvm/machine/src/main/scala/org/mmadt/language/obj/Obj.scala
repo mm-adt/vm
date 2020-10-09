@@ -139,11 +139,11 @@ trait Obj
   def toStrm:Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   // evaluation methods
-  final def compute[E <: Obj](target:E, withAs:Boolean=true):E =
+  final def compute[E <: Obj](target:E, withAs:Boolean = true):E =
     if (withAs) AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target) else Obj.resolveInternal[E](this, target)
   final def ~~>[E <: Obj](target:E):E = Obj.resolveArg[this.type, E](this, target)
   final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
-  final def coerce[E<:Obj](target:E):Strm[E] = strm[E](this.model.graph.coerce(this,target))
+  final def coerce[E <: Obj](target:E):Strm[E] = strm[E](this.model.graph.coerce(this, target))
 
   // lst fluent methods
   def `|`:Lst[this.type] = lst(g = (Tokens.`|`, List(this)))
@@ -243,14 +243,18 @@ object Obj {
   }
 
   private def objTypeCheck[A <: Obj](source:A):A = {
-    if (Tokens.named(source.name) && source.isInstanceOf[Value[_]] && !source.isInstanceOf[Model]) {
-      source.model.search[A](source, source).map(x => x.asInstanceOf[Type[Obj]]).headOption.map(y => {
-        if (null != y && !Obj.resolveInternal(toBaseName(source), y).alive)
-          throw LanguageException.typingError(source, y.named(source.name))
-        source
-      }).getOrElse(source)
+    source match {
+      case avalue:Value[_] if Tokens.named(source.name) => avalue.via._1 match {
+        case bvalue:Value[_] if avalue.g != bvalue.g =>
+          source.model.search[A](source, source,baseName = false).headOption.map(y => {
+            if (null != y && !Obj.resolveInternal(toBaseName(source), y).alive)
+              throw LanguageException.typingError(source, asType(y))
+            source
+          }).getOrElse(source)
+        case _ => source
+      }
+      case _ => source
     }
-    source
   }
 
   // TODO: this will come in handy when types are automatically unrolled to their coercion

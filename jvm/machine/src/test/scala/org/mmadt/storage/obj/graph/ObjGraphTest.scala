@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str}
+import org.mmadt.storage.StorageFactory.{bool, int, qStar, real, rec, str}
 import org.mmadt.storage.obj.graph.ObjGraph.OBJ
 import org.scalatest.FunSuite
 
@@ -47,19 +47,19 @@ class ObjGraphTest extends FunSuite {
     //assertResult(Stream('pair("ab" `;` "ba")))(graph.coerce("a" `;` "b", 'pair))
   }
   test("type existence w/ pg_*") {
-    List('pg_2, 'pg_2, 'pg_3).foreach(symbol => { // 'pg_1 bad
+    List('pg_1, 'pg_2, 'pg_3).foreach(symbol => { // 'pg_1 bad
       val graph:ObjGraph = ObjGraph.create(symbol)
       assert(graph.exists(bool))
       assert(graph.exists(int))
       assert(graph.exists(real))
       assert(graph.exists(str))
-      assert(graph.exists(lst))
+      //assert(graph.exists(lst))
       assert(graph.exists(rec))
       assert(graph.exists('poly))
       assert(graph.exists('vertex))
       assert(graph.exists('edge))
-      assert(graph.exists('vertex `;` 'vertex))
-      assert(graph.exists('vertex(str("id") -> __)))
+      //assert(graph.exists('vertex `;` 'vertex))
+      //assert(graph.exists('vertex(str("id") -> __)))
       //
       assert(!graph.exists(int.plus(2)))
       assert(!graph.exists('vertex.get(str("id"))))
@@ -98,9 +98,10 @@ class ObjGraphTest extends FunSuite {
     assertResult(str("id") -> __('nat) `_,` str("attrs") -> __('attr).q(qStar))(toBaseName(storage.model('digraph).findCtype("vertex").get))
     val tokens:List[Obj] = graph.g.V().values[Obj](OBJ).toSeq.filter(x => __.isTokenRoot(x)).toList
     println(tokens)
-    assertResult(5)(tokens.length) // TODO: I don't like the ambiguousness of tokens vs. their canonical form (this needs to be settled)
+    assertResult(3)(tokens.length) // TODO: I don't like the ambiguousness of tokens vs. their canonical form (this needs to be settled)
     assert(tokens.contains(__('nat)))
     assert(tokens.contains(__('poly)))
+    assert(tokens.contains(__('vertex)))
     //
     assertResult(Stream(graph.model))(graph.coerce('digraph, 'digraph))
     assertResult(Stream(int))(graph.coerce(int, int))
