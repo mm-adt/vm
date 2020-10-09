@@ -22,13 +22,14 @@
 
 package org.mmadt.storage.obj.graph
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, qStar, real, rec, str}
+import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str}
 import org.mmadt.storage.obj.graph.ObjGraph.OBJ
 import org.scalatest.FunSuite
 
@@ -47,7 +48,7 @@ class ObjGraphTest extends FunSuite {
     //assertResult(Stream('pair("ab" `;` "ba")))(graph.coerce("a" `;` "b", 'pair))
   }
   test("type existence w/ pg_*") {
-    List('pg_1, 'pg_2, 'pg_3).foreach(symbol => { // 'pg_1 bad
+    List('pg_1, 'pg_2, 'pg_3).foreach(symbol => {
       val graph:ObjGraph = ObjGraph.create(symbol)
       assert(graph.exists(bool))
       assert(graph.exists(int))
@@ -58,12 +59,25 @@ class ObjGraphTest extends FunSuite {
       assert(graph.exists('poly))
       assert(graph.exists('vertex))
       assert(graph.exists('edge))
-      //assert(graph.exists('vertex `;` 'vertex))
-      //assert(graph.exists('vertex(str("id") -> __)))
-      //
+      if (symbol.name.contains("_1")) {
+        assert(graph.exists('vertex(str("id") -> int)))
+        assert(graph.exists('edge(str("outV") -> __('vertex) `_,` str("inV") -> 'vertex)))
+      }
+      if (symbol.name.contains("_2")) {
+        assert(graph.exists('vertex(str("id") -> int)))
+        assert(graph.exists('edge(str("outV") -> __('vertex) `_,` str("inV") -> 'vertex)))
+        assert(graph.exists('vertex `;` 'vertex))
+      }
+      if (symbol.name.contains("_3")) {
+        assert(graph.exists('vertex(str("id") -> int `_,` str("label") -> str)))
+        assert(graph.exists('edge(str("outV") -> __('vertex) `_,` str("label") -> str `_,` str("inV") -> __('vertex))))
+        assert(graph.exists('vertex `;` 'vertex))
+      }
+      //////////////////////////////////
       assert(!graph.exists(int.plus(2)))
       assert(!graph.exists('vertex.get(str("id"))))
     })
+
   }
 
   test("type construction w/ none") {
@@ -86,9 +100,9 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('vertex(str("id") -> int(6))))(graph.coerce(6, 'vertex))
     assertResult(Seq(int(6)))(graph.coerce((1 `;` 6 `;` 3), int))
     assertResult(Seq('edge <= ('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce('vertex `;` 'vertex, 'edge).head))
-    //assertResult(Seq('edge(str("outV") -> int(8) `_,` str("inV") -> int(9))))(Stream('edge <= graph.coerce('vertex(str("id") -> int(8)) `;` 'vertex(str("id") -> int(9)), 'edge).head))
-    //assertResult(Seq('edge(str("outV") -> int(8) `_,` str("inV") -> int(9))))(Stream('edge <= graph.coerce(8 `;` 9, 'edge).head))
-    //assertResult(Seq('edge <= (int `;` int).combine('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(8)) `_,` str("inV") -> 'vertex(str("id") -> int(9)))))(graph.coerce('vertex(str("id") -> int(8)) `;` 'vertex(str("id") -> int(9)), 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(81 `;` 91, 'edge))
+    assertResult(Seq('edge <= (int `;` int).-<((str("outV") -> ('vertex <= get(0))) `_,`(str("inV") -> ('vertex <= get(1))))))(graph.coerce(int `;` int, 'edge))
   }
 
   test("type construction w/ digraph") {
@@ -124,16 +138,18 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).head))
     // TODO: .... I don't think this is a good idea (still uses runtime as'ing)
-    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex `;` 'vertex)).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
-    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex `;` 'vertex)).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
-    /*
-    assertResult(8)(
-    graph.coerce(
-    lst(g = (Tokens.`;`, List(
-      'nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29)),
-      'nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27))))), 'edge))
-   */
-    //assertResult(8)(graph.paths((('nat `;` 'attr) `;`('nat `;` 'attr)), 'edge))
+    assertResult(Seq('edge <= ('nat `;` 'nat).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
+    assertResult(Seq('edge <= ('nat `;` 'nat).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
+    assertResult(Seq(
+      'edge(
+        str("outV") -> 'vertex(str("id") -> 'nat(1) `_,` str("attrs") -> 'attr(str("key") -> str("age") `_,` str("value") -> int(29))) `_,`
+          str("inV") -> 'vertex(str("id") -> 'nat(2) `_,` str("attrs") -> 'attr(str("key") -> str("age") `_,` str("value") -> int(27))))))(
+      graph.coerce(
+        lst(g = (Tokens.`;`, List(
+          'nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29)),
+          'nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27))))), 'edge))
+    val natattr = lst(g = (Tokens.`;`, List(('nat `;` 'attr), ('nat `;` 'attr))))
+    assertResult(Seq('edge <= natattr.-<(str("outV") -> ('vertex <= natattr.get(0)) `_,` str("inV") -> ('vertex <= natattr.get(1)))))(graph.coerce(natattr, 'edge))
   }
 
   test("type construction w/ time") {

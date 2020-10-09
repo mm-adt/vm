@@ -134,9 +134,9 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       .map(x => x.map(y => y.rangeObj))
       // manipulate head and tail types with computable paths
       .map(x => x.filter(y => y != NoOp())) // direct mappings (e.g. str<=int) have a [noop] as the morphism
-      .map(x => if (!__.isAnonRootAlive(sroot) && x.size > 1) x.head +: (objMatch(sroot, x.head) +: x.tail) else x)
+      .map(x => if (!__.isAnonRootAlive(sroot) && x.size > 1) x.head +: objMatch(sroot, x.head) +: x.tail else x)
       .map(x => if (__.isAnonRootAlive(sroot) || x.head == sroot) x else sroot +: x)
-      .map(x => if (x.last.isInstanceOf[Lst[Obj]]) x.dropRight(1) :+ __.combine(toBaseName(x.last)).inst :+ x.last else x)
+      .map(x => if (x.last.isInstanceOf[Lst[Obj]]) x.dropRight(1) :+ objMatch(target.rangeObj,x.last) :+ x.last else x)
       .map(x => x.filter(y => !__.isAnonRootAlive(y)))
       .map(x => x.foldLeft(List.empty[Obj])((a, b) => {
         if (a.isEmpty) a :+ b
@@ -156,10 +156,10 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case blst:Lst[Obj] if Lst.exactTest(alst, blst) => alst
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
             val combo = alst.glist.zip(blst.glist).map(pair => coerce(pair._1, pair._2))
-            if (combo.exists(x => x.isEmpty)) return zeroObj
-            // TODO: multiple legal paths leads to non-deterministic morphing (currently choosing smallest trace)
-            val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size).rangeObj)) // hmmmm.
-            if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
+            if (combo.exists(x => x.isEmpty)) zeroObj else __
+          // TODO: multiple legal paths leads to non-deterministic morphing (currently choosing smallest trace)
+          //val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size).rangeObj)) // hmmmm.
+          //if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else __
           case _ => zeroObj
         }
         case arec:Rec[Obj, Obj] => target match {
