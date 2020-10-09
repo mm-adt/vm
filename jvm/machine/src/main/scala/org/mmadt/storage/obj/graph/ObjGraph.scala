@@ -99,9 +99,9 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   ///////////////////////////////////////////////////
 
   val noSource:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => true
-  val noTarget:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => !t.get().edges(Direction.OUT).hasNext || !t.path().isSimple
+  val noTarget:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => !__.isTokenRoot(t.get().obj) && (!t.get().edges(Direction.OUT).hasNext || !t.path().isSimple)
   val aSource:Obj => Traverser[Vertex] => Boolean = (source:Obj) => (t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive
-  val aTarget:Obj => Traverser[Vertex] => Boolean = (target:Obj) => (t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive
+  val aTarget:Obj => Traverser[Vertex] => Boolean = (target:Obj) => (t:Traverser[Vertex]) => !__.isTokenRoot(t.get().obj) && objMatch(t.get().obj, target).alive
 
   def paths(source:Obj, target:Obj):Stream[List[Obj]] = {
     val xsource = source match {
@@ -131,6 +131,10 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       .map(x => if (__.isAnonRootAlive(sroot) || x.head == sroot) x else sroot +: x)
       .map(x => if (x.last.isInstanceOf[Lst[Obj]]) x.dropRight(1) :+ __.combine(toBaseName(x.last)).inst :+ x.last else x)
       .map(x => x.filter(y => !__.isAnonRootAlive(y)))
+      .map(x => x.foldLeft(List.empty[Obj])((a, b) => {
+        if (a.isEmpty) a :+ b
+        else a.lastOption.filter(x => x != b).map(_ => a :+ b).getOrElse(a)
+      })).distinct
   }
 
   ///////////////////////////////////////////////////
@@ -138,28 +142,30 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   private def objMatch(source:Obj, target:Obj):Obj = {
     source match {
       case _ if __.isAnon(target) => source
-      case _ if source.named && source.name.equals(target.name) => source
-      case alst:Lst[Obj] => target match {
-        case blst:LstType[Obj] if blst.ctype => alst.named(blst.name)
-        case blst:Lst[Obj] if Lst.exactTest(alst, blst) => alst
-        case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-          val combo = alst.glist.zip(blst.glist).map(pair => coerce(pair._1, pair._2))
-          if (combo.exists(x => x.isEmpty)) return zeroObj
-          // TODO: multiple legal paths leads to non-deterministic morphing (currently choosing smallest trace)
-          val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size).rangeObj)) // hmmmm.
-          if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
-        case _ => zeroObj
-      }
-      case arec:Rec[Obj, Obj] => target match {
-        case brec:RecType[Obj, Obj] if brec.ctype => arec.named(brec.name)
-        case brec:Rec[Obj, Obj] =>
-          val z = arec.clone(name = brec.name, g = (brec.gsep,
-            arec.gmap.flatMap(a => brec.gmap
-              .filter(b => a._1.test(b._1))
-              .map(b => (coerce(a._1, b._1).headOption.getOrElse(zeroObj), coerce(a._2, b._2).headOption.getOrElse(zeroObj)))
-              .filter(b => b._1.alive && b._2.alive))))
-          if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) zeroObj else z
-        case _ => zeroObj
+      case _:Poly[Obj] => source match {
+        case _ if source.named && source.name.equals(target.name) => source
+        case alst:Lst[Obj] => target match {
+          case blst:LstType[Obj] if blst.ctype => alst.named(blst.name)
+          case blst:Lst[Obj] if Lst.exactTest(alst, blst) => alst
+          case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
+            val combo = alst.glist.zip(blst.glist).map(pair => coerce(pair._1, pair._2))
+            if (combo.exists(x => x.isEmpty)) return zeroObj
+            // TODO: multiple legal paths leads to non-deterministic morphing (currently choosing smallest trace)
+            val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size).rangeObj)) // hmmmm.
+            if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else __.combine(combination).inst
+          case _ => zeroObj
+        }
+        case arec:Rec[Obj, Obj] => target match {
+          case brec:RecType[Obj, Obj] if brec.ctype => arec.named(brec.name)
+          case brec:Rec[Obj, Obj] =>
+            val z = arec.clone(name = brec.name, g = (brec.gsep,
+              arec.gmap.flatMap(a => brec.gmap
+                .filter(b => a._1.test(b._1))
+                .map(b => (coerce(a._1, b._1).headOption.getOrElse(zeroObj), coerce(a._2, b._2).headOption.getOrElse(zeroObj)))
+                .filter(b => b._1.alive && b._2.alive))))
+            if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) zeroObj else z
+          case _ => zeroObj
+        }
       }
       case _ if source.name.equals(target.name) => source
       case _ => zeroObj

@@ -86,6 +86,8 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('vertex(str("id") -> int(6))))(graph.coerce(6, 'vertex))
     assertResult(Seq(int(6)))(graph.coerce((1 `;` 6 `;` 3), int))
     assertResult(Seq('edge <= ('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce('vertex `;` 'vertex, 'edge).head))
+    //assertResult(Seq('edge(str("outV") -> int(8) `_,` str("inV") -> int(9))))(Stream('edge <= graph.coerce('vertex(str("id") -> int(8)) `;` 'vertex(str("id") -> int(9)), 'edge).head))
+    //assertResult(Seq('edge(str("outV") -> int(8) `_,` str("inV") -> int(9))))(Stream('edge <= graph.coerce(8 `;` 9, 'edge).head))
     //assertResult(Seq('edge <= (int `;` int).combine('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
   }
 
@@ -133,13 +135,6 @@ class ObjGraphTest extends FunSuite {
     //assertResult(8)(graph.paths((('nat `;` 'attr) `;`('nat `;` 'attr)), 'edge))
   }
 
-  test("play") {
-    val graph:ObjGraph = ObjGraph.create('digraph)
-    println("----")
-    graph.paths(-6, 'vertex).foreach(x => println(x))
-    println(graph.coerce(-23, 'vertex))
-  }
-
   test("type construction w/ time") {
     val graph:ObjGraph = ObjGraph.create('time)
     graph.paths(8 `;` 24 `;` 2020, 'date).foreach(x => println(x))
@@ -175,9 +170,7 @@ class ObjGraphTest extends FunSuite {
     graph.coerce(5, __('vertex).asInstanceOf[Obj]).foreach(x => println(x))
     graph.coerce(-5, __('vertex).asInstanceOf[Obj]).foreach(x => println(x))
     println("____")
-
     graph.coerce(('nat(5) `;` 'nat(6)), str.asInstanceOf[Obj]).foreach(x => println(x))
-
     println(rec(str("id") -> str("marko")).compute('blah(str -> str)))
     println(rec(str("id") -> str("marko")).test('blah(str -> int)))
   }
