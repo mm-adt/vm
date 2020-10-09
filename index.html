@@ -4984,7 +4984,7 @@ language error: 0 is not a nat</code></pre>
 <div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,nat&lt;=int[is&gt;0],
-                           date&lt;=(nat[is=&lt;12];nat[is=&lt;31];nat),
+                           date:(nat[is=&lt;12];nat[is=&lt;31];nat),
                            date&lt;=(nat[is=&lt;12];nat[is=&lt;31])[put,2,2020]]
 mmlang&gt;
 mmlang&gt; (8;26;2020) =&gt; date
@@ -5022,7 +5022,7 @@ mmlang&gt; (8;26)      =&gt; date
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">mm:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt;
   (<span style="color:#369;font-weight:bold">bool</span> -&gt;  ( ), <span style="color:#369;font-weight:bold">int</span> -&gt;  ( ), real -&gt; ( ),
-   <span style="color:#369;font-weight:bold">str</span>  -&gt;  ( ), lst  -&gt; ( ), rec -&gt;  ( ),
+   <span style="color:#369;font-weight:bold">str</span>  -&gt;  ( ), lst  -&gt; (lst), rec -&gt;  ( ),
    poly -&gt;  (poly&lt;=[lst|rec]),
 ))</code></pre>
 </div>
@@ -5125,8 +5125,8 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (
-  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>)),
-  edge   -&gt; ( edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex)))) &lt;= mm</code></pre>
+  vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>)),
+  edge   -&gt; ( edge:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex)))) &lt;= mm</code></pre>
 </div>
 </div></div></td>
 <td class="tableblock halign-left valign-top"><p class="tableblock"><span class="image"><img src="./images/obj/pg_1-model.svg" alt="pg 1 model"></span></p></td>
@@ -5248,9 +5248,7 @@ mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('id'-&gt;_)
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1][define,vertex&lt;=int-&lt;('id'-&gt;_)]
 ==&gt;_[define,vertex&lt;=int[split,('id'-&gt;int)]]
 mmlang&gt; 5 =&gt; vertex
-==&gt;vertex:('id'-&gt;5)
-mmlang&gt; (5;6) =&gt; (vertex;vertex)
-==&gt;(vertex:('id'-&gt;5);vertex:('id'-&gt;6))</code></pre>
+==&gt;vertex:('id'-&gt;5)</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5262,10 +5260,10 @@ mmlang&gt; (5;6) =&gt; (vertex;vertex)
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">pg_2:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (
-  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>),                                       <i class="conum" data-value="1"></i><b>(1)</b>
-             vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_)),                                   <i class="conum" data-value="2"></i><b>(2)</b>
-  edge   -&gt; (edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),                      <i class="conum" data-value="3"></i><b>(3)</b>
-             edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>)))) &lt;= mm     <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
+  vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>),                                       <i class="conum" data-value="1"></i><b>(1)</b>
+             vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_)),                                  <i class="conum" data-value="2"></i><b>(2)</b>
+  edge   -&gt; (edge:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),                      <i class="conum" data-value="3"></i><b>(3)</b>
+             edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>)))) &lt;= mm    <i class="conum" data-value="4"></i><b>(4)</b></code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5370,9 +5368,9 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="python">pg_3:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (
   graph  -&gt; (graph&lt;=edge{*}),
-  vertex -&gt; (vertex&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>),
+  vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>),
              vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">vertex</span><span style="color:#710">'</span></span>)),
-  edge   -&gt; (edge&lt;=(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),
+  edge   -&gt; (edge:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),
              edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">edge</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>)))) &lt;= mm</code></pre>
 </div>
 </div>
@@ -5475,13 +5473,13 @@ language error: 0 is not a nat</code></pre>
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,list&lt;=[(_){?}|(_,list)]]
 ==&gt;_[define,list&lt;=_[(_){?}|(_,list)]]
 mmlang&gt; (1)             =&gt; list
-==&gt;list:(1)
+==&gt;list:([0])
 mmlang&gt; (1,(1))         =&gt; list
-==&gt;list:(1,list:(1))
+==&gt;list:(1,(1))
 mmlang&gt; (1,(1,(1)))     =&gt; list
-==&gt;list:(1,list:(1,list:(1)))
+==&gt;list:(1,(1,(1)))
 mmlang&gt; (1,(1,(1,(1)))) =&gt; list
-==&gt;list:(1,list:(1,list:(1,list:(1))))
+==&gt;list:(1,(1,(1,(1))))
 mmlang&gt; 1               =&gt; list
 language error: 1 is not a list
 mmlang&gt; (1,1)           =&gt; list
@@ -5560,15 +5558,15 @@ language error: 0 is not a nat</code></pre>
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mm][define,vec:(lst,int)&lt;=lst-&lt;(_,=(_)&gt;-[count]),
                                   single&lt;=vec:(lst,is&lt;4).0[tail][head],
                                   single&lt;=vec:(lst,is&gt;3).0[head]]
-==&gt;_[define,vec&lt;=lst[split,(lst,int&lt;=lst[combine,(_)][merge][count])],single&lt;=vec[get,0,_][tail][head],single&lt;=vec[get,0,_][head]]
+==&gt;_[define,vec&lt;=lst[split,(lst,int&lt;=lst[combine,(_)][merge][count])],single&lt;=vec:(lst,_[is,_[lt,4]])[get,0,_][tail][head],single&lt;=vec:(lst,_[is,_[gt,3]])[get,0,_][head]]
 mmlang&gt; (1;2;3)   =&gt; vec                                               <i class="conum" data-value="1"></i><b>(1)</b>
-==&gt;vec:(((1;2;3),1),2)
+==&gt;vec:((1;2;3),1)
 mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;single:1
+==&gt;single:2
 mmlang&gt; (1;2;3;4) =&gt; vec                                               <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;vec:(((1;2;3;4),1),2)
+==&gt;vec:((1;2;3;4),1)
 mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                                     <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;single:1</code></pre>
+==&gt;single:2</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -5964,7 +5962,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-09-29 11:21:26 -0600
+Last updated 2020-09-29 11:24:09 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
