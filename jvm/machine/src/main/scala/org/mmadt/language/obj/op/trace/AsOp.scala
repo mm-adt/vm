@@ -102,7 +102,7 @@ object AsOp extends Func[Obj, Obj] {
 
   /////// CONVERTERS
 
-  def objConverter(source:Obj, target:Obj):Obj =
+  private def objConverter(source:Obj, target:Obj):Obj =
     (source match {
       case abool:Bool => boolConverter(abool, target)
       case aint:Int => intConverter(aint, target)

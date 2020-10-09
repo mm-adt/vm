@@ -39,7 +39,7 @@ object CombineOp extends Func[Obj, Obj] {
   def apply[A <: Obj, B <: Obj](other:Obj):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.combine, List(other)), func = this) with BranchInstruction with TraceInstruction
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
     (start match {
-      case alst:Poly[Obj] if !alst.ctype => combineAlgorithm(alst, inst.arg0[Poly[Obj]]).via(start, inst)
+      case alst:Poly[Obj] if !alst.ctype => combineAlgorithm(alst, inst.arg0[Poly[Obj]])
       case alst:Poly[Obj] => alst
       case _ => start
     }).via(start, inst)

@@ -81,18 +81,18 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
     assertResult(Seq('nat <= int.plus(10).is(gt(0))))(graph.coerce(int.plus(10), 'nat))
     assertResult(Seq('nat <= (int `;` int `;` int).get(1).is(gt(0))))(graph.coerce((int `;` int `;` int), 'nat))
-    // assertResult(Seq(__('vertex)))(graph.coerce('vertex, 'vertex))
+    assertResult(Seq(__('vertex)))(graph.coerce('vertex, 'vertex))
     assertResult(Seq('vertex(str("id") -> int) <= int.-<(rec(str("id") -> __))))(graph.coerce(int, 'vertex))
     assertResult(Seq('vertex(str("id") -> int(6))))(graph.coerce(6, 'vertex))
     assertResult(Seq(int(6)))(graph.coerce((1 `;` 6 `;` 3), int))
-    assertResult(Seq('edge <= ('vertex `;` 'vertex).-<((str("outV") -> ('vertex <= ('vertex `;` 'vertex).get(0))) `_,`(str("inV") -> ('vertex <= ('vertex `;` 'vertex).get(1))))))(Stream('edge <= graph.coerce('vertex `;` 'vertex, 'edge).head))
-    // assertResult(Seq('edge <= (int `;` int).combine('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
+    assertResult(Seq('edge <= ('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce('vertex `;` 'vertex, 'edge).head))
+    //assertResult(Seq('edge <= (int `;` int).combine('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
   }
 
   test("type construction w/ digraph") {
     val graph:ObjGraph = ObjGraph.create('digraph)
     // GraphSONWriter.build().create().writeGraph(new FileOutputStream(new File("/Users/marko/Desktop/digraph.json")),graph.graph)
-    graph.paths(__, __, OBJ).foreach(x => println(x))
+    graph.paths(__, __).foreach(x => println(x))
     assertResult(str("id") -> __('nat) `_,` str("attrs") -> __('attr).q(qStar))(toBaseName(storage.model('digraph).findCtype("vertex").get))
     val tokens:List[Obj] = graph.g.V().values[Obj](OBJ).toSeq.filter(x => __.isTokenRoot(x)).toList
     println(tokens)
@@ -116,18 +116,21 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('attr(str("key") -> str("marko") `_,` str("value") -> int(29))))(graph.coerce(str("key") -> str("marko") `_,` str("value") -> int(29), 'attr))
     assertResult(Seq('vertex(str("id") -> 'nat(55) `_,` str("attrs") -> 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)))))(graph.coerce('nat(55) `;` 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)), 'vertex))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
-    // assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('nat(100) `;` 'nat(200), 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('nat(100) `;` 'nat(200), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List(('nat(100) `;` 'nat(200)) ==>[Obj] graph.coerce('nat `;` 'nat, 'edge).head))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).head))
-    /* assertResult(8)(
-          graph.fpath(
-            (('nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29))) `;`
-              ('nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27)))), 'edge))*/
+    // TODO: .... I don't think this is a good idea (still uses runtime as'ing)
+    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex `;` 'vertex)).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
+    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex `;` 'vertex)).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
+    /*
+    assertResult(8)(
+    graph.coerce(
+    lst(g = (Tokens.`;`, List(
+      'nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29)),
+      'nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27))))), 'edge))
+   */
     //assertResult(8)(graph.paths((('nat `;` 'attr) `;`('nat `;` 'attr)), 'edge))
-    // TODO: .... I don't think this is a good idea
-    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex `;` 'vertex)).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
-    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex `;` 'vertex)).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
   }
 
   test("play") {
@@ -147,7 +150,7 @@ class ObjGraphTest extends FunSuite {
 
   test("dependent sum construction w/ custom types") {
     val graph = ObjGraph.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))).defining(str <= int))
-    graph.paths(__, __, OBJ).foreach(x => println(x))
+    graph.paths(__, __).foreach(x => println(x))
     assertResult(Stream(int(45)))(graph.coerce(45, int))
     assertResult(Stream(int))(graph.coerce(int, int))
     assertResult(Stream(int))(graph.coerce(int, int <= int))
@@ -174,5 +177,8 @@ class ObjGraphTest extends FunSuite {
     println("____")
 
     graph.coerce(('nat(5) `;` 'nat(6)), str.asInstanceOf[Obj]).foreach(x => println(x))
+
+    println(rec(str("id") -> str("marko")).compute('blah(str -> str)))
+    println(rec(str("id") -> str("marko")).test('blah(str -> int)))
   }
 }

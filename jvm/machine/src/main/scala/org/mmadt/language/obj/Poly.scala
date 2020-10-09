@@ -46,6 +46,7 @@ trait Poly[+A <: Obj] extends Obj
   def size:scala.Int = this.glist.size
   def ctype:Boolean
   def scalarMult(start:Obj):this.type
+  def internalRange:this.type
 }
 
 object Poly {

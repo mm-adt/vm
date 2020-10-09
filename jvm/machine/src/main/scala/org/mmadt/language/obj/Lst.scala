@@ -44,6 +44,7 @@ trait Lst[+A <: Obj] extends Poly[A]
   def gstrm:Strm[A] = strm[A](glist)
   lazy val glist:List[A] = if (null == g._2) List.empty[A] else g._2.map(x => x.update(this.model))
   override def ctype:Boolean = null == g._2 // type token
+  def internalRange:this.type = this.clone(g = (gsep, if (null == g._2) null else g._2.map(x => x.rangeObj)), q = this.q, via = this.domainObj.via)
   override def scalarMult(start:Obj):this.type = this.clone(values => Lst.moduleStruct(gsep, values, start))
   override def reload:this.type = this.update(fetchVars(this.model, this.g._2))
 
@@ -86,7 +87,7 @@ object Lst {
   def shapeTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.coerce(pair._2).alive)
   def exactTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
     case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
-      alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name) && p._1.test(Obj.resolveToken(p._1, p._2)))))
+      alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name) && p._1.test(p._2))))
     case _ => false
   }
   def test[A <: Obj](alst:Lst[A], blst:Lst[A]):Boolean = {

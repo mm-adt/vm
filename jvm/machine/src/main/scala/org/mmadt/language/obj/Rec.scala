@@ -47,7 +47,7 @@ trait Rec[A <: Obj, +B <: Obj] extends Poly[B]
   override def glist:Seq[B] = this.gmap.values
   override def ctype:Boolean = null == g._2 // type token
   override def scalarMult(start:Obj):this.type = this.clone(pairs => Rec.moduleStruct(gsep, pairs, start))
-
+  def internalRange:this.type = this.clone(g=(gsep,if(g._2 == null) null else g._2.map(x=>(x._1.rangeObj,x._2.rangeObj))), q = this.q, via = this.domainObj.via)
   def clone(f:Pairs[A, B] => Pairs[A, Obj]):this.type = this.clone(g = (this.gsep, f(this.gmap)))
   override def equals(other:Any):Boolean = other match {
     case arec:Rec[_, _] => Poly.sameSep(this, arec) &&

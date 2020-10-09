@@ -49,7 +49,10 @@ object SplitOp extends Func[Obj, Obj] {
         case _ => return lst.via(start, inst)
       }
     }
-    val newPoly: Poly[Obj] = apoly.scalarMult(start.clone(q = qOne, via = (start, inst))) // unit the start
+    val newPoly: Poly[Obj] = apoly.scalarMult((start match {
+      case apoly:Poly[Obj] => apoly.internalRange // if a poly is going to be processed as a whole, then its individual components need to be ranged so as to not pull in the entire trace
+      case _ => start
+    } ).clone(q = qOne, via = (start, inst))) // unit the start
     newPoly.clone(via = (start, SplitOp(newPoly).hardQ(inst.q))).hardQ(BranchInstruction.multPolyQ(start, apoly, inst.clone(_ => List(apoly))).q)
   }
 }

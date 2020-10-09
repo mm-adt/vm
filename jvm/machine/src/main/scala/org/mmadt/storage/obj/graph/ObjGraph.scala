@@ -103,7 +103,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   val aSource:Obj => Traverser[Vertex] => Boolean = (source:Obj) => (t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive
   val aTarget:Obj => Traverser[Vertex] => Boolean = (target:Obj) => (t:Traverser[Vertex]) => objMatch(t.get().obj, target).alive
 
-  def paths(source:Obj, target:Obj, form:String = OBJ):Stream[List[Obj]] = {
+  def paths(source:Obj, target:Obj):Stream[List[Obj]] = {
     val xsource = source match {
       case _:__ if __.isAnon(source) => noSource(source)
       case _ => aSource(source)
@@ -112,15 +112,15 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case _:__ if __.isAnon(target) => noTarget(target)
       case _ => aTarget(target)
     }
-    paths(source, target, xsource, xtarget, form)
+    paths(source, target, xsource, xtarget)
   }
-  private def paths(source:Obj, target:Obj, sourceFilter:Traverser[Vertex] => Boolean, targetFilter:Traverser[Vertex] => Boolean, form:String):Stream[List[Obj]] = {
+  private def paths(source:Obj, target:Obj, sourceFilter:Traverser[Vertex] => Boolean, targetFilter:Traverser[Vertex] => Boolean):Stream[List[Obj]] = {
     val sroot:Obj = source.rangeObj
     JavaConverters.asScalaIterator(
       g.R.filter((t:Traverser[Vertex]) => sourceFilter(t))
         .until((t:Traverser[Vertex]) => targetFilter(t))
         .repeat(___.simplePath().outE().inV())
-        .path().by(form))
+        .path().by(OBJ))
       .toStream
       .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
       .filter(x => x.forall(y => y.alive))
@@ -141,6 +141,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case _ if source.named && source.name.equals(target.name) => source
       case alst:Lst[Obj] => target match {
         case blst:LstType[Obj] if blst.ctype => alst.named(blst.name)
+        case blst:Lst[Obj] if Lst.exactTest(alst, blst) => alst
         case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
           val combo = alst.glist.zip(blst.glist).map(pair => coerce(pair._1, pair._2))
           if (combo.exists(x => x.isEmpty)) return zeroObj
