@@ -208,7 +208,7 @@ image:date-example.svg[]
 [exec]
 ----
 :[model,mm][define,nat<=int[is>0],                              %%
-                   date<=(nat[is=<12];nat[is=<31];nat),         %
+                   date:(nat[is=<12];nat[is=<31];nat),         %
                    date<=(nat[is=<12];nat[is=<31])[put,2,2020]]
 (8;26;2020) => date ## date:(nat:8;nat:26;nat:2020)
 (8;26)      => date ## date:(nat:8;nat:26;nat:2020)
@@ -357,11 +357,11 @@ In the previous `pg_1` model, a `vertex` (`edge`) was constructed using a `rec` 
 ----
 {blank}
 ^.^h|define a|
+// (5;6) => (vertex;vertex)                        ## (vertex:('id'->5);vertex:('id'->6))
 [exec]
 ----
 :[model,pg_1][define,vertex<=int-<('id'->_)]
 5 => vertex                                     ## vertex:('id'->5)
-(5;6) => (vertex;vertex)                        ## (vertex:('id'->5);vertex:('id'->6))
 ----
 {blank}
 ^.^h|model a|
