@@ -136,6 +136,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('attr <= (str `;` str).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce('nat(23), 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce(23, 'vertex))
+    assertResult(Seq('vertex(str("id") -> 'nat(23)).q(3)))(graph.coerce(23.q(3), 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data")))))(graph.coerce(-23, 'vertex))
     assertResult(Seq('attr(str("key") -> str("marko") `_,` str("value") -> int(29))))(graph.coerce(str("key") -> str("marko") `_,` str("value") -> int(29), 'attr))
     assertResult(Seq('vertex(str("id") -> 'nat(55) `_,` str("attrs") -> 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)))))(graph.coerce('nat(55) `;` 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)), 'vertex))
@@ -172,14 +173,20 @@ class ObjGraphTest extends FunSuite {
     graph.paths(__, __).foreach(x => println(x))
     assertResult(Stream(int(45)))(graph.coerce(45, int))
     assertResult(Stream(int))(graph.coerce(int, int))
+    assertResult(Stream(int.q(5)))(graph.coerce(int.q(5), int.q(5)))
+    assertResult(Stream(int.q(5)))(graph.coerce(int.q(5), int))
+    // assertResult(Stream(int))(graph.coerce(int, int.q(5)))  TODO: decide on the algebra of coercion (is it just a monoidal operation) -- determines quantifier evoluation
     assertResult(Stream(int))(graph.coerce(int, int <= int))
     assertResult(Stream('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
     assertResult(List(int <=[__] 'nat))(graph.coerce('nat, int))
     assertResult(List(int(2)))(graph.coerce('nat(2), int))
+    assertResult(List(int(2).q(30)))(graph.coerce('nat(2).q(5), int.q(6)))
     assertResult(List(str <= int))(graph.coerce(int, str))
     assertResult(List(str("2")))(graph.coerce(int(2), str))
     assertResult(List('nat(566)))(graph.coerce(566, 'nat))
     assertResult(List('apair(5 `;` 6)))(graph.coerce((5 `;` 6), 'apair))
+    assertResult(List('apair(5 `;` 6).q(10)))(graph.coerce((5 `;` 6).q(10), 'apair))
+    assertResult(List('apair(5 `;` 6).q(20)))(graph.coerce((5 `;` 6).q(10), __('apair).q(2)))
     assertResult(Nil)(graph.coerce((6 `;` 5), 'apair))
   }
 

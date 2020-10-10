@@ -93,11 +93,13 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         (a, b) => b match {
           case _ if !b.alive || !a.alive => zeroObj
           case inst:Inst[Obj, Obj] => inst.exec(a)
-          case _ => a `=>` b
+          case _:Type[Obj] => a.q(b.q)
+          case _:Value[Obj] => a `=>` b
         }))
       .filter(_.alive)
       .distinct
-      .map(x => Try[Obj](source.update(model).compute(x)).filter(y => y.test(x.rangeObj)).getOrElse(zeroObj))
+      .map(x => Try[Obj](source.update(model) `=>` x.q(target.q))
+        .filter(y => y.hardQ(x.rangeObj.q).test(x.rangeObj)).getOrElse(zeroObj)) // filter needed because => doesn't use biproduct coercion yet
       .filter(_.alive)
       .asInstanceOf[Stream[target.type]]
   }
@@ -119,7 +121,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         .until((t:Traverser[Vertex]) =>
           (target == __ && (!t.get().edges(Direction.OUT).hasNext || !t.path().isSimple)) || // all reachable objs
             (target != __ && !__.isTokenRoot(t.get().obj) && t.sack[(Obj, Obj)]._2.alive)) // targeted paths
-        .repeat(___
+        .repeat(___ // this is where various cost/sort algorithms will prune expensive paths
           .simplePath()
           .outE()
           .inV()
@@ -145,7 +147,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   ///////////////////////////////////////////////////
 
   private def objMatch(source:Obj, target:Obj):Obj = {
-    source match {
+    Option(source match {
       case _ if __.isAnon(target) => source
       case _:Poly[Obj] => source match {
         case _ if source.named && source.name.equals(target.name) => source
@@ -173,7 +175,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       }
       case _ if source.name.equals(target.name) => source
       case _ => zeroObj
-    }
+    }).filter(_.alive).map(o => o.q(target.q)).getOrElse(zeroObj)
   }
 
 
