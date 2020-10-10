@@ -37,6 +37,7 @@ import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj
 import org.mmadt.storage.obj.graph.ObjGraph._
 
 import scala.collection.JavaConverters
+import scala.collection.convert.ImplicitConversions.`collection AsScalaIterable`
 import scala.util.Try
 
 /**
@@ -92,7 +93,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         (a, b) => b match {
           case _ if !b.alive || !a.alive => zeroObj
           case inst:Inst[Obj, Obj] => inst.exec(a)
-          case _ => Tokens.tryName(b, a)
+          case _ => a `=>` b
         }))
       .filter(_.alive)
       .distinct
@@ -122,15 +123,15 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           .simplePath()
           .outE()
           .inV()
-          .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[(Obj, Obj)]._1, objMatch(t.get().obj, troot))))
+          .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[(Obj, Obj)]._1, objMatch(t.get.obj, troot))))
         .path().by(OBJ)
-        .map((t:Traverser[Path]) => (t.get, t.sack[(Obj, Obj)])))
+        .map((t:Traverser[Path]) => (t.get().objects().asInstanceOf[java.util.List[Obj]]
+          //.map(y => y.rangeObj)
+          .filter(y => y != NoOp() && y.alive)
+          .toList, t.sack[(Obj, Obj)])))
       .toStream
-      .map(x => (JavaConverters.asScalaBuffer(x._1.objects().asInstanceOf[java.util.List[Obj]]).toList, x._2))
-      .filter(x => x._1.forall(y => y.alive))
-      .map(x => (x._1.map(y => y.rangeObj), x._2))
       // manipulate head and tail types with computable paths
-      .map(x => (x._1.filter(y => y != NoOp()), x._2)) // direct mappings (e.g. str<=int) have a [noop] as the morphism
+      // TODO: reconstruct arguments to all instructions so that a coercion maintains to complete bytecode specification
       .map(x => ((if (!__.isAnonRootAlive(sroot) && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1), x._2))
       .map(x => ((if (__.isAnonRootAlive(sroot) || x._1.head == sroot) x._1 else (sroot +: x._1)), x._2))
       .map(x => if (x._1.last.isInstanceOf[Lst[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1)
@@ -153,10 +154,9 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case blst:Lst[Obj] if Lst.exactTest(alst, blst) => alst
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
             val combo = alst.glist.zip(blst.glist).map(pair => coerce(pair._1, pair._2))
-            if (combo.exists(x => x.isEmpty)) zeroObj else __
-          // TODO: multiple legal paths leads to non-deterministic morphing (currently choosing smallest trace)
-          //val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size).rangeObj)) // hmmmm.
-          //if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else __
+            if (combo.exists(x => x.isEmpty)) return zeroObj
+            val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size))) // hmmmm.
+            if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size)))
           case _ => zeroObj
         }
         case arec:Rec[Obj, Obj] => target match {
