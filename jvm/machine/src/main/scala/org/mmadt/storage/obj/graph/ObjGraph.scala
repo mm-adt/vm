@@ -22,8 +22,8 @@
 
 package org.mmadt.storage.obj.graph
 
-import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
+import org.apache.tinkerpop.gremlin.process.traversal.{Path, Traverser}
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
@@ -105,38 +105,35 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
 
   ///////////////////////////////////////////////////
 
-  val noSource:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => true
-  val noTarget:Obj => Traverser[Vertex] => Boolean = (_:Obj) => (t:Traverser[Vertex]) => !__.isTokenRoot(t.get().obj) && (!t.get().edges(Direction.OUT).hasNext || !t.path().isSimple)
-  val aSource:Obj => Traverser[Vertex] => Boolean = (source:Obj) => (t:Traverser[Vertex]) => objMatch(source, t.get().obj).alive
-  val aTarget:Obj => Traverser[Vertex] => Boolean = (target:Obj) => (t:Traverser[Vertex]) => !__.isTokenRoot(t.get().obj) && objMatch(t.get().obj, target).alive
-
   def paths(source:Obj, target:Obj):Stream[List[Obj]] = {
-    val xsource = source match {
-      case _:__ if __.isAnon(source) => noSource(source)
-      case _ => aSource(source)
-    }
-    val xtarget = target match {
-      case _:__ if __.isAnon(target) => noTarget(target)
-      case _ => aTarget(target)
-    }
-    paths(source, target, xsource, xtarget)
-  }
-  private def paths(source:Obj, target:Obj, sourceFilter:Traverser[Vertex] => Boolean, targetFilter:Traverser[Vertex] => Boolean):Stream[List[Obj]] = {
     val sroot:Obj = source.rangeObj
+    val troot:Obj = target.rangeObj
     JavaConverters.asScalaIterator(
-      g.R.filter((t:Traverser[Vertex]) => sourceFilter(t))
-        .until((t:Traverser[Vertex]) => targetFilter(t))
-        .repeat(___.simplePath().outE().inV())
-        .path().by(OBJ))
+      g.withSack((zeroObj, zeroObj)) // sack(source morph,target morph)
+        .R.inject(createObj(target))
+        .sideEffect((t:Traverser[Vertex]) => t.sack[(Obj, Obj)](objMatch(sroot, t.get.obj), objMatch(t.get.obj, troot)))
+        .filter((t:Traverser[Vertex]) =>
+          (source == __) || // all roots
+            t.sack[(Obj, Obj)]._1.alive) // sourced paths
+        .until((t:Traverser[Vertex]) =>
+          (target == __ && (!t.get().edges(Direction.OUT).hasNext || !t.path().isSimple)) || // all reachable objs
+            (target != __ && !__.isTokenRoot(t.get().obj) && t.sack[(Obj, Obj)]._2.alive)) // targeted paths
+        .repeat(___
+          .simplePath()
+          .outE()
+          .inV()
+          .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[(Obj, Obj)]._1, objMatch(t.get().obj, troot))))
+        .path().by(OBJ)
+        .map((t:Traverser[Path]) => (t.get, t.sack[(Obj, Obj)])))
       .toStream
-      .map(x => JavaConverters.asScalaBuffer(x.objects()).toList.asInstanceOf[List[Obj]])
-      .filter(x => x.forall(y => y.alive))
-      .map(x => x.map(y => y.rangeObj))
+      .map(x => (JavaConverters.asScalaBuffer(x._1.objects().asInstanceOf[java.util.List[Obj]]).toList, x._2))
+      .filter(x => x._1.forall(y => y.alive))
+      .map(x => (x._1.map(y => y.rangeObj), x._2))
       // manipulate head and tail types with computable paths
-      .map(x => x.filter(y => y != NoOp())) // direct mappings (e.g. str<=int) have a [noop] as the morphism
-      .map(x => if (!__.isAnonRootAlive(sroot) && x.size > 1) x.head +: objMatch(sroot, x.head) +: x.tail else x)
-      .map(x => if (__.isAnonRootAlive(sroot) || x.head == sroot) x else sroot +: x)
-      .map(x => if (x.last.isInstanceOf[Lst[Obj]]) x.dropRight(1) :+ objMatch(target.rangeObj,x.last) :+ x.last else x)
+      .map(x => (x._1.filter(y => y != NoOp()), x._2)) // direct mappings (e.g. str<=int) have a [noop] as the morphism
+      .map(x => ((if (!__.isAnonRootAlive(sroot) && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1), x._2))
+      .map(x => ((if (__.isAnonRootAlive(sroot) || x._1.head == sroot) x._1 else (sroot +: x._1)), x._2))
+      .map(x => if (x._1.last.isInstanceOf[Lst[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1)
       .map(x => x.filter(y => !__.isAnonRootAlive(y)))
       .map(x => x.foldLeft(List.empty[Obj])((a, b) => {
         if (a.isEmpty) a :+ b
