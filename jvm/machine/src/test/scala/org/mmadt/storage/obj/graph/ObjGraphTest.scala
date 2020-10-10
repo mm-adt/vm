@@ -87,6 +87,12 @@ class ObjGraphTest extends FunSuite {
     assertResult(Nil)(graph.coerce(int(35), str))
   }
 
+  test("type construction w/ pg_1") {
+    val graph:ObjGraph = ObjGraph.create(storage.model('pg_1))
+    assertResult(Seq('vertex(str("id") -> int(5))))(graph.coerce(rec(str("id") -> int(5)), 'vertex))
+    //assertResult(Seq('vertex(str("id") -> int(6))`;`'vertex(str("id") -> int(7))))(graph.coerce(rec(str("id")->int(6))`;`rec(str("id")->int(7)),'vertex`;`'vertex))
+  }
+
   test("type construction w/ pg_2") {
     val graph:ObjGraph = ObjGraph.create(storage.model('pg_2).defining('nat <= int.is(gt(0))).defining(int <= (int `;` int `;` int).get(1)))
     println(graph.coerce(int, str))
