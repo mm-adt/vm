@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj.Obj.symbolToToken
 import org.mmadt.language.obj.op.map.{MultOp, PlusOp}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
@@ -32,6 +33,19 @@ import org.scalatest.FunSuite
  */
 class __Test extends FunSuite {
 
+  test("__ check methods") {
+    assert(__.isTokenRoot('nat))
+    assert(!__.isTokenRoot('nat.plus(1)))
+    assert(!__.isTokenRoot(int))
+    assert(!__.isTokenRoot('nat <= int.plus(10)))
+    assert(__.isToken('nat))
+    assert(__.isToken('nat.plus(10)))
+    assert(__.isToken('nat <= int))
+    assert(!__.isToken(int <= __('nat)))
+    assert(__.isAnon(__))
+    assert(__.isAnon(__.plus(6)))
+  }
+  
   test("__ compute on ctype") {
     assertResult(int(4))(int(4).compute(__))
     assertResult(int)(int.compute(__))
