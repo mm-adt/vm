@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.trace.AsOp.autoAsType
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, RecValue, StrValue, Value}
+import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -79,17 +79,13 @@ object AsOp extends Func[Obj, Obj] {
 
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
     val asObj:Obj = if (searchable(target)) WalkOp.walkSourceToTarget(source, target, targetName = true) else target
-    val dObj:Obj = Tokens.tryName(asObj, pickMapping(source, asObj))
-    val rObj:Obj =
-      if (searchable(asObj.range) && asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined)
-        pickMapping(dObj, Tokens.tryName(target, asObj.range))
-      else dObj
+    val dObj:Obj = pickMapping(source, asObj).named(asObj.name)
+    val rObj:Obj = if (searchable(asObj.range) && asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined)
+      pickMapping(dObj, asObj.range.named(target.name)) else dObj
     if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
-    Tokens.tryName(asObj, rObj)
+    rObj.named(asObj.name)
   }
 
-  /*private def baseMapping(source:Obj, target:Obj):Boolean = __.isAnon(source) || __.isAnon(target) || source.named || target.named ||
-    source.model.dtypes.exists(t => source.name.equals(t.domainObj.name) && target.name.equals(t.rangeObj.name))*/
   def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
 
   private def pickMapping(source:Obj, target:Obj):Obj = {

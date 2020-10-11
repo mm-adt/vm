@@ -55,10 +55,10 @@ object WalkOp extends Func[Obj, Obj] {
   /////////////////////////////////////////////////////////////////////////
 
   def walkSourceToTarget[A <: Obj](source:Obj, target:A, targetName:Boolean = false):A = {
-    val result:A = source match {
+    source match {
       case astrm:Strm[Obj] => astrm(x => walkSourceToTarget[A](x, target))
       case _ if !target.named => target // NEED A PATH RESOLVER FOR BASE TYPES TO AVOID STACK ISSUES
-      case _ => Obj.resolveTokenOption(source, target).getOrElse({
+      case _ => Obj.resolveTokenOption(source, target, !targetName).getOrElse({
         if (source.isInstanceOf[Type[_]] || !AsOp.searchable(target)) return target
         source.coerce(target).drain.headOption.getOrElse {
           if (source.model.graph.exists(target)) throw LanguageException.typingError(source, asType(target))
@@ -66,6 +66,5 @@ object WalkOp extends Func[Obj, Obj] {
         }
       })
     }
-    if (targetName) result.named(target.name) else result
   }
 }
