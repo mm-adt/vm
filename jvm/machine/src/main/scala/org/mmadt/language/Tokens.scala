@@ -126,7 +126,7 @@ object Tokens {
   val or_op = "||"
   val not_op = "!"
   val get_op = "."
-  val help_op = "?"
+  val is_a = "?"
   val barrier_op = "=|"
 
   val split_op = "-<"

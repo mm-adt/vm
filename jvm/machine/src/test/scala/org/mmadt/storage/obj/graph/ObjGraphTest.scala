@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str}
+import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, lst, qStar, real, rec, str}
 import org.mmadt.storage.obj.graph.ObjGraph.OBJ
 import org.scalatest.FunSuite
 
@@ -119,10 +119,9 @@ class ObjGraphTest extends FunSuite {
     assertResult(str("id") -> __('nat) `_,` str("attrs") -> __('attr).q(qStar))(toBaseName(storage.model('digraph).findCtype("vertex").get))
     val tokens:List[Obj] = graph.g.V().values[Obj](OBJ).toSeq.filter(x => __.isTokenRoot(x)).toList
     println(tokens)
-    assertResult(3)(tokens.length) // TODO: I don't like the ambiguousness of tokens vs. their canonical form (this needs to be settled)
+    assertResult(2)(tokens.length) // TODO: I don't like the ambiguousness of tokens vs. their canonical form (this needs to be settled)
     assert(tokens.contains(__('nat)))
     assert(tokens.contains(__('poly)))
-    assert(tokens.contains(__('vertex)))
     //
     assertResult(Stream(graph.model))(graph.coerce('digraph, 'digraph))
     assertResult(Stream(int))(graph.coerce(int, int))
@@ -212,5 +211,31 @@ class ObjGraphTest extends FunSuite {
     assertResult(Stream(str <= int))(graph.coerce(int, str))
     assertResult(Stream(str("4")))(graph.coerce(4, str))
     assertResult(Stream(str <= int.plus(10)))(graph.coerce(int.plus(10), str))
+  }
+
+  test("coercion on recursive types") {
+    val rmodel = storage.model('mm)
+      .defining('tree <= branch(??(0) `|`(int `;` 'tree `;` int)))
+      .defining('ctree <= branch(??(0) `|` (int.to('x) `;`'ctree`;`int.to('y)).is('x.gt('y))))
+    val graph = ObjGraph.create(rmodel)
+    // single level
+    assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('tree))
+    assertResult(btrue)((1 `;` 0 `;` 1).model(rmodel) ==> a('tree))
+    assertResult(bfalse)((1 `;` 1).model(rmodel) ==> a('tree))
+    assertResult(bfalse)((1 `;` 0 `;` "a").model(rmodel) ==> a('tree))
+    assertResult(bfalse)((1 `;` 0 `;` 1 `;` 1).model(rmodel) ==> a('tree))
+    // multi-level
+    assertResult(btrue)((1 `;`(2 `;` 0 `;` 2) `;` 1).model(rmodel) ==> a('tree))
+    assertResult(bfalse)((1 `;`(2 `;` 2 `;` 2) `;` 1).model(rmodel) ==> a('tree))
+    assertResult(btrue)((1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1).model(rmodel) ==> a('tree))
+    // coercion
+    assertResult(Stream('tree(1 `;`'tree(2 `;`'tree(3 `;` 'tree(0) `;` 3) `;` 2) `;` 1)))(graph.coerce(1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1,'tree))
+    assertResult('tree(1 `;`'tree(2 `;`'tree(3 `;` 'tree(0) `;` 3) `;` 2) `;` 1))((1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1).model(rmodel) ==>[Obj] 'tree)
+    ///////////
+    // ctree //
+    ///////////
+//  assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('ctree))
+    assertResult(btrue)((2`;`0`;`1).model(rmodel) ==> a('ctree))
+    assertResult(bfalse)((1`;`0`;`1).model(rmodel) ==> a('ctree))
   }
 }

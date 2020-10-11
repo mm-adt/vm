@@ -61,6 +61,8 @@ object ObjGraph {
 
   @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
     def R:GraphTraversal[Vertex, Vertex] = g.V().has(ROOT, true)
+    def C(token:Symbol):GraphTraversal[Vertex, Vertex] = g.C(token.name)
+    def C(name:String):GraphTraversal[Vertex, Vertex] = g.R.filter((t:Traverser[Vertex]) => !__.isTokenRoot(t.get().obj) && t.get().obj.name.equals(name))
   }
 }
 class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
@@ -71,9 +73,9 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   } else {
     Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
       .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
-      .flatMap(x => x._1 +: x._2.glist)
+      .flatMap(x => x._2.glist.filter(y => y.root) :+ x._1) // ctype + token ctype
       .distinct
-      .foreach(c => this.createType((if (__.isTokenRoot(c)) this.model.findCtype[Obj](c.name).getOrElse(c) else c).asInstanceOf[Type[Obj]]))
+      .foreach(c => this.createType(c.asInstanceOf[Type[Obj]]))
     model.dtypes.foreach(d => this.createType(d))
   }
 
@@ -134,8 +136,8 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       .toStream
       // manipulate head and tail types with computable paths
       // TODO: reconstruct arguments to all instructions so that a coercion maintains to complete bytecode specification
-      .map(x => ((if (!__.isAnonRootAlive(sroot) && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1), x._2))
-      .map(x => ((if (__.isAnonRootAlive(sroot) || x._1.head == sroot) x._1 else (sroot +: x._1)), x._2))
+      .map(x => (if (!__.isAnonRootAlive(sroot) && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1, x._2))
+      .map(x => (if (__.isAnonRootAlive(sroot) || x._1.head == sroot) x._1 else (sroot +: x._1), x._2))
       .map(x => if (x._1.last.isInstanceOf[Lst[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1)
       .map(x => x.filter(y => !__.isAnonRootAlive(y)))
       .map(x => x.foldLeft(List.empty[Obj])((a, b) => {
@@ -187,7 +189,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         val rangeV = bindObj(atype.range)
         val edge = target.addEdge(Tokens.noop, rangeV, OBJ, NoOp())
         if (__.isTokenRoot(rangeV.obj))
-          rangeV.addEdge(Tokens.noop, bindObj(Obj.resolveToken(__.update(this.model), rangeV.obj)), OBJ, NoOp())
+          g.C(rangeV.obj.name).map((t:Traverser[Vertex]) => rangeV.addEdge(Tokens.noop, t.get(), OBJ, NoOp())).iterate()
         edge
       })
     }

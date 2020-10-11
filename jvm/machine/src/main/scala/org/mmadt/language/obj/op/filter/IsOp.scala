@@ -37,6 +37,7 @@ trait IsOp {
   this: Obj =>
   def is(anon: __): this.type = IsOp(anon).exec(this)
   def is(bool: Bool): this.type = IsOp(bool).exec(this)
+  def ??(obj:Obj):this.type = IsOp(__.a(obj)).exec(this)
 }
 object IsOp extends Func[Obj, Obj] {
   def apply[O <: Obj](other: Obj): Inst[O, O] = new VInst[O, O](g = (Tokens.is, List(other.asInstanceOf[O])), func = this)
