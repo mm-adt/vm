@@ -91,7 +91,6 @@ object ModelOp extends Func[Obj, Obj] {
     lazy val graph:ObjGraph = ObjGraph.create(model)
     lazy val coreName:String = model.name.split(MODEL_EXTENSION)(0)
 
-    final def resolve(aobj:Obj):Obj = Obj.resolveToken(__.update(this.model), aobj, baseName = false)
     private final def findType[A <: Obj](model:Model, source:Obj, targetName:String):List[A] =
       (if (model.name.equals(targetName)) List(model).asInstanceOf[List[A]]
       else model.gmap.fetchOrElse(TYPE, NOREC).gmap

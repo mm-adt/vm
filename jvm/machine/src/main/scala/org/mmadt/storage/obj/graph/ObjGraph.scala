@@ -187,7 +187,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         val rangeV = bindObj(atype.range)
         val edge = target.addEdge(Tokens.noop, rangeV, OBJ, NoOp())
         if (__.isTokenRoot(rangeV.obj))
-          rangeV.addEdge(Tokens.noop, bindObj(model.resolve(rangeV.obj)), OBJ, NoOp())
+          rangeV.addEdge(Tokens.noop, bindObj(Obj.resolveToken(__.update(this.model), rangeV.obj)), OBJ, NoOp())
         edge
       })
     }
