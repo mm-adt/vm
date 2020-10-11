@@ -33,16 +33,16 @@ import org.scalatest.Matchers.assertResult
  */
 object TestUtil {
 
-  private val engine: mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
+  private val engine:mmADTScriptEngine = new mmlangScriptEngineFactory().getScriptEngine
 
-  def stringify(obj: Obj): String = if (obj.isInstanceOf[Strm[_]]) {
+  def stringify(obj:Obj):String = if (obj.isInstanceOf[Strm[_]]) {
     if (!obj.alive)
       zeroObj.toString
     else
       obj.toStrm.drain.foldLeft("[")((a, b) => a.concat(b + ",")).dropRight(1).concat("]")
   } else obj.toString
 
-  def evaluate(start: Obj, middle: Obj, end: Obj, inst: Inst[Obj, Obj] = null, engine: mmADTScriptEngine = engine, compile: Boolean = true): Unit = {
+  def evaluate(start:Obj, middle:Obj, end:Obj, inst:Inst[Obj, Obj] = null, engine:mmADTScriptEngine = engine, compile:Boolean = true):Unit = {
     engine.eval(":")
     val evaluating = List[Obj => Obj](
       s => engine.eval(s"${stringify(s)} => ${middle}"),

@@ -211,6 +211,6 @@ class ObjGraphTest extends FunSuite {
     val graph = ObjGraph.create(storage.model('none).defining(str <= int))
     assertResult(Stream(str <= int))(graph.coerce(int, str))
     assertResult(Stream(str("4")))(graph.coerce(4, str))
-    assertResult(Stream(str<=int.plus(10)))(graph.coerce(int.plus(10), str))
+    assertResult(Stream(str <= int.plus(10)))(graph.coerce(int.plus(10), str))
   }
 }

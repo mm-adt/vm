@@ -25,6 +25,7 @@ package org.mmadt.processor.inst.branch
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__.merge
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory.{int, lst, str, zeroObj}
@@ -33,7 +34,7 @@ import org.mmadt.storage.StorageFactory.{int, lst, str, zeroObj}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class MergeInstTest extends BaseInstTest(
-  testSet(",-lst table test",
+  testSet(",-lst table test", List(NONE, MM, MMX),
     comment("no quantifiers"),
     testing(lst(), merge, zeroObj, "( )>-"),
     testing(1 `,`, merge, 1, "(1)>-"),
@@ -48,16 +49,15 @@ class MergeInstTest extends BaseInstTest(
     testing(1 `,` 2.q(10) `,` 3, merge.q(2), int(1.q(2), 2.q(20), 3.q(2)), "(1,2{10},3)>-{2}"),
     testing((1 `,` 2 `,` 3 `,` 3).q(2, 5), merge.q(10), int(1.q(20, 50), 2.q(20, 50), 3.q(40, 100)), "(1,2,3,3){2,5}>-{10}"),
     testing(1 `,` "a".q(10) `,` 2 `,` "a".q(2), merge.q(3), __(1.q(3), "a".q(30), 2.q(3), "a".q(6)), "(1,'a'{10},2,'a'{2})>-{3}"),
-  ), testSet(";-lst table test",
+  ), testSet(";-lst table test", List(NONE, MM, MMX),
     comment("no quantifiers"),
-
     testing(lst(), merge, zeroObj, "()>-"),
     testing(1 `;`, merge, 1, "(1)>-"),
     testing(1 `;` 2 `;` 3, merge, 3, "(1;2;3)>-"),
     testing(1 `;` "a" `;` 4.0, merge, 4.0, "(1;'a';4.0)>-"),
     comment("quantifiers"),
     // testing(1.q(2) `;` 2.q(3) `;` 3, merge, 3.q(6), "(1{2};2{3};3)>-"), // TODO: solve [split]/[merge] scalar multiplication timing
-  ), testSet("|-lst table test",
+  ), testSet("|-lst table test", List(NONE, MM, MMX),
     comment("no quantifiers"),
     testing(lst(), merge, zeroObj, "()>-"),
     testing(int(1) `|`, merge, 1, "(1)>-"),

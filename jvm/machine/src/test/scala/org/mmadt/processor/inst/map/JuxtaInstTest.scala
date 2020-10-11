@@ -31,7 +31,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor2}
 class JuxtaInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[juxta] value, type, strm, anon combinations") {
-    val starts: TableFor2[List[Obj], Obj] =
+    val starts:TableFor2[List[Obj], Obj] =
       new TableFor2[List[Obj], Obj](("query", "result"),
         // value/value
         (List(int(1).q(5)), int(1).q(5)),

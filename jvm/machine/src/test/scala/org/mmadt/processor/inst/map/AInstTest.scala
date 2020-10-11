@@ -26,14 +26,14 @@ import org.mmadt.language.mmlang.mmlangScriptEngineFactory
 import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.Obj.{booleanToBool, intToInt}
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableFor3
 
 class AInstTest extends BaseInstTest(
-  testSet("[a] table test",List(NONE,MM),
+  testSet("[a] table test", List(NONE, MM, MMX),
     comment("bool"),
     testing(true, a(true), true, "true[a,true]"),
     testing(true, a(true.q(1)), true, "true[a,true{1}]"),
@@ -130,7 +130,7 @@ class AInstTest extends BaseInstTest(
   )) {
 
   test("[a] lineage") {
-    val check: TableFor3[Obj, Obj, scala.Int] =
+    val check:TableFor3[Obj, Obj, scala.Int] =
 
       new TableFor3(("computation", "result", "lineage length"),
         (20, 20, 0),

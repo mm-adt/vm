@@ -22,18 +22,18 @@
 
 package org.mmadt.processor.inst.map
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{doubleToReal, intToInt, stringToStr, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ZeroInstTest extends BaseInstTest(
-  testSet("[zero] table test",
+  testSet("[zero] table test", List(NONE),
     comment("bool"),
     testing(true, zero, false, "true[zero]"),
     testing(false, zero, false, "false[zero]"),

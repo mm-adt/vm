@@ -25,13 +25,13 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class HeadInstTest extends BaseInstTest(
-  testSet("[head] table test",List(NONE,MM),
+  testSet("[head] table test", List(NONE, MM, MMX),
     comment(";-lst"),
     testing(1 `;` 2 `;` 3, lst.head, 1, "(1;2;3) => lst[head]"),
     testing(1 `;` 2 `;` 3, head, 1, "(1;2;3)[head]"),

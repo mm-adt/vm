@@ -188,7 +188,7 @@ class RecTypeTest extends FunSuite {
     assert(personNameBackwards.test(personName))
     assert(personName.test(personBackwards))
     assert(personBackwards.test(person))
-//    assert(marko.test(extra))
+    //    assert(marko.test(extra))
     assert(marko.test(extraLess))
     assert(!extra.test(marko))
     assert(!extraLess.test(marko))

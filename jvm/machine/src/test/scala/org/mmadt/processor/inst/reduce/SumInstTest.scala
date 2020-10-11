@@ -27,7 +27,7 @@ import org.scalatest.FunSuite
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-class SumInstTest  extends FunSuite {
+class SumInstTest extends FunSuite {
   test("[sum] w/ int") {
     assertResult(int(2))(int(2).sum())
     assertResult(int(20))(int(2).q(10).sum())

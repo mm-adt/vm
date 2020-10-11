@@ -27,7 +27,7 @@ import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken}
 import org.mmadt.language.obj.`type`.LstTypeTest._
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, Model, NONE}
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
@@ -45,9 +45,9 @@ object LstTypeTest {
 
 }
 class LstTypeTest extends BaseInstTest(
-  testSet("lst ctype basics",
+  testSet("lst ctype basics", List(NONE, MM, MMX),
     testing(lst, lst, lst, "lst=>lst"),
-    testing(lst(), lst(), lst(), "()=>())"),
+    //testing(lst(), lst(), lst(), "()=>())"),
     testing(lst(), lst, lst(), "()=>lst"),
     //testing(lst(),lst(),lst,"()=>lst"),
     testing(lst(), a(lst), true, "()[a,lst]"),

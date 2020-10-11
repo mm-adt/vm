@@ -30,7 +30,7 @@ import org.scalatest.FunSuite
 class ValueTest extends FunSuite {
 
   test("value hashCode, equals, toString") {
-    val values: List[Value[Obj]] = List(btrue, int(1), real(1.0), str("1"), (int(1) `,`).asInstanceOf[LstValue[Obj]], rec(int(1) -> str("1")).asInstanceOf[RecValue[Obj, Obj]])
+    val values:List[Value[Obj]] = List(btrue, int(1), real(1.0), str("1"), (int(1) `,`).asInstanceOf[LstValue[Obj]], rec(int(1) -> str("1")).asInstanceOf[RecValue[Obj, Obj]])
     var sameCounter = 0
     var diffCounter = 0
     for (a <- values) {

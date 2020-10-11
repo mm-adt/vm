@@ -34,7 +34,7 @@ import org.scalatest.FunSuite
 class TypeTest extends FunSuite {
 
   test("type hashCode, equals, toString") {
-    val types: List[Type[Obj]] = List(bool, int, real, lst, str, rec, __)
+    val types:List[Type[Obj]] = List(bool, int, real, lst, str, rec, __)
     var sameCounter = 0
     var diffCounter = 0
     for (a <- types) {
@@ -59,7 +59,7 @@ class TypeTest extends FunSuite {
   }
 
   test("type structure w/ one canonical type") {
-    var tobj: IntType = int.plus(10).mult(1).is(int.gt(20))
+    var tobj:IntType = int.plus(10).mult(1).is(int.gt(20))
     assertResult(int)(tobj.domain)
     assertResult("int{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]]")(tobj.toString)
     assertResult(int.q(0, 1))(tobj.range)
@@ -94,7 +94,7 @@ class TypeTest extends FunSuite {
   }
 
   test("type structure w/ two canonical types") {
-    val boolType: BoolType = int.plus(10).mult(1).is(int.gt(20)).gt(100).asInstanceOf[BoolType]
+    val boolType:BoolType = int.plus(10).mult(1).is(int.gt(20)).gt(100).asInstanceOf[BoolType]
     assertResult(int)(boolType.domain)
     assertResult(Nil)(boolType.domain.trace)
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][gt,100]")(boolType.toString)
@@ -136,7 +136,7 @@ class TypeTest extends FunSuite {
     }
   }
 
-  def domainTest(atype: Type[_]): Unit = {
+  def domainTest(atype:Type[_]):Unit = {
     assertResult(int)(atype.domain)
     assertThrows[LanguageException] {
       atype.domain.rinvert
@@ -148,7 +148,7 @@ class TypeTest extends FunSuite {
   }
 
   test("type structure w/ three canonical types") {
-    val boolType: BoolType = int.plus(int(10)).mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a").asInstanceOf[BoolType]
+    val boolType:BoolType = int.plus(int(10)).mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)).gt("a").asInstanceOf[BoolType]
     assertResult("bool{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,'hellohello'][gt,'a']")(boolType.toString)
     assertResult(bool.q(0, 1))(boolType.range)
     assertResult(bool)(boolType.range.q(qOne))
@@ -158,7 +158,7 @@ class TypeTest extends FunSuite {
     assertResult(int.mult(int(1)).is(int.gt(int(20))).map(str("hello").plus(str)))(boolType.linvert.rinvert)
     domainTest(boolType)
     //
-    val strType: StrType = boolType.rinvert[StrType]
+    val strType:StrType = boolType.rinvert[StrType]
     assertResult(int)(strType.domain)
     assertResult("str{?}<=int[plus,10][mult,1][is,bool<=int[gt,20]][map,'hellohello']")(strType.toString)
     assertResult(str.q(0, 1))(strType.range)

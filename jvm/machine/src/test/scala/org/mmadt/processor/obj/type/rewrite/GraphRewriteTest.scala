@@ -66,7 +66,7 @@ class GraphRewriteTest extends FunSuite {
 
   test("connected values") {
     def makeEdge(outV:Vertex, label:String, inV:Vertex) = {
-      (str("outV") -> outV`_,` str("label") -> str(label)`_,` str("inV") -> inV)
+      (str("outV") -> outV `_,` str("label") -> str(label) `_,` str("inV") -> inV)
     }
     var marko:Vertex = rec(str("id") -> int(1)).asInstanceOf[RecValue[StrValue, Value[Obj]]]
     val vadas:Vertex = rec(str("id") -> int(2)).asInstanceOf[RecValue[StrValue, Value[Obj]]]

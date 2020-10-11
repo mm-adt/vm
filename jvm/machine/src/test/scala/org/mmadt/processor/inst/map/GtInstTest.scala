@@ -26,7 +26,7 @@ import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{booleanToBool, intToInt, stringToStr}
 import org.mmadt.language.obj.`type`.__.{gt, id, mult}
 import org.mmadt.language.obj.op.map.GtOp
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class GtInstTest extends BaseInstTest(
-  testSet("[gt] table test", List(NONE, MM),
+  testSet("[gt] table test", List(NONE, MM, MMX),
     comment("int"),
     testing(2, gt(1), true, "2 => [gt,1]"),
     testing(2.q(10), gt(1), true.q(10), "2{10}[gt,1]"),

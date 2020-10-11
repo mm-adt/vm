@@ -25,7 +25,7 @@ package org.mmadt.processor.inst.trace
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.MMX
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._

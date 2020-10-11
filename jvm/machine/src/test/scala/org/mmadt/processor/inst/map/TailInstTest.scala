@@ -31,7 +31,7 @@ import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class TailInstTest extends BaseInstTest(
-  testSet("[tail] table test",List(NONE,MM),
+  testSet("[tail] table test", List(NONE, MM, MMX),
     comment(";-lst"),
     testing(1 `;`, tail, lst(), "(1)[tail]"),
     testing(1 `;`, lst.tail, lst(), "(1) => lst[tail]"),

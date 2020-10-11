@@ -28,11 +28,11 @@ import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.NegOp
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, excepting, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory.{int, real}
 
 class NegInstTest extends BaseInstTest(
-  testSet("[neg] table test",List(NONE,MM),
+  testSet("[neg] table test", List(NONE, MM), // MMX),
     comment("int"),
     testing(2, int.neg, -2, "2 => int[neg]"),
     testing(2.q(2), int.q(2).neg, -2.q(2), "2{2} => int{2}[neg]"),

@@ -36,7 +36,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
 class EqsInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[eq] value, type, strm, anon combinations") {
-    val starts: TableFor4[Obj, Obj, Obj, String] =
+    val starts:TableFor4[Obj, Obj, Obj, String] =
       new TableFor4[Obj, Obj, Obj, String](("input", "type", "result", "kind"),
         //////// INT
         (int.q(qZero), __.eqs(str.q(qZero)), btrue.q(qZero), "value"),

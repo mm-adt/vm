@@ -33,7 +33,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor1, TableFor4}
 class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
 
   test("[or] value, type, strm, anon combinations") {
-    val starts: TableFor4[Obj, Obj, Obj, String] =
+    val starts:TableFor4[Obj, Obj, Obj, String] =
       new TableFor4[Obj, Obj, Obj, String](("input", "type", "result", "kind"),
         (bfalse, __.or(btrue), btrue, "value"), // value * value = value
         (bfalse, __.or(bool), bfalse, "value"), // value * type = value
@@ -49,9 +49,9 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
   }
 
   test("[or] testing") {
-    def maker(x: Obj with OrOp): Obj = x.q(2).or(bfalse).q(3).or(bfalse).q(10)
+    def maker(x:Obj with OrOp):Obj = x.q(2).or(bfalse).q(3).or(bfalse).q(10)
 
-    val starts: TableFor1[OrOp with Obj] =
+    val starts:TableFor1[OrOp with Obj] =
       new TableFor1("obj",
         bool,
         btrue,

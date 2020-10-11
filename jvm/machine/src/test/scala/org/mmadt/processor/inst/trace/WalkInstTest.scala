@@ -29,9 +29,8 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.processor.inst.trace.WalkInstTest._
-import org.mmadt.storage.StorageFactory.{int, lst, str, strm}
+import org.mmadt.storage.StorageFactory.int
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -127,7 +126,7 @@ class WalkInstTest extends BaseInstTest(
     testing('B, __, 'B, "B"),
     testing('C, __, 'C, "C"),
     )*/
-  ) {
+) {
   test("walk play") {
     // assertResult(MODEL)(PARSE_MODEL)
     println(MODEL)

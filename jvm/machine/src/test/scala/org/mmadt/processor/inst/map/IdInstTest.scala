@@ -26,7 +26,7 @@ import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__.{id, _}
 import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.op.trace.ModelOp.{Model, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.BaseInstTest.model
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
@@ -40,7 +40,7 @@ object IdInstTest {
   val IDRULE:Model = (ModelOp.TYPE -> (lst(__) -> lst(g = (",", List((__ `,`) <= '^(id `,`)))) `,`) `,`).asInstanceOf[Model]
 }
 class IdInstTest extends BaseInstTest(
-  testSet("[id] table test",
+  testSet("[id] table test", List(NONE),
     comment("int"),
     testing(int(2), int.id, int(2), "2 => int[id]"),
     testing(int(-2), int.id, int(-2), "-2 => int[id]"),

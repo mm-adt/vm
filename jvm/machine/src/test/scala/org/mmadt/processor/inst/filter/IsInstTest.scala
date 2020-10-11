@@ -24,13 +24,13 @@ package org.mmadt.processor.inst.filter
 
 import org.mmadt.language.obj.Obj.{booleanToBool, doubleToReal, intToInt}
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class IsInstTest extends BaseInstTest(
-  testSet("[is] table test", List(NONE, MM),
+  testSet("[is] table test", List(NONE, MM, MMX),
     comment("int"),
     testing(2, is(true), 2, "2[is,true]"),
     testing(2.q(10), int.q(10).is(true), 2.q(10), "2{10} => int{10}[is,true]"),

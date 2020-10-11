@@ -22,36 +22,36 @@
 
 package org.mmadt.processor.inst.branch
 
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory.{real, _}
 
 class SplitInstTest extends BaseInstTest(
-  testSet("[split] lst table test",
-    testing(lst, is(lst.eqs(lst.zero)), lst, "lst => [is,lst[eq,lst[zero]]]"),
-    testing(lst, eqs(lst.zero), btrue, "lst => [eq,lst[zero]]"),
-    testing(1, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"), // why 1 not work?
-    testing(lst, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"),
-  ), testSet("[split] ,-lst table test",
-    testing(lst, is(lst.eqs(lst.zero)), lst, "lst => [is,lst[eq,lst[zero]]]"),
-    testing(lst, eqs(lst.zero), btrue, "lst => [eq,lst[zero]]"),
-    testing(1, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"), // why 1 not work?
-    testing(lst, map(lst).eqs(lst.zero), btrue, "lst => [map,lst][eq,lst[zero]]"),
-    testing(1, -<(int `,` int), int(1) `,` int(1), "1-<(int,int)"),
+  testSet("[split] lst table test", List(NONE, MM, MMX),
+    testing(lst, zero, lst(), "lst => [zero]"),
+    testing(lst(), is(eqs(lst().zero)), lst(), "() => [is,[eq,[zero]]]"),
+    testing(lst(), zero, lst(), "() => [zero]"),
+    testing(1, map(lst()).eqs(lst.zero), btrue, "1 => [map,()][eq,lst[zero]]"),
+    testing(lst(), map(lst()).eqs(zero), btrue, "() => [map,()][eq,[zero]]"),
+    // testing(lst, map(lst()).eqs(zero), btrue, "lst => [map,()][eq,[zero]]"),
+  ), testSet("[split] ,-lst table test", List(NONE, MM, MMX),
+    //testing(1, -<(int `,` int), int(1) `,` int(1), "1-<(int,int)"),
     testing(1, -<(int `,` int.plus(2)), int(1) `,` int(3), "1-<(int,int+2)"),
-    testing(1, -<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10), "1-<(int,int+{10}2)"),
-    testing(1.q(5), -<(int `,` int.plus(2).q(10)), (1 `,` 3.q(10)).q(5), "1{5}-<(int,int+{10}2)"),
+    //testing(1, -<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10), "1-<(int,int+{10}2)"),
+    //testing(1.q(5), -<(int `,` int.plus(2).q(10)), (1 `,` 3.q(10)).q(5), "1{5}-<(int,int+{10}2)"),
     testing(1.q(5), -<(int `,` int.plus(2).q(10)) >-, int(1.q(5), 3.q(50))),
-  ), testSet("[split] ;-lst table test",
+  ), testSet("[split] ;-lst table test", List(NONE, MM, MMX),
     testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
     testing(2.q(2), int.q(2).-<(int `;` int.is(gt(10))), (2 `;` zeroObj).q(2), "2{2} => int{2}-<(int;int[is>10])"),
     testing(2, int.-<(int `;` int.is(gt(10))), 2 `;` zeroObj, "2 => int-<(int;int[is>10])"),
-  ), testSet("[split] |-lst table test",
+  ), testSet("[split] |-lst table test", List(NONE, MM),
     testing(int(1, 100), -<(int | int) >-, int(int(1), int(100)), "[1,100]-<(int|int)>-"),
     testing(int(1, 100), -<(int.q(?) | int) >-, int(int(1), int(100)), "[1,100]-<(int{?}|int)>-"),
     testing(int(1, 100), -<(int `,` int) >-, int(1, 1, 100, 100), "[1,100]-<(int,int)>-"),
@@ -62,42 +62,37 @@ class SplitInstTest extends BaseInstTest(
     testing(int(1, 2), -<(int | (int -< (int | int))), __(int(1) `|`, int(2) `|`), "[1,2]-<(int|int-<(int|int))"),
     testing(int(1, 2), -<(int `,`(int -< (int | int))), __(int(1) `,`(int(1) |), 2 `,`(int(2) |))),
     testing(1, -<(str.q(?) | int), zeroObj | 1, "1-<(str{?}|int)"),
-
     testing(int(1, 2, 3), int.q(3).-<(int.q(3) `;` int.q(3)), strm(List(1 `;` 1, 2 `;` 2, 3 `;` 3)), "(1,2,3) => lst>--<(int{3};int{3})"),
     testing(2, -<(int.q(?) | str), int(2) | __.q(qZero), "2-<(int{?}|str)"),
     testing(4.q(2), int.q(2).-<(int | int.is(gt(10))), (4 | zeroObj).q(2), "4{2} => int{2}-<(int|int[is>10])"),
     testing(2, int.-<((int | int.is(gt(11))) | int.is(gt(10))), (2 | zeroObj | zeroObj), "2 => int-<(int|int[is>11])"),
   ),
-  testSet("[split] |-rec table test",
-    testing(0, plus(1).-<(
-      int.is(int.gt(2)) -> int.mult(3) |
-        int -> int.mult(4)) >-, 4, "0[plus,1]-<(int[is>2] -> int[mult,3] | int -> int[mult,4])>-"),
-    testing(0, int.plus(39).-<(
-      int.is(int.gt(40)) -> int.plus(1) |
-        int.is(int.gt(30)) -> int.plus(2) |
-        int.is(int.gt(20)) -> int.plus(3) |
-        int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 42, "0 => int[plus,39]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    testing(0, int.plus(29).-<(
-      int.is(int.gt(40)) -> int.plus(1) `_|`
-        int.is(int.gt(30)) -> int.plus(2) `_|`
-        int.is(int.gt(20)) -> int.plus(3) `_|`
-        int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    testing(0, int.plus(29).-<(
-      (is(gt(40)) -> int.plus(1)) |
-        (is(gt(30)) -> int.plus(2)) |
-        (is(gt(20)) -> int.plus(3)) |
-        (is(gt(10)) -> int.plus(4))).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    testing(29, int.-<(
-      int.is(int.gt(40)) -> plus(1) `_|`
-        int.is(int.gt(30)) -> plus(2) `_|`
-        int.is(int.gt(20)) -> plus(3) `_|`
-        int.is(int.gt(10)) -> plus(4)).>-, 32, "29-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-"),
+  testSet("[split] |-rec table test", List(NONE, MM, MMX),
+    testing(0, plus(1).-<(int.is(int.gt(2)) -> int.mult(3) |
+      int -> int.mult(4)) >-, 4, "0[plus,1]-<(int[is>2] -> int[mult,3] | int -> int[mult,4])>-"),
+    IGNORING("eval-6")(0, int.plus(39).-<(int.is(int.gt(40)) -> int.plus(1) |
+      int.is(int.gt(30)) -> int.plus(2) |
+      int.is(int.gt(20)) -> int.plus(3) |
+      int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 42, "0 => int[plus,39]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
+    IGNORING("eval-6")(0, int.plus(29).-<(int.is(int.gt(40)) -> int.plus(1) `_|`
+      int.is(int.gt(30)) -> int.plus(2) `_|`
+      int.is(int.gt(20)) -> int.plus(3) `_|`
+      int.is(int.gt(10)) -> int.plus(4)).>-.plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
+    IGNORING("eval-6")(0, int.plus(29).split(rec(g = (Tokens.`|`, List(
+      is(gt(40)) -> int.plus(1),
+      is(gt(30)) -> int.plus(2),
+      is(gt(20)) -> int.plus(3),
+      is(gt(10)) -> int.plus(4))))).merge[Int].plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
+    IGNORING("eval-5", "eval-6")(29, int.-<(int.is(int.gt(40)) -> plus(1) `_|`
+      int.is(int.gt(30)) -> plus(2) `_|`
+      int.is(int.gt(20)) -> plus(3) `_|`
+      int.is(int.gt(10)) -> plus(4)).>-, 32, "29-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-"),
     testing(real(0.0, 1.0, 1.0),
       real.q(3).to('x).plus(1.0).to('y).-<(
         (is(eqs(1.0)) -> real.from('y)) |
           (is(eqs(2.0)) -> real.from('x))).>-.plus(real.from('y)), real(2.0, 3.0, 3.0)),
   ),
-  testSet("[split] ,-rec table test",
+  testSet("[split] ,-rec table test", List(NONE, MM, MMX),
     testing(0, plus(1).-<(int.is(int.gt(2)) -> int.mult(3) `_,` int -> int.mult(4)) >-, 4),
     testing(0, plus(4).-<(
       (int.is(int.gt(2)) -> int.mult(3)) `,`

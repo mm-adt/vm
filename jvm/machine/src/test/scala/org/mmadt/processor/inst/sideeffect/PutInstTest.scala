@@ -28,19 +28,17 @@ import org.mmadt.language.obj.{Obj, Rec}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 
-import scala.collection.immutable.ListMap
-
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class PutInstTest extends FunSuite {
   test("[put] w/ rec value") {
-    val marko: Rec[StrValue, Obj] = rec(str("name") -> str("marko"))
+    val marko:Rec[StrValue, Obj] = rec(str("name") -> str("marko"))
     val markoFull = marko.put(str("age"), int(29))
-    assertResult((str("name") -> str("marko")`_,`str("age") -> int(29)))(markoFull)
-    assertResult((str("name") -> str("marko")`_,` str("age") -> int(29)))(markoFull.put(str("name"), str("marko")))
-    assertResult((str("name") -> str("kuppitz")`_,` str("age") -> int(29)))(markoFull.put(str("name"), str("kuppitz")))
-    assertResult((str("name") -> str("marko")`_,` str("age") -> int(28)))(markoFull.put(str("age"), int(28)))
+    assertResult((str("name") -> str("marko") `_,` str("age") -> int(29)))(markoFull)
+    assertResult((str("name") -> str("marko") `_,` str("age") -> int(29)))(markoFull.put(str("name"), str("marko")))
+    assertResult((str("name") -> str("kuppitz") `_,` str("age") -> int(29)))(markoFull.put(str("name"), str("kuppitz")))
+    assertResult((str("name") -> str("marko") `_,` str("age") -> int(28)))(markoFull.put(str("age"), int(28)))
     // test rec key/value ordering
     assertResult(List(str("name") -> str("kuppitz"), str("age") -> int(29)))(markoFull.put(str("name"), str("kuppitz")).gmap)
     assertResult(List(str("name") -> str("marko"), str("age") -> int(28)))(markoFull.put(str("age"), int(28)).gmap)

@@ -41,7 +41,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
  * @author Stephen Mallette (http://stephen.genoprime.com)
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, Result, String, List[(Model,String)]])*) extends FunSuite with TableDrivenPropertyChecks {
+abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, Result, String, List[(Model, String)]])*) extends FunSuite with TableDrivenPropertyChecks {
   testSets.foreach(testSet => {
     test(testSet._1) {
       val models = testSet._2
@@ -55,7 +55,8 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
     }
   })
 
-  private def evaluate(lastComment:String = "", start:Obj, middle:Obj, end:Result, query:String = null, models:List[Model] = Nil, ignore:List[(Model,String)]):Unit = {
+  private def evaluate(lastComment:String = "", start:Obj, middle:Obj, end:Result, query:String = null, models:List[Model] = Nil, ignore:List[(Model, String)]):Unit = {
+    if (models.isEmpty) println(s"WARNING: No models defined for query: $start => $middle")
     models.foreach(model => {
       val querying = List[(String, Obj => Obj)](
         ("query-1", _ => engine.eval(query, bindings(model))),

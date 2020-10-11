@@ -45,7 +45,7 @@ class __Test extends FunSuite {
     assert(__.isAnon(__))
     assert(__.isAnon(__.plus(6)))
   }
-  
+
   test("__ compute on ctype") {
     assertResult(int(4))(int(4).compute(__))
     assertResult(int)(int.compute(__))

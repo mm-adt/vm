@@ -25,6 +25,7 @@ package org.mmadt.processor.inst.trace
 import org.mmadt.language.obj.Obj.tupleToRecYES
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory.{?, int, str}
@@ -33,7 +34,7 @@ import org.mmadt.storage.StorageFactory.{?, int, str}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TypeInstTest extends BaseInstTest(
-  testSet("[type] table",
+  testSet("[type] table", List(NONE, MM, MMX),
     comment("[noop]"),
     testing(__, __.`type`, __.`type`, "[type]"),
     comment("[plus][mult]"),

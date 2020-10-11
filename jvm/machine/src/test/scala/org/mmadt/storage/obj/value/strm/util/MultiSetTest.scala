@@ -28,8 +28,8 @@ import org.scalatest.FunSuite
 
 class MultiSetTest extends FunSuite {
 
-  def qmaker(a: Int, b: Int): IntQ = (a, b)
-  def qmaker(a: Int): IntQ = (a, a)
+  def qmaker(a:Int, b:Int):IntQ = (a, b)
+  def qmaker(a:Int):IntQ = (a, a)
 
   test("multiset put") {
     assertResult(1L)(MultiSet.put(int(2)).objSize)

@@ -21,6 +21,7 @@
  */
 
 package org.mmadt.language.obj.value
+
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.FunSuite
 

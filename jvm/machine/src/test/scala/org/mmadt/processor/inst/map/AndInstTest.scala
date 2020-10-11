@@ -35,7 +35,7 @@ import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor4}
  */
 class AndInstTest extends FunSuite with TableDrivenPropertyChecks {
   test("[and] value, type, strm, anon combinations") {
-    val starts: TableFor4[Obj, Obj, Obj, String] =
+    val starts:TableFor4[Obj, Obj, Obj, String] =
       new TableFor4[Obj, Obj, Obj, String](("input", "type", "result", "kind"),
         (btrue, __.and(btrue), btrue, "value"), // value * value = value
         (btrue.q(10), __.and(btrue), btrue.q(10), "value"), // value * value = value

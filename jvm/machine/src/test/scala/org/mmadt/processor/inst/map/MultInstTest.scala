@@ -25,6 +25,7 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__.mult
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
@@ -33,7 +34,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class MultInstTest extends BaseInstTest(
-  testSet("[mult] table test",
+  testSet("[mult] table test", List(NONE, MM, MMX),
     comment("int"),
     testing(2, mult(2), 4),
     testing(2.q(10), int.q(10).mult(2), 4.q(10)),

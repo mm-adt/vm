@@ -24,6 +24,7 @@ package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Obj.intToInt
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory.int
@@ -32,7 +33,7 @@ import org.mmadt.storage.StorageFactory.int
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class RepeatInstTest extends BaseInstTest(
-  testSet("[repeat]",
+  testSet("[repeat]", List(NONE, MM, MMX),
     comment("times"),
     testing(1, repeat(plus(1))(10), 11, "1(+1)^(10)"),
     testing(5, repeat(plus(1))(10), 15, "5[repeat,+1,10]"),

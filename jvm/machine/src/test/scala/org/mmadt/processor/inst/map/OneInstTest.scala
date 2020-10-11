@@ -34,18 +34,18 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class OneInstTest extends BaseInstTest(
-  testSet("[one] table test",List(NONE,MM),
+  testSet("[one] table test", List(NONE, MM), // MMX),
     comment("int"),
     testing(2, one, 1),
     testing(2, one.q(10), 1.q(10)),
-    IGNORING(MM)(2.q(10), one, 1.q(10),"2{10}[one]"),
+    IGNORING(MM)(2.q(10), one, 1.q(10), "2{10}[one]"),
     testing(2.q(10), one.q(20), 1.q(200)),
     testing(-2, one, 1),
-    IGNORING(MM)(int, one, int.one,"int => [one]"),
-    IGNORING(MM)(int, one.q(10), int.one.q(10),"int => [one]{10}"),
-    IGNORING(MM)(int.q(10), one, int.q(10).one,"int{10}[one]"),
-    IGNORING(MM)(int.q(10), one.q(20), int.q(10).one.q(20),"int{10} => [one]{20}"),
-    IGNORING(MM)(int(1, 2, 3), one, 1.q(3),"[1,2,3][one]"),
+    IGNORING(MM)(int, one, int.one, "int => [one]"),
+    IGNORING(MM)(int, one.q(10), int.one.q(10), "int => [one]{10}"),
+    IGNORING(MM)(int.q(10), one, int.q(10).one, "int{10}[one]"),
+    IGNORING(MM)(int.q(10), one.q(20), int.q(10).one.q(20), "int{10} => [one]{20}"),
+    IGNORING(MM)(int(1, 2, 3), one, 1.q(3), "[1,2,3][one]"),
     comment("real"),
     testing(2.0, one, 1.0, "2.0[one]"),
     testing(-2.0, one, 1.0, "-2.0[one]"),
@@ -64,5 +64,5 @@ class OneInstTest extends BaseInstTest(
     testing(int.q(3), id.q(2).one.q(5).id.q(10), 1.q(300)),
     testing(int.q(2), int.q(2).one.q(5), 1.q(10)),
     comment("exceptions"),
-    excepting("a",one,LanguageException.unsupportedInstType("a",one.inst),"'a'[one]"),
+    excepting("a", one, LanguageException.unsupportedInstType("a", one.inst), "'a'[one]"),
   ))
