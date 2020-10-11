@@ -55,9 +55,7 @@ object CombineOp extends Func[Obj, Obj] {
         val newSep:String = /*if (argSize < 2) apoly.gsep else*/ bpoly.gsep
         if (argSize > 0) {
           for (x <- arec.gmap) {
-            newList = newList :+ (
-              Tokens.tryName(argList(i)._1, x._1 ~~> argList(i)._1),
-              Tokens.tryName(argList(i)._2, x._2 ~~> argList(i)._2))
+            newList = newList :+ (x._1.compute(argList(i)._1), x._2.compute(argList(i)._2))
             i = (i + 1) % argSize
           }
         }
@@ -70,7 +68,7 @@ object CombineOp extends Func[Obj, Obj] {
         val newSep:String = if (argSize < 2) apoly.gsep else bpoly.gsep
         if (argSize > 0) {
           for (x <- alst.glist) {
-            newList = newList :+ Tokens.tryName(argList(i), x ~~> argList(i))
+            newList = newList :+ x.compute(argList(i))
             i = (i + 1) % argSize
           }
         }
