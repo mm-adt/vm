@@ -205,4 +205,12 @@ class ObjGraphTest extends FunSuite {
     println(rec(str("id") -> str("marko")).compute('blah(str -> str)))
     println(rec(str("id") -> str("marko")).test('blah(str -> int)))
   }
+
+  test("coercion of base types") {
+    assertResult(Nil)(ObjGraph.create(storage.model('none)).coerce(4, str))
+    val graph = ObjGraph.create(storage.model('none).defining(str <= int))
+    assertResult(Stream(str <= int))(graph.coerce(int, str))
+    assertResult(Stream(str("4")))(graph.coerce(4, str))
+    assertResult(Stream(str<=int.plus(10)))(graph.coerce(int.plus(10), str))
+  }
 }

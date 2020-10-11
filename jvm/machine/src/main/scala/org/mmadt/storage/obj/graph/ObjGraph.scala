@@ -94,7 +94,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case _ if !b.alive || !a.alive => zeroObj
           case inst:Inst[Obj, Obj] => inst.exec(a)
           case _:Type[Obj] => a.q(b.q)
-          case _:Value[Obj] => a `=>` b
+          case _:Value[Obj] => b.q(q => a.q.mult(q))
         }))
       .filter(_.alive)
       .distinct
@@ -180,6 +180,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
 
 
   def createType(atype:Type[Obj]):Unit = {
+    // ...---[inst]--->atype---[noop]--->token---[noop]--->roottype
     val target:Vertex = createObj(atype)
     if (!atype.root) {
       g.V(target).outE(Tokens.noop).has(OBJ, NoOp()).where(___.inV().hasId(atype.range)).tryNext().orElseGet(() => {
@@ -193,6 +194,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   }
 
   private def createObj(aobj:Obj):Vertex = {
+    // baobj---[inst]--->aobj
     val target:Vertex = bindObj(aobj)
     if (!aobj.root) {
       g.V(target).inE(aobj.via._2.op).has(OBJ, aobj.via._2).where(___.outV().hasId(aobj.via._1)).tryNext().orElseGet(() => {
@@ -212,18 +214,15 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
             OBJ, avalue,
             G, avalue.g.asInstanceOf[Object],
             Q, avalue.q,
-            ROOT, Boolean.box(aobj.root)
-          )
+            ROOT, Boolean.box(aobj.root))
         case atype:Type[_] =>
           graph.addVertex(
             T.label, TYPE,
             T.id, atype,
             OBJ, atype,
             Q, atype.q,
-            ROOT, Boolean.box(aobj.root)
-          )
+            ROOT, Boolean.box(aobj.root))
       }
     })
   }
-
 }
