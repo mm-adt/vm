@@ -87,11 +87,7 @@ trait Obj
   def reload:this.type = this
   // type methods
   def named:Boolean = Tokens.named(this.name)
-  def named(name:String, ignoreAnon:Boolean = false):this.type = {
-    if (ignoreAnon && !this.isInstanceOf[__] && name.equals(Tokens.anon)) return this
-    LanguageException.checkTypeNaming(this, name)
-    this.clone(name = if (null == name) baseName(this) else name)
-  }
+  def named(name:String):this.type = if (Tokens.anon.equals(name)) this else this.clone(name = if (null == name) baseName(this) else name)
   def <=[D <: Obj](domainType:D):this.type = {
     LanguageException.checkRootRange(this, domainType)
     if (domainType.rangeObj.equals(this)) domainType.asInstanceOf[this.type]
@@ -99,7 +95,7 @@ trait Obj
     // else if(domainType.root && !domainType.named && __.isToken(this)) domainType.named(range.name) // related to b:a vs b<=a (they should resolve to the same obj)
     // this is a total hack -- I'm encoding the range of the type in the via of the last instruction
     // the fix is to make it so <= doesn't rinvert and instead extends via a [noop] of some sort
-    else this.clone(via = (domainType.rinvert, domainType.via._2.clone(via = (domainType.rangeObj.named(this.name, ignoreAnon = true).q(this.q), IdOp())).asInstanceOf[Inst[Obj, Obj]]))
+    else this.clone(via = (domainType.rinvert, domainType.via._2.clone(via = (domainType.rangeObj.named(this.name).q(this.q), IdOp())).asInstanceOf[Inst[Obj, Obj]]))
   }
   // obj path methods
   def model:Model = Option(this.domainObj.via._1).getOrElse(ModelOp.NONE).asInstanceOf[Model]
@@ -246,7 +242,7 @@ object Obj {
     source match {
       case avalue:Value[_] if Tokens.named(source.name) => avalue.via._1 match {
         case bvalue:Value[_] if avalue.g != bvalue.g =>
-          source.model.search[A](source, source,baseName = false).headOption.map(y => {
+          source.model.search[A](source, source, baseName = false).headOption.map(y => {
             if (null != y && !Obj.resolveInternal(toBaseName(source), y).alive)
               throw LanguageException.typingError(source, asType(y))
             source

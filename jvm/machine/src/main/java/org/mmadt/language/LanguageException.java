@@ -60,18 +60,13 @@ public class LanguageException extends VmException {
         return new LanguageException(prefix + "\n" + rowSubstring + "\n" + Stream.generate(() -> " ").limit(Math.min(rowSubstring.length(), column) - 1).reduce((a, b) -> a + b).orElse("") + "^ near here");
     }
 
-    public static void checkTypeNaming(final Obj obj, final String name) {
-        if (!(obj instanceof __) && Tokens.anon().equals(name))
-            throw new LanguageException(obj + " can not be named anonymously");
-    }
-
     public static void checkRootRange(final Obj range, final Obj domain) {
         if (!range.root() || !(range instanceof Type<?>))
             throw new LanguageException(range + " must be a rooted type to be a range for " + domain);
     }
 
     public static LanguageException typingError(final Obj source, final Type<?> target) {
-        return new LanguageException(source.named(null, false) + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + (Tokens.named(target.name()) ? target.rangeObj() : target));
+        return new LanguageException(source.named(null) + " is not " + (target.toString().matches("^[aeioAEIO].*") ? "an " : "a ") + (Tokens.named(target.name()) ? target.rangeObj() : target));
     }
 
     public static LanguageException unknownInstruction(final String op, final List<Obj> args) {
