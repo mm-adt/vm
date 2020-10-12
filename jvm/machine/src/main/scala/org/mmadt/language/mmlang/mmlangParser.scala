@@ -197,6 +197,7 @@ object mmlangParser {
     new mmlangParser().parse[O](script, prefix)
   } catch {
     case e:VmException => throw e
+    case _:MatchError => throw LanguageException.parseError("A parser match error", script, 0, 0)
     case e:Exception =>
       e.printStackTrace()
       throw new LanguageException(e.getMessage)
