@@ -237,5 +237,8 @@ class ObjGraphTest extends FunSuite {
 //  assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('ctree))
     assertResult(btrue)((2`;`0`;`1).model(rmodel) ==> a('ctree))
     assertResult(bfalse)((1`;`0`;`1).model(rmodel) ==> a('ctree))
+/*  assertResult(bfalse)((3`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
+    assertResult(bfalse)((1`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
+    assertResult(btrue)((3`;`(2`;`0`;`1)`;`4).model(rmodel) ==> a('ctree)) */
   }
 }
