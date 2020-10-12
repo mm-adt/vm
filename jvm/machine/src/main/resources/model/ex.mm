@@ -1,4 +1,6 @@
-ex:('type' -> (nat    -> (nat<=int[is>0]),
+ex:(
+'import' -> (mm -> ()),
+'type'   -> (nat    -> (nat<=int[is>0]),
                large  -> (large<=int[is>99],
                           large<=nat[is>99]),
                names  -> (names:(str,str)),
@@ -8,4 +10,4 @@ ex:('type' -> (nat    -> (nat<=int[is>0]),
                           person<=('name'->str,'age'->int),
                           person<=('name'->str)[put,'age',1],
                           person<=names-<('name'-><y>.0+<.y>.1,'age'->1),
-                          person<=str-<('name'->_,'age'->1)))) <= mm
+                          person<=str-<('name'->_,'age'->1))))

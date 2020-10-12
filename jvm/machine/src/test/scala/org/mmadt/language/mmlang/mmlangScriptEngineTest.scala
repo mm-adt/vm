@@ -102,7 +102,7 @@ class mmlangScriptEngineTest extends FunSuite {
     assertResult("nat")(engine.eval("nat").toString)
     // assertResult(labelNotFound(int.is(bool <= int.gt(0)), "nat"))(intercept[LanguageException](engine.eval("nat<=int[is>0]")))
     assertResult("nat<=int[is,bool<=int[gt,0]]")(engine.eval("nat<=int[is>0]").toString)
-    engine.eval(":[model,('type'->(nat->(nat<=int[is>0]))) <= mm]")
+    engine.eval(":[model,ex:('import'->(mm->()),'type'->(nat->(nat<=int[is>0])))]")
     engine.eval("5 => nat")
     assertResult(13.q(8))(engine.eval("10 => int[plus,1]{2}[plus,2]{4}"))
     assertResult(13.q(8).named("nat"))(engine.eval("10 => nat[plus,1]{2}[plus,2]{4}"))

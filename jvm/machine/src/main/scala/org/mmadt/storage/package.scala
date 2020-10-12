@@ -22,10 +22,10 @@
 
 package org.mmadt
 
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageFactory, LanguageProvider, Tokens}
+import org.mmadt.storage.StorageFactory.rec
 
 import scala.io.{BufferedSource, Source}
 import scala.util.Try
@@ -55,12 +55,5 @@ package object storage {
     finally source.close();
   }
 
-  def model(rangeModel:Model):Model = {
-    if (rangeModel == rangeModel.domainObj) return rangeModel
-    val domainModel:Model = {
-      if (__.isToken(rangeModel.domainObj)) this.model(rangeModel.domainObj.name)
-      else rangeModel.domainObj.asInstanceOf[Model]
-    }
-    rangeModel.merging(domainModel)
-  }
+  def model(rangeModel:Model):Model = rangeModel.imports.foldLeft(rec().asInstanceOf[Model])((a, b) => a.merging(b)).merging(rangeModel).named(rangeModel.name)
 }

@@ -58,10 +58,13 @@ object ModelOp extends Func[Obj, Obj] {
   type ModelMap = Rec[Obj, Lst[Obj]]
   val TYPE:StrValue = str("type")
   val VAR:StrValue = str("var")
+  val IMPORT:StrValue = str("import")
   val MODEL_EXTENSION:String = "#"
   val NOROOT:Pairs[StrValue, ModelOp.ModelMap] = List.empty
   val NOMAP:Pairs[Obj, Lst[Obj]] = List.empty
+  val NOLIST:List[Obj] = List.empty
   val NOREC:ModelMap = rec[Obj, Lst[Obj]]
+  val NOLST:Lst[Obj] = lst[Obj]
 
   def apply[O <: Obj](file:StrValue):Inst[O, O] = this.apply(storage.model(LoadOp.loadObj[Model](file.g)))
   def apply[O <: Obj](model:Model):Inst[O, O] = new VInst[O, O](g = (Tokens.model, List(storage.model(model)).asInstanceOf[List[O]]), func = this) with TraceInstruction
@@ -156,6 +159,7 @@ object ModelOp extends Func[Obj, Obj] {
     }
 
     final def vars:List[(StrValue, Obj)] = Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.VAR, NOREC).g._2).getOrElse(NOMAP).map(x => (x._1.asInstanceOf[StrValue], x._2.glist.last))
+    final def imports:List[Model] = Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.IMPORT, NOREC).g._2).getOrElse(NOMAP).map(x => storage.model(x._1.name))
 
     final def defining(definition:Obj):Model = {
       val map = Option(model.g._2).getOrElse(NOROOT)

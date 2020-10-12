@@ -1,5 +1,6 @@
 digraph:(
-'type' -> (
+'import' -> (num -> ()),
+'type'   -> (
   int    -> (int<=vertex.id),
   vertex -> (vertex:('id'->nat,'attrs'->attr{*}),
              vertex<=nat-<('id'->nat),
@@ -10,4 +11,4 @@ digraph:(
              attr<=(str;[id])-<('key'->.0,'value'->.1)),
   edge   -> (edge:('outV'->vertex,'inV'->vertex),
              edge<=(vertex;vertex)-<('outV'->.0,'inV'->.1))
-)) <= num
+))
