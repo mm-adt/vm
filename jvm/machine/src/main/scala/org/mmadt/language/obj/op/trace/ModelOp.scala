@@ -21,6 +21,7 @@
  */
 package org.mmadt.language.obj.op.trace
 
+import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.GraphTraversalSource
 import org.mmadt
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
@@ -93,6 +94,8 @@ object ModelOp extends Func[Obj, Obj] {
   class RichModel(val model:Model) {
     lazy val graph:ObjGraph = ObjGraph.create(model)
     lazy val coreName:String = model.name.split(MODEL_EXTENSION)(0)
+
+    lazy val og:GraphTraversalSource = model.graph.g
 
     private final def findType[A <: Obj](model:Model, source:Obj, targetName:String):List[A] =
       (if (model.name.equals(targetName)) List(model).asInstanceOf[List[A]]

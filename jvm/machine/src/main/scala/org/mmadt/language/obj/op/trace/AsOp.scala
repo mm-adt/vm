@@ -34,7 +34,10 @@ import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.graph.ObjGraph.{NAME, ObjTraversalSource, ObjVertex}
 import org.mmadt.storage.obj.value.VInst
+
+import scala.collection.convert.ImplicitConversions.`iterator asScala`
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -70,7 +73,7 @@ object AsOp extends Func[Obj, Obj] {
     if (!source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
     if ((!__.isAnon(source)) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
     source match {
-      case _:Strm[Obj] if source.model.dtypes.exists(x => x.name.equals(target.name) && source.q.within(x.domainObj.q)) => target.trace.reconstruct(source, target.name)
+      case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => target.trace.reconstruct(source, target.name)
       case astrm:Strm[Obj] => astrm(src => AsOp.autoAsType(src, target, domain))
       case _:Value[_] => internalConvertAs(source, target).hardQ(source.q)
       case _:Type[_] => if (domain) target.update(source.model) else target <= source
@@ -80,7 +83,7 @@ object AsOp extends Func[Obj, Obj] {
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
     val asObj:Obj = if (searchable(target)) WalkOp.walkSourceToTarget(source, target, targetName = true) else target
     val dObj:Obj = pickMapping(source, asObj).named(asObj.name)
-    val rObj:Obj = if (searchable(asObj.range) && asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined)
+    val rObj:Obj = if (searchable(asObj.range) && asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined) // source.model.og.V().has(CTYPE,NAME,asObj.range.name).hasNext
       pickMapping(dObj, asObj.range.named(target.name)) else dObj
     if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
     rObj.named(asObj.name)

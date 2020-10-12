@@ -45,10 +45,12 @@ import scala.util.Try
  */
 object ObjGraph {
   val OBJ:String = "obj"
+  val CTYPE:String = "ctype"
   val TYPE:String = "type"
   val VALUE:String = "value"
   val ROOT:String = "root"
   val NONE:String = "none"
+  val NAME:String = "name"
   val G:String = "g"
   val Q:String = "q"
 
@@ -62,10 +64,11 @@ object ObjGraph {
   @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
     def R:GraphTraversal[Vertex, Vertex] = g.V().has(ROOT, true)
     def C(token:Symbol):GraphTraversal[Vertex, Vertex] = g.C(token.name)
-    def C(name:String):GraphTraversal[Vertex, Vertex] = g.R.filter((t:Traverser[Vertex]) => !__.isTokenRoot(t.get().obj) && t.get().obj.name.equals(name))
+    def C(name:String):GraphTraversal[Vertex, Vertex] = g.R.has(NAME, name).filter((t:Traverser[Vertex]) => !__.isTokenRoot(t.get().obj))
   }
 }
 class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
+  graph.asInstanceOf[TinkerGraph].createIndex(NAME, classOf[Vertex])
   val g:GraphTraversalSource = graph.traversal()
   // load model into graph
   if (model.name.equals(NONE)) {
@@ -185,8 +188,8 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     // ...---[inst]--->atype---[noop]--->token---[noop]--->roottype
     val target:Vertex = createObj(atype)
     if (!atype.root) {
-      g.V(target).outE(Tokens.noop).has(OBJ, NoOp()).where(___.inV().hasId(atype.range)).tryNext().orElseGet(() => {
-        val rangeV = bindObj(atype.range)
+      g.V(target).outE(Tokens.noop).has(OBJ, NoOp()).where(___.inV().hasId(atype.rangeObj)).tryNext().orElseGet(() => {
+        val rangeV = bindObj(atype.rangeObj)
         val edge = target.addEdge(Tokens.noop, rangeV, OBJ, NoOp())
         if (__.isTokenRoot(rangeV.obj))
           g.C(rangeV.obj.name).map((t:Traverser[Vertex]) => rangeV.addEdge(Tokens.noop, t.get(), OBJ, NoOp())).iterate()
@@ -213,14 +216,16 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           graph.addVertex(
             T.label, VALUE,
             T.id, avalue,
+            NAME, aobj.name,
             OBJ, avalue,
             G, avalue.g.asInstanceOf[Object],
             Q, avalue.q,
             ROOT, Boolean.box(aobj.root))
         case atype:Type[_] =>
           graph.addVertex(
-            T.label, TYPE,
+            T.label, if (aobj.root && !__.isTokenRoot(aobj)) CTYPE else TYPE,
             T.id, atype,
+            NAME, aobj.name,
             OBJ, atype,
             Q, atype.q,
             ROOT, Boolean.box(aobj.root))
