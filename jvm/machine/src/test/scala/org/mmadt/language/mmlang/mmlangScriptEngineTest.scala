@@ -1085,24 +1085,6 @@ class mmlangScriptEngineTest extends FunSuite {
 
   }
 
-  test("model example") {
-    engine.eval(":{1}")
-    val ex:Model = LoadOp.loadObj[Model](getClass.getResource("/model/ex.mm").getPath)
-    assert(toBaseName(ex).toString.nonEmpty)
-    engine.getContext.getBindings(ScriptContext.ENGINE_SCOPE).put(":", __.model(ex))
-    // assertResult(int(1))(engine.eval("'marko' => person => user => .login => user => .id"))
-    assertResult(int(1).named("nat"))(engine.eval("'marko' => person => user => .login => person => .age"))
-    // assertResult((str("name") -> str("marko") `_,` str("age") -> int(1).named("nat")).named("person"))(engine.eval("('marko','') => person"))
-    assertResult((str("name") -> str("marko") `_,` str("age") -> int(1).named("nat")).named("person"))(engine.eval("'marko' => person"))
-    assertResult((str("name") -> str("marko") `_,` str("age") -> int(1).named("nat")).named("person"))(engine.eval("('name'->'marko') => person"))
-    assertResult((str("name") -> str("marko") `_,` str("age") -> int(29).named("nat")).named("person"))(engine.eval("('name'->'marko','age'->29) => person"))
-    assertResult((str("name") -> str("marko") `_,` str("age") -> int(29).named("nat")).named("person"))(engine.eval("('name'->'marko') => person<=[put,'age',29][is,person.age>20][is,user.id[a,nat]]"))
-    assertResult((str("id") -> int(29) `_,` str("login") -> str("marko")).named("user"))(engine.eval("('name'->'marko') => user<=person[put,'age',29][is,person.age>20][is,user.id[a,nat]]"))
-    assertResult((str("name") -> str("marko") `_,` str("age") -> int(29).named("nat")).named("person"))(engine.eval("('name'->'marko') => person<=[put,'age',29][is,person.age>20][is,user.id[a,nat]]"))
-    assertResult(zeroObj)(engine.eval("('name'->'marko') => [put,'age',29][is,person.age>20][as,user].id[is,[a,large]]"))
-    assertResult(zeroObj)(engine.eval("('name'->'marko','age'->29) => person[is,person.age>20][as,user].id[is,[a,large]]"))
-    // assertResult(zeroObj) (engine.eval("('name'->'marko','age'->29) => person[is,person.age>20][is,user.id[a,large]]"))
-  }
   test("model parsing") {
     engine.eval(":[model,pp:('type' -> (person -> (person:('name'->str)))) <= mm]")
     assertResult("person:('name'->'marko')")(engine.eval("('name'->'marko') => [as,person]").toString)

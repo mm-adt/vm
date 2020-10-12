@@ -192,7 +192,7 @@ object Obj {
     case _:Type[_] => Iterator(obj)
   }
 
-  def resolveToken[A <: Obj](obj:Obj, arg:A):A = this.resolveTokenOption(obj, arg).getOrElse(arg)
+  def resolveToken[A <: Obj](obj:Obj, arg:A):A = this.resolveTokenOption(obj, arg, baseName = false).getOrElse(arg.update(obj.model))
   def resolveTokenOption[A <: Obj](obj:Obj, arg:A, baseName:Boolean = true):Option[A] =
     Some(arg).filter(a => __.isToken(a))
       .map(a => obj.model.search[A](obj, a, baseName).headOption)

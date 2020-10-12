@@ -49,6 +49,7 @@ class CombineInstTest extends BaseInstTest(
     testing(int.plus(1) `;` int.plus(2), combine(int.plus(3) `;` int.plus(4)), (int.plus(1).plus(3) `;` int.plus(2).plus(4)) <= (int.plus(1) `;` int.plus(2)).combine(int.plus(3) `;` int.plus(4)), "(int+1;int+2)=(int+3;int+4)"),
     testing(int.plus(1) `;` int.plus(2), lst.combine(int.plus(3) `;` int.plus(4)), (int.plus(1).plus(3) `;` int.plus(2).plus(4)) <= (int.plus(1) `;` int.plus(2)).combine(int.plus(3) `;` int.plus(4)), "(int+1;int+2)=(int+3;int+4)"),
     testing((4 `;` 5), (int `;` int).combine((int.plus(1) `;` int.plus(2))).combine(int.plus(3) `;` int.plus(4)), (8 `;` 11), "(4;5)=>(int;int)=(int+1;int+2)=(int+3;int+4)"),
+    testing((4 `;` 5), combine((int `;` int)).combine((int.plus(1) `;` int.plus(2))).combine(int.plus(3) `;` int.plus(4)), (8 `;` 11), "(4;5)=(int;int)=(int+1;int+2)=(int+3;int+4)"),
     // testing((4 `;` 5), (int.plus(1) `;` int.plus(2)).combine(int.plus(3) `;` int.plus(4)), (8 `;` 11), "(4;5)=>(int+1;int+2)=(int+3;int+4)"),
   ),
   testSet("[combine] |-lst", List(NONE, MM, MMX),

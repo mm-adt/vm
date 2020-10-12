@@ -211,7 +211,11 @@ class ObjGraphTest extends FunSuite {
     assertResult(Stream(str <= int))(graph.coerce(int, str))
     assertResult(Stream(str("4")))(graph.coerce(4, str))
     assertResult(Stream(str <= int.plus(10)))(graph.coerce(int.plus(10), str))
+    // assertResult((2`;`5))((1`;`2)`=>`(int.plus(1)`;`int.plus(3)))
+    // assertResult(Stream(2`;`5))(graph.coerce((1`;`2),(int.plus(1)`;`int.plus(3))))
+
   }
+
 
   test("coercion on recursive types") {
     val rmodel = storage.model('mm)
