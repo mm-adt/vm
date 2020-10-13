@@ -132,16 +132,15 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           .inV()
           .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[(Obj, Obj)]._1, objMatch(t.get.obj, troot))))
         .path().by(OBJ)
-        .map((t:Traverser[Path]) => (t.get().objects().asInstanceOf[java.util.List[Obj]]
-          //.map(y => y.rangeObj)
-          .filter(y => y != NoOp() && y.alive)
-          .toList, t.sack[(Obj, Obj)])))
+        .map((t:Traverser[Path]) => (t.get().objects().asInstanceOf[java.util.List[Obj]].toList, t.sack[(Obj, Obj)])))
       .toStream
       // manipulate head and tail types with computable paths
       // TODO: reconstruct arguments to all instructions so that a coercion maintains to complete bytecode specification
+      .filter(x => x._1.forall(_.alive))
+      .map(x => (x._1.filter(y => y != NoOp()), x._2))
       .map(x => (if (!__.isAnonRootAlive(sroot) && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1, x._2))
       .map(x => (if (__.isAnonRootAlive(sroot) || x._1.head == sroot) x._1 else (sroot +: x._1), x._2))
-      .map(x => if (x._1.last.isInstanceOf[Lst[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1)
+      .map(x => if (x._1.last.isInstanceOf[Poly[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1)
       .map(x => x.filter(y => !__.isAnonRootAlive(y)))
       .map(x => x.foldLeft(List.empty[Obj])((a, b) => {
         if (a.isEmpty) a :+ b
@@ -160,10 +159,9 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case blst:LstType[Obj] if blst.ctype => alst.named(blst.name)
           case blst:Lst[Obj] if Lst.exactTest(alst, blst) => alst
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            val combo = alst.glist.zip(blst.glist).map(pair => coerce(pair._1, pair._2))
-            if (combo.exists(x => x.isEmpty)) return zeroObj
-            val combination = alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size))) // hmmmm.
-            if (combination.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else alst.clone(_ => combo.map(x => x.minBy(x => x.trace.size)))
+            val combo:Lst[Obj] = alst.clone(_ => alst.glist.zip(blst.glist).map(pair => coerce(pair._1, pair._2).headOption.getOrElse(zeroObj)))
+            if (combo.glist.exists(x => !x.alive)) return zeroObj
+            if (combo.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else combo
           case _ => zeroObj
         }
         case arec:Rec[Obj, Obj] => target match {
