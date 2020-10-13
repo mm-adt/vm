@@ -27,11 +27,11 @@ import org.apache.tinkerpop.gremlin.process.traversal.{Path, Traverser}
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 import org.mmadt.storage.obj.graph.ObjGraph._
@@ -103,8 +103,12 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         }))
       .filter(_.alive)
       .distinct
-      .map(x => Try[Obj](source.update(model) `=>` x.q(target.q))
-        .filter(y => y.hardQ(x.rangeObj.q).test(x.rangeObj)).getOrElse(zeroObj)) // filter needed because => doesn't use biproduct coercion yet
+      .map(x => {
+        val s = objMatch(source.update(model), Obj.resolveToken(source.update(model), x.domainObj))
+        val temp = Try[Obj](s.compute(x).hardQ(source.q.mult(target.q))).getOrElse(zeroObj) // TODO: get rid of withAs=true
+        val t = objMatch(temp.update(model), Obj.resolveToken(temp.update(model), x.rangeObj))
+        Some(t).filter(y => y.hardQ(x.rangeObj.q).test(x.rangeObj)).getOrElse(zeroObj)
+      }) // filter needed because => doesn't use biproduct coercion yet
       .filter(_.alive)
       .asInstanceOf[Stream[target.type]]
   }
@@ -138,9 +142,9 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       // TODO: reconstruct arguments to all instructions so that a coercion maintains to complete bytecode specification
       .filter(x => x._1.forall(_.alive))
       .map(x => (x._1.filter(y => y != NoOp()), x._2))
-      .map(x => (if (!__.isAnonRootAlive(sroot) && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1, x._2))
-      .map(x => (if (__.isAnonRootAlive(sroot) || x._1.head == sroot) x._1 else (sroot +: x._1), x._2))
-      .map(x => if (x._1.last.isInstanceOf[Poly[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1)
+      .map(x => (if (!__.isAnonRootAlive(sroot) && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1, x._2)) // append the source morph sack
+      .map(x => (if (__.isAnonRootAlive(sroot) || x._1.head == sroot) x._1 else (sroot +: x._1), x._2)) // append the source range
+      .map(x => if (x._1.last.isInstanceOf[Poly[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1) // append the target morph sack
       .map(x => x.filter(y => !__.isAnonRootAlive(y)))
       .map(x => x.foldLeft(List.empty[Obj])((a, b) => {
         if (a.isEmpty) a :+ b
@@ -178,7 +182,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       }
       case _ if source.name.equals(target.name) => source
       case _ => zeroObj
-    }).filter(_.alive).map(o => o.q(target.q)).getOrElse(zeroObj)
+    }).filter(_.alive).map(o => o.hardQ(source.q).named(target.name)).getOrElse(zeroObj)
   }
 
 
