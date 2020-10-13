@@ -156,35 +156,42 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   ///////////////////////////////////////////////////
 
   private def objMatch(source:Obj, target:Obj):Stream[Obj] = {
-    Option(source match {
-      case _ if __.isAnon(target) => source
+    (source match {
+      case _ if __.isAnon(target) => Stream(source)
       case _:Poly[Obj] => source match {
-        case _ if source.named && source.name.equals(target.name) => source
+        case _ if source.named && source.name.equals(target.name) => Stream(source)
         case alst:Lst[Obj] => target match {
-          case blst:LstType[Obj] if blst.ctype => alst.named(blst.name)
-          case blst:Lst[Obj] if Lst.exactTest(alst, blst) => alst
+          case blst:LstType[Obj] if blst.ctype => Stream(alst.named(blst.name))
+          case blst:Lst[Obj] if Lst.exactTest(alst, blst) => Stream(alst)
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            val combo:Lst[Obj] = alst.clone(_ => alst.update(model).glist.zip(blst.glist).map(pair => pair._1.coerce(pair._2)))
-            if (combo.glist.exists(x => !x.alive)) zeroObj
-            else if (combo.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __
-            else __.combine(combo).inst
-          case _ => zeroObj
+            alst.update(model).glist.map(a => blst.glist.map(b => coerce(a, b)))
+              .flatMap(x => x.permutations.flatten)
+              .filter(x => x.forall(_.alive))
+              .map(x => alst.update(model).clone(_ => x.toList))
+              .map(z =>
+                if (z.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __.combine(z).inst
+                else __.combine(z).inst).toStream
+          /*val combo:Lst[Obj] = alst.clone(_ => alst.update(model).glist.zip(blst.glist).map(pair => pair._1.coerce(pair._2)))
+          if (combo.glist.exists(x => !x.alive)) Stream(zeroObj)
+          else if (combo.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) Stream(__)
+          else Stream(__.combine(combo).inst)*/
+          case _ => Stream(zeroObj)
         }
         case arec:Rec[Obj, Obj] => target match {
-          case brec:RecType[Obj, Obj] if brec.ctype => arec.named(brec.name)
+          case brec:RecType[Obj, Obj] if brec.ctype => Stream(arec.named(brec.name))
           case brec:Rec[Obj, Obj] =>
             val z = arec.clone(name = brec.name, g = (brec.gsep,
               arec.update(model).gmap.flatMap(a => brec.gmap
                 .filter(b => a._1.test(b._1))
                 .map(b => (a._1.coerce(b._1), a._2.coerce(b._2)))
                 .filter(b => b._1.alive && b._2.alive))))
-            if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) zeroObj else z
-          case _ => zeroObj
+            if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) Stream(zeroObj) else Stream(z)
+          case _ => Stream(zeroObj)
         }
       }
-      case _ if source.name.equals(target.name) => source
-      case _ => zeroObj
-    }).filter(_.alive).map(o => o.hardQ(source.q).named(target.name)).map(x => Stream(x)).getOrElse(Stream.empty)
+      case _ if source.name.equals(target.name) => Stream(source)
+      case _ => Stream(zeroObj)
+    }).filter(_.alive).map(o => o.hardQ(source.q).named(target.name))
   }
 
 
