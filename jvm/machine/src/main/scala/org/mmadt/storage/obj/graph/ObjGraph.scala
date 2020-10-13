@@ -94,21 +94,22 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
     ////////////////////////////////////////////////////////////////
     paths(if (source.isInstanceOf[Value[_]]) asType(source) else source, target)
-      .map(path => path.last.rangeObj <= path.tail.dropRight(1).foldLeft(path.head.update(model))(
-        (a, b) => b match {
-          case _ if !b.alive || !a.alive => zeroObj
-          case inst:Inst[Obj, Obj] => inst.exec(a)
-          case _:Type[Obj] => a.q(b.q)
-          case _:Value[Obj] => b.q(q => a.q.mult(q))
-        }))
+      .map(path => {
+        path.last.rangeObj <= path.tail.dropRight(1).foldLeft(path.head.update(model))(
+          (a, b) => b match {
+            case _ if !b.alive || !a.alive => zeroObj
+            case inst:Inst[Obj, Obj] => inst.exec(a)
+            case _:Type[Obj] => a.q(b.q)
+            case _:Value[Obj] => b.q(q => a.q.mult(q))
+          })
+      })
       .filter(_.alive)
       .distinct
-      .map(x => {
-        val s = objMatch(source.update(model), Obj.resolveToken(source.update(model), x.domainObj))
-        val temp = Try[Obj](s.compute(x).hardQ(source.q.mult(target.q))).getOrElse(zeroObj) // TODO: get rid of withAs=true
-        val t = objMatch(temp.update(model), Obj.resolveToken(temp.update(model), x.rangeObj))
-        Some(t).filter(y => y.hardQ(x.rangeObj.q).test(x.rangeObj)).getOrElse(zeroObj)
-      }) // filter needed because => doesn't use biproduct coercion yet
+      .flatMap(x => objMatch(source.update(model), Obj.resolveToken(source.update(model), x.domainObj)).map(y => (x, y)))
+      .map(x => (x._1, Try[Obj](x._2.compute(x._1).hardQ(source.q.mult(target.q))).getOrElse(zeroObj))) // TODO: get rid of withAs=true
+      .flatMap(x => objMatch(x._2.update(model), Obj.resolveToken(x._2.update(model), x._1.rangeObj)).map(y => (x._1, y)))
+      .filter(x => x._2.hardQ(x._1.rangeObj.q).test(x._1.rangeObj))
+      .map(x => x._2)
       .filter(_.alive)
       .asInstanceOf[Stream[target.type]]
   }
@@ -123,7 +124,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     JavaConverters.asScalaIterator(
       g.withSack((zeroObj, zeroObj)) // sack(source morph,target morph)
         .R.inject(createObj(target))
-        .sideEffect((t:Traverser[Vertex]) => t.sack[(Obj, Obj)](objMatch(sroot, t.get.obj), objMatch(t.get.obj, troot)))
+        .sideEffect((t:Traverser[Vertex]) => t.sack[(Obj, Obj)](objMatch(sroot, t.get.obj).headOption.getOrElse(zeroObj), objMatch(t.get.obj, troot).headOption.getOrElse(zeroObj)))
         .filter((t:Traverser[Vertex]) =>
           (source == __) || // all roots
             t.sack[(Obj, Obj)]._1.alive) // sourced paths
@@ -134,7 +135,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           .simplePath()
           .outE()
           .inV()
-          .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[(Obj, Obj)]._1, objMatch(t.get.obj, troot))))
+          .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[(Obj, Obj)]._1, objMatch(t.get.obj, troot).headOption.getOrElse(zeroObj))))
         .path().by(OBJ)
         .map((t:Traverser[Path]) => (t.get().objects().asInstanceOf[java.util.List[Obj]].toList, t.sack[(Obj, Obj)])))
       .toStream
@@ -154,7 +155,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
 
   ///////////////////////////////////////////////////
 
-  private def objMatch(source:Obj, target:Obj):Obj = {
+  private def objMatch(source:Obj, target:Obj):Stream[Obj] = {
     Option(source match {
       case _ if __.isAnon(target) => source
       case _:Poly[Obj] => source match {
@@ -163,18 +164,19 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case blst:LstType[Obj] if blst.ctype => alst.named(blst.name)
           case blst:Lst[Obj] if Lst.exactTest(alst, blst) => alst
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            val combo:Lst[Obj] = alst.clone(_ => alst.glist.zip(blst.glist).map(pair => coerce(pair._1, pair._2).headOption.getOrElse(zeroObj)))
-            if (combo.glist.exists(x => !x.alive)) return zeroObj
-            if (combo.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __ else combo
+            val combo:Lst[Obj] = alst.clone(_ => alst.update(model).glist.zip(blst.glist).map(pair => pair._1.coerce(pair._2)))
+            if (combo.glist.exists(x => !x.alive)) zeroObj
+            else if (combo.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __
+            else __.combine(combo).inst
           case _ => zeroObj
         }
         case arec:Rec[Obj, Obj] => target match {
           case brec:RecType[Obj, Obj] if brec.ctype => arec.named(brec.name)
           case brec:Rec[Obj, Obj] =>
             val z = arec.clone(name = brec.name, g = (brec.gsep,
-              arec.gmap.flatMap(a => brec.gmap
+              arec.update(model).gmap.flatMap(a => brec.gmap
                 .filter(b => a._1.test(b._1))
-                .map(b => (coerce(a._1, b._1).headOption.getOrElse(zeroObj), coerce(a._2, b._2).headOption.getOrElse(zeroObj)))
+                .map(b => (a._1.coerce(b._1), a._2.coerce(b._2)))
                 .filter(b => b._1.alive && b._2.alive))))
             if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) zeroObj else z
           case _ => zeroObj
@@ -182,9 +184,11 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       }
       case _ if source.name.equals(target.name) => source
       case _ => zeroObj
-    }).filter(_.alive).map(o => o.hardQ(source.q).named(target.name)).getOrElse(zeroObj)
+    }).filter(_.alive).map(o => o.hardQ(source.q).named(target.name)).map(x => Stream(x)).getOrElse(Stream.empty)
   }
 
+
+  ///////////// CONSTRUCT GRAPH
 
   def createType(atype:Type[Obj]):Unit = {
     // ...---[inst]--->atype---[noop]--->token---[noop]--->roottype

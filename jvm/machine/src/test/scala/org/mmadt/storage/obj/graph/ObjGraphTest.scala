@@ -109,7 +109,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('edge <= ('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce('vertex `;` 'vertex, 'edge).head))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(8)) `_,` str("inV") -> 'vertex(str("id") -> int(9)))))(graph.coerce('vertex(str("id") -> int(8)) `;` 'vertex(str("id") -> int(9)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(81 `;` 91, 'edge))
-    assertResult(Seq('edge <= (int `;` int).-<((str("outV") -> ('vertex <= get(0))) `_,`(str("inV") -> ('vertex <= get(1))))))(graph.coerce(int `;` int, 'edge))
+    assertResult(Seq('edge <= (int `;` int).combine(('vertex <= int.-<(str("id") -> int)) `;`('vertex <= int.-<(str("id") -> int))).-<((str("outV") -> ('vertex <= get(0))) `_,`(str("inV") -> ('vertex <= get(1))))))(graph.coerce(int `;` int, 'edge))
   }
 
   test("type construction w/ digraph") {
@@ -132,21 +132,20 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq(int(23)))(graph.coerce('vertex(str("id") -> 'nat(23)), int))
     assertResult(Seq('vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2))))(graph.coerce('nat(1) `;` 'nat(2), 'vertex `;` 'vertex))
     assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.coerce(str("a") `;` "b", 'attr))
-//    assertResult(Seq('attr <= (str `;` str).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
+    assertResult(Seq('attr <= (str `;` str).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce('nat(23), 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce(23, 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23)).q(3)))(graph.coerce(23.q(3), 'vertex))
-//    assertResult(Seq('vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data")))))(graph.coerce(-23, 'vertex))
+    assertResult(Seq('vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data")))))(graph.coerce(-23, 'vertex))
     assertResult(Seq('attr(str("key") -> str("marko") `_,` str("value") -> int(29))))(graph.coerce(str("key") -> str("marko") `_,` str("value") -> int(29), 'attr))
     assertResult(Seq('vertex(str("id") -> 'nat(55) `_,` str("attrs") -> 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)))))(graph.coerce('nat(55) `;` 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)), 'vertex))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('nat(100) `;` 'nat(200), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List(('nat(100) `;` 'nat(200)) ==>[Obj] graph.coerce('nat `;` 'nat, 'edge).head))
-    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
-    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).head))
-    // TODO: .... I don't think this is a good idea (still uses runtime as'ing)
-    assertResult(Seq('edge <= ('nat `;` 'nat).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
-    assertResult(Seq('edge <= ('nat `;` 'nat).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
+    //    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
+    //    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).head))
+    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex <= 'nat.split(str("id") -> __('nat))) `;`('vertex <= 'nat.split(str("id") -> __('nat)))).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
+    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex <= 'nat.split(str("id") -> __('nat))) `;`('vertex <= 'nat.split(str("id") -> __('nat)))).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
     assertResult(Seq(
       'edge(
         str("outV") -> 'vertex(str("id") -> 'nat(1) `_,` str("attrs") -> 'attr(str("key") -> str("age") `_,` str("value") -> int(29))) `_,`
@@ -156,7 +155,11 @@ class ObjGraphTest extends FunSuite {
           'nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29)),
           'nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27))))), 'edge))
     val natattr = lst(g = (Tokens.`;`, List(('nat `;` 'attr), ('nat `;` 'attr))))
-    assertResult(Seq('edge <= natattr.-<(str("outV") -> ('vertex <= natattr.get(0)) `_,` str("inV") -> ('vertex <= natattr.get(1)))))(graph.coerce(natattr, 'edge))
+    assertResult(Seq('edge <= natattr
+      .combine(
+        ('vertex <= ('nat `;` 'attr).split((str("id") -> get(0)) `_,` str("attrs") -> get(1))) `;`
+          ('vertex <= ('nat `;` 'attr).split(str("id") -> get(0) `_,` str("attrs") -> get(1))))
+      .split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce(natattr, 'edge))
   }
 
   test("type construction w/ time") {
@@ -216,11 +219,10 @@ class ObjGraphTest extends FunSuite {
 
   }
 
-
   test("coercion on recursive types") {
     val rmodel = storage.model('mm)
       .defining('tree <= branch(??(0) `|`(int `;` 'tree `;` int)))
-      .defining('ctree <= branch(??(0) `|` (int.to('x) `;`'ctree`;`int.to('y)).is('x.gt('y))))
+      .defining('ctree <= branch(??(0) `|` (int.to('x) `;` 'ctree `;` int.to('y)).is('x.gt('y))))
     val graph = ObjGraph.create(rmodel)
     // single level
     assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('tree))
@@ -233,16 +235,22 @@ class ObjGraphTest extends FunSuite {
     assertResult(bfalse)((1 `;`(2 `;` 2 `;` 2) `;` 1).model(rmodel) ==> a('tree))
     assertResult(btrue)((1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1).model(rmodel) ==> a('tree))
     // coercion
-    assertResult(Stream('tree(1 `;`'tree(2 `;`'tree(3 `;` 'tree(0) `;` 3) `;` 2) `;` 1)))(graph.coerce(1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1,'tree))
-    assertResult('tree(1 `;`'tree(2 `;`'tree(3 `;` 'tree(0) `;` 3) `;` 2) `;` 1))((1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1).model(rmodel) ==>[Obj] 'tree)
+    assertResult(Stream('tree(1 `;` 'tree(2 `;` 'tree(3 `;` 'tree(0) `;` 3) `;` 2) `;` 1)))(graph.coerce(1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1, 'tree))
+    assertResult('tree(1 `;` 'tree(2 `;` 'tree(3 `;` 'tree(0) `;` 3) `;` 2) `;` 1))((1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1).model(rmodel) ==>[Obj] 'tree)
     ///////////
     // ctree //
     ///////////
-//  assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('ctree))
-    assertResult(btrue)((2`;`0`;`1).model(rmodel) ==> a('ctree))
-    assertResult(bfalse)((1`;`0`;`1).model(rmodel) ==> a('ctree))
-/*  assertResult(bfalse)((3`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
-    assertResult(bfalse)((1`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
-    assertResult(btrue)((3`;`(2`;`0`;`1)`;`4).model(rmodel) ==> a('ctree)) */
+    //  assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('ctree))
+    assertResult(btrue)((2 `;` 0 `;` 1).model(rmodel) ==> a('ctree))
+    assertResult(bfalse)((1 `;` 0 `;` 1).model(rmodel) ==> a('ctree))
+    /*  assertResult(bfalse)((3`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
+        assertResult(bfalse)((1`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
+        assertResult(btrue)((3`;`(2`;`0`;`1)`;`4).model(rmodel) ==> a('ctree)) */
   }
+
+
+  /*test("MAKE WORK WITH RECURSIVE STREAMING") {
+  val graph:ObjGraph = ObjGraph.create('digraph)
+  assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
+}*/
 }

@@ -139,7 +139,7 @@ trait Obj
     if (withAs) AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target) else Obj.resolveInternal[E](this, target)
   final def ~~>[E <: Obj](target:E):E = Obj.resolveArg[this.type, E](this, target)
   final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
-  final def coerce[E <: Obj](target:E):Strm[E] = strm[E](this.model.graph.coerce(this, target))
+  final def coerce[E <: Obj](target:E):E = this.model.graph.coerce(this, target).headOption.getOrElse(zeroObj).asInstanceOf[E]
 
   // lst fluent methods
   def `|`:Lst[this.type] = lst(g = (Tokens.`|`, List(this)))

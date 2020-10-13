@@ -60,7 +60,7 @@ object WalkOp extends Func[Obj, Obj] {
       case _ if !target.named => target // NEED A PATH RESOLVER FOR BASE TYPES TO AVOID STACK ISSUES
       case _ => Obj.resolveTokenOption(source, target, !targetName).getOrElse({
         if (source.isInstanceOf[Type[_]] || !AsOp.searchable(target)) return target
-        source.coerce(target).drain.headOption.getOrElse {
+        Some(source.coerce(target)).filter(_.alive).getOrElse {
           if (source.model.graph.exists(target)) throw LanguageException.typingError(source, asType(target))
           else throw LanguageException.labelNotFound(source, target.name)
         }

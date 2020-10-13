@@ -38,6 +38,7 @@ import org.mmadt.storage.obj.value.strm.util.MultiSet
 trait Strm[+O <: Obj] extends Value[O] {
   protected def values:Seq[O]
 
+  def first:O = this.drain.find(_.alive).getOrElse(zeroObj).asInstanceOf[O]
   def drain:Seq[O] = values // TODO: staged separate from values now so any build up of operations on a strm can be applied at time of merge
   def apply[P <: Obj](f:O => P):P = strm[P](this.drain.map(x => f(x)))
   override def model:Model = this.values.headOption.map(v => v.model).getOrElse(ModelOp.NONE)
