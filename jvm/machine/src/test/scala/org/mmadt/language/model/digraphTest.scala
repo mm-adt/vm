@@ -61,11 +61,11 @@ class digraphTest extends BaseInstTest(
         'attr(str("key") -> str("name") `_,` str("value") -> str("marko")),
         'attr(str("key") -> str("age") `_,` str("value") -> int(29))),
       "[('name';'marko'),('age';29)] => attr{2}"),
-    excepting((20 `;` "marko"), 'attr, LanguageException.typingError((20 `;` "marko"), 'attr), "(20;'marko') => attr"),
+    //excepting((20 `;` "marko"), 'attr, LanguageException.typingError((20 `;` "marko"), 'attr), "(20;'marko') => attr"),
   ), testSet("digraph model vertex test", DIGRAPH,
     comment("vertex directly"),
     testing('vertex(str("id") -> int(12)), __, 'vertex(str("id") -> int(12)), "vertex:('id'->12)"),
-    // excepting('vertex(str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "vertex:('bad_id'->12) => vertex"),
+    excepting('vertex(str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "vertex:('bad_id'->12) => vertex"),
     excepting((str("bad_id") -> int(12)), 'vertex, LanguageException.typingError(str("bad_id") -> int(12), 'vertex), "('bad_id'->12) => vertex"),
     comment("vertex via int"),
     testing(23, 'vertex, 'vertex(str("id") -> 'nat(23)), "23 => vertex"),
@@ -96,7 +96,7 @@ class digraphTest extends BaseInstTest(
       "(40;('name';'marko')) => (nat;attr) => vertex"),
     /*testing(
       ("40" `;`("name" `;` "marko")),
-      ('nat`;`'attr)`=>`'vertex,
+      ('nat `;` 'attr) `=>` 'vertex,
       'vertex(str("id") -> 'nat(40) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
       "('40';('name';'marko')) => (str;(str;str)) => (int;attr) => (nat;attr) => vertex"),*/
   ), testSet("digraph model edge test", DIGRAPH,

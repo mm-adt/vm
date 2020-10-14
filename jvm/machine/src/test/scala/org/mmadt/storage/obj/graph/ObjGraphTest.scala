@@ -45,7 +45,7 @@ class ObjGraphTest extends FunSuite {
       .defining('pair <= (str `;` str).to('x).:=(plus('x.get(1)) `;` plus('x.get(0)))))
     assertResult(Stream('apair(1 `;` 2)))(graph.coerce(1 `;` 2, 'apair))
     assertResult(Nil)(graph.coerce(10 `;` 2, 'apair))
-    //assertResult(Stream('pair("ab" `;` "ba")))(graph.coerce("a" `;` "b", 'pair))
+    // assertResult(Stream('pair("ab" `;` "ba")))(graph.coerce("a" `;` "b", 'pair))
   }
   test("type existence w/ pg_*") {
     List('pg_1, 'pg_2, 'pg_3).foreach(symbol => {
@@ -132,7 +132,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq(int(23)))(graph.coerce('vertex(str("id") -> 'nat(23)), int))
     assertResult(Seq('vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2))))(graph.coerce('nat(1) `;` 'nat(2), 'vertex `;` 'vertex))
     assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.coerce(str("a") `;` "b", 'attr))
-    assertResult(Seq('attr <= (str `;` str).combine(str `;`).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
+    assertResult(Seq('attr <= (str `;` str).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce('nat(23), 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce(23, 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23)).q(3)))(graph.coerce(23.q(3), 'vertex))
@@ -142,8 +142,8 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('nat(100) `;` 'nat(200), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List(('nat(100) `;` 'nat(200)) ==>[Obj] graph.coerce('nat `;` 'nat, 'edge).head))
-    //    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
-    //    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).head))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).head))
     assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex <= 'nat.split(str("id") -> __('nat))) `;`('vertex <= 'nat.split(str("id") -> __('nat)))).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
     assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex <= 'nat.split(str("id") -> __('nat))) `;`('vertex <= 'nat.split(str("id") -> __('nat)))).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
     assertResult(Seq(
@@ -249,8 +249,9 @@ class ObjGraphTest extends FunSuite {
   }
 
 
-  /*test("MAKE WORK WITH RECURSIVE STREAMING") {
-  val graph:ObjGraph = ObjGraph.create('digraph)
-  assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
-}*/
+  test("MAKE WORK WITH RECURSIVE STREAMING") {
+    val graph:ObjGraph = ObjGraph.create('digraph)
+    //println(graph.coerce((20 `;` "marko"),'attr).toList + "$$$$")
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
+  }
 }

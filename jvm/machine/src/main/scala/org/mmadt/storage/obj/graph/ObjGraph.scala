@@ -164,17 +164,15 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case blst:LstType[Obj] if blst.ctype => Stream(alst.named(blst.name))
           case blst:Lst[Obj] if Lst.exactTest(alst, blst) => Stream(alst)
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            alst.update(model).glist.map(a => blst.glist.map(b => coerce(a, b)))
-              .flatMap(x => x.permutations.flatten)
+            alst.update(model).glist.map(a => blst.glist.map(b => coerce(a, b).toList))
+              .foldLeft(List.empty[List[Obj]])((a,b)=>a :+ b.flatten)
+              .flatMap(x => x.combinations(alst.size)).distinct.reverse
               .filter(x => x.forall(_.alive))
-              .map(x => alst.update(model).clone(_ => x.toList))
+              .filter(x => x.size == alst.size)
+              .map(x => alst.update(model).clone(_ => x))
               .map(z =>
-                if (z.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __.combine(z).inst
+                if (z.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __
                 else __.combine(z).inst).toStream
-          /*val combo:Lst[Obj] = alst.clone(_ => alst.update(model).glist.zip(blst.glist).map(pair => pair._1.coerce(pair._2)))
-          if (combo.glist.exists(x => !x.alive)) Stream(zeroObj)
-          else if (combo.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) Stream(__)
-          else Stream(__.combine(combo).inst)*/
           case _ => Stream(zeroObj)
         }
         case arec:Rec[Obj, Obj] => target match {
