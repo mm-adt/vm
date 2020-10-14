@@ -34,7 +34,7 @@ import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.graph.ObjGraph.{NAME, ObjTraversalSource, ObjVertex}
+import org.mmadt.storage.obj.graph.ObjGraph.{NAME, ObjVertex}
 import org.mmadt.storage.obj.value.VInst
 
 import scala.collection.convert.ImplicitConversions.`iterator asScala`
@@ -71,7 +71,7 @@ object AsOp extends Func[Obj, Obj] {
     }
     if (!target.alive) return zeroObj
     if (!source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
-    if ((!__.isAnon(source)) && !source.model.typeExists(target)) throw LanguageException.typeNotInModel(source, asType(target), source.model.name)
+    LanguageException.testTypeInModel(source, asType(target))
     source match {
       case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => target.trace.reconstruct(source, target.name)
       case astrm:Strm[Obj] => astrm(src => AsOp.autoAsType(src, target, domain))
@@ -148,7 +148,7 @@ object AsOp extends Func[Obj, Obj] {
     case astr:StrType => str(name = astr.name, g = source.toString, via = source.via)
     case _:Inst[Obj, Obj] => OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail)
     case alst:LstType[Obj] if alst.ctype => source.named(alst.name)
-    case alst:LstType[Obj] if Lst.shapeTest(source, alst) => lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a =>  toBaseName(a._1).compute(a._2))), via = source.via).reload
+    case alst:LstType[Obj] if Lst.shapeTest(source, alst) => lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a => toBaseName(a._1).compute(a._2))), via = source.via).reload
     case alst:LstType[Obj] if Lst.test(source, alst) => source.named(alst.name)
     case _ => throw LanguageException.typingError(source, asType(target))
   }

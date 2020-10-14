@@ -26,7 +26,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp
+import org.mmadt.language.obj.op.trace.{AsOp, ModelOp}
 import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, lst, qStar, real, rec, str}
@@ -253,5 +253,13 @@ class ObjGraphTest extends FunSuite {
     val graph:ObjGraph = ObjGraph.create('digraph)
     //println(graph.coerce((20 `;` "marko"),'attr).toList + "$$$$")
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
+  }
+
+  test("coercion on pla2y") {
+    val graph = ObjGraph.create(storage.model('digraph))
+    println(graph.paths(5.update(graph.model),'vertex))
+    println(graph.paths((6`;`7).update(graph.model),('nat`;`'nat)))
+    println(6.update(graph.model) `=>` 'vertex.-<(__`;`__) `=>` 'edge)
+    println(graph.paths(6,str).toList)
   }
 }

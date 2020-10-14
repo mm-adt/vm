@@ -29,6 +29,7 @@ import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.Rec;
 import org.mmadt.language.obj.op.map.WalkOp;
 import org.mmadt.language.obj.op.trace.AsOp;
+import org.mmadt.language.obj.op.trace.ModelOp;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
 import org.mmadt.language.obj.value.Value;
@@ -109,6 +110,11 @@ public class LanguageException extends VmException {
 
     public static LanguageException typeNotInModel(final Obj aobj, final Type<?> atype, final String modelName) {
         return new LanguageException(atype.name() + " for " + aobj + " is not a type in model " + modelName);
+    }
+
+    public static void testTypeInModel(final Obj aobj, final Type<?> atype) {
+        if (!__.isAnon(aobj) && !ModelOp.modelToRichModel(aobj.model()).typeExists(atype))
+            throw typeNotInModel(aobj, atype, aobj.model().name());
     }
 
     public static class Poly {
