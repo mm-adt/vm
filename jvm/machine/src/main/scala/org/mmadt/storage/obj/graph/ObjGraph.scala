@@ -124,7 +124,18 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     JavaConverters.asScalaIterator(
       g.withSack((zeroObj, zeroObj)) // sack(source morph,target morph)
         .R.inject(createObj(target))
-        .sideEffect((t:Traverser[Vertex]) => t.sack[(Obj, Obj)](objMatch(sroot, t.get.obj).headOption.getOrElse(zeroObj), objMatch(t.get.obj, troot).headOption.getOrElse(zeroObj)))
+        .sideEffect((t:Traverser[Vertex]) => t.sack[(Stream[Obj], Stream[Obj])](objMatch(sroot, t.get.obj), objMatch(t.get.obj, troot)))
+        .flatMap((t:Traverser[Vertex]) => {
+          val sack = t.sack[(Stream[Obj], Stream[Obj])]()
+          JavaConverters.asJavaIterator((
+            if (sack._2.isEmpty) sack._1.map(x => (t.get(), x, zeroObj))
+            else sack._1.flatMap(x => sack._2.map(y => (t.get(), x, y)))).iterator).asInstanceOf[java.util.Iterator[Vertex]]
+        })
+        .sideEffect((t:Traverser[Vertex]) => {
+          val sack = (t.get.asInstanceOf[(Vertex, Obj, Obj)]._2, t.get.asInstanceOf[(Vertex, Obj, Obj)]._3)
+          t.asAdmin().sack(sack)
+          t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj, Obj)]._1)
+        })
         .filter((t:Traverser[Vertex]) =>
           (source == __) || // all roots
             t.sack[(Obj, Obj)]._1.alive) // sourced paths
@@ -135,9 +146,23 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           .simplePath()
           .outE()
           .inV()
-          .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[(Obj, Obj)]._1, objMatch(t.get.obj, troot).headOption.getOrElse(zeroObj))))
-        .path().by(OBJ)
-        .map((t:Traverser[Path]) => (t.get().objects().asInstanceOf[java.util.List[Obj]].toList, t.sack[(Obj, Obj)])))
+          .flatMap((t:Traverser[Vertex]) => {
+            val sack = t.sack[(Obj, Obj)]
+            val s:Stream[Obj] = objMatch(t.get.obj, troot)
+            JavaConverters.asJavaIterator(
+              if (s.isEmpty) Iterator((t.get, sack._1, zeroObj))
+              else s.map(x => (t.get, sack._1, x)).iterator).asInstanceOf[java.util.Iterator[Vertex]]
+          })
+          .sideEffect((t:Traverser[Vertex]) => {
+            val sack:(Obj, Obj) = (t.get.asInstanceOf[(Vertex, Obj, Obj)]._2, t.get.asInstanceOf[(Vertex, Obj, Obj)]._3)
+            t.asAdmin().sack(sack)
+            t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj, Obj)]._1)
+          }))
+        .path()
+        .by((t:Any) => t match {
+          case e:Element => e.value[Obj](OBJ) // avoid sack in the path
+          case _ => __
+        }).map((t:Traverser[Path]) => (t.get().objects().asInstanceOf[java.util.List[Obj]].toList, t.sack[(Obj, Obj)])))
       .toStream
       // manipulate head and tail types with computable paths
       // TODO: reconstruct arguments to all instructions so that a coercion maintains to complete bytecode specification
@@ -145,7 +170,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       .map(x => (x._1.filter(y => y != NoOp()), x._2))
       .map(x => (if (!__.isAnonRootAlive(sroot) && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1, x._2)) // append the source morph sack
       .map(x => (if (__.isAnonRootAlive(sroot) || x._1.head == sroot) x._1 else (sroot +: x._1), x._2)) // append the source range
-      .map(x => if (x._1.last.isInstanceOf[Poly[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1) // append the target morph sack
+      .map(x => if (x._1.last.isInstanceOf[Poly[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1 :+ x._2._2) // append the target morph sack*/
       .map(x => x.filter(y => !__.isAnonRootAlive(y)))
       .map(x => x.foldLeft(List.empty[Obj])((a, b) => {
         if (a.isEmpty) a :+ b
@@ -164,11 +189,11 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case blst:LstType[Obj] if blst.ctype => Stream(alst.named(blst.name))
           case blst:Lst[Obj] if Lst.exactTest(alst, blst) => Stream(alst)
           case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            alst.update(model).glist.map(a => blst.glist.map(b => coerce(a, b).toList))
-              .foldLeft(List.empty[List[Obj]])((a,b)=>a :+ b.flatten)
-              .flatMap(x => x.combinations(alst.size)).distinct.reverse
-              .filter(x => x.forall(_.alive))
+            alst.update(model).glist.zip(blst.glist).flatMap(pair => coerce(pair._1, pair._2).flatten(pair => Iterator(pair)))
+              .foldLeft(List.empty[Obj])((a, b) => a :+ b)
+              .combinations(alst.size).toList.distinct
               .filter(x => x.size == alst.size)
+              .filter(x => x.forall(_.alive))
               .map(x => alst.update(model).clone(_ => x))
               .map(z =>
                 if (z.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __

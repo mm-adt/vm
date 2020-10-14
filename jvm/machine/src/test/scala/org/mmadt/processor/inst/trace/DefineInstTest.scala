@@ -50,7 +50,7 @@ class DefineInstTest extends BaseInstTest(
     testing(1 `;` 2, 'apair, 'apair(1 `;` 2), "(1;2)=>apair"),
     testing(100 `;` 101, 'apair, 'apair(100 `;` 101), "(100;101)=>apair"),
     excepting(2 `;` 1, 'apair, LanguageException.typingError(2 `;` 1, 'apair), "(2;1)=>apair"),
-    //excepting(1 `;` 2 `;` 3, 'apair, LanguageException.typingError(1 `;` 2 `;` 3, 'apair), "(1;2;3)=>apair"), // TODO: if root then don't double domain/range
+    excepting(1 `;` 2 `;` 3, 'apair, LanguageException.typingError(1 `;` 2 `;` 3, 'apair), "(1;2;3)=>apair"),
     comment("bpair"),
     testing(1 `;` 2, 'bpair <= (int `;` int), 'bpair(2 `;` 4), "(1;2)=>bpair<=(int;int)"),
   ), testSet("[define] table test w/ nat model", MODEL,

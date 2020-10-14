@@ -22,12 +22,13 @@
 
 package org.mmadt.language.model.examples
 
+import org.mmadt.language.LanguageException
 import org.mmadt.language.model.examples.timeTest.TIME
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, Model}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.storage.model
 
 /**
@@ -43,5 +44,8 @@ class timeTest extends BaseInstTest(
   testSet("time model table test", List(TIME, model('time)),
     comment("date"),
     testing(8 `;` 26 `;` 2020, 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26;2020) => date"),
+    testing('nat(8) `;` 'nat(26) `;` 'nat(2020), 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26;2020) => date"),
     testing(8 `;` 26, 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26) => date"),
+    testing('nat(8) `;` 'nat(26), 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26) => date"),
+    excepting(8, 'date, LanguageException.typingError(8, 'date), "8=>date")
   ))

@@ -22,10 +22,10 @@
 
 package org.mmadt.language.model.examples
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.{Obj, asType}
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage
@@ -40,12 +40,12 @@ class pgTest extends BaseInstTest(
     comment("vertex"),
     testing((str("id") -> int(1)), 'vertex, 'vertex(str("id") -> int(1)), "('id'->1) => vertex"),
     comment("edge"),
-    // TODO: something wierd with pg_1 excepting(rec(str("id") -> int(1)) `;` rec(str("id") -> int(2)), ('vertex `;` 'vertex) `=>` 'edge, LanguageException.typingError('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(2)), 'edge), "(('id'->1);('id'->2))=>(vertex;vertex)=>edge"),
-    // TODO: something wierd with pg_1  excepting(rec(str("id") -> int(1)) `;` rec(str("id") -> int(2)), 'edge, LanguageException.typingError(rec(str("id") -> int(1)) `;` rec(str("id") -> int(2)), 'edge), "(('id'->1);('id'->2))=>edge"),
+    // excepting(lst(g=(Tokens.`;`,List(rec(str("id") -> int(1)), rec(str("id") -> int(2))))), ('vertex `;` 'vertex) `=>` 'edge, LanguageException.typingError(lst(g=(Tokens.`;`,List(rec(str("id") -> int(1)), rec(str("id") -> int(2))))), 'edge), "(('id'->1);('id'->2))=>(vertex;vertex)=>edge"),
+    excepting(lst(g = (Tokens.`;`, List(rec(str("id") -> int(1)), rec(str("id") -> int(2))))), 'edge, LanguageException.typingError(rec(str("id") -> int(1)) `;` rec(str("id") -> int(2)), 'edge), "(('id'->1);('id'->2))=>edge"),
     comment("exceptions"),
-    // TODO: something wierd with pg_1 excepting(6, 'vertex, LanguageException.typingError(6, 'vertex), "6 => vertex"),
-    // TODO: something wierd with pg_1 excepting(7, 'edge, LanguageException.typingError(7, 'edge), "7 => edge"),
-    // TODO: something wierd with pg_1 excepting((8 `;` 9), 'edge, LanguageException.typingError((8 `;` 9), 'edge), "(8;9) => edge"),
+    excepting(6, 'vertex, LanguageException.typingError(6, 'vertex), "6 => vertex"),
+    excepting(7, 'edge, LanguageException.typingError(7, 'edge), "7 => edge"),
+    excepting((8 `;` 9), 'edge, LanguageException.typingError((8 `;` 9), 'edge), "(8;9) => edge"),
     excepting((1 `;` 2), ('vertex `;` 'vertex), LanguageException.typingError(1 `;` 2, asType('vertex `;` 'vertex)), "(1;2) => (vertex;vertex)"),
   ), testSet("pg_2 model table test", storage.model('pg_2),
     comment("int=>vertex"),
