@@ -45,7 +45,7 @@ object CombineOp extends Func[Obj, Obj] {
     }).via(start, inst)
   }
 
-  def combineAlgorithm(apoly:Poly[Obj], bpoly:Poly[Obj]):Poly[Obj] = {
+  def combineAlgorithm(apoly:Poly[Obj], bpoly:Poly[Obj],withAs:Boolean=true):Poly[Obj] = {
     apoly match {
       case arec:Rec[Obj, Obj] =>
         val argList:Rec.Pairs[Obj, Obj] = bpoly.asInstanceOf[Rec[Obj, Obj]].gmap
@@ -55,7 +55,7 @@ object CombineOp extends Func[Obj, Obj] {
         val newSep:String = /*if (argSize < 2) apoly.gsep else*/ bpoly.gsep
         if (argSize > 0) {
           for (x <- arec.gmap) {
-            newList = newList :+ (x._1.compute(argList(i)._1), x._2.compute(argList(i)._2))
+            newList = newList :+ (x._1.compute(argList(i)._1,withAs=withAs), x._2.compute(argList(i)._2,withAs=withAs))
             i = (i + 1) % argSize
           }
         }
@@ -68,7 +68,7 @@ object CombineOp extends Func[Obj, Obj] {
         val newSep:String = if (argSize < 2) apoly.gsep else bpoly.gsep
         if (argSize > 0) {
           for (x <- alst.glist) {
-            newList = newList :+ x.compute(argList(i))
+            newList = newList :+ x.compute(argList(i),withAs=withAs)
             i = (i + 1) % argSize
           }
         }

@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, Model, NONE}
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableFor3
 
@@ -84,8 +84,13 @@ class LstTypeTest extends BaseInstTest(
     // TODO: testing(int(1).q(2) `,` int(2).q(2), a(str.q(0, 2) `|` int.q(0, 2)), true, "(1{2},2{2})[a,(str{+}|int{+})]"),
     testing(1 `,` 2 `,` 3, a(int `,` int), false, "(1,2,3)[a,(int,int)]"),
   ), testSet(";-lst int array type", INT_ARRAY_MODEL,
+    comment("nested evaluations"),
+    IGNORING(".*")(int(1,2,3),int.q(3).split(int.q(3)`;`mult(10)`;`split(split(is(gt(20))`;`split(plus(70)`,`plus(170)`,`plus(270))))),
+      strm[Obj](1`;`10`;`(zeroObj `;` zeroObj),(2`;`20`;`(zeroObj`;`zeroObj)),(3`;`30`;`(30`;`zeroObj))),
+      "[1,2,3]-<(int{3};[mult,10];-<(-<([is>20];-<(+70,+170,+270))))"),
     comment("int array mmlang/mmscala"),
-    // testing(intArrayObj, __, intArrayObj, intArrayStr),
+    // testing(intArrayObj
+    // , __, intArrayObj, intArrayStr),
     comment("int array passing"),
     testing(lst(), a('tarr_i), true, "( )[a,tarr_i]"),
     testing(1 `;`, a('tarr_i), true, "(1)[a,tarr_i]"),

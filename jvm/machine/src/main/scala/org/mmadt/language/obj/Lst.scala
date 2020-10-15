@@ -119,7 +119,7 @@ object Lst {
     case Tokens.`,` =>
       if (null == start) return Type.mergeObjs(values).filter(_.alive)
       Type.mergeObjs(Type.mergeObjs(values).map(v =>
-        if (!__.isAnon(start) && v.isInstanceOf[Value[_]]) start `=>` v
+        if (!__.isAnon(start) && v.isInstanceOf[Value[_]]) v.hardQ(q => multQ(start.q, q))
         else (if (v.isInstanceOf[Type[_]]) AsOp.autoAsType(start, v.domain) else start) ~~> v)).filter(_.alive)
     /////////// ;-lst
     case Tokens.`;` =>
@@ -131,7 +131,7 @@ object Lst {
           case x:Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
         }
-        running.named(v.name)
+        running
       }).asInstanceOf[List[A]]
     /////////// |-lst
     case Tokens.`|` =>

@@ -37,6 +37,8 @@ import org.mmadt.storage.StorageFactory.{int, oneObj, strm}
 import org.scalatest.FunSuite
 import org.scalatest.prop.{TableDrivenPropertyChecks, TableFor5}
 
+import scala.util.matching.Regex
+
 /**
  * @author Stephen Mallette (http://stephen.genoprime.com)
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -106,7 +108,7 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
       (evaluating ++
         (if (null != query) querying else Nil))
         .foreach(example => {
-          if (ignore.exists(i => (i._1 == null || i._1 == model) && (i._2 == null || i._2 == example._1)))
+          if (ignore.exists(i => (i._1 == null || i._1 == model) && (i._2 == null || i._2 == example._1 || new Regex(i._2).pattern.matcher(example._1).matches())))
             println(s"IGNORING[${example._1}][${model.name}]: $start => $middle")
           else
             end match {

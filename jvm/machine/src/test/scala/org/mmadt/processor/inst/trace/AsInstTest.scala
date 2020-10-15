@@ -74,7 +74,7 @@ class AsInstTest extends BaseInstTest(
     testing((int(1) `;` 2 `;` 3), as(str), "(1;2;3)"),
     //testing((int(1) `,` 2 `,` 3), as((str `,` real `,` int)), (str("1") `,` 2.0 `,` 3)),
     //testing((int(1) `,` 2 `,` 3), as((__.plus(1) `,` __.plus(2) `,` __.plus(3))), (int(2) `,` 4 `,` 6)),
-    testing((int(1) `,` 2 `,` 3), as((int.plus(1) `,` int.plus(2) `,` int.plus(3))), (int(2) `,` 4 `,` 6)),
+    //testing((int(1) `,` 2 `,` 3), (int`;`int`;`int)`=>` (int.plus(1) `,` int.plus(2) `,` int.plus(3)), (int(2) `,` 4 `,` 6)),
     testing((int(1) `,` 2 `,` 3), as((int(8) `,` 9 `,` 10)), (int(8) `,` 9 `,` 10)),
     testing((int(1) `,` 2 `,` 3), as(lst), (int(1) `,` 2 `,` 3)),
     testing((int `,` int.plus(7) `,` int), as((int.plus(1) `,` int.plus(2) `,` int.plus(3))), (int.plus(1) `,` int.plus(2) `,` int.plus(3)) <= (int `,` int.plus(7) `,` int).as((int.plus(1) `,` int.plus(2) `,` int.plus(3))))

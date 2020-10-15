@@ -98,6 +98,9 @@ class ObjGraphTest extends FunSuite {
     val graph:ObjGraph = ObjGraph.create(storage.model('pg_2).defining('nat <= int.is(gt(0))).defining(int <= (int `;` int `;` int).get(1)))
     println(graph.coerce(int, str))
     println(graph.coerce(int `;` int, 'edge))
+    assertResult('edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(5))))(graph.model.s(int(5))-<('vertex`;`'vertex) `=>` 'edge)
+    //assertResult(Seq(Seq('edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(5))))))(graph.coerce(graph.model.s(int(5))-<('vertex`;`'vertex),'edge))
+    //assertResult('edge<=int.split(('vertex<=int-<(str("id")->int))`;`('vertex<=int-<(str("id")->int))).split((str("outV") -> ('vertex <= get(0))) `_,`(str("inV") -> ('vertex <= get(1)))))(graph.coerce(graph.model.s(int)-<('vertex`;`'vertex), 'edge))
     assertResult(Seq(int <= (int `;` int `;` int).get(1)))(graph.coerce((int `;` int `;` int), int))
     assertResult(Seq('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
     assertResult(Seq('nat <= int.plus(10).is(gt(0))))(graph.coerce(int.plus(10), 'nat))
@@ -143,6 +146,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('nat(100) `;` 'nat(200), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List(('nat(100) `;` 'nat(200)) ==>[Obj] graph.coerce('nat `;` 'nat, 'edge).head))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 'nat(200), 'edge))
     // assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).head))
     assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex <= 'nat.split(str("id") -> __('nat))) `;`('vertex <= 'nat.split(str("id") -> __('nat)))).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
     assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex <= 'nat.split(str("id") -> __('nat))) `;`('vertex <= 'nat.split(str("id") -> __('nat)))).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
@@ -170,6 +174,12 @@ class ObjGraphTest extends FunSuite {
     assertResult(Nil)(graph.coerce(8, 'date))
   }
 
+  test("type constructions with path counts") {
+    val graph = ObjGraph.create(storage.model('digraph))
+    println(graph.paths(8,'vertex).toList)
+    assertResult(2)(graph.paths(8,'vertex).toList.size)
+  }
+
   test("dependent sum construction w/ custom types") {
     val graph = ObjGraph.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))).defining(str <= int))
     graph.paths(__, __).foreach(x => println(x))
@@ -182,7 +192,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Stream('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
     assertResult(List(int <=[__] 'nat))(graph.coerce('nat, int))
     assertResult(List(int(2)))(graph.coerce('nat(2), int))
-    assertResult(List(int(2).q(30)))(graph.coerce('nat(2).q(5), int.q(6)))
+    //assertResult(List(int(2).q(30)))(graph.coerce('nat(2).q(5), int.q(6)))
     assertResult(List(str <= int))(graph.coerce(int, str))
     assertResult(List(str("2")))(graph.coerce(int(2), str))
     assertResult(List('nat(566)))(graph.coerce(566, 'nat))
@@ -241,8 +251,8 @@ class ObjGraphTest extends FunSuite {
     // ctree //
     ///////////
     //  assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('ctree))
-    assertResult(btrue)((2 `;` 0 `;` 1).model(rmodel) ==> a('ctree))
-    assertResult(bfalse)((1 `;` 0 `;` 1).model(rmodel) ==> a('ctree))
+    //assertResult(btrue)((2 `;` 0 `;` 1).model(rmodel) ==> a('ctree))
+    //assertResult(bfalse)((1 `;` 0 `;` 1).model(rmodel) ==> a('ctree))
     /*  assertResult(bfalse)((3`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
         assertResult(bfalse)((1`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
         assertResult(btrue)((3`;`(2`;`0`;`1)`;`4).model(rmodel) ==> a('ctree)) */
@@ -253,7 +263,7 @@ class ObjGraphTest extends FunSuite {
     val graph:ObjGraph = ObjGraph.create('digraph)
     //println(graph.coerce((20 `;` "marko"),'attr).toList + "$$$$")
     println(graph.coerce((100 `;` 'nat(2)), 'edge).toList)
-    //assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
   }
 
   test("coercion on pla2y") {

@@ -29,7 +29,7 @@ import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.`type`.{LstType, RecType, Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
+import org.mmadt.language.obj.op.trace.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage
@@ -99,14 +99,14 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           (a, b) => b match {
             case _ if !b.alive || !a.alive => zeroObj
             case inst:Inst[Obj, Obj] => inst.exec(a)
-            case _:Type[Obj] => a.q(b.q)
-            case _:Value[Obj] => b.q(q => a.q.mult(q))
+            case _:Type[Obj] => a
+            case _:Value[Obj] => b
           })
       })
       .filter(_.alive)
       .distinct
       .flatMap(x => objMatch(source.update(model), Obj.resolveToken(source.update(model), x.domainObj)).map(y => (x, y)))
-      .map(x => (x._1, Try[Obj](x._2.compute(x._1).hardQ(source.q.mult(target.q))).getOrElse(zeroObj))) // TODO: get rid of withAs=true
+      .map(x => (x._1, Try[Obj](x._2.compute(x._1)).getOrElse(zeroObj))) // TODO: get rid of withAs=true
       .flatMap(x => objMatch(x._2.update(model), Obj.resolveToken(x._2.update(model), x._1.rangeObj)).map(y => (x._1, y)))
       .filter(x => x._2.hardQ(x._1.rangeObj.q).test(x._1.rangeObj))
       .map(x => x._2)

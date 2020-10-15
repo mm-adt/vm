@@ -97,6 +97,8 @@ object ModelOp extends Func[Obj, Obj] {
 
     lazy val og:GraphTraversalSource = model.graph.g
 
+    def s[A<:Obj](start:A):A = start.update(model)
+
     private final def findType[A <: Obj](model:Model, source:Obj, targetName:String):List[A] =
       (if (model.name.equals(targetName)) List(model).asInstanceOf[List[A]]
       else model.gmap.fetchOrElse(TYPE, NOREC).gmap
