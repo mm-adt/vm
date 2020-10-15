@@ -134,6 +134,7 @@ object Tokens {
   val combine_op = "="
   val merge_op = ">-"
   val as_op = "~>"
+  val walk_op = "~~>"
   val juxt_op = "=>"
   val swap_op = "/"
 

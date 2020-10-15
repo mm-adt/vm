@@ -31,7 +31,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch._
-import org.mmadt.language.obj.op.map.GetOp
+import org.mmadt.language.obj.op.map.{GetOp, WalkOp}
 import org.mmadt.language.obj.op.reduce.BarrierOp
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
 import org.mmadt.language.obj.value.{strm => _, _}
@@ -160,7 +160,7 @@ class mmlangParser extends JavaTokenParsers {
 
   // instruction parsing
   lazy val inst:Parser[Inst[Obj, Obj]] = (
-    liftSugar | sugarlessInst | fromSugar | toSugar | splitSugar | swapSugar | barrierSugar | branchSugar |
+    liftSugar | sugarlessInst | fromSugar | toSugar | splitSugar | swapSugar | barrierSugar | branchSugar | walkSugar |
       combineSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar) ~ opt(quantifier) ^^
     (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
   lazy val infixSugar:Parser[Inst[Obj, Obj]] = not(Tokens.:<=) ~> (
@@ -168,6 +168,7 @@ class mmlangParser extends JavaTokenParsers {
       Tokens.lt_op | Tokens.eqs_op | Tokens.and_op | Tokens.or_op | Tokens.product_op | Tokens.sum_op |
       Tokens.is_a | Tokens.is | Tokens.not_op) ~ opt(quantifier) ~ obj ^^ (x => x._1._2.map(q => OpInstResolver.resolve[Obj, Obj](x._1._1, List(x._2)).hardQ(q)).getOrElse(OpInstResolver.resolve(x._1._1, List(x._2))))
   lazy val infixArg:Parser[Obj] = Tokens.:: ~> obj <~ Tokens.:: ^^ (x => x)
+  lazy val walkSugar:Parser[Inst[Obj, Obj]] = Tokens.walk_op ~> cType ^^ (x => WalkOp(x.asInstanceOf[Type[Obj]]))
   lazy val barrierSugar:Parser[Inst[Obj, Obj]] = Tokens.barrier_op ~> objType ^^ (x => BarrierOp(asType(x)))
   lazy val combineSugar:Parser[Inst[Obj, Obj]] = Tokens.combine_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => CombineOp(x._1.q(q))).getOrElse(CombineOp(x._1)))
   lazy val splitSugar:Parser[Inst[Obj, Obj]] = Tokens.split_op ~> polyObj ~ opt(quantifier) ^^
