@@ -1,5 +1,4 @@
-pg_2:(
-'import' -> (mm -> ()),
+pg_2:('import' -> (mm -> ()),
 'type'   -> (
   vertex -> (vertex:('id'->int),                                       //<1>
              vertex<=int-<('id'->_)),                                  //<2>

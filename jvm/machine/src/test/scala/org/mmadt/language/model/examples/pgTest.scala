@@ -24,7 +24,7 @@ package org.mmadt.language.model.examples
 
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.{Obj, Rec, asType}
+import org.mmadt.language.obj.{Obj, asType}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
@@ -50,7 +50,7 @@ class pgTest extends BaseInstTest(
   ), testSet("pg_2 model table test", storage.model('pg_2),
     comment("int=>vertex"),
     testing(5, 'vertex, 'vertex(str("id") -> int(5)), "5 => vertex"),
-    testing(5, int.-<('vertex`;`'vertex), lst(g=(Tokens.`;`,List('vertex(str("id") -> int(5)),'vertex(str("id") -> int(5))))), "5-<(vertex;vertex)"),
+    testing(5, int.-<('vertex `;` 'vertex), lst(g = (Tokens.`;`, List('vertex(str("id") -> int(5)), 'vertex(str("id") -> int(5))))), "5-<(vertex;vertex)"),
     excepting("6", 'vertex, LanguageException.typingError("6", 'vertex), "'6' => vertex"),
     comment("(int;int)=>(vertex;vertex)=>edge"),
     testing((1 `;` 2), ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(2))), "(1;2) => (vertex;vertex)"),
@@ -59,4 +59,9 @@ class pgTest extends BaseInstTest(
   ), testSet("int=>(vertex;vertex)", storage.model('pg_2).defining(('vertex `;` 'vertex) <= (int.-<('vertex `;` 'vertex))),
     testing(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
     testing(int(1, 2), ('vertex `;` 'vertex), strm[Obj](('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), ('vertex(str("id") -> int(2)) `;` 'vertex(str("id") -> int(2)))), "[1,2] => (vertex;vertex)"),
+  ), testSet("property graph #4", storage.model('pg_4),
+    testing(8, 'vertex, 'vertex(str("id") -> 'nat(8) `_,` str("label") -> str("vertex")), "8 => vertex"),
+    IGNORING("eval-.","query-2")((9 `;` "person"`;`"name"`;`"marko"), 'vertex,
+      'vertex(str("id") -> 'nat(9) `_,` str("label") -> str("person"))/*`_,`str("props")->(str("name")->str("marko")))*/, "" +
+        "(9;'person';'name';'marko') => vertex"),
   ))
