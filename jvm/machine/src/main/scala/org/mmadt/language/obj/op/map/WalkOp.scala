@@ -24,9 +24,8 @@ package org.mmadt.language.obj.op.map
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.Type
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.AsOp
-import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{lst, qOne}
@@ -44,12 +43,12 @@ object WalkOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
   def apply[A <: Obj](atype:OType[A]):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.walk, List(atype)), func = this)
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Lst[Obj] =
-    Poly.finalResult(start match {
-      case _:Type[_] => lst
-      case _:Value[_] => lst(g = (Tokens.`,`,
-        start.model.graph.paths(asType(start).rangeObj.hardQ(qOne), inst.arg0[Obj]).toList
-          .map(list => lst(g = (Tokens.`;`, list.map(step => step.rangeObj))))))
-    }, start, inst)
+    (start match {
+      case _:__ => lst
+      case _ => lst(g = (Tokens.`,`,
+        start.model.graph.paths(asType(start).rangeObj.hardQ(qOne), inst.arg0[Obj])
+          .map(list => lst(g = (Tokens.`;`, list.map(step => step.rangeObj)))).toList))
+    }).via(start, inst)
 
   /////////////////////////////////////////////////////////////////////////
   /////////////////////////////////////////////////////////////////////////

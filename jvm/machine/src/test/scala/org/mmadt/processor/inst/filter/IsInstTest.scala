@@ -57,7 +57,7 @@ class IsInstTest extends BaseInstTest(
     testing(2.0, real.is(gt(mult(real))), zeroObj, "2.0 => real[is>*real]"),
     testing(real, is(real.gt(2.0)), real.is(real.gt(2.0)), "real[is,real>2.0]"),
     testing(real, real.is(gt(2.0)), real.is(real.gt(2.0)), "real => real[is>2.0]"),
-    IGNORING("eval-3", "eval-4", "eval-5")(real, is(bool), real.is(bool), "real[is,bool]"),
+    IGNORING("eval-1", "eval-2", "eval-3", "eval-4", "eval-5")(real, is(bool), real.is(bool), "real[is,bool]"),
     IGNORING("eval-5")(real(1.0, 2.0, 3.0), is(real.gt(2.0)), 3.0, "[1.0,2.0,3.0][is,real>2.0]"),
     testing(real(1.0, 2.0, 3.0), real.q(3).is(real.gt(real)), zeroObj, "[1.0,2.0,3.0] => real{3}[is,real>real]"),
     testing(real(1.0, 2.0, 3.0), is(gt(mult(real))), zeroObj, "[1.0,2.0,3.0][is>*real]"),

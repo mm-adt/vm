@@ -82,9 +82,7 @@ package object obj {
     case atype:Type[_] => atype
     case arec:RecStrm[Obj, Obj] => asType[O](arec.drain.headOption.getOrElse(zeroObj).asInstanceOf[O])
     case alst:LstStrm[Obj] => asType[O](alst.drain.headOption.getOrElse(zeroObj).asInstanceOf[O])
-    case alst:LstValue[Obj] => if (alst.isEmpty) lst.q(obj.q) else {
-      Some(lst(name = obj.name, g = (alst.gsep, alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)).filter(x => x.isInstanceOf[Type[Obj]]).getOrElse(zeroObj)
-    }
+    case alst:LstValue[Obj] => if (alst.isEmpty) lst.q(obj.q) else Some(lst(name = obj.name, g = (alst.gsep, alst.glist.map(x => asType(x))), q = obj.q, via = alst.via)).filter(x => x.isInstanceOf[Type[Obj]]).getOrElse(zeroObj)
     case arec:RecValue[Obj, Obj] => if (arec.isEmpty) rec.q(obj.q) else rec(name = obj.name, g = (arec.gsep, arec.gmap.map(x => x._1 -> asType(x._2))), q = obj.q, via = arec.via)
     //
     case _:IntValue | _:IntStrm => tint(name = obj.name, q = obj.q)

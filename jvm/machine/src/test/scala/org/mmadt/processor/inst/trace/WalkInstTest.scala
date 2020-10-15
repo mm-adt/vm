@@ -25,13 +25,13 @@ package org.mmadt.processor.inst.trace
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.obj.op.trace.ModelOp.MM
 import org.mmadt.language.obj.{Lst, Obj}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
-import org.mmadt.processor.inst.trace.WalkInstTest._
-import org.mmadt.storage.StorageFactory.{int, lst, str, strm}
+import org.mmadt.processor.inst.BaseInstTest.{bindings, engine}
+import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
+import org.mmadt.storage
+import org.mmadt.storage.StorageFactory.{int, lst}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -42,20 +42,13 @@ object WalkInstTest {
   private val dateType:Lst[__] = 'date(('nat <= 'nat.is(lte(12))) `;`('nat <= 'nat.is(lte(31))) `;` 'nat)
   private val noYearDateType:__ = 'date <= 'moday(('nat <= 'nat.is(lte(12))) `;`('nat <= 'nat.is(lte(31)))).put(2, 2009)
   private val modayType:Obj = 'moday <= (int -< (int `;` int))
-  //private val sdateType:Obj = 'sdate <= 'moday(int `;` int).:=(str `;` str)
-  private val MODEL:Model = ModelOp.NONE
-    .defining(natType)
-    .defining(dateType)
-    .defining(noYearDateType)
-    .defining(modayType) //.defining(sdateType)
-  private val PARSE_MODEL:Model = org.mmadt.storage.model("social")
   /**
    *
    * /-------------\
    * z-->y-->x-->w-->v
    * \------/
    */
-  private val CHAIN_MODEL:Model = ModelOp.MM
+  /*private val CHAIN_MODEL:Model = ModelOp.MM
     .defining('ztype <= int)
     .defining('ytype <= 'ztype.id)
     .defining('xtype <= 'ytype.id)
@@ -67,15 +60,17 @@ object WalkInstTest {
     .defining('A <= int)
     .defining('B <= __("A"))
     .defining('C <= __("B"))
-    .defining('A <= __("C"))
+    .defining('A <= __("C"))*/
 }
 
 class WalkInstTest extends BaseInstTest(
-  /*testSet("[walk] table test", MODEL,
+  testSet("[walk] table test", List(MM).map(m => m.defining('nat <= int.is(gt(0)))),
     comment("int~>int"),
-    testing(int, int.walk(int), lst <= int.walk(int), "int => int[walk,int]"),
+    testing(int, int.walk(int), lst(lst(int)) <= int.walk(int), "int => int[walk,int]"),
+    testing(2, int.walk(int), lst(lst(int)) <= 2.walk(int), "2 => int[walk,int]"),
     comment("int~>nat"),
-    testing(int, int.walk('nat), lst <= int.walk('nat), "int => int[walk,nat]"),
+    //testing(int, int.walk('nat), lst(int`;`'nat) <= int.walk('nat), "int => int[walk,nat]"),
+    /*testing(int, int.walk('nat), lst <= int.walk('nat), "int => int[walk,nat]"),
     testing(int, walk('nat), lst <= int.walk('nat), "int => [walk,nat]"),
     testing(5, int.walk('nat), ((int `;` 'nat) `,`) <= 5.walk('nat), "5 => int[walk,nat]"),
     testing(-5, int.walk('nat), ((int `;` 'nat) `,`) <= (-5).walk('nat), "-5 => int[walk,nat]"),
@@ -127,15 +122,11 @@ class WalkInstTest extends BaseInstTest(
     testing('A, __, 'A, "A"),
     testing('B, __, 'B, "B"),
     testing('C, __, 'C, "C"),*/
-    )
-/* {
+  )) {
   test("walk play") {
-    // assertResult(MODEL)(PARSE_MODEL)
-    println(MODEL)
-    println(PARSE_MODEL.domainObj.asInstanceOf[Model].dtypes)
-    println(CHAIN_MODEL)
-    println(CAT3_MODEL)
+    println(engine.eval("int => [walk,nat]", bindings(storage.model('digraph))))
+    //println(int.update(storage.model('digraph)).model.graph.paths(asType(int).rangeObj.hardQ(qOne),'nat))
   }
 }
-*/
+
 

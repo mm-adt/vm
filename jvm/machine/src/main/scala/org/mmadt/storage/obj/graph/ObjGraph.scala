@@ -85,9 +85,9 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
 
   def coerce(source:Obj, target:Obj):Stream[target.type] = {
     Option(source match {
-      case _ if (!source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined) => source
-      case _ if (!target.alive) => zeroObj
-      case _ if (__.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined) => source.from(__(target.name))
+      case _ if !source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined => source
+      case _ if !target.alive => zeroObj
+      case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
       case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => target.trace.reconstruct(source, target.name)
       case _:Strm[Obj] => strm[target.type](coerce(source, target))
       case alst:Lst[_] if Lst.exactTest(alst, target) => source

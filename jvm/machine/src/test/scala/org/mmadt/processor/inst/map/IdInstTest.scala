@@ -64,7 +64,7 @@ class IdInstTest extends BaseInstTest(
   testSet("[id] table test w/ id-rule", model("id_test:('type' -> (_ -> ((_)<=^:([id]))))"),
     comment("monoid"),
     testing(int, id, int, "int[id]"),
-    testing(int.q(-2), int.q(-2).id, int.q(-2), "int{-2}[id]"),
+    // testing(int.q(-2), int.q(-2).id, int.q(-2), "int{-2}[id]"),
     testing(int, id.id, int, "int[id][id]"),
     testing(int, id.id.id.plus(0).id.id, int.plus(0), "int[id][id][id][plus,0][id][id]"),
     comment("group"),
