@@ -23,12 +23,12 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.language.obj.op.trace.PathOp.VERTICES
+import org.mmadt.language.obj.{Int, Obj, Rec}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory.{real, _}
@@ -40,13 +40,23 @@ class SplitInstTest extends BaseInstTest(
     testing(lst(), zero, lst(), "() => [zero]"),
     testing(1, map(lst()).eqs(lst.zero), btrue, "1 => [map,()][eq,lst[zero]]"),
     testing(lst(), map(lst()).eqs(zero), btrue, "() => [map,()][eq,[zero]]"),
-    // testing(lst, map(lst()).eqs(zero), btrue, "lst => [map,()][eq,[zero]]"),
+    IGNORING(".*")(lst, map(lst()).eqs(zero), btrue, "lst => [map,()][eq,[zero]]"),
   ), testSet("[split] ,-lst table test", List(NONE, MM, MMX),
-    //testing(1, -<(int `,` int), int(1) `,` int(1), "1-<(int,int)"),
+    testing(1, -<(int `,` int), int(1) `,` int(1), "1-<(int,int)"),
     testing(1, -<(int `,` int.plus(2)), int(1) `,` int(3), "1-<(int,int+2)"),
-    //testing(1, -<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10), "1-<(int,int+{10}2)"),
-    //testing(1.q(5), -<(int `,` int.plus(2).q(10)), (1 `,` 3.q(10)).q(5), "1{5}-<(int,int+{10}2)"),
+    testing(1, -<(int `,` int.plus(2).q(10)), int(1) `,` int(3).q(10), "1-<(int,int+{10}2)"),
+    testing(1.q(5), -<(int `,` int.plus(2).q(10)), (1 `,` 3.q(10)).q(5), "1{5}-<(int,int+{10}2)"),
     testing(1.q(5), -<(int `,` int.plus(2).q(10)) >-, int(1.q(5), 3.q(50))),
+    IGNORING("eval-.")(
+      (1 `;` 2 `;` 3 `;` 4),
+      (int `;` int `;` int `;` int).to('x).split(str("a") -> get(0) `_,` str("b") -> get(1)).asInstanceOf[Rec[Obj, Obj]].put(from('x).get(2), from('x).get(3)),
+      (str("a") -> int(1) `_,` str("b") -> int(2) `_,` int(3) -> int(4)),
+      "(1;2;3;4)<x>-<('a'->.0,'b'->.1)[put,x.2,x.3]"),
+    IGNORING("eval-5")(
+      (1 `;` 2 `;` 3 `;` 4),
+      (int `;` int `;` int `;` int).to('x).split(get(0, int) `,` get(1, int)).put(from('x).get(2, int), from('x).get(3, int)),
+      (1 `,` 2 `,` 4),
+      "(1;2;3;4)<x>-<(.0,.1)[put,x.2,x.3]"),
   ), testSet("[split] ;-lst table test", List(NONE, MM, MMX),
     testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
     testing(2.q(2), int.q(2).-<(int `;` int.is(gt(10))), (2 `;` zeroObj).q(2), "2{2} => int{2}-<(int;int[is>10])"),
@@ -126,7 +136,7 @@ class SplitInstTest extends BaseInstTest(
   test("lineage preservation (products)") {
     assertResult(int(321))(int(1) ==> int.plus(100).plus(200).split(int `,` is(a(bool))).merge[Int].plus(20))
     assertResult(int.plus(100).plus(200).split(int | is(a(bool))).merge[Int].plus(20))(int ==> int.plus(100).plus(200).split(int | is(a(bool))).merge[Int].plus(20))
-    //    assertResult(int(1) `;` 101 `;` 301 `;` 301 `;` 321)((int(1) ==> int.plus(100).plus(200).split(int `,` is(a(bool))).merge[Int].plus(20)).path(VERTICES))
+    // assertResult(int(1) `;` 101 `;` 301 `;` 301 `;` 321)((int(1) ==> int.plus(100).plus(200).split(int `,` is(a(bool))).merge[Int].plus(20)).path(VERTICES))
   }
   test("lineage preservation (coproducts)") {
     assertResult(int(321, 323))(int(1) ==> int.plus(100).plus(200).split(int `,` int.plus(2)).merge[Int].plus(20))

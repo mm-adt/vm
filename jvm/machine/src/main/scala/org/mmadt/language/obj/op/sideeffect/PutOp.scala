@@ -67,7 +67,7 @@ object PutOp extends Func[Obj, Obj] {
             case (true, false) => alst.clone(_ => (front :+ oldValue) ++ back).via(start, Inst.oldInst(inst))
             case _ => alst.clone(_ => (front :+ value) ++ back).via(start, inst)
           }
-        case _ => alst.via(start, inst)
+        case _ => alst.clone(_ :+ value.range).via(start, inst)
       }
     }
   }

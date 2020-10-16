@@ -23,11 +23,12 @@
 package org.mmadt.processor.inst.branch
 
 import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.storage.StorageFactory.int
+import org.mmadt.storage.StorageFactory.{int, lst}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -56,7 +57,7 @@ class RepeatInstTest extends BaseInstTest(
     testing(7, int.to('x).repeat(int.to('y).plus(int.from('x)))(int.is(lt(10))).mult(from('x)), 98, "7 => int<x>[repeat,int<y>[plus,int<.x>],int[is<10]][mult,x]"),
     testing(8, to('x).repeat(to('y).plus(from('x)))(is(lt(10))).mult(from('x)), 128, "8<x>[repeat,<y>[plus,x],is<10][mult,x]"),
     testing(int(5, 6), to('x).repeat(to('y).plus(from('x)))(is(lt(10))).mult(from('x)), int(50, 72), "[5,6]<x>[repeat,<y>[plus,x],is<10][mult,x]"),
-    comment("splitting"),
+    // comment("splitting"),
     // testing(1, lst<=int.repeat(-<(__))(3), lst(lst(lst(int(1)))), "1(-<(_))^(3)"),
     comment("branching"),
     testing(2, int.repeat(branch(plus(1) `,` mult(2)))(1).plus(10), int(13, 14), "2 => int([+1,*2])^(1)[plus,10]"),
