@@ -45,7 +45,7 @@ class BranchInstTest extends BaseInstTest(
     testing("a", -<(plus("a") `,` plus("b")) >-, str(str("aa"), str("ab")), "'a' => str-<(+'a',+'b')>-"),
     testing("a", id.-<(plus("a") `,` plus("b")).id.id.>-, str(str("aa"), str("ab")), "'a' => [id]-<(+'a',+'b')[id][id]>-"),
   ),
-  testSet("[branch] ,-lst", List(MMX),
+  testSet("[branch] ,-lst", List(NONE,MMX),
     testing(str, branch(str `,` str `,` str), str.id.q(3), "str[str,str,str]"),
     testing(int, branch(is(gt(10)) `,` is(gt(5)) `,` is(gt(0))), int.q(0, 3) <= int.branch(int.is(gt(10)) `,` int.is(gt(5)) `,` int.is(gt(0))),
       "int[[is>10],[is>5],[is>0]]"),

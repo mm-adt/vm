@@ -23,6 +23,7 @@
 package org.mmadt.language.model.examples
 
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.{Obj, asType}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -36,7 +37,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class pgTest extends BaseInstTest(
-  testSet("pg_1 model table test", storage.model('pg_1),
+  testSet("property graph #1", storage.model('pg_1),
     comment("vertex"),
     testing((str("id") -> int(1)), 'vertex, 'vertex(str("id") -> int(1)), "('id'->1) => vertex"),
     comment("edge"),
@@ -47,7 +48,7 @@ class pgTest extends BaseInstTest(
     excepting(7, 'edge, LanguageException.typingError(7, 'edge), "7 => edge"),
     excepting((8 `;` 9), 'edge, LanguageException.typingError((8 `;` 9), 'edge), "(8;9) => edge"),
     excepting((1 `;` 2), ('vertex `;` 'vertex), LanguageException.typingError(1 `;` 2, asType('vertex `;` 'vertex)), "(1;2) => (vertex;vertex)"),
-  ), testSet("pg_2 model table test", storage.model('pg_2),
+  ), testSet("property graph #2", storage.model('pg_2),
     comment("int=>vertex"),
     testing(5, 'vertex, 'vertex(str("id") -> int(5)), "5 => vertex"),
     testing(5, int.-<('vertex `;` 'vertex), lst(g = (Tokens.`;`, List('vertex(str("id") -> int(5)), 'vertex(str("id") -> int(5))))), "5-<(vertex;vertex)"),
@@ -56,6 +57,7 @@ class pgTest extends BaseInstTest(
     testing((1 `;` 2), ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(2))), "(1;2) => (vertex;vertex)"),
     testing((3 `;` 4), ('vertex `;` 'vertex) `=>` 'edge, 'edge(str("outV") -> 'vertex(str("id") -> int(3)) `_,` str("inV") -> 'vertex(str("id") -> int(4))), "(3;4) => (vertex;vertex) => edge"),
     testing((5 `;` 6), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "(5;6) => edge"),
+    testing(5, int.-<(__`;`plus(1)).as('vertex`;`'vertex).as('edge), 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "5-<(_;+1)=>(vertex;vertex)=>edge"),
   ), testSet("int=>(vertex;vertex)", storage.model('pg_2).defining(('vertex `;` 'vertex) <= (int.-<('vertex `;` 'vertex))),
     testing(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
     testing(int(1, 2), ('vertex `;` 'vertex), strm[Obj](('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), ('vertex(str("id") -> int(2)) `;` 'vertex(str("id") -> int(2)))), "[1,2] => (vertex;vertex)"),

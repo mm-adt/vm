@@ -93,7 +93,7 @@ class SplitInstTest extends BaseInstTest(
       is(gt(30)) -> int.plus(2),
       is(gt(20)) -> int.plus(3),
       is(gt(10)) -> int.plus(4))))).merge[Int].plus(1), 33, "0 => int[plus,29]-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-[plus,1]"),
-    IGNORING("eval-5", "eval-6")(29, int.-<(int.is(int.gt(40)) -> plus(1) `_|`
+    IGNORING("eval-[5-6]")(29, int.-<(int.is(int.gt(40)) -> plus(1) `_|`
       int.is(int.gt(30)) -> plus(2) `_|`
       int.is(int.gt(20)) -> plus(3) `_|`
       int.is(int.gt(10)) -> plus(4)).>-, 32, "29-<(int[is>40] -> [plus,1] | int[is>30] -> [plus,2] | int[is>20] -> [plus,3] | int[is>10] -> [plus,4])>-"),

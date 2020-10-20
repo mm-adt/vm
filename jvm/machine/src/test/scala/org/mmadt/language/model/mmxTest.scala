@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory.str
 class mmxTest extends BaseInstTest(
   testSet("mm model table test", MM,
     comment("int"),
-    //testing(5,as(str),"5", "5 => str"),
+    // excepting(5,as(str),LanguageException.typingError(int,str), "5 => str"),
   ),
   testSet("mmx model table test", MMX,
     comment("int"),

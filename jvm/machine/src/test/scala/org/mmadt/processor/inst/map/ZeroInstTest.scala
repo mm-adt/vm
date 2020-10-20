@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj.{doubleToReal, intToInt, stringToStr, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.NONE
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._

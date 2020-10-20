@@ -25,7 +25,7 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{doubleToReal, intToInt}
 import org.mmadt.language.obj.`type`.__.{id, one}
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory._
@@ -57,7 +57,7 @@ class OneInstTest extends BaseInstTest(
     comment("exceptions"),
     excepting("a", one, LanguageException.unsupportedInstType("a", one.inst), "'a'[one]")
   ),
-  testSet("[one] table test w/ mm", MM,
+  testSet("[one] table test w/ mm and mmx", List(MM, MMX),
     comment("int"),
     testing(int, one, 1),
     testing(int, one.q(5), 1.q(5)),

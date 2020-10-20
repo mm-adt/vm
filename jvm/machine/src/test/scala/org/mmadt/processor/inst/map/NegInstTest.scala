@@ -26,14 +26,13 @@ import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.{doubleToReal, intToInt}
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.NegOp
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory.{int, real}
 
 class NegInstTest extends BaseInstTest(
-  testSet("[neg] table test", List(NONE, MM), // MMX),
-    comment("int"),
+  testSet("[neg] int", List(NONE, MM), // MMX),
     testing(2, int.neg, -2, "2 => int[neg]"),
     testing(2.q(2), int.q(2).neg, -2.q(2), "2{2} => int{2}[neg]"),
     testing(-2, neg, 2, "-2[neg]"),
@@ -41,7 +40,10 @@ class NegInstTest extends BaseInstTest(
     IGNORING(MM)(int.neg, int.neg, int.neg.neg, "int[neg] => int[neg]"),
     IGNORING(MM)(int, int.neg.neg, int.neg.neg, "int => int[neg][neg]"),
     testing(int(-1, -2, -3), int.q(3).neg, int(1, 2, 3), "[-1,-2,-3] => int{3}[neg]"),
-    comment("real"),
+    comment("exceptions"),
+    excepting("a", neg, LanguageException.unsupportedInstType("a", NegOp()), "'a'[neg]")
+  ),
+  testSet("[neg] real", List(NONE, MM), // MMX),
     testing(2.0, real.neg, -2.0, "2.0 => real[neg]"),
     testing(-2.0, neg, 2.0, "-2.0[neg]"),
     testing(real, real.neg, real.neg, "real => real[neg]"),
@@ -50,7 +52,7 @@ class NegInstTest extends BaseInstTest(
     comment("exceptions"),
     excepting("a", neg, LanguageException.unsupportedInstType("a", NegOp()), "'a'[neg]")
   ),
-  testSet("[neg] table test w/ mm", MM,
+  testSet("[neg] int w/ mm and mmx", List(MM, MMX),
     comment("int"),
     testing(int, neg, int.neg, "int[neg]"),
     testing(int, neg.neg, int, "int[neg][neg]"),
