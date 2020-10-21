@@ -62,6 +62,10 @@ object ObjGraph {
     def obj:Obj = vertex.value[Obj](OBJ)
   }
 
+  @inline implicit class ObjEdge(val edge:Edge) {
+    def inst:Inst[Obj,Obj] = edge.value[Inst[Obj,Obj]](OBJ)
+  }
+
   @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
     def R:GraphTraversal[Vertex, Vertex] = g.V().has(ROOT, true)
     def C(token:Symbol):GraphTraversal[Vertex, Vertex] = g.C(token.name)

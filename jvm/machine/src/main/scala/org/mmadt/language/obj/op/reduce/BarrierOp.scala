@@ -46,8 +46,8 @@ object BarrierOp extends Func[Obj, Obj] {
 
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
     val atype = inst.arg0[Type[Obj]]
-    if (start.isInstanceOf[Type[_]]) return atype.via(start, inst)
-    val asStart:Obj = AsOp.autoAsType(start, x => x, atype)
+    if (start.isInstanceOf[Type[_]]) return atype.via(start,inst)
+    val asStart:Obj = AsOp.autoAsType(start, atype)
     if (!atype.root) asStart.toStrm.drain.reduce[Obj]((a, b) => a.to('x).map(b) `=>`[Obj] atype)
     else asStart
   }

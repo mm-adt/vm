@@ -39,7 +39,6 @@ abstract class OLst[A <: Obj](val name:String = Tokens.lst, val g:LstTuple[A] = 
                      g:Any = this.g,
                      q:IntQ = this.q,
                      via:ViaTuple = this.via):this.type = OLst.makeLst(name = name, g = g.asInstanceOf[LstTuple[A]], q = q, via = via).asInstanceOf[this.type]
-
 }
 object OLst {
   def makeLst[A <: Obj](name:String = Tokens.lst, g:LstTuple[A] = (Tokens.`,`, Nil), q:IntQ = qOne, via:ViaTuple = rootVia):Lst[A] = {

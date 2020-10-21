@@ -28,9 +28,11 @@ import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.{Obj, asType}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.BaseInstTest.engine
 import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.graph.ObjGraph
 
 
 /**
@@ -67,3 +69,13 @@ class pgTest extends BaseInstTest(
       'vertex(str("id") -> 'nat(9) `_,` str("label") -> str("person"))/*`_,`str("props")->(str("name")->str("marko")))*/, "" +
         "(9;'person';'name';'marko') => vertex"),
   ))
+{
+  test("testing") {
+    engine.eval(":[model,pg_3]")
+    println(engine.eval("5 => vertex"))
+    println(engine.eval("[1,2,3] => int{3}[plus,2]"))
+    println(engine.eval("(int;int){3} => [as,edge] =| graph"))
+    println(engine.eval("[(1;2),(2;3),(3;4)] => [as,edge] =| graph"))
+  }
+
+}

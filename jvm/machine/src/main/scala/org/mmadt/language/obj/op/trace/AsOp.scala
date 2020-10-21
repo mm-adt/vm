@@ -74,8 +74,8 @@ object AsOp extends Func[Obj, Obj] {
     if (!source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
     LanguageException.testTypeInModel(source, asType(target))
     source match {
-      case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => target.trace.reconstruct(source, target.name)
-      case astrm:Strm[Obj] => astrm(src => AsOp.autoAsType(src, target, domain))
+      // case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => target.trace.reconstruct(source, target.name)
+      case astrm:Strm[Obj] => astrm(src => AsOp.autoAsType(src, target, domain)).named(target.name)
       case _:Value[_] => internalConvertAs(source, target).hardQ(source.q)
       case _:Type[_] => if (domain) target.update(source.model) else target <= source
     }
