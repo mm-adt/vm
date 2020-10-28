@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str}
+import org.mmadt.storage.StorageFactory.{?, bool, int, lst, qStar, real, rec, str}
 import org.mmadt.storage.obj.graph.ObjGraph.OBJ
 import org.scalatest.FunSuite
 
@@ -130,8 +130,8 @@ class ObjGraph2Test extends FunSuite {
     assertResult(Nil)(graph.coerce((20 `;` "marko"), 'attr))
     assertResult(Seq(int(23)))(graph.coerce('vertex(str("id") -> 'nat(23)), int))
     assertResult(Seq('vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2))))(graph.coerce('nat(1) `;` 'nat(2), 'vertex `;` 'vertex))
-    assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.coerce(str("a") `;` "b", 'attr))
-    assertResult(Seq('attr <= (str `;` str).combine(str `;` str.id).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
+    //    assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.coerce(str("a") `;` "b", 'attr))
+    //    assertResult(Seq('attr <= (str `;` str).combine(str `;` str.id).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce('nat(23), 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce(23, 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23)).q(3)))(graph.coerce(23.q(3), 'vertex))
@@ -155,16 +155,17 @@ class ObjGraph2Test extends FunSuite {
               'nat(1) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(29)),
               'nat(2) `;` 'attr(str("key") -> str("age") `_,` str("value") -> int(27))))), 'edge))*/
     val natattr = lst(g = (Tokens.`;`, List(('nat `;` 'attr), ('nat `;` 'attr))))
-    /*assertResult(Seq('edge <= natattr
-      .combine(
-        ('vertex <= ('nat `;` 'attr).split((str("id") -> get(0)) `_,` str("attrs") -> get(1))) `;`
-          ('vertex <= ('nat `;` 'attr).split(str("id") -> get(0) `_,` str("attrs") -> get(1))))
-      .split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce(natattr, 'edge))*/
+    /* assertResult(Seq('edge <= natattr
+       .combine(
+         ('vertex <= ('nat `;` 'attr).split((str("id") -> get(0)) `_,` str("attrs") -> get(1))) `;`
+           ('vertex <= ('nat `;` 'attr).split(str("id") -> get(0) `_,` str("attrs") -> get(1))))
+       .split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(Stream('edge<=graph.coerce(natattr, 'edge).head))*/
   }
 
   test("type construction w/ time") {
     val graph:ObjGraph2 = ObjGraph2.create('time)
-    // assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.coerce(8 `;` 26 `;` 2020, 'date))
+    assertResult(Seq('date <= (int `;` int `;` int).combine(('nat.q(?) <= int.is(gt(0))).is(lte(12)) `;` ('nat.q(?) <= int.is(gt(0))).is(lte(31)) `;`('nat <= int.is(gt(0))))))(Stream('date <= graph.coerce(int `;` int `;` int, 'date).head))
+    assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.coerce(8 `;` 26 `;` 2020, 'date))
     assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.coerce(8 `;` 26, 'date))
     assertResult(Nil)(graph.coerce(8, 'date))
   }

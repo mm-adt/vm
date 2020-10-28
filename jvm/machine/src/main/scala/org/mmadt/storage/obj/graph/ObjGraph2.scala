@@ -35,7 +35,7 @@ import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
+import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str, zeroObj}
 import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}
 
 import scala.collection.JavaConverters
@@ -78,6 +78,8 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
         createObj(aobj.via._1).addEdge(aobj.via._2.op, target, OBJ, aobj.via._2)
       })
       target.addEdge(Tokens.noop, g.R.has(NAME, aobj.rangeObj.name).next(), OBJ, NoOp())
+    } else {
+      bindObj(toBaseName(aobj.rangeObj)).addEdge(Tokens.noop, target, OBJ, NoOp())
     }
     target
   }
@@ -115,8 +117,14 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
         !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name))))
       case _ => false
     }
-    val sroot:Obj = (if (source.rangeObj.named) g.R.has(CTYPE, NAME, source.rangeObj.name) /*.has(Q, source.rangeObj.q)*/ .tryNext().orElseGet(() => bindObj(asType(source.rangeObj))).obj else asType(source.rangeObj)).update(model)
-    val troot:Vertex = g.R.has(NAME, target.domainObj.name).tryNext().orElseGet(() => bindObj(target.domainObj))
+    val sroot:Obj = Stream(asType(source.rangeObj))
+      .filter(_.named)
+      .flatMap(x => JavaConverters.asScalaIterator(g.R.has(CTYPE, NAME, x.name) /*.has(Q, source.rangeObj.q)*/))
+      .map(x => x.obj)
+      .headOption
+      .getOrElse(bindObj(asType(source.rangeObj)).obj)
+      .update(model)
+    val troot:Vertex = g.R.has(CTYPE, NAME, target.domainObj.name).tryNext().orElseGet(() => bindObj(target.domainObj))
     JavaConverters.asScalaIterator(
       g.withSack(sroot)
         .R
@@ -132,7 +140,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
                 .filter(x => x.forall(_.alive))
                 .map(x => alst.clone(_ => x).named(t.get.obj.name))
                 .map(x => {
-                  if (x.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) x
+                  if (x.glist.zip(alst.glist).forall(pair => finalStructureTest(pair._1, pair._2))) x
                   else alst.combine(x)
                 })
                 .iterator
@@ -143,7 +151,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
               case brec:Rec[Obj, Obj] =>
                 val z = arec.clone(name = brec.name, g = (brec.gsep,
                   arec.gmap.flatMap(a => brec.gmap
-                    .filter(b => a._1.test(b._1))
+                    .filter(b => finalStructureTest(a._1, b._1))
                     .map(b => (coerce(a._1, b._1).headOption.getOrElse(zeroObj), coerce(a._2, b._2).headOption.getOrElse(zeroObj))))
                     .filter(b => b._1.alive && b._2.alive)))
                 if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) Iterator(zeroObj) else Iterator(z)
@@ -161,10 +169,9 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
           t.asAdmin().sack(sack)
           t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj)]._1)
         })
-
         .until((t:Traverser[Vertex]) => { // acyclic walk of obj graph, applying edge instructions, until target is reached
           t.get.obj.root && (__.isAnon(troot.obj) || t.get.obj.name == troot.obj.name || (baseName(troot.obj).equals(baseName(t.sack[Obj]()))))
-          /* && t.sack[Obj].rangeObj.test(troot.obj) */
+          // finalStructureTest(t.sack[Obj].rangeObj,troot.obj.domainObj)
         })
         .repeat(___
           .simplePath() // no cycles allowed
@@ -179,14 +186,38 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
       // if source was a value, compute the value against the derived type
       .map(obj => {
         source match {
-          case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(obj.name)).getOrElse(zeroObj)
+          case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj)
           case _:Type[_] => obj
         }
       })
-      .filter(_.alive)
-      .filter {
-        case apoly:Poly[Obj] => apoly.glist.forall(_.alive) && apoly.hardQ(target.q).test(target)
-        case _ => true
-      }
+      .filter(x => finalStructureTest(x.rangeObj, target.rangeObj))
+      .distinct
+  }
+
+  def finalStructureTest(a:Obj, b:Obj):Boolean = {
+    if (a.alive != b.alive || a.name != b.name) return false
+    if (__.isAnon(b)) return true
+    val aobj:Obj = a
+    val bobj:Obj = Obj.resolveToken(a, b)
+    aobj match {
+      case alst:Lst[Obj] =>
+        bobj match {
+          case blst:Lst[Obj] =>
+            Poly.sameSep(alst, blst) &&
+              alst.size == blst.size &&
+              alst.glist.zip(blst.glist).forall(p => finalStructureTest(p._1, p._2))
+          case _ => false
+        }
+      case arec:Rec[Obj, Obj] =>
+        bobj match {
+          case brec:Rec[Obj, Obj] =>
+            Poly.sameSep(arec, brec) &&
+              brec.isEmpty == arec.isEmpty &&
+              arec.gmap.forall(p => qStar.equals(p.q) || brec.gmap.exists(q => finalStructureTest(p._1, q._1) && p._2.test(q._2))) //finalStructureTest(p._1,q._1) && finalStructureTest(p._2,q._2)))
+          case _ => false
+        }
+      case _:Value[Obj] if bobj.isInstanceOf[Value[Obj]] => aobj.equals(bobj)
+      case _ => true
+    }
   }
 }
