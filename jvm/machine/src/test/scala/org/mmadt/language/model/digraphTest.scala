@@ -102,10 +102,4 @@ class digraphTest extends BaseInstTest(
   ), testSet("digraph model edge test", DIGRAPH,
     testing((1 `;` 2), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>edge"),
     testing((1 `;` 2), ('vertex `;` 'vertex) `=>` 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>(vertex;vertex)=>edge"),
-  )) {
-
-
-  test("play examples") {
-    println(engine.eval("1 => edge<=int[model,mm][define,vertex:('id'->int),edge:('outV'->vertex,'inV'->vertex)]-<('outV'->-<('id'->_),'inV'->-<('id'->+1))"))
-  }
-}
+  ))

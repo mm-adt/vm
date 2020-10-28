@@ -63,7 +63,7 @@ object ObjGraph {
   }
 
   @inline implicit class ObjEdge(val edge:Edge) {
-    def inst:Inst[Obj,Obj] = edge.value[Inst[Obj,Obj]](OBJ)
+    def inst:Inst[Obj, Obj] = edge.value[Inst[Obj, Obj]](OBJ)
   }
 
   @inline implicit class ObjTraversalSource(val g:GraphTraversalSource) {
@@ -102,6 +102,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
     // LanguageException.testTypeInModel(source, asType(target))
     ////////////////////////////////////////////////////////////////
+
     paths(asType(source), target).map(path =>
       path.last.rangeObj <= path.tail.dropRight(1).foldLeft(path.head.update(model))(
         (a, b) => b match {
@@ -193,7 +194,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   }
   ///////////////////////////////////////////////////
 
-  private def objMatch(source:Obj, target:Obj):Stream[Obj] = {
+  def objMatch(source:Obj, target:Obj):Stream[Obj] = {
     val rtarget = Obj.resolveToken(source, target)
     (source match {
       case _ if __.isAnon(rtarget) => Stream(source)
