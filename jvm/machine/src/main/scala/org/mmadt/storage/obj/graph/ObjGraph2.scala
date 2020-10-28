@@ -117,14 +117,9 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
         !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name))))
       case _ => false
     }
-    val sroot:Obj = Stream(asType(source.rangeObj))
-      .filter(_.named)
-      .flatMap(x => JavaConverters.asScalaIterator(g.R.has(CTYPE, NAME, x.name) /*.has(Q, source.rangeObj.q)*/))
-      .map(x => x.obj)
-      .headOption
-      .getOrElse(bindObj(asType(source.rangeObj)).obj)
-      .update(model)
-    val troot:Vertex = g.R.has(CTYPE, NAME, target.domainObj.name).tryNext().orElseGet(() => bindObj(target.domainObj))
+
+    val sroot:Obj = bindObj(asType(source.rangeObj)).obj
+    val troot:Vertex = bindObj(asType(target.domainObj))
     JavaConverters.asScalaIterator(
       g.withSack(sroot)
         .R
@@ -160,7 +155,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
             case aobj => Iterator(aobj)
           })
             .filter(_.alive)
-            .map(x => source.update(model).trace.reconstruct[Obj](x, source.name))
+            .map(x => source.trace.reconstruct[Obj](x, source.name))
             .map(sack => (t.get, sack)))
             .asInstanceOf[java.util.Iterator[Vertex]] // hack on typing (necessary because TP3 doesn't have flatmap on traverser)
         })
@@ -177,12 +172,21 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
           .simplePath() // no cycles allowed
           .outE()
           .sideEffect((t:Traverser[Edge]) => t.sack(t.get.inst.exec(t.sack[Obj]))) // evaluate edge instruction
-          .filter((t:Traverser[Edge]) => t.sack[Obj].alive)
+          .filter((t:Traverser[_]) => t.sack[Obj] match { // filter out any {0} results
+            case apoly:Poly[Obj] => apoly.alive && apoly.glist.forall(_.alive)
+            case x => x.alive
+          })
           .inV()
-          .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[Obj].named(t.get.obj.name)))) // name type accordingly
+          .sideEffect((t:Traverser[Vertex]) => {
+            val sack = t.sack[Obj]
+            if (!__.isAnonToken(t.get.obj.rangeObj) && sack.root)
+              t.sack(t.get.obj.rangeObj <= sack)
+            else
+              t.sack(sack.named(t.get.obj.name))
+          })) // name type accordingly
         .sack[Obj]
     ).toStream
-      .map(obj => target.update(model).trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
+      .map(obj => target.trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
       // if source was a value, compute the value against the derived type
       .map(obj => {
         source match {
@@ -198,7 +202,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
     if (a.alive != b.alive || a.name != b.name) return false
     if (__.isAnon(b)) return true
     val aobj:Obj = a
-    val bobj:Obj = Obj.resolveToken(a, b)
+    val bobj:Obj = Obj.resolveToken(__.update(model), b)
     aobj match {
       case alst:Lst[Obj] =>
         bobj match {

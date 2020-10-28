@@ -84,7 +84,7 @@ class ObjGraph2Test extends FunSuite {
   test("type construction w/ pg_1") {
     val graph:ObjGraph2 = ObjGraph2.create(storage.model('pg_1))
     assertResult(Seq('vertex(str("id") -> int(5))))(graph.coerce(rec(str("id") -> int(5)), 'vertex))
-    //assertResult(Seq('vertex(str("id") -> int(6)) `;` 'vertex(str("id") -> int(7))))(graph.coerce(rec(str("id") -> int(6)) `;` rec(str("id") -> int(7)), 'vertex `;` 'vertex))
+    assertResult(Seq('vertex(str("id") -> int(6)) `;` 'vertex(str("id") -> int(7))))(graph.coerce(rec(str("id") -> int(6)) `;` rec(str("id") -> int(7)), 'vertex `;` 'vertex))
     //assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(8)) `_,` str("inV") -> 'vertex(str("id") -> int(9)))))(graph.coerce(str("outV") -> rec(str("id") -> int(8)) `_,` str("inV") -> rec(str("id") -> int(9)), 'edge))
   }
 
@@ -173,7 +173,7 @@ class ObjGraph2Test extends FunSuite {
   test("coercion of base types") {
     assertResult(Nil)(ObjGraph2.create(storage.model('none)).coerce(4, str))
     val graph = ObjGraph2.create(storage.model('none).defining(str <= int))
-    //assertResult(Stream(str <= int))(graph.coerce(int, str))
+    assertResult(Stream(str <= int))(graph.coerce(int, str))
     //assertResult(Stream(str("4")))(graph.coerce(4, str))
     assertResult(Stream(str <= int.plus(10)))(graph.coerce(int.plus(10), str))
     // assertResult((2`;`5))((1`;`2)`=>`(int.plus(1)`;`int.plus(3)))
