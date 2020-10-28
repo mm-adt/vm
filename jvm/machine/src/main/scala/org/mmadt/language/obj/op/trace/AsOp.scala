@@ -35,10 +35,7 @@ import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.graph.ObjGraph.{NAME, ObjVertex}
 import org.mmadt.storage.obj.value.VInst
-
-import scala.collection.convert.ImplicitConversions.`iterator asScala`
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -148,7 +145,6 @@ object AsOp extends Func[Obj, Obj] {
     case _:__ => source
     case astr:StrType => str(name = astr.name, g = source.toString, via = source.via)
     case _:Inst[Obj, Obj] => OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail)
-    case alst:LstType[Obj] if alst.ctype => source.named(alst.name)
     case alst:LstType[Obj] if Lst.shapeTest(source, alst) =>
       val blst = lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a => a._1.coerce2(a._2))), via = source.via)
       if (Lst.exactTest(blst, alst.domainObj)) CombineOp.combineAlgorithm(blst, alst, withAs = false).reload else blst.reload
@@ -159,7 +155,6 @@ object AsOp extends Func[Obj, Obj] {
   private def recConverter(source:Rec[Obj, Obj], target:Obj):Obj = target.domain match {
     case _:__ => source
     case astr:StrType => str(name = astr.name, g = source.toString, via = source.via)
-    case arec:RecType[Obj, Obj] if arec.ctype => source.named(arec.name)
     case arec:RecType[Obj, Obj] => val z = rec(name = arec.name, g = (arec.gsep,
       source.gmap.flatMap(a => arec.gmap
         .filter(b => a._1.test(b._1))
