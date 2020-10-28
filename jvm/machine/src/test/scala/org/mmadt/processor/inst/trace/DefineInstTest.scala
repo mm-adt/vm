@@ -45,7 +45,7 @@ object DefineInstTest {
   private val MODEL:Model = ModelOp.MM.defining(natType).defining(myListType).defining(iListType).defining(siListType) //.defining(vecType)
 }
 class DefineInstTest extends BaseInstTest(
-  testSet("[define] test w/ apair", MODEL.defining(apairType).defining(bpairType),
+  /*testSet("[define] test w/ apair", MODEL.defining(apairType).defining(bpairType),
     comment("apair"),
     testing(1 `;` 2, 'apair, 'apair(1 `;` 2), "(1;2)=>apair"),
     testing(100 `;` 101, 'apair, 'apair(100 `;` 101), "(100;101)=>apair"),
@@ -105,7 +105,7 @@ class DefineInstTest extends BaseInstTest(
     IGNORING("eval-3", "eval-4", "eval-5")('pair("ab" `;` "ba"), (str `;` str) <=[Obj] 'pair, ("ab" `;` "ba"), "pair:('ab';'ba')=>(str;str)<=pair"),
     excepting("ab", 'pair <= (str `;` str), LanguageException.typingError("ab", asType(str `;` str)), "'ab' => pair<=(str;str)"),
     // excepting("ab", 'pair, LanguageException.typingError("ab", 'pair), "'ab' => pair"),
-  )
+  )*/
 )
 
 /*test("vec documentation example") {

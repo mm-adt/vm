@@ -39,6 +39,7 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.graph.ObjGraph2
 
 import scala.annotation.tailrec
 
@@ -105,7 +106,7 @@ trait Obj
   def root:Boolean = null == this.via || null == this.via._2 // NOTE: null via._2 ensures model isn't considered -- TEST w/ !via.exists(x => !ModelOp.isMetaModel(x._2))
   def range:Type[Obj] = asType(this.rangeObj)
   def domain:Type[Obj] = asType(this.domainObj)
-  def via(obj:Obj, inst:Inst[_ <: Obj, _ <: Obj]):this.type = Obj.objTypeCheck(this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst)))
+  def via(obj:Obj, inst:Inst[_ <: Obj, _ <: Obj]):this.type = this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst))
   def rinvert[R <: Obj]:R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
   def linvert:this.type = {
     if (this.root) throw LanguageException.zeroLengthPath(this)
@@ -140,6 +141,7 @@ trait Obj
   final def ~~>[E <: Obj](target:E):E = Some(Obj.resolveArg[this.type, E](this, target)).map(x => if(this.model.vars(target.name).isDefined) x else x.named(target.name)).get
   final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
   final def coerce[E <: Obj](target:E):E = this.model.graph.coerce(this, target).headOption.getOrElse(zeroObj).asInstanceOf[E]
+  final def coerce2[E<:Obj](target:E):E =  ObjGraph2.create(this.model).coerce(this,target).headOption.getOrElse(zeroObj).asInstanceOf[E]
 
   // lst fluent methods
   def `|`:Lst[this.type] = lst(g = (Tokens.`|`, List(this)))

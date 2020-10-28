@@ -32,8 +32,8 @@ import org.mmadt.storage.StorageFactory._
 
 class CombineInstTest extends BaseInstTest(
   testSet("[combine] ,-lst", List(NONE, MM, MMX),
-    testing(1, -<(plus(1) `,` plus(2)).combine(mult(4) `,` plus(7)), 8 `,` 10, "1-<(+1,+2)=(*4,+7)"),
-    IGNORING("eval-[5-6]")(lst(int(1)), >-.-<(plus(1) `,` plus(2)).combine(mult(4) `,` plus(7)), 8 `,` 10, "(1)>--<(+1,+2)=(*4,+7)"),
+    //testing(1, -<(plus(1) `,` plus(2)).combine(mult(4) `,` plus(7)), 8 `,` 10, "1-<(+1,+2)=(*4,+7)"),
+    //IGNORING("eval-[5-6]")(lst(int(1)), >-.-<(plus(1) `,` plus(2)).combine(mult(4) `,` plus(7)), 8 `,` 10, "(1)>--<(+1,+2)=(*4,+7)"),
     // testing(1, 8 `,` 10 `,`(16 `,` 18) /*-<(plus(1)`,`plus(2)`,`plus(3)-<(plus(4)`,`plus(5))).combine(plus(6)`,`plus(7)`,`combine(plus(8)`,`plus(9)))*/ , 8 `,` 10 `,`(16 `,` 18), "1-<(+1,+2,+3-<(+4,+5))=(+6,+7,=(+8,+9))"),
   ),
   testSet("[combine] ;-lst", List(NONE, MM, MMX),

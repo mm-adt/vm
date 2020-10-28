@@ -79,7 +79,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
       g.V(target).inE(aobj.via._2.op).has(OBJ, aobj.via._2).where(___.outV().hasId(aobj.via._1)).tryNext().orElseGet(() => {
         createObj(aobj.via._1).addEdge(aobj.via._2.op, target, OBJ, aobj.via._2)
       })
-      target.addEdge(Tokens.noop, g.R.has(NAME, aobj.rangeObj.name).next(), OBJ, NoOp())
+      target.addEdge(Tokens.noop, g.R.has(NAME, aobj.rangeObj.name).tryNext().orElseGet(() => bindObj(aobj.rangeObj)), OBJ, NoOp())
     } else {
       bindObj(toBaseName(aobj.rangeObj)).addEdge(Tokens.noop, target, OBJ, NoOp())
     }
@@ -135,12 +135,12 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case _ if !source.alive || source.model.vars(target.name).isDefined => source
       case _ if !target.alive => zeroObj
       case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
-      case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => target.trace.reconstruct(source, target.name)
+      case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source // target.trace.reconstruct(source, target.name)
       case _:Strm[Obj] => strm(coerce(source, target))
       case alst:Lst[_] if Lst.exactTest(alst, target) => source
       case _:Poly[_] => null
       case _ if target.name.equals(model.coreName) => model
-      case _ if source.name.equals(target.name) => target.trace.reconstruct(source, target.name)
+      case _ if source.name.equals(target.name) => source //target.trace.reconstruct(source, target.name)
       case _ => null
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
     ///////////////////////////////////////////////////////////////
@@ -164,7 +164,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
                 .combinations(alst.size).toStream.distinct
                 .filter(x => x.size == alst.size)
                 .filter(x => x.forall(_.alive))
-                .map(x => alst.combine(alst.clone(_ => x)))
+                .map(x => alst.update(model).combine(alst.clone(_ => x)))
                 .iterator
             case arec:Rec[Obj, Obj] => t.get.obj match {
               case brec:Rec[Obj, Obj] =>
@@ -174,7 +174,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
                   .combinations(arec.size)
                   .toStream
                   .distinct
-                  .map(x => arec.clone(name = brec.name, g = (brec.gsep, x)))
+                  .map(x => arec.update(model).clone(name = brec.name, g = (brec.gsep, x)))
                   .filter(x => x.gmap.size >= brec.gmap.count(x => x._2.q._1.g > 0))
                   .toIterator
               case _ => Iterator(zeroObj)
@@ -210,12 +210,13 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
           })) // name type accordingly
         .sack[Obj]
     ).toStream
+      //.map(obj => obj.named(target.name).hardQ(target.q))
       .map(obj => target.trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
       .map(obj => source match {
-        // if source was a value, compute the value against the derived type
+        // if source was a value, compute the value against the derived type // TODO: this needs to do a recursive descent
         case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj) match {
-          case arec:Rec[Obj, Obj] => arec.clone(x => x.zip(obj.asInstanceOf[Rec[Obj, Obj]].gmap).map(pair => (pair._1._1.named(pair._2._1.name), pair._1._2.named(pair._2._2.name))))
-          case alst:Lst[Obj] => alst.clone(x => x.zip(obj.asInstanceOf[Lst[Obj]].glist).map(pair => pair._1.named(pair._2.name)))
+          case arec:Rec[Obj, Obj] if obj.isInstanceOf[Rec[_, _]] => arec.clone(x => x.zip(obj.asInstanceOf[Rec[Obj, Obj]].gmap).map(pair => (pair._1._1.named(pair._2._1.name), pair._1._2.named(pair._2._2.name))))
+          case alst:Lst[Obj] if obj.isInstanceOf[Lst[_]] => alst.clone(x => x.zip(obj.asInstanceOf[Lst[Obj]].glist).map(pair => pair._1.named(pair._2.name)))
           case x => x
         }
         case _:Type[_] => obj

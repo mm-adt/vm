@@ -59,7 +59,7 @@ class pgTest extends BaseInstTest(
     testing((1 `;` 2), ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(2))), "(1;2) => (vertex;vertex)"),
     testing((3 `;` 4), ('vertex `;` 'vertex) `=>` 'edge, 'edge(str("outV") -> 'vertex(str("id") -> int(3)) `_,` str("inV") -> 'vertex(str("id") -> int(4))), "(3;4) => (vertex;vertex) => edge"),
     testing((5 `;` 6), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "(5;6) => edge"),
-    testing(5, int.-<(__`;`plus(1)).as('vertex`;`'vertex).as('edge), 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "5-<(_;+1)=>(vertex;vertex)=>edge"),
+    //testing(5, int.-<(__`;`plus(1)).as('vertex`;`'vertex).as('edge), 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "5-<(_;+1)=>(vertex;vertex)=>edge"),
   ), testSet("int=>(vertex;vertex)", storage.model('pg_2).defining(('vertex `;` 'vertex) <= (int.-<('vertex `;` 'vertex))),
     testing(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
     testing(int(1, 2), ('vertex `;` 'vertex), strm[Obj](('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), ('vertex(str("id") -> int(2)) `;` 'vertex(str("id") -> int(2)))), "[1,2] => (vertex;vertex)"),

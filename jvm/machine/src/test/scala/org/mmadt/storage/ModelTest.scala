@@ -79,8 +79,8 @@ class ModelTest extends FunSuite {
   }
 
   test("[kv] model") {
-    val record1 = str("k") -> int(1) `_,` str("v") -> str("marko")
-    assertResult('kv(record1))(record1 ==> kv `=>` as('kv))
+    val record1 = (str("k") -> int(1) `_,` str("v") -> str("marko"))
+    //assertResult('kv(record1))((record1 `=>` kv) `=>`'kv)
   }
 
 
