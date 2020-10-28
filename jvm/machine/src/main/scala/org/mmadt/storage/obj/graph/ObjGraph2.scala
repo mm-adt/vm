@@ -27,14 +27,13 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversalS
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Obj.intToInt
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Lst, Obj, Poly, asType}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str}
+import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj}
 import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}
 
 import scala.collection.JavaConverters
@@ -46,7 +45,7 @@ object ObjGraph2 {
   def create(model:Symbol):ObjGraph2 = create(storage.model(model))
   def create(model:Model):ObjGraph2 = new ObjGraph2(model)
 
-  def main(args:Array[String]):Unit = {
+  /*def main(args:Array[String]):Unit = {
     val graph2 = ObjGraph2.create('pg_3)
     graph2.g.E().forEachRemaining(x => println(x))
     println("\n ####### \n")
@@ -55,7 +54,7 @@ object ObjGraph2 {
     println(graph2.coerce('vertex, int).toList)
     println(graph2.coerce(2 `;` 8, 'edge).toList)
     println(graph2.coerce(int `;` int, 'edge).toList)
-  }
+  }*/
 }
 class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
   val g:GraphTraversalSource = graph.traversal()
@@ -72,7 +71,6 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
   }
 
   ///////////// CONSTRUCT GRAPH /////////////
-
   def createObj(aobj:Obj):Vertex = {
     // baobj---[inst]--->aobj
     val target:Vertex = bindObj(aobj)
@@ -112,6 +110,11 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
   def exists(aobj:Obj):Boolean = g.V(aobj).hasNext
 
   def coerce(source:Obj, target:Obj):Stream[Obj] = {
+    def lstTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
+      case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
+        !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name))))
+      case _ => false
+    }
     val sroot:Obj = if (source.rangeObj.named) g.R.has(CTYPE, NAME, source.rangeObj.name).has(Q, source.rangeObj.q).next().obj else asType(source.rangeObj)
     val troot:Vertex = g.R.has(NAME, target.rangeObj.name).has(Q, target.rangeObj.q).next()
     JavaConverters.asScalaIterator(
@@ -120,12 +123,27 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
         .has(CTYPE, NAME, sroot.name)
         ///////// ALL MATCHING PERMUTATIONS OF DOMAIN /////////
         .flatMap((t:Traverser[Vertex]) => {
-          JavaConverters.asJavaIterator(Iterator[Obj](source.trace.reconstruct(t.sack[Obj] match {
+          JavaConverters.asJavaIterator((t.sack[Obj] match {
             case alst:Lst[Obj] if lstTest(alst, t.get.obj) =>
-              alst.combine(alst.clone(_ => alst.glist.zip(t.get.obj.asInstanceOf[Lst[Obj]].glist)
-                .map(pair => coerce(pair._1, pair._2).head)))
-            case _ => t.sack[Obj]
-          })).map(x => (t.get, x))).asInstanceOf[java.util.Iterator[Vertex]] // hack on typing (necessary because TP3 doesn't have flatmap on traverser)
+              alst.glist.zip(t.get.obj.asInstanceOf[Lst[Obj]].glist).flatMap(pair => coerce(pair._1, pair._2))
+                .foldLeft(List.empty[Obj])((a, b) => a :+ b)
+                .combinations(alst.size).toList.distinct
+                .filter(x => x.size == alst.size)
+                .filter(x => x.forall(_.alive))
+                .map(x => alst.clone(_ => x).named(t.get.obj.name))
+                .map(x => {
+                  if (x.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) x
+                  else alst.combine(x)
+                })
+                .iterator
+            case alst:Lst[Obj] if t.get.obj.asInstanceOf[Lst[Obj]].ctype => Iterator(alst)
+            case alst:Lst[Obj] if alst.size != t.get.obj.asInstanceOf[Lst[Obj]].size => Iterator(zeroObj)
+            case aobj => Iterator(aobj)
+          })
+            .filter(_.alive)
+            .map(x => source.trace.reconstruct[Obj](x, source.name))
+            .map(sack => (t.get, sack)))
+            .asInstanceOf[java.util.Iterator[Vertex]] // hack on typing (necessary because TP3 doesn't have flatmap on traverser)
         })
         .sideEffect((t:Traverser[Vertex]) => {
           val sack = t.get.asInstanceOf[(Vertex, Obj)]._2
@@ -153,11 +171,5 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case _:Type[_] => obj
         }
       })
-  }
-
-  def lstTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
-    case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
-      !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name))))
-    case _ => false
   }
 }
