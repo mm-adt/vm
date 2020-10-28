@@ -27,8 +27,10 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversalS
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj.{symbolToToken, _}
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.`type`.{RecType, Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
@@ -37,6 +39,7 @@ import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, zeroObj
 import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}
 
 import scala.collection.JavaConverters
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -45,16 +48,12 @@ object ObjGraph2 {
   def create(model:Symbol):ObjGraph2 = create(storage.model(model))
   def create(model:Model):ObjGraph2 = new ObjGraph2(model)
 
-  /*def main(args:Array[String]):Unit = {
-    val graph2 = ObjGraph2.create('pg_3)
+  def main(args:Array[String]):Unit = {
+    val graph2 = ObjGraph2.create('digraph)
     graph2.g.E().forEachRemaining(x => println(x))
     println("\n ####### \n")
-    println(graph2.coerce(7, 'vertex).toList)
-    println(graph2.coerce(int, 'vertex).toList)
-    println(graph2.coerce('vertex, int).toList)
-    println(graph2.coerce(2 `;` 8, 'edge).toList)
-    println(graph2.coerce(int `;` int, 'edge).toList)
-  }*/
+    println(graph2.coerce('nat(1) `;` 'nat(int(2)), 'vertex `;` 'vertex))
+  }
 }
 class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
   val g:GraphTraversalSource = graph.traversal()
@@ -97,7 +96,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
             ROOT, Boolean.box(aobj.root))
         case atype:Type[_] =>
           graph.addVertex(
-            T.label, if (aobj.root && !__.isTokenRoot(aobj)) CTYPE else TYPE,
+            T.label, if (aobj.root) CTYPE else TYPE,
             T.id, atype,
             NAME, aobj.name,
             OBJ, atype,
@@ -110,13 +109,14 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
   def exists(aobj:Obj):Boolean = g.V(aobj).hasNext
 
   def coerce(source:Obj, target:Obj):Stream[Obj] = {
+    if (target.name.equals(model.coreName)) return Stream(model)
     def lstTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
       case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
         !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name))))
       case _ => false
     }
-    val sroot:Obj = if (source.rangeObj.named) g.R.has(CTYPE, NAME, source.rangeObj.name).has(Q, source.rangeObj.q).next().obj else asType(source.rangeObj)
-    val troot:Vertex = g.R.has(NAME, target.rangeObj.name).has(Q, target.rangeObj.q).next()
+    val sroot:Obj = (if (source.rangeObj.named) g.R.has(CTYPE, NAME, source.rangeObj.name) /*.has(Q, source.rangeObj.q)*/ .tryNext().orElseGet(() => bindObj(asType(source.rangeObj))).obj else asType(source.rangeObj)).update(model)
+    val troot:Vertex = g.R.has(NAME, target.domainObj.name).tryNext().orElseGet(() => bindObj(target.domainObj))
     JavaConverters.asScalaIterator(
       g.withSack(sroot)
         .R
@@ -138,10 +138,21 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
                 .iterator
             case alst:Lst[Obj] if t.get.obj.asInstanceOf[Lst[Obj]].ctype => Iterator(alst)
             case alst:Lst[Obj] if alst.size != t.get.obj.asInstanceOf[Lst[Obj]].size => Iterator(zeroObj)
+            case arec:Rec[Obj, Obj] => t.get.obj match {
+              case brec:RecType[Obj, Obj] if brec.ctype => Iterator(arec.named(brec.name))
+              case brec:Rec[Obj, Obj] =>
+                val z = arec.clone(name = brec.name, g = (brec.gsep,
+                  arec.gmap.flatMap(a => brec.gmap
+                    .filter(b => a._1.test(b._1))
+                    .map(b => (coerce(a._1, b._1).headOption.getOrElse(zeroObj), coerce(a._2, b._2).headOption.getOrElse(zeroObj))))
+                    .filter(b => b._1.alive && b._2.alive)))
+                if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) Iterator(zeroObj) else Iterator(z)
+              case _ => Iterator(zeroObj)
+            }
             case aobj => Iterator(aobj)
           })
             .filter(_.alive)
-            .map(x => source.trace.reconstruct[Obj](x, source.name))
+            .map(x => source.update(model).trace.reconstruct[Obj](x, source.name))
             .map(sack => (t.get, sack)))
             .asInstanceOf[java.util.Iterator[Vertex]] // hack on typing (necessary because TP3 doesn't have flatmap on traverser)
         })
@@ -152,24 +163,30 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
         })
 
         .until((t:Traverser[Vertex]) => { // acyclic walk of obj graph, applying edge instructions, until target is reached
-          t.get.obj.root && t.sack[Obj].name == troot.obj.name
+          t.get.obj.root && (__.isAnon(troot.obj) || t.get.obj.name == troot.obj.name || (baseName(troot.obj).equals(baseName(t.sack[Obj]()))))
           /* && t.sack[Obj].rangeObj.test(troot.obj) */
         })
         .repeat(___
           .simplePath() // no cycles allowed
           .outE()
           .sideEffect((t:Traverser[Edge]) => t.sack(t.get.inst.exec(t.sack[Obj]))) // evaluate edge instruction
+          .filter((t:Traverser[Edge]) => t.sack[Obj].alive)
           .inV()
           .sideEffect((t:Traverser[Vertex]) => t.sack(t.sack[Obj].named(t.get.obj.name)))) // name type accordingly
         .sack[Obj]
     ).toStream
-      .map(obj => obj.hardQ(target.q))
+      .map(obj => target.update(model).trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
       // if source was a value, compute the value against the derived type
       .map(obj => {
         source match {
-          case _:Value[_] => source.compute(obj, withAs = false).named(obj.name)
+          case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(obj.name)).getOrElse(zeroObj)
           case _:Type[_] => obj
         }
       })
+      .filter(_.alive)
+      .filter {
+        case apoly:Poly[Obj] => apoly.glist.forall(_.alive) && apoly.hardQ(target.q).test(target)
+        case _ => true
+      }
   }
 }
