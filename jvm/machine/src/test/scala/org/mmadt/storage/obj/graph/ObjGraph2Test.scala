@@ -23,9 +23,10 @@
 package org.mmadt.storage.obj.graph
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
+import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{?, bool, int, lst, qStar, real, rec, str}
@@ -38,6 +39,15 @@ import scala.collection.convert.ImplicitConversions.`iterator asScala`
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ObjGraph2Test extends FunSuite {
+
+  test("type existence w/ pair") {
+    val graph:ObjGraph2 = ObjGraph2.create(ModelOp.MM
+      .defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int))))
+      .defining('pair <= (str `;` str).to('x).:=(plus('x.get(1)) `;` plus('x.get(0)))))
+    //  assertResult(Stream('apair(1 `;` 2)))(graph.coerce(1 `;` 2, 'apair))
+    assertResult(Nil)(graph.coerce(10 `;` 2, 'apair))
+    // assertResult(Stream('pair("ab" `;` "ba")))(graph.coerce("a" `;` "b", 'pair))
+  }
 
   test("type existence w/ pg_*") {
     List('pg_1, 'pg_2, 'pg_3).foreach(symbol => {
@@ -136,7 +146,7 @@ class ObjGraph2Test extends FunSuite {
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce('nat(23), 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce(23, 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23)).q(3)))(graph.coerce(23.q(3), 'vertex))
-    //    assertResult(Seq('vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data")))))(graph.coerce(-23, 'vertex))
+    //assertResult(Seq('vertex(str("id") -> 'nat(23) `_,` str("attrs") -> 'attr(str("key") -> str("no") `_,` str("value") -> str("data")))))(graph.coerce(-23, 'vertex))
     assertResult(Seq('attr(str("key") -> str("marko") `_,` str("value") -> int(29))))(graph.coerce(str("key") -> str("marko") `_,` str("value") -> int(29), 'attr))
     assertResult(Seq('vertex(str("id") -> 'nat(55) `_,` str("attrs") -> 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)))))(graph.coerce('nat(55) `;` 'attr(str("key") -> str("marko") `_,` str("value") -> int(29)), 'vertex))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce('vertex(str("id") -> 'nat(100)) `;` 'vertex(str("id") -> 'nat(200)), 'edge))
@@ -144,8 +154,7 @@ class ObjGraph2Test extends FunSuite {
     //    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List(('nat(100) `;` 'nat(200)) ==>[Obj] graph.coerce('nat `;` 'nat, 'edge).head))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 200, 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(graph.coerce(100 `;` 'nat(200), 'edge))
-    //    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).last)) // COERCIONS STREAMS NEED To KNOWN BY RUNTIME METHODS
-    //    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex <= 'nat.split(str("id") -> __('nat))) `;`('vertex <= 'nat.split(str("id") -> __('nat)))).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> 'nat(100)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(200)))))(List((100 `;` 200) ==>[Obj] graph.coerce(int `;` int, 'edge).last)) // COERCIONS STREAMS NEED To KNOWN BY RUNTIME METHODS
     //    assertResult(Seq('edge <= ('nat `;` 'nat).combine(('vertex <= 'nat.split(str("id") -> __('nat))) `;`('vertex <= 'nat.split(str("id") -> __('nat)))).split(str("outV") -> ('vertex `;` 'vertex).get(0) `_,` str("inV") -> ('vertex `;` 'vertex).get(1))))(graph.coerce('nat `;` 'nat, 'edge))
     /*    assertResult(Seq(
           'edge(
@@ -180,5 +189,57 @@ class ObjGraph2Test extends FunSuite {
     // assertResult((2`;`5))((1`;`2)`=>`(int.plus(1)`;`int.plus(3)))
     // assertResult(Stream(2`;`5))(graph.coerce((1`;`2),(int.plus(1)`;`int.plus(3))))
   }
+
+  test("dependent sum construction w/ custom types") {
+    val graph = ObjGraph2.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))).defining(str <= int))
+    // graph.paths(__, __).foreach(x => println(x))
+    assertResult(Stream(int(45)))(graph.coerce(45, int))
+    assertResult(Stream(int))(graph.coerce(int, int))
+    assertResult(Stream(int.q(5)))(graph.coerce(int.q(5), int.q(5)))
+    assertResult(Stream(int.q(5)))(graph.coerce(int.q(5), int))
+    // assertResult(Stream(int))(graph.coerce(int, int.q(5)))  TODO: decide on the algebra of coercion (is it just a monoidal operation) -- determines quantifier evoluation
+    assertResult(Stream(int))(graph.coerce(int, int <= int))
+    assertResult(Stream('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
+    assertResult(List(int <=[__] 'nat))(graph.coerce('nat, int))
+    assertResult(List(int(2)))(graph.coerce('nat(2), int))
+    //assertResult(List(int(2).q(30)))(graph.coerce('nat(2).q(5), int.q(6)))
+    assertResult(List(str <= int))(graph.coerce(int, str))
+    //    assertResult(List(str("2")))(graph.coerce(int(2), str))
+    assertResult(List('nat(566)))(graph.coerce(566, 'nat))
+    //    assertResult(List('apair(5 `;` 6)))(graph.coerce((5 `;` 6), 'apair))
+    //    assertResult(List('apair(5 `;` 6).q(10)))(graph.coerce((5 `;` 6).q(10), 'apair))
+    // assertResult(List('apair(5 `;` 6).q(20)))(graph.coerce((5 `;` 6).q(10), __('apair).q(2)))
+    assertResult(Nil)(graph.coerce((6 `;` 5), 'apair))
+  }
+
+  /* test("coercion on recursive types") {
+     val rmodel = storage.model('mm)
+       .defining('tree <= branch(??(0) `|`(int `;` 'tree `;` int)))
+       .defining('ctree <= branch(??(0) `|` (int.to('x) `;` 'ctree `;` int.to('y)).is('x.gt('y))))
+     val graph = ObjGraph2.create(rmodel)
+     // single level
+     assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('tree))
+     assertResult(btrue)((1 `;` 0 `;` 1).model(rmodel) ==> a('tree))
+     assertResult(bfalse)((1 `;` 1).model(rmodel) ==> a('tree))
+     assertResult(bfalse)((1 `;` 0 `;` "a").model(rmodel) ==> a('tree))
+     assertResult(bfalse)((1 `;` 0 `;` 1 `;` 1).model(rmodel) ==> a('tree))
+     // multi-level
+     assertResult(btrue)((1 `;`(2 `;` 0 `;` 2) `;` 1).model(rmodel) ==> a('tree))
+     assertResult(bfalse)((1 `;`(2 `;` 2 `;` 2) `;` 1).model(rmodel) ==> a('tree))
+     assertResult(btrue)((1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1).model(rmodel) ==> a('tree))
+     // coercion
+     assertResult(Stream('tree(1 `;` 'tree(2 `;` 'tree(3 `;` 'tree(0) `;` 3) `;` 2) `;` 1)))(graph.coerce(1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1, 'tree))
+     assertResult('tree(1 `;` 'tree(2 `;` 'tree(3 `;` 'tree(0) `;` 3) `;` 2) `;` 1))((1 `;`(2 `;`(3 `;` 0 `;` 3) `;` 2) `;` 1).model(rmodel) ==>[Obj] 'tree)
+     ///////////
+     // ctree //
+     ///////////
+     //  assertResult(btrue)(lst(int(0)).model(rmodel) ==> a('ctree))
+     assertResult(btrue)((2 `;` 0 `;` 1).model(rmodel) ==> a('ctree))
+     assertResult(bfalse)((1 `;` 0 `;` 1).model(rmodel) ==> a('ctree))
+     /*  assertResult(bfalse)((3`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
+         assertResult(bfalse)((1`;`(2`;`0`;`4)`;`1).model(rmodel) ==> a('ctree))
+         assertResult(btrue)((3`;`(2`;`0`;`1)`;`4).model(rmodel) ==> a('ctree)) */
+   }*/
+
 
 }
