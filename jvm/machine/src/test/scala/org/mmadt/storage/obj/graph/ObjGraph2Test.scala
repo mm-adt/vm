@@ -85,7 +85,8 @@ class ObjGraph2Test extends FunSuite {
     val graph:ObjGraph2 = ObjGraph2.create(storage.model('pg_1))
     assertResult(Seq('vertex(str("id") -> int(5))))(graph.coerce(rec(str("id") -> int(5)), 'vertex))
     assertResult(Seq('vertex(str("id") -> int(6)) `;` 'vertex(str("id") -> int(7))))(graph.coerce(rec(str("id") -> int(6)) `;` rec(str("id") -> int(7)), 'vertex `;` 'vertex))
-    //assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(8)) `_,` str("inV") -> 'vertex(str("id") -> int(9)))))(graph.coerce(str("outV") -> rec(str("id") -> int(8)) `_,` str("inV") -> rec(str("id") -> int(9)), 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int) `_,` str("inV") -> 'vertex(str("id") -> int))))(graph.coerce(str("outV") -> rec(str("id") -> int) `_,` str("inV") -> rec(str("id") -> int), 'edge))
+    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(8)) `_,` str("inV") -> 'vertex(str("id") -> int(9)))))(graph.coerce(str("outV") -> rec(str("id") -> int(8)) `_,` str("inV") -> rec(str("id") -> int(9)), 'edge))
   }
 
   test("type construction w/ pg_2") {
@@ -93,7 +94,7 @@ class ObjGraph2Test extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(5)))))(graph.coerce(graph.model.s(int(5)) -< (__ `;` __), 'edge))
     assertResult('edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(5))))(graph.model.s(int(5)) -< ('vertex `;` 'vertex) `=>` 'edge)
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(5)))))(graph.coerce(graph.model.s(int(5)) -< ('vertex `;` 'vertex), 'edge))
-    //assertResult('edge<=int.split(('vertex<=int-<(str("id")->int))`;`('vertex<=int-<(str("id")->int))).split((str("outV") -> ('vertex <= get(0))) `_,`(str("inV") -> ('vertex <= get(1)))))(graph.coerce(graph.model.s(int)-<('vertex`;`'vertex), 'edge))
+    //    assertResult('edge<=int.split(('vertex<=int-<(str("id")->int))`;`('vertex<=int-<(str("id")->int))).split((str("outV") -> ('vertex <= get(0))) `_,`(str("inV") -> ('vertex <= get(1)))))(graph.coerce(graph.model.s(int)-<('vertex`;`'vertex), 'edge))
     assertResult(Seq(int <= (int `;` int `;` int).get(1)))(graph.coerce((int `;` int `;` int), int))
     assertResult(Seq('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
     assertResult(Seq('nat <= int.plus(10).is(gt(0))))(graph.coerce(int.plus(10), 'nat))
@@ -108,7 +109,7 @@ class ObjGraph2Test extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(8)) `_,` str("inV") -> 'vertex(str("id") -> int(9)))))(graph.coerce('vertex(str("id") -> int(8)) `;` 'vertex(str("id") -> int(9)), 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(81 `;` 91, 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(lst(g = (Tokens.`;`, List((1 `;` 81 `;` 2), (3 `;` 91 `;` 24)))), 'edge))
-    //    assertResult(Seq('edge <= (int `;` int).combine(('vertex <= int.-<(str("id") -> int)) `;`('vertex <= int.-<(str("id") -> int))).-<((str("outV") -> (get(0))) `_,`(str("inV") -> (get(1))))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
+    // assertResult(Seq('edge <= (int `;` int).combine(('vertex <= int.-<(str("id") -> int)) `;`('vertex <= int.-<(str("id") -> int))).-<((str("outV") -> (get(0))) `_,`(str("inV") -> (get(1))))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
   }
 
   test("type construction w/ digraph") {
@@ -130,8 +131,8 @@ class ObjGraph2Test extends FunSuite {
     assertResult(Nil)(graph.coerce((20 `;` "marko"), 'attr))
     assertResult(Seq(int(23)))(graph.coerce('vertex(str("id") -> 'nat(23)), int))
     assertResult(Seq('vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2))))(graph.coerce('nat(1) `;` 'nat(2), 'vertex `;` 'vertex))
-    //    assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.coerce(str("a") `;` "b", 'attr))
-    //    assertResult(Seq('attr <= (str `;` str).combine(str `;` str.id).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
+    assertResult(Seq('attr(str("key") -> str("a") `_,` str("value") -> str("b"))))(graph.coerce(str("a") `;` "b", 'attr))
+    assertResult(Seq('attr <= (str `;` str).combine(str `;` str.id).-<(str("key") -> (str `;` id).get(0) `_,` str("value") -> (str `;` id).get(1))))(Stream('attr <= graph.coerce(str `;` str, 'attr).head))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce('nat(23), 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23))))(graph.coerce(23, 'vertex))
     assertResult(Seq('vertex(str("id") -> 'nat(23)).q(3)))(graph.coerce(23.q(3), 'vertex))

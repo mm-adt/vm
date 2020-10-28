@@ -30,7 +30,7 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj.{symbolToToken, _}
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.`type`.{RecType, Type, __}
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
@@ -109,6 +109,24 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
   }
 
   def exists(aobj:Obj):Boolean = g.V(aobj).hasNext
+  def cartesianProduct[T](in:Seq[Seq[T]]):Seq[Seq[T]] = {
+    @scala.annotation.tailrec
+    def loop(acc:Seq[Seq[T]], rest:Seq[Seq[T]]):Seq[Seq[T]] = {
+      rest match {
+        case Nil =>
+          acc
+        case seq :: remainingSeqs =>
+          // Equivalent of:
+          // val next = seq.flatMap(i => acc.map(a => i+: a))
+          val next = for {
+            i <- seq
+            a <- acc
+          } yield i +: a
+          loop(next, remainingSeqs)
+      }
+    }
+    loop(Seq(Nil), in.reverse)
+  }
 
   def coerce(source:Obj, target:Obj):Stream[Obj] = {
     if (target.name.equals(model.coreName)) return Stream(model)
@@ -117,7 +135,6 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
         !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name))))
       case _ => false
     }
-
     val sroot:Obj = bindObj(asType(source.rangeObj)).obj
     val troot:Vertex = bindObj(asType(target.domainObj))
     JavaConverters.asScalaIterator(
@@ -130,26 +147,22 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
             case alst:Lst[Obj] if lstTest(alst, t.get.obj) =>
               alst.glist.zip(t.get.obj.asInstanceOf[Lst[Obj]].glist).flatMap(pair => coerce(pair._1, pair._2))
                 .foldLeft(List.empty[Obj])((a, b) => a :+ b)
-                .combinations(alst.size).toList.distinct
+                .combinations(alst.size).toStream.distinct
                 .filter(x => x.size == alst.size)
                 .filter(x => x.forall(_.alive))
-                .map(x => alst.clone(_ => x).named(t.get.obj.name))
-                .map(x => {
-                  if (x.glist.zip(alst.glist).forall(pair => finalStructureTest(pair._1, pair._2))) x
-                  else alst.combine(x)
-                })
+                .map(x => alst.combine(alst.clone(_ => x)))
                 .iterator
-            case alst:Lst[Obj] if t.get.obj.asInstanceOf[Lst[Obj]].ctype => Iterator(alst)
-            case alst:Lst[Obj] if alst.size != t.get.obj.asInstanceOf[Lst[Obj]].size => Iterator(zeroObj)
             case arec:Rec[Obj, Obj] => t.get.obj match {
-              case brec:RecType[Obj, Obj] if brec.ctype => Iterator(arec.named(brec.name))
               case brec:Rec[Obj, Obj] =>
-                val z = arec.clone(name = brec.name, g = (brec.gsep,
-                  arec.gmap.flatMap(a => brec.gmap
-                    .filter(b => finalStructureTest(a._1, b._1))
-                    .map(b => (coerce(a._1, b._1).headOption.getOrElse(zeroObj), coerce(a._2, b._2).headOption.getOrElse(zeroObj))))
-                    .filter(b => b._1.alive && b._2.alive)))
-                if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) Iterator(zeroObj) else Iterator(z)
+                arec.gmap.flatMap(a => brec.gmap
+                  .flatMap(b => cartesianProduct(List(coerce(a._1, b._1), coerce(a._2, b._2)))))
+                  .map(b => (b.head, b.last))
+                  .combinations(arec.size)
+                  .toStream
+                  .distinct
+                  .map(x => arec.clone(name = brec.name, g = (brec.gsep, x)))
+                  .filter(x => x.gmap.size >= brec.gmap.count(x => x._2.q._1.g > 0))
+                  .toIterator
               case _ => Iterator(zeroObj)
             }
             case aobj => Iterator(aobj)
@@ -164,10 +177,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
           t.asAdmin().sack(sack)
           t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj)]._1)
         })
-        .until((t:Traverser[Vertex]) => { // acyclic walk of obj graph, applying edge instructions, until target is reached
-          t.get.obj.root && (__.isAnon(troot.obj) || t.get.obj.name == troot.obj.name || (baseName(troot.obj).equals(baseName(t.sack[Obj]()))))
-          // finalStructureTest(t.sack[Obj].rangeObj,troot.obj.domainObj)
-        })
+        .until((t:Traverser[Vertex]) => t.get.obj.root && finalStructureTest(t.sack[Obj].rangeObj, troot.obj.domainObj))
         .repeat(___
           .simplePath() // no cycles allowed
           .outE()
@@ -179,7 +189,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
           .inV()
           .sideEffect((t:Traverser[Vertex]) => {
             val sack = t.sack[Obj]
-            if (!__.isAnonToken(t.get.obj.rangeObj) && sack.root)
+            if (!__.isAnonToken(t.get.obj.rangeObj) && !sack.isInstanceOf[Poly[_]])
               t.sack(t.get.obj.rangeObj <= sack)
             else
               t.sack(sack.named(t.get.obj.name))
@@ -187,20 +197,22 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
         .sack[Obj]
     ).toStream
       .map(obj => target.trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
-      // if source was a value, compute the value against the derived type
-      .map(obj => {
-        source match {
-          case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj)
-          case _:Type[_] => obj
+      .map(obj => source match {
+        // if source was a value, compute the value against the derived type
+        case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj) match {
+          case arec:Rec[Obj, Obj] => arec.clone(x => x.zip(obj.asInstanceOf[Rec[Obj, Obj]].gmap).map(pair => (pair._1._1.named(pair._2._1.name), pair._1._2.named(pair._2._2.name))))
+          case alst:Lst[Obj] => alst.clone(x => x.zip(obj.asInstanceOf[Lst[Obj]].glist).map(pair => pair._1.named(pair._2.name)))
+          case x => x
         }
+        case _:Type[_] => obj
       })
       .filter(x => finalStructureTest(x.rangeObj, target.rangeObj))
       .distinct
   }
 
   def finalStructureTest(a:Obj, b:Obj):Boolean = {
+    if (__.isAnon(b.domainObj)) return true
     if (a.alive != b.alive || a.name != b.name) return false
-    if (__.isAnon(b)) return true
     val aobj:Obj = a
     val bobj:Obj = Obj.resolveToken(__.update(model), b)
     aobj match {
@@ -217,7 +229,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case brec:Rec[Obj, Obj] =>
             Poly.sameSep(arec, brec) &&
               brec.isEmpty == arec.isEmpty &&
-              arec.gmap.forall(p => qStar.equals(p.q) || brec.gmap.exists(q => finalStructureTest(p._1, q._1) && p._2.test(q._2))) //finalStructureTest(p._1,q._1) && finalStructureTest(p._2,q._2)))
+              arec.gmap.forall(p => qStar.equals(p.q) || brec.gmap.exists(q => finalStructureTest(p._1, q._1) && finalStructureTest(p._2, q._2)))
           case _ => false
         }
       case _:Value[Obj] if bobj.isInstanceOf[Value[Obj]] => aobj.equals(bobj)
