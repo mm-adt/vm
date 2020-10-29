@@ -99,6 +99,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
   }
 
   def exists(aobj:Obj):Boolean = g.V(aobj).hasNext
+  def paths(source:Obj, target:Obj):Stream[List[Obj]] = Stream.empty
 
   def coerce(source:Obj, target:Obj):Stream[Obj] = {
     Option(source match {
@@ -107,31 +108,31 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
       case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source // target.trace.reconstruct(source, target.name)
       case _:Strm[Obj] => strm(coerce(source, target))
-      case alst:Lst[_] if Lst.exactTest(alst, target) => source
+      //case alst:Lst[_] if Lst.exactTest(alst, target) => source // TODO: just straight equals on the domain
+      case _:Lst[_] if target.isInstanceOf[Lst[_]] && target.asInstanceOf[Lst[_]].ctype => source.named(target.name)
       case _:Poly[_] => null
       case _ if target.name.equals(model.coreName) => model
-      case _ if source.name.equals(target.name) => source //target.trace.reconstruct(source, target.name)
+      case _:Value[_] if source.name.equals(target.domainObj.name) => source //target.trace.reconstruct(source, target.name)
+      case _:Type[_] if source.name.equals(target.domainObj.name) => target.trace.reconstruct(source, target.name)
       case _ => null
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
     ///////////////////////////////////////////////////////////////
-    val sroot:Obj = bindObj(asType(source.rangeObj)).obj
-    val troot:Vertex = bindObj(asType(target.domainObj))
+    val sroot:Obj = asType(source)
+    val troot:Obj = bindObj(asType(target.domainObj)).obj
     JavaConverters.asScalaIterator(
       g.withSack(sroot)
         .R
         .has(CTYPE, NAME, sroot.name)
         ///////// ALL MATCHING PERMUTATIONS OF DOMAIN /////////
         .flatMap((t:Traverser[Vertex]) => JavaConverters.asJavaIterator(
-          Converters.objConverter(t.sack[Obj].update(model), t.get.obj)
-            .map(x => source.trace.reconstruct[Obj](x, source.name)) // TODO: this should be handled prior to target instruction resolution
-            .map(sack => (t.get, sack)).iterator)
+          Converters.objConverter(t.sack[Obj].update(model), t.get.obj).map(sack => (t.get, sack)).iterator)
           .asInstanceOf[java.util.Iterator[Vertex]]) // hack on typing (necessary because TP3 doesn't have flatmap on traverser
         .sideEffect((t:Traverser[Vertex]) => {
           val sack = t.get.asInstanceOf[(Vertex, Obj)]._2
           t.asAdmin().sack(sack)
           t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj)]._1)
         })
-        .until((t:Traverser[Vertex]) => t.get.obj.root && finalStructureTest(t.sack[Obj].rangeObj, troot.obj.domainObj)) // this can also be emit() instead resolution ends after a full span of the obj graph
+        .until((t:Traverser[Vertex]) => t.get.obj.root && finalStructureTest(t.sack[Obj].rangeObj, troot.domainObj)) // this can also be emit() instead resolution ends after a full span of the obj graph
         .repeat(___
           .simplePath() // no cycles allowed
           .outE()
@@ -150,13 +151,13 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
           })) // name type accordingly
         .sack[Obj]
     ).toStream
-      //.map(obj => obj.named(target.name).hardQ(target.q))
       .map(obj => target.trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
       .map(obj => source match {
         // if source was a value, compute the value against the derived type // TODO: this needs to do a recursive descent
         case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj) match {
           case arec:Rec[Obj, Obj] if obj.isInstanceOf[Rec[_, _]] => arec.clone(x => x.zip(obj.asInstanceOf[Rec[Obj, Obj]].gmap).map(pair => (pair._1._1.named(pair._2._1.name), pair._1._2.named(pair._2._2.name))))
           case alst:Lst[Obj] if obj.isInstanceOf[Lst[_]] => alst.clone(x => x.zip(obj.asInstanceOf[Lst[Obj]].glist).map(pair => pair._1.named(pair._2.name)))
+          case x if !x.isInstanceOf[Poly[_]] => Converters.objConverter(x, obj.rangeObj).headOption.getOrElse(zeroObj)
           case x => x
         }
         case _:Type[_] => obj

@@ -52,7 +52,7 @@ class SplitInstTest extends BaseInstTest(
       (int `;` int `;` int `;` int).to('x).split(str("a") -> get(0) `_,` str("b") -> get(1)).asInstanceOf[Rec[Obj, Obj]].put(from('x).get(2), from('x).get(3)),
       (str("a") -> int(1) `_,` str("b") -> int(2) `_,` int(3) -> int(4)),
       "(1;2;3;4)<x>-<('a'->.0,'b'->.1)[put,x.2,x.3]"),
-    IGNORING("eval-5")(
+    IGNORING(".*")(
       (1 `;` 2 `;` 3 `;` 4),
       (int `;` int `;` int `;` int).to('x).split(get(0, int) `,` get(1, int)).put(from('x).get(2, int), from('x).get(3, int)),
       (1 `,` 2 `,` 4),

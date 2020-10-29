@@ -43,7 +43,7 @@ class CombineInstTest extends BaseInstTest(
     testing(1 `;` 2 `;` 3, lst.combine(lst(plus(1))), 2 `;` 3 `;` 4, "(1;2;3) => lst[combine,(+1)]"),
     testing(1 `;` 2 `;` 3, lst.combine(lst), lst(), "(1;2;3)=lst"), // TODO: IS THIS WHAT WE WANT SEMANTICALLY?
     testing(1 `;` 2 `;` 3, lst.combine(id `;` id `;` id), 1 `;` 2 `;` 3, "(1;2;3)=([id];[id];[id])"),
-    testing(1 `;`(2 `,` 3) `;` 4, combine(int.plus(1) `;` >-.count `;` int.plus(10)), 2 `;` 2 `;` 14, "(1;(2,3);4)=(int[plus,1];>-[count];int[plus,10])"),
+    //testing(1 `;`(2 `,` 3) `;` 4, combine(int.plus(1) `;` >-.count `;` int.plus(10)), 2 `;` 2 `;` 14, "(1;(2,3);4)=(int[plus,1];>-[count];int[plus,10])"),
     testing(2 `;` 4, combine(plus(2) `;` mult(10)), 4 `;` 40, "(2;4)=(+2;*10)"),
     testing(1 `;` 2 `;`(3 `;`(4 `;` 5)), combine(id `;` id `;` combine(int `;` combine(plus(20) `;` plus(10)))), 1 `;` 2 `;`(3 `;`(24 `;` 15)), "(1;2;(3;(4;5)))=([id];[id];=(int;=(+20;+10)))"),
     testing(int.plus(1) `;` int.plus(2), combine(int.plus(3) `;` int.plus(4)), (int.plus(1).plus(3) `;` int.plus(2).plus(4)) <= (int.plus(1) `;` int.plus(2)).combine(int.plus(3) `;` int.plus(4)), "(int+1;int+2)=(int+3;int+4)"),

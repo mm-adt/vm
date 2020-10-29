@@ -22,11 +22,13 @@
 
 package org.mmadt.storage.obj.graph
 
+import java.lang.{Boolean => JBoolean, Double => JDouble, Long => JLong}
+
 import org.mmadt.language.LanguageException
+import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
-import org.mmadt.language.obj.value.StrValue
-import org.mmadt.language.obj.{Bool, Inst, Int, Lst, Obj, Poly, Real, Rec, Str, asType}
+import org.mmadt.language.obj.value.{BoolValue, IntValue, RealValue, StrValue}
 import org.mmadt.storage.StorageFactory.{bool, int, real, str}
 
 /**
@@ -36,24 +38,45 @@ object Converters {
 
   def objConverter(source:Obj, target:Obj):Stream[Obj] = {
     (source match {
-      case abool:Bool => Stream(boolConverter(abool, target))
-      case aint:Int => Stream(intConverter(aint, target))
-      case areal:Real => Stream(realConverter(areal, target))
-      case astr:Str => Stream(strConverter(astr, target))
+      case abool:BoolValue => Stream(boolConverter(abool, target))
+      case abool:BoolType => Stream(boolConverter(abool, target))
+      case aint:IntValue => Stream(intConverter(aint, target))
+      case aint:IntType => Stream(intConverter(aint, target))
+      case areal:RealValue => Stream(realConverter(areal, target))
+      case areal:RealType => Stream(realConverter(areal, target))
+      case astr:StrValue => Stream(strConverter(astr, target))
+      case astr:StrType => Stream(strConverter(astr, target))
       case alst:Lst[Obj] => lstConverter(alst, target)
       case arec:Rec[Obj, Obj] => recConverter(arec, target)
       case _:__ => Stream(source)
+      case _ => Stream(source) // strm weirdness
     }).filter(_.alive) //.map(x => target.trace.reconstruct[Obj](x))
   }
 
-  private def boolConverter(source:Bool, target:Obj):Obj = target.domain match {
+  private def boolConverter(source:BoolValue, target:Obj):Obj = target match {
     case _:__ => source
     case abool:BoolType => bool(name = abool.name, g = source.g, via = source.via)
     case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
-  private def intConverter(source:Int, target:Obj):Obj = target match {
+  private def boolConverter(source:BoolType, target:Obj):Obj = target match {
+    case _:__ => source
+    case abool:BoolType => bool.clone(name = abool.name, via = source.via)
+    case astr:StrType => str.clone(name = astr.name, via = source.via)
+    case _ => throw LanguageException.typingError(source, asType(target))
+  }
+
+  private def intConverter(source:IntValue, target:Obj):Obj = target match {
+    case _:__ => source
+    case aint:IntType => int(name = aint.name, g = source.g, via = source.via)
+    case areal:RealType => real(name = areal.name, g = source.g, via = source.via)
+    case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
+    case _ => throw LanguageException.typingError(source, asType(target))
+  }
+
+
+  private def intConverter(source:IntType, target:Obj):Obj = target match {
     case _:__ => source
     case aint:IntType => int.clone(name = aint.name, via = source.via)
     case areal:RealType => real.clone(name = areal.name, via = source.via)
@@ -61,7 +84,15 @@ object Converters {
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
-  private def realConverter(source:Real, target:Obj):Obj = target.domain match {
+  private def realConverter(source:RealValue, target:Obj):Obj = target match {
+    case _:__ => source
+    case aint:IntType => int(name = aint.name, g = source.g.longValue(), via = source.via)
+    case areal:RealType => real(name = areal.name, g = source.g, via = source.via)
+    case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
+    case _ => throw LanguageException.typingError(source, asType(target))
+  }
+
+  private def realConverter(source:RealType, target:Obj):Obj = target match {
     case _:__ => source
     case aint:IntType => int.clone(name = aint.name, via = source.via)
     case areal:RealType => real.clone(name = areal.name, via = source.via)
@@ -69,7 +100,16 @@ object Converters {
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
-  private def strConverter(source:Str, target:Obj):Obj = target.domain match {
+  private def strConverter(source:StrValue, target:Obj):Obj = target match {
+    case _:__ => source
+    case abool:BoolType => bool(name = abool.name, g = JBoolean.valueOf(source.g), via = source.via)
+    case aint:IntType => int(name = aint.name, g = JLong.valueOf(source.g), via = source.via)
+    case areal:RealType => real(name = areal.name, g = JDouble.valueOf(source.g), via = source.via)
+    case astr:StrType => str(name = astr.name, g = source.g, via = source.via)
+    case _ => throw LanguageException.typingError(source, asType(target))
+  }
+
+  private def strConverter(source:StrType, target:Obj):Obj = target match {
     case _:__ => source
     case abool:BoolType => bool.clone(name = abool.name, via = source.via)
     case aint:IntType => int.clone(name = aint.name, via = source.via)
@@ -82,19 +122,24 @@ object Converters {
     case _:__ => Stream(source)
     case _:StrType => Stream(str(name = target.name, g = source.toString, via = source.via))
     case _:Inst[Obj, Obj] => Stream(OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail))
-    case blst:Lst[Obj] if lstTest(source, blst) =>
-      source.glist.zip(blst.glist).flatMap(pair => pair._1.coercions2(pair._2))
-        .foldLeft(List.empty[Obj])((a, b) => a :+ b)
-        .combinations(source.size).toStream.distinct
-        .filter(x => x.size == source.size)
-        .filter(x => x.forall(_.alive))
-        .map(x => source.combine(source.clone(_ => x)).named(blst.name))
-    case _ => Stream(source)
+    //case blst:Lst[_] if blst.ctype => Stream(source.named(blst.name))
+    case blst:Lst[Obj] if lstTest(source, blst) => source.glist.zip(blst.glist).flatMap(pair => pair._1.coercions2(pair._2))
+      .foldLeft(List.empty[Obj])((a, b) => a :+ b)
+      .combinations(source.size).toStream.distinct
+      .filter(x => x.size == source.size)
+      .filter(x => x.forall(_.alive))
+      .map(x => {
+        if (source.glist == x) source
+        else source.combine(source.clone(_ => x))
+      })
+      .map(x => x.named(blst.name))
+    case _ => Stream.empty
   }
 
   private def recConverter(source:Rec[Obj, Obj], target:Obj):Stream[Obj] = target match {
     case _:__ => Stream(source)
     case bstr:StrType => Stream(str(name = bstr.name, g = source.toString, via = source.via))
+    case brec:Rec[_, _] if brec.ctype => Stream(source.named(brec.name))
     case brec:Rec[Obj, Obj] => source.gmap.flatMap(a => brec.gmap
       .flatMap(b => cartesianProduct(List(a._1.coercions2(b._1), a._2.coercions2(b._2)))))
       .map(b => (b.head, b.last))
@@ -111,8 +156,8 @@ object Converters {
   ////////////////////////////////////////////////////////////////////
 
   private def lstTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
-    case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
-      !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || p._1.name.equals(p._2.name)))
+    case blst:Lst[Obj] => (Poly.sameSep(alst, blst) && alst.size == blst.size) //&&
+    //  !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || p._1.name.equals(p._2.name)))
     case _ => false
   }
 

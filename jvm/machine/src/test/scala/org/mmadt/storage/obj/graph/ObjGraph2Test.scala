@@ -86,8 +86,8 @@ class ObjGraph2Test extends FunSuite {
     assertResult(Stream(int))(graph.coerce(int, int))
     assertResult(Stream(int(45)))(graph.coerce(45, int))
     assertResult(Stream(int.plus(11)))(graph.coerce(int.plus(11), int))
-    //    assertResult(Stream(int.plus(10)))(graph.coerce(int, int.plus(10)))
-    //    assertResult(Stream(int(32)))(graph.coerce(22, int.plus(10)))
+    assertResult(Stream(int.plus(10)))(graph.coerce(int, int.plus(10)))
+    // assertResult(Stream(int(32)))(graph.coerce(22, int.plus(10)))
     assertResult(Nil)(graph.coerce(int(35), str))
   }
 
@@ -182,12 +182,13 @@ class ObjGraph2Test extends FunSuite {
 
   test("coercion of base types") {
     assertResult(Nil)(ObjGraph2.create(storage.model('none)).coerce(4, str))
-    val graph = ObjGraph2.create(storage.model('none).defining(str <= int))
+    val graph = ObjGraph2.create(storage.model('none).defining(str <= int).defining(real <= int).defining(lst))
     assertResult(Stream(str <= int))(graph.coerce(int, str))
-    //assertResult(Stream(str("4")))(graph.coerce(4, str))
+    assertResult(Stream(real(6.0)))(graph.coerce(6, real))
+    assertResult(Stream(str("4")))(graph.coerce(4, str))
     assertResult(Stream(str <= int.plus(10)))(graph.coerce(int.plus(10), str))
     // assertResult((2`;`5))((1`;`2)`=>`(int.plus(1)`;`int.plus(3)))
-    // assertResult(Stream(2`;`5))(graph.coerce((1`;`2),(int.plus(1)`;`int.plus(3))))
+    assertResult(Stream(2 `;` 5))(graph.coerce((1 `;` 2), (int.plus(1) `;` int.plus(3))))
   }
 
   test("dependent sum construction w/ custom types") {
