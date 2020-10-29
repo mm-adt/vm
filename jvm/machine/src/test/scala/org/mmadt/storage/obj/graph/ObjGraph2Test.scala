@@ -86,8 +86,8 @@ class ObjGraph2Test extends FunSuite {
     assertResult(Stream(int))(graph.coerce(int, int))
     assertResult(Stream(int(45)))(graph.coerce(45, int))
     assertResult(Stream(int.plus(11)))(graph.coerce(int.plus(11), int))
-//    assertResult(Stream(int.plus(10)))(graph.coerce(int, int.plus(10)))
-//    assertResult(Stream(int(32)))(graph.coerce(22, int.plus(10)))
+    //    assertResult(Stream(int.plus(10)))(graph.coerce(int, int.plus(10)))
+    //    assertResult(Stream(int(32)))(graph.coerce(22, int.plus(10)))
     assertResult(Nil)(graph.coerce(int(35), str))
   }
 

@@ -39,7 +39,6 @@ import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.Processor
 import org.mmadt.storage.StorageFactory._
-import org.mmadt.storage.obj.graph.ObjGraph2
 
 import scala.annotation.tailrec
 
@@ -138,10 +137,11 @@ trait Obj
   // evaluation methods
   final def compute[E <: Obj](target:E, withAs:Boolean = true):E =
     if (withAs) AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target) else Obj.resolveInternal[E](this, target)
-  final def ~~>[E <: Obj](target:E):E = Some(Obj.resolveArg[this.type, E](this, target)).map(x => if(this.model.vars(target.name).isDefined) x else x.named(target.name)).get
+  final def ~~>[E <: Obj](target:E):E = Some(Obj.resolveArg[this.type, E](this, target)).map(x => if (this.model.vars(target.name).isDefined) x else x.named(target.name)).get
   final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
   final def coerce[E <: Obj](target:E):E = this.model.graph.coerce(this, target).headOption.getOrElse(zeroObj).asInstanceOf[E]
-  final def coerce2[E<:Obj](target:E):E =  ObjGraph2.create(this.model).coerce(this,target).headOption.getOrElse(zeroObj).asInstanceOf[E]
+  final def coerce2[E <: Obj](target:E):E = this.coercions2(target).headOption.getOrElse(zeroObj).asInstanceOf[E]
+  final def coercions2[E <: Obj](target:E):Stream[E] = this.model.graph2.coerce(this, target).asInstanceOf[Stream[E]]
 
   // lst fluent methods
   def `|`:Lst[this.type] = lst(g = (Tokens.`|`, List(this)))
@@ -240,7 +240,7 @@ object Obj {
     }
   }
 
-  private def objTypeCheck[A <: Obj](source:A):A = {
+  /*private def objTypeCheck[A <: Obj](source:A):A = {
     source match {
       case avalue:Value[_] if Tokens.named(source.name) => avalue.via._1 match {
         case bvalue:Value[_] if avalue.g != bvalue.g =>
@@ -253,7 +253,7 @@ object Obj {
       }
       case _ => source
     }
-  }
+  }*/
 
   // TODO: this will come in handy when types are automatically unrolled to their coercion
   /*def isRecursive(aobj:Obj):Boolean = {
