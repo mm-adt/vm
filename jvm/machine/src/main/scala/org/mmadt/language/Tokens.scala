@@ -43,6 +43,8 @@ object Tokens {
   val rule_id = "rule:id"
   val rule_unity = "rule:unity"
 
+  val coerce = "coerce"
+
   val anon = "_"
   val bool = "bool"
   val str = "str"
@@ -133,7 +135,7 @@ object Tokens {
   val lift_op = "^" // -^ like -< but over and up. (^- ?)
   val combine_op = "="
   val merge_op = ">-"
-  val as_op = "~>"
+  val coerce_op = "=>"
   val walk_op = "~~>"
   val juxt_op = "=>"
   val swap_op = "/"

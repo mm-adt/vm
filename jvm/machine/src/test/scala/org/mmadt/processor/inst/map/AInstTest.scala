@@ -33,7 +33,7 @@ import org.mmadt.storage.StorageFactory._
 import org.scalatest.prop.TableFor3
 
 class AInstTest extends BaseInstTest(
-  testSet("[a] table test", List(NONE, MM, MMX),
+  testSet("[a] table test", List(MM, MMX),
     comment("bool"),
     testing(true, a(true), true, "true[a,true]"),
     testing(true, a(true.q(1)), true, "true[a,true{1}]"),

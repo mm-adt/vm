@@ -44,8 +44,8 @@ trait AsOp {
   this:Obj =>
   def as[O <: Obj](aobj:O):O = AsOp(aobj).exec(this).asInstanceOf[O]
   def as(atype:Symbol):__ = AsOp(__(atype.name)).exec(this).asInstanceOf[__]
-  def ~>(atype:Symbol):__ = autoAsType(this, x => x, atype)
-  def ~>[O <: Obj](aobj:O):O = autoAsType(this, x => x, aobj)
+  //def ~>(atype:Symbol):__ = autoAsType(this, x => x, atype)
+  //def ~>[O <: Obj](aobj:O):O = autoAsType(this, x => x, aobj)
 }
 
 object AsOp extends Func[Obj, Obj] {

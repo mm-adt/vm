@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class OneInstTest extends BaseInstTest(
-  testSet("[one] table test", List(NONE, MM), // MMX),
+  testSet("[one] table test", List(MM), // MMX),
     comment("int"),
     testing(2, one, 1),
     testing(2, one.q(10), 1.q(10)),

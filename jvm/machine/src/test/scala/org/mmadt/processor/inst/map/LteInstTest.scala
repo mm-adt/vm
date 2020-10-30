@@ -31,7 +31,7 @@ import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testin
 import org.mmadt.storage.StorageFactory.{bool, int, real}
 
 class LteInstTest extends BaseInstTest(
-  testSet("[lte] table testing", List(NONE, MM, MMX),
+  testSet("[lte] table testing", List(MM, MMX),
     comment("int"),
     testing(2, lte(1), false, "2=<1"),
     testing(2.q(10), lte(1), false.q(10), "2{10}[lte,1]"),

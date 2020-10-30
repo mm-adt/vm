@@ -31,7 +31,7 @@ import org.mmadt.processor.inst.TestSetUtil.{testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class NotInstTest extends BaseInstTest(
-  testSet("[not] table test", List(NONE, MM, MMX),
+  testSet("[not] table test", List(MM, MMX),
     testing(true, not(__), false, "true[not,_]"),
     testing(true, not(bool), false, "true[not,bool]"),
     testing(true.q(19), not(__), false.q(19), "true{19} => [not,_]"),

@@ -103,6 +103,7 @@ class ObjGraph2(val model:Model, val graph:Graph = TinkerGraph.open()) {
 
   def coerce(source:Obj, target:Obj):Stream[Obj] = {
     Option(source match {
+      case _ if __.isAnon(target.domainObj) => target.trace.reconstruct(source, target.name)
       case _ if !source.alive || source.model.vars(target.name).isDefined => source
       case _ if !target.alive => zeroObj
       case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))

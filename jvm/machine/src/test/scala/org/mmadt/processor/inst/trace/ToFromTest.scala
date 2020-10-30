@@ -27,7 +27,7 @@ import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{excepting, _}
 import org.mmadt.storage.StorageFactory._
@@ -36,7 +36,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ToFromTest extends BaseInstTest(
-  testSet("[to][from] table test", List(NONE, MM, MMX),
+  testSet("[to][from] table test", List(MM, MMX),
     comment("types"),
     testing(int, to('x).plus(1).from('x), int.to('x).plus(1).from('x), "int<x>[plus,1]<.x>"),
     testing(int, to('x).plus(1).plus(from('x)), int.to('x).plus(1).plus(from('x)), "int<x>[plus,1][plus,int<.x>]"),

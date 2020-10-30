@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory.{?, int, str}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class TypeInstTest extends BaseInstTest(
-  testSet("[type] table", List(NONE, MM, MMX),
+  testSet("[type] table", List(MM, MMX),
     comment("[noop]"),
     testing(__, __.`type`, __.`type`, "[type]"),
     comment("[plus][mult]"),

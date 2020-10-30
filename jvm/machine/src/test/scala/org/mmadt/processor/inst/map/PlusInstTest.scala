@@ -26,13 +26,13 @@ import org.mmadt.language.obj.Obj.{intToInt, stringToStr}
 import org.mmadt.language.obj.Str
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
 
 class PlusInstTest extends BaseInstTest(
-  testSet("[plus] table test", List(NONE, MM, MMX),
+  testSet("[plus] table test", List( MM, MMX),
     comment("int"),
     testing(2, plus(2), 4, "2[plus,2]"),
     testing(2, int.plus(2), 4, "2 => int[plus,2]"),

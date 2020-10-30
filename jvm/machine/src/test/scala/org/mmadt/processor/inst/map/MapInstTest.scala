@@ -24,7 +24,7 @@ package org.mmadt.processor.inst.map
 
 import org.mmadt.language.obj.Obj.intToInt
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.op.trace.ModelOp.NONE
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, NONE}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
@@ -33,7 +33,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class MapInstTest extends BaseInstTest(
-  testSet("[map] table testing", List(NONE), // MM
+  testSet("[map] table testing", List.empty, // MM
     comment("int"),
     testing(2, map(1), 1, "2[map,1]"),
     testing(2.q(10), int.q(10).map(1), 1.q(10), "2{10} => int{10}[map,1]"),

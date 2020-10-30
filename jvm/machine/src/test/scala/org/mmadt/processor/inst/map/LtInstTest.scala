@@ -25,7 +25,7 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.map.LtOp
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testing}
 import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory.{bfalse, bool, btrue, int, real}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class LtInstTest extends BaseInstTest(
-  testSet("[lt] table testing", List(NONE, MM, MMX),
+  testSet("[lt] table testing", List(MM, MMX),
     comment("int"),
     testing(int(2), lt(1), bfalse, "2 < 1"),
     testing(int(2).q(10), lt(1), bfalse.q(10), "2{10} < 1"),

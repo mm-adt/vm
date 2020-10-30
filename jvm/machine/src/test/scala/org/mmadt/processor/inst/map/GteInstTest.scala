@@ -32,7 +32,7 @@ import org.mmadt.processor.inst.TestSetUtil.{comment, excepting, testSet, testin
 import org.mmadt.storage.StorageFactory.{bool, int}
 
 class GteInstTest extends BaseInstTest(
-  testSet("[gte] table test", List(NONE, MM, MMX),
+  testSet("[gte] table test", List( MM, MMX),
     comment("int"),
     testing(2, gte(1), true, "2>=1"),
     testing(2.q(10), int.q(10).gte(1), true.q(10), "2{10} => int{10}[gte,1]"),

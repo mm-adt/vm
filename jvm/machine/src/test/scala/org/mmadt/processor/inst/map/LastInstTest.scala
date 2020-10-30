@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory.{int, lst, rec, str}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class LastInstTest extends BaseInstTest(
-  testSet("[last] table test", List(NONE, MM, MMX),
+  testSet("[last] table test", List( MM, MMX),
     comment(";-lst"),
     testing(1 `;` 2 `;` 3, lst.last, 3, "(1;2;3) => lst[last]"),
     testing(1 `;` 2 `;` 3, last, 3, "(1;2;3)[last]"),

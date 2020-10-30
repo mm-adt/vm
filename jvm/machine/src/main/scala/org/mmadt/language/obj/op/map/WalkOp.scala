@@ -37,7 +37,7 @@ import org.mmadt.storage.obj.value.VInst
 trait WalkOp {
   this:Obj =>
   def walk(target:Type[Obj]):Lst[target.type] = WalkOp(target).exec(this).asInstanceOf[Lst[target.type]]
-  def ~>(target:Type[Obj]):Lst[target.type] = this.walk(target)
+  def ~~>(target:Type[Obj]):Lst[target.type] = this.walk(target)
 }
 object WalkOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false

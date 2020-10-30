@@ -71,8 +71,13 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
         })
       )
       val evaluating = List[(String, Obj => Obj)](
-        ("eval-1", s => engine.eval(s"$s => $middle", bindings(model))),
-        ("eval-2", s => engine.eval(s"$s $middle", bindings(model))),
+        //("eval-1", s => engine.eval(s"$s => $middle", bindings(model))),
+        ("eval-2", s => {
+          if (__.isAnon(s))
+            engine.eval(s"$middle", bindings(model))
+          else
+            engine.eval(s"$s => $middle", bindings(model))
+        }),
         ("eval-3", s => s ==> (middle.domain ==> middle)),
         ("eval-4", s => s ==> (middle.domain ==> middle) match {
           case aobj:Obj

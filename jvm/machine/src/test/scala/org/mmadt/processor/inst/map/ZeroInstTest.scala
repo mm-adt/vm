@@ -33,7 +33,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class ZeroInstTest extends BaseInstTest(
-  testSet("[zero] table test", List(NONE),
+  testSet("[zero] table test", List.empty,
     comment("bool"),
     testing(true, zero, false, "true[zero]"),
     testing(false, zero, false, "false[zero]"),

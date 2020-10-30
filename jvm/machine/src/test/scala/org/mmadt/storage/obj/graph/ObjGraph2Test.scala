@@ -28,6 +28,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.{Obj, toBaseName}
+import org.mmadt.processor.inst.BaseInstTest.{bindings, engine}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{?, bool, int, lst, qStar, real, rec, str}
 import org.mmadt.storage.obj.graph.ObjGraph.OBJ
@@ -100,7 +101,7 @@ class ObjGraph2Test extends FunSuite {
   }
 
   test("type construction w/ pg_2") {
-    val graph:ObjGraph2 = ObjGraph2.create(storage.model('pg_2).defining('nat <= int.is(gt(0))).defining(int <= (int `;` int `;` int).get(1)))
+    val graph:ObjGraph2 = ObjGraph2.create(storage.model('pg_2).defining('nat <= int.is(gt(0))).defining(int <= __('nat)).defining(int <= (int `;` int `;` int).get(1)))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(5)))))(graph.coerce(graph.model.s(int(5)) -< (__ `;` __), 'edge))
     assertResult('edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(5))))(graph.model.s(int(5)) -< ('vertex `;` 'vertex) `=>` 'edge)
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(5)))))(graph.coerce(graph.model.s(int(5)) -< ('vertex `;` 'vertex), 'edge))
@@ -120,6 +121,10 @@ class ObjGraph2Test extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(81 `;` 91, 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(lst(g = (Tokens.`;`, List((1 `;` 81 `;` 2), (3 `;` 91 `;` 24)))), 'edge))
     // assertResult(Seq('edge <= (int `;` int).combine(('vertex <= int.-<(str("id") -> int)) `;`('vertex <= int.-<(str("id") -> int))).-<((str("outV") -> (get(0))) `_,`(str("inV") -> (get(1))))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
+    assertResult(Seq('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
+    assertResult(Seq(int <= int.is(gt(0))))(graph.coerce(int, 'nat).map(x => graph.coerce(x, int)).head)
+    assertResult(int <= int.is(gt(0)))(int.update(graph.model) ~> 'nat ~> int)
+    // assertResult(Seq('vertex<=int.is(gt(0)).split(str("id")->int)))(graph.coerce(int, 'nat).map(x => graph.coerce(x,int)).head.map(x => graph.coerce(x,'vertex)).head)
   }
 
   test("type construction w/ digraph") {
@@ -242,5 +247,9 @@ class ObjGraph2Test extends FunSuite {
          assertResult(btrue)((3`;`(2`;`0`;`1)`;`4).model(rmodel) ==> a('ctree)) */
    }*/
 
+  test("coercion play") {
+    val graph:ObjGraph2 = ObjGraph2.create(storage.model('pg_2).defining('nat <= int.is(gt(0))).defining(int <= __('nat)).defining(int <= (int `;` int `;` int).get(1)))
+    println(engine.eval("int=>nat=>int=>vertex", bindings(graph.model)))
+  }
 
 }

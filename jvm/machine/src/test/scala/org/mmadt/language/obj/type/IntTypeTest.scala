@@ -24,7 +24,7 @@ package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.LanguageException
 import org.mmadt.language.obj.Obj.intToInt
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
@@ -33,7 +33,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class IntTypeTest extends BaseInstTest(
-  testSet("int table test", List(NONE, MM, MMX),
+  testSet("int table test", List(MM, MMX),
     comment("canonical"),
     testing(int, __, int, "int"),
     testing(6, __, 6, "6"),

@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class GtInstTest extends BaseInstTest(
-  testSet("[gt] table test", List(NONE, MM, MMX),
+  testSet("[gt] table test", List(MM, MMX),
     comment("int"),
     testing(2, gt(1), true, "2 => [gt,1]"),
     testing(2.q(10), gt(1), true.q(10), "2{10}[gt,1]"),

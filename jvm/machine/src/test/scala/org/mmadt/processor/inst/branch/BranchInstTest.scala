@@ -28,7 +28,7 @@ import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.branch.BranchOp
 import org.mmadt.language.obj.op.map.PlusOp
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet, testing}
 import org.mmadt.storage.StorageFactory._
@@ -45,7 +45,7 @@ class BranchInstTest extends BaseInstTest(
     testing("a", -<(plus("a") `,` plus("b")) >-, str(str("aa"), str("ab")), "'a' => str-<(+'a',+'b')>-"),
     testing("a", id.-<(plus("a") `,` plus("b")).id.id.>-, str(str("aa"), str("ab")), "'a' => [id]-<(+'a',+'b')[id][id]>-"),
   ),
-  testSet("[branch] ,-lst", List(NONE,MMX),
+  testSet("[branch] ,-lst", List(MMX),
     testing(str, branch(str `,` str `,` str), str.id.q(3), "str[str,str,str]"),
     testing(int, branch(is(gt(10)) `,` is(gt(5)) `,` is(gt(0))), int.q(0, 3) <= int.branch(int.is(gt(10)) `,` int.is(gt(5)) `,` int.is(gt(0))),
       "int[[is>10],[is>5],[is>0]]"),
@@ -82,7 +82,7 @@ class BranchInstTest extends BaseInstTest(
     // comment("multi-return type"),
     // testing(int, int.plus(2).branch(plus(3)`,`as(str).plus("a")),__("int|str")<=int.plus(2).branch(plus(3)`,`as(str).plus("a")),"int => int[plus,2][[plus,3],str[plus,'a']]") // int{53}[plus,2][[plus,3],[as,str][plus,'a']]
   ),
-  testSet("[branch] ;-lst", List(NONE, MM),
+  testSet("[branch] ;-lst", List(MM),
     IGNORING(MM)(int.q(10), plus(0).branch(plus(1) `;` plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(plus(1) `;` plus(2)).is(gt(10)),
       "int{10}[plus,0][+1;+2][is>10]"),
     testing(1, int.plus(0).branch(plus(1) `;` plus(2)), 4,
@@ -100,7 +100,7 @@ class BranchInstTest extends BaseInstTest(
       (2 `;` plus(0).inst `;` 2 `;` plus(1).inst `;` 3 `;` plus(2).inst `;` 5)),
       "[1,2]+0[+1;+2][path]")
   ),
-  testSet("[branch] |-lst", List(NONE, MM),
+  testSet("[branch] |-lst", List(MM),
     testing("marko", branch(str.q(?) `|` int), "marko", "'marko'  => [str{?}|int]"),
     testing("marko", branch(real.q(?) `|` int), zeroObj, "'marko' => [real{?}|int]"),
     testing(str, branch(__ `|` __ `|` __), str, "str[_|_|_]"),
@@ -138,12 +138,12 @@ class BranchInstTest extends BaseInstTest(
     IGNORING(MM)(int(1, 2), int.q(2).plus(0).branch(plus(1) | plus(2)).path, strm(
       (1 `;` plus(0).inst `;` 1 `;` plus(1).inst `;` 2),
       (2 `;` plus(0).inst `;` 2 `;` plus(1).inst `;` 3)), "[1,2]=>int{2}[plus,0][+1|+2][path]")),
-  testSet("[branch] ,-rec", List(NONE, MM),
+  testSet("[branch] ,-rec", List(MM),
     testing(int(0), plus(1).branch((is(gt(1)) -> plus(10)) `_,`(is(gt(2)) -> plus(20)) `_,`(__ -> int.plus(30))), int(31)),
     testing(int(1, 2, 3), plus(0).branch((is(gt(1)) -> plus(10)) `_,`(is(gt(2)) -> plus(20)) `_,`(__ -> int.plus(30))), int(31, 12, 13, 32, 23, 33)),
     testing(int(5), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(6, 7)),
     testing(int(11), plus(0).branch(__ -> plus(1) `_,` __ -> plus(2) `_,` is(gt(10)) -> plus(6)), int(12, 13, 17))),
-  testSet("[branch] |-rec", List(NONE, MM),
+  testSet("[branch] |-rec", List( MM),
     IGNORING(MM)(int.q(10), plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).is(gt(10)), int.q(0, 10) <= int.q(10).plus(0).branch(int + 0 -> plus(1) `_|` int -> plus(2)).is(gt(10)), "int{10}=>[plus,0][int+0->+1|int->+2][is,[gt,10]]"),
     testing(int(1), int.plus(0).branch((int + 0 -> int.plus(1)) `_|`(int -> int.plus(2))), int(2)),
     testing(int(1), int.plus(0).branch(int.q(0) -> plus(1) `_|` int.q(0) -> plus(2) `_|` int + 0 -> int.plus(3)), int(4)),

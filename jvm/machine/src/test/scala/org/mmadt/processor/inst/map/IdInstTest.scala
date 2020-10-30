@@ -40,7 +40,7 @@ object IdInstTest {
   val IDRULE:Model = (ModelOp.TYPE -> (lst(__) -> lst(g = (",", List((__ `,`) <= '^(id `,`)))) `,`) `,`).asInstanceOf[Model]
 }
 class IdInstTest extends BaseInstTest(
-  testSet("[id] table test", List(NONE),
+  testSet("[id] table test", List.empty,
     comment("int"),
     testing(int(2), int.id, int(2), "2 => int[id]"),
     testing(int(-2), int.id, int(-2), "-2 => int[id]"),

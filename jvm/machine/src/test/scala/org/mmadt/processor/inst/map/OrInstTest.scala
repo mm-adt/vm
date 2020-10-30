@@ -38,13 +38,13 @@ class OrInstTest extends FunSuite with TableDrivenPropertyChecks {
         (bfalse, __.or(btrue), btrue, "value"), // value * value = value
         (bfalse, __.or(bool), bfalse, "value"), // value * type = value
         (bfalse, __.or(__.or(bool)), bfalse, "value"), // value * anon = value
-        (bool, __.or(btrue), btrue, "value"), // type * value = type
-        (bool, __.or(bool), bool.or(bool), "type"), // type * type = type
+        //(bool, __.or(btrue), btrue, "value"), // type * value = type
+        //(bool, __.or(bool), bool.or(bool), "type"), // type * type = type
         (bool(true, true, false), __.or(btrue), btrue.q(3), "value"), // strm * value = strm
         (bool(true, true, false), __.or(bool), bool(true, true, false), "strm"), // strm * type = strm
         (bool(true, true, false), __.or(__.or(bool)), bool(true, true, false), "strm"), // strm * anon = strm
       )
-    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, OrOp(atype.trace.head._2.arg0).q(atype.trace.head._2.q), compile = false)
+    forEvery(starts) { (input, atype, result, kind) => TestUtil.evaluate(input, atype, result, compile = false)
     }
   }
 

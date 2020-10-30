@@ -34,7 +34,7 @@ import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory.{real, _}
 
 class SplitInstTest extends BaseInstTest(
-  testSet("[split] lst table test", List(NONE, MM, MMX),
+  testSet("[split] lst table test", List( MM, MMX),
     testing(lst, zero, lst(), "lst => [zero]"),
     testing(lst(), is(eqs(lst().zero)), lst(), "() => [is,[eq,[zero]]]"),
     testing(lst(), zero, lst(), "() => [zero]"),
@@ -57,11 +57,11 @@ class SplitInstTest extends BaseInstTest(
       (int `;` int `;` int `;` int).to('x).split(get(0, int) `,` get(1, int)).put(from('x).get(2, int), from('x).get(3, int)),
       (1 `,` 2 `,` 4),
       "(1;2;3;4)<x>-<(.0,.1)[put,x.2,x.3]"),
-  ), testSet("[split] ;-lst table test", List(NONE, MM, MMX),
+  ), testSet("[split] ;-lst table test", List(MM, MMX),
     testing(1, int.-<(int `;` int), 1 `;` 1, "1=>int-<(int;int)"),
     testing(2.q(2), int.q(2).-<(int `;` int.is(gt(10))), (2 `;` zeroObj).q(2), "2{2} => int{2}-<(int;int[is>10])"),
     testing(2, int.-<(int `;` int.is(gt(10))), 2 `;` zeroObj, "2 => int-<(int;int[is>10])"),
-  ), testSet("[split] |-lst table test", List(NONE, MM),
+  ), testSet("[split] |-lst table test", List(MM),
     testing(int(1, 100), -<(int | int) >-, int(int(1), int(100)), "[1,100]-<(int|int)>-"),
     testing(int(1, 100), -<(int.q(?) | int) >-, int(int(1), int(100)), "[1,100]-<(int{?}|int)>-"),
     testing(int(1, 100), -<(int `,` int) >-, int(1, 1, 100, 100), "[1,100]-<(int,int)>-"),
@@ -77,7 +77,7 @@ class SplitInstTest extends BaseInstTest(
     testing(4.q(2), int.q(2).-<(int | int.is(gt(10))), (4 | zeroObj).q(2), "4{2} => int{2}-<(int|int[is>10])"),
     testing(2, int.-<((int | int.is(gt(11))) | int.is(gt(10))), (2 | zeroObj | zeroObj), "2 => int-<(int|int[is>11])"),
   ),
-  testSet("[split] |-rec table test", List(NONE, MM, MMX),
+  testSet("[split] |-rec table test", List(MM, MMX),
     testing(0, plus(1).-<(int.is(int.gt(2)) -> int.mult(3) |
       int -> int.mult(4)) >-, 4, "0[plus,1]-<(int[is>2] -> int[mult,3] | int -> int[mult,4])>-"),
     IGNORING("eval-6")(0, int.plus(39).-<(int.is(int.gt(40)) -> int.plus(1) |
@@ -102,7 +102,7 @@ class SplitInstTest extends BaseInstTest(
         (is(eqs(1.0)) -> real.from('y)) |
           (is(eqs(2.0)) -> real.from('x))).>-.plus(real.from('y)), real(2.0, 3.0, 3.0)),
   ),
-  testSet("[split] ,-rec table test", List(NONE, MM, MMX),
+  testSet("[split] ,-rec table test", List( MM, MMX),
     testing(0, plus(1).-<(int.is(int.gt(2)) -> int.mult(3) `_,` int -> int.mult(4)) >-, 4),
     testing(0, plus(4).-<(
       (int.is(int.gt(2)) -> int.mult(3)) `,`

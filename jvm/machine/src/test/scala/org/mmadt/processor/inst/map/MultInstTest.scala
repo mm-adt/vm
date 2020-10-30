@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory._
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class MultInstTest extends BaseInstTest(
-  testSet("[mult] table test", List(NONE, MM, MMX),
+  testSet("[mult] table test", List(MM, MMX),
     comment("int"),
     testing(2, mult(2), 4),
     testing(2.q(10), int.q(10).mult(2), 4.q(10)),
