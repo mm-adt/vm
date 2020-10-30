@@ -178,7 +178,7 @@ class ObjGraphTest extends FunSuite {
   test("type constructions with path counts") {
     val graph = ObjGraph.create(storage.model('digraph))
     println(graph.paths(8, 'vertex).toList)
-    assertResult(4)(graph.paths(8, 'vertex).toList.size)
+    assertResult(2)(graph.paths(8, 'vertex).toList.size)
   }
 
   test("dependent sum construction w/ custom types") {

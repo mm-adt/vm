@@ -25,7 +25,7 @@ package org.mmadt.processor.inst.map
 import org.mmadt.language.obj.Int
 import org.mmadt.language.obj.Obj.{intToInt, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__.last
-import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
 import org.mmadt.storage.StorageFactory.{int, lst, rec, str}
@@ -34,7 +34,7 @@ import org.mmadt.storage.StorageFactory.{int, lst, rec, str}
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
 class LastInstTest extends BaseInstTest(
-  testSet("[last] table test", List( MM, MMX),
+  testSet("[last] table test", List(MM, MMX),
     comment(";-lst"),
     testing(1 `;` 2 `;` 3, lst.last, 3, "(1;2;3) => lst[last]"),
     testing(1 `;` 2 `;` 3, last, 3, "(1;2;3)[last]"),

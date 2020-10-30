@@ -145,6 +145,7 @@ object Converters {
       .map(b => (b.head, b.last))
       .combinations(source.size)
       .toStream
+      .filter(x => x.size >= brec.gmap.count(x => x._2.q._1.g > 0))
       .distinct
       .map(x => source.clone(name = brec.name, g = (brec.gsep, x)))
       .filter(x => x.gmap.size >= brec.gmap.count(x => x._2.q._1.g > 0))

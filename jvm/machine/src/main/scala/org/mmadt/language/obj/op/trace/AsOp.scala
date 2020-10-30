@@ -22,19 +22,17 @@
 
 package org.mmadt.language.obj.op.trace
 
-import java.lang.{Boolean => JBoolean, Double => JDouble, Long => JLong}
-
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map.WalkOp
-import org.mmadt.language.obj.op.trace.AsOp.autoAsType
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
+import org.mmadt.storage.obj.graph.Converters
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -63,9 +61,9 @@ object AsOp extends Func[Obj, Obj] {
     if (source.name.equals(target.name)) {
       source match {
         case alst:LstValue[Obj] if !Lst.exactTest(alst, target) =>
-        // case arec:RecValue[Obj, Obj] if !Rec.test(arec, target.asInstanceOf[Rec[Obj, Obj]]) =>
         case _ => return source
       }
+
     }
     if (!target.alive) return zeroObj
     if (!source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
@@ -100,52 +98,18 @@ object AsOp extends Func[Obj, Obj] {
   def objConverter(source:Obj, target:Obj):Obj = {
     val rtarget = Obj.resolveToken(source, target)
     target.trace.reconstruct[Obj](source match {
-      case abool:Bool => boolConverter(abool, rtarget)
-      case aint:Int => intConverter(aint, rtarget)
-      case areal:Real => realConverter(areal, rtarget)
-      case astr:Str => strConverter(astr, rtarget)
       case alst:Lst[Obj] => lstConverter(alst, rtarget)
       case arec:Rec[Obj, Obj] => recConverter(arec, rtarget)
+      case _:Value[Obj] => Converters.objConverter(source, rtarget.domainObj).headOption.getOrElse(throw LanguageException.typingError(source, asType(rtarget.domainObj)))
+      case _ => Converters.objConverter(source, rtarget).headOption.getOrElse(throw LanguageException.typingError(source, asType(rtarget)))
     })
-  }
-
-  private def boolConverter(source:Bool, target:Obj):Obj = target.domain match {
-    case _:__ => source
-    case abool:BoolType => bool(name = abool.name, g = source.g, via = source.via)
-    case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
-    case _ => throw LanguageException.typingError(source, asType(target))
-  }
-
-  private def intConverter(source:Int, target:Obj):Obj = target.domain match {
-    case _:__ => source
-    case aint:IntType => int(name = aint.name, g = source.g, via = source.via)
-    case areal:RealType => real(name = areal.name, g = source.g, via = source.via)
-    case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
-    case _ => throw LanguageException.typingError(source, asType(target))
-  }
-
-  private def realConverter(source:Real, target:Obj):Obj = target.domain match {
-    case _:__ => source
-    case aint:IntType => int(name = aint.name, g = source.g.longValue(), via = source.via)
-    case areal:RealType => real(name = areal.name, g = source.g, via = source.via)
-    case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
-    case _ => throw LanguageException.typingError(source, asType(target))
-  }
-
-  private def strConverter(source:Str, target:Obj):Obj = target.domain match {
-    case _:__ => source
-    case abool:BoolType => bool(name = abool.name, g = JBoolean.valueOf(source.g), via = source.via)
-    case aint:IntType => int(name = aint.name, g = JLong.valueOf(source.g), via = source.via)
-    case areal:RealType => real(name = areal.name, g = JDouble.valueOf(source.g), via = source.via)
-    case astr:StrType => str(name = astr.name, g = source.g, via = source.via)
-    case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def lstConverter(source:Lst[Obj], target:Obj):Obj = target.domain match {
     case _:__ => source
     case astr:StrType => str(name = astr.name, g = source.toString, via = source.via)
     case _:Inst[Obj, Obj] => OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail)
-    case alst:LstType[Obj] if Lst.shapeTest(source, alst) =>
+    case alst:LstType[Obj] if Lst.shapeTest(source, alst) => //source.coercions2(alst).headOption.getOrElse(source.named(target.name)).reload
       val blst = lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a => a._1.coerce2(a._2))), via = source.via)
       if (Lst.exactTest(blst, alst.domainObj)) CombineOp.combineAlgorithm(blst, alst, withAs = false).reload else blst.reload
     case alst:LstType[Obj] if Lst.test(source, alst) => source.named(alst.name)
@@ -155,11 +119,7 @@ object AsOp extends Func[Obj, Obj] {
   private def recConverter(source:Rec[Obj, Obj], target:Obj):Obj = target.domain match {
     case _:__ => source
     case astr:StrType => str(name = astr.name, g = source.toString, via = source.via)
-    case arec:RecType[Obj, Obj] => val z = rec(name = arec.name, g = (arec.gsep,
-      source.gmap.flatMap(a => arec.gmap
-        .filter(b => a._1.test(b._1))
-        .map(b => (a._1.coerce2(b._1), a._2.coerce(b._2))))), via = source.via)
-      if (z.gmap.size < arec.gmap.count(x => x._2.q._1.g > 0)) throw LanguageException.typingError(source, asType(target)) else z
+    case arec:Rec[Obj, Obj] => source.coercions2(arec).headOption.getOrElse(source.named(target.name))
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 }

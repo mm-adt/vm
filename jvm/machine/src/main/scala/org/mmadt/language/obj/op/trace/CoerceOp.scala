@@ -45,7 +45,7 @@ object CoerceOp extends Func[Obj, Obj] {
   def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.coerce, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = inst.arg0[Obj] match {
     case atype:Type[Obj] if start.model == NONE => atype.rangeObj.via(start,inst)
-    case atype:Type[Obj] => atype.trace.reconstruct[Obj](start.coerce2(atype.domainObj)).coerce2(atype.rangeObj)
+    case atype:Type[Obj] => start.coerce2(atype.domainObj).compute(atype,withAs=false).coerce2(atype.rangeObj)
     case _:Value[Obj] => throw LanguageException.unsupportedInstType(start, inst)
   }
 }
