@@ -50,7 +50,7 @@ object Converters {
       case arec:Rec[Obj, Obj] => recConverter(arec, target)
       case _:__ => Stream(source)
       case _ => Stream(source) // strm weirdness
-    }).filter(_.alive) //.map(x => target.trace.reconstruct[Obj](x))
+    }).filter(_.alive) // .map(x => x.update(source.model)) //.map(x => target.trace.reconstruct[Obj](x))
   }
 
   private def boolConverter(source:BoolValue, target:Obj):Obj = target match {
@@ -132,7 +132,7 @@ object Converters {
         if (source.glist == x) source
         else source.combine(source.clone(_ => x))
       })
-      .map(x => x.named(blst.name))
+      .map(x => x.named(blst.name).reload)
     case _ => Stream.empty
   }
 

@@ -69,7 +69,6 @@ object AsOp extends Func[Obj, Obj] {
     if (!source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined) return source
     LanguageException.testTypeInModel(source, asType(target))
     source match {
-      // case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => target.trace.reconstruct(source, target.name)
       case astrm:Strm[Obj] => astrm(src => AsOp.autoAsType(src, target, domain)).named(target.name)
       case _:Value[_] => internalConvertAs(source, target).hardQ(source.q)
       case _:Type[_] => if (domain) target.update(source.model) else target <= source
@@ -77,10 +76,10 @@ object AsOp extends Func[Obj, Obj] {
   }
 
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
-    val asObj:Obj = if (searchable(target)) WalkOp.walkSourceToTarget(source, target, targetName = true) else target
-    val dObj:Obj = pickMapping(source, asObj).named(asObj.name)
-    val rObj:Obj = if (searchable(asObj.range) && asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined) // source.model.og.V().has(CTYPE,NAME,asObj.range.name).hasNext
-      pickMapping(dObj, asObj.range.named(target.name)) else dObj
+    val asObj:Obj = WalkOp.walkSourceToTarget(source, target, targetName = true)
+    val dObj:Obj = pickMapping(source, asObj)
+    val rObj:Obj = if (asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined) // source.model.og.V().has(CTYPE,NAME,asObj.range.name).hasNext
+      pickMapping(dObj, asObj.range) else dObj
     if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
     rObj.named(asObj.name)
   }
@@ -89,21 +88,19 @@ object AsOp extends Func[Obj, Obj] {
 
   private def pickMapping(source:Obj, target:Obj):Obj = {
     if (target.isInstanceOf[Value[Obj]]) source ~~> target
-    else if (source.isInstanceOf[Type[_]]) target.update(source.model)
-    else objConverter(source, Option(source.model).filter(_ => searchable(target)).flatMap(model => model.search[Obj](source, target).headOption).getOrElse(target))
+    else if (source.isInstanceOf[Type[_]]) target
+    else {
+      val rtarget = Obj.resolveToken(source, target)
+      target.trace.reconstruct[Obj](source match {
+        case alst:LstValue[Obj] => lstConverter(alst, rtarget)
+        case _:Value[Obj] => Converters.objConverter(source, rtarget.domainObj).headOption.getOrElse(source)
+        case _ => Converters.objConverter(source, rtarget).headOption.getOrElse(source)
+      })
+    }
   }
 
   /////// CONVERTERS
 
-  def objConverter(source:Obj, target:Obj):Obj = {
-    val rtarget = Obj.resolveToken(source, target)
-    target.trace.reconstruct[Obj](source match {
-      case alst:Lst[Obj] => lstConverter(alst, rtarget)
-      case arec:Rec[Obj, Obj] => recConverter(arec, rtarget)
-      case _:Value[Obj] => Converters.objConverter(source, rtarget.domainObj).headOption.getOrElse(throw LanguageException.typingError(source, asType(rtarget.domainObj)))
-      case _ => Converters.objConverter(source, rtarget).headOption.getOrElse(throw LanguageException.typingError(source, asType(rtarget)))
-    })
-  }
 
   private def lstConverter(source:Lst[Obj], target:Obj):Obj = target.domain match {
     case _:__ => source
@@ -113,13 +110,6 @@ object AsOp extends Func[Obj, Obj] {
       val blst = lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a => a._1.coerce(a._2))), via = source.via)
       if (Lst.exactTest(blst, alst.domainObj)) CombineOp.combineAlgorithm(blst, alst, withAs = false).reload else blst.reload
     case alst:LstType[Obj] if Lst.test(source, alst) => source.named(alst.name)
-    case _ => throw LanguageException.typingError(source, asType(target))
-  }
-
-  private def recConverter(source:Rec[Obj, Obj], target:Obj):Obj = target.domain match {
-    case _:__ => source
-    case astr:StrType => str(name = astr.name, g = source.toString, via = source.via)
-    case arec:Rec[Obj, Obj] => source.coercions(arec).headOption.getOrElse(source.named(target.name))
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 }

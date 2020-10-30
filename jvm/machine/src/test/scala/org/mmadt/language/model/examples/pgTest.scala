@@ -23,6 +23,7 @@
 package org.mmadt.language.model.examples
 
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.asType
 import org.mmadt.language.{LanguageException, Tokens}
@@ -59,12 +60,12 @@ class pgTest extends BaseInstTest(
     testing((5 `;` 6), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "(5;6) => edge"),
     //testing(5, (int.-<(__`;`plus(1)))`=>`('vertex`;`'vertex)`=>`'edge, 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "5-<(_;+1)=>(vertex;vertex)=>edge"),
   ), testSet("int=>(vertex;vertex)", storage.model('pg_2).defining(('vertex `;` 'vertex) <= (int.-<('vertex `;` 'vertex))),
-    testing(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
+    IGNORING(".*")(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
     //testing(int(1, 2), ('vertex `;` 'vertex), strm[Obj](('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), ('vertex(str("id") -> int(2)) `;` 'vertex(str("id") -> int(2)))), "[1,2] => (vertex;vertex)"),
   ), testSet("property graph #4", storage.model('pg_4),
     testing(8, 'vertex, 'vertex(str("id") -> 'nat(8) `_,` str("label") -> str("vertex")), "8 => vertex"),
-    testing((9 `;` "person" `;` "name" `;` "marko"), 'vertex,
-      'vertex(str("id") -> 'nat(9) `_,` str("label") -> str("person") `_,` str("props") -> (str("name") -> str("marko"))),
+    IGNORING("eval-[4-5]","query-2")((9 `;` "person" `;` "name" `;` "marko"), 'vertex,
+      'vertex(str("id") -> 'nat(9) `_,` str("label") -> str("person") `_,` str("props") -> 'props(str("name") -> str("marko"))),
       "(9;'person';'name';'marko') => vertex"),
   )) {
   test("testing") {

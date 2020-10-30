@@ -46,7 +46,7 @@ class mmlangScriptEngineTest extends FunSuite {
 
   test("pairs") {
     engine.eval(":[model,pg_2][define,(vertex;vertex)<=int-<(vertex;vertex)]")
-    println(engine.eval("1 => (vertex;vertex)"))
+  //  println(engine.eval("1 => (vertex;vertex)"))
   }
 
   test("test check") {
