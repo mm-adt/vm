@@ -34,7 +34,7 @@ import org.mmadt.processor.inst.TestSetUtil._
 import org.mmadt.storage.StorageFactory.{real, _}
 
 class SplitInstTest extends BaseInstTest(
-  testSet("[split] lst table test", List( MM, MMX),
+  testSet("[split] lst table test", List(MM, MMX),
     testing(lst, zero, lst(), "lst => [zero]"),
     testing(lst(), is(eqs(lst().zero)), lst(), "() => [is,[eq,[zero]]]"),
     testing(lst(), zero, lst(), "() => [zero]"),
@@ -102,7 +102,7 @@ class SplitInstTest extends BaseInstTest(
         (is(eqs(1.0)) -> real.from('y)) |
           (is(eqs(2.0)) -> real.from('x))).>-.plus(real.from('y)), real(2.0, 3.0, 3.0)),
   ),
-  testSet("[split] ,-rec table test", List( MM, MMX),
+  testSet("[split] ,-rec table test", List(MM, MMX),
     testing(0, plus(1).-<(int.is(int.gt(2)) -> int.mult(3) `_,` int -> int.mult(4)) >-, 4),
     testing(0, plus(4).-<(
       (int.is(int.gt(2)) -> int.mult(3)) `,`

@@ -86,7 +86,7 @@ object Lst {
       case _ => false
     }
   }
-  def shapeTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.coerce2(pair._2).alive)
+  def shapeTest(alst:Lst[Obj], blst:Lst[Obj]):Boolean = Poly.sameSep(alst, blst) && alst.size == blst.size && alst.glist.zip(blst.glist).forall(pair => pair._1.coerce(pair._2).alive)
   def exactTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
     case blst:Lst[Obj] => blst.ctype || (Poly.sameSep(alst, blst) && alst.size == blst.size &&
       alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || (p._1.name.equals(p._2.name) && p._1.test(p._2))))

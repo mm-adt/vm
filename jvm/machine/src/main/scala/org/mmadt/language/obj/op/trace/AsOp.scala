@@ -110,7 +110,7 @@ object AsOp extends Func[Obj, Obj] {
     case astr:StrType => str(name = astr.name, g = source.toString, via = source.via)
     case _:Inst[Obj, Obj] => OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail)
     case alst:LstType[Obj] if Lst.shapeTest(source, alst) => //source.coercions2(alst).headOption.getOrElse(source.named(target.name)).reload
-      val blst = lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a => a._1.coerce2(a._2))), via = source.via)
+      val blst = lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a => a._1.coerce(a._2))), via = source.via)
       if (Lst.exactTest(blst, alst.domainObj)) CombineOp.combineAlgorithm(blst, alst, withAs = false).reload else blst.reload
     case alst:LstType[Obj] if Lst.test(source, alst) => source.named(alst.name)
     case _ => throw LanguageException.typingError(source, asType(target))
@@ -119,7 +119,7 @@ object AsOp extends Func[Obj, Obj] {
   private def recConverter(source:Rec[Obj, Obj], target:Obj):Obj = target.domain match {
     case _:__ => source
     case astr:StrType => str(name = astr.name, g = source.toString, via = source.via)
-    case arec:Rec[Obj, Obj] => source.coercions2(arec).headOption.getOrElse(source.named(target.name))
+    case arec:Rec[Obj, Obj] => source.coercions(arec).headOption.getOrElse(source.named(target.name))
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 }

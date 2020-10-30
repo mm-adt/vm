@@ -65,10 +65,10 @@ object WalkInstTest {
 
 class WalkInstTest extends BaseInstTest(
   testSet("[walk] table test", List(MM).map(m => m.defining('nat <= int.is(gt(0)))),
-    comment("int~>int"),
-    testing(int, int.walk(int), lst(lst(int)) <= int.walk(int), "int => int[walk,int]"),
-    testing(2, int.walk(int), lst(lst(int)) <= 2.walk(int), "2 => int[walk,int]"),
-    comment("int~>nat"),
+    //comment("int~>int"),
+    //testing(int, int.walk(int), lst(lst(int)) <= int.walk(int), "int => int[walk,int]"),
+    //testing(2, int.walk(int), lst(lst(int)) <= 2.walk(int), "2 => int[walk,int]"),
+    //comment("int~>nat"),
     //testing(int, int.walk('nat), lst(int`;`'nat) <= int.walk('nat), "int => int[walk,nat]"),
     /*testing(int, int.walk('nat), lst <= int.walk('nat), "int => int[walk,nat]"),
     testing(int, walk('nat), lst <= int.walk('nat), "int => [walk,nat]"),

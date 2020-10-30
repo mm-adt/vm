@@ -123,7 +123,7 @@ object Converters {
     case _:StrType => Stream(str(name = target.name, g = source.toString, via = source.via))
     case _:Inst[Obj, Obj] => Stream(OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail))
     //case blst:Lst[_] if blst.ctype => Stream(source.named(blst.name))
-    case blst:Lst[Obj] if lstTest(source, blst) => source.glist.zip(blst.glist).flatMap(pair => pair._1.coercions2(pair._2))
+    case blst:Lst[Obj] if lstTest(source, blst) => source.glist.zip(blst.glist).flatMap(pair => pair._1.coercions(pair._2))
       .foldLeft(List.empty[Obj])((a, b) => a :+ b)
       .combinations(source.size).toStream.distinct
       .filter(x => x.size == source.size)
@@ -141,7 +141,7 @@ object Converters {
     case bstr:StrType => Stream(str(name = bstr.name, g = source.toString, via = source.via))
     case brec:Rec[_, _] if brec.ctype => Stream(source.named(brec.name))
     case brec:Rec[Obj, Obj] => source.gmap.flatMap(a => brec.gmap
-      .flatMap(b => cartesianProduct(List(a._1.coercions2(b._1), a._2.coercions2(b._2)))))
+      .flatMap(b => cartesianProduct(List(a._1.coercions(b._1), a._2.coercions(b._2)))))
       .map(b => (b.head, b.last))
       .combinations(source.size)
       .toStream

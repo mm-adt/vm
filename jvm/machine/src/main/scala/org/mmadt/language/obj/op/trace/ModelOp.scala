@@ -36,7 +36,7 @@ import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{lst, rec, str}
 import org.mmadt.storage.model
-import org.mmadt.storage.obj.graph.{ObjGraph, ObjGraph2}
+import org.mmadt.storage.obj.graph.ObjGraph
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -93,7 +93,6 @@ object ModelOp extends Func[Obj, Obj] {
   @inline implicit def modelToRichModel(ground:Model):RichModel = new RichModel(ground)
   class RichModel(val model:Model) {
     lazy val graph:ObjGraph = ObjGraph.create(model)
-    lazy val graph2:ObjGraph2 = ObjGraph2.create(model)
     lazy val coreName:String = model.name.split(MODEL_EXTENSION)(0)
 
     lazy val og:GraphTraversalSource = model.graph.g

@@ -140,9 +140,8 @@ trait Obj
     if (withAs) AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target) else Obj.resolveInternal[E](this, target)
   final def ~~>[E <: Obj](target:E):E = Some(Obj.resolveArg[this.type, E](this, target)).map(x => if (this.model.vars(target.name).isDefined) x else x.named(target.name)).get
   final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
-  final def coerce[E <: Obj](target:E):E = this.model.graph.coerce(this, target).headOption.getOrElse(zeroObj).asInstanceOf[E]
-  final def coerce2[E <: Obj](target:E):E = this.coercions2(target).headOption.getOrElse(zeroObj).asInstanceOf[E]
-  final def coercions2[E <: Obj](target:E):Stream[E] = this.model.graph2.coerce(this, target).asInstanceOf[Stream[E]]
+  final def coerce[E <: Obj](target:E):E = this.coercions(target).headOption.getOrElse(zeroObj).asInstanceOf[E]
+  final def coercions[E <: Obj](target:E):Stream[E] = this.model.graph.coerce(this, target).asInstanceOf[Stream[E]]
 
   // lst fluent methods
   def `|`:Lst[this.type] = lst(g = (Tokens.`|`, List(this)))

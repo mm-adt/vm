@@ -22,23 +22,24 @@
 
 package org.mmadt.storage.obj.graph
 
+import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
-import org.apache.tinkerpop.gremlin.process.traversal.{Path, Traverser}
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.`type`.{LstType, RecType, Type, __}
+import org.mmadt.language.obj.Obj._
+import org.mmadt.language.obj._
+import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.op.trace.{AsOp, ModelOp, NoOp}
+import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.{Obj, _}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, strm, zeroObj}
-import org.mmadt.storage.obj.graph.ObjGraph._
+import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str, strm, zeroObj}
+import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}
 
 import scala.collection.JavaConverters
-import scala.collection.convert.ImplicitConversions.{`collection AsScalaIterable`, `iterator asScala`}
+import scala.collection.convert.ImplicitConversions.`iterator asScala`
 import scala.util.Try
 
 /**
@@ -73,190 +74,27 @@ object ObjGraph {
   }
 }
 class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
-  graph.asInstanceOf[TinkerGraph].createIndex(NAME, classOf[Vertex])
   val g:GraphTraversalSource = graph.traversal()
-  // load model into graph
   if (model.name.equals(NONE)) {
-    List(bool, int, real, str, lst, rec).foreach(c => this.createType(c))
+    List(bool, int, real, str, lst, rec).foreach(c => this.createObj(c))
   } else {
     Option(Option(model.g._2).getOrElse(NOROOT).fetchOrElse(ModelOp.TYPE, NOREC).g._2).getOrElse(NOMAP)
       .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
       .flatMap(x => x._2.glist.filter(y => y.root) :+ x._1) // ctype + token ctype
       .distinct
-      .foreach(c => this.createType(c.asInstanceOf[Type[Obj]]))
-    model.dtypes.foreach(d => this.createType(d))
+      .foreach(c => this.createObj(c.asInstanceOf[Type[Obj]]))
+    model.dtypes.foreach(d => this.createObj(d))
   }
-
-  def coerce(source:Obj, target:Obj):Stream[target.type] = {
-    Option(source match {
-      case _ if !source.alive || __.isAnon(target) || source.model.vars(target.name).isDefined => source
-      case _ if !target.alive => zeroObj
-      case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
-      case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => target.trace.reconstruct(source, target.name)
-      case _:Strm[Obj] => strm[target.type](coerce(source, target))
-      case alst:Lst[_] if Lst.exactTest(alst, target) => source
-      case _:Poly[_] => null
-      case _ if target.name.equals(model.coreName) => model
-      case _ if source.name.equals(target.name) => source
-      case _ => null
-    }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
-    // LanguageException.testTypeInModel(source, asType(target))
-    ////////////////////////////////////////////////////////////////
-
-    paths(asType(source), target).map(path =>
-      path.last.rangeObj <= path.tail.dropRight(1).foldLeft(path.head.update(model))(
-        (a, b) => b match {
-          case _ if !b.alive || !a.alive => zeroObj
-          case inst:Inst[Obj, Obj] => inst.exec(a)
-          case _:Type[Obj] => a
-          case _:Value[Obj] => b
-        }))
-      .filter(_.alive)
-      .distinct
-      .flatMap(x => objMatch(source.update(model), x.domainObj).map(y => (x, y)))
-      .map(x => (x._1, Try[Obj](x._2.compute(x._1) /*, withAs = false).hardQ(target.q).named(target.name)*/).getOrElse(zeroObj))) // TODO: get rid of withAs=true
-      .filter(_.alive)
-      .flatMap(x => objMatch(x._2, x._1.rangeObj).map(y => (x._1, y)))
-      .filter(x => x._2.hardQ(x._1.rangeObj.q).test(x._1.rangeObj))
-      .map(x => x._2)
-      .filter(_.alive)
-      .asInstanceOf[Stream[target.type]]
-  }
-
-  def exists(aobj:Obj):Boolean = g.V(aobj).hasNext
-
-  def paths(source:Obj, target:Obj):Stream[List[Obj]] = {
-    val reorganizeTraversal:java.util.function.Consumer[Traverser[Vertex]] =
-      (t:Traverser[Vertex]) => {
-        val sack = (t.get.asInstanceOf[(Vertex, Obj, Obj)]._2, t.get.asInstanceOf[(Vertex, Obj, Obj)]._3)
-        t.asAdmin().sack(sack)
-        t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj, Obj)]._1)
-      }
-    val sroot:Obj = source.rangeObj
-    val troot:Obj = target.rangeObj
-    val anonStart:Boolean = __.isAnonRootAlive(sroot)
-    /////////////////////////////////////////////////
-    JavaConverters.asScalaIterator(
-      g.withSack((zeroObj, zeroObj)) // sack(source morph,target morph)
-        .R.inject(createObj(target))
-        .sideEffect((t:Traverser[Vertex]) => t.sack[(Stream[Obj], Stream[Obj])]())
-        ///////////////////////////////
-        // BRANCH SOURCE PROJECTIONS //
-        ///////////////////////////////
-        .flatMap((t:Traverser[Vertex]) => {
-          val sourceSplits = objMatch(sroot, t.get.obj)
-          val targetSplits = objMatch(t.get.obj, troot)
-          JavaConverters.asJavaIterator((
-            if (targetSplits.isEmpty) sourceSplits.map(x => (t.get(), x, zeroObj))
-            else sourceSplits.flatMap(x => targetSplits.map(y => (t.get(), x, y)))).iterator).asInstanceOf[java.util.Iterator[Vertex]]
-        })
-        .sideEffect(reorganizeTraversal)
-        ////////////////////////////////
-        .filter((t:Traverser[Vertex]) => (source == __) || t.sack[(Obj, Obj)]._1.alive) // all paths or sourced paths
-        .until((t:Traverser[Vertex]) =>
-          (target != __ && !__.isTokenRoot(t.get().obj) && t.sack[(Obj, Obj)]._2.alive) || // all targeted paths reachable
-            (target == __ && (!t.get().edges(Direction.OUT).hasNext || !t.path().isSimple))) // all paths reachable (not typical -- more for testing)
-        .repeat(___ // this is where various cost/sort algorithms will prune expensive paths
-          .simplePath() // no cycles
-          .outE() // instruction edge
-          .inV() // range obj
-          ///////////////////////////////
-          // BRANCH TARGET PROJECTIONS //
-          ///////////////////////////////
-          .flatMap((t:Traverser[Vertex]) => {
-            val sourceSplit = t.sack[(Obj, Obj)]._1
-            val targetSplits = objMatch(t.get.obj, troot)
-            JavaConverters.asJavaIterator(
-              if (targetSplits.isEmpty) Iterator((t.get, sourceSplit, zeroObj))
-              else targetSplits.map(x => (t.get, sourceSplit, x)).iterator).asInstanceOf[java.util.Iterator[Vertex]]
-          })
-          .sideEffect(reorganizeTraversal))
-        ///////////////////////////////
-        .path() // the path is the program
-        .by((t:Any) => t match {
-          case e:Element => e.value[Obj](OBJ) // the path elements are instructions and types
-          case _ => __ // avoid side-effect sack objs in the path
-        }).map((t:Traverser[Path]) => (t.get().objects().asInstanceOf[java.util.List[Obj]].toList, t.sack[(Obj, Obj)])))
-      .toStream
-      // manipulate head and tail types with computable paths
-      // TODO: reconstruct arguments to all instructions so that a coercion maintains to complete bytecode specification
-      .filter(x => x._1.forall(_.alive)) // if a path leds to zero the entire computation is dead (monoidal product on 0)
-      .map(x => (x._1.filter(y => y != NoOp()), x._2)) // remove noops which are used to connect poly tokens to their canonical form
-      .map(x => (if (!anonStart && x._1.size > 1) x._1.head +: x._2._1 +: x._1.tail else x._1, x._2)) // append the source morph sack
-      .map(x => (if (anonStart || x._1.head == sroot) x._1 else (sroot +: x._1), x._2)) // append the source range
-      .map(x => if (x._1.last.isInstanceOf[Poly[Obj]]) x._1.dropRight(1) :+ x._2._2 :+ x._1.last else x._1 :+ x._2._2) // append the target morph sack
-      .map(x => x.filter(y => !__.isAnonRootAlive(y)))
-      .map(x => x.foldLeft(List[Obj]()) {
-        case (alist, e) if alist.isEmpty || alist.last != e => alist ++ List(e)
-        case (alist, _) => alist
-      }) // remove repeated juxtaposed types
-      .distinct // after pruning the path, there may be repeats
-  }
-  ///////////////////////////////////////////////////
-
-  def objMatch(source:Obj, target:Obj):Stream[Obj] = {
-    val rtarget = Obj.resolveToken(source, target)
-    (source match {
-      case _ if __.isAnon(rtarget) => Stream(source)
-      case _:Poly[Obj] => source match {
-        case _ if source.named && source.name.equals(rtarget.name) => Stream(source)
-        case alst:Lst[Obj] => rtarget match {
-          case blst:LstType[Obj] if blst.ctype => Stream(alst.named(blst.name))
-          case blst:Lst[Obj] if Lst.exactTest(alst, blst) => Stream(alst)
-          case blst:Lst[Obj] if alst.gsep == blst.gsep && alst.size == blst.size =>
-            alst.update(model).glist.zip(blst.glist).flatMap(pair => coerce(pair._1, pair._2).flatten(pair => Iterator(pair)))
-              .foldLeft(List.empty[Obj])((a, b) => a :+ b)
-              .combinations(alst.size).toList.distinct
-              .filter(x => x.size == alst.size)
-              .filter(x => x.forall(_.alive))
-              .map(x => alst.update(model).clone(_ => x))
-              .map(z =>
-                if (z.glist.zip(alst.glist).forall(pair => pair._1 == pair._2)) __
-                else __.combine(z).inst).toStream
-          case _ => Stream(zeroObj)
-        }
-        case arec:Rec[Obj, Obj] => rtarget match {
-          case brec:RecType[Obj, Obj] if brec.ctype => Stream(arec.named(brec.name))
-          case brec:Rec[Obj, Obj] =>
-            val z = arec.clone(name = brec.name, g = (brec.gsep,
-              arec.update(model).gmap.flatMap(a => brec.gmap
-                .filter(b => a._1.test(b._1))
-                .map(b => (a._1.coerce(b._1), a._2.coerce(b._2)))
-                .filter(b => b._1.alive && b._2.alive))))
-            if (z.gmap.size < brec.gmap.count(x => x._2.q._1.g > 0)) Stream(zeroObj) else Stream(z)
-          case _ => Stream(zeroObj)
-        }
-      }
-      case _ if source.name.equals(rtarget.name) => Stream(source)
-      case _:Value[Obj] if model.typeExists(rtarget) => Stream(Try[Obj](AsOp.objConverter(source, rtarget)).getOrElse(zeroObj))
-      case _ => Stream(zeroObj)
-    }).filter(_.alive).map(o => o.hardQ(source.q).named(rtarget.name))
-  }
-
   ///////////// CONSTRUCT GRAPH /////////////
-
-  def createType(atype:Type[Obj]):Unit = {
-    // ...---[inst]--->atype---[noop]--->token---[noop]--->roottype
-    val target:Vertex = createObj(atype)
-    if (!atype.root) {
-      g.V(target).outE(Tokens.noop).has(OBJ, NoOp()).where(___.inV().hasId(atype.rangeObj)).tryNext().orElseGet(() => {
-        val rangeV = bindObj(atype.rangeObj)
-        val edge = target.addEdge(Tokens.noop, rangeV, OBJ, NoOp())
-        if (__.isTokenRoot(rangeV.obj))
-          g.C(rangeV.obj.name).map((t:Traverser[Vertex]) => rangeV.addEdge(Tokens.noop, t.get(), OBJ, NoOp())).iterate()
-        edge
-      })
-    }
-  }
-
-  private def createObj(aobj:Obj):Vertex = {
+  def createObj(aobj:Obj):Vertex = {
     // baobj---[inst]--->aobj
     val target:Vertex = bindObj(aobj)
     if (!aobj.root) {
       g.V(target).inE(aobj.via._2.op).has(OBJ, aobj.via._2).where(___.outV().hasId(aobj.via._1)).tryNext().orElseGet(() => {
         createObj(aobj.via._1).addEdge(aobj.via._2.op, target, OBJ, aobj.via._2)
       })
-    }
+      target.addEdge(Tokens.noop, g.R.has(NAME, aobj.rangeObj.name).tryNext().orElseGet(() => bindObj(aobj.rangeObj)), OBJ, NoOp())
+    } else bindObj(toBaseName(aobj.rangeObj)).addEdge(Tokens.noop, target, OBJ, NoOp())
     target
   }
 
@@ -274,7 +112,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
             ROOT, Boolean.box(aobj.root))
         case atype:Type[_] =>
           graph.addVertex(
-            T.label, if (aobj.root && !__.isTokenRoot(aobj)) CTYPE else TYPE,
+            T.label, if (aobj.root) CTYPE else TYPE,
             T.id, atype,
             NAME, aobj.name,
             OBJ, atype,
@@ -282,5 +120,101 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
             ROOT, Boolean.box(aobj.root))
       }
     })
+  }
+
+  def exists(aobj:Obj):Boolean = g.V(aobj).hasNext
+  def paths(source:Obj, target:Obj):Stream[List[Obj]] = Stream.empty
+
+  def coerce(source:Obj, target:Obj):Stream[Obj] = {
+    Option(source match {
+      case _ if __.isAnon(target.domainObj) => target.trace.reconstruct(source, target.name)
+      case _ if !source.alive || source.model.vars(target.name).isDefined => source
+      case _ if !target.alive => zeroObj
+      case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
+      case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source // target.trace.reconstruct(source, target.name)
+      case _:Strm[Obj] => strm(coerce(source, target))
+      //case alst:Lst[_] if Lst.exactTest(alst, target) => source // TODO: just straight equals on the domain
+      case _:Lst[_] if target.isInstanceOf[Lst[_]] && target.asInstanceOf[Lst[_]].ctype => source.named(target.name)
+      case _:Poly[_] => null
+      case _ if target.name.equals(model.coreName) => model
+      case _:Value[_] if source.name.equals(target.domainObj.name) => source //target.trace.reconstruct(source, target.name)
+      case _:Type[_] if source.name.equals(target.domainObj.name) => target.trace.reconstruct(source, target.name)
+      case _ => null
+    }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
+    ///////////////////////////////////////////////////////////////
+    val sroot:Obj = asType(source)
+    val troot:Obj = bindObj(asType(target.domainObj)).obj
+    JavaConverters.asScalaIterator(
+      g.withSack(sroot)
+        .R
+        .has(CTYPE, NAME, sroot.name)
+        ///////// ALL MATCHING PERMUTATIONS OF DOMAIN /////////
+        .flatMap((t:Traverser[Vertex]) => JavaConverters.asJavaIterator(
+          Converters.objConverter(t.sack[Obj].update(model), t.get.obj).map(sack => (t.get, sack)).iterator)
+          .asInstanceOf[java.util.Iterator[Vertex]]) // hack on typing (necessary because TP3 doesn't have flatmap on traverser
+        .sideEffect((t:Traverser[Vertex]) => {
+          val sack = t.get.asInstanceOf[(Vertex, Obj)]._2
+          t.asAdmin().sack(sack)
+          t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj)]._1)
+        })
+        .until((t:Traverser[Vertex]) => t.get.obj.root && finalStructureTest(t.sack[Obj].rangeObj, troot.domainObj)) // this can also be emit() instead resolution ends after a full span of the obj graph
+        .repeat(___
+          .simplePath() // no cycles allowed
+          .outE()
+          .sideEffect((t:Traverser[Edge]) => t.sack(t.get.inst.exec(t.sack[Obj]))) // evaluate edge instruction
+          .filter((t:Traverser[_]) => t.sack[Obj] match { // filter out any {0} results (this should be handled internally by poly)
+            case apoly:Poly[Obj] => apoly.alive && apoly.glist.forall(_.alive)
+            case x => x.alive
+          })
+          .inV()
+          .sideEffect((t:Traverser[Vertex]) => {
+            val sack = t.sack[Obj]
+            if (!__.isAnonToken(t.get.obj.rangeObj) && !sack.isInstanceOf[Poly[_]])
+              t.sack(t.get.obj.rangeObj <= sack)
+            else
+              t.sack(sack.named(t.get.obj.name))
+          })) // name type accordingly
+        .sack[Obj]
+    ).toStream
+      .map(obj => target.trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
+      .map(obj => source match {
+        // if source was a value, compute the value against the derived type // TODO: this needs to do a recursive descent
+        case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj) match {
+          case arec:Rec[Obj, Obj] if obj.isInstanceOf[Rec[_, _]] => arec.clone(x => x.zip(obj.asInstanceOf[Rec[Obj, Obj]].gmap).map(pair => (pair._1._1.named(pair._2._1.name), pair._1._2.named(pair._2._2.name))))
+          case alst:Lst[Obj] if obj.isInstanceOf[Lst[_]] => alst.clone(x => x.zip(obj.asInstanceOf[Lst[Obj]].glist).map(pair => pair._1.named(pair._2.name)))
+          case x if !x.isInstanceOf[Poly[_]] => Converters.objConverter(x, obj.rangeObj).headOption.getOrElse(zeroObj)
+          case x => x
+        }
+        case _:Type[_] => obj
+      })
+      .filter(x => finalStructureTest(x.rangeObj, target.rangeObj))
+      .distinct
+  }
+
+  def finalStructureTest(a:Obj, b:Obj):Boolean = {
+    if (__.isAnon(b.domainObj)) return true
+    if (a.alive != b.alive || a.name != b.name) return false
+    val aobj:Obj = a
+    val bobj:Obj = Obj.resolveToken(__.update(model), b)
+    aobj match {
+      case alst:Lst[Obj] =>
+        bobj match {
+          case blst:Lst[Obj] =>
+            Poly.sameSep(alst, blst) &&
+              alst.size == blst.size &&
+              alst.glist.zip(blst.glist).forall(p => finalStructureTest(p._1, p._2))
+          case _ => false
+        }
+      case arec:Rec[Obj, Obj] =>
+        bobj match {
+          case brec:Rec[Obj, Obj] =>
+            Poly.sameSep(arec, brec) &&
+              brec.isEmpty == arec.isEmpty &&
+              arec.gmap.forall(p => qStar.equals(p.q) || brec.gmap.exists(q => finalStructureTest(p._1, q._1) && finalStructureTest(p._2, q._2)))
+          case _ => false
+        }
+      case _:Value[Obj] if bobj.isInstanceOf[Value[Obj]] => aobj.equals(bobj)
+      case _ => true
+    }
   }
 }
