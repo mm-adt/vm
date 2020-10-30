@@ -2,6 +2,6 @@ mmx:(
 'import' -> (mm -> ()),
 'type'   -> (
   bool   -> (bool<=str),
-  int    -> (int<=[real|str]),
-  real   -> (real<=[int|str]),
-  str    -> (str<=[bool|int|real|poly])))
+  int    -> (int<=real,int<=str),
+  real   -> (real<=int,real<=str),
+  str    -> (str<=bool,str<=int,str<=real,str<=lst,str<=rec)))

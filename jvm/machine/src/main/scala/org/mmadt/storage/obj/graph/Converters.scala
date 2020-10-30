@@ -29,7 +29,9 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.value.{BoolValue, IntValue, RealValue, StrValue}
-import org.mmadt.storage.StorageFactory.{bool, int, real, str}
+import org.mmadt.storage.StorageFactory.{bool, int, real, str, zeroObj}
+
+import scala.util.Try
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -55,66 +57,66 @@ object Converters {
 
   private def boolConverter(source:BoolValue, target:Obj):Obj = target match {
     case _:__ => source
-    case abool:BoolType => bool(name = abool.name, g = source.g, via = source.via)
-    case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
+    case _:BoolType => bool(name = target.name, g = source.g, via = source.via)
+    case _:StrType => str(name = target.name, g = source.g.toString, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def boolConverter(source:BoolType, target:Obj):Obj = target match {
     case _:__ => source
-    case abool:BoolType => bool.clone(name = abool.name, via = source.via)
-    case astr:StrType => str.clone(name = astr.name, via = source.via)
+    case _:BoolType => bool.clone(name = target.name, via = source.via)
+    case _:StrType => str.clone(name = target.name, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def intConverter(source:IntValue, target:Obj):Obj = target match {
     case _:__ => source
-    case aint:IntType => int(name = aint.name, g = source.g, via = source.via)
-    case areal:RealType => real(name = areal.name, g = source.g, via = source.via)
-    case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
+    case _:IntType => int(name = target.name, g = source.g, via = source.via)
+    case _:RealType => real(name = target.name, g = source.g, via = source.via)
+    case _:StrType => str(name = target.name, g = source.g.toString, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
 
   private def intConverter(source:IntType, target:Obj):Obj = target match {
     case _:__ => source
-    case aint:IntType => int.clone(name = aint.name, via = source.via)
-    case areal:RealType => real.clone(name = areal.name, via = source.via)
-    case astr:StrType => str.clone(name = astr.name, via = source.via)
+    case _:IntType => int.clone(name = target.name, via = source.via)
+    case _:RealType => real.clone(name = target.name, via = source.via)
+    case _:StrType => str.clone(name = target.name, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def realConverter(source:RealValue, target:Obj):Obj = target match {
     case _:__ => source
-    case aint:IntType => int(name = aint.name, g = source.g.longValue(), via = source.via)
-    case areal:RealType => real(name = areal.name, g = source.g, via = source.via)
-    case astr:StrType => str(name = astr.name, g = source.g.toString, via = source.via)
+    case _:IntType => int(name = target.name, g = source.g.longValue(), via = source.via)
+    case _:RealType => real(name = target.name, g = source.g, via = source.via)
+    case _:StrType => str(name = target.name, g = source.g.toString, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def realConverter(source:RealType, target:Obj):Obj = target match {
     case _:__ => source
-    case aint:IntType => int.clone(name = aint.name, via = source.via)
-    case areal:RealType => real.clone(name = areal.name, via = source.via)
-    case astr:StrType => str.clone(name = astr.name, via = source.via)
+    case _:IntType => int.clone(name = target.name, via = source.via)
+    case _:RealType => real.clone(name = target.name, via = source.via)
+    case _:StrType => str.clone(name = target.name, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def strConverter(source:StrValue, target:Obj):Obj = target match {
     case _:__ => source
-    case abool:BoolType => bool(name = abool.name, g = JBoolean.valueOf(source.g), via = source.via)
-    case aint:IntType => int(name = aint.name, g = JLong.valueOf(source.g), via = source.via)
-    case areal:RealType => real(name = areal.name, g = JDouble.valueOf(source.g), via = source.via)
-    case astr:StrType => str(name = astr.name, g = source.g, via = source.via)
+    case _:BoolType => Try(JBoolean.valueOf(source.g)).map(i => bool(name = target.name, g = i, via = source.via)).getOrElse(zeroObj)
+    case _:IntType => Try(JLong.valueOf(source.g)).map(i => int(name = target.name, g = i, via = source.via)).getOrElse(zeroObj)
+    case _:RealType => Try(JDouble.valueOf(source.g)).map(i => real(name = target.name, g = i, via = source.via)).getOrElse(zeroObj)
+    case _:StrType => str(name = target.name, g = source.g, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def strConverter(source:StrType, target:Obj):Obj = target match {
     case _:__ => source
-    case abool:BoolType => bool.clone(name = abool.name, via = source.via)
-    case aint:IntType => int.clone(name = aint.name, via = source.via)
-    case areal:RealType => real.clone(name = areal.name, via = source.via)
-    case astr:StrType => str.clone(name = astr.name, via = source.via)
+    case _:BoolType => bool.clone(name = target.name, via = source.via)
+    case _:IntType => int.clone(name = target.name, via = source.via)
+    case _:RealType => real.clone(name = target.name, via = source.via)
+    case _:StrType => str.clone(name = target.name, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
