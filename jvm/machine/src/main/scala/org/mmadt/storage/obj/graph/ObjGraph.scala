@@ -26,7 +26,6 @@ import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
-import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
@@ -34,6 +33,7 @@ import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str, strm, zeroObj}
 import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}

@@ -110,6 +110,6 @@ object AsOp extends Func[Obj, Obj] {
       val blst = lst(name = alst.name, g = (alst.gsep, source.glist.zip(alst.glist).map(a => a._1.coerce(a._2))), via = source.via)
       if (Lst.exactTest(blst, alst.domainObj)) CombineOp.combineAlgorithm(blst, alst, withAs = false).reload else blst.reload
     case alst:LstType[Obj] if Lst.test(source, alst) => source.named(alst.name)
-    case _ => throw LanguageException.typingError(source, asType(target))
+    case _ => source
   }
 }

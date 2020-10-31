@@ -123,7 +123,6 @@ class ObjGraphTest extends FunSuite {
     // assertResult(Seq('edge <= (int `;` int).combine(('vertex <= int.-<(str("id") -> int)) `;`('vertex <= int.-<(str("id") -> int))).-<((str("outV") -> (get(0))) `_,`(str("inV") -> (get(1))))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
     assertResult(Seq('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
     assertResult(Seq(int <= int.is(gt(0))))(graph.coerce(int, 'nat).map(x => graph.coerce(x, int)).head)
-    assertResult(int <= int.is(gt(0)))(int.update(graph.model) ~> 'nat ~> int)
     // assertResult(Seq('vertex<=int.is(gt(0)).split(str("id")->int)))(graph.coerce(int, 'nat).map(x => graph.coerce(x,int)).head.map(x => graph.coerce(x,'vertex)).head)
   }
 
@@ -253,8 +252,9 @@ class ObjGraphTest extends FunSuite {
   }
 
   test("coercion play2") {
-    val graph:ObjGraph = ObjGraph.create(storage.model('mmx))
-    //println(engine.eval("8 => int => str => [plus,'1'] =>int => +2 => int", bindings(graph.model)))
+    val graph:ObjGraph = ObjGraph.create(storage.model('pg_2))
+    println(engine.eval("(1;2) => (vertex;vertex)", bindings(graph.model)))
+    //println(engine.eval("(int;(int;int))=>(vertex=>nat;edge)", bindings(graph.model)))
   }
 
 }

@@ -41,7 +41,7 @@ class BranchInstTest extends BaseInstTest(
 
   testSet("[branch] w/ mm", MM.defining((__.via(__, BranchOp(from('x))) `;`) <= '^(split(to('x)).merge `,`)), //  ([branch,x])<=([split,<x>][merge])
     testing(str, -<(str `;` str) >-, str, "str-<(str;str)>-"),
-    testing(str, id.-<(plus("a") `,` plus("b")).id.id.>-, str.branch(str.plus("a") `,` str.plus("b")), "str => [id]-<(+'a',+'b')[id][id]>-"),
+    testing(str, id.-<(plus("a") `,` plus("b")).id.id.>-, str.branch(str.plus("a") `,` str.plus("b")), "str[id]-<(+'a',+'b')[id][id]>-"),
     testing("a", -<(plus("a") `,` plus("b")) >-, str(str("aa"), str("ab")), "'a' => str-<(+'a',+'b')>-"),
     testing("a", id.-<(plus("a") `,` plus("b")).id.id.>-, str(str("aa"), str("ab")), "'a' => [id]-<(+'a',+'b')[id][id]>-"),
   ),

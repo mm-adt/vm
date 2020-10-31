@@ -35,7 +35,7 @@ import org.mmadt.storage.StorageFactory.{int, lst, rec, str, _}
 class EmptyInstTest extends BaseInstTest(
   testSet("[empty] table test", List(MM, MMX),
     comment("lst"),
-    testing(lst.q(20), lst.q(20).empty.q(5), lst.q(20).empty.q(5), "lst{20} => lst{20}[empty]{5}"),
+    testing(lst.q(20), lst.q(20).empty.q(5), lst.q(20).empty.q(5), "lst{20}[empty]{5}"),
     testing(lst(), empty, true, "()[empty]"),
     testing(lst(), lst.empty, true, "() => lst[empty]"),
     testing(lst().q(2), empty.q(5), true.q(10), "(){2}[empty]{5}"),

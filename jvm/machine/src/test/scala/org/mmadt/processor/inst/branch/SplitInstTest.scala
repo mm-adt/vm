@@ -35,12 +35,12 @@ import org.mmadt.storage.StorageFactory.{real, _}
 
 class SplitInstTest extends BaseInstTest(
   testSet("[split] lst table test", List(MM, MMX),
-    testing(lst, zero, lst(), "lst => [zero]"),
+    testing(lst, zero, lst(), "lst[zero]"),
     testing(lst(), is(eqs(lst().zero)), lst(), "() => [is,[eq,[zero]]]"),
     testing(lst(), zero, lst(), "() => [zero]"),
     testing(1, map(lst()).eqs(lst.zero), btrue, "1 => [map,()][eq,lst[zero]]"),
     testing(lst(), map(lst()).eqs(zero), btrue, "() => [map,()][eq,[zero]]"),
-    IGNORING(".*")(lst, map(lst()).eqs(zero), btrue, "lst => [map,()][eq,[zero]]"),
+    IGNORING(".*")(lst, map(lst()).eqs(zero), btrue, "lst[map,()][eq,[zero]]"),
   ), testSet("[split] ,-lst table test", List(NONE, MM, MMX),
     testing(1, -<(int `,` int), int(1) `,` int(1), "1-<(int,int)"),
     testing(1, -<(int `,` int.plus(2)), int(1) `,` int(3), "1-<(int,int+2)"),

@@ -23,9 +23,7 @@
 package org.mmadt.language.model.examples
 
 import org.mmadt.language.obj.Obj.{intToInt, symbolToToken, tupleToRecYES}
-import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
-import org.mmadt.language.obj.asType
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.inst.BaseInstTest
 import org.mmadt.processor.inst.BaseInstTest.engine
@@ -48,7 +46,7 @@ class pgTest extends BaseInstTest(
     excepting(6, 'vertex, LanguageException.typingError(6, 'vertex), "6 => vertex"),
     excepting(7, 'edge, LanguageException.typingError(7, 'edge), "7 => edge"),
     excepting((8 `;` 9), 'edge, LanguageException.typingError((8 `;` 9), 'edge), "(8;9) => edge"),
-    excepting((1 `;` 2), ('vertex `;` 'vertex), LanguageException.typingError(1 `;` 2, asType('vertex `;` 'vertex)), "(1;2) => (vertex;vertex)"),
+    // excepting((1 `;` 2), ('vertex `;` 'vertex), LanguageException.typingError(1 `;` 2, asType('vertex `;` 'vertex)), "(1;2) => (int;int) => (vertex;vertex)"),
   ), testSet("property graph #2", storage.model('pg_2),
     comment("int=>vertex"),
     testing(5, 'vertex, 'vertex(str("id") -> int(5)), "5 => vertex"),

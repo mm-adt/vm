@@ -39,7 +39,7 @@ class GetInstTest extends BaseInstTest(
   ),
   testSet("[get] ;-lst test", List(MM, MMX),
     comment(";-lst int index"),
-    testing(lst, get(0, int), lst.get(0, int), "lst => [get,0,int]"),
+    testing(lst, get(0, int), lst.get(0, int), "lst[get,0,int]"),
     testing(1 `;` 2 `;` 3, get(0), 1, "(1;2;3)[get,0]"),
     testing(1 `;` 2 `;` 3, get(1), 2, "(1;2;3)[get,1]"),
     testing(1 `;` 2 `;` 3, get(2, int), 3, "(1;2;3)[get,2,int]"),
