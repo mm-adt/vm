@@ -26,6 +26,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
+import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
@@ -33,7 +34,6 @@ import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str, strm, zeroObj}
 import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}
@@ -127,14 +127,14 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
 
   def coerce(source:Obj, target:Obj):Stream[Obj] = {
     Option(source match {
-      case _ if __.isAnon(target.domainObj) => target.trace.reconstruct(source, target.name)
       case _ if !source.alive || source.model.vars(target.name).isDefined => source
       case _ if !target.alive => zeroObj
+      case _ if source == target => source
+      case _ if __.isAnon(target.domainObj) => target.trace.reconstruct(source, target.name)
       case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
       case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source // target.trace.reconstruct(source, target.name)
       case _:Strm[Obj] => strm(coerce(source, target))
-      //case alst:Lst[_] if Lst.exactTest(alst, target) => source // TODO: just straight equals on the domain
-      case _:Lst[_] if target.isInstanceOf[Lst[_]] && target.asInstanceOf[Lst[_]].ctype => source.named(target.name)
+      //case _:Lst[_] if target.isInstanceOf[Lst[_]] && target.asInstanceOf[Lst[_]].ctype => source.named(target.name)
       case _:Poly[_] => null
       case _ if target.name.equals(model.coreName) => model
       case _:Value[_] if source.name.equals(target.domainObj.name) => source //target.trace.reconstruct(source, target.name)
@@ -157,15 +157,11 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           t.asAdmin().sack(sack)
           t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj)]._1)
         })
-        .until((t:Traverser[Vertex]) => t.get.obj.root && finalStructureTest(t.sack[Obj].rangeObj, troot.domainObj)) // this can also be emit() instead resolution ends after a full span of the obj graph
+        .until((t:Traverser[Vertex]) => t.get.obj.root && finalStructureTest(t.sack[Obj].rangeObj, troot)) // this can also be emit() instead resolution ends after a full span of the obj graph
         .repeat(___
           .simplePath() // no cycles allowed
           .outE()
           .sideEffect((t:Traverser[Edge]) => t.sack(t.get.inst.exec(t.sack[Obj]))) // evaluate edge instruction
-          .filter((t:Traverser[_]) => t.sack[Obj] match { // filter out any {0} results (this should be handled internally by poly)
-            case apoly:Poly[Obj] => apoly.alive && apoly.glist.forall(_.alive)
-            case x => x.alive
-          })
           .inV()
           .sideEffect((t:Traverser[Vertex]) => {
             val sack = t.sack[Obj]

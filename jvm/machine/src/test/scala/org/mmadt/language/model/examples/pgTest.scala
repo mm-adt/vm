@@ -72,8 +72,8 @@ class pgTest extends BaseInstTest(
     engine.eval(":[model,pg_3]")
     println(engine.eval("5 => vertex"))
     println(engine.eval("[1,2,3] => int{3}[plus,2]"))
-    println(engine.eval("(int;int){3} => [as,edge] =| graph"))
-    println(engine.eval("[(1;2),(2;3),(3;4)] => [as,edge] =| graph"))
+    println(engine.eval("(int;int){3} => edge{3} =| graph"))
+    println(engine.eval("[(1;2),(2;3),(3;4)] => edge{3} =| graph"))
   }
 
 }
