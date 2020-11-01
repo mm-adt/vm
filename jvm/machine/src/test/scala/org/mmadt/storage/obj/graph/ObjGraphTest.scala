@@ -252,8 +252,9 @@ class ObjGraphTest extends FunSuite {
   }
 
   test("coercion play2") {
-    val graph:ObjGraph = ObjGraph.create(storage.model('pg_2))
-    println(engine.eval("(1;2) => (vertex;vertex)", bindings(graph.model)))
+    val graph:ObjGraph = ObjGraph.create(storage.model('digraph))
+    println(engine.eval("int{5} => vertex{5}",bindings(graph.model)))
+    //println(engine.eval("(1;2) => (vertex;vertex)", bindings(graph.model)))
     //println(engine.eval("(int;(int;int))=>(vertex=>nat;edge)", bindings(graph.model)))
   }
 

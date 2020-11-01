@@ -61,8 +61,10 @@ class pgTest extends BaseInstTest(
     IGNORING(".*")(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
     //testing(int(1, 2), ('vertex `;` 'vertex), strm[Obj](('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), ('vertex(str("id") -> int(2)) `;` 'vertex(str("id") -> int(2)))), "[1,2] => (vertex;vertex)"),
   ), testSet("property graph #4", storage.model('pg_4),
+    // testing(int, 'vertex, 'vertex<=int.~>('vertex<=int.is(gt(0)).split(str("id") -> 'nat(int) `_,` str("label") -> str("vertex"))), "int => vertex"),
     testing(8, 'vertex, 'vertex(str("id") -> 'nat(8) `_,` str("label") -> str("vertex")), "8 => vertex"),
-    IGNORING("eval-[4-5]","query-2")((9 `;` "person" `;` "name" `;` "marko"), 'vertex,
+    testing(8.q(5), 'vertex.q(5), 'vertex(str("id") -> 'nat(8) `_,` str("label") -> str("vertex")).q(5), "8{5} => vertex{5}"),
+    IGNORING("eval-[4-5]", "query-2")((9 `;` "person" `;` "name" `;` "marko"), 'vertex,
       'vertex(str("id") -> 'nat(9) `_,` str("label") -> str("person") `_,` str("props") -> 'props(str("name") -> str("marko"))),
       "(9;'person';'name';'marko') => vertex"),
   )) {

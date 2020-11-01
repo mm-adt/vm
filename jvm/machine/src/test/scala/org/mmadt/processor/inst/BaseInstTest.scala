@@ -75,8 +75,7 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
         ("eval-2", s => s match {
           case _:__ if __.isAnon(s) => engine.eval(s"$middle", bindings(model))
           case _:Type[_] if middle.alive => engine.eval(s"${middle.trace.reconstruct[Obj](s)}", bindings(model))
-          case _:Value[_] => engine.eval(s"$s => $middle", bindings(model))
-          case _ => end.left.get
+          case _ => engine.eval(s"$s => $middle", bindings(model))
         }),
         ("eval-3", s => s ==> (middle.domain ==> middle)),
         ("eval-4", s => s ==> (middle.domain ==> middle) match {

@@ -57,57 +57,57 @@ object Converters {
 
   private def boolConverter(source:BoolValue, target:Obj):Obj = target match {
     case _:__ => source
-    case _:BoolType => bool(name = target.name, g = source.g, via = source.via)
-    case _:StrType => str(name = target.name, g = source.g.toString, via = source.via)
+    case _:BoolType => bool(name = target.name, g = source.g, q = source.q, via = source.via)
+    case _:StrType => str(name = target.name, g = source.g.toString, q = source.q, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def boolConverter(source:BoolType, target:Obj):Obj = target match {
     case _:__ => source
-    case _:BoolType => bool.clone(name = target.name, via = source.via)
-    case _:StrType => str.clone(name = target.name, via = source.via)
+    case _:BoolType => bool.clone(name = target.name, q = source.q, via = source.via)
+    case _:StrType => str.clone(name = target.name, q = source.q, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def intConverter(source:IntValue, target:Obj):Obj = target match {
     case _:__ => source
-    case _:IntType => int(name = target.name, g = source.g, via = source.via)
-    case _:RealType => real(name = target.name, g = source.g, via = source.via)
-    case _:StrType => str(name = target.name, g = source.g.toString, via = source.via)
+    case _:IntType => int(name = target.name, g = source.g, q = source.q, via = source.via)
+    case _:RealType => real(name = target.name, g = source.g, q = source.q, via = source.via)
+    case _:StrType => str(name = target.name, g = source.g.toString, q = source.q, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
 
   private def intConverter(source:IntType, target:Obj):Obj = target match {
     case _:__ => source
-    case _:IntType => int.clone(name = target.name, via = source.via)
-    case _:RealType => real.clone(name = target.name, via = source.via)
-    case _:StrType => str.clone(name = target.name, via = source.via)
+    case _:IntType => int.clone(name = target.name, q = source.q, via = source.via)
+    case _:RealType => real.clone(name = target.name, q = source.q, via = source.via)
+    case _:StrType => str.clone(name = target.name, q = source.q, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def realConverter(source:RealValue, target:Obj):Obj = target match {
     case _:__ => source
-    case _:IntType => int(name = target.name, g = source.g.longValue(), via = source.via)
-    case _:RealType => real(name = target.name, g = source.g, via = source.via)
-    case _:StrType => str(name = target.name, g = source.g.toString, via = source.via)
+    case _:IntType => int(name = target.name, g = source.g.longValue(), q = source.q, via = source.via)
+    case _:RealType => real(name = target.name, g = source.g, q = source.q, via = source.via)
+    case _:StrType => str(name = target.name, g = source.g.toString, q = source.q, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def realConverter(source:RealType, target:Obj):Obj = target match {
     case _:__ => source
-    case _:IntType => int.clone(name = target.name, via = source.via)
-    case _:RealType => real.clone(name = target.name, via = source.via)
-    case _:StrType => str.clone(name = target.name, via = source.via)
+    case _:IntType => int.clone(name = target.name, q = source.q, via = source.via)
+    case _:RealType => real.clone(name = target.name, q = source.q, via = source.via)
+    case _:StrType => str.clone(name = target.name, q = source.q, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
   private def strConverter(source:StrValue, target:Obj):Obj = target match {
     case _:__ => source
-    case _:BoolType => Try(JBoolean.valueOf(source.g)).map(i => bool(name = target.name, g = i, via = source.via)).getOrElse(zeroObj)
-    case _:IntType => Try(JLong.valueOf(source.g)).map(i => int(name = target.name, g = i, via = source.via)).getOrElse(zeroObj)
-    case _:RealType => Try(JDouble.valueOf(source.g)).map(i => real(name = target.name, g = i, via = source.via)).getOrElse(zeroObj)
-    case _:StrType => str(name = target.name, g = source.g, via = source.via)
+    case _:BoolType => Try(JBoolean.valueOf(source.g)).map(i => bool(name = target.name, g = i, q = source.q, via = source.via)).getOrElse(zeroObj)
+    case _:IntType => Try(JLong.valueOf(source.g)).map(i => int(name = target.name, g = i, q = source.q, via = source.via)).getOrElse(zeroObj)
+    case _:RealType => Try(JDouble.valueOf(source.g)).map(i => real(name = target.name, g = i, q = source.q, via = source.via)).getOrElse(zeroObj)
+    case _:StrType => str(name = target.name, g = source.g, q = source.q, via = source.via)
     case _ => throw LanguageException.typingError(source, asType(target))
   }
 
