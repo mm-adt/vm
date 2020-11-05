@@ -87,8 +87,13 @@ class patternTest extends BaseInstTest(
       "(1;2)=>pair=>=(int;int)=>=(ipair;+2)=>=(ipair;int+1)=>pair",
       "(1;2)=>pair=>(int;int)=>(ipair;+3)=>pair"
     )
-  )
-
-
-)
-
+  ),
+  testSet("custom instructions", PATTERN,
+    IGNORING("eval-[4-5]", "query-2")(2 `;` 3, (int `;` int).branch(lst(__('aplus))), 5,
+      "(2;3)[aplus]",
+      "(2;3)=>aplus",
+      "(2;3)=>(int;int)=>aplus=>int",
+      "(2;3)=>(dble;dble)=>(int+-2;int+-3)=>aplus=>int",
+      "(2;3)=>(dble+-2;dble+-3)=>aplus=>int"
+    ),
+  ))
