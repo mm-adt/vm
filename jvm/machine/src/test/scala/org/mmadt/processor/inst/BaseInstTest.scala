@@ -43,7 +43,7 @@ import scala.util.matching.Regex
  * @author Stephen Mallette (http://stephen.genoprime.com)
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, Result, String, List[(Model, String)]])*) extends FunSuite with TableDrivenPropertyChecks {
+abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, Result, List[String], List[(Model, String)]])*) extends FunSuite with TableDrivenPropertyChecks {
   testSets.foreach(testSet => {
     test(testSet._1) {
       val models = testSet._2
@@ -51,25 +51,25 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
       forEvery(testSet._3) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
-        case (null, null, comment, null, Nil) => lastComment = comment.toString
-        case (lhs, rhs, result:Result, query, ignore) => evaluate(lastComment, lhs, rhs, result, query = query, models = models, ignore = ignore)
+        case (null, null, comment, Nil, Nil) => lastComment = comment.toString
+        case (lhs, rhs, result:Result, query, ignore) => evaluate(lastComment, lhs, rhs, result, queries = query, models = models, ignore = ignore)
       }
     }
   })
 
-  private def evaluate(lastComment:String = "", start:Obj, middle:Obj, end:Result, query:String = null, models:List[Model] = Nil, ignore:List[(Model, String)]):Unit = {
+  private def evaluate(lastComment:String = "", start:Obj, middle:Obj, end:Result, queries:List[String] = Nil, models:List[Model] = Nil, ignore:List[(Model, String)]):Unit = {
     if (models.isEmpty) println(s"WARNING: No models defined for query: $start => $middle")
     models.foreach(model => {
-      val querying = List[(String, Obj => Obj)](
+      val querying = queries.flatMap(query=>List[(String, Obj => Obj)](
         ("query-1", _ => engine.eval(query, bindings(model))),
         ("query-2", _ => engine.eval(query, bindings(model)) match {
           case x:Strm[_] => x // TODO: reconstruct type from a stream
-          case x:Value[_] if query.contains(">-") || query.contains("[merge") => x // TODO: not rebuild type up correctly
+          case x:Value[_] if query.contains(">-") || query.contains("[merge") => x // TODO: rebuild type up correctly
           case atype:Type[_] => atype.domainObj ==> atype
           case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
           case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
         })
-      )
+      ))
       val evaluating = List[(String, Obj => Obj)](
         //("eval-1", s => engine.eval(s"$s => $middle", bindings(model))),
         ("eval-2", s => s match {
@@ -109,8 +109,7 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
         // ("eval-6", s => s ==> (s.range ==> middle)),
         // ("eval-7", s => s ==> (s.range ==> (middle.domain ==> middle))),
       )
-      (evaluating ++
-        (if (null != query) querying else Nil))
+      (evaluating ++ querying)
         .foreach(example => {
           if (ignore.exists(i => (i._1 == null || i._1 == model) && (i._2 == null || i._2 == example._1 || new Regex(i._2).pattern.matcher(example._1).matches())))
             println(s"IGNORING[${example._1}][${model.name}]: $start => $middle")

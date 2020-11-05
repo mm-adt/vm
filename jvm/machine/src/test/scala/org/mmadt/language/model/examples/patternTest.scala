@@ -64,7 +64,12 @@ class patternTest extends BaseInstTest(
     excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
     testing(("one" `;` "two"), 'fst, 'fst("one"), "('one';'two') => fst"),
     //testing((1 `;` 2), 'ipair.combine(int.plus(2) `;` int.plus(3)), 'ipair(3 `;` 5), "(1;2)=>ipair=(+2;+3)"),
-    IGNORING("eval-.", "query-2")((1 `;` 2), 'pair.~>(lst.combine('ipair `;` int.plus(3))), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))), "(1;2)=>pair=>=(ipair;+3)=>pair")
+    IGNORING("eval-.", "query-2")((1 `;` 2), 'pair.~>(lst.combine('ipair `;` int.plus(3))), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))),
+      "(1;2)=>pair=>=(ipair;+3)=>pair",
+      "(1;2)=>pair=>=(int;int)=>=(ipair;+3)",
+      "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>pair",
+      "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>=(ipair;int)=>pair",
+      "(1;2)=>pair=>=(int;int)=>=(ipair;+2)=>=(ipair;int+1)=>pair")
   )
 
 
