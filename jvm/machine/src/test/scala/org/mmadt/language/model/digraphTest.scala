@@ -50,7 +50,7 @@ class digraphTest extends BaseInstTest(
     excepting(-51, 'nat, LanguageException.typingError(-51, 'nat), "-51 => nat"),
     testing('vertex(str("id") -> 'nat(45)), 'nat, 'nat(45), "vertex:('id'->nat:45) => nat"),
     IGNORING("eval-5")('vertex(str("id") -> 'nat(65)), 'nat.as(int), 65, "vertex:('id'->nat:65) => nat => int"),
-    // testing('vertex(str("id") -> 'nat(66)), int, 66, "vertex:('id'->nat:66) => int"),
+    IGNORING("eval-.")('vertex(str("id") -> 'nat(66)), int, 66, "vertex:('id'->nat:66) => vertex => int"),
   ), testSet("digraph model attr test", DIGRAPH,
     testing(("name" `;` "marko"), 'attr, 'attr(str("key") -> str("name") `_,` str("value") -> str("marko")), "('name';'marko') => attr"),
     testing(("age" `;` 29), 'attr, 'attr(str("key") -> str("age") `_,` str("value") -> int(29)), "('age';29) => attr"),
@@ -78,11 +78,11 @@ class digraphTest extends BaseInstTest(
       as(int `;` 'attr),
       (32 `;` 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
       "(32;('name';'marko')) => (int;attr)"),
-    /*testing(
+    IGNORING("query-.")(
       (32 `;`("name" `;` "marko")),
-      (int `;` 'attr) `=>` 'vertex,
+      (int `;` 'attr) =>> 'vertex,
       'vertex(str("id") -> 'nat(32) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
-      "(32;('name';'marko')) => (int;attr) => vertex"),*/
+      "(32;('name';'marko')) => (int;attr) => vertex"),
     testing(
       (32 `;`("name" `;` "marko")),
       'vertex,
@@ -90,14 +90,14 @@ class digraphTest extends BaseInstTest(
       "(32;('name';'marko')) => vertex"),
     /* testing(
        (40 `;`("name" `;` "marko")),
-       ('nat `;` 'attr) `=>` 'vertex,
+       ('nat `;` 'attr) ==> 'vertex,
        'vertex(str("id") -> 'nat(40) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
        "(40;('name';'marko')) => (nat;attr) => vertex"),*/
     /*testing(
       ("40" `;`("name" `;` "marko")),
-      ('nat `;` 'attr) `=>` 'vertex,
+      (int`;`(str`;`str)) =>> (int `;` 'attr)=>> ('nat `;` 'attr) =>> 'vertex,
       'vertex(str("id") -> 'nat(40) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
-      "('40';('name';'marko')) => (str;(str;str)) => (int;attr) => (nat;attr) => vertex"),*/
+      "('40';('name';'marko')) => (int;(str;str)) => (int;attr) => (nat;attr) => vertex"),*/
   ), testSet("digraph model edge test", DIGRAPH,
     testing((1 `;` 2), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>edge"),
     testing((1 `;` 2), ('vertex `;` 'vertex) `=>>` 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>(vertex;vertex)=>edge"),

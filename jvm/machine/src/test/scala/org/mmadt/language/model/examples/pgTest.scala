@@ -47,7 +47,7 @@ class pgTest extends BaseInstTest(
     excepting(6, 'vertex, LanguageException.typingError(6, 'vertex), "6 => vertex"),
     excepting(7, 'edge, LanguageException.typingError(7, 'edge), "7 => edge"),
     excepting((8 `;` 9), 'edge, LanguageException.typingError((8 `;` 9), 'edge), "(8;9) => edge"),
-    // excepting((1 `;` 2), ('vertex `;` 'vertex), LanguageException.typingError(1 `;` 2, asType('vertex `;` 'vertex)), "(1;2) => (int;int) => (vertex;vertex)"),
+    //excepting((1 `;` 2), ('vertex `;` 'vertex), LanguageException.typingError(1 `;` 2, asType('vertex `;` 'vertex)), "(1;2) => (int;int) => (vertex;vertex)"),
   ), testSet("property graph #2", storage.model('pg_2),
     comment("int=>vertex"),
     testing(5, 'vertex, 'vertex(str("id") -> int(5)), "5 => vertex"),
@@ -62,12 +62,12 @@ class pgTest extends BaseInstTest(
     IGNORING(".*")(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
     //testing(int(1, 2), ('vertex `;` 'vertex), strm[Obj](('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), ('vertex(str("id") -> int(2)) `;` 'vertex(str("id") -> int(2)))), "[1,2] => (vertex;vertex)"),
   ), testSet("property graph #4", storage.model('pg_4),
-    //IGNORING("eval-.", "query-2")(int, 'vertex, 'vertex<=int.is(gt(0)).~>('vertex.q(?)<='nat(int).q(?).split(str("id") ->int.named("nat") `_,` str("label") -> str("vertex"))), "int => vertex"),
+    //IGNORING("eval-.", "query-2")(int, 'vertex, 'vertex<=(int.is(__.gt(0))`=>`('vertex.q(?)<='nat(int).q(?).split(str("id") ->int.named("nat") `_,` str("label") -> str("vertex")))), "int => vertex"),
     testing(8, 'vertex, 'vertex(str("id") -> 'nat(8) `_,` str("label") -> str("vertex")), "8 => vertex"),
     testing(8.q(5), 'vertex.q(5), 'vertex(str("id") -> 'nat(8) `_,` str("label") -> str("vertex")).q(5), "8{5} => vertex{5}"),
-  /*  IGNORING("eval-[3-5]", "query-2")((9 `;` "person" `;` "name" `;` "marko"), 'vertex,
+    IGNORING("eval-[3-5]", "query-2")((9 `;` "person" `;` "name" `;` "marko"), 'vertex,
       'vertex(str("id") -> 'nat(9) `_,` str("label") -> str("person") `_,` str("props") -> 'props(str("name") -> str("marko"))),
-      "(9;'person';'name';'marko') => vertex"),*/
+      "(9;'person';'name';'marko') => vertex"),
   )) {
   test("testing") {
     engine.eval(":[model,pg_3]")
