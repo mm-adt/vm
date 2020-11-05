@@ -83,11 +83,11 @@ class digraphTest extends BaseInstTest(
       (int `;` 'attr) `=>` 'vertex,
       'vertex(str("id") -> 'nat(32) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
       "(32;('name';'marko')) => (int;attr) => vertex"),*/
-    /*testing(
+    testing(
       (32 `;`("name" `;` "marko")),
       'vertex,
       'vertex(str("id") -> 'nat(32) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
-      "(32;('name';'marko')) => vertex"),*/
+      "(32;('name';'marko')) => vertex"),
     /* testing(
        (40 `;`("name" `;` "marko")),
        ('nat `;` 'attr) `=>` 'vertex,

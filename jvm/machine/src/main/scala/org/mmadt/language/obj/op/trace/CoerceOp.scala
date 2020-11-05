@@ -44,14 +44,16 @@ trait CoerceOp {
 object CoerceOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
   def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.coerce, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = inst.arg0[Obj] match {
-    case atype:Type[Obj] if start.model == NONE => atype.rangeObj.via(start, inst)
-    case atype:Type[Obj] =>
-      start match {
-        case _:Type[_] => getc(start.coerce(atype.domainObj), atype.trace).foldLeft(start)((a, b) => b.rangeObj.via(a, CoerceOp(b)))
-        case _:Value[_] => start.named(atype.domainObj.name).compute(atype, withAs = false).named(atype.rangeObj.name)
-      }
-    case _:Value[Obj] => start
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
+    inst.arg0[Obj] match {
+      case atype:Type[Obj] if start.model == NONE => atype.rangeObj.via(start, inst)
+      case atype:Type[Obj] =>
+        start match {
+          case _:Type[_] => start.coerce(atype) //getc(start.coerce(atype.domainObj), atype.trace).foldLeft(start)((a, b) => b.rangeObj.via(a, CoerceOp(b)))
+          case _:Value[_] => start.named(atype.domainObj.name).compute(atype, withAs = false).named(atype.rangeObj.name)
+        }
+      case _:Value[Obj] => start
+    }
   }
 
   private def getc(base:Obj, trace:List[ViaTuple], cs:List[Obj] = List.empty[Obj]):List[Obj] = {

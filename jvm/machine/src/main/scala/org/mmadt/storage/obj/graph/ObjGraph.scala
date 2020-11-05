@@ -31,7 +31,7 @@ import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.op.trace.{ModelOp, NoOp}
+import org.mmadt.language.obj.op.trace.{CoerceOp, ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage
@@ -94,6 +94,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         createObj(aobj.via._1).addEdge(aobj.via._2.op, target, OBJ, aobj.via._2)
       })
       target.addEdge(Tokens.noop, g.R.has(NAME, aobj.rangeObj.name).tryNext().orElseGet(() => bindObj(aobj.rangeObj)), OBJ, NoOp())
+      //target.addEdge(Tokens.noop, g.R.has(NAME, toBaseName(aobj.rangeObj).name).tryNext().orElseGet(() => bindObj(toBaseName(aobj.rangeObj))), OBJ, NoOp()) // to allow binding to unnamed base type
     } else bindObj(toBaseName(aobj.rangeObj)).addEdge(Tokens.noop, target, OBJ, NoOp())
     target
   }
@@ -130,20 +131,20 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case _ if !source.alive || source.model.vars(target.name).isDefined => source
       case _ if !target.alive => zeroObj
       case _ if source == target => source
-      case _ if __.isAnon(target.domainObj) => target.trace.reconstruct(source, target.name)
+      case _ if __.isAnon(target.domainObj) => target.trace.reconstruct[Obj](source, target.name)
       case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
       case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source // target.trace.reconstruct(source, target.name)
       case _:Strm[Obj] => strm(coerce(source, target))
       //case _:Lst[_] if target.isInstanceOf[Lst[_]] && target.asInstanceOf[Lst[_]].ctype => source.named(target.name)
       case _:Poly[_] => null
       case _ if target.name.equals(model.coreName) => model
-      case _:Value[_] if source.name.equals(target.domainObj.name) => source //target.trace.reconstruct(source, target.name)
+      case _:Value[_] if source.name.equals(target.domainObj.name) => source // target.trace.reconstruct(source, target.name)
       case _:Type[_] if source.name.equals(target.domainObj.name) => target.trace.reconstruct(source, target.name)
       case _ => null
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
     ///////////////////////////////////////////////////////////////
     val sroot:Obj = asType(source)
-    val troot:Obj = bindObj(asType(target.domainObj)).obj
+    val troot:Obj = bindObj(asType(Obj.resolveToken(__.update(model), target.domainObj))).obj
     JavaConverters.asScalaIterator(
       g.withSack(sroot)
         .R
@@ -161,28 +162,38 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         .repeat(___
           .simplePath() // no cycles allowed
           .outE()
-          .sideEffect((t:Traverser[Edge]) => t.sack(t.get.inst.exec(t.sack[Obj]))) // evaluate edge instruction
-          .inV()
-          .sideEffect((t:Traverser[Vertex]) => {
+          .sideEffect((t:Traverser[Edge]) => {
             val sack = t.sack[Obj]
-            if (!__.isAnonToken(t.get.obj.rangeObj) && !sack.isInstanceOf[Poly[_]])
-              t.sack(t.get.obj.rangeObj <= sack)
-            else
-              t.sack(sack.named(t.get.obj.name))
-          })) // name type accordingly
+            val inst = t.get.inst
+            val incidentObj = t.get.inVertex().obj
+            if (inst.op.equals(Tokens.noop) && baseName(sack) != baseName(incidentObj))
+              t.sack(Converters.objConverter(sack, t.get.inVertex().obj).headOption.getOrElse(zeroObj))
+            else {
+              val instOut = t.get.inst.exec(sack)
+              val incidentName = t.get.inVertex().obj.name
+              t.sack(
+                if (!sack.name.equals(instOut.name)) instOut.named(incidentName).via(sack, CoerceOp(t.get.inst.exec(sack.rangeObj).named(incidentName)))
+                else instOut.named(incidentName))
+            }
+          }) // evaluate edge instruction
+          .inV()
+          .filter((t:Traverser[Vertex]) => t.sack[Obj].alive))
         .sack[Obj]
     ).toStream
       .map(obj => target.trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
-      .map(obj => source match {
-        // if source was a value, compute the value against the derived type // TODO: this needs to do a recursive descent
-        case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj) match {
-          case arec:Rec[Obj, Obj] if obj.isInstanceOf[Rec[_, _]] => arec.clone(x => x.zip(obj.asInstanceOf[Rec[Obj, Obj]].gmap).map(pair => (pair._1._1.named(pair._2._1.name), pair._1._2.named(pair._2._2.name))))
-          case alst:Lst[Obj] if obj.isInstanceOf[Lst[_]] => alst.clone(x => x.zip(obj.asInstanceOf[Lst[Obj]].glist).map(pair => pair._1.named(pair._2.name)))
-          case x if !x.isInstanceOf[Poly[_]] => Converters.objConverter(x, obj.rangeObj).headOption.getOrElse(zeroObj)
-          case x => x
+      .map(obj => {
+        source match {
+          // if source was a value, compute the value against the derived type // TODO: this needs to do a recursive descent
+          case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj) match {
+            case arec:Rec[Obj, Obj] if obj.isInstanceOf[Rec[_, _]] => arec.clone(x => x.zip(obj.asInstanceOf[Rec[Obj, Obj]].gmap).map(pair => (pair._1._1.named(pair._2._1.name), pair._1._2.named(pair._2._2.name))))
+            case alst:Lst[Obj] if obj.isInstanceOf[Lst[_]] => alst.clone(x => x.zip(obj.asInstanceOf[Lst[Obj]].glist).map(pair => pair._1.named(pair._2.name)))
+            case x if !x.isInstanceOf[Poly[_]] => Converters.objConverter(x, obj.rangeObj).headOption.getOrElse(zeroObj)
+            case x => x
+          }
+          case _:Type[_] => obj
         }
-        case _:Type[_] => obj
       })
+      //.union(Converters.objConverter(source, target).map(x => x.via(source, NoOp())))
       .filter(x => finalStructureTest(x.rangeObj, target.rangeObj))
       .distinct
   }

@@ -49,11 +49,11 @@ class mmlangScriptEngineTest extends FunSuite {
   //  println(engine.eval("1 => (vertex;vertex)"))
   }
 
-  test("test check") {
+  /*test("test check") {
     engine.eval(":[model,pg_3][model,mmx]")
     println(engine.eval("[1,2,3,4,5] =|[plus,x] => str =[+'1',+'2',+'3']=> int =|[mult,x]"))
     println(engine.eval("[(1;2),(3;4),(1;3)] => (vertex;vertex) => edge =| graph"))
-  }
+  }*/
 
   test("help2") {
     println(engine.eval(":[model,mm][define,apair<=(int:m;int:n)[is,m<n]]"))

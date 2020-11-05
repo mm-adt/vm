@@ -39,7 +39,7 @@ import scala.util.Try
 object Converters {
 
   def objConverter(source:Obj, target:Obj):Stream[Obj] = {
-    (source match {
+    (Obj.resolveToken(__.update(source.model), source) match {
       case abool:BoolValue => Stream(boolConverter(abool, target))
       case abool:BoolType => Stream(boolConverter(abool, target))
       case aint:IntValue => Stream(intConverter(aint, target))
