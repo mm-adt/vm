@@ -49,7 +49,7 @@ class digraphTest extends BaseInstTest(
     testing(54, 'nat `=>` int `=>` 'nat `=>` 'vertex, 'vertex(str("id") -> 'nat(54)), "54 => nat => int => nat => vertex"),
     excepting(-51, 'nat, LanguageException.typingError(-51, 'nat), "-51 => nat"),
     testing('vertex(str("id") -> 'nat(45)), 'nat, 'nat(45), "vertex:('id'->nat:45) => nat"),
-    IGNORING("eval-5", "eval-6")('vertex(str("id") -> 'nat(65)), 'nat.as(int), 65, "vertex:('id'->nat:65) => nat => int"),
+    IGNORING("eval-5")('vertex(str("id") -> 'nat(65)), 'nat.as(int), 65, "vertex:('id'->nat:65) => nat => int"),
     // testing('vertex(str("id") -> 'nat(66)), int, 66, "vertex:('id'->nat:66) => int"),
   ), testSet("digraph model attr test", DIGRAPH,
     testing(("name" `;` "marko"), 'attr, 'attr(str("key") -> str("name") `_,` str("value") -> str("marko")), "('name';'marko') => attr"),

@@ -29,7 +29,7 @@ import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.trace.ModelOp.NONE
 import org.mmadt.language.obj.value.Value
-import org.mmadt.language.obj.{Inst, Obj}
+import org.mmadt.language.obj.{Inst, Obj, toBaseName}
 import org.mmadt.storage.obj.value.VInst
 
 /**
@@ -49,6 +49,7 @@ object CoerceOp extends Func[Obj, Obj] {
       case atype:Type[Obj] if start.model == NONE => atype.rangeObj.via(start, inst)
       case atype:Type[Obj] =>
         start match {
+          case _:Type[_] if !Tokens.named(atype.name) && toBaseName(start.rangeObj) == atype => (atype.rangeObj <= start)
           case _:Type[_] => start.coerce(atype) //getc(start.coerce(atype.domainObj), atype.trace).foldLeft(start)((a, b) => b.rangeObj.via(a, CoerceOp(b)))
           case _:Value[_] => start.named(atype.domainObj.name).compute(atype, withAs = false).named(atype.rangeObj.name)
         }

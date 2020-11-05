@@ -22,16 +22,16 @@
 
 package org.mmadt.language.model.examples
 
-import org.mmadt.language.LanguageException
 import org.mmadt.language.model.examples.patternTest.PATTERN
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken}
 import org.mmadt.language.obj.`type`.__.symbolToRichToken
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil._
+import org.mmadt.processor.inst.TestSetUtil.{testing, _}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.int
+import org.mmadt.storage.StorageFactory._
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -46,8 +46,8 @@ class patternTest extends BaseInstTest(
     IGNORING("eval-.", "query-2")(int, 'ipair ~> 'isnd, 'isnd(int) <= ((int ~> ('ipair(int `;` int) <= int.split(int `;` int))) ~> ('isnd(int) <= 'ipair(int `;` int).get(1))), "int => ipair => isnd"),
     testing(5, 'ipair, 'ipair(5 `;` 5), "5 => ipair"),
     testing('ipair(5 `;` 5), (int `;` int), (5 `;` 5), "ipair:(5;5) => (int;int)"),
+    IGNORING("eval-.", "query-2")(int, 'ipair ~> (int `;` int), (int `;` int) <= (int.~>('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
     //IGNORING("eval-.")(5, 'ipair ~> (int `;` int), (5 `;` 5), "5 => ipair => (int;int)"),
-    // IGNORING("eval-.","query-2")(int, 'ipair ~> (int `;` int), lst<=int.~>('ipair<=int.split(int `;` int)), "int => ipair => (int;int)"),
     excepting("4", 'ipair, LanguageException.typingError("4", 'ipair), "'4' => ipair"),
     excepting("five", 'ipair, LanguageException.typingError("five", 'ipair), "'five' => ipair"),
     IGNORING("eval-.", "query-2")(int, 'ipair, int ~> ('ipair(int `;` int) <= int -< (int `;` int)), "int => ipair"),
@@ -61,9 +61,12 @@ class patternTest extends BaseInstTest(
     IGNORING("eval-.", "query-2")('ipair, 'ifst, 'ifst <= 'ipair(int `;` int) ~> ('ifst <= 'ipair(int `;` int).get(0)), "ipair => ifst"),
     testing('ipair(1 `;` 2), 'ifst, 'ifst(1), "ipair:(1;2) => ifst"),
     testing((1 `;` 2), 'ifst, 'ifst(1), "(1;2) => ifst"),
-    // excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
+    excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
     testing(("one" `;` "two"), 'fst, 'fst("one"), "('one';'two') => fst"),
-
+    //testing((1 `;` 2), 'ipair.combine(int.plus(2) `;` int.plus(3)), 'ipair(3 `;` 5), "(1;2)=>ipair=(+2;+3)"),
+    IGNORING("eval-.", "query-2")((1 `;` 2), 'pair.~>(lst.combine('ipair `;` int.plus(3))), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))), "(1;2)=>pair=>=(ipair;+3)=>pair")
   )
 
+
 )
+

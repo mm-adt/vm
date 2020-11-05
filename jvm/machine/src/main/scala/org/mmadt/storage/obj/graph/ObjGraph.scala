@@ -94,7 +94,6 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         createObj(aobj.via._1).addEdge(aobj.via._2.op, target, OBJ, aobj.via._2)
       })
       target.addEdge(Tokens.noop, g.R.has(NAME, aobj.rangeObj.name).tryNext().orElseGet(() => bindObj(aobj.rangeObj)), OBJ, NoOp())
-      //target.addEdge(Tokens.noop, g.R.has(NAME, toBaseName(aobj.rangeObj).name).tryNext().orElseGet(() => bindObj(toBaseName(aobj.rangeObj))), OBJ, NoOp()) // to allow binding to unnamed base type
     } else bindObj(toBaseName(aobj.rangeObj)).addEdge(Tokens.noop, target, OBJ, NoOp())
     target
   }
@@ -145,41 +144,45 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     ///////////////////////////////////////////////////////////////
     val sroot:Obj = asType(source)
     val troot:Obj = bindObj(asType(Obj.resolveToken(__.update(model), target.domainObj))).obj
-    JavaConverters.asScalaIterator(
-      g.withSack(sroot)
-        .R
-        .has(CTYPE, NAME, sroot.name)
-        ///////// ALL MATCHING PERMUTATIONS OF DOMAIN /////////
-        .flatMap((t:Traverser[Vertex]) => JavaConverters.asJavaIterator(
-          Converters.objConverter(t.sack[Obj].update(model), t.get.obj).map(sack => (t.get, sack)).iterator)
-          .asInstanceOf[java.util.Iterator[Vertex]]) // hack on typing (necessary because TP3 doesn't have flatmap on traverser
-        .sideEffect((t:Traverser[Vertex]) => {
-          val sack = t.get.asInstanceOf[(Vertex, Obj)]._2
-          t.asAdmin().sack(sack)
-          t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj)]._1)
-        })
-        .until((t:Traverser[Vertex]) => t.get.obj.root && finalStructureTest(t.sack[Obj].rangeObj, troot)) // this can also be emit() instead resolution ends after a full span of the obj graph
-        .repeat(___
-          .simplePath() // no cycles allowed
-          .outE()
-          .sideEffect((t:Traverser[Edge]) => {
-            val sack = t.sack[Obj]
-            val inst = t.get.inst
-            val incidentObj = t.get.inVertex().obj
-            if (inst.op.equals(Tokens.noop) && baseName(sack) != baseName(incidentObj))
-              t.sack(Converters.objConverter(sack, t.get.inVertex().obj).headOption.getOrElse(zeroObj))
-            else {
-              val instOut = t.get.inst.exec(sack)
-              val incidentName = t.get.inVertex().obj.name
-              t.sack(
-                if (!sack.name.equals(instOut.name)) instOut.named(incidentName).via(sack, CoerceOp(t.get.inst.exec(sack.rangeObj).named(incidentName)))
-                else instOut.named(incidentName))
-            }
-          }) // evaluate edge instruction
-          .inV()
-          .filter((t:Traverser[Vertex]) => t.sack[Obj].alive))
-        .sack[Obj]
-    ).toStream
+    Stream.empty
+      .union(Stream(sroot))
+      //.union(Converters.objConverter(sroot, target.domainObj))
+      .flatMap(s => {
+        JavaConverters.asScalaIterator(
+          g.withSack(s).R.has(CTYPE, NAME, s.name)
+            ///////// ALL MATCHING PERMUTATIONS OF DOMAIN /////////
+            .flatMap((t:Traverser[Vertex]) => JavaConverters.asJavaIterator(
+              Converters.objConverter(t.sack[Obj].update(model), t.get.obj).map(sack => (t.get, sack)).iterator)
+              .asInstanceOf[java.util.Iterator[Vertex]]) // hack on typing (necessary because TP3 doesn't have flatmap on traverser
+            .sideEffect((t:Traverser[Vertex]) => {
+              val sack = t.get.asInstanceOf[(Vertex, Obj)]._2
+              t.asAdmin().sack(sack)
+              t.asAdmin().set(t.get.asInstanceOf[(Vertex, Obj)]._1)
+            })
+            .until((t:Traverser[Vertex]) => t.get.obj.root && finalStructureTest(t.sack[Obj].rangeObj, troot)) // this can also be emit() instead resolution ends after a full span of the obj graph
+            .repeat(___
+              .simplePath() // no cycles allowed
+              .outE()
+              .sideEffect((t:Traverser[Edge]) => {
+                val sack = t.sack[Obj]
+                val inst = t.get.inst
+                val incidentObj = t.get.inVertex().obj
+                if (inst.op.equals(Tokens.noop) && baseName(sack) != baseName(incidentObj))
+                  t.sack(Converters.objConverter(sack, t.get.inVertex().obj).headOption.getOrElse(zeroObj))
+                else {
+                  val instOut = t.get.inst.exec(sack)
+                  val incidentName = t.get.inVertex().obj.name
+                  t.sack(
+                    if (!sack.name.equals(instOut.name)) instOut.named(incidentName).via(sack, CoerceOp(t.get.inst.exec(sack.rangeObj).named(incidentName)))
+                    else instOut.named(incidentName))
+                }
+              }) // evaluate edge instruction
+              .inV()
+              .filter((t:Traverser[Vertex]) => t.sack[Obj].alive)
+            )
+            .sack[Obj]
+        ).toStream
+      })
       .map(obj => target.trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
       .map(obj => {
         source match {

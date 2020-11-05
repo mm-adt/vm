@@ -64,12 +64,10 @@ class pgTest extends BaseInstTest(
   ), testSet("property graph #4", storage.model('pg_4),
     //IGNORING("eval-.", "query-2")(int, 'vertex, 'vertex<=int.is(gt(0)).~>('vertex.q(?)<='nat(int).q(?).split(str("id") ->int.named("nat") `_,` str("label") -> str("vertex"))), "int => vertex"),
     testing(8, 'vertex, 'vertex(str("id") -> 'nat(8) `_,` str("label") -> str("vertex")), "8 => vertex"),
-
-
     testing(8.q(5), 'vertex.q(5), 'vertex(str("id") -> 'nat(8) `_,` str("label") -> str("vertex")).q(5), "8{5} => vertex{5}"),
-    IGNORING("eval-[3-5]", "query-2")((9 `;` "person" `;` "name" `;` "marko"), 'vertex,
+  /*  IGNORING("eval-[3-5]", "query-2")((9 `;` "person" `;` "name" `;` "marko"), 'vertex,
       'vertex(str("id") -> 'nat(9) `_,` str("label") -> str("person") `_,` str("props") -> 'props(str("name") -> str("marko"))),
-      "(9;'person';'name';'marko') => vertex"),
+      "(9;'person';'name';'marko') => vertex"),*/
   )) {
   test("testing") {
     engine.eval(":[model,pg_3]")
