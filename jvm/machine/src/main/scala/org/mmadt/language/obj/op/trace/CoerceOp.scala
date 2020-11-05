@@ -24,7 +24,6 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
-import org.mmadt.language.obj.Obj.ViaTuple
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.trace.ModelOp.NONE
@@ -49,19 +48,12 @@ object CoerceOp extends Func[Obj, Obj] {
       case atype:Type[Obj] if start.model == NONE => atype.rangeObj.via(start, inst)
       case atype:Type[Obj] =>
         start match {
-          case _:Type[_] if !Tokens.named(atype.name) && toBaseName(start.rangeObj) == atype => (atype.rangeObj <= start)
-          case _:Type[_] => start.coerce(atype) //getc(start.coerce(atype.domainObj), atype.trace).foldLeft(start)((a, b) => b.rangeObj.via(a, CoerceOp(b)))
+          case _:Type[_] if start.rangeObj == atype => start
+          case _:Type[_] if !Tokens.named(atype.name) && toBaseName(start.rangeObj) == atype => atype.rangeObj <= start
+          case _:Type[_] => start.coerce(atype).update(start.model)
           case _:Value[_] => start.named(atype.domainObj.name).compute(atype, withAs = false).named(atype.rangeObj.name)
         }
       case _:Value[Obj] => start
     }
-  }
-
-  private def getc(base:Obj, trace:List[ViaTuple], cs:List[Obj] = List.empty[Obj]):List[Obj] = {
-    cs :+ trace.foldLeft(base)((a, b) => {
-      if (b._2.op.equals(Tokens.coerce))
-        return (cs :+ a) ++ getc(a.rangeObj.coerce(b._2.arg0[Obj].domainObj), b._2.arg0[Obj].trace)
-      else b._2.asInstanceOf[Inst[Obj, Obj]].exec(a)
-    })
   }
 }

@@ -24,6 +24,7 @@ package org.mmadt.language.model.examples
 
 import org.mmadt.language.model.examples.patternTest.PATTERN
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken}
+import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__.symbolToRichToken
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
@@ -56,7 +57,13 @@ class patternTest extends BaseInstTest(
     testing("4", 'pair, 'pair("4" `;` "4"), "'4' => pair"),
     testing("five", 'pair, 'pair("five" `;` "five"), "'five' => pair"),
     // IGNORING("eval-.", "query-2")(int, 'pair, int ~> ('pair <= int -< (int `;` int)), "int => pair"),
-    // IGNORING("eval-.", "query-2")(6, 'ipair.combine(int `;`(int ~> 'ipair)), 'ipair(6 `;` 'ipair(6 `;` 6)), "6 => ipair:(int;int=>ipair)"),
+    IGNORING("eval-.")(6, int ==> int.split(__ `;` __) `=>`(int `;`(int `=>` 'ipair)) `=>` 'pair, 'pair(6 `;` 'ipair(6 `;` 6)),
+      "6 =>-<(_;_)=>(int;int=>ipair)=>pair",
+      "6 => int-<(int;int)=>(int;int=>ipair)=>pair",
+      "6 =>-<(_;_)=>pair:(int;int=>ipair)",
+      "6 => int-<(int;ipair)=>pair",
+      "6 => int-<pair:(int;ipair)",
+    ),
     comment("fst and snd"),
     IGNORING("eval-.", "query-2")('ipair, 'ifst, 'ifst <= ('ipair(int `;` int) `=>`('ifst <= 'ipair(int `;` int).get(0))), "ipair => ifst"),
     testing('ipair(1 `;` 2), 'ifst, 'ifst(1), "ipair:(1;2) => ifst"),
@@ -69,10 +76,16 @@ class patternTest extends BaseInstTest(
       "(1;2)=>(int;int)=>(ipair;int+3)=>pair",
       "(1;2)=>(int;int)=>(ipair;int)=>pair=>=(_;+3)",
       "(1;2)=>(int;int)=>(ipair;int+3)=>(_;int)=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>pair=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(ipair;int)=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(_;_)=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>(_;_)=>pair",
+      "(1;2)=>(int;int)=>pair:(ipair;int+3)",
       "(1;2)=>pair=>=(int;int)=>=(ipair;+3)",
       "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>pair",
       "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>=(ipair;int)=>pair",
-      "(1;2)=>pair=>=(int;int)=>=(ipair;+2)=>=(ipair;int+1)=>pair"
+      "(1;2)=>pair=>=(int;int)=>=(ipair;+2)=>=(ipair;int+1)=>pair",
+      "(1;2)=>pair=>(int;int)=>(ipair;+3)=>pair"
     )
   )
 

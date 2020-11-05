@@ -192,8 +192,9 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           }
           case _:Type[_] => obj
         }
-      })
-      //.union(Converters.objConverter(source, target).map(x => x.via(source, NoOp())))
+      }).union(Try(Converters.objConverter(source, troot)
+      .filter(_ => Tokens.named(target.name))
+      .map(x => target.trace.reconstruct[Obj](x))).getOrElse(Stream.empty[Obj])) // direct translation of source to target with reconstruction via target trace
       .filter(x => finalStructureTest(x.rangeObj, target.rangeObj))
       .distinct
   }
