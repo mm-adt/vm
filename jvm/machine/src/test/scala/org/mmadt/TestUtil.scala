@@ -47,11 +47,11 @@ object TestUtil {
     val evaluating = List[Obj => Obj](
       s => engine.eval(s"${stringify(s)} => ${middle}"),
       s => s.compute(middle),
+      s => s =>> middle,
       s => s ==> middle,
-      s => s `=>` middle,
     )
     val compiling = List[Obj => Obj](
-      s => (asType(s.rangeObj) ==> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)))
+      s => (asType(s.rangeObj) =>> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)))
     val instructioning = List[Obj => Obj](s => inst.exec(s))
     (evaluating ++
       (if (compile) compiling else Nil) ++

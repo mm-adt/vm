@@ -72,7 +72,7 @@ class CompilingProcessorTest extends BaseInstTest {
       int.plus(0).plus(1).plus(-1).plus(0).plus(0).plus(1).plus(-1).plus(0).plus(0),
       int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(0),
       int.plus(1).plus(1).plus(-1).plus(0).plus(0).plus(-1).plus(1).plus(0).plus(-1).plus(1).plus(-1))) {
-      i => assertResult(int)(processor.apply(rewrites `=>` i))
+      i => assertResult(int)(processor.apply(rewrites `=>>` i))
     }
   }
 
@@ -83,8 +83,8 @@ class CompilingProcessorTest extends BaseInstTest {
       (int.mult(4) `;`) <= '^(int.mult(2).mult(2) `;`),
       (int `,`) <= '^(int.plus(1).plus(-1) `;`))
     /////
-    assertResult(int.mult(2))(processor.apply(int, rewrites `=>` int.plus(int)))
-    assertResult(int.mult(4))(processor.apply(int, rewrites `=>` int.plus(int).mult(int(2))))
+    assertResult(int.mult(2))(processor.apply(int, rewrites `=>>` int.plus(int)))
+    assertResult(int.mult(4))(processor.apply(int, rewrites `=>>` int.plus(int).mult(int(2))))
   }
 
   test("compiler w/ nested instructions") {

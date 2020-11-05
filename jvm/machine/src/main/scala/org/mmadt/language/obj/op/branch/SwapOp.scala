@@ -46,7 +46,7 @@ object SwapOp extends Func[Obj, Obj] {
     val arg:Obj = nestedInst.arg0[Obj]
     start match {
       case _:Type[_] => start.via(start, inst)
-      case _:Value[_] => (arg ~~> nestedInst.clone(_ => List(start)).exec(asType(arg))).via(start, inst)
+      case _:Value[_] => (arg ->> nestedInst.clone(_ => List(start)).exec(asType(arg))).via(start, inst)
     }
   }
 }

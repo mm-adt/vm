@@ -49,7 +49,7 @@ object GetOp extends Func[Obj, Obj] {
     val value: Obj = start match {
       case arec: Rec[_, _] => strm(arec.gmap.filter(kv => kv._1.test(key)).map(kv => kv._2 match {
         case _: Value[_] => kv._2
-        case _: Type[_] => __ `=>` kv._2
+        case _: Type[_] => __ ==> kv._2
       }))
       case alst: Lst[_] if key.isInstanceOf[Int] => key match {
         case aint: IntValue => alst match {
@@ -59,7 +59,7 @@ object GetOp extends Func[Obj, Obj] {
         }
         case atype: Type[_] => strm(alst.glist.view.zipWithIndex.filter(vi => int(vi._2).test(atype)).map(vi => vi._1 match {
           case _: Value[_] => vi._1
-          case _: Type[_] => __ `=>` vi._1
+          case _: Type[_] => __ ==> vi._1
         }))
       }
       case anon: __ if anon.name.equals("x") => anon // TODO: so ghetto -- this is because defs and variables fighting for namespace

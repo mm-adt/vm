@@ -45,7 +45,7 @@ class LstValueTest extends BaseInstTest() {
     // TODO: think on the semantics of this --- assert(("z" | ("b" |)).test("a" | ("b" | "c")))
     //
     assertResult(btrue)(lst.zero.eqs(lst))
-    assertResult(lst())(lst() ==> __.is(__.eqs(lst.zero)))
+    assertResult(lst())(lst() =>> __.is(__.eqs(lst.zero)))
   }
 
   test("parallel [tail][head][last] values") {

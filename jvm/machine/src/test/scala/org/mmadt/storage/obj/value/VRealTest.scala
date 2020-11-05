@@ -34,6 +34,6 @@ class VRealTest extends FunSuite {
     assertResult(real(3.0))(real(1.0) + real(2.0))
     assertResult(real(3))(real(1) + 2.0)
     assertResult(real(-4.0))(-real(4))
-    assertResult(real(-4))(real(3) ==> real.plus(1.0).neg)
+    assertResult(real(-4))(real(3) =>> real.plus(1.0).neg)
   }
 }

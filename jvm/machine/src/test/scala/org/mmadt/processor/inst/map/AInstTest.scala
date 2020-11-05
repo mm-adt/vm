@@ -137,7 +137,7 @@ class AInstTest extends BaseInstTest(
         (20.plus(10).a(int).is(true), true, 3),
         (20.plus(10).a(real), false, 2),
         (20.plus(10).id.a(int), true, 3),
-        (20 ==> int.id.plus(int.plus(5).plus(5)).a(int.is(int.gt(20))).id, true, 4),
+        (20 =>> int.id.plus(int.plus(5).plus(5)).a(int.is(int.gt(20))).id, true, 4),
         (true, true, 0),
       )
     forEvery(check) { (expr, result, length) => {

@@ -49,7 +49,7 @@ object BranchOp extends Func[Obj, Obj] {
       case bpoly if bpoly.isEmpty => zeroObj.via(start, inst)
       case bpoly: Value[_] => BranchInstruction.mergeBranches(bpoly, inst)
       case bpoly: Type[_] =>
-        if (1 == bpoly.size) (start `=>` bpoly.glist.head).q(inst.q)
+        if (1 == bpoly.size) (start ==> bpoly.glist.head).q(inst.q)
         else BranchInstruction.brchType[Obj](bpoly, inst.q).clone(via = (start, inst.clone(_ => List(bpoly))))
     }
   }

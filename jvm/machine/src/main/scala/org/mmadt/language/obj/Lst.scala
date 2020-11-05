@@ -120,14 +120,14 @@ object Lst {
       if (null == start) return Type.mergeObjs(values).filter(_.alive)
       Type.mergeObjs(Type.mergeObjs(values).map(v =>
         if (!__.isAnon(start) && v.isInstanceOf[Value[_]]) v.hardQ(q => multQ(start.q, q))
-        else (if (v.isInstanceOf[Type[_]]) AsOp.autoAsType(start, v.domain) else start) ~~> v)).filter(_.alive)
+        else (if (v.isInstanceOf[Type[_]]) AsOp.autoAsType(start, v.domain) else start) ->> v)).filter(_.alive)
     /////////// ;-lst
     case Tokens.`;` =>
       if (null == start) return values
       var running = start
       values.map(v => {
-        running = if (running.isInstanceOf[Strm[_]]) strm[A](running.toStrm.drain.map(r => r ~~> v):_*)
-        else running ~~> v match {
+        running = if (running.isInstanceOf[Strm[_]]) strm[A](running.toStrm.drain.map(r => r ->> v):_*)
+        else running ->> v match {
           case x:Value[_] if v.isInstanceOf[Value[_]] => x.hardQ(q => multQ(running.q, q)).asInstanceOf[A]
           case x => x
         }
@@ -138,7 +138,7 @@ object Lst {
       val newStart:Obj = if (null == start) __ else start
       var taken:Set[Obj] = Set.empty
       values.map(v => {
-        (newStart ~~> v) match {
+        (newStart ->> v) match {
           // TODO: we need a concept of stable vs. non-stable quantifiers as
           //  you don't want types to alter values quantifiers if they are zeroable.
           case avalue:OValue[A]

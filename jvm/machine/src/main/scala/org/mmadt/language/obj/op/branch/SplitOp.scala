@@ -44,7 +44,7 @@ object SplitOp extends Func[Obj, Obj] {
   override def apply(start: Obj, inst: Inst[Obj, Obj]): Obj = {
     val apoly: Poly[Obj] = inst.arg0[Obj] match {
       case bpoly: Poly[_] => bpoly
-      case aobj: Obj => start ~~> aobj match {
+      case aobj: Obj => start ->> aobj match {
         case bpoly: Poly[Obj] => bpoly.clone(via = aobj.via)
         case _ => return lst.via(start, inst)
       }

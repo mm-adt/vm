@@ -47,6 +47,6 @@ object FromOp extends Func[Obj, Obj] {
     start.model.vars[Obj](inst.arg0[__].name).filter(x => !x.isInstanceOf[__]).getOrElse(
       start match {
         case _:Type[_] => inst.args.tail.headOption.getOrElse(asType[Obj](start))
-        case _:Value[_] => inst.args.tail.headOption.map(x => start ~~> x).getOrElse(throw LanguageException.labelNotFound(start.path(PathOp.VERTICES), inst.arg0[__].name))
+        case _:Value[_] => inst.args.tail.headOption.map(x => start ->> x).getOrElse(throw LanguageException.labelNotFound(start.path(PathOp.VERTICES), inst.arg0[__].name))
       }).via(start, inst)
 }

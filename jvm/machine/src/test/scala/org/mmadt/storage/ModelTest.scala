@@ -58,7 +58,7 @@ class ModelTest extends FunSuite {
     val record1a = (
       str("id") -> int(1) `_,`
         str("label") -> str("person"))
-    assertResult('vertex(record1a))(record1a ==> tp3 `=>` as('vertex))
+    assertResult('vertex(record1a))(record1a =>> tp3 `=>>` as('vertex))
     ///
     val record2a = str("id") -> int(1) `_,`
       str("label") -> str("person") `_,`

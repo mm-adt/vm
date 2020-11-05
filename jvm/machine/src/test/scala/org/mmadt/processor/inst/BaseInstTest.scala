@@ -65,9 +65,9 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
         ("query-2", _ => engine.eval(query, bindings(model)) match {
           case x:Strm[_] => x // TODO: reconstruct type from a stream
           case x:Value[_] if query.contains(">-") || query.contains("[merge") => x // TODO: rebuild type up correctly
-          case atype:Type[_] => atype.domainObj ==> atype
+          case atype:Type[_] => atype.domainObj =>> atype
           case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
-          case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
+          case avalue:Value[_] => (avalue.domainObj =>> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
         })
       ))
       val evaluating = List[(String, Obj => Obj)](
@@ -77,21 +77,21 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
           case _:Type[_] if middle.alive => engine.eval(s"${middle.trace.reconstruct[Obj](s)}", bindings(model))
           case _ => engine.eval(s"$s => $middle", bindings(model))
         }),
-        ("eval-3", s => s ==> (middle.domain ==> middle)),
-        ("eval-4", s => s ==> (middle.domain ==> middle) match {
+        ("eval-3", s => s =>> (middle.domain =>> middle)),
+        ("eval-4", s => s =>> (middle.domain =>> middle) match {
           case aobj:Obj
             if middle.via.exists(x => List(Tokens.split, Tokens.lift).contains(x._2.op)) ||
               (aobj.isInstanceOf[Strm[_]] && aobj.toStrm.drain.headOption.exists(y => y.via.exists(x => List(Tokens.get).contains(x._2.op)))) => aobj // nested poly have their quantifiers altered
-          case atype:Type[_] => atype.domainObj ==> atype
-          case astrm:Strm[_] => strm(astrm.drain.map(x => (x.domainObj ==> x.trace.reconstruct[Obj](x.domainObj, x.name)).hardQ(x.q)))
+          case atype:Type[_] => atype.domainObj =>> atype
+          case astrm:Strm[_] => strm(astrm.drain.map(x => (x.domainObj =>> x.trace.reconstruct[Obj](x.domainObj, x.name)).hardQ(x.q)))
           case alst:LstValue[_] if alst.named && !alst.isEmpty => alst // nested typing not reconstructing
-          case avalue:Value[_] => (avalue.domainObj ==> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
+          case avalue:Value[_] => (avalue.domainObj =>> avalue.trace.reconstruct[Obj](avalue.domainObj, avalue.name)).hardQ(avalue.q)
         }),
         ("eval-5", s => {
-          val result = s ==> (middle.domain ==> middle)
+          val result = s =>> (middle.domain =>> middle)
           if (!middle.trace.nexists(x => List(Tokens.one, Tokens.noop, Tokens.map, Tokens.neg, Tokens.repeat).contains(x._2.op) ||
             (x._2.op.equals(Tokens.lift) || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
-            result.trace.modeless.zip((asType(s) ==> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
+            result.trace.modeless.zip((asType(s) =>> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
               assert(asType(x._1._1).test(x._2._1.rangeObj), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
               assertResult(x._1._2.op)(x._2._2.op) // test via tuples' inst opcode
               if (!List(Tokens.split, Tokens.combine).contains(x._1._2.op))

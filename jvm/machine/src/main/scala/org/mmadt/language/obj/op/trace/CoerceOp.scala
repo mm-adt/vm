@@ -37,8 +37,8 @@ import org.mmadt.storage.obj.value.VInst
  */
 trait CoerceOp {
   this:Obj =>
-  def ~>[O <: Obj](aobj:O):O = CoerceOp(aobj).exec(this).asInstanceOf[O]
-  def ~>(atype:Symbol):Obj = CoerceOp(__(atype.name)).exec(this)
+  def `=>`[O <: Obj](aobj:O):O = CoerceOp(aobj).exec(this).asInstanceOf[O]
+  def `=>`(atype:Symbol):Obj = CoerceOp(__(atype.name)).exec(this)
 }
 
 object CoerceOp extends Func[Obj, Obj] {

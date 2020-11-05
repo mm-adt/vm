@@ -34,8 +34,8 @@ import org.mmadt.storage.obj.value.VInst
 trait JuxtOp {
   this:Obj =>
   def juxta[A <: Obj](right:A):A = JuxtOp(right).exec(this)
-  final def `=>`[A <: Obj](right:A):A = this.juxta(right)
-  final def `=>`(right:Symbol):Obj = this.juxta(__(right.name))
+  final def ==>[A <: Obj](right:A):A = this.juxta(right)
+  final def ==>(right:Symbol):Obj = this.juxta(__(right.name))
 }
 
 object JuxtOp extends Func[Obj, Obj] {

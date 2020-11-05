@@ -70,8 +70,8 @@ class RecTypeTest extends FunSuite {
     assertResult("(1->true)")(rec(int(1) -> btrue).toString)
     assertResult("(1->true,2->false)")(((int(1) -> btrue) `,`(int(2) -> bfalse)).toString)
     assertResult("(1->true,2->false)")((int(1) -> btrue).plus(int(2) -> bfalse).toString)
-    assertResult(bfalse)((int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)).get(int(2)))
-    assertResult(int(1) -> btrue `_,` int(2) -> bfalse)((int(1) -> btrue) ==> rec[IntValue, BoolValue].plus(int(2) -> bfalse))
+    assertResult(bfalse)((int(1) -> btrue) =>> rec[IntValue, BoolValue].plus(rec(int(2) -> bfalse)).get(int(2)))
+    assertResult(int(1) -> btrue `_,` int(2) -> bfalse)((int(1) -> btrue) =>> rec[IntValue, BoolValue].plus(int(2) -> bfalse))
     assertResult(btrue)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(1)))
     assertResult(bfalse)((int(1) -> btrue `_,` int(2) -> bfalse).get(int(2)))
     //intercept[LanguageException] {
@@ -80,13 +80,13 @@ class RecTypeTest extends FunSuite {
   }
 
   test("rec domain check") {
-    assertResult(rec(str("name") -> str("marko")))(rec(str("name") -> str("marko")) ==> rec(str("name") -> str))
+    assertResult(rec(str("name") -> str("marko")))(rec(str("name") -> str("marko")) =>> rec(str("name") -> str))
     assertThrows[LanguageException] {
-      rec(str("nae") -> str("marko")) ==> rec(str("name") -> str)
+      rec(str("nae") -> str("marko")) =>> rec(str("name") -> str)
     }
-    assertResult(int(11))(int(10) ==> int.split(int -> int.plus(1) | bool -> btrue).merge[Obj])
-    assertResult(int(11, 12, 13))(int(10, 11, 12) ==> int.q(3).split(int -> int.plus(1) | bool -> btrue).merge[Obj])
-    assertResult(int(11, 12, 13))((int(10) `,` 11 `,` 12) ==> (int `,` int `,` int).merge.split(int -> int.plus(1) | bool -> btrue).merge[Obj])
+    assertResult(int(11))(int(10) =>> int.split(int -> int.plus(1) | bool -> btrue).merge[Obj])
+    assertResult(int(11, 12, 13))(int(10, 11, 12) =>> int.q(3).split(int -> int.plus(1) | bool -> btrue).merge[Obj])
+    assertResult(int(11, 12, 13))((int(10) `,` 11 `,` 12) =>> (int `,` int `,` int).merge.split(int -> int.plus(1) | bool -> btrue).merge[Obj])
   }
 
   test("rec value via varargs construction") {
@@ -124,10 +124,10 @@ class RecTypeTest extends FunSuite {
   }
 
   test("rec value quantifiers") {
-    assertResult((X `,` Y).q(int(2)))((X `,` Y).q(int(2)) ==> rec.q(int(2)))
-    assertResult((X `,` Y `,` Z).q(2))((X `,` Y).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Z))
-    assertResult((X `,` Y `,` Z).q(2))(rec(X).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)))
-    assertResult((X `,` Y `,` Z).q(4))(rec(X).q(int(2)) ==> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)).q(2))
+    assertResult((X `,` Y).q(int(2)))((X `,` Y).q(int(2)) =>> rec.q(int(2)))
+    assertResult((X `,` Y `,` Z).q(2))((X `,` Y).q(int(2)) =>> rec[IntValue, StrValue].q(int(2)).plus(Z))
+    assertResult((X `,` Y `,` Z).q(2))(rec(X).q(int(2)) =>> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)))
+    assertResult((X `,` Y `,` Z).q(4))(rec(X).q(int(2)) =>> rec[IntValue, StrValue].q(int(2)).plus(Y).plus(Z.q(34)).q(2))
   }
 
   test("rec choose branching") {

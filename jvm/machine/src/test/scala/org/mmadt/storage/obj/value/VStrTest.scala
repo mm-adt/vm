@@ -41,16 +41,16 @@ class VStrTest extends FunSuite {
     assertResult(bfalse)(str("m").gt("r"))
   }
   test("str value quantifiers") {
-    assertResult(str("marko").q(2))(str("marko").q(2) ==> str.q(2))
-    assertResult(str("marko").q(2))(str("mar").q(2) ==> str.q(2).plus(str("ko")))
-    assertResult(str("marko").q(2))(str("mar").q(2) ==> str.q(2).plus(str("k")).plus(str("o").q(34)))
-    assertResult(str("marko").q(4))(str("mar").q(2) ==> str.q(2).plus(str("k")).plus(str("o").q(34)).q(2))
-    assertResult(str("marko").q(200))(str("mar").q(2) ==> str.q(2).plus(str("k")).q(10).plus(str("o").q(34)).q(10))
+    assertResult(str("marko").q(2))(str("marko").q(2) =>> str.q(2))
+    assertResult(str("marko").q(2))(str("mar").q(2) =>> str.q(2).plus(str("ko")))
+    assertResult(str("marko").q(2))(str("mar").q(2) =>> str.q(2).plus(str("k")).plus(str("o").q(34)))
+    assertResult(str("marko").q(4))(str("mar").q(2) =>> str.q(2).plus(str("k")).plus(str("o").q(34)).q(2))
+    assertResult(str("marko").q(200))(str("mar").q(2) =>> str.q(2).plus(str("k")).q(10).plus(str("o").q(34)).q(10))
   }
   test("str compute") {
-    assertResult(str("marko"))(str("m") ==> str.plus("a").plus("r").plus("k").plus("o"))
-    assertResult(str("marko"))(str("m") ==> str.plus(str("a").plus(str("r").plus(str("k").plus("o")))))
-    assertResult(str("mmamarmarkmarko"))(str("m") ==>
+    assertResult(str("marko"))(str("m") =>> str.plus("a").plus("r").plus("k").plus("o"))
+    assertResult(str("marko"))(str("m") =>> str.plus(str("a").plus(str("r").plus(str("k").plus("o")))))
+    assertResult(str("mmamarmarkmarko"))(str("m") =>>
       str.to('a).plus("a")
         .to('b).plus("r")
         .to('c).plus("k")
@@ -61,11 +61,11 @@ class VStrTest extends FunSuite {
           .plus(str.from('c))
           .plus(str.from('d))
           .plus(str.from('e))))
-    assertResult(str("marko"))(str("m") ==> str.plus("a").plus("r").plus("k").plus("o").path(VERTICES).tail.tail.tail.tail.head)
-    assertResult(str("marko"))(str("m") ==> str.plus("a").plus("r").plus("k").plus("o").path(VERTICES).tail.tail.tail.head.as(str).plus("k").plus("o").path(VERTICES).tail.tail.tail.tail.head)
+    assertResult(str("marko"))(str("m") =>> str.plus("a").plus("r").plus("k").plus("o").path(VERTICES).tail.tail.tail.tail.head)
+    assertResult(str("marko"))(str("m") =>> str.plus("a").plus("r").plus("k").plus("o").path(VERTICES).tail.tail.tail.head.as(str).plus("k").plus("o").path(VERTICES).tail.tail.tail.tail.head)
   }
 
   test("play") {
-    str("m") ==>[Str] str.plus("a").plus("r").plus("k").plus("o")
+    str("m") =>>[Str] str.plus("a").plus("r").plus("k").plus("o")
   }
 }

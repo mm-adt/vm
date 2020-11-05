@@ -39,7 +39,7 @@ trait LoadOp {
 
 object LoadOp extends Func[Obj, Obj] {
   def apply(file:Obj):Inst[Obj, Obj] = new VInst[Obj, Obj](g = (Tokens.load, List(file)), func = this)
-  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start `=>` loadObj[Obj](Inst.oldInst(inst).arg0[Obj].toString)
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = start `=>>` loadObj[Obj](Inst.oldInst(inst).arg0[Obj].toString)
   def loadObj[A <: Obj](file:String):A = {
     try {
       val source:BufferedSource = Source.fromFile(file.replace("'", ""))

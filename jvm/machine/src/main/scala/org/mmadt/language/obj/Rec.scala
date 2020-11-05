@@ -108,9 +108,9 @@ object Rec {
     /////////// ,-rec
     case Tokens.`,` =>
       val nostart:Boolean = null == start
-      pairs.map(kv => (if (nostart) kv._1 else (start ~~> kv._1)) -> kv._2)
+      pairs.map(kv => (if (nostart) kv._1 else (start ->> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
-        .map(kv => kv._1 -> (if (nostart) kv._2 else Tokens.tryName(kv._2, start ~~> toBaseName(kv._2)))) // this is odd
+        .map(kv => kv._1 -> (if (nostart) kv._2 else Tokens.tryName(kv._2, start ->> toBaseName(kv._2)))) // this is odd
         .filter(kv => kv._2.alive)
         .foldLeft(Map.empty[A, List[B]])((a, b) => a + (b._1 -> (a.get(b._1).map(c => c :+ b._2).getOrElse(List(b._2)))))
         .map(kv => kv._1 -> {
@@ -124,10 +124,10 @@ object Rec {
       if (null == start) return semi(pairs)
       var running = start
       semi(pairs.map(kv => {
-        val key = running ~~> kv._1
+        val key = running ->> kv._1
         val keyValue = (
           if (!key.alive) (key -> zeroObj)
-          else (key -> (running ~~> kv._2))).asInstanceOf[Tuple2[A, A]]
+          else (key -> (running ->> kv._2))).asInstanceOf[Tuple2[A, A]]
         running = keyValue._2
         keyValue
       }).asInstanceOf[Pairs[A, B]])
@@ -138,7 +138,7 @@ object Rec {
       var taken:Boolean = false
       pairs
         .filter(kv => kv._1.alive && kv._2.alive)
-        .map(kv => (if (kv._1.isInstanceOf[Type[_]]) (AsOp.autoAsType(newStart, kv._1) ~~> kv._1) else (newStart ~~> kv._1)) -> kv._2)
+        .map(kv => (if (kv._1.isInstanceOf[Type[_]]) (AsOp.autoAsType(newStart, kv._1) ->> kv._1) else (newStart ->> kv._1)) -> kv._2)
         .filter(kv => kv._1.alive)
         .filter(kv =>
           if (taken) false
@@ -147,7 +147,7 @@ object Rec {
             taken = true;
             true
           })
-        .map(kv => if (nostart) kv else kv._1 -> (if (kv._2.isInstanceOf[Type[_]]) ((AsOp.autoAsType(newStart, kv._2)) ~~> kv._2) else (newStart ~~> kv._2) match {
+        .map(kv => if (nostart) kv else kv._1 -> (if (kv._2.isInstanceOf[Type[_]]) ((AsOp.autoAsType(newStart, kv._2)) ->> kv._2) else (newStart ->> kv._2) match {
           case x if kv._2.isInstanceOf[Value[_]] => x.hardQ(q => q.mult(kv._2.q)).asInstanceOf[B]
           case x => x
         }))

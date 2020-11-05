@@ -138,8 +138,8 @@ trait Obj
   // evaluation methods
   final def compute[E <: Obj](target:E, withAs:Boolean = true):E =
     if (withAs) AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target) else Obj.resolveInternal[E](this, target)
-  final def ~~>[E <: Obj](target:E):E = Some(Obj.resolveArg[this.type, E](this, target)).map(x => if (this.model.vars(target.name).isDefined) x else x.named(target.name)).get
-  final def ==>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
+  final def ->>[E <: Obj](target:E):E = Some(Obj.resolveArg[this.type, E](this, target)).map(x => if (this.model.vars(target.name).isDefined) x else x.named(target.name)).get
+  final def =>>[E <: Obj](target:E):E = Obj.resolveObj[this.type, E](this, target)
   final def coerce[E <: Obj](target:E):E = this.coercions(target).headOption.getOrElse(zeroObj).asInstanceOf[E]
   final def coercions[E <: Obj](target:E):Stream[E] = this.model.graph.coerce(this, target).asInstanceOf[Stream[E]]
 

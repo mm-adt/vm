@@ -58,14 +58,14 @@ class __Test extends FunSuite {
     assert(str("marko").q(10).test(__.q(10)))
     assert(str("marko").q(5, 10).test(__.q(*)))
     assert(str("marko").q(10).test(__.q(3, 11)))
-    assertResult(0)((str("marko").q(10) `=>` __.q(+)).trace.length)
+    assertResult(0)((str("marko").q(10) `=>>` __.q(+)).trace.length)
   }
 
   test("__ type structure") {
     assertResult(__.q(0))(__.q(0))
     assertResult(int.q(0))(__.q(0))
-    assertResult(zeroObj)(__.q(0) `=>` __.q(0))
-    assertResult(zeroObj)(__.q(0) ==> __.q(0))
+    assertResult(zeroObj)(__.q(0) `=>>` __.q(0))
+    assertResult(zeroObj)(__.q(0) =>> __.q(0))
     assert(__.root)
     assert(!__.plus(1).root)
     assertResult(__)(__.plus(1).via._1)
@@ -84,42 +84,42 @@ class __Test extends FunSuite {
   }
 
   test("__  type fluency") {
-    assertResult(str("marko!"))(rec(str("name") -> str("marko")) ==> __.id.get(str("name")).plus(str("!")))
-    assertResult(int(12))(int(5) ==> __.plus(2).plus(5).id)
-    assertResult(int(120))(int(5) ==> __.plus(2).plus(5).id.mult(10))
+    assertResult(str("marko!"))(rec(str("name") -> str("marko")) =>> __.id.get(str("name")).plus(str("!")))
+    assertResult(int(12))(int(5) =>> __.plus(2).plus(5).id)
+    assertResult(int(120))(int(5) =>> __.plus(2).plus(5).id.mult(10))
   }
 
   test("__ deep nest") {
-    assertResult(int(2))(int(1) ==> __.plus(1))
-    assertResult(int(3))(int(1) ==> __.plus(__.plus(1)))
-    assertResult(int(4))(int(1) ==> __.plus(__.plus(__.plus(1))))
-    assertResult(int(5))(int(1) ==> __.plus(__.plus(__.plus(__.plus(1)))))
-    assertResult(int(6))(int(1) ==> __.plus(__.plus(__.plus(__.plus(__.plus(1))))))
+    assertResult(int(2))(int(1) =>> __.plus(1))
+    assertResult(int(3))(int(1) =>> __.plus(__.plus(1)))
+    assertResult(int(4))(int(1) =>> __.plus(__.plus(__.plus(1))))
+    assertResult(int(5))(int(1) =>> __.plus(__.plus(__.plus(__.plus(1)))))
+    assertResult(int(6))(int(1) =>> __.plus(__.plus(__.plus(__.plus(__.plus(1))))))
   }
 
   test("__ quantifiers") {
-    println(int ==> __.id.q(2))
+    println(int =>> __.id.q(2))
     assertThrows[LanguageException] {
-      int(5) ==> int.q(10)
+      int(5) =>> int.q(10)
     }
-    assertResult(bfalse)(int(5) ==> __.gt(16))
-    assertResult(zeroObj)(int(5).q(*) ==> __.q(0).gt(16))
-    assertResult(zeroObj)(int(5).q(0) ==> __.q(*).gt(16))
-    assertResult(int(5))(int(5) ==> __)
-    assertResult(int(5))(int(5) ==> __.id)
-    assertResult(int(5))(int(5) ==> __.id.q(1))
-    assertResult(int(5).q(2))(int(5) ==> __.id.q(2).asInstanceOf[__])
+    assertResult(bfalse)(int(5) =>> __.gt(16))
+    assertResult(zeroObj)(int(5).q(*) =>> __.q(0).gt(16))
+    assertResult(zeroObj)(int(5).q(0) =>> __.q(*).gt(16))
+    assertResult(int(5))(int(5) =>> __)
+    assertResult(int(5))(int(5) =>> __.id)
+    assertResult(int(5))(int(5) =>> __.id.q(1))
+    assertResult(int(5).q(2))(int(5) =>> __.id.q(2).asInstanceOf[__])
 
-    assertResult(int(1))(int(1) ==> __.q(10).asInstanceOf[__])
-    assertResult(int(1).q(*))(int(1) ==> __.q(10).id.q(*).asInstanceOf[__])
-    assertResult(int(1).q(?))(int(1) ==> __.q(10).id.q(?).asInstanceOf[__])
-    assertResult(int(2).q(10))(int(1) ==> __.plus(1).q(10).asInstanceOf[__])
-    assertResult(int(2).q(20))(int(1).q(2) ==> __.plus(1).q(10).asInstanceOf[__])
-    assertResult(int(20).q(20))(int(1).q(2) ==> __.plus(1).q(10).mult(10).asInstanceOf[__])
-    assertResult(int(20).q(2000))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).asInstanceOf[__])
-    assertResult(int(21).q(2000))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).asInstanceOf[__])
-    assertResult(int(42).q(2000))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).plus(__.id.q(1000)).asInstanceOf[__])
-    assertResult(int(45).q(2000))(int(1).q(2) ==> __.plus(1).q(10).mult(10).q(100).plus(1).plus(__.id.q(1000)).plus(3).asInstanceOf[__])
+    assertResult(int(1))(int(1) =>> __.q(10).asInstanceOf[__])
+    assertResult(int(1).q(*))(int(1) =>> __.q(10).id.q(*).asInstanceOf[__])
+    assertResult(int(1).q(?))(int(1) =>> __.q(10).id.q(?).asInstanceOf[__])
+    assertResult(int(2).q(10))(int(1) =>> __.plus(1).q(10).asInstanceOf[__])
+    assertResult(int(2).q(20))(int(1).q(2) =>> __.plus(1).q(10).asInstanceOf[__])
+    assertResult(int(20).q(20))(int(1).q(2) =>> __.plus(1).q(10).mult(10).asInstanceOf[__])
+    assertResult(int(20).q(2000))(int(1).q(2) =>> __.plus(1).q(10).mult(10).q(100).asInstanceOf[__])
+    assertResult(int(21).q(2000))(int(1).q(2) =>> __.plus(1).q(10).mult(10).q(100).plus(1).asInstanceOf[__])
+    assertResult(int(42).q(2000))(int(1).q(2) =>> __.plus(1).q(10).mult(10).q(100).plus(1).plus(__.id.q(1000)).asInstanceOf[__])
+    assertResult(int(45).q(2000))(int(1).q(2) =>> __.plus(1).q(10).mult(10).q(100).plus(1).plus(__.id.q(1000)).plus(3).asInstanceOf[__])
   }
 
 }

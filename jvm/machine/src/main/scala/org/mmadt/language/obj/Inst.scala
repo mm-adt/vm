@@ -44,7 +44,7 @@ trait Inst[S <: Obj, +E <: Obj] extends LstType[S] {
   def exec(start:S):E = {
     val end:E = start match {
       case _:Strm[_] if this.func.preStrm => start.via(start, this).asInstanceOf[E]
-      case _ if this.func.preArgs => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => start ~~> arg)), via = (this, IdOp()))) // TODO: It's not an [id] that processes the inst. hmmm...
+      case _ if this.func.preArgs => this.func.asInstanceOf[Func[S, E]](start, this.clone(g = (this.op, this.args.map(arg => start ->> arg)), via = (this, IdOp()))) // TODO: It's not an [id] that processes the inst. hmmm...
       case _ => this.func.asInstanceOf[Func[S, E]](start, this)
     }
     if (LiftOp.inLift(end, this)) end.via(start, IdOp())

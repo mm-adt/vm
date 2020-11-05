@@ -87,7 +87,7 @@ object AsOp extends Func[Obj, Obj] {
   def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
 
   private def pickMapping(source:Obj, target:Obj):Obj = {
-    if (target.isInstanceOf[Value[Obj]]) source ~~> target
+    if (target.isInstanceOf[Value[Obj]]) source ->> target
     else if (source.isInstanceOf[Type[_]]) target
     else {
       val rtarget = Obj.resolveToken(source, target)
