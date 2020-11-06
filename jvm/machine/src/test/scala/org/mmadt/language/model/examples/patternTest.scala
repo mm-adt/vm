@@ -23,7 +23,7 @@
 package org.mmadt.language.model.examples
 
 import org.mmadt.language.model.examples.patternTest.PATTERN
-import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken}
+import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__.symbolToRichToken
 import org.mmadt.language.obj.op.sideeffect.LoadOp
@@ -96,4 +96,10 @@ class patternTest extends BaseInstTest(
       "(2;3)=>(dble;dble)=>(int+-2;int+-3)=>aplus=>int",
       "(2;3)=>(dble+-2;dble+-3)=>aplus=>int"
     ),
-  ))
+  ),
+  testSet("rec coercions", PATTERN,
+    testing(str("a")->int(1)`_,`str("b")->str("two"),'abc,'abc(str("a")->int(1)`_,`str("b")->str("two")),"('a'->1,'b'->'two')=>abc"),
+    //testing(str("a")->int(1)`_,`str("b")->str("two")`_,`str("x")->int(123),'abc,'abc(str("a")->int(1)`_,`str("b")->str("two")),"('a'->1,'b'->'two','x'->123)=>abc"),
+    excepting(str("a")->int(1)`_,`str("b")->int(2),'abc,LanguageException.typingError(str("a")->int(1)`_,`str("b")->int(2),'abc),"('a'->1,'b'->2)=>abc"),
+  )
+)

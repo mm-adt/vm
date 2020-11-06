@@ -142,12 +142,11 @@ object Converters {
     case _:__ => Stream(source)
     case bstr:StrType => Stream(str(name = bstr.name, g = source.toString, via = source.via))
     case brec:Rec[_, _] if brec.ctype => Stream(source.named(brec.name))
-    case brec:Rec[Obj, Obj] => source.gmap.flatMap(a => brec.gmap
-      .flatMap(b => cartesianProduct(List(a._1.coercions(b._1), a._2.coercions(b._2)))))
+    case brec:Rec[Obj, Obj] => source.gmap
+      .flatMap(a => brec.gmap.flatMap(b => cartesianProduct(List(a._1.coercions(b._1), a._2.coercions(b._2)))))
       .map(b => (b.head, b.last))
       .combinations(source.size)
       .toStream
-      .filter(x => x.size >= brec.gmap.count(x => x._2.q._1.g > 0))
       .distinct
       .map(x => source.clone(name = brec.name, g = (brec.gsep, x)))
       .filter(x => x.gmap.size >= brec.gmap.count(x => x._2.q._1.g > 0))

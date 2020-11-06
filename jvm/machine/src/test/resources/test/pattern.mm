@@ -1,5 +1,6 @@
 pattern:('import' -> (mm -> ()),
 'type' -> (
+ abc   -> (abc:('a'->int,'b'->str,'c'->abc{?})),
  dble  -> (dble<=int*2),
  aplus -> (aplus<=(int;int)-<(<x>.0+x.1)>-),
  pair  -> (pair:(_;_),
