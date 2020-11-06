@@ -125,7 +125,7 @@ trait Obj
   def hardQ(q:IntQ):this.type = this.clone(q = q)
   def hardQ(single:IntValue):this.type = this.hardQ(single.g, single.g)
   def pureQ:IntQ = divQ(this.q, this.domainObj.q)
-  def normQ(otherQ:IntQ):this.type = this.hardQ(if(this.q._1.g == 0 && this.alive) otherQ.mult(this.q._2,this.q._2) else otherQ.mult(this.q))
+  def normQ(otherQ:IntQ):this.type = this.hardQ(if (this.q._1.g == 0 && this.alive) otherQ.mult(this.q._2, this.q._2) else otherQ.mult(this.q))
   lazy val alive:Boolean = this.q != qZero
   lazy val unity:this.type = this.clone(q = qOne)
 
