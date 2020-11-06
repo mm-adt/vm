@@ -25,7 +25,7 @@ package org.mmadt.language.model.examples
 import org.mmadt.language.model.examples.patternTest.PATTERN
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
-import org.mmadt.language.obj.`type`.__.symbolToRichToken
+import org.mmadt.language.obj.`type`.__.{as, symbolToRichToken}
 import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageException, Tokens}
@@ -43,21 +43,21 @@ object patternTest {
 class patternTest extends BaseInstTest(
   testSet("basic patterns", PATTERN,
     comment("ipair"),
-    IGNORING("eval-.", "query-2")(int, 'ipair, 'ipair(int `;` int) <= (int `=>`('ipair(int `;` int) <= int.split(int `;` int))), "int => ipair"),
-    IGNORING("eval-.", "query-2")(int, 'ipair `=>` 'isnd, 'isnd(int) <= ((int `=>`('ipair(int `;` int) <= int.split(int `;` int))) `=>`('isnd(int) <= 'ipair(int `;` int).get(1))), "int => ipair => isnd"),
+    IGNORING("eval-.", "query-2")(int, 'ipair, 'ipair(int `;` int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)), "int => ipair"),
+    IGNORING("eval-.", "query-2")(int, 'ipair.as('isnd), 'isnd(int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)).as('isnd(int) <= 'ipair(int `;` int).get(1)), "int => ipair => isnd"),
     testing(5, 'ipair, 'ipair(5 `;` 5), "5 => ipair"),
     testing('ipair(5 `;` 5), (int `;` int), (5 `;` 5), "ipair:(5;5) => (int;int)"),
-    IGNORING("eval-.", "query-2")(int, __ `=>` 'ipair `=>` (int `;` int), (int `;` int) <= (int.`=>`('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
+    IGNORING("eval-.", "query-2")(int,as('ipair).as(int `;` int), (int `;` int) <= (int.as('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
     //IGNORING("eval-.")(5, 'ipair ~> (int `;` int), (5 `;` 5), "5 => ipair => (int;int)"),
     excepting("4", 'ipair, LanguageException.typingError("4", 'ipair), "'4' => ipair"),
     excepting("five", 'ipair, LanguageException.typingError("five", 'ipair), "'five' => ipair"),
-    IGNORING("eval-.", "query-2")(int, __ `=>` 'ipair, int `=>`('ipair(int `;` int) <= int -< (int `;` int)), "int => ipair"),
+    IGNORING("eval-.", "query-2")(int, as('ipair), int.as('ipair(int `;` int) <= int -< (int `;` int)), "int => ipair"),
     comment("pair"),
     testing(5, 'pair, 'pair(5 `;` 5), "5 => pair"),
     testing("4", 'pair, 'pair("4" `;` "4"), "'4' => pair"),
     testing("five", 'pair, 'pair("five" `;` "five"), "'five' => pair"),
     // IGNORING("eval-.", "query-2")(int, 'pair, int ~> ('pair <= int -< (int `;` int)), "int => pair"),
-    IGNORING("eval-.")(6, int ==> int.split(__ `;` __) `=>`(int `;`(int `=>` 'ipair)) `=>` 'pair, 'pair(6 `;` 'ipair(6 `;` 6)),
+    IGNORING("eval-.")(6, int ==> int.split(__ `;` __).as(int `;`(int.as('ipair))).as('pair), 'pair(6 `;` 'ipair(6 `;` 6)),
       "6 =>-<(_;_)=>(int;int=>ipair)=>pair",
       "6 => int-<(int;int)=>(int;int=>ipair)=>pair",
       "6 =>-<(_;_)=>pair:(int;int=>ipair)",
@@ -65,7 +65,7 @@ class patternTest extends BaseInstTest(
       "6 => int-<pair:(int;ipair)",
     ),
     comment("fst and snd"),
-    IGNORING("eval-[2-4]", "query-2")('ipair, __ `=>` 'ifst, 'ifst <= ('ipair(int `;` int) `=>`('ifst <= 'ipair(int `;` int).get(0))), "ipair => ifst"),
+    IGNORING("eval-[2-4]", "query-2")('ipair, as('ifst), 'ifst <= 'ipair(int `;` int).as('ifst <= 'ipair(int `;` int).get(0)), "ipair => ifst"),
     testing('ipair(1 `;` 2), 'ifst, 'ifst(1), "ipair:(1;2) => ifst"),
     testing((1 `;` 2), 'ifst, 'ifst(1), "(1;2) => ifst"),
     excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
@@ -92,7 +92,7 @@ class patternTest extends BaseInstTest(
 
   test("quantifiers") {
     evaluate(testSet("quantifiers", PATTERN,
-      IGNORING("eval-2","eval-4","query-2")(int.q(4), __ `=>` 'dble.plus(10), 'dble.q(4) <= ('dble.q(4) <= int.q(4).mult(2)).plus(10), "int{4} => dble+10"),
+      IGNORING("eval-2","eval-4","query-2")(int.q(4), as('dble.plus(10)), 'dble.q(4) <= ('dble.q(4) <= int.q(4).mult(2)).plus(10), "int{4} => dble+10"),
       testing(3.q(4), 'dble, 'dble(6.q(4)), "3{4} => dble"),
       testing(4.q(5), 'dble.plus(10).q(6), 'dble(18.q(30)), "4{5} => dble[plus,10]{6}"),
     ))

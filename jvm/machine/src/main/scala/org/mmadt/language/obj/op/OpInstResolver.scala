@@ -91,7 +91,7 @@ object OpInstResolver {
       case Tokens.load => LoadOp(args.head)
       case Tokens.noop => NoOp()
       case Tokens.a => AOp(args.head)
-      case Tokens.as => AsOp(args.head)
+      case Tokens.as | Tokens.`as_op` => AsOp(args.head)
       case Tokens.not | Tokens.not_op => NotOp(args.head)
       case Tokens.and | Tokens.and_op => AndOp(args:_*)
       case Tokens.or | Tokens.or_op => OrOp(args:_*)
@@ -107,8 +107,6 @@ object OpInstResolver {
         case List(key:Obj, typeHint:Type[Obj]) => GetOp(key, typeHint)
         case List(key:Obj) => GetOp(key)
       }
-
-      case Tokens.coerce | Tokens.coerce_op => CoerceOp(args.head)
       case Tokens.juxt | Tokens.juxt_op => JuxtOp(args.head)
       case Tokens.branch => BranchOp(args.head)
       case Tokens.map => MapOp(args.head)

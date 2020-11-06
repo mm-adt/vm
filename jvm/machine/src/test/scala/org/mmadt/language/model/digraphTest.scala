@@ -75,7 +75,7 @@ class digraphTest extends BaseInstTest(
     testing((1 `;` 2), ('vertex `;` 'vertex), 'vertex(str("id") -> 'nat(1)) `;` 'vertex(str("id") -> 'nat(2)), "(1;2)=>(vertex;vertex)"),
     testing(
       (32 `;`("name" `;` "marko")),
-      as(int `;` 'attr),
+      (int `;` 'attr),
       (32 `;` 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
       "(32;('name';'marko')) => (int;attr)"),
     IGNORING("query-.")(
@@ -98,7 +98,7 @@ class digraphTest extends BaseInstTest(
       (int`;`(str`;`str)) =>> (int `;` 'attr)=>> ('nat `;` 'attr) =>> 'vertex,
       'vertex(str("id") -> 'nat(40) `_,` str("attrs") -> 'attr(str("key") -> str("name") `_,` str("value") -> str("marko"))),
       "('40';('name';'marko')) => (int;(str;str)) => (int;attr) => (nat;attr) => vertex"),*/
-  ) ) {
+  )) {
 
   test("edges")(evaluate(testSet("digraph model edge test", DIGRAPH,
     testing((1 `;` 2), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> 'nat(1)) `_,` str("inV") -> 'vertex(str("id") -> 'nat(2))), "(1;2)=>edge"),

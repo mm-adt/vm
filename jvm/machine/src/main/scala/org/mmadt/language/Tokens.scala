@@ -135,7 +135,7 @@ object Tokens {
   val lift_op = "^" // -^ like -< but over and up. (^- ?)
   val combine_op = "="
   val merge_op = ">-"
-  val coerce_op = "=>"
+  val as_op = "=>"
   val walk_op = "~~>"
   val juxt_op = "=>"
   val swap_op = "/"

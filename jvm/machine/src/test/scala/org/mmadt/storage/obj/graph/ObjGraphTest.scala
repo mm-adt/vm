@@ -112,8 +112,8 @@ class ObjGraphTest extends FunSuite {
         assertResult(Seq('nat <= (int `;` int `;` int).get(1).is(gt(0))))(graph.coerce((int `;` int `;` int), 'nat))
         assertResult(Seq('vertex(str("id") -> int) <= (int `;` int `;` int).get(1).-<(str("id") -> __)))(graph.coerce((int `;` int `;` int), 'vertex))*/
     assertResult(Seq('vertex(str("id") -> int(2))))(graph.coerce((1 `;` 2 `;` 3), 'vertex))
-    /*assertResult(Seq('vertex(str("id") -> int)))(graph.coerce('vertex, 'vertex))
-    assertResult(Seq('vertex(str("id") -> int) <= int.-<(str("id") -> __)))(graph.coerce(int, 'vertex))*/
+    assertResult(Seq('vertex(str("id") -> int)))(graph.coerce('vertex, 'vertex))
+    assertResult(Seq('vertex(str("id") -> int) <= int.as('vertex(str("id") -> int) <= int.-<(str("id") -> __))))(graph.coerce(int, 'vertex))
     assertResult(Seq('vertex(str("id") -> int(6))))(graph.coerce(6, 'vertex))
     assertResult(Seq(int(6)))(graph.coerce(1 `;` 6 `;` 3, int))
     // assertResult(Seq('edge <= ('vertex `;` 'vertex).-<((str("outV") -> get(0)) `_,`(str("inV") -> get(1)))))(Stream('edge <= graph.coerce('vertex `;` 'vertex, 'edge).head))
@@ -121,7 +121,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(81 `;` 91, 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(lst(g = (Tokens.`;`, List((1 `;` 81 `;` 2), (3 `;` 91 `;` 24)))), 'edge))
     // assertResult(Seq('edge <= (int `;` int).combine(('vertex <= int.-<(str("id") -> int)) `;`('vertex <= int.-<(str("id") -> int))).-<((str("outV") -> (get(0))) `_,`(str("inV") -> (get(1))))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
-    // assertResult(Seq('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
+    assertResult(Seq('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
     // assertResult(Seq(int <= int.is(gt(0))))(graph.coerce(int, 'nat).map(x => graph.coerce(x, int)).head)
     // assertResult(Seq('vertex<=int.is(gt(0)).split(str("id")->int)))(graph.coerce(int, 'nat).map(x => graph.coerce(x,int)).head.map(x => graph.coerce(x,'vertex)).head)
   }

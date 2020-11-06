@@ -76,7 +76,6 @@ trait Obj
     with LiftOp
     with RepeatOp
     with ExplainOp
-  with CoerceOp
     with TypeOp {
 
   //////////////////////////////////////////////////////////////

@@ -26,6 +26,7 @@ import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.branch.CombineOp
 import org.mmadt.language.obj.op.map.WalkOp
+import org.mmadt.language.obj.op.trace.ModelOp.NONE
 import org.mmadt.language.obj.op.{OpInstResolver, TraceInstruction}
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.value.{LstValue, StrValue, Value}
@@ -42,20 +43,37 @@ trait AsOp {
   this:Obj =>
   def as[O <: Obj](aobj:O):O = AsOp(aobj).exec(this).asInstanceOf[O]
   def as(atype:Symbol):__ = AsOp(__(atype.name)).exec(this).asInstanceOf[__]
-  //def ~>(atype:Symbol):__ = autoAsType(this, x => x, atype)
-  //def ~>[O <: Obj](aobj:O):O = autoAsType(this, x => x, aobj)
+  def `=>`[O <: Obj](aobj:O):O = as(aobj)
+  def `=>`(atype:Symbol):__ = as(atype)
 }
-
 object AsOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
   def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
-  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = internalConvertAs(start, inst.arg0[Obj]).via(start, inst)
+  override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
+    if (__.isAnon(start)) return start.via(start, inst)
+    inst.arg0[Obj] match {
+      case avalue:Value[Obj] => avalue.hardQ(q => start.q.mult(q))
+      case atype:Type[Obj] if __.isAnonRootAlive(atype) => start
+      case atype:Type[Obj] if start.model == NONE => atype.rangeObj.via(start, inst)
+      case atype:Type[Obj] =>
+        start match {
+          case _:Type[_] if start.rangeObj == atype => start
+          case _:Type[_] if !Tokens.named(atype.name) && toBaseName(start.rangeObj) == atype => atype.rangeObj <= start
+          case _:Type[_] => start.coerce(atype).update(start.model)
+          case _:Value[_] => start.named(atype.domainObj.name).compute(atype, withAs = false).named(atype.rangeObj.name)
+        }
+    }
+  }
+
+  def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
 
   def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
+
   def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E =
     if (target.root) f(autoAsType(source, target.domain)).asInstanceOf[E]
     else autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
 
+  /////// PRIVATE METHODS
   private def autoAsType(source:Obj, target:Obj, domain:Boolean):Obj = {
     if (domain && __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined) return source.from(__(target.name))
     if (source.name.equals(target.name)) {
@@ -74,7 +92,6 @@ object AsOp extends Func[Obj, Obj] {
       case _:Type[_] => if (domain) target.update(source.model) else target <= source
     }
   }
-
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
     val asObj:Obj = WalkOp.walkSourceToTarget(source, target, targetName = true)
     val dObj:Obj = pickMapping(source, asObj)
@@ -83,8 +100,6 @@ object AsOp extends Func[Obj, Obj] {
     if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
     rObj.named(asObj.name)
   }
-
-  def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
 
   private def pickMapping(source:Obj, target:Obj):Obj = {
     if (target.isInstanceOf[Value[Obj]]) source ->> target
@@ -98,9 +113,6 @@ object AsOp extends Func[Obj, Obj] {
       })
     }
   }
-
-  /////// CONVERTERS
-
 
   private def lstConverter(source:Lst[Obj], target:Obj):Obj = target.domain match {
     case _:__ => source

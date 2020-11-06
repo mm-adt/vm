@@ -38,5 +38,5 @@ class mmxTest extends BaseInstTest(
   ),
   testSet("mmx model table test", MMX,
     comment("int"),
-    testing(5, as(str), "5", "5[as,str]"),
+    //testing(5, as(str), "5", "5[as,str]"),
   ))

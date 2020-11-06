@@ -26,12 +26,13 @@ import org.apache.tinkerpop.gremlin.process.traversal.Traverser
 import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal, GraphTraversalSource, __ => ___}
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
+import org.apache.tinkerpop.gremlin.util.iterator.IteratorUtils
 import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
-import org.mmadt.language.obj.op.trace.{CoerceOp, ModelOp, NoOp}
+import org.mmadt.language.obj.op.trace.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage
@@ -82,7 +83,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       .filter(x => !x._2.glist.exists(y => y.domainObj.name == Tokens.lift_op)) // little optimization hack that will go away as model becomes more cleverly organized
       .flatMap(x => x._2.glist.filter(y => y.root) :+ x._1) // ctype + token ctype
       .distinct
-      .foreach(c => this.createObj(c.asInstanceOf[Type[Obj]]))
+      .foreach(c => this.createObj(c))
     model.dtypes.foreach(d => this.createObj(d))
   }
   ///////////// CONSTRUCT GRAPH /////////////
@@ -161,20 +162,27 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           .repeat(___
             .simplePath() // no cycles allowed
             .outE()
-            .sideEffect((t:Traverser[Edge]) => {
+            .flatMap((t:Traverser[Edge]) => {
               val sack = t.sack[Obj]
               val inst = t.get.inst
               val incidentObj = t.get.inVertex().obj
               if (inst.op.equals(Tokens.noop) && baseName(sack) != baseName(incidentObj))
-                t.sack(Converters.objConverter(sack, t.get.inVertex().obj).headOption.getOrElse(zeroObj))
+                JavaConverters.asJavaIterator(Converters.objConverter(sack, incidentObj)
+                  .map(newSack => (t.get, newSack)).iterator)
+                  .asInstanceOf[java.util.Iterator[Edge]]
               else {
                 val instOut = t.get.inst.exec(sack)
-                val incidentName = t.get.inVertex().obj.name
-                t.sack(
-                  if (!sack.name.equals(instOut.name)) instOut.named(incidentName).via(sack, CoerceOp(t.get.inst.exec(sack.rangeObj).named(incidentName)))
-                  else instOut.named(incidentName))
+                val incidentName = incidentObj.name
+                IteratorUtils.of((t.get,
+                  if (!sack.name.equals(instOut.name)) instOut.named(incidentName).via(sack, AsOp(t.get.inst.exec(sack.rangeObj).named(incidentName)))
+                  else instOut.named(incidentName))).asInstanceOf[java.util.Iterator[Edge]]
               }
             }) // evaluate edge instruction
+            .sideEffect((t:Traverser[Edge]) => {
+              val sack = t.get.asInstanceOf[(Edge, Obj)]._2
+              t.asAdmin().sack(sack)
+              t.asAdmin().set(t.get.asInstanceOf[(Edge, Obj)]._1)
+            })
             .inV()
             .filter((t:Traverser[Vertex]) => t.sack[Obj].alive)
           )
@@ -192,10 +200,11 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           }
           case _:Type[_] => obj
         }
-      }).union(Try(Converters.objConverter(source, troot)
+      })
       .filter(_.alive)
-      .filter(_ => Tokens.named(target.name))
-      .map(x => target.trace.reconstruct[Obj](x))).getOrElse(Stream.empty[Obj])) // direct translation of source to target with reconstruction via target trace
+      .union(Try(Converters.objConverter(source, troot)
+        .filter(_ => Tokens.named(target.name))
+        .map(x => target.trace.reconstruct[Obj](x))).getOrElse(Stream.empty[Obj])) // direct translation of source to target with reconstruction via target trace
       .filter(x => finalStructureTest(x.rangeObj, target.rangeObj))
       .distinct
   }
