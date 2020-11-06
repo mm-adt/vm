@@ -47,11 +47,11 @@ class patternTest extends BaseInstTest(
     IGNORING("eval-.", "query-2")(int, 'ipair `=>` 'isnd, 'isnd(int) <= ((int `=>`('ipair(int `;` int) <= int.split(int `;` int))) `=>`('isnd(int) <= 'ipair(int `;` int).get(1))), "int => ipair => isnd"),
     testing(5, 'ipair, 'ipair(5 `;` 5), "5 => ipair"),
     testing('ipair(5 `;` 5), (int `;` int), (5 `;` 5), "ipair:(5;5) => (int;int)"),
-    IGNORING("eval-.", "query-2")(int, 'ipair ==> (int `;` int), (int `;` int) <= (int.`=>`('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
+    IGNORING("eval-.", "query-2")(int, __ `=>` 'ipair `=>` (int `;` int), (int `;` int) <= (int.`=>`('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
     //IGNORING("eval-.")(5, 'ipair ~> (int `;` int), (5 `;` 5), "5 => ipair => (int;int)"),
     excepting("4", 'ipair, LanguageException.typingError("4", 'ipair), "'4' => ipair"),
     excepting("five", 'ipair, LanguageException.typingError("five", 'ipair), "'five' => ipair"),
-    IGNORING("eval-.", "query-2")(int, 'ipair, int `=>`('ipair(int `;` int) <= int -< (int `;` int)), "int => ipair"),
+    IGNORING("eval-.", "query-2")(int, __ `=>` 'ipair, int `=>`('ipair(int `;` int) <= int -< (int `;` int)), "int => ipair"),
     comment("pair"),
     testing(5, 'pair, 'pair(5 `;` 5), "5 => pair"),
     testing("4", 'pair, 'pair("4" `;` "4"), "'4' => pair"),
@@ -65,7 +65,7 @@ class patternTest extends BaseInstTest(
       "6 => int-<pair:(int;ipair)",
     ),
     comment("fst and snd"),
-    IGNORING("eval-.", "query-2")('ipair, 'ifst, 'ifst <= ('ipair(int `;` int) `=>`('ifst <= 'ipair(int `;` int).get(0))), "ipair => ifst"),
+    IGNORING("eval-[2-4]", "query-2")('ipair, __ `=>` 'ifst, 'ifst <= ('ipair(int `;` int) `=>`('ifst <= 'ipair(int `;` int).get(0))), "ipair => ifst"),
     testing('ipair(1 `;` 2), 'ifst, 'ifst(1), "ipair:(1;2) => ifst"),
     testing((1 `;` 2), 'ifst, 'ifst(1), "(1;2) => ifst"),
     excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
@@ -88,18 +88,32 @@ class patternTest extends BaseInstTest(
       "(1;2)=>pair=>(int;int)=>(ipair;+3)=>pair"
     )
   ),
-  testSet("custom instructions", PATTERN,
-    IGNORING("eval-[4-5]", "query-2")(2 `;` 3, (int `;` int).branch(lst(__('aplus))), 5,
-      "(2;3)[aplus]",
-      "(2;3)=>aplus",
-      "(2;3)=>(int;int)=>aplus=>int",
-      "(2;3)=>(dble;dble)=>(int+-2;int+-3)=>aplus=>int",
-      "(2;3)=>(dble+-2;dble+-3)=>aplus=>int"
-    ),
-  ),
-  testSet("rec coercions", PATTERN,
-    testing(str("a")->int(1)`_,`str("b")->str("two"),'abc,'abc(str("a")->int(1)`_,`str("b")->str("two")),"('a'->1,'b'->'two')=>abc"),
+) {
+
+  test("quantifiers") {
+    evaluate(testSet("quantifiers", PATTERN,
+      IGNORING("eval-2","eval-4","query-2")(int.q(4), __ `=>` 'dble.plus(10), 'dble.q(4) <= ('dble.q(4) <= int.q(4).mult(2)).plus(10), "int{4} => dble+10"),
+      testing(3.q(4), 'dble, 'dble(6.q(4)), "3{4} => dble"),
+      testing(4.q(5), 'dble.plus(10).q(6), 'dble(18.q(30)), "4{5} => dble[plus,10]{6}"),
+    ))
+  }
+
+  test("custom instructions") {
+    evaluate(testSet("custom instructions", PATTERN,
+      IGNORING("eval-[4-5]", "query-2")(2 `;` 3, (int `;` int).branch(lst(__('aplus))), 5,
+        "(2;3)[aplus]",
+        "(2;3)=>aplus",
+        "(2;3)=>(int;int)=>aplus=>int",
+        "(2;3)=>(dble;dble)=>(int+-2;int+-3)=>aplus=>int",
+        "(2;3)=>(dble+-2;dble+-3)=>aplus=>int"
+      ),
+    ))
+  }
+
+  test("rec coercions")(evaluate(testSet("rec coercions", PATTERN,
+    testing(str("a") -> int(1) `_,` str("b") -> str("two"), 'abc, 'abc(str("a") -> int(1) `_,` str("b") -> str("two")), "('a'->1,'b'->'two')=>abc"),
     //testing(str("a")->int(1)`_,`str("b")->str("two")`_,`str("x")->int(123),'abc,'abc(str("a")->int(1)`_,`str("b")->str("two")),"('a'->1,'b'->'two','x'->123)=>abc"),
-    excepting(str("a")->int(1)`_,`str("b")->int(2),'abc,LanguageException.typingError(str("a")->int(1)`_,`str("b")->int(2),'abc),"('a'->1,'b'->2)=>abc"),
-  )
-)
+    excepting(str("a") -> int(1) `_,` str("b") -> int(2), 'abc, LanguageException.typingError(str("a") -> int(1) `_,` str("b") -> int(2), 'abc), "('a'->1,'b'->2)=>abc"),
+  )))
+
+}

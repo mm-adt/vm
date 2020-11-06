@@ -44,6 +44,7 @@ object CoerceOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false
   def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.coerce, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
+    if (__.isAnon(start)) return start.via(start, inst)
     inst.arg0[Obj] match {
       case atype:Type[Obj] if start.model == NONE => atype.rangeObj.via(start, inst)
       case atype:Type[Obj] =>

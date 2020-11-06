@@ -180,7 +180,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           )
           .sack[Obj]
       ).toStream
-    }).map(obj => target.trace.reconstruct[Obj](obj, target.name).hardQ(target.q))
+    }).map(obj => target.trace.reconstruct[Obj](obj, target.name).normQ(target.q))
       .map(obj => {
         source match {
           // if source was a value, compute the value against the derived type // TODO: this needs to do a recursive descent
@@ -193,6 +193,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case _:Type[_] => obj
         }
       }).union(Try(Converters.objConverter(source, troot)
+      .filter(_.alive)
       .filter(_ => Tokens.named(target.name))
       .map(x => target.trace.reconstruct[Obj](x))).getOrElse(Stream.empty[Obj])) // direct translation of source to target with reconstruction via target trace
       .filter(x => finalStructureTest(x.rangeObj, target.rangeObj))

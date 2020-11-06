@@ -46,21 +46,27 @@ import scala.util.matching.Regex
 abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, Result, List[String], List[(Model, String)]])*) extends FunSuite with TableDrivenPropertyChecks {
   testSets.foreach(testSet => {
     test(testSet._1) {
+      evaluate(testSet)
+    }
+  })
+
+  def evaluate(testSets:(String, List[Model], TableFor5[Obj, Obj, Result, List[String], List[(Model, String)]])*):Unit = {
+    testSets.foreach(testSet => {
       val models = testSet._2
       var lastComment:String = Tokens.blank
       forEvery(testSet._3) {
         // ignore comment lines - with comments as "data" it's easier to track which line in the table
         // has failing data
         case (null, null, comment, Nil, Nil) => lastComment = comment.toString
-        case (lhs, rhs, result:Result, query, ignore) => evaluate(lastComment, lhs, rhs, result, queries = query, models = models, ignore = ignore)
+        case (lhs, rhs, result:Result, query, ignore) => evaluateTest(lastComment, lhs, rhs, result, queries = query, models = models, ignore = ignore)
       }
-    }
-  })
+    })
+  }
 
-  private def evaluate(lastComment:String = "", start:Obj, middle:Obj, end:Result, queries:List[String] = Nil, models:List[Model] = Nil, ignore:List[(Model, String)]):Unit = {
+  private def evaluateTest(lastComment:String = "", start:Obj, middle:Obj, end:Result, queries:List[String] = Nil, models:List[Model] = Nil, ignore:List[(Model, String)]):Unit = {
     if (models.isEmpty) println(s"WARNING: No models defined for query: $start => $middle")
     models.foreach(model => {
-      val querying = queries.flatMap(query=>List[(String, Obj => Obj)](
+      val querying = queries.flatMap(query => List[(String, Obj => Obj)](
         ("query-1", _ => engine.eval(query, bindings(model))),
         ("query-2", _ => engine.eval(query, bindings(model)) match {
           case x:Strm[_] => x // TODO: reconstruct type from a stream
@@ -92,10 +98,12 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
           if (!middle.trace.nexists(x => List(Tokens.one, Tokens.noop, Tokens.map, Tokens.neg, Tokens.repeat).contains(x._2.op) ||
             (x._2.op.equals(Tokens.lift) || x._2.op.equals(Tokens.plus) && (x._2.arg0[Obj].equals(int(0)) || x._2.arg0[Obj].equals(int(1))))))
             result.trace.modeless.zip((asType(s) =>> middle).trace.modeless).foreach(x => { // test trace of compiled form (not __ form)
-              assert(asType(x._1._1).test(x._2._1.rangeObj), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
-              assertResult(x._1._2.op)(x._2._2.op) // test via tuples' inst opcode
-              if (!List(Tokens.split, Tokens.combine).contains(x._1._2.op))
-                assert(x._1._2.test(x._2._2), s"\n\t${x._1._2} -- ${x._2._2}\n\t\t==>${x}") // test via tuples' inst
+              assert(asType(x._1._1).test(x._2._1.range), s"\n\t${x._1._1} -- ${x._2._1}\n\t\t==>${result.trace + "::" + middle.trace}") // test via tuples' obj
+              if (result.isInstanceOf[Type[_]]) { // rewrites complete alter this for values cause of obj graph resolutions
+                assertResult(x._1._2.op)(x._2._2.op) // test via tuples' inst opcode
+                if (!List(Tokens.split, Tokens.combine).contains(x._1._2.op))
+                  assert(x._1._2.rangeObj.test(x._2._2.rangeObj), s"\n\t${x._1._2} -- ${x._2._2}\n\t\t==>${x}") // test via tuples' inst
+              }
             })
           result
         }),
@@ -106,8 +114,6 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
             case Right(value) => throw value
           }
         }),
-        // ("eval-6", s => s ==> (s.range ==> middle)),
-        // ("eval-7", s => s ==> (s.range ==> (middle.domain ==> middle))),
       )
       (evaluating ++ querying)
         .foreach(example => {

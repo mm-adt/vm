@@ -88,7 +88,7 @@ trait Obj
   def reload:this.type = this
   // type methods
   def named:Boolean = Tokens.named(this.name)
-  def named(name:String):this.type = if (Tokens.anon.equals(name)) this else this.clone(name = if (null == name) baseName(this) else name)
+  def named(name:String):this.type = if (Tokens.anon.equals(name) || this.name == name) this else this.clone(name = if (null == name) baseName(this) else name)
   def <=[D <: Obj](domainType:D):this.type = {
     LanguageException.checkRootRange(this, domainType)
     if (domainType.rangeObj.equals(this)) domainType.asInstanceOf[this.type]
@@ -126,6 +126,7 @@ trait Obj
   def hardQ(q:IntQ):this.type = this.clone(q = q)
   def hardQ(single:IntValue):this.type = this.hardQ(single.g, single.g)
   def pureQ:IntQ = divQ(this.q, this.domainObj.q)
+  def normQ(otherQ:IntQ):this.type = this.hardQ(if(this.q._1.g == 0 && this.alive) otherQ.mult(this.q._2,this.q._2) else otherQ.mult(this.q))
   lazy val alive:Boolean = this.q != qZero
   lazy val unity:this.type = this.clone(q = qOne)
 
