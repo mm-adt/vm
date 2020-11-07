@@ -48,7 +48,7 @@ object TestUtil {
       s => engine.eval(s"${stringify(s)} => ${middle}"),
       s => s.compute(middle),
       s => s =>> middle,
-      s => s ==> middle,
+      s => s `=>` middle,
     )
     val compiling = List[Obj => Obj](
       s => (asType(s.rangeObj) =>> middle).trace.foldLeft(s)((a, b) => b._2.exec(a)))

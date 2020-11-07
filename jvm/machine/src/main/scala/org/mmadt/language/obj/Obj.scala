@@ -61,7 +61,6 @@ trait Obj
     with MapOp
     with ModelOp
     with NotOp
-    with JuxtOp
     with FromOp
     with LoadOp
     with QOp
@@ -136,7 +135,8 @@ trait Obj
   def toStrm:Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   // evaluation methods
-  final def inflate[E <: Obj](model:Model = this.model):E = if (__.isToken(this)) Obj.resolveToken(__.update(model), this).asInstanceOf[E] else this.update(model).asInstanceOf[E]
+  final def inflate[E <: Obj](model:Model = this.model):E = if (__.isToken(this)) Obj.resolveTokenOption(__.update(model), this, baseName = false).getOrElse(this).asInstanceOf[E]
+  else this.update(model).asInstanceOf[E]
   final def compute[E <: Obj](target:E, withAs:Boolean = true):E =
     if (withAs) AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target) else Obj.resolveInternal[E](this, target)
   final def ->>[E <: Obj](target:E):E = Some(Obj.resolveArg[this.type, E](this, target)).map(x => if (this.model.vars(target.name).isDefined) x else x.named(target.name)).get
@@ -195,7 +195,6 @@ object Obj {
     case _:Type[_] => Iterator(obj)
   }
 
-  def resolveToken[A <: Obj](obj:Obj, arg:A):A = this.resolveTokenOption(obj, arg, baseName = false).getOrElse(arg.update(obj.model))
   def resolveTokenOption[A <: Obj](obj:Obj, arg:A, baseName:Boolean = true):Option[A] =
     Some(arg).filter(a => __.isToken(a))
       .map(a => obj.model.search[A](obj, a, baseName).headOption)

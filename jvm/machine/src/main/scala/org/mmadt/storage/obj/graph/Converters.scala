@@ -29,7 +29,6 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.CombineOp
-import org.mmadt.language.obj.op.branch.CombineOp.combineAlgorithm
 import org.mmadt.language.obj.value.{BoolValue, IntValue, RealValue, StrValue}
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, str, zeroObj}
 
@@ -41,17 +40,18 @@ import scala.util.Try
 object Converters {
 
   def objConverter(source:Obj, target:Obj):Stream[Obj] = {
+    val itarget = target.inflate[Obj](source.model)
     (source.inflate[Obj](source.model) match {
-      case abool:BoolValue => Stream(boolConverter(abool, target))
-      case abool:BoolType => Stream(boolConverter(abool, target))
-      case aint:IntValue => Stream(intConverter(aint, target))
-      case aint:IntType => Stream(intConverter(aint, target))
-      case areal:RealValue => Stream(realConverter(areal, target))
-      case areal:RealType => Stream(realConverter(areal, target))
-      case astr:StrValue => Stream(strConverter(astr, target))
-      case astr:StrType => Stream(strConverter(astr, target))
-      case alst:Lst[Obj] => lstConverter(alst, target)
-      case arec:Rec[Obj, Obj] => recConverter(arec, target)
+      case abool:BoolValue => Stream(boolConverter(abool, itarget))
+      case abool:BoolType => Stream(boolConverter(abool, itarget))
+      case aint:IntValue => Stream(intConverter(aint, itarget))
+      case aint:IntType => Stream(intConverter(aint, itarget))
+      case areal:RealValue => Stream(realConverter(areal, itarget))
+      case areal:RealType => Stream(realConverter(areal, itarget))
+      case astr:StrValue => Stream(strConverter(astr, itarget))
+      case astr:StrType => Stream(strConverter(astr, itarget))
+      case alst:Lst[Obj] => lstConverter(alst, itarget)
+      case arec:Rec[Obj, Obj] => recConverter(arec, itarget)
       case _:__ => Stream(source)
       case _ => Stream(source) // strm weirdness
     }).filter(_.alive) // .map(x => x.update(source.model)) //.map(x => target.trace.reconstruct[Obj](x))
@@ -140,7 +140,7 @@ object Converters {
           .map(x => x.named(blst.name).reload)
       } else {
         val clst = lst(name = source.name, g = (blst.gsep, source.glist.zip(blst.glist).map(a => a._1.coerce(a._2))), via = source.via)
-        Stream((if(Lst.exactTest(clst, blst.domainObj)) CombineOp.combineAlgorithm(clst, blst, withAs = false) else clst).reload)
+        Stream((if (Lst.exactTest(clst, blst.domainObj)) CombineOp.combineAlgorithm(clst, blst, withAs = false) else clst).reload)
       }
     case _ => Stream.empty
   }

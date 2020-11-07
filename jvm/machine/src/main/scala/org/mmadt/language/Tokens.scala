@@ -34,7 +34,7 @@ object Tokens {
     Tokens.noop, Tokens.and, Tokens.count, Tokens.eqs, Tokens.explain, Tokens.get, Tokens.is, Tokens.mult, Tokens.load,
     Tokens.plus, Tokens.gte, Tokens.gt, Tokens.lte, Tokens.lt, Tokens.path, Tokens.put, Tokens.map, Tokens.from, Tokens.to, Tokens.as,
     Tokens.split, Tokens.combine, Tokens.merge, Tokens.start, Tokens.`type`, Tokens.repeat, Tokens.last, Tokens.empty, Tokens.swap,
-    Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.juxt, Tokens.fold, Tokens.error,
+    Tokens.and, Tokens.or, Tokens.id, Tokens.zero, Tokens.one, Tokens.a, Tokens.head, Tokens.tail, Tokens.fold, Tokens.error,
     Tokens.not, Tokens.sum, Tokens.model, Tokens.rule_id, Tokens.rule_unity, Tokens.walk, Tokens.lift, Tokens.help)
 
   lazy val reservedTypes:List[String] = List(Tokens.btrue, Tokens.bfalse, Tokens.int, Tokens.bool, Tokens.lst, Tokens.rec, Tokens.real, Tokens.str, Tokens.anon)
@@ -67,7 +67,6 @@ object Tokens {
   val tail = "tail"
   val help = "help"
   val last = "last"
-  val juxt = "juxt"
   val noop = "noop"
   val and = "and"
   val as = "as"
@@ -137,7 +136,6 @@ object Tokens {
   val merge_op = ">-"
   val as_op = "=>"
   val walk_op = "~~>"
-  val juxt_op = "=>"
   val swap_op = "/"
 
   val :: = ":"
