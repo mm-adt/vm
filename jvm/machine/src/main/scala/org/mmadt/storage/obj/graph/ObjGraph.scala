@@ -144,8 +144,8 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case _ => null
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
     ///////////////////////////////////////////////////////////////
-    val sroot:Obj = asType(Obj.resolveToken(__.update(model), source))
-    val troot:Obj = bindObj(asType(Obj.resolveToken(__.update(model), target.domainObj))).obj
+    val sroot:Obj = asType(source.inflate[Obj](model))
+    val troot:Obj = bindObj(asType(target.domainObj.inflate[Obj](model))).obj
     Stream(sroot).flatMap(s => {
       JavaConverters.asScalaIterator(
         g.withSack(s).R.has(CTYPE, NAME, s.name)
@@ -213,7 +213,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     if (__.isAnon(b.domainObj)) return true
     if (a.alive != b.alive || a.name != b.name) return false
     val aobj:Obj = a
-    val bobj:Obj = Obj.resolveToken(__.update(model), b)
+    val bobj:Obj = b.inflate(model)
     aobj match {
       case alst:Lst[Obj] =>
         bobj match {

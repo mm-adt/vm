@@ -136,6 +136,7 @@ trait Obj
   def toStrm:Strm[this.type] = strm[this.type](Seq[this.type](this)).asInstanceOf[Strm[this.type]]
 
   // evaluation methods
+  final def inflate[E <: Obj](model:Model = this.model):E = if (__.isToken(this)) Obj.resolveToken(__.update(model), this).asInstanceOf[E] else this.update(model).asInstanceOf[E]
   final def compute[E <: Obj](target:E, withAs:Boolean = true):E =
     if (withAs) AsOp.autoAsType[E](this, source => Obj.resolveInternal[E](source, target), target) else Obj.resolveInternal[E](this, target)
   final def ->>[E <: Obj](target:E):E = Some(Obj.resolveArg[this.type, E](this, target)).map(x => if (this.model.vars(target.name).isDefined) x else x.named(target.name)).get
@@ -233,8 +234,8 @@ object Obj {
       case valueArg:OValue[E] => valueArg
       case typeArg:OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>
         obj match {
-          case _:Value[_] => obj.compute(typeArg)
-          case _:Type[_] => obj.range.compute(typeArg)
+          case _:Value[_] => obj.as(typeArg)
+          case _:Type[_] => obj.rangeObj.compute(typeArg)
         }
       case _ => arg.hardQ(qZero)
     }
