@@ -121,7 +121,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(81 `;` 91, 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(lst(g = (Tokens.`;`, List((1 `;` 81 `;` 2), (3 `;` 91 `;` 24)))), 'edge))
     // assertResult(Seq('edge <= (int `;` int).combine(('vertex <= int.-<(str("id") -> int)) `;`('vertex <= int.-<(str("id") -> int))).-<((str("outV") -> (get(0))) `_,`(str("inV") -> (get(1))))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
-    assertResult(Seq('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
+    assertResult(Seq('nat <= int.as('nat<=int.is(gt(0)))))(graph.coerce(int, 'nat))
     // assertResult(Seq(int <= int.is(gt(0))))(graph.coerce(int, 'nat).map(x => graph.coerce(x, int)).head)
     // assertResult(Seq('vertex<=int.is(gt(0)).split(str("id")->int)))(graph.coerce(int, 'nat).map(x => graph.coerce(x,int)).head.map(x => graph.coerce(x,'vertex)).head)
   }

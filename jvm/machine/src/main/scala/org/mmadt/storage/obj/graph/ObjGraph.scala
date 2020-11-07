@@ -171,11 +171,11 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
                   .map(newSack => (t.get, newSack)).iterator)
                   .asInstanceOf[java.util.Iterator[Edge]]
               else {
-                val instOut = t.get.inst.exec(sack)
                 val incidentName = incidentObj.name
+                val instOut = t.get.inst.exec(sack.rangeObj).clone(name=incidentName,q=sack.pureQ).normQ(sack.rangeObj.q)
                 IteratorUtils.of((t.get,
-                  if (!sack.name.equals(instOut.name)) instOut.named(incidentName).via(sack, AsOp(t.get.inst.exec(sack.rangeObj).named(incidentName)))
-                  else instOut.named(incidentName))).asInstanceOf[java.util.Iterator[Edge]]
+                  if (instOut.root) sack.named(incidentName)
+                  else instOut.clone(via=(sack, AsOp(instOut))))).asInstanceOf[java.util.Iterator[Edge]]
               }
             }) // evaluate edge instruction
             .sideEffect((t:Traverser[Edge]) => {

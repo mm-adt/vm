@@ -44,7 +44,7 @@ class patternTest extends BaseInstTest(
   testSet("basic patterns", PATTERN,
     comment("ipair"),
     IGNORING("eval-.", "query-2")(int, 'ipair, 'ipair(int `;` int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)), "int => ipair"),
-    IGNORING("eval-.", "query-2")(int, 'ipair.as('isnd), 'isnd(int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)).get(1), "int => ipair => isnd"),
+    IGNORING("eval-.", "query-2")(int, 'ipair.as('isnd), 'isnd(int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)).as('isnd <= 'ipair.get(1)), "int => ipair => isnd"),
     testing(5, 'ipair, 'ipair(5 `;` 5), "5 => ipair"),
     testing('ipair(5 `;` 5), (int `;` int), (5 `;` 5), "ipair:(5;5) => (int;int)"),
     IGNORING("eval-.", "query-2")(int, int `=>` 'ipair `=>`(int `;` int), (int `;` int) <= (int.as('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
@@ -74,9 +74,9 @@ class patternTest extends BaseInstTest(
     testing((1 `;` 2), 'ifst, 'ifst(1), "(1;2) => ifst"),
     excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
     testing(("one" `;` "two"), 'fst, 'fst("one"), "('one';'two') => fst"),
-    testing((1 `;` 2), 'ipair.combine(int.plus(2) `;` int.plus(3)), 'ipair(3 `;` 5), "(1;2)=>ipair=(+2;+3)"),
-    testing((1 `;` 2), 'pair.combine('ipair `;` int.plus(3)), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))),
-      "(1;2)=>pair=>=(ipair;+3)=>pair",
+    //testing((1 `;` 2), 'ipair.combine(int.plus(2) `;` int.plus(3)), 'ipair(3 `;` 5), "(1;2)=>ipair=(+2;+3)"),
+    IGNORING("eval-[2-5]")((1 `;` 2), 'pair.combine('ipair `;` int.plus(3)), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))),
+      //"(1;2)=>pair=>=(ipair;+3)=>pair",
       //"(1;2)=>(int;int)=>(int=>ipair;int=>+3)=>pair",
       //"(1;2)=>(int;int)=>(ipair;int+3)=>pair",
       //"(1;2)=>(int;int)=>(ipair;int)=>pair=>=(_;+3)",
@@ -97,7 +97,7 @@ class patternTest extends BaseInstTest(
 
   test("quantifiers") {
     evaluate(testSet("quantifiers", PATTERN,
-      IGNORING("eval-2", "eval-4", "query-2")(int.q(4), as('dble.plus(10)), 'dble.q(4) <= int.q(4).mult(2).plus(10), "int{4} => dble+10"),
+      IGNORING("eval-2", "eval-4", "query-2")(int.q(4), as('dble.plus(10)), 'dble.q(4) <= int.q(4).as('dble.q(4) <= int.q(4).mult(2)).plus(10), "int{4} => dble+10"),
       testing(3.q(4), 'dble, 'dble(6.q(4)), "3{4} => dble"),
       testing(4.q(5), 'dble.plus(10).q(6), 'dble(18.q(30)), "4{5} => dble[plus,10]{6}"),
     ))

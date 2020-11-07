@@ -24,6 +24,7 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`._
+import org.mmadt.language.obj.`type`.__.as
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.trace.ModelOp.NONE
@@ -60,7 +61,7 @@ object AsOp extends Func[Obj, Obj] {
           case _:Type[_] if start.rangeObj == rtype => start
           case _:Type[Obj] if start.model == NONE => rtype.rangeObj.via(start, inst)
           case _:Type[_] if !Tokens.named(rtype.name) && toBaseName(start.rangeObj) == rtype => Converters.objConverter(start, rtype).headOption.getOrElse(zeroObj) // atype.rangeObj <= start
-          case _:Type[_] => start.coerce(rtype)
+          case _:Type[_] => start.coerce(atype)
           case _:Value[_] => start.named(rtype.domainObj.name).compute(atype, withAs = false).named(rtype.rangeObj.name)
         }
     }
@@ -100,7 +101,7 @@ object AsOp extends Func[Obj, Obj] {
     if (target.isInstanceOf[Value[Obj]]) source ->> target
     else source match {
       case _:Value[Obj] => Converters.objConverter(source, target.domainObj).map(x => target.trace.reconstruct[Obj](x)).headOption.getOrElse(source)
-      case _ => Converters.objConverter(source, target).headOption.getOrElse(source)
+      case _ => throw new Exception("todo")// Converters.objConverter(source, target).headOption.getOrElse(source)
     }
   }
 }
