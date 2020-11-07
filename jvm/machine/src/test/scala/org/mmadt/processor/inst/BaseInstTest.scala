@@ -77,7 +77,7 @@ abstract class BaseInstTest(testSets:(String, List[Model], TableFor5[Obj, Obj, R
         })
       ))
       val evaluating = List[(String, Obj => Obj)](
-        //("eval-1", s => engine.eval(s"$s => $middle", bindings(model))),
+        //("eval-1",s => s =>>  middle),
         ("eval-2", s => s match {
           case _:__ if __.isAnon(s) => engine.eval(s"$middle", bindings(model))
           case _:Type[_] if middle.alive => engine.eval(s"${middle.trace.reconstruct[Obj](s)}", bindings(model))

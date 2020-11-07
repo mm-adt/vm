@@ -59,7 +59,7 @@ class pgTest extends BaseInstTest(
     testing((5 `;` 6), 'edge, 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "(5;6) => edge"),
     //testing(5, (int.-<(__`;`plus(1)))`=>`('vertex`;`'vertex)`=>`'edge, 'edge(str("outV") -> 'vertex(str("id") -> int(5)) `_,` str("inV") -> 'vertex(str("id") -> int(6))), "5-<(_;+1)=>(vertex;vertex)=>edge"),
   ), testSet("int=>(vertex;vertex)", storage.model('pg_2).defining(('vertex `;` 'vertex) <= (int.-<('vertex `;` 'vertex))),
-    IGNORING(".*")(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
+    // IGNORING(".*")(1, ('vertex `;` 'vertex), ('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), "1 => (vertex;vertex)"),
     //testing(int(1, 2), ('vertex `;` 'vertex), strm[Obj](('vertex(str("id") -> int(1)) `;` 'vertex(str("id") -> int(1))), ('vertex(str("id") -> int(2)) `;` 'vertex(str("id") -> int(2)))), "[1,2] => (vertex;vertex)"),
   ), testSet("property graph #4", storage.model('pg_4),
     //IGNORING("eval-.", "query-2")(int, 'vertex, 'vertex<=(int.is(__.gt(0))`=>`('vertex.q(?)<='nat(int).q(?).split(str("id") ->int.named("nat") `_,` str("label") -> str("vertex")))), "int => vertex"),

@@ -55,16 +55,16 @@ object AsOp extends Func[Obj, Obj] {
       case avalue:Value[Obj] => avalue.hardQ(q => start.q.mult(q))
       case atype:Type[Obj] if __.isAnonRootAlive(atype) => start
       case atype:Type[Obj] =>
-        start match {
-          case _:Type[Obj] if start.model == NONE => atype.rangeObj.via(start, inst)
-          case _:Type[_] if start.rangeObj == atype => start
-          case _:Type[_] if !Tokens.named(atype.name) && toBaseName(start.rangeObj) == atype => atype.rangeObj <= start
-          case _:Type[_] => start.coerce(atype)
-          case _:Value[_] => start.named(atype.domainObj.name).compute(atype, withAs = false).named(atype.rangeObj.name)
+        val rtype = atype.inflate[Obj](start.model)
+        start.inflate[Obj]() match {
+          case _:Type[_] if start.rangeObj == rtype => start
+          case _:Type[Obj] if start.model == NONE => rtype.rangeObj.via(start, inst)
+          case _:Type[_] if !Tokens.named(rtype.name) && toBaseName(start.rangeObj) == rtype => Converters.objConverter(start, rtype).headOption.getOrElse(zeroObj) // atype.rangeObj <= start
+          case _:Type[_] => start.coerce(rtype)
+          case _:Value[_] => start.named(rtype.domainObj.name).compute(atype, withAs = false).named(rtype.rangeObj.name)
         }
     }
   }
-
   def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
   def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
   def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E =

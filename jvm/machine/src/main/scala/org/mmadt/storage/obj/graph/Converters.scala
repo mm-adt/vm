@@ -29,7 +29,7 @@ import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch.CombineOp
-import org.mmadt.language.obj.value.{BoolValue, IntValue, RealValue, StrValue}
+import org.mmadt.language.obj.value._
 import org.mmadt.storage.StorageFactory.{bool, int, lst, real, str, zeroObj}
 
 import scala.util.Try
@@ -126,8 +126,8 @@ object Converters {
     case _:__ => Stream(source)
     case _:StrType => Stream(str(name = target.name, g = source.toString, via = source.via))
     case _:Inst[Obj, Obj] => Stream(OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail))
-    case blst:Lst[Obj] if lstTest(source, blst) =>
-      if (source.isInstanceOf[LstType[_]]) {
+    case blst:Lst[Obj] if lstTest(source, blst) => source match {
+      case _:LstType[_] =>
         source.glist.zip(blst.glist).flatMap(pair => pair._1.coercions(pair._2))
           .foldLeft(List.empty[Obj])((a, b) => a :+ b)
           .combinations(source.size).toStream.distinct
@@ -138,10 +138,10 @@ object Converters {
             else source.combine(source.clone(_ => x))
           })
           .map(x => x.named(blst.name).reload)
-      } else {
+      case _:LstValue[_] =>
         val clst = lst(name = source.name, g = (blst.gsep, source.glist.zip(blst.glist).map(a => a._1.coerce(a._2))), via = source.via)
         Stream((if (Lst.exactTest(clst, blst.domainObj)) CombineOp.combineAlgorithm(clst, blst, withAs = false) else clst).reload)
-      }
+    }
     case _ => Stream.empty
   }
   private def recConverter(source:Rec[Obj, Obj], target:Obj):Stream[Obj] = target match {
