@@ -24,7 +24,6 @@ package org.mmadt.language.obj.op.trace
 
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`._
-import org.mmadt.language.obj.`type`.__.as
 import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.trace.ModelOp.NONE
@@ -65,6 +64,7 @@ object AsOp extends Func[Obj, Obj] {
           case _:Value[_] => start.named(rtype.domainObj.name).compute(atype, withAs = false).named(rtype.rangeObj.name)
         }
     }
+    //if (!morph.alive && inst.arg0[Obj].alive) throw LanguageException.typingError(start, asType(inst.arg0[Obj])) else morph
   }
   def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
   def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
@@ -101,7 +101,7 @@ object AsOp extends Func[Obj, Obj] {
     if (target.isInstanceOf[Value[Obj]]) source ->> target
     else source match {
       case _:Value[Obj] => Converters.objConverter(source, target.domainObj).map(x => target.trace.reconstruct[Obj](x)).headOption.getOrElse(source)
-      case _ => throw new Exception("todo")// Converters.objConverter(source, target).headOption.getOrElse(source)
+      case _ => throw new Exception("todo") // Converters.objConverter(source, target).headOption.getOrElse(source)
     }
   }
 }

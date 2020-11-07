@@ -172,10 +172,10 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
                   .asInstanceOf[java.util.Iterator[Edge]]
               else {
                 val incidentName = incidentObj.name
-                val instOut = t.get.inst.exec(sack.rangeObj).clone(name=incidentName,q=sack.pureQ).normQ(sack.rangeObj.q)
+                val instOut = t.get.inst.exec(sack.rangeObj).clone(name = incidentName, q = sack.pureQ).normQ(sack.rangeObj.q)
                 IteratorUtils.of((t.get,
                   if (instOut.root) sack.named(incidentName)
-                  else instOut.clone(via=(sack, AsOp(instOut))))).asInstanceOf[java.util.Iterator[Edge]]
+                  else instOut.clone(via = (sack, AsOp(instOut))))).asInstanceOf[java.util.Iterator[Edge]]
               }
             }) // evaluate edge instruction
             .sideEffect((t:Traverser[Edge]) => {
@@ -191,10 +191,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     }).map(obj => target.trace.reconstruct[Obj](obj, target.name).normQ(target.q))
       .map(obj => {
         source match {
-          // if source was a value, compute the value against the derived type // TODO: this needs to do a recursive descent
           case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false).named(target.name)).getOrElse(zeroObj) match {
-            case arec:Rec[Obj, Obj] if obj.isInstanceOf[Rec[_, _]] => arec.clone(x => x.zip(obj.asInstanceOf[Rec[Obj, Obj]].gmap).map(pair => (pair._1._1.named(pair._2._1.name), pair._1._2.named(pair._2._2.name))))
-            case alst:Lst[Obj] if obj.isInstanceOf[Lst[_]] => alst.clone(x => x.zip(obj.asInstanceOf[Lst[Obj]].glist).map(pair => pair._1.named(pair._2.name)))
             case x if !x.isInstanceOf[Poly[_]] => Converters.objConverter(x, obj.rangeObj).headOption.getOrElse(zeroObj)
             case x => x
           }
@@ -218,8 +215,8 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case alst:Lst[Obj] =>
         bobj match {
           case blst:Lst[Obj] =>
-            Poly.sameSep(alst, blst) &&
-              alst.size == blst.size &&
+            //Poly.sameSep(alst, blst) &&
+            alst.size == blst.size &&
               alst.glist.zip(blst.glist).forall(p => finalStructureTest(p._1, p._2))
           case _ => false
         }

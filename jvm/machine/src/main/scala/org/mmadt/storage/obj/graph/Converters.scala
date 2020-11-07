@@ -126,17 +126,15 @@ object Converters {
     case _:__ => Stream(source)
     case _:StrType => Stream(str(name = target.name, g = source.toString, via = source.via))
     case _:Inst[Obj, Obj] => Stream(OpInstResolver.resolve(source.g._2.head.asInstanceOf[StrValue].g, source.g._2.tail))
-    case blst:Lst[Obj] if lstTest(source, blst) => source match {
+    case blst:Lst[Obj] if source.size == blst.size => source match {
       case _:LstType[_] =>
         source.glist.zip(blst.glist).flatMap(pair => pair._1.coercions(pair._2))
           .foldLeft(List.empty[Obj])((a, b) => a :+ b)
           .combinations(source.size).toStream.distinct
           .filter(x => x.size == source.size)
           .filter(x => x.forall(_.alive))
-          .map(x => {
-            if (source.glist == x) source
-            else source.combine(source.clone(_ => x))
-          })
+          .map(x => source.clone(g = (blst.gsep, x)))
+          .map(x => if (source.glist == x.glist) x else source.combine(x))
           .map(x => x.named(blst.name).reload)
       case _:LstValue[_] =>
         val clst = lst(name = source.name, g = (blst.gsep, source.glist.zip(blst.glist).map(a => a._1.coerce(a._2))), via = source.via)
@@ -162,12 +160,6 @@ object Converters {
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////
   ////////////////////////////////////////////////////////////////////
-
-  private def lstTest(alst:Lst[Obj], bobj:Obj):Boolean = bobj match {
-    case blst:Lst[Obj] => (Poly.sameSep(alst, blst) && alst.size == blst.size) //&&
-    //  !alst.glist.zip(blst.glist).forall(p => __.isAnon(p._1) || p._1.name.equals(p._2.name)))
-    case _ => false
-  }
 
   private def cartesianProduct[T](in:Seq[Seq[T]]):Seq[Seq[T]] = {
     @scala.annotation.tailrec

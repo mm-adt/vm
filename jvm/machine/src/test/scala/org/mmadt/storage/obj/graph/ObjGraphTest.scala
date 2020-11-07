@@ -97,7 +97,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('vertex(str("id") -> int(5))))(graph.coerce(rec(str("id") -> int(5)), 'vertex))
     assertResult(Seq('vertex(str("id") -> int(6)) `;` 'vertex(str("id") -> int(7))))(graph.coerce(rec(str("id") -> int(6)) `;` rec(str("id") -> int(7)), 'vertex `;` 'vertex))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int) `_,` str("inV") -> 'vertex(str("id") -> int))))(graph.coerce(str("outV") -> rec(str("id") -> int) `_,` str("inV") -> rec(str("id") -> int), 'edge))
-    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(8)) `_,` str("inV") -> 'vertex(str("id") -> int(9)))))(graph.coerce(str("outV") -> rec(str("id") -> int(8)) `_,` str("inV") -> rec(str("id") -> int(9)), 'edge))
+    //    assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(8)) `_,` str("inV") -> 'vertex(str("id") -> int(9)))))(graph.coerce(str("outV") -> rec(str("id") -> int(8)) `_,` str("inV") -> rec(str("id") -> int(9)), 'edge))
   }
 
   test("type construction w/ pg_2") {
@@ -121,7 +121,7 @@ class ObjGraphTest extends FunSuite {
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(81 `;` 91, 'edge))
     assertResult(Seq('edge(str("outV") -> 'vertex(str("id") -> int(81)) `_,` str("inV") -> 'vertex(str("id") -> int(91)))))(graph.coerce(lst(g = (Tokens.`;`, List((1 `;` 81 `;` 2), (3 `;` 91 `;` 24)))), 'edge))
     // assertResult(Seq('edge <= (int `;` int).combine(('vertex <= int.-<(str("id") -> int)) `;`('vertex <= int.-<(str("id") -> int))).-<((str("outV") -> (get(0))) `_,`(str("inV") -> (get(1))))))(Stream('edge <= graph.coerce(int `;` int, 'edge).head))
-    assertResult(Seq('nat <= int.as('nat<=int.is(gt(0)))))(graph.coerce(int, 'nat))
+    assertResult(Seq('nat <= int.as('nat <= int.is(gt(0)))))(graph.coerce(int, 'nat))
     // assertResult(Seq(int <= int.is(gt(0))))(graph.coerce(int, 'nat).map(x => graph.coerce(x, int)).head)
     // assertResult(Seq('vertex<=int.is(gt(0)).split(str("id")->int)))(graph.coerce(int, 'nat).map(x => graph.coerce(x,int)).head.map(x => graph.coerce(x,'vertex)).head)
   }
@@ -178,7 +178,7 @@ class ObjGraphTest extends FunSuite {
 
   test("type construction w/ time") {
     val graph:ObjGraph = ObjGraph.create('time)
-    //    assertResult(Seq('date <= (int `;` int `;` int).combine(('nat.q(?) <= int.is(gt(0))).is(lte(12)) `;` ('nat.q(?) <= int.is(gt(0))).is(lte(31)) `;`('nat <= int.is(gt(0))))))(Stream('date <= graph.coerce(int `;` int `;` int, 'date).head))
+    //assertResult(Seq('date <= (int `;` int `;` int).combine(('nat.q(?) <= int.is(gt(0))).is(lte(12)) `;` ('nat.q(?) <= int.is(gt(0))).is(lte(31)) `;`('nat <= int.is(gt(0))))))(Stream('date <= graph.coerce(int `;` int `;` int, 'date).head))
     assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.coerce(8 `;` 26 `;` 2020, 'date))
     assertResult(Seq('date('nat(8) `;` 'nat(26) `;` 'nat(2020))))(graph.coerce(8 `;` 26, 'date))
     assertResult(Nil)(graph.coerce(8, 'date))
@@ -191,26 +191,25 @@ class ObjGraphTest extends FunSuite {
     println(engine.eval("int => real", bindings(graph.model)))
     assertResult(Stream(real(6.0)))(graph.coerce(6, real))
     assertResult(Stream(str("4")))(graph.coerce(4, str))
-    // assertResult(Stream(str <= int.plus(10)))(graph.coerce(int.plus(10), str))
+    assertResult(Stream(str <= int.plus(10)))(graph.coerce(int.plus(10), str))
     // assertResult((2`;`5))((1`;`2)`=>`(int.plus(1)`;`int.plus(3)))
     assertResult(Stream(2 `;` 5))(graph.coerce((1 `;` 2), (int.plus(1) `;` int.plus(3))))
   }
 
   test("dependent sum construction w/ custom types") {
     val graph = ObjGraph.create(storage.model('num).defining('apair <= (int.to('m) `;` int.to('n)).is(from('m, int).lt(from('n, int)))).defining(str <= int))
-    // graph.paths(__, __).foreach(x => println(x))
     assertResult(Stream(int(45)))(graph.coerce(45, int))
     assertResult(Stream(int))(graph.coerce(int, int))
     assertResult(Stream(int.q(5)))(graph.coerce(int.q(5), int.q(5)))
     assertResult(Stream(int.q(5)))(graph.coerce(int.q(5), int))
     // assertResult(Stream(int))(graph.coerce(int, int.q(5)))  TODO: decide on the algebra of coercion (is it just a monoidal operation) -- determines quantifier evoluation
     assertResult(Stream(int))(graph.coerce(int, int <= int))
-    //    assertResult(Stream('nat <= int.is(gt(0))))(graph.coerce(int, 'nat))
+    assertResult(Stream('nat <= int.as('nat <= int.is(gt(0)))))(graph.coerce(int, 'nat))
     //    assertResult(List(int <=[__] 'nat))(graph.coerce('nat, int))
     assertResult(List(int(2)))(graph.coerce('nat(2), int))
-    //assertResult(List(int(2).q(30)))(graph.coerce('nat(2).q(5), int.q(6)))
+    assertResult(List(int(2).q(5)))(graph.coerce('nat(2).q(5), int.q(5)))
     //    assertResult(List(str <= int))(graph.coerce(int, str))
-    //    assertResult(List(str("2")))(graph.coerce(int(2), str))
+    assertResult(List(str("2")))(graph.coerce(2, str))
     assertResult(List('nat(566)))(graph.coerce(566, 'nat))
     // assertResult(List('apair(5 `;` 6)))(graph.coerce((int `;` int), 'apair))
     //    assertResult(List('apair(5 `;` 6)))(graph.coerce((5 `;` 6), 'apair))

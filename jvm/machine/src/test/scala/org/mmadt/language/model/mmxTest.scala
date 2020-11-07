@@ -25,8 +25,8 @@ package org.mmadt.language.model
 import org.mmadt.language.obj.`type`.__.as
 import org.mmadt.language.obj.op.trace.ModelOp.{MM, MMX}
 import org.mmadt.processor.inst.BaseInstTest
-import org.mmadt.processor.inst.TestSetUtil.{comment, testSet, testing}
-import org.mmadt.storage.StorageFactory.str
+import org.mmadt.processor.inst.TestSetUtil.{IGNORING, comment, testSet}
+import org.mmadt.storage.StorageFactory.{int, str}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
@@ -38,5 +38,5 @@ class mmxTest extends BaseInstTest(
   ),
   testSet("mmx model table test", MMX,
     comment("int"),
-    //testing(5, as(str), "5", "5[as,str]"),
+    IGNORING("eval-[3-5]")(5, int `=>` as(str), "5", "5[as,str]", "5=>int=>str") //, "5=>str"),
   ))
