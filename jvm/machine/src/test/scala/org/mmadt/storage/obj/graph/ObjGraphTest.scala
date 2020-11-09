@@ -23,14 +23,14 @@
 package org.mmadt.storage.obj.graph
 
 import org.mmadt.language.Tokens
+import org.mmadt.language.obj.Obj
 import org.mmadt.language.obj.Obj.{intToInt, stringToStr, symbolToToken, tupleToRecYES}
 import org.mmadt.language.obj.`type`.__
 import org.mmadt.language.obj.`type`.__._
 import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.{Obj, toBaseName}
 import org.mmadt.processor.inst.BaseInstTest.{bindings, engine}
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str}
+import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str}
 import org.mmadt.storage.obj.graph.ObjGraph.OBJ
 import org.scalatest.FunSuite
 
@@ -129,7 +129,7 @@ class ObjGraphTest extends FunSuite {
   test("type construction w/ digraph") {
     val graph:ObjGraph = ObjGraph.create('digraph)
     // GraphSONWriter.build().create().writeGraph(new FileOutputStream(new File("/Users/marko/Desktop/digraph.json")),graph.graph)
-    assertResult(str("id") -> __('nat) `_,` str("attrs") -> __('attr).q(qStar))(toBaseName(storage.model('digraph).findCtype("vertex").get))
+    // assertResult(str("id") -> __('nat) `_,` str("attrs") -> __('attr).q(qStar))(graph.g.C('vertex).next().obj)
     val tokens:List[Obj] = graph.g.V().values[Obj](OBJ).toSeq.filter(x => __.isTokenRoot(x)).toList
     println(tokens)
     assertResult(2)(tokens.length) // TODO: I don't like the ambiguousness of tokens vs. their canonical form (this needs to be settled)

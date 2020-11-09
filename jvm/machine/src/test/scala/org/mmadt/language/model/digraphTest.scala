@@ -42,9 +42,9 @@ object digraphTest {
 class digraphTest extends BaseInstTest(
   testSet("digraph model table test", DIGRAPH,
     comment("int"),
-    IGNORING("eval-[2-5]", "query-2")(int, int `=>` 'nat `=>` int, int<=int.as('nat<=int.is(gt(0))), "int => nat => int"),
-    IGNORING("eval-[2-5]", "query-2")(int,__ `=>` 'nat,'nat<=int.as('nat<=int.is(gt(0))),"int => nat"),
-    //IGNORING("eval-[2-5]", "query-2")(int,__ `=>` 'nat `=>` 'vertex,int.as('nat<=int.is(gt(0))).as('vertex<='nat.split(str("id")->__('nat))).as('vertex(str("id")->__('nat))),"int => int => nat => vertex"),
+    IGNORING("eval-[2-5]", "query-2")(int, int `=>` 'nat `=>` int, int <= int.as('nat <= int.is(gt(0))), "int => nat => int"),
+    IGNORING("eval-[2-5]", "query-2")(int, __ `=>` 'nat, 'nat <= int.as('nat <= int.is(gt(0))), "int => nat"),
+    IGNORING("eval-[2-5]", "query-2")(int, int `=>` 'nat `=>` 'vertex, int.as('nat <= int.is(gt(0))).as('vertex(str("id") -> __('nat)) <= 'nat.split(str("id") -> __('nat))).as('vertex(str("id") -> __('nat))), "int => nat => vertex"),
     testing('nat(50), int, 50, "nat:50 => int"),
     testing(51, 'nat, 'nat(51), "51 => nat"),
     testing(52, 'nat `=>` int, 52, "52 => nat => int"),

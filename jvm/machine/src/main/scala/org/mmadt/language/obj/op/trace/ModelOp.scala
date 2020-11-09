@@ -97,40 +97,28 @@ object ModelOp extends Func[Obj, Obj] {
 
     lazy val og:GraphTraversalSource = model.graph.g
 
-    def s[A<:Obj](start:A):A = start.update(model)
+    def s[A <: Obj](start:A):A = start.update(model)
 
-    private final def findType[A <: Obj](model:Model, source:Obj, targetName:String):List[A] =
-      (if (model.name.equals(targetName)) List(model).asInstanceOf[List[A]]
+    private final def findType[A <: Obj](model:Model, source:Obj, targetName:String):Stream[A] =
+      (if (model.name.equals(targetName)) Stream(model.asInstanceOf[A])
       else model.gmap.fetchOrElse(TYPE, NOREC).gmap
+        .toStream
         .filter(x => x._1.name == targetName)
         .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2))
         .filter(x => x.domainObj.name != Tokens.lift_op) // little optimization hack that will go away as model becomes more cleverly organized
-        .map(x => if (__.isToken(x.domainObj) && !typeGrounded(model, x)) __.asInstanceOf[A] else x) // is the type is not grounded in an mm base type, then anything matches
         .filter(x => if (__.isToken(x.domainObj))
           model.search(source, x.domainObj, baseName = false).exists(y => source.test(y))
-        else if (source.isInstanceOf[LstValue[Obj]] && AsOp.searchable(x.domainObj)) Lst.fastCheck(source, x.domainObj)
+        else if (source.isInstanceOf[LstValue[Obj]] && __.isToken(x.domainObj)) Lst.fastCheck(source, x.domainObj)
         else source.test(x.domainObj.hardQ(source.q)))
-
-    private final def typeGrounded(model:Model, aobj:Obj):Boolean =
-      model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap
-        .find(x => x._1.name == aobj.name).map(x => x._2.glist)
-        .exists(x => x.exists(y => !baseName(y.domainObj).equals(Tokens.anon) || !Type.isIdentity(y)))
 
     final def typeExists(aobj:Obj):Boolean = __.isAnon(aobj) || model.vars(str(aobj.name)).isDefined || model.gmap.fetchOrElse(ModelOp.TYPE, NOREC).gmap.exists(x => x._1.name == aobj.name) || model.dtypes.isEmpty
 
-    final def search[A <: Obj](source:Obj = __, target:A, baseName:Boolean = true):List[A] = {
+    final def search[A <: Obj](source:Obj = __, target:A, baseName:Boolean = true):Stream[A] = {
       model.vars[A](target.name)
         .map(x => if (x.isInstanceOf[Type[_]]) target.range.asInstanceOf[A] else x)
-        .map(x => List(x))
-        .getOrElse[List[A]](
-          findType[A](model, source, target.name) // TODO: graph.model.fpath()
-            .map(y => if (baseName) toBaseName(y) else y))
+        .map(x => Stream(x))
+        .getOrElse[Stream[A]](findType[A](model, source, target.name).map(y => if (baseName) toBaseName(y) else y))
     }
-
-    final def findCtype[A <: Obj](name:String):Option[A] = model.gmap.fetchOrElse(TYPE, NOREC).gmap
-      .filter(x => x._1.name == name)
-      .flatMap(x => x._2.asInstanceOf[Lst[A]].g._2)
-      .find(x => x.root)
 
     final def rewrites:List[Obj] = model.gmap.fetchOrElse(TYPE, NOREC).gmap.values.flatMap(x => x.g._2).filter(x => x.domainObj.name.equals(Tokens.lift_op))
 

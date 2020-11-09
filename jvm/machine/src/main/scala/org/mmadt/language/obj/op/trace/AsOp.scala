@@ -64,9 +64,8 @@ object AsOp extends Func[Obj, Obj] {
           case _:Value[_] => start.named(rtype.domainObj.name).compute(atype, withAs = false).named(rtype.rangeObj.name)
         }
     }
-    //if (!morph.alive && inst.arg0[Obj].alive) throw LanguageException.typingError(start, asType(inst.arg0[Obj])) else morph
   }
-  def searchable(aobj:Obj):Boolean = __.isToken(aobj) || (aobj.isInstanceOf[LstType[Obj]] && !aobj.asInstanceOf[Lst[Obj]].ctype && !aobj.named)
+
   def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
   def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E =
     if (target.root) f(autoAsType(source, target.domain)).asInstanceOf[E]
@@ -89,19 +88,10 @@ object AsOp extends Func[Obj, Obj] {
     }
   }
   private def internalConvertAs(source:Obj, target:Obj):Obj = {
-    val asObj:Obj = WalkOp.walkSourceToTarget(source, target, targetName = true)
-    val dObj:Obj = pickMapping(source, asObj)
-    val rObj:Obj = if (asObj.domain != asObj.range && source.model.findCtype(asObj.range.name).isDefined) // source.model.og.V().has(CTYPE,NAME,asObj.range.name).hasNext
-      pickMapping(dObj, asObj.range) else dObj
+    val asObj:Obj = if (!target.named) target else WalkOp.walkSourceToTarget(source, target, targetName = true)
+    val dObj:Obj = asObj.trace.reconstruct[Obj](source.coercions(asObj.domain).headOption.getOrElse(source)).named(asObj.range.name)
+    val rObj:Obj = if (asObj.domain != asObj.range && source.model.graph.exists(asObj.range)) dObj.coercions(asObj.range).headOption.getOrElse(dObj) else dObj
     if (!rObj.alive) throw LanguageException.typingError(source, asType(asObj))
     rObj.named(asObj.name)
-  }
-
-  private def pickMapping(source:Obj, target:Obj):Obj = {
-    if (target.isInstanceOf[Value[Obj]]) source ->> target
-    else source match {
-      case _:Value[Obj] => source.coercions(target.domainObj).map(x=>target.trace.reconstruct[Obj](x)).headOption.getOrElse(source)
-      case _ => throw new Exception("todo") // Converters.objConverter(source, target).headOption.getOrElse(source)
-    }
   }
 }

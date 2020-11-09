@@ -206,7 +206,7 @@ object Obj {
     else objB match {
       case _:Value[_] => objB.hardQ(q => q.mult(objA.q))
       case rangeType:Type[_] =>
-        LanguageException.testTypeCheck(objA, objB.domain)
+        LanguageException.testTypeCheck(objA.range.update(objB.model), objB.domain)
         objA match {
           case _:Value[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.iterator(x, rangeType), rangeType)
           case _:Type[_] => AsOp.autoAsType(objA.update(objB.model), x => Processor.compiler(x, rangeType), rangeType)

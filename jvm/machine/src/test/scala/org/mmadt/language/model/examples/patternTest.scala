@@ -123,7 +123,7 @@ class patternTest extends BaseInstTest(
   )))
 
   test("blah") {
-    println(engine.eval("5 => ipair", bindings(PATTERN)))
+    println(engine.eval("int =>ipair=>isnd=>int=>pair=(int;int+60)", bindings(PATTERN)))
   }
 
 }

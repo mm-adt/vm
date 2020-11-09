@@ -27,6 +27,8 @@ import org.mmadt.language.obj.Inst;
 import org.mmadt.language.obj.Lst;
 import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.Rec;
+import org.mmadt.language.obj.op.map.WalkOp;
+import org.mmadt.language.obj.op.trace.AsOp;
 import org.mmadt.language.obj.op.trace.ModelOp;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
