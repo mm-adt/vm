@@ -100,7 +100,7 @@ object AsOp extends Func[Obj, Obj] {
   private def pickMapping(source:Obj, target:Obj):Obj = {
     if (target.isInstanceOf[Value[Obj]]) source ->> target
     else source match {
-      case _:Value[Obj] => Converters.objConverter(source, target.domainObj).map(x => target.trace.reconstruct[Obj](x)).headOption.getOrElse(source)
+      case _:Value[Obj] => source.coercions(target.domainObj).map(x=>target.trace.reconstruct[Obj](x)).headOption.getOrElse(source)
       case _ => throw new Exception("todo") // Converters.objConverter(source, target).headOption.getOrElse(source)
     }
   }

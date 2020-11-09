@@ -36,7 +36,7 @@ import org.mmadt.language.obj.op.trace.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, qStar, real, rec, str, strm, zeroObj}
+import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, strm, zeroObj}
 import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}
 
 import scala.collection.JavaConverters
@@ -95,7 +95,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         createObj(aobj.via._1).addEdge(aobj.via._2.op, target, OBJ, aobj.via._2)
       })
       target.addEdge(Tokens.noop, g.R.has(NAME, aobj.rangeObj.name).tryNext().orElseGet(() => bindObj(aobj.rangeObj)), OBJ, NoOp())
-    } else bindObj(toBaseName(aobj.rangeObj)).addEdge(Tokens.noop, target, OBJ, NoOp())
+    } else if (baseName(aobj) != Tokens.anon) bindObj(toBaseName(aobj.rangeObj)).addEdge(Tokens.noop, target, OBJ, NoOp())
     target
   }
 
@@ -130,25 +130,24 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
     Option(source match {
       case _ if !source.alive || source.model.vars(target.name).isDefined => source
       case _ if !target.alive => zeroObj
+      case _ if target.name.equals(model.coreName) => model
       case _ if source == target => source
       case _ if __.isAnonRootAlive(source) => target
       case _ if __.isAnon(target.domainObj) => target.trace.reconstruct[Obj](source, target.name)
       case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
-      case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source // target.trace.reconstruct(source, target.name)
+      case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source
       case _:Strm[Obj] => strm(coerce(source, target))
-      //case _:Lst[_] if target.isInstanceOf[Lst[_]] && target.asInstanceOf[Lst[_]].ctype => source.named(target.name)
-      case _:Poly[_] => null
-      case _ if target.name.equals(model.coreName) => model
-      case _:Value[_] if source.name.equals(target.domainObj.name) => source // target.trace.reconstruct(source, target.name)
-      case _:Type[_] if source.name.equals(target.domainObj.name) => target.trace.reconstruct(source, target.name)
+      case _:Value[_] if finalStructureTest(source, target.domainObj) => Converters.objConverter(source, target.domainObj).head // evaluate any instructions in nested polys
+      case _:Type[_] if finalStructureTest(source, target.domainObj) => target.trace.reconstruct[Obj](source, target.name)
       case _ => null
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
     ///////////////////////////////////////////////////////////////
     val sroot:Obj = asType(source.inflate[Obj](model))
-    val troot:Obj = bindObj(asType(target.domainObj.inflate[Obj](model))).obj
-    Stream(sroot).flatMap(s => {
+    val troot:Obj = bindObj(asType(target.domainObj.inflate[Obj](model))).obj // necessary when source is already target
+
+    Stream(sroot, __).flatMap(s => { // __ is necessary for types with __ domains
       JavaConverters.asScalaIterator(
-        g.withSack(s).R.has(CTYPE, NAME, s.name)
+        g.withSack(sroot).R.has(CTYPE, NAME, s.name)
           ///////// ALL MATCHING PERMUTATIONS OF DOMAIN /////////
           .flatMap((t:Traverser[Vertex]) => JavaConverters.asJavaIterator(
             Converters.objConverter(t.sack[Obj], t.get.obj).map(sack => (t.get, sack)).iterator)
@@ -225,7 +224,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
           case brec:Rec[Obj, Obj] =>
             Poly.sameSep(arec, brec) &&
               brec.isEmpty == arec.isEmpty &&
-              arec.gmap.forall(p => qStar.equals(p.q) || brec.gmap.exists(q => finalStructureTest(p._1, q._1) && finalStructureTest(p._2, q._2)))
+              brec.gmap.forall(x => x._2.q.zeroable || arec.gmap.exists(y => finalStructureTest(y._1, x._1) && finalStructureTest(y._2, x._2)))
           case _ => false
         }
       case _:Value[Obj] if bobj.isInstanceOf[Value[Obj]] => aobj.equals(bobj)

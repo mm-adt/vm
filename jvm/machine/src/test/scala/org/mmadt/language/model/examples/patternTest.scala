@@ -30,6 +30,7 @@ import org.mmadt.language.obj.op.sideeffect.LoadOp
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.processor.inst.BaseInstTest
+import org.mmadt.processor.inst.BaseInstTest.{bindings, engine}
 import org.mmadt.processor.inst.TestSetUtil.{testing, _}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory._
@@ -58,8 +59,8 @@ class patternTest extends BaseInstTest(
     testing("five", 'pair, 'pair("five" `;` "five"), "'five' => pair"),
     // IGNORING("eval-.", "query-2")(int, 'pair, int `=>` ('pair <= int -< (int `;` int)), "int => pair"),
     IGNORING("eval-[3-5]")(6, int.split(__ `;` __).as(int `;`(int.as('ipair))).as('pair), 'pair(6 `;` 'ipair(6 `;` 6)),
-      //"6 => int-<(_;_)=>(int;int=>ipair)=>pair",
-      //"6 => int => -<(int;int)=>(int;int=>ipair)=>pair",
+      "6 => int-<(_;_)=>(int;int=>ipair)=>pair",
+      "6 => int => -<(int;int)=>(int;int=>ipair)=>pair",
       "6-<(_;_)=>pair:(int;int=>ipair)",
       "6 => -<(_;_)=>pair:(int;int=>ipair)",
       "6 => int => -<(_;_)=>pair:(int;int=>ipair)",
@@ -75,17 +76,17 @@ class patternTest extends BaseInstTest(
     excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
     testing(("one" `;` "two"), 'fst, 'fst("one"), "('one';'two') => fst"),
     testing((1 `;` 2), 'ipair.combine(int.plus(2) `;` int.plus(3)), 'ipair(3 `;` 5), "(1;2)=>ipair=(+2;+3)"),
-    IGNORING("eval-[2-5]")((1 `;` 2), 'pair.combine('ipair `;` int.plus(3)), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))),
+    testing((1 `;` 2), 'pair.combine('ipair `;` int.plus(3)), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))),
       "(1;2)=>pair=>=(ipair;+3)=>pair",
-      //"(1;2)=>(int;int)=>(int=>ipair;int=>+3)=>pair",
-      //"(1;2)=>(int;int)=>(ipair;int+3)=>pair",
-      //"(1;2)=>(int;int)=>(ipair;int)=>pair=>=(_;+3)",
-      //"(1;2)=>(int;int)=>(ipair;int+3)=>(_;int)=>pair",
-      //"(1;2)=>(int;int)=>(ipair;int+3)=>pair=>pair=>pair",
-      //"(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(ipair;int)=>pair",
-      //"(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(_;_)=>pair",
-      //"(1;2)=>(int;int)=>(ipair;int+3)=>pair=>(_;_)=>pair",
-      //"(1;2)=>(int;int)=>pair:(ipair;int+3)",
+      "(1;2)=>(int;int)=>(int=>ipair;int=>+3)=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair",
+      "(1;2)=>(int;int)=>(ipair;int)=>pair=>=(_;+3)",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>(_;int)=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>pair=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(ipair;int)=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(_;_)=>pair",
+      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>(_;_)=>pair",
+      "(1;2)=>(int;int)=>pair:(ipair;int+3)",
       "(1;2)=>pair=>=(int;int)=>=(ipair;+3)",
       "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>pair",
       "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>=(ipair;int)=>pair",
@@ -120,5 +121,9 @@ class patternTest extends BaseInstTest(
     //testing(str("a")->int(1)`_,`str("b")->str("two")`_,`str("x")->int(123),'abc,'abc(str("a")->int(1)`_,`str("b")->str("two")),"('a'->1,'b'->'two','x'->123)=>abc"),
     excepting(str("a") -> int(1) `_,` str("b") -> int(2), 'abc, LanguageException.typingError(str("a") -> int(1) `_,` str("b") -> int(2), 'abc), "('a'->1,'b'->2)=>abc"),
   )))
+
+  test("blah") {
+    println(engine.eval("5 => ipair", bindings(PATTERN)))
+  }
 
 }
