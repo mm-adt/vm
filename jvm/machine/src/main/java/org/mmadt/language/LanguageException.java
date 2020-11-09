@@ -27,8 +27,6 @@ import org.mmadt.language.obj.Inst;
 import org.mmadt.language.obj.Lst;
 import org.mmadt.language.obj.Obj;
 import org.mmadt.language.obj.Rec;
-import org.mmadt.language.obj.op.map.WalkOp;
-import org.mmadt.language.obj.op.trace.AsOp;
 import org.mmadt.language.obj.op.trace.ModelOp;
 import org.mmadt.language.obj.type.Type;
 import org.mmadt.language.obj.type.__;
@@ -100,8 +98,7 @@ public class LanguageException extends VmException {
     }
 
     public static void testTypeCheck(final Obj obj, Type<?> type) {
-        if (AsOp.searchable(type)) WalkOp.walkSourceToTarget(obj, type.domain(), false);
-        else if (!obj.range().test(type.domain())) throw LanguageException.typingError(obj, type);
+        if (!obj.range().test(type.domain()) && !obj.range().coerce(type.domainObj()).alive()) throw LanguageException.typingError(obj, type);
     }
 
     public static boolean testIndex(final Lst<?> lst, final int index) {

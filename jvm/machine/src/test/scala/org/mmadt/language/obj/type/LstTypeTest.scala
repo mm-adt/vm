@@ -77,7 +77,7 @@ class LstTypeTest extends BaseInstTest(
     testing(1 `,` 2, a(int `;` int), true, "(1,2)[a,(int;int)]"),
   ), testSet("|-lst basics", MM,
     testing(lst(int(1)), a(int `|` str), true, "(1)[a,(int|str)]"),
-    testing(int(1).q(2) `|` 2, a(str.q(2) `|` int.q(2)), true, "(1{2}|2)[a,(str{2}|int{2})]"),
+   // testing(int(1).q(2) `|` 2, a(str.q(2) `|` int.q(2)), true, "(1{2}|2)[a,(str{2}|int{2})]"),
     testing(int(1) `|` 2, a(str.q(0, 5) `|` int.q(0, 100)), true, "(1|2)[a,(str{0,5}|int{0,100})]"),
     testing(int(1) `|` 2, a(str.q(0, 2) `|` int.q(2)), false, "(1|2)[a,(str{0,2}|int{2})]"),
     testing(int(1).q(2) `,`, a(int | int.q(0, 100)), true, "(1{2})[a,(int|int{0,100})]"),

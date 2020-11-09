@@ -27,7 +27,7 @@ import org.apache.tinkerpop.gremlin.process.traversal.dsl.graph.{GraphTraversal,
 import org.apache.tinkerpop.gremlin.structure._
 import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.apache.tinkerpop.gremlin.util.iterator.IteratorUtils
-import org.mmadt.language.Tokens
+import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
@@ -36,7 +36,7 @@ import org.mmadt.language.obj.op.trace.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage
-import org.mmadt.storage.StorageFactory.{bool, int, lst, real, rec, str, strm, zeroObj}
+import org.mmadt.storage.StorageFactory.{bool, int, lst, qOne, real, rec, str, strm, zeroObj}
 import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}
 
 import scala.collection.JavaConverters
@@ -127,6 +127,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
   def paths(source:Obj, target:Obj):Stream[List[Obj]] = Stream.empty
 
   def coerce(source:Obj, target:Obj):Stream[Obj] = {
+    if(!__.isAnon(target.domain) && target.q != qOne && !source.q.within(target.q)) throw LanguageException.typingError(source,asType(target))
     Option(source match {
       case _ if !source.alive || source.model.vars(target.name).isDefined => source
       case _ if !target.alive => zeroObj
@@ -136,7 +137,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case _ if __.isAnon(target.domainObj) => target.trace.reconstruct[Obj](source, target.name)
       case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
       case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source
-      case _:Strm[Obj] => strm(coerce(source, target))
+      case astrm:Strm[Obj] => astrm(x=>x.coerce(target))
       case _:Value[_] if finalStructureTest(source, target.domainObj) => Converters.objConverter(source, target.domainObj).head // evaluate any instructions in nested polys
       case _:Type[_] if finalStructureTest(source, target.domainObj) => target.trace.reconstruct[Obj](source, target.name)
       case _ => null
