@@ -140,10 +140,13 @@ class mmlangParser extends JavaTokenParsers {
 
   lazy val cType:Parser[Obj] = (anonType | boolType | realType | intType | strType | instType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
   lazy val dtype:Parser[Obj] = cType ~ rep[Inst[Obj, Obj]](inst) ^^ (x => x._2.foldLeft(x._1.asInstanceOf[Obj])((x, y) => y.exec(x))) | anonTypeSugar
-  lazy val aType:Parser[Obj] = opt(cType <~ Tokens.:<=) ~ dtype ^^ {
-    case Some(range) ~ domain => range <= domain
-    case None ~ domain => domain
-  }
+  lazy val aType:Parser[Obj] = rep1(opt(cType <~ Tokens.:<=) ~ dtype <~ opt(Tokens.:=>)) ^^ ( x => x.foldLeft(__.asInstanceOf[Obj])((a,b)=> {
+    val ttype = b match {
+      case Some(range) ~ domain => range <= domain
+      case None ~ domain => domain
+    }
+    if(__.isAnonRootAlive(a)) ttype else a.as(ttype)
+  }))
   lazy val anonQuant:Parser[__] = quantifier ^^ (x => new __().q(x))
   lazy val anonTypeSugar:Parser[__] = rep1[Inst[Obj, Obj]](inst) ^^ (x => x.foldLeft(new __())((a, b) => a.clone(via = (a, b))))
 
@@ -164,7 +167,7 @@ class mmlangParser extends JavaTokenParsers {
       combineSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar) ~ opt(quantifier) ^^
     (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
   lazy val infixSugar:Parser[Inst[Obj, Obj]] = not(Tokens.:<=) ~> (
-    Tokens.swap_op | Tokens.as_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.lte_op | (Tokens.gt_op <~ not(Tokens.gt_op) ^^ { x => x }) |
+    Tokens.swap_op | Tokens.plus_op | Tokens.mult_op | Tokens.gte_op | Tokens.lte_op | (Tokens.gt_op <~ not(Tokens.gt_op) ^^ { x => x }) |
       Tokens.lt_op | Tokens.eqs_op | Tokens.and_op | Tokens.or_op | Tokens.product_op | Tokens.sum_op |
       Tokens.is_a | Tokens.is | Tokens.not_op) ~ opt(quantifier) ~ obj ^^ (x => x._1._2.map(q => OpInstResolver.resolve[Obj, Obj](x._1._1, List(x._2)).hardQ(q)).getOrElse(OpInstResolver.resolve(x._1._1, List(x._2))))
   lazy val infixArg:Parser[Obj] = Tokens.:: ~> obj <~ Tokens.:: ^^ (x => x)

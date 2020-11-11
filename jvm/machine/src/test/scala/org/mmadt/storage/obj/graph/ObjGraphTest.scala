@@ -256,7 +256,7 @@ class ObjGraphTest extends FunSuite {
     val graph:ObjGraph = ObjGraph.create(storage.model('digraph))
     println(engine.eval("(5;6) => edge", bindings(graph.model)))
     //println(engine.eval("(1;2) => (vertex;vertex)", bindings(graph.model)))
-    //println(engine.eval("(int;(int;int))=>(vertex=>nat;edge)", bindings(graph.model)))
+    println(engine.eval("(5;(5;7)) =>(vertex;edge)", bindings(graph.model)))
   }
 
 }

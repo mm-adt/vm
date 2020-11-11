@@ -41,60 +41,73 @@ import org.mmadt.storage.StorageFactory._
 object patternTest {
   val PATTERN:Model = storage.model(LoadOp.loadObj[Model](getClass.getResource("/test/pattern.mm").getPath))
 }
-class patternTest extends BaseInstTest(
-  testSet("basic patterns", PATTERN,
-    comment("ipair"),
-    IGNORING("eval-.", "query-2")(int, 'ipair, 'ipair(int `;` int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)), "int => ipair"),
-    IGNORING("eval-.", "query-2")(int, 'ipair.as('isnd), 'isnd(int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)).as('isnd <= 'ipair.get(1)), "int => ipair => isnd"),
-    testing(5, 'ipair, 'ipair(5 `;` 5), "5 => ipair"),
-    testing('ipair(5 `;` 5), (int `;` int), (5 `;` 5), "ipair:(5;5) => (int;int)"),
-    IGNORING("eval-.", "query-2")(int, int `=>` 'ipair `=>`(int `;` int), (int `;` int) <= (int.as('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
-    IGNORING("eval-[3-5]")(5, int `=>` 'ipair `=>`(int `;` int), (5 `;` 5), "5 => int => ipair => (int;int)"),
-    excepting("4", 'ipair, LanguageException.typingError("4", 'ipair), "'4' => ipair"),
-    excepting("five", 'ipair, LanguageException.typingError("five", 'ipair), "'five' => ipair"),
-    IGNORING("eval-.", "query-2")(int, as('ipair), int.as('ipair(int `;` int) <= int -< (int `;` int)), "int => ipair"),
-    comment("pair"),
-    testing(5, 'pair, 'pair(5 `;` 5), "5 => pair"),
-    testing("4", 'pair, 'pair("4" `;` "4"), "'4' => pair"),
-    testing("five", 'pair, 'pair("five" `;` "five"), "'five' => pair"),
-    // IGNORING("eval-.", "query-2")(int, 'pair, int `=>` ('pair <= int -< (int `;` int)), "int => pair"),
-    IGNORING("eval-[3-5]")(6, int.split(__ `;` __).as(int `;`(int.as('ipair))).as('pair), 'pair(6 `;` 'ipair(6 `;` 6)),
-      "6 => int-<(_;_)=>(int;int=>ipair)=>pair",
-      "6 => int => -<(int;int)=>(int;int=>ipair)=>pair",
-      "6-<(_;_)=>pair:(int;int=>ipair)",
-      "6 => -<(_;_)=>pair:(int;int=>ipair)",
-      "6 => int => -<(_;_)=>pair:(int;int=>ipair)",
-      "6-<(int;int=>ipair)=>pair",
-      "6 => -<(int;int=>ipair)=>pair",
-      "6 => int => -<(int;int=>ipair) => pair",
-      "6 => int => -<pair:(int;int=>ipair)",
-    ),
-    comment("fst and snd"),
-    IGNORING("eval-[2-5]", "query-2")('ipair, __ `=>` 'ifst, 'ifst <= 'ipair(int `;` int).as('ifst <= 'ipair(int `;` int).get(0)), "ipair => ifst"),
-    testing('ipair(1 `;` 2), 'ifst, 'ifst(1), "ipair:(1;2) => ifst"),
-    testing((1 `;` 2), 'ifst, 'ifst(1), "(1;2) => ifst"),
-    excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
-    testing(("one" `;` "two"), 'fst, 'fst("one"), "('one';'two') => fst"),
-    testing((1 `;` 2), 'ipair.combine(int.plus(2) `;` int.plus(3)), 'ipair(3 `;` 5), "(1;2)=>ipair=(+2;+3)"),
-    testing((1 `;` 2), 'pair.combine('ipair `;` int.plus(3)), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))),
-      "(1;2)=>pair=>=(ipair;+3)=>pair",
-      "(1;2)=>(int;int)=>(int=>ipair;int=>+3)=>pair",
-      "(1;2)=>(int;int)=>(ipair;int+3)=>pair",
-      "(1;2)=>(int;int)=>(ipair;int)=>pair=>=(_;+3)",
-      "(1;2)=>(int;int)=>(ipair;int+3)=>(_;int)=>pair",
-      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>pair=>pair",
-      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(ipair;int)=>pair",
-      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(_;_)=>pair",
-      "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>(_;_)=>pair",
-      "(1;2)=>(int;int)=>pair:(ipair;int+3)",
-      "(1;2)=>pair=>=(int;int)=>=(ipair;+3)",
-      "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>pair",
-      "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>=(ipair;int)=>pair",
-      "(1;2)=>pair=>=(int;int)=>=(ipair;+2)=>=(ipair;int+1)=>pair",
-      //"(1;2)=>pair=>(int;int)=>(ipair;+3)=>pair"
-    )
-  ),
-) {
+class patternTest extends BaseInstTest {
+
+  test("basic pattern") {
+    evaluate(testSet("basic patterns", PATTERN,
+      comment("ipair"),
+      IGNORING("eval-.", "query-2")(int, 'ipair, 'ipair(int `;` int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)), "int => ipair"),
+      IGNORING("eval-.", "query-2")(int, 'ipair.as('isnd), 'isnd(int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)).as('isnd <= 'ipair.get(1)), "int => ipair => isnd"),
+      testing(5, 'ipair, 'ipair(5 `;` 5), "5 => ipair"),
+      testing('ipair(5 `;` 5), (int `;` int), (5 `;` 5), "ipair:(5;5) => (int;int)"),
+      IGNORING("eval-.", "query-2")(int, int `=>` 'ipair `=>`(int `;` int), (int `;` int) <= (int.as('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
+      IGNORING("eval-[3-5]")(5, int `=>` 'ipair `=>`(int `;` int), (5 `;` 5), "5 => int => ipair => (int;int)"),
+      excepting("4", 'ipair, LanguageException.typingError("4", 'ipair), "'4' => ipair"),
+      excepting("five", 'ipair, LanguageException.typingError("five", 'ipair), "'five' => ipair"),
+      IGNORING("eval-[2-5]", "query-2")(int, as('ipair), int.as('ipair(int `;` int) <= int -< (int `;` int)), "int => ipair"),
+      comment("pair"),
+      testing(5, 'pair, 'pair(5 `;` 5), "5 => pair"),
+      testing("4", 'pair, 'pair("4" `;` "4"), "'4' => pair"),
+      testing("five", 'pair, 'pair("five" `;` "five"), "'five' => pair"),
+      IGNORING("eval-[2-5]", "query-2")(int, int.as('pair), int `=>` ('pair(int`;`int) <= int -< (int `;` int)), "int => pair"),
+    ))
+  }
+  test("productions") {
+    evaluate(testSet("projections", PATTERN,
+      comment("fst and snd"),
+      IGNORING("eval-[2-5]", "query-2")('ipair, __ `=>` 'ifst, 'ifst <= 'ipair(int `;` int).as('ifst <= 'ipair(int `;` int).get(0)), "ipair => ifst"),
+      testing('ipair(1 `;` 2), 'ifst, 'ifst(1), "ipair:(1;2) => ifst"),
+      testing((1 `;` 2), 'ifst, 'ifst(1), "(1;2) => ifst"),
+      excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
+      testing(("one" `;` "two"), 'fst, 'fst("one"), "('one';'two') => fst")
+    ))
+  }
+
+  test("bi-uni-products") {
+    evaluate(testSet("bi-uni-products", PATTERN,
+      IGNORING("eval-[3-5]")(6, int.split(__ `;` __).as(int `;`(int.as('ipair))).as('pair), 'pair(6 `;` 'ipair(6 `;` 6)),
+        "6 => int-<(_;_)=>(int;int=>ipair)=>pair",
+        "6 => int => -<(int;int)=>(int;int=>ipair)=>pair",
+        "6-<(_;_)=>pair:(int;int=>ipair)",
+        "6 => -<(_;_)=>pair:(int;int=>ipair)",
+        "6 => int => -<(_;_)=>pair:(int;int=>ipair)",
+        "6-<(int;int=>ipair)=>pair",
+        "6 => -<(int;int=>ipair)=>pair",
+        "6 => int => -<(int;int=>ipair) => pair",
+        "6 => int => -<pair:(int;int=>ipair)",
+      )))
+  }
+
+  test("biproducts") {
+    evaluate(testSet("biproducts", PATTERN,
+      testing((1 `;` 2), 'ipair.combine(int.plus(2) `;` int.plus(3)), 'ipair(3 `;` 5), "(1;2)=>ipair=(+2;+3)"),
+      IGNORING("eval-[3-5]")((1 `;` 2), 'pair.combine('ipair `;` int.plus(3)), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))),
+        "(1;2)=>pair=>=(ipair;+3)=>pair",
+        //"(1;2)=>(int;int)=(int=>ipair;int=>+3)=>pair",
+        "(1;2)=>(int;int)=>(ipair;int+3)=>pair",
+        "(1;2)=>(int;int)=>(ipair;int)=>pair=>=(_;+3)",
+        "(1;2)=>(int;int)=>(ipair;int+3)=>(_;int)=>pair",
+        "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>pair=>pair",
+        "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(ipair;int)=>pair",
+        "(1;2)=>(int;int)=>(ipair;int+3)=>pair=>=(_;_)=>pair",
+        "(1;2)=>(int;int)=>pair:(ipair;int+3)",
+        "(1;2)=>pair=>=(int;int)=>=(ipair;+3)",
+        "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>pair",
+        "(1;2)=>pair=>=(int;int)=>=(ipair;+3)=>=(ipair;int)=>pair",
+        "(1;2)=>pair=>=(int;int)=>=(ipair;+2)=>=(ipair;int+1)=>pair",
+        //"(1;2)=>pair=>(int;int)=>(ipair;+2)=>(ipair;int+1)=>pair",
+      )))
+  }
 
   test("quantifiers") {
     evaluate(testSet("quantifiers", PATTERN,
@@ -106,12 +119,14 @@ class patternTest extends BaseInstTest(
 
   test("custom instructions") {
     evaluate(testSet("custom instructions", PATTERN,
-      IGNORING("eval-[4-5]", "query-2")(2 `;` 3, (int `;` int).branch(lst(__('aplus))), 5,
+      IGNORING("eval-[3-5]", "query-2")(2 `;` 3, (int `;` int).branch(lst(__('aplus))), 5,
         "(2;3)[aplus]",
         "(2;3)=>aplus",
         "(2;3)=>(int;int)=>aplus=>int",
         "(2;3)=>(dble;dble)=>(int+-2;int+-3)=>aplus=>int",
-        "(2;3)=>(dble+-2;dble+-3)=>aplus=>int"
+        "(2;3)=>(dble+-2;dble+-3)=>aplus=>int",
+       // "(1;1)=(int+1;int+2)=>aplus=>int",
+        //"(1;1)=>(int;int)=(int+1;int+2)=>aplus=>int",
       ),
     ))
   }
@@ -123,7 +138,7 @@ class patternTest extends BaseInstTest(
   )))
 
   test("blah") {
-    println(engine.eval("int =>ipair=>isnd=>int=>pair=(int;int+60)", bindings(PATTERN)))
+    println(engine.eval("(4;5)=>(int;int)=>(ipair;int)", bindings(PATTERN)))
   }
 
 }
