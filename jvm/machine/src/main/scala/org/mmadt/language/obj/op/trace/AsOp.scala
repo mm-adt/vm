@@ -42,8 +42,8 @@ trait AsOp {
   this:Obj =>
   def as[O <: Obj](aobj:O):O = AsOp(aobj).exec(this).asInstanceOf[O]
   def as(atype:Symbol):__ = AsOp(__(atype.name)).exec(this).asInstanceOf[__]
-  def `=>`[O <: Obj](aobj:O):O = as(aobj)
-  def `=>`(atype:Symbol):__ = as(atype)
+  def ==>[O <: Obj](aobj:O):O = as(aobj)
+  def ==>(atype:Symbol):__ = as(atype)
 }
 object AsOp extends Func[Obj, Obj] {
   override val preArgs:Boolean = false

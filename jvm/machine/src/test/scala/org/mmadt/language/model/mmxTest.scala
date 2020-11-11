@@ -38,5 +38,5 @@ class mmxTest extends BaseInstTest(
   ),
   testSet("mmx model table test", MMX,
     comment("int"),
-    IGNORING("eval-[3-5]")(5, int `=>` as(str), "5", "5[as,str]", "5=>int=>str") //, "5=>str"),
+    IGNORING("eval-[3-5]")(5, int ==> as(str), "5", "5[as,str]", "5=>int=>str") //, "5=>str"),
   ))

@@ -50,8 +50,8 @@ class patternTest extends BaseInstTest {
       IGNORING("eval-.", "query-2")(int, 'ipair.as('isnd), 'isnd(int) <= int.as('ipair(int `;` int) <= int.split(int `;` int)).as('isnd <= 'ipair.get(1)), "int => ipair => isnd"),
       testing(5, 'ipair, 'ipair(5 `;` 5), "5 => ipair"),
       testing('ipair(5 `;` 5), (int `;` int), (5 `;` 5), "ipair:(5;5) => (int;int)"),
-      IGNORING("eval-.", "query-2")(int, int `=>` 'ipair `=>`(int `;` int), (int `;` int) <= (int.as('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
-      IGNORING("eval-[3-5]")(5, int `=>` 'ipair `=>`(int `;` int), (5 `;` 5), "5 => int => ipair => (int;int)"),
+      IGNORING("eval-.", "query-2")(int, int ==> 'ipair ==>(int `;` int), (int `;` int) <= (int.as('ipair <= int.split(int `;` int))), "int => ipair => (int;int)"),
+      IGNORING("eval-[3-5]")(5, int ==> 'ipair ==>(int `;` int), (5 `;` 5), "5 => int => ipair => (int;int)"),
       excepting("4", 'ipair, LanguageException.typingError("4", 'ipair), "'4' => ipair"),
       excepting("five", 'ipair, LanguageException.typingError("five", 'ipair), "'five' => ipair"),
       IGNORING("eval-[2-5]", "query-2")(int, as('ipair), int.as('ipair(int `;` int) <= int -< (int `;` int)), "int => ipair"),
@@ -59,13 +59,13 @@ class patternTest extends BaseInstTest {
       testing(5, 'pair, 'pair(5 `;` 5), "5 => pair"),
       testing("4", 'pair, 'pair("4" `;` "4"), "'4' => pair"),
       testing("five", 'pair, 'pair("five" `;` "five"), "'five' => pair"),
-      IGNORING("eval-[2-5]", "query-2")(int, int.as('pair), int `=>` ('pair(int`;`int) <= int -< (int `;` int)), "int => pair"),
+      IGNORING("eval-[2-5]", "query-2")(int, int.as('pair), int ==> ('pair(int`;`int) <= int -< (int `;` int)), "int => pair"),
     ))
   }
   test("productions") {
     evaluate(testSet("projections", PATTERN,
       comment("fst and snd"),
-      IGNORING("eval-[2-5]", "query-2")('ipair, __ `=>` 'ifst, 'ifst <= 'ipair(int `;` int).as('ifst <= 'ipair(int `;` int).get(0)), "ipair => ifst"),
+      IGNORING("eval-[2-5]", "query-2")('ipair, __ ==> 'ifst, 'ifst <= 'ipair(int `;` int).as('ifst <= 'ipair(int `;` int).get(0)), "ipair => ifst"),
       testing('ipair(1 `;` 2), 'ifst, 'ifst(1), "ipair:(1;2) => ifst"),
       testing((1 `;` 2), 'ifst, 'ifst(1), "(1;2) => ifst"),
       excepting(("one" `;` "two"), 'ifst, LanguageException.typingError("one" `;` "two", 'ifst), "('one';'two') => ifst"),
