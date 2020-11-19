@@ -54,7 +54,7 @@ class CombineInstTest extends BaseInstTest(
   ),
   testSet("[combine] |-lst", List(MM, MMX),
     testing(2 `;` 4, combine(plus(2) `|` mult(10)), 4 `|` zeroObj, "(2;4)=(+2|*10)"),
-    //testing(2.q(1) `|` 4, lst.combine(plus(2) `;` mult(10)), (4 `;` 40), "(2{1}|4) => lst=(+2;*10)"),
+    testing(2.q(1) `|` 4, lst.combine(plus(2) `;` mult(10)), (4 `;` 40), "(2{1}|4) => lst=(+2;*10)"),
     testing(4 | zeroObj, combine(int.plus(2) | int.mult(10)), 6 | zeroObj, "(4|{0})=(int[plus,2]|int[mult,10])"),
   ),
   testSet("[combine] ;-rec", List(MM, MMX),

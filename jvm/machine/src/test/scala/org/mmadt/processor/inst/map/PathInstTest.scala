@@ -38,7 +38,7 @@ class PathInstTest extends BaseInstTest(
     testing(__, str.path, lst(str) <= str.path, "str[path]"),
     testing(str.q(2), str.q(2).path, (str.q(2) `;`).q(2) <= str.q(2).path, "str{2}[path]"),
     //testing(str.q(2), str.q(2).plus("b").q(3).path, (str.q(2) `;` plus("b").inst.q(3) `;` str.q(6)).q(6) <= str.q(2).plus("b").q(3).path, "str{2} => str{2}[plus,'b']{3}[path]"),
-    //testing(str, str.plus("b").plus("c").path, (str `;` plus("b").inst `;` str `;` plus("c").inst `;` str) <= str.plus("b").plus("c").path, "str[plus,'b'][plus,'c'][path]"),
+    testing(str, str.plus("b").plus("c").path, (str `;` plus("b").inst `;` str `;` plus("c").inst `;` str) <= str.plus("b").plus("c").path, "str[plus,'b'][plus,'c'][path]"),
     comment("type edges"),
     testing(str, str.plus("b").plus("c").path(EDGES), (str `;` plus("b").inst `;` plus("c").inst) <= str.plus("b").plus("c").path(EDGES), "str[plus,'b'][plus,'c'][path,({0};_)]"),
     comment("value vertices and edges"),
