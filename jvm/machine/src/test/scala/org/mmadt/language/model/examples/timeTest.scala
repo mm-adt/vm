@@ -44,9 +44,16 @@ class timeTest extends BaseInstTest(
   testSet("time model table test", List(TIME, model('time)),
     comment("date"),
     testing(8 `;` 26 `;` 2020, 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26;2020) => date"),
-    testing('nat(8) `;` 'nat(26) `;` 'nat(2020), 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26;2020) => date"),
+    testing('nat(8) `;` 'nat(26) `;` 'nat(2020), 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)),
+      "(nat:8;nat:26;nat:2020) => date",
+      "(nat:8;nat:26;2020) => date",
+      "(nat:8;26;nat:2020) => date",
+      "(8;nat:26;nat:2020) => date"),
     testing(8 `;` 26, 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26) => date"),
-    testing('nat(8) `;` 'nat(26), 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)), "(8;26) => date"),
+    testing('nat(8) `;` 'nat(26), 'date, 'date('nat(8) `;` 'nat(26) `;` 'nat(2020)),
+      "(nat:8;nat:26) => date",
+      "(nat:8;26) => date",
+      "(8;nat:26) => date"),
     excepting(8, 'date, LanguageException.typingError(8, 'date), "8=>date"),
     excepting(8 `;` 26.5, 'date, LanguageException.typingError(8 `;` 26.5, 'date), "(8;26.5)=>date")
   ))
