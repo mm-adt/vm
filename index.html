@@ -2090,7 +2090,18 @@ t_q \Rightarrow v_r = v_{q \ast r}
 </tbody>
 </table>
 <div class="paragraph">
-<p>The simple example program below uses all 3 stream ring operators. The subsequent table provides a detailed decomposition of the evaluation.</p>
+<p>The simple example program below uses all 3 stream ring operators. The subsequent table provides a detailed decomposition of the evaluation. The instruction <code>[model,mmx]</code> loads the mm-ADT e<strong>x</strong>tension model that contains common <code>mm</code> base type coercions such as <code>int&lt;=str</code>, <code>real&lt;=int</code>, etc.</p>
+</div>
+<div class="listingblock">
+<div class="content">
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,mmx]
+==&gt;_
+mmlang&gt; 4 =&gt; int[mult,2] =&gt; str[plus,'0'] =&gt; real
+==&gt;80.0
+mmlang&gt; 4 =&gt; int[mult,2] =[ int=&gt;str[plus,'0'],int=&gt;str[plus,'.1'] ] =&gt; real
+==&gt;80.0
+==&gt;8.1</code></pre>
+</div>
 </div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
@@ -5406,8 +5417,6 @@ mmlang&gt; 5 =&gt; [plus,[plus,2]]
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 5   =&gt; int
 ==&gt;5
-mmlang&gt; '5' =&gt; int
-language error: str is not an int
 mmlang&gt; 5   =&gt; int{10}
 language error: int is not an int{10}</code></pre>
 </div>
@@ -5947,7 +5956,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-15 00:47:51 -0600
+Last updated 2020-11-22 11:29:53 -0700
 </div>
 </div>
 <script type="text/x-mathjax-config">
