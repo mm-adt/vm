@@ -41,7 +41,7 @@ trait Type[+T <: Obj] extends Obj {
     case _:Obj if !other.alive => !this.alive
     case _ if __.isAnon(this) || __.isAnon(other) => true
     case _:__ if __.isToken(other) => Obj.resolveTokenOption(this, other).forall(x => this.test(x))
-    case _:Type[_] => (sameBase(this, other.domain) || baseMapping(this, other.domain)) && this.q.within(other.q) // withinQ domain?
+    case _:Type[_] => (baseName(this).equals(baseName(other.domain)) || baseMapping(this, other.domain)) && this.q.within(other.q) // withinQ domain?
     case _ => false
   }
   private def baseMapping(source:Obj, target:Obj):Boolean = source.model.dtypes.exists(t =>

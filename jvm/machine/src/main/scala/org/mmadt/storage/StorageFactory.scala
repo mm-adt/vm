@@ -88,7 +88,7 @@ object StorageFactory {
   lazy val inst:Inst[Obj, Obj] = new VInst(g = (Tokens.inst, Nil))
   def rec[A <: Obj, B <: Obj](implicit f:StorageFactory):RecType[A, B] = f.rec[A, B].asInstanceOf[RecType[A, B]]
   def rec[A <: Obj, B <: Obj](single:(A, B))(implicit f:StorageFactory):Rec[A, B] = f.rec(g = (Tokens.`,`, List(single)))
-  def rec[A <: Obj, B <: Obj](name:String = Tokens.rec, g:RecTuple[A, B] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):Rec[A, B] = f.rec[A,B](name,g,q,via)
+  def rec[A <: Obj, B <: Obj](name:String = Tokens.rec, g:RecTuple[A, B] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):Rec[A, B] = f.rec[A, B](name, g, q, via)
   def lst[A <: Obj](single:A)(implicit f:StorageFactory):Lst[A] = f.lst[A](single)
   def lst[A <: Obj](implicit f:StorageFactory):LstType[A] = f.lst[A].asInstanceOf[LstType[A]]
   def lst[A <: Obj](name:String = Tokens.lst, g:LstTuple[A] = (Tokens.`,`, List.empty), q:IntQ = qOne, via:ViaTuple = rootVia)(implicit f:StorageFactory):Lst[A] = f.lst[A](name, g, q, via)
@@ -154,7 +154,7 @@ object StorageFactory {
           case _:Str => new VStrStrm(name = headName, values = MultiSet(values.asInstanceOf[Seq[StrValue]]))
           case _:Rec[Obj, Obj] => new VRecStrm[Obj, Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[RecValue[Obj, Obj]]]))
           case _:LstValue[Obj] => new VLstStrm[Obj](name = headName, values = MultiSet(values.asInstanceOf[Seq[LstValue[Obj]]]))
-          // TODO: temporary below
+          // TODO: temporary below (inst is still always a type and that needs to change)
           case y:TLst[_] => new VLstStrm[Obj](name = headName, values = MultiSet(values.map(x => new VLst(g = (y.gsep, if (!x.alive || !x.isInstanceOf[Lst[Obj]]) Nil else x.asInstanceOf[Lst[Obj]].glist))).asInstanceOf[Seq[LstValue[Obj]]]))
           case _ => new VObjStrm(values = List.empty)
         }

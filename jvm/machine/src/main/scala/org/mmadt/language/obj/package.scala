@@ -90,10 +90,7 @@ package object obj {
     case _:StrValue | _:StrStrm => tstr(name = obj.name, q = obj.q)
     case _:BoolValue | _:BoolStrm => tbool(name = obj.name, q = obj.q)
     case _:ObjStrm => __.clone(name = obj.name, q = obj.q)
-
   }).asInstanceOf[OType[O]]
-
-  def sameBase(objA:Obj, objB:Obj):Boolean = baseName(objA).equals(baseName(objB))
 }
 
 
