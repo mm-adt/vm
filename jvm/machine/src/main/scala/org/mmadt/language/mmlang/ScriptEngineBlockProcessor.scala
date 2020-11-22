@@ -76,7 +76,7 @@ class ScriptEngineBlockProcessor(astring:String, config:java.util.Map[String, Ob
           if (eval)
             builder.append(prompt).append(query).append("\n")
           Try[Obj] {
-            engine.eval(query.toString().replaceAll("\n", Tokens.blank).replaceAll("(//<[0-9]>)", Tokens.blank))
+            engine.eval(query.toString().replaceAll("(//<[0-9]>)", Tokens.blank).replaceAll("\n", Tokens.blank))
           } match {
             case Failure(e) if e.getClass.getSimpleName.equals(line._2) =>
               if (eval) {

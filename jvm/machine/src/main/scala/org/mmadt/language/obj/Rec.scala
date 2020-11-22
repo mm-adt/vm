@@ -101,7 +101,11 @@ object Rec {
 
   def test[A <: Obj, B <: Obj](arec:Rec[A, B], brec:Rec[A, B]):Boolean = Poly.sameSep(arec, brec) && arec.q.within(brec.q) &&
     (brec.ctype || brec.gmap.forall(x => qStar.equals(x._2.q) || arec.gmap.exists(y => y._1.test(x._1) && y._2.test(x._2))))
-
+  def exactTest(arec:Rec[Obj,Obj], bobj:Obj):Boolean = bobj match {
+    case brec:Rec[Obj,Obj] => brec.ctype || (Poly.sameSep(arec, brec) && arec.size == brec.size &&
+      arec.gmap.zip(brec.gmap).forall(p => (__.isAnon(p._1._1) || (p._1._1.name.equals(p._2._1.name) && p._1._1.test(p._2._1))) && __.isAnon(p._1._2) || (p._1._2.name.equals(p._2._2.name) && p._1._2.test(p._2._2))))
+    case _ => false
+  }
   private def semi[A <: Obj, B <: Obj](objs:Pairs[A, B]):Pairs[A, B] = if (objs.exists(x => !x._1.alive || !x._2.alive)) List(zeroObj -> zeroObj).asInstanceOf[Pairs[A, B]] else objs.filter(kv => !__.isAnonRootAlive(kv._2))
   def moduleStruct[A <: Obj, B <: Obj](gsep:String, pairs:Pairs[A, B], start:Obj = null):Pairs[A, B] = gsep match {
     /////////// ,-rec

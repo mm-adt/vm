@@ -22,7 +22,7 @@
 
 package org.mmadt.language.obj
 
-import org.mmadt.language.obj.Obj.{IntQ, Trace, ViaTuple}
+import org.mmadt.language.obj.Obj.{IntQ, Trace, ViaTuple, objTypeCheck}
 import org.mmadt.language.obj.Rec.RichTuple
 import org.mmadt.language.obj.`type`.{Type, __}
 import org.mmadt.language.obj.op.branch._
@@ -105,7 +105,7 @@ trait Obj
   def root:Boolean = null == this.via || null == this.via._2 // NOTE: null via._2 ensures model isn't considered -- TEST w/ !via.exists(x => !ModelOp.isMetaModel(x._2))
   def range:Type[Obj] = asType(this.rangeObj)
   def domain:Type[Obj] = asType(this.domainObj)
-  def via(obj:Obj, inst:Inst[_ <: Obj, _ <: Obj]):this.type = this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst))
+  def via(obj:Obj, inst:Inst[_ <: Obj, _ <: Obj]):this.type = objTypeCheck(this.clone(q = if (this.alive) obj.q.mult(inst.q) else qZero, via = (obj, inst)))
   def rinvert[R <: Obj]:R = if (this.root) throw LanguageException.zeroLengthPath(this) else this.via._1.asInstanceOf[R]
   def linvert:this.type = {
     if (this.root) throw LanguageException.zeroLengthPath(this)
@@ -240,7 +240,7 @@ object Obj {
     }
   }
 
-  /*private def objTypeCheck[A <: Obj](source:A):A = {
+  private def objTypeCheck[A <: Obj](source:A):A = {
     source match {
       case avalue:Value[_] if Tokens.named(source.name) => avalue.via._1 match {
         case bvalue:Value[_] if avalue.g != bvalue.g =>
@@ -253,7 +253,7 @@ object Obj {
       }
       case _ => source
     }
-  }*/
+  }
 
   // TODO: this will come in handy when types are automatically unrolled to their coercion
   /*def isRecursive(aobj:Obj):Boolean = {

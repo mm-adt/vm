@@ -314,11 +314,12 @@ NOTE: A type definition with no instructions serves as both a model constructor 
 
 Three examples of https://en.wikipedia.org/wiki/Constructor_(object-oriented_programming)[constructing] a `vertex` are presented below.
 
+// ## vertex:('id'->1)
 [exec]
 ----
 :[model,pg_1]                                //<1>
 ('id'->1) => vertex                          ## vertex:('id'->1)  //<2>
-('id'->1,'age'->28) => vertex                ## vertex:('id'->1)  //<3>
+('id'->1,'age'->28) => vertex                //<3>
 ('ID'->1) => vertex                          ## LanguageException //<4>
 ----
 <1> The type prefix loads the `pg_1` model into the `obj` graph.
@@ -357,11 +358,11 @@ In the previous `pg_1` model, a `vertex` (`edge`) was constructed using a `rec` 
 ----
 {blank}
 ^.^h|define a|
-// (5;6) => (vertex;vertex)                        ## (vertex:('id'->5);vertex:('id'->6))
 [exec]
 ----
 :[model,pg_1][define,vertex<=int-<('id'->_)]
 5 => vertex                                     ## vertex:('id'->5)
+(5;6) => (vertex;vertex)                        ## (vertex:('id'->5);vertex:('id'->6))
 ----
 {blank}
 ^.^h|model a|
@@ -383,10 +384,10 @@ An edge can be constructed in a number ways. The constructor below maps an `int`
 [exec]
 ----
 :[model,pg_2]
-(5;6) => (vertex;vertex)=>edge                                              //<1>
-(5;6) => edge<=(vertex;vertex)
-(5;6) => edge                                                               //<2>
-5 => int-<(vertex;vertex) => edge                                           //<3>
+(5;6) => (vertex;vertex) => edge                 ## edge:('outV'->vertex:('id'->5),'inV'->vertex:('id'->6)) //<1>
+(5;6) => edge<=(vertex;vertex)                   ## edge:('outV'->vertex:('id'->5),'inV'->vertex:('id'->6))
+(5;6) => edge                                    ## edge:('outV'->vertex:('id'->5),'inV'->vertex:('id'->6)) //<2>
+5 => int-<(vertex;vertex) => edge                                                                           //<3>
 5-<(vertex;vertex)=>edge
 ----
 <1> An `int` pair morphed into a `vertex` pair and then into an `edge`.
@@ -489,16 +490,17 @@ a|
 a|
 [exec,none=""]
 ----
-:[model,social:('type'->  %
-  (person -> (person:('name'->str,'age'->nat)), %
-   nat    -> (nat<=int[is>0])))]
+:[model,social:( %
+  'import' -> (mm -> ()), %
+  'type'->  %
+    (person -> (person:('name'->str,'age'->nat)), %
+     nat    -> (nat<=int[is>0])))]
 ('name'->'marko','age'->0)                => person  ## LanguageException
 ('name'->'marko','age'->29)               => person  ## person:('name'->'marko','age'->nat:29)
-('name'->'marko','age'->29,'alive'->true) => person  ## person:('name'->'marko','age'->nat:29)
-
 ----
 {blank}
 |===
+// ('name'->'marko','age'->29,'alive'->true) => person  ## person:('name'->'marko','age'->nat:29)
 
 ===== Refinement Types
 
@@ -511,9 +513,9 @@ In mm-ADT, the above is written `int[is>0]` which is the sugar form of `int{?}\<
 [exec,none=""]
 ----
 :[model,mm][define,nat<=int[is>0]]
-10 => nat
+10 => nat                           ## nat:10
 -1 => nat                           ## LanguageException
-10 => nat[plus,5]
+10 => nat[plus,5]                   ## nat:15
 10 => nat[plus,5][plus,-15]         ## LanguageException
 ----
 

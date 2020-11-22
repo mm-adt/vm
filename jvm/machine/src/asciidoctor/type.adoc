@@ -270,7 +270,7 @@ The type `int{0,5}` denotes the inclusive range of 0, 1, 2, 3, 4, or 5 integers.
 [exec]
 ----
 int<=bool
-true => int<=bool ## LanguageException
+// true => int<=bool ## LanguageException
 ----
 {blank}
 |Types that are fully specified by their type signature are canonical types (ctypes). Therefore, `bool\<=int` is meaningless as there are no instructions to map an `int` to a `bool`. This example is in the `mm` model-ADT, where given another model, it is possible for `bool\<=int` to yield a result.
@@ -412,7 +412,7 @@ where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative ide
 a|
 [exec,none=""]
 ----
-{0}[start,6]
+_{0}[start,6]
 6[is>7]
 6[is>8]
 6[is>9]
@@ -789,12 +789,14 @@ t_q \Rightarrow v_r = v_{q \ast r}
 
 The simple example program below uses all 3 stream ring operators. The subsequent table provides a detailed decomposition of the evaluation.
 
+////
 [exec]
 ----
 4 => int[mult,2] => str[plus,'0'] => real                               ## 80.0
 4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real               ## [80.0,8.1]
 4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real =| [plus,x]   ## 88.1{2}
 ----
+////
 
 [cols="1h,^3,^5,^4,^3"]
 |====
@@ -808,12 +810,15 @@ The simple example program below uses all 3 stream ring operators. The subsequen
 |term | series              | expansion                         | series              | contraction
 |====
 
+////
 Finally, below is the unsugar'd form of the disectected type from above.
 
 [exec]
 ----
-4[juxt,int[mult,2]][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]  ## 88.1
+4[as,int[mult,2]][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]  ## 88.1
 ----
+////
+
 
 ==== Stream Ring Algebra
 

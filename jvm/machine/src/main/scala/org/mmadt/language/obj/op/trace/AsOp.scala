@@ -28,7 +28,7 @@ import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.trace.ModelOp.NONE
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, Value}
+import org.mmadt.language.obj.value.{LstValue, RecValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -50,6 +50,7 @@ object AsOp extends Func[Obj, Obj] {
   override val preStrm:Boolean = true
   def apply[O <: Obj](obj:Obj):Inst[O, O] = new VInst[O, O](g = (Tokens.as, List(obj.asInstanceOf[O])), func = this) with TraceInstruction
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
+    if (__.isAnonRootAlive(start) && __.isAnonRootAlive(inst.arg0[Obj].domain)) return inst.arg0[Obj]
     if (__.isAnon(start)) return start.via(start, inst)
     inst.arg0[Obj] match {
       case avalue:Value[Obj] => avalue.hardQ(q => start.q.mult(q))
@@ -75,6 +76,7 @@ object AsOp extends Func[Obj, Obj] {
     if (domain && __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined) return source.from(__(target.name))
     if (source.name.equals(target.name)) source match {
       case alst:LstValue[Obj] if !Lst.exactTest(alst, target) =>
+      //case arec:RecValue[Obj,Obj] if !Rec.exactTest(arec,target) =>
       case _ => return source
     }
     if (!target.alive) return zeroObj

@@ -37,6 +37,7 @@ import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage
 import org.mmadt.storage.StorageFactory.{bool, int, lst, qOne, real, rec, str, zeroObj}
+import org.mmadt.storage.obj.graph.Converters.objConverter
 import org.mmadt.storage.obj.graph.ObjGraph.{CTYPE, G, NAME, NONE, OBJ, ObjEdge, ObjTraversal, ObjTraversalSource, ObjVertex, Q, ROOT, TYPE, VALUE}
 
 import scala.collection.JavaConverters
@@ -142,7 +143,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case _ if __.isToken(target) && source.isInstanceOf[Type[_]] && source.reload.model.vars(target.name).isDefined => source.from(__(target.name))
       case _:Strm[Obj] if source.model.og.V().has(NAME, target.name).exists(x => source.q.within(x.obj.domainObj.q)) => source
       case astrm:Strm[Obj] => astrm(x => x.coerce(target))
-      case _:Value[_] if finalStructureTest(source, target.domainObj) => Converters.objConverter(source, target.domainObj).head // evaluate any instructions in nested polys
+      case _:Value[_] if finalStructureTest(source, target.domainObj) => objConverter(source, target.domainObj).headOption.orNull // evaluate any instructions in nested polys
       case _:Type[_] if finalStructureTest(source, target.domainObj) => target.trace.reconstruct[Obj](source, target.name)
       case _ => null
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
@@ -155,7 +156,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       g.withSack(sroot).R.has(CTYPE, NAME, s.name)
         ///////// ALL MATCHING PERMUTATIONS OF DOMAIN /////////
         .flatMap((t:Traverser[Vertex]) => JavaConverters.asJavaIterator(
-          Converters.objConverter(t.sack[Obj], t.get.obj).map(sack => (t.get, sack)).iterator)
+          objConverter(t.sack[Obj], t.get.obj).map(sack => (t.get, sack)).iterator)
           .asInstanceOf[java.util.Iterator[Vertex]]) // hack on typing (necessary because TP3 doesn't have flatmap on traverser
         .sideEffect((t:Traverser[Vertex]) => {
           val sack = t.get.asInstanceOf[(Vertex, Obj)]._2
@@ -171,7 +172,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
             val inst = t.get.inst
             val incidentObj = t.get.inVertex().obj
             if (inst.op.equals(Tokens.noop) && baseName(sack) != baseName(incidentObj))
-              JavaConverters.asJavaIterator(Converters.objConverter(sack, incidentObj)
+              JavaConverters.asJavaIterator(objConverter(sack, incidentObj)
                 .map(newSack => (t.get, newSack)).iterator)
                 .asInstanceOf[java.util.Iterator[Edge]]
             else {
@@ -195,12 +196,12 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       .flatMap(obj => if(tdomain.name != trange.name) this.coerce(obj, trange.hardQ(1)) else Stream(obj.named(trange.name))) // compute the range mapping
       .map(obj => source match {
         case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false)).getOrElse(zeroObj) match {
-          case x if !x.isInstanceOf[Poly[_]] => Converters.objConverter(x, obj.rangeObj).headOption.getOrElse(zeroObj) // necessary for base type conversion like int<=str (perhaps a new inst)
+          case x if !x.isInstanceOf[Poly[_]] => objConverter(x, obj.rangeObj).headOption.getOrElse(zeroObj) // necessary for base type conversion like int<=str (perhaps a new inst)
           case x => x.named(trange.name)
         }
         case _:Type[_] => obj
       })
-      .union(Try(Converters.objConverter(source, tdomain)
+      .union(Try(objConverter(source, tdomain)
         .filter(_ => Tokens.named(target.name))
         .map(x => target.trace.reconstruct[Obj](x))).getOrElse(Stream.empty[Obj])) // direct translation of source to target with reconstruction via target trace
       .filter(x => finalStructureTest(x.rangeObj, target.rangeObj))
