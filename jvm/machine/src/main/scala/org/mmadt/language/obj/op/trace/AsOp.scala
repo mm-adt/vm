@@ -28,7 +28,7 @@ import org.mmadt.language.obj.op.TraceInstruction
 import org.mmadt.language.obj.op.map.WalkOp
 import org.mmadt.language.obj.op.trace.ModelOp.NONE
 import org.mmadt.language.obj.value.strm.Strm
-import org.mmadt.language.obj.value.{LstValue, RecValue, Value}
+import org.mmadt.language.obj.value.{LstValue, MonoValue, Value}
 import org.mmadt.language.obj.{Inst, _}
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory._
@@ -61,13 +61,15 @@ object AsOp extends Func[Obj, Obj] {
           case _:Type[_] if start.rangeObj == rtype => start
           case _:Type[Obj] if start.model == NONE => rtype.rangeObj.via(start, inst)
           case _:Type[_] if !Tokens.named(rtype.name) && toBaseName(start.rangeObj) == rtype => Converters.objConverter(start, rtype).headOption.getOrElse(zeroObj) // atype.rangeObj <= start
+          case _:MonoType[_] if Type.conversion(start, rtype.domainObj) => start.via(start, AsOp(rtype.trace.reconstruct[Obj](Converters.objConverter(start.rangeObj, rtype).headOption.getOrElse(zeroObj).rangeObj))) // atype.rangeObj <= start
+          case _:MonoValue[_] if Type.conversion(start, rtype.domainObj) => Converters.objConverter(Converters.objConverter(start, rtype.domainObj).headOption.getOrElse(zeroObj).compute(atype, withAs = false), rtype.rangeObj).headOption.getOrElse(zeroObj)
           case _:Type[_] => start.coerce(atype)
           case _:Value[_] => start.named(rtype.domainObj.name).compute(atype, withAs = false).named(rtype.rangeObj.name)
         }
     }
   }
 
- def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E =
+  def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E =
     if (target.root) f(autoAsType(source, target.domain, domain = true)).asInstanceOf[E]
     else autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
 

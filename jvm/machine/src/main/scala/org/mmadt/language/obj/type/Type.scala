@@ -23,6 +23,7 @@
 package org.mmadt.language.obj.`type`
 
 import org.mmadt.language.obj.Obj.IntQ
+import org.mmadt.language.obj.op.trace.ModelOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.{eqQ, _}
 import org.mmadt.language.{LanguageFactory, Tokens}
@@ -62,6 +63,7 @@ trait Type[+T <: Obj] extends Obj {
   def rule(rewrite:Inst[Obj, Obj]):this.type = this.via(this, rewrite)
 }
 object Type {
+  def conversion(objA:Obj, objB:Obj):Boolean = objA.isInstanceOf[Mono[_]] && objB.isInstanceOf[Mono[_]] && !objA.named && baseName(objA) != baseName(objB) && objA.model.typeExists(objB.range <= objA.domain)
   def isIdentity(obj:Obj):Boolean = obj.isInstanceOf[Value[_]] || obj.root || !obj.trace.modeless.exists(x => !(x._2.op == Tokens.id) && !(x._2.op == Tokens.noop))
   def mergeObjs[A <: Obj](objs:List[A]):List[A] = {
     def pureQ(obj:Obj):IntQ = if (obj.root || obj.isInstanceOf[Value[_]]) obj.q else obj.trace.foldLeft(qOne)((a, b) => multQ(a, b._2.q))

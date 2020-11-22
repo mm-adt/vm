@@ -28,7 +28,7 @@ import org.mmadt.language.obj.Int
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IntType extends Int with Type[Int] {
+trait IntType extends Int with MonoType[Int] {
   def g: Long = throw LanguageException.typeNoGround(this)
 }
 

@@ -787,16 +787,16 @@ t_q \Rightarrow v_r = v_{q \ast r}
 \]
 |====
 
-The simple example program below uses all 3 stream ring operators. The subsequent table provides a detailed decomposition of the evaluation.
+The simple example program below uses all 3 stream ring operators. The subsequent table provides a detailed decomposition of the evaluation. The instruction `[model,mmx]` loads the mm-ADT e**x**tension model that contains common `mm` base type coercions such as `int\<=str`, `real\<=int`, etc.
 
-////
+
 [exec]
 ----
-4 => int[mult,2] => str[plus,'0'] => real                               ## 80.0
-4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real               ## [80.0,8.1]
-4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real =| [plus,x]   ## 88.1{2}
+:[model,mmx]
+4 => int[mult,2] => str[plus,'0'] => real                                 ## 80.0
+4 => int[mult,2] =[ int=>str[plus,'0'],int=>str[plus,'.1'] ] => real      ## [80.0,8.1]
 ----
-////
+// 4 => int[mult,2] =[ str[plus,'0'],str[plus,'.1']] => real =| [plus,x]   ## 88.1{2}
 
 [cols="1h,^3,^5,^4,^3"]
 |====

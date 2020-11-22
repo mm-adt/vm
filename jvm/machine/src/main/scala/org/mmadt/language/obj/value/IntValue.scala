@@ -27,6 +27,6 @@ import org.mmadt.language.obj.Int
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait IntValue extends Int with Value[Int] {
+trait IntValue extends Int with MonoValue[Int] {
   override val g: Long
 }

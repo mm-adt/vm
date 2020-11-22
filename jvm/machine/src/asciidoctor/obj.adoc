@@ -443,10 +443,10 @@ a|
 [exec]
 ----
 5   => int      ## 5
-'5' => int      ## LanguageException
 5   => int{10}  ## LanguageException
 ----
 {blank}
+// '5' => int      ## LanguageException
 | https://en.wikipedia.org/wiki/Polynomial[polynomial] | A https://en.wikipedia.org/wiki/Composite_data_type[composite type] containing a linearly combination of terms and their coefficients.
 a|
 [exec,exception=LanguageException]

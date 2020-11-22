@@ -27,7 +27,7 @@ import org.mmadt.language.obj.op.map._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Real extends Obj
+trait Real extends Mono[Real]
   with PlusOp[Real]
   with MultOp[Real]
   with NegOp[Real]

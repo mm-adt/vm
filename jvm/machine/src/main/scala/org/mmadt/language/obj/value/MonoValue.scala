@@ -20,14 +20,11 @@
  * commercial license from RReduX,Inc. at [info@rredux.com].
  */
 
-package org.mmadt.language.obj.`type`
+package org.mmadt.language.obj.value
 
-import org.mmadt.language.LanguageException
-import org.mmadt.language.obj.Real
+import org.mmadt.language.obj.{Mono, Obj}
 
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait RealType extends Real with MonoType[Real] {
-  def g: Double = throw LanguageException.typeNoGround(this)
-}
+trait MonoValue[A<:Obj] extends Mono[A] with Value[A]

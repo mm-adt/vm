@@ -27,7 +27,7 @@ import org.mmadt.language.obj.op.map._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Int extends Obj
+trait Int extends Mono[Int]
   with PlusOp[Int]
   with MultOp[Int]
   with NegOp[Int]

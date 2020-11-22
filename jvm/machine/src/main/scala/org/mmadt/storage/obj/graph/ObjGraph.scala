@@ -29,7 +29,7 @@ import org.apache.tinkerpop.gremlin.tinkergraph.structure.TinkerGraph
 import org.apache.tinkerpop.gremlin.util.iterator.IteratorUtils
 import org.mmadt.language.obj.Obj._
 import org.mmadt.language.obj._
-import org.mmadt.language.obj.`type`.{Type, __}
+import org.mmadt.language.obj.`type`.{MonoType, Type, __}
 import org.mmadt.language.obj.op.trace.ModelOp.{Model, NOMAP, NOREC, NOROOT}
 import org.mmadt.language.obj.op.trace.{AsOp, ModelOp, NoOp}
 import org.mmadt.language.obj.value.Value
@@ -145,6 +145,10 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
       case astrm:Strm[Obj] => astrm(x => x.coerce(target))
       case _:Value[_] if finalStructureTest(source, target.domainObj) => objConverter(source, target.domainObj).headOption.orNull // evaluate any instructions in nested polys
       case _:Type[_] if finalStructureTest(source, target.domainObj) => target.trace.reconstruct[Obj](source, target.name)
+      case _:MonoType[_] if target.isInstanceOf[Mono[Obj]] && Type.conversion(source,target)=> {
+        if (target.root) target <= source
+        else source.via(source, AsOp(target.trace.reconstruct[Obj](objConverter(source.rangeObj, target).headOption.getOrElse(zeroObj).rangeObj)))
+      } // atype.rangeObj <= start
       case _ => null
     }).map(x => return Stream(x).asInstanceOf[Stream[target.type]])
     ///////////////////////////////////////////////////////////////
@@ -193,7 +197,7 @@ class ObjGraph(val model:Model, val graph:Graph = TinkerGraph.open()) {
         .sack[Obj]
         .stream[Obj]
     }).map(obj => target.trace.reconstruct[Obj](obj).normQ(target.q))
-      .flatMap(obj => if(tdomain.name != trange.name) this.coerce(obj, trange.hardQ(1)) else Stream(obj.named(trange.name))) // compute the range mapping
+      .flatMap(obj => if (tdomain.name != trange.name) this.coerce(obj, trange.hardQ(1)) else Stream(obj.named(trange.name))) // compute the range mapping
       .map(obj => source match {
         case _:Value[_] => Try[Obj](source.update(model).compute(obj, withAs = false)).getOrElse(zeroObj) match {
           case x if !x.isInstanceOf[Poly[_]] => objConverter(x, obj.rangeObj).headOption.getOrElse(zeroObj) // necessary for base type conversion like int<=str (perhaps a new inst)

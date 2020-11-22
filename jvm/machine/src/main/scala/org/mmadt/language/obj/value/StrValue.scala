@@ -27,6 +27,6 @@ import org.mmadt.language.obj.Str
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait StrValue extends Str with Value[Str] {
+trait StrValue extends Str with MonoValue[Str] {
   override val g: String
 }

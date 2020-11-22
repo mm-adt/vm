@@ -27,7 +27,7 @@ import org.mmadt.language.obj.op.map._
 /**
  * @author Marko A. Rodriguez (http://markorodriguez.com)
  */
-trait Str extends Obj
+trait Str extends Mono[Str]
   with PlusOp[Str]
   with GtOp[Str]
   with GteOp[Str]
