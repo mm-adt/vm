@@ -1319,9 +1319,7 @@ The type <code>int{0,5}</code> denotes the inclusive range of 0, 1, 2, 3, 4, or 
 <td class="tableblock halign-left valign-middle"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; int&lt;=bool
-==&gt;int&lt;=bool
-mmlang&gt; true =&gt; int&lt;=bool
-language error: true is not an int</code></pre>
+==&gt;int&lt;=bool</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -1533,7 +1531,8 @@ where \$(0,0)\$ is the additive identity and \$(1,1)\$ is the multiplicative ide
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; {0}[start,6]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; _{0}[start,6]
+==&gt;6
 mmlang&gt; 6[is&gt;7]
 mmlang&gt; 6[is&gt;8]
 mmlang&gt; 6[is&gt;9]</code></pre>
@@ -2093,17 +2092,6 @@ t_q \Rightarrow v_r = v_{q \ast r}
 <div class="paragraph">
 <p>The simple example program below uses all 3 stream ring operators. The subsequent table provides a detailed decomposition of the evaluation.</p>
 </div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4 =&gt; int[mult,2] =&gt; str[plus,'0'] =&gt; real
-==&gt;80.0
-mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real
-==&gt;80.0
-==&gt;8.1
-mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [plus,x]
-==&gt;88.1{2}</code></pre>
-</div>
-</div>
 <table class="tableblock frame-all grid-all stretch">
 <colgroup>
 <col style="width: 6.25%;">
@@ -2157,15 +2145,6 @@ mmlang&gt; 4 =&gt; int[mult,2] =[ str[plus,'0'],str[plus,'.1']] =&gt; real =| [p
 </tr>
 </tbody>
 </table>
-<div class="paragraph">
-<p>Finally, below is the unsugar&#8217;d form of the disectected type from above.</p>
-</div>
-<div class="listingblock">
-<div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 4[juxt,int[mult,2]][branch,(str[plus,'0'],str[plus,'.1'])][as,real][barrier,[plus,x]]
-==&gt;88.1</code></pre>
-</div>
-</div>
 </div>
 <div class="sect3">
 <h4 id="_stream_ring_algebra">Stream Ring Algebra</h4>
@@ -2774,7 +2753,7 @@ Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoi
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'a'{2}['b'{3}]
-==&gt;'b'{6}</code></pre>
+==&gt;'b'{3}</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -2799,8 +2778,8 @@ Thus, mm-ADT realizes an additive <a href="https://en.wikipedia.org/wiki/Groupoi
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mm&gt; 'a'{2}['b'{3},'c'{4}]
-==&gt;'b'{6}
-==&gt;'c'{8}
+==&gt;'b'{3}
+==&gt;'c'{4}
 mm&gt; ['b'{6},'c'{8}]
 ==&gt;'b'{6}
 ==&gt;'c'{8}</code></pre>
@@ -3192,16 +3171,17 @@ inst        domain      range state
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; 1 =&gt; int[define,x&lt;=int[plus,2]][as,x]
-==&gt;x:3
+==&gt;x:5
 mmlang&gt; int[define,x&lt;=int[plus,2]][as,x][explain]
 ==&gt;'
-x&lt;=int[define,x&lt;=int[plus,2]][as,x]
+x&lt;=int[define,x&lt;=int[plus,2]][as,x&lt;=int[plus,2]]
 
 inst                       domain      range state
 ---------------------------------------------------
 [define,x&lt;=int[plus,2]]    int    =&gt;   int    x-&gt;x&lt;=int[plus,2]
  [plus,2]                   int   =&gt;    int   x-&gt;x&lt;=int[plus,2]
-[as,x]                     int    =&gt;   x      x-&gt;x&lt;=int[plus,2]
+[as,x&lt;=int[plus,2]]        int    =&gt;   x      x-&gt;x&lt;=int[plus,2]
+ [plus,2]                   int   =&gt;    int   x-&gt;x&lt;=int[plus,2]
 '</code></pre>
 </div>
 </div>
@@ -5124,8 +5104,7 @@ There are more ctypes than the 6 <a href="https://en.wikipedia.org/wiki/Primitiv
 <tr>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">pg_1:(
-<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">import</span><span style="color:#710">'</span></span> -&gt; (mm -&gt; ()),
+<pre class="CodeRay highlight"><code data-lang="python">pg_1:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">import</span><span style="color:#710">'</span></span> -&gt; (mm -&gt; ()),
 <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span> -&gt; (
   vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>)),
   edge   -&gt; ( edge:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex))))</code></pre>
@@ -5160,7 +5139,7 @@ A type definition with no instructions serves as both a model constructor and ca
 mmlang&gt; ('id'-&gt;1) =&gt; vertex                          <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;vertex:('id'-&gt;1)
 mmlang&gt; ('id'-&gt;1,'age'-&gt;28) =&gt; vertex                <i class="conum" data-value="3"></i><b>(3)</b>
-==&gt;vertex:('id'-&gt;1)
+==&gt;vertex:('id'-&gt;1,'age'-&gt;28)
 mmlang&gt; ('ID'-&gt;1) =&gt; vertex                          <i class="conum" data-value="4"></i><b>(4)</b>
 language error: ('ID'-&gt;1) is not a vertex</code></pre>
 </div>
@@ -5250,7 +5229,9 @@ mmlang&gt; 1 =&gt; vertex&lt;=int-&lt;('id'-&gt;_)
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_1][define,vertex&lt;=int-&lt;('id'-&gt;_)]
 ==&gt;_[define,vertex&lt;=int[split,('id'-&gt;int)]]
 mmlang&gt; 5 =&gt; vertex
-==&gt;vertex:('id'-&gt;5)</code></pre>
+==&gt;vertex:('id'-&gt;5)
+mmlang&gt; (5;6) =&gt; (vertex;vertex)
+==&gt;(vertex:('id'-&gt;5);vertex:('id'-&gt;6))</code></pre>
 </div>
 </div>
 <div class="paragraph">
@@ -5261,8 +5242,7 @@ mmlang&gt; 5 =&gt; vertex
 <th class="tableblock halign-center valign-middle"><p class="tableblock">model</p></th>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">pg_2:(
-<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">import</span><span style="color:#710">'</span></span> -&gt; (mm -&gt; ()),
+<pre class="CodeRay highlight"><code data-lang="python">pg_2:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">import</span><span style="color:#710">'</span></span> -&gt; (mm -&gt; ()),
 <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span>   -&gt; (
   vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>),                                       <i class="conum" data-value="1"></i><b>(1)</b>
              vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_)),                                  <i class="conum" data-value="2"></i><b>(2)</b>
@@ -5308,13 +5288,13 @@ mmlang&gt; 5 =&gt; vertex
 <div class="content">
 <pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,pg_2]
 ==&gt;_
-mmlang&gt; (5;6) =&gt; (vertex;vertex)=&gt;edge                                              <i class="conum" data-value="1"></i><b>(1)</b>
+mmlang&gt; (5;6) =&gt; (vertex;vertex) =&gt; edge                 <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
 mmlang&gt; (5;6) =&gt; edge&lt;=(vertex;vertex)
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
-mmlang&gt; (5;6) =&gt; edge                                                               <i class="conum" data-value="2"></i><b>(2)</b>
+mmlang&gt; (5;6) =&gt; edge                                    <i class="conum" data-value="2"></i><b>(2)</b>
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;6))
-mmlang&gt; 5 =&gt; int-&lt;(vertex;vertex) =&gt; edge                                           <i class="conum" data-value="3"></i><b>(3)</b>
+mmlang&gt; 5 =&gt; int-&lt;(vertex;vertex) =&gt; edge                                                                           <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))
 mmlang&gt; 5-&lt;(vertex;vertex)=&gt;edge
 ==&gt;edge:('outV'-&gt;vertex:('id'-&gt;5),'inV'-&gt;vertex:('id'-&gt;5))</code></pre>
@@ -5370,14 +5350,13 @@ where \$d[x][y][z]\$ denotes some intermediate instructions that operate on \$d\
 <h5 id="_property_graph_model_3" class="discrete">Property Graph Model 3</h5>
 <div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="python">pg_3:(
-<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">import</span><span style="color:#710">'</span></span> -&gt; (mm -&gt; ()),
+<pre class="CodeRay highlight"><code data-lang="python">pg_3:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">import</span><span style="color:#710">'</span></span> -&gt; (mm -&gt; ()),
 <span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">type</span><span style="color:#710">'</span></span>   -&gt; (
-    graph  -&gt; (graph&lt;=edge{*}),
-    vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>),
-               vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">vertex</span><span style="color:#710">'</span></span>)),
-    edge   -&gt; (edge:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),
-               edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">edge</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>))))</code></pre>
+ graph  -&gt; (graph&lt;=edge{*}),
+ vertex -&gt; (vertex:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">int</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>),
+            vertex&lt;=<span style="color:#369;font-weight:bold">int</span>-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">id</span><span style="color:#710">'</span></span>-&gt;_,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">vertex</span><span style="color:#710">'</span></span>)),
+ edge   -&gt; (edge:(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;vertex,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="color:#369;font-weight:bold">str</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;vertex),
+            edge&lt;=(vertex;vertex)-&lt;(<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">outV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.0</span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">label</span><span style="color:#710">'</span></span>-&gt;<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">edge</span><span style="color:#710">'</span></span>,<span style="background-color:hsla(0,100%,50%,0.05)"><span style="color:#710">'</span><span style="color:#D20">inV</span><span style="color:#710">'</span></span>-&gt;<span style="color:#60E">.1</span>))))</code></pre>
 </div>
 </div>
 </div>
@@ -5481,11 +5460,11 @@ language error: 0 is not a nat</code></pre>
 mmlang&gt; (1)             =&gt; list
 ==&gt;list:(1)
 mmlang&gt; (1,(1))         =&gt; list
-==&gt;list:(1,list:(1))
+==&gt;list:(1,(1))
 mmlang&gt; (1,(1,(1)))     =&gt; list
-==&gt;list:(1,list:(1,list:(1)))
+==&gt;list:(1,(1,(1)))
 mmlang&gt; (1,(1,(1,(1)))) =&gt; list
-==&gt;list:(1,list:(1,list:(1,list:(1))))
+==&gt;list:(1,(1,(1,(1))))
 mmlang&gt; 1               =&gt; list
 language error: 1 is not a list
 mmlang&gt; (1,1)           =&gt; list
@@ -5515,15 +5494,15 @@ mmlang&gt; 5 =&gt; [plus,int]
 <td class="tableblock halign-left valign-top"><p class="tableblock">A set of types and path equations.</p></td>
 <td class="tableblock halign-left valign-top"><div class="content"><div class="listingblock">
 <div class="content">
-<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:('type'-&gt;
-          (person -&gt; (person:('name'-&gt;str,'age'-&gt;nat)),
-           nat    -&gt; (nat&lt;=int[is&gt;0])))]
+<pre class="CodeRay highlight"><code data-lang="mmlang">mmlang&gt; :[model,social:(
+          'import' -&gt; (mm -&gt; ()),
+          'type'-&gt;
+            (person -&gt; (person:('name'-&gt;str,'age'-&gt;nat)),
+             nat    -&gt; (nat&lt;=int[is&gt;0])))]
 ==&gt;_
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;0)                =&gt; person
 language error: ('name'-&gt;'marko','age'-&gt;0) is not a person
 mmlang&gt; ('name'-&gt;'marko','age'-&gt;29)               =&gt; person
-==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)
-mmlang&gt; ('name'-&gt;'marko','age'-&gt;29,'alive'-&gt;true) =&gt; person
 ==&gt;person:('name'-&gt;'marko','age'-&gt;nat:29)</code></pre>
 </div>
 </div>
@@ -5568,11 +5547,11 @@ language error: 0 is not a nat</code></pre>
 mmlang&gt; (1;2;3)   =&gt; vec                                               <i class="conum" data-value="1"></i><b>(1)</b>
 ==&gt;vec:((1;2;3),1)
 mmlang&gt; (1;2;3)   =&gt; vec =&gt; single                                     <i class="conum" data-value="2"></i><b>(2)</b>
-==&gt;single:2
+==&gt;single:1
 mmlang&gt; (1;2;3;4) =&gt; vec                                               <i class="conum" data-value="3"></i><b>(3)</b>
 ==&gt;vec:((1;2;3;4),1)
 mmlang&gt; (1;2;3;4) =&gt; vec =&gt; single                                     <i class="conum" data-value="4"></i><b>(4)</b>
-==&gt;single:2</code></pre>
+==&gt;single:1</code></pre>
 </div>
 </div>
 <div class="colist arabic">
@@ -5968,7 +5947,7 @@ mm&gt; '-adt'/+'mm'/
 </div>
 <div id="footer">
 <div id="footer-text">
-Last updated 2020-10-09 16:57:51 -0600
+Last updated 2020-10-15 00:47:51 -0600
 </div>
 </div>
 <script type="text/x-mathjax-config">
