@@ -93,7 +93,7 @@ class patternTest extends BaseInstTest {
       testing((1 `;` 2), 'ipair.combine(int.plus(2) `;` int.plus(3)), 'ipair(3 `;` 5), "(1;2)=>ipair=(+2;+3)"),
       IGNORING("eval-[3-5]")((1 `;` 2), 'pair.combine('ipair `;` int.plus(3)), lst(name = "pair", g = (Tokens.`;`, List('ipair(1 `;` 1), int(5)))),
         "(1;2)=>pair=>=(ipair;+3)=>pair",
-        //"(1;2)=>(int;int)=(int=>ipair;int=>+3)=>pair",
+        // "(1;2)=>(int;int)=(int=>ipair;int=>+3)=>pair",
         "(1;2)=>(int;int)=>(ipair;int+3)=>pair",
         "(1;2)=>(int;int)=>(ipair;int)=>pair=>=(_;+3)",
         "(1;2)=>(int;int)=>(ipair;int+3)=>(_;int)=>pair",
@@ -138,7 +138,7 @@ class patternTest extends BaseInstTest {
   )))
 
   test("blah") {
-    println(engine.eval("(4;5)=>(int;int)=>(ipair;int)", bindings(PATTERN)))
+    println(engine.eval("(4;5)=>(int;int)=(ipair;int)", bindings(PATTERN)))
   }
 
 }

@@ -32,7 +32,6 @@ import org.mmadt.language.obj.`type`._
 import org.mmadt.language.obj.op.OpInstResolver
 import org.mmadt.language.obj.op.branch._
 import org.mmadt.language.obj.op.map.{GetOp, WalkOp}
-import org.mmadt.language.obj.op.reduce.BarrierOp
 import org.mmadt.language.obj.op.trace.{FromOp, ToOp}
 import org.mmadt.language.obj.value.{strm => _, _}
 import org.mmadt.language.{LanguageException, Tokens}
@@ -125,7 +124,7 @@ class mmlangParser extends JavaTokenParsers {
   }
 
   // type parsing
-  lazy val objType:Parser[Obj] = aType | anonTypeSugar | objZero | objOne
+  lazy val objType:Parser[Obj] = eType | anonTypeSugar | objZero | objOne
   lazy val objZero:Parser[Obj] = LCURL ~> "0" <~ RCURL ^^ (_ => zeroObj)
   lazy val objOne:Parser[Obj] = LCURL ~> "1" <~ RCURL ^^ (_ => oneObj)
   lazy val anonType:Parser[__] = Tokens.anon ^^ (_ => __)
@@ -139,13 +138,15 @@ class mmlangParser extends JavaTokenParsers {
   lazy val tokenType:Parser[Type[Obj]] = typeNameNoColon ^^ (x => toType(x))
 
   lazy val cType:Parser[Obj] = (anonType | boolType | realType | intType | strType | instType | (not(inst) ~> (lstType | recType)) | tokenType) ~ opt(quantifier) ^^ (x => x._2.map(q => x._1.q(q)).getOrElse(x._1))
-  lazy val dtype:Parser[Obj] = cType ~ rep[Inst[Obj, Obj]](inst) ^^ (x => x._2.foldLeft(x._1.asInstanceOf[Obj])((x, y) => y.exec(x))) | anonTypeSugar
-  lazy val aType:Parser[Obj] = rep1(opt(cType <~ Tokens.:<=) ~ dtype <~ opt(Tokens.:=>)) ^^ ( x => x.foldLeft(__.asInstanceOf[Obj])((a,b)=> {
-    val ttype = b match {
-      case Some(range) ~ domain => range <= domain
-      case None ~ domain => domain
-    }
-    if(__.isAnonRootAlive(a)) ttype else a.as(ttype)
+  lazy val dType:Parser[Obj] = cType ~ rep[Inst[Obj, Obj]](inst) ^^ (x => x._2.foldLeft(x._1.asInstanceOf[Obj])((x, y) => y.exec(x))) | anonTypeSugar
+  lazy val aType:Parser[Obj] = opt(cType <~ Tokens.:<=) ~ dType ^^ {
+    case Some(range) ~ domain => range <= domain
+    case None ~ domain => domain
+  }
+  lazy val eType:Parser[Obj] = aType ~ rep((Tokens.:=> | Tokens.:=|) ~ aType) ^^ (x => x._2.foldLeft(x._1)((a, b) => b match {
+    case Tokens.:=> ~ atype => a.as(atype)
+    case Tokens.:=| ~ atype => a.barrier(asType(atype))
+    // case Tokens.:=[ ~ btype => a.branch(btype)
   }))
   lazy val anonQuant:Parser[__] = quantifier ^^ (x => new __().q(x))
   lazy val anonTypeSugar:Parser[__] = rep1[Inst[Obj, Obj]](inst) ^^ (x => x.foldLeft(new __())((a, b) => a.clone(via = (a, b))))
@@ -163,7 +164,7 @@ class mmlangParser extends JavaTokenParsers {
 
   // instruction parsing
   lazy val inst:Parser[Inst[Obj, Obj]] = (
-    liftSugar | sugarlessInst | fromSugar | toSugar | splitSugar | swapSugar | barrierSugar | branchSugar | walkSugar |
+    liftSugar | sugarlessInst | fromSugar | toSugar | splitSugar | swapSugar | branchSugar | walkSugar |
       combineSugar | repeatSugar | mergeSugar | infixSugar | getStrSugar | getIntSugar) ~ opt(quantifier) ^^
     (x => x._2.map(q => x._1.q(q)).getOrElse(x._1).asInstanceOf[Inst[Obj, Obj]])
   lazy val infixSugar:Parser[Inst[Obj, Obj]] = not(Tokens.:<=) ~> (
@@ -172,7 +173,6 @@ class mmlangParser extends JavaTokenParsers {
       Tokens.is_a | Tokens.is | Tokens.not_op) ~ opt(quantifier) ~ obj ^^ (x => x._1._2.map(q => OpInstResolver.resolve[Obj, Obj](x._1._1, List(x._2)).hardQ(q)).getOrElse(OpInstResolver.resolve(x._1._1, List(x._2))))
   lazy val infixArg:Parser[Obj] = Tokens.:: ~> obj <~ Tokens.:: ^^ (x => x)
   lazy val walkSugar:Parser[Inst[Obj, Obj]] = Tokens.walk_op ~> cType ^^ (x => WalkOp(x.asInstanceOf[Type[Obj]]))
-  lazy val barrierSugar:Parser[Inst[Obj, Obj]] = Tokens.barrier_op ~> objType ^^ (x => BarrierOp(asType(x)))
   lazy val combineSugar:Parser[Inst[Obj, Obj]] = Tokens.combine_op ~> polyObj ~ opt(quantifier) ^^ (x => x._2.map(q => CombineOp(x._1.q(q))).getOrElse(CombineOp(x._1)))
   lazy val splitSugar:Parser[Inst[Obj, Obj]] = Tokens.split_op ~> polyObj ~ opt(quantifier) ^^
     (x => x._2.map(q => SplitOp(x._1.q(q))).getOrElse(SplitOp(x._1)).asInstanceOf[Inst[Obj, Obj]]) | Tokens.split_op ~> infixArg ^^

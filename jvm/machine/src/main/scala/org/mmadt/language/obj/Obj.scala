@@ -30,7 +30,7 @@ import org.mmadt.language.obj.op.filter.IsOp
 import org.mmadt.language.obj.op.initial.StartOp
 import org.mmadt.language.obj.op.map.WalkOp.walkSourceToTarget
 import org.mmadt.language.obj.op.map._
-import org.mmadt.language.obj.op.reduce.{CountOp, FoldOp, SumOp}
+import org.mmadt.language.obj.op.reduce.{BarrierOp, CountOp, FoldOp, SumOp}
 import org.mmadt.language.obj.op.sideeffect.{ErrorOp, LoadOp}
 import org.mmadt.language.obj.op.trace.ModelOp.Model
 import org.mmadt.language.obj.op.trace._
@@ -49,6 +49,7 @@ trait Obj
   extends AOp
     with AsOp
     with AndOp
+    with BarrierOp
     with BranchOp
     with OrOp
     with CountOp

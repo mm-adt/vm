@@ -26,7 +26,8 @@ import org.mmadt.language.Tokens
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj.`type`.Type
 import org.mmadt.language.obj.op.ReduceInstruction
-import org.mmadt.language.obj.op.trace.AsOp
+import org.mmadt.language.obj.value.Value
+import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.obj.{Inst, Obj}
 import org.mmadt.storage.obj.value.VInst
 
@@ -46,9 +47,10 @@ object BarrierOp extends Func[Obj, Obj] {
 
   override def apply(start:Obj, inst:Inst[Obj, Obj]):Obj = {
     val atype = inst.arg0[Type[Obj]]
-    if (start.isInstanceOf[Type[_]]) return atype.via(start,inst)
-    val asStart:Obj = start.coerce(atype)
-    if (!atype.root) asStart.toStrm.drain.reduce[Obj]((a, b) => a.to('x).map(b) `=>>`[Obj] atype)
-    else asStart
+    start match {
+      case _:Type[_] => atype.via(start, inst)
+      case _:Strm[_] => start.named(atype.name).coerce(atype)
+      case _:Value[_] => start.coerce(atype)
+    }
   }
 }
