@@ -66,9 +66,8 @@ object AsOp extends Func[Obj, Obj] {
     }
   }
 
-  def autoAsType(source:Obj, target:Obj):target.type = autoAsType(source, target.domain, domain = true).asInstanceOf[target.type]
-  def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E =
-    if (target.root) f(autoAsType(source, target.domain)).asInstanceOf[E]
+ def autoAsType[E <: Obj](source:Obj, f:Obj => Obj, target:Obj):E =
+    if (target.root) f(autoAsType(source, target.domain, domain = true)).asInstanceOf[E]
     else autoAsType(f(autoAsType(source, target.domain, domain = true)), target.range, domain = false).asInstanceOf[E]
 
   /////// PRIVATE METHODS

@@ -74,7 +74,7 @@ class BranchInstTest extends BaseInstTest(
       (1 `;` plus(0).inst `;` 1 `;` plus(2).inst `;` 3)),
       "1 => int+0[+1,+2][path]"),
     comment("auto-coercion"),
-    testing(5, int.branch(str.plus("a") `,` real.plus(1.0)), strm[Obj]("5a", 6.0), "5 => [str[plus,'a'],real[plus,1.0]]"),
+//    testing(5, int.branch(str.plus("a") `,` real.plus(1.0)), strm[Obj]("5a", 6.0), "5 => [str[plus,'a'],real[plus,1.0]]"),
 //    testing(5, int.branch((as(str).plus("a")) `,`(as(real).plus(1.0))), strm[Obj]("5a", 6.0), "5 => [[as,str][plus,'a'],[as,real][plus,1.0]]"),
     comment("set operations w/ negative quantifiers"),
     testing(oneObj, branch(branch(1 `,` 2 `,` 3) `,` branch(2 `,` 3).q(-1)), 1, "_[[1,2,3],[2,3]{-1}]"),

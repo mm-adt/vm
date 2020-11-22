@@ -119,14 +119,14 @@ class patternTest extends BaseInstTest {
 
   test("custom instructions") {
     evaluate(testSet("custom instructions", PATTERN,
-      IGNORING("eval-[3-5]", "query-2")(2 `;` 3, (int `;` int).branch(lst(__('aplus))), 5,
+      IGNORING("eval-[3-5]", "query-2")(2 `;` 3, (int `;` int)==>'aplus, 'aplus(5),
         "(2;3)[aplus]",
-        "(2;3)=>aplus",
-        "(2;3)=>(int;int)=>aplus=>int",
-        "(2;3)=>(dble;dble)=>(int+-2;int+-3)=>aplus=>int",
-        "(2;3)=>(dble+-2;dble+-3)=>aplus=>int",
-       // "(1;1)=(int+1;int+2)=>aplus=>int",
-        //"(1;1)=>(int;int)=(int+1;int+2)=>aplus=>int",
+       // "(2;3)=>aplus",
+        "(2;3)=>(int;int)=>aplus",
+        "(2;3)=>(dble;dble)=>(int+-2;int+-3)=>aplus",
+        "(2;3)=>(dble+-2;dble+-3)=>aplus",
+        "(1;1)=(int+1;int+2)=>aplus",
+        "(1;1)=>(int;int)=(int+1;int+2)=>aplus",
       ),
     ))
   }

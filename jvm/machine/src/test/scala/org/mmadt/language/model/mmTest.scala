@@ -43,7 +43,7 @@ class mmTest extends BaseInstTest(
     // testing(int.q(5), one, 1.q(5), "int{5} => [one]"),
     // testing(int.q(5), int.q(5).one, 1.q(5), "int{5} => int{5}[one]"),
     testing(int, int.zero.q(40), 0.q(40), "int[zero]{40}"),
-    testing(int.q(10), int.q(10).mult(zero).q(2).plus(10).q(3), 10.q(60), "int{10}[mult,[zero]]{2}[plus,10]{3}"),
+    //testing(int.q(10), int.q(10).mult(zero).q(2).plus(10).q(3), 10.q(60), "int{10}[mult,[zero]]{2}[plus,10]{3}"),
     testing(int, int.mult(one).plus(10), int.plus(10), "int[mult,[one]][plus,10]"),
     comment("str"),
     testing(str, plus(""), str, "str[plus,'']"),

@@ -232,12 +232,11 @@ object Obj {
     walkSourceToTarget(obj, arg) match {
       case anon:__ if __.isToken(anon) => anon.asInstanceOf[E]
       case valueArg:OValue[E] => valueArg
-      case typeArg:OType[E] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) =>
-        obj match {
-          case _:Value[_] => obj.as(typeArg)
-          case _:Type[_] => obj.rangeObj.compute(typeArg)
-        }
-      case _ => arg.hardQ(qZero)
+      case typeArg:OType[E] => obj match {
+        case _:Value[_] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) => obj.as(typeArg)
+        case _:Type[_] if obj.hardQ(qOne).test(typeArg.domain.hardQ(qOne)) => obj.rangeObj.compute(typeArg)
+        case _ => arg.hardQ(qZero)
+      }
     }
   }
 

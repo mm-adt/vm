@@ -25,7 +25,6 @@ package org.mmadt.language.obj.op.map
 import org.mmadt.language.obj.Inst.Func
 import org.mmadt.language.obj._
 import org.mmadt.language.obj.`type`.{Type, __}
-import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.language.{LanguageException, Tokens}
 import org.mmadt.storage.StorageFactory.{lst, qOne}

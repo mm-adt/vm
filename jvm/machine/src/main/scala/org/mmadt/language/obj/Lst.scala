@@ -28,7 +28,6 @@ import org.mmadt.language.obj.Poly.fetchVars
 import org.mmadt.language.obj.`type`.{LstType, Type, __}
 import org.mmadt.language.obj.op.map._
 import org.mmadt.language.obj.op.sideeffect.PutOp
-import org.mmadt.language.obj.op.trace.AsOp
 import org.mmadt.language.obj.value.Value
 import org.mmadt.language.obj.value.strm.Strm
 import org.mmadt.storage.StorageFactory._
@@ -113,14 +112,9 @@ object Lst {
       })
   }
 
-  //private def semi[A <: Obj](objs:List[A]):List[A] = if (objs.exists(x => !x.alive)) List(zeroObj.asInstanceOf[A]) else objs.filter(v => !__.isAnonRootAlive(v))
   def moduleStruct[A <: Obj](gsep:String, values:List[A], start:Obj = null):List[A] = gsep match {
     /////////// ,-lst
-    case Tokens.`,` =>
-      if (null == start) return Type.mergeObjs(values).filter(_.alive)
-      Type.mergeObjs(Type.mergeObjs(values).map(v =>
-        if (!__.isAnon(start) && v.isInstanceOf[Value[_]]) v.hardQ(q => multQ(start.q, q))
-        else (if (v.isInstanceOf[Type[_]]) AsOp.autoAsType(start, v.domain) else start) ->> v)).filter(_.alive)
+    case Tokens.`,` => (if (null == start) Type.mergeObjs(values) else Type.mergeObjs(Type.mergeObjs(values).map(v => start ->> v))).filter(_.alive)
     /////////// ;-lst
     case Tokens.`;` =>
       if (null == start) return values
