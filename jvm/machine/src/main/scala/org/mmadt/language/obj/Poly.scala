@@ -23,11 +23,9 @@
 package org.mmadt.language.obj
 
 import org.mmadt.language.Tokens
-import org.mmadt.language.obj.Poly.fetchVars
 import org.mmadt.language.obj.op.branch.{CombineOp, MergeOp}
 import org.mmadt.language.obj.op.map.{EmptyOp, HeadOp, LastOp, TailOp}
-import org.mmadt.language.obj.op.trace.ModelOp
-import org.mmadt.language.obj.op.trace.ModelOp.{Model, NONE}
+import org.mmadt.language.obj.op.trace.ModelOp.Model
 
 trait Poly[+A <: Obj] extends Obj
   with CombineOp[A]
@@ -50,8 +48,7 @@ trait Poly[+A <: Obj] extends Obj
 }
 
 object Poly {
-  def sameSep(apoly:Poly[_], bpoly:Poly[_]):Boolean = (apoly.size < 2 || bpoly.size < 2) ||
-    (apoly.isChoice == bpoly.isChoice && apoly.isParallel == bpoly.isParallel && apoly.isSerial == bpoly.isSerial)
+  def sameSep(apoly:Poly[_], bpoly:Poly[_]):Boolean = apoly.size < 2 || bpoly.size < 2 || apoly.gsep == bpoly.gsep
   def finalResult[A <: Obj](obj:A, start:Obj, inst:Inst[Obj, Obj]):A = obj.clone(q = obj.q.mult(start.q).mult(inst.q), via = (start, inst))
-  def fetchVars(model:Model,list:List[Obj]):Model = if(null ==list) model else list.flatMap(x=>x.model.vars).foldLeft(model)((a,b)=>a.vars(b._1,b._2))
+  def fetchVars(model:Model, list:List[Obj]):Model = if (null == list) model else list.flatMap(x => x.model.vars).foldLeft(model)((a, b) => a.vars(b._1, b._2))
 }
